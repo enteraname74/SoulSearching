@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
@@ -52,6 +53,9 @@ class AlbumRepositoryImpl(
 
     override fun getAll(): Flow<List<Album>> =
         albumDataSource.getAll()
+
+    override fun getAllPaged(): Flow<PagingData<AlbumPreview>> =
+        albumDataSource.getAllPaged()
 
     override fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>> =
         albumDataSource.getAllAlbumWithMusics()

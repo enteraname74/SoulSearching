@@ -93,6 +93,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -210,12 +211,9 @@ class MainPageViewModel(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _albums = albumSortingInformation.flatMapLatest { sortingInformation ->
-        getAllAlbumWithMusicsSortedUseCase(
-            sortDirection = sortingInformation.direction,
-            sortType = sortingInformation.type,
-        )
-    }
+    private val _albums = commonAlbumUseCase
+        .getAllPaged()
+        .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _playlists = playlistSortingInformation.flatMapLatest { sortingInformation ->
@@ -280,20 +278,18 @@ class MainPageViewModel(
         initialValue = AllArtistsState()
     )
 
-    val allAlbumsState: StateFlow<AllAlbumsState> = combine(
-        _albums,
-        albumSortingInformation,
-    ) { albums, sortingInformation ->
-        AllAlbumsState(
-            albums = albums,
-            sortType = sortingInformation.type,
-            sortDirection = sortingInformation.direction,
+    val allAlbumsState: StateFlow<AllAlbumsState> =
+        albumSortingInformation.map { sortingInformation ->
+            AllAlbumsState(
+                albums = _albums,
+                sortType = sortingInformation.type,
+                sortDirection = sortingInformation.direction,
+            )
+        }.stateIn(
+            scope = viewModelScope.plus(Dispatchers.IO),
+            started = SharingStarted.Eagerly,
+            initialValue = AllAlbumsState()
         )
-    }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
-        initialValue = AllAlbumsState()
-    )
 
     val allPlaylistsState: StateFlow<AllPlaylistsState> = combine(
         _playlists,
@@ -730,6 +726,15 @@ class MainPageViewModel(
             // TODO OPTIMIZATION: find a way to not directly fetch all songs
             playbackManager.playShuffle(musicList = commonMusicUseCase.getAll().first())
             playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+        }
+    }
+
+    fun showAlbumPreviewBottomSheet(albumPreview: AlbumPreview) {
+        viewModelScope.launch {
+            val albumWithMusics: AlbumWithMusics = commonAlbumUseCase
+                .getAlbumWithMusics(albumPreview.id).firstOrNull() ?: return@launch
+
+            showAlbumBottomSheet(albumWithMusics)
         }
     }
 }

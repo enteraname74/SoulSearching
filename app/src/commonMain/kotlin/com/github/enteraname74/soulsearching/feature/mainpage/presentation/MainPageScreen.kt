@@ -14,7 +14,13 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
@@ -32,7 +38,11 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageNavigationState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainMenuHeaderComposable
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageHorizontalShortcut
@@ -244,7 +254,7 @@ fun MainPageScreenView(
                     allArtistsState = allArtistsState,
                     allPlaylistsState = allPlaylistsState,
                     onSelectedMusicForBottomSheet = mainPageViewModel::showMusicBottomSheet,
-                    onSelectedAlbumForBottomSheet = mainPageViewModel::showAlbumBottomSheet,
+                    onSelectedAlbumForBottomSheet = mainPageViewModel::showAlbumPreviewBottomSheet,
                     onSelectedPlaylistForBottomSheet = mainPageViewModel::showPlaylistBottomSheet,
                     onSelectedArtistForBottomSheet = mainPageViewModel::showArtistBottomSheet,
                     navigateToPlaylist = mainPageViewModel::toPlaylist,

@@ -1,5 +1,6 @@
 package com.github.enteraname74.localdb.dao
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.github.enteraname74.localdb.model.RoomAlbum
 import com.github.enteraname74.localdb.model.RoomAlbumPreview
@@ -42,7 +43,7 @@ interface AlbumDao {
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId")
-    fun getAllAlbumsFromArtist(artistId: UUID) : Flow<List<RoomCompleteAlbum>>
+    fun getAllAlbumsFromArtist(artistId: UUID): Flow<List<RoomCompleteAlbum>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId")
@@ -51,6 +52,186 @@ interface AlbumDao {
     @Transaction
     @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")
     fun getAll(): Flow<List<RoomCompleteAlbum>>
+
+    @Transaction
+    @Query(
+        """
+            SELECT album.albumId AS id, album.albumName AS name, 
+            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
+            (
+                CASE WHEN album.coverId IS NULL THEN 
+                        (
+                            SELECT music.coverId FROM RoomMusic AS music 
+                            WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
+                            music.albumPosition, 
+                            CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        )
+                    ELSE album.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
+                music.albumPosition, 
+                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+            ) AS musicCoverPath,
+            album.isInQuickAccess 
+            FROM RoomAlbum AS album 
+            ORDER BY name ASC
+        """
+    )
+    fun getAllPagedByNameAsc(): PagingSource<Int, RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT album.albumId AS id, album.albumName AS name, 
+            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
+            (
+                CASE WHEN album.coverId IS NULL THEN 
+                        (
+                            SELECT music.coverId FROM RoomMusic AS music 
+                            WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
+                            music.albumPosition, 
+                            CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        )
+                    ELSE album.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
+                music.albumPosition, 
+                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+            ) AS musicCoverPath,
+            album.isInQuickAccess 
+            FROM RoomAlbum AS album 
+            ORDER BY name DESC
+        """
+    )
+    fun getAllPagedByNameDesc(): PagingSource<Int, RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT album.albumId AS id, album.albumName AS name, 
+            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
+            (
+                CASE WHEN album.coverId IS NULL THEN 
+                        (
+                            SELECT music.coverId FROM RoomMusic AS music 
+                            WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
+                            music.albumPosition, 
+                            CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        )
+                    ELSE album.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
+                music.albumPosition, 
+                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+            ) AS musicCoverPath,
+            album.isInQuickAccess 
+            FROM RoomAlbum AS album 
+            ORDER BY addedDate ASC
+        """
+    )
+    fun getAllPagedByDateAsc(): PagingSource<Int, RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT album.albumId AS id, album.albumName AS name, 
+            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
+            (
+                CASE WHEN album.coverId IS NULL THEN 
+                        (
+                            SELECT music.coverId FROM RoomMusic AS music 
+                            WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
+                            music.albumPosition, 
+                            CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        )
+                    ELSE album.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
+                music.albumPosition, 
+                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+            ) AS musicCoverPath,
+            album.isInQuickAccess 
+            FROM RoomAlbum AS album 
+            ORDER BY addedDate DESC
+        """
+    )
+    fun getAllPagedByDateDesc(): PagingSource<Int, RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT album.albumId AS id, album.albumName AS name, 
+            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
+            (
+                CASE WHEN album.coverId IS NULL THEN 
+                        (
+                            SELECT music.coverId FROM RoomMusic AS music 
+                            WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
+                            music.albumPosition, 
+                            CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        )
+                    ELSE album.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
+                music.albumPosition, 
+                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+            ) AS musicCoverPath,
+            album.isInQuickAccess 
+            FROM RoomAlbum AS album 
+            ORDER BY nbPlayed ASC
+        """
+    )
+    fun getAllPagedByNbPlayedAsc(): PagingSource<Int, RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT album.albumId AS id, album.albumName AS name, 
+            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
+            (
+                CASE WHEN album.coverId IS NULL THEN 
+                        (
+                            SELECT music.coverId FROM RoomMusic AS music 
+                            WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
+                            music.albumPosition, 
+                            CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        )
+                    ELSE album.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
+                music.albumPosition, 
+                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+            ) AS musicCoverPath,
+            album.isInQuickAccess 
+            FROM RoomAlbum AS album 
+            ORDER BY nbPlayed DESC
+        """
+    )
+    fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomAlbumPreview>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")

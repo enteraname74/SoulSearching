@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.usecase.album
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
@@ -18,6 +19,9 @@ class CommonAlbumUseCase(
 
     fun getAll(): Flow<List<Album>> =
         albumRepository.getAll()
+
+    fun getAllPaged(): Flow<PagingData<AlbumPreview>> =
+        albumRepository.getAllPaged()
 
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
         albumRepository.getAllFromQuickAccess()

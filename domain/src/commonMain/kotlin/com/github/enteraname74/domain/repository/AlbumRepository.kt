@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.repository
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
@@ -46,7 +47,10 @@ interface AlbumRepository {
     /**
      * Retrieves a flow of all Album, sorted by name asc.
      */
+    @Deprecated("Avoid fetching all album from DB because of performance issue")
     fun getAll(): Flow<List<Album>>
+
+    fun getAllPaged(): Flow<PagingData<AlbumPreview>>
 
     /**
      * Retrieves a flow of all AlbumsWithMusics.

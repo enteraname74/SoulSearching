@@ -8,7 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
-import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
@@ -38,7 +38,7 @@ fun SearchAll(
     allArtistsState: AllArtistsState,
     allPlaylistsState: AllPlaylistsState,
     onSelectedMusicForBottomSheet: (Music) -> Unit,
-    onSelectedAlbumForBottomSheet: (AlbumWithMusics) -> Unit,
+    onSelectedAlbumForBottomSheet: (AlbumPreview) -> Unit,
     onSelectedPlaylistForBottomSheet: (PlaylistWithMusicsNumber) -> Unit,
     onSelectedArtistForBottomSheet: (ArtistWithMusics) -> Unit,
     navigateToPlaylist: (UUID) -> Unit,
@@ -125,10 +125,11 @@ fun SearchAll(
             }
         }
 
-        val foundedAlbums = allAlbumsState.albums.filter {
-            it.album.artist.artistName.lowercase().contains(searchText.lowercase()) ||
-                    it.album.albumName.lowercase().contains(searchText.lowercase())
-        }
+        val foundedAlbums = emptyList<AlbumPreview>()
+//        allAlbumsState.albums.filter {
+//            it.album.artist.artistName.lowercase().contains(searchText.lowercase()) ||
+//                    it.album.albumName.lowercase().contains(searchText.lowercase())
+//        }
         if (foundedAlbums.isNotEmpty()) {
             stickyHeader(
                 key = SEARCH_ALL_ALBUM_STICKY_KEY,
@@ -142,24 +143,24 @@ fun SearchAll(
             }
             items(
                 items = foundedAlbums,
-                key = { it.album.albumId },
+                key = { it.id },
                 contentType = { SEARCH_ALL_ALBUM_CONTENT_TYPE },
-            ) { albumWithMusics ->
+            ) { albumPreview ->
                 LinearPreviewComposable(
                     modifier = Modifier
                         .animateItem(),
-                    title = albumWithMusics.album.albumName,
-                    text = albumWithMusics.album.artist.artistName,
+                    title = albumPreview.name,
+                    text = albumPreview.artist,
                     onClick = {
                         focusManager.clearFocus()
-                        navigateToAlbum(albumWithMusics.album.albumId)
+                        navigateToAlbum(albumPreview.id)
                     },
                     onLongClick = {
                         coroutineScope.launch {
-                            onSelectedAlbumForBottomSheet(albumWithMusics)
+                            onSelectedAlbumForBottomSheet(albumPreview)
                         }
                     },
-                    cover = albumWithMusics.cover,
+                    cover = albumPreview.cover,
                 )
             }
         }
@@ -226,7 +227,8 @@ fun SearchAll(
 }
 
 private const val SEARCH_ALL_PLAYLIST_STICKY_KEY = "SEARCH_ALL_PLAYLIST_STICKY_KEY"
-private const val SEARCH_ALL_PLAYLIST_STICKY_CONTENT_TYPE = "SEARCH_ALL_PLAYLIST_STICKY_CONTENT_TYPE"
+private const val SEARCH_ALL_PLAYLIST_STICKY_CONTENT_TYPE =
+    "SEARCH_ALL_PLAYLIST_STICKY_CONTENT_TYPE"
 private const val SEARCH_ALL_PLAYLISTS_CONTENT_TYPE = "SEARCH_ALL_PLAYLISTS_CONTENT_TYPE"
 
 private const val SEARCH_ALL_ARTIST_STICKY_KEY = "SEARCH_ALL_ARTIST_STICKY_KEY"

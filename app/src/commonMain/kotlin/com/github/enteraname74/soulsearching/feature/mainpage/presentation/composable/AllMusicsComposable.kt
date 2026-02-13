@@ -87,7 +87,7 @@ fun AllMusicsComposable(
                 }
             )
         }
-        if (musics.itemCount != 0) {
+        if (musics.itemCount > 0) {
             items(
                 key = { musics[it]?.musicId ?: UUID.randomUUID() },
                 contentType = { ALL_MUSICS_CONTENT_TYPE },
