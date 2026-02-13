@@ -141,4 +141,15 @@ internal class RoomAlbumDataSourceImpl(
     override suspend fun cleanAllMusicCovers() {
         appDatabase.albumDao.cleanAllMusicCovers()
     }
+
+    override suspend fun getDuplicatedAlbum(
+        albumId: UUID,
+        albumName: String,
+        artistId: UUID
+    ): Album? =
+        appDatabase.albumDao.getDuplicatedAlbum(
+            albumId = albumId,
+            albumName = albumName,
+            artistId = artistId,
+        )?.toAlbum()
 }

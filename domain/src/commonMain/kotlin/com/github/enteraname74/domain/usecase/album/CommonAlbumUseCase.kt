@@ -50,15 +50,12 @@ class CommonAlbumUseCase(
         albumId: UUID,
         albumName: String,
         artistId: UUID
-    ): Album? {
-        val allAlbums: List<Album> = albumRepository.getAll().first()
-        return allAlbums
-            .firstOrNull {
-                it.albumName == albumName &&
-                        it.artist.artistId == artistId &&
-                        it.albumId != albumId
-            }
-    }
+    ): Album? =
+        albumRepository.getDuplicatedAlbum(
+            albumId = albumId,
+            albumName = albumName,
+            artistId = artistId,
+        )
 
     suspend fun incrementAlbumNbPlayed(albumId: UUID) {
         val album: Album = albumRepository.getFromId(albumId = albumId).first() ?: return
@@ -82,4 +79,5 @@ class CommonAlbumUseCase(
     suspend fun cleanAllMusicCovers() {
         albumRepository.cleanAllMusicCovers()
     }
+
 }

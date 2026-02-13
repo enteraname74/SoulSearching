@@ -2,6 +2,7 @@ package com.github.enteraname74.localdb.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
+import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.localdb.model.RoomAlbum
 import com.github.enteraname74.localdb.model.RoomAlbumPreview
 import com.github.enteraname74.localdb.model.RoomCompleteAlbum
@@ -277,4 +278,19 @@ interface AlbumDao {
 
     @Query("UPDATE RoomAlbum SET coverId = NULL")
     suspend fun cleanAllMusicCovers()
+
+    @Query(
+        """
+            SELECT * FROM RoomAlbum 
+            WHERE albumName = :albumName 
+            AND artistId = :artistId 
+            AND albumId != :albumId 
+            LIMIT 1
+        """
+    )
+    suspend fun getDuplicatedAlbum(
+        albumId: UUID,
+        albumName: String,
+        artistId: UUID
+    ): RoomCompleteAlbum?
 }

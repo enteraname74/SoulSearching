@@ -60,4 +60,10 @@ interface AlbumRepository {
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>>
 
     suspend fun cleanAllMusicCovers()
+
+    suspend fun getDuplicatedAlbum(
+        albumId: UUID,
+        albumName: String,
+        artistId: UUID
+    ): Album?
 }

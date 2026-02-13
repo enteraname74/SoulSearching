@@ -48,6 +48,7 @@ class UpdateAlbumUseCase(
 
         val updatedAlbum = updateInformation.legacyAlbum.copy(
             artist = albumArtistToSave,
+            albumName = updateInformation.newName,
             isInQuickAccess = updateInformation.legacyAlbum.isInQuickAccess
                     || duplicateAlbum?.isInQuickAccess == true,
             cover = updateInformation.newCover,

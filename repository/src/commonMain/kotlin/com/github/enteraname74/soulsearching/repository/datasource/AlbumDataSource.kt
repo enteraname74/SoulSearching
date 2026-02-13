@@ -4,9 +4,8 @@ import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
-import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 /**
  * Data source of an Album.
@@ -61,4 +60,10 @@ interface AlbumDataSource {
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>>
 
     suspend fun cleanAllMusicCovers()
+
+    suspend fun getDuplicatedAlbum(
+        albumId: UUID,
+        albumName: String,
+        artistId: UUID
+    ): Album?
 }

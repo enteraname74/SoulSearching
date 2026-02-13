@@ -67,4 +67,15 @@ class AlbumRepositoryImpl(
     override suspend fun cleanAllMusicCovers() {
         albumDataSource.cleanAllMusicCovers()
     }
+
+    override suspend fun getDuplicatedAlbum(
+        albumId: UUID,
+        albumName: String,
+        artistId: UUID
+    ): Album? =
+        albumDataSource.getDuplicatedAlbum(
+            albumId = albumId,
+            albumName = albumName,
+            artistId = artistId,
+        )
 }
