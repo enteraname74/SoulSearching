@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.features.filemanager.usecase
 
+import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.MusicArtist
@@ -8,7 +9,6 @@ import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import kotlinx.coroutines.flow.first
 
 class UpdateArtistUseCase(
     private val artistRepository: ArtistRepository,
@@ -53,9 +53,9 @@ class UpdateArtistUseCase(
      * Redirect the albums of an artist with the same name to the correct artist id.
      */
     private suspend fun redirectAlbumsToCorrectArtist(artist: Artist) {
-        val legacyAlbumsOfArtist = albumRepository.getAllAlbumWithMusics().first().filter {
-            it.album.artist.artistName == artist.artistName
-        }
+        val legacyAlbumsOfArtist: List<AlbumWithMusics> = albumRepository.getAlbumsOfArtistName(
+            artistName = artist.artistName,
+        )
 
         /*
          If, once the artist name was changed,

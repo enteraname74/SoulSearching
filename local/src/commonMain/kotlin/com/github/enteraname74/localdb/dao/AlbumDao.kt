@@ -2,7 +2,6 @@ package com.github.enteraname74.localdb.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.localdb.model.RoomAlbum
 import com.github.enteraname74.localdb.model.RoomAlbumPreview
 import com.github.enteraname74.localdb.model.RoomCompleteAlbum
@@ -353,4 +352,15 @@ interface AlbumDao {
         """
     )
     fun getStatisticsData(): Flow<List<RoomAlbumPreview>>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbum AS album 
+            INNER JOIN RoomArtist AS artist 
+            ON album.artistId = artist.artistId 
+            AND artist.artistName = :artistName
+        """
+    )
+    suspend fun getAlbumsOfArtistName(artistName: String): List<RoomCompleteAlbumWithMusics>
 }

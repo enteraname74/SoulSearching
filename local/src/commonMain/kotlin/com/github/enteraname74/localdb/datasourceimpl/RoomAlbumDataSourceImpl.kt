@@ -175,4 +175,7 @@ internal class RoomAlbumDataSourceImpl(
         appDatabase.albumDao.getStatisticsData().map { list ->
             list.map { it.toAlbumPreview() }
         }
+
+    override suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics> =
+        appDatabase.albumDao.getAlbumsOfArtistName(artistName).map { it.toAlbumWithMusics() }
 }

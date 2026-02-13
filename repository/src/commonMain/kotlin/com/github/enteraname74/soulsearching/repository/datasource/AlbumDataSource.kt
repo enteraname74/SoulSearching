@@ -78,4 +78,6 @@ interface AlbumDataSource {
     ): Album?
 
     fun getStatisticsData(): Flow<List<AlbumPreview>>
+
+    suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics>
 }
