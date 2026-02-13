@@ -58,9 +58,6 @@ class AlbumRepositoryImpl(
     override fun getAllPaged(): Flow<PagingData<AlbumPreview>> =
         albumDataSource.getAllPaged()
 
-    override fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>> =
-        albumDataSource.getAllAlbumWithMusics()
-
     override fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
         albumDataSource.getAllFromQuickAccess()
 

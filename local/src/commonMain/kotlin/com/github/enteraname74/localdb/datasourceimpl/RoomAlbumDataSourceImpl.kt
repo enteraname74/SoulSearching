@@ -127,12 +127,6 @@ internal class RoomAlbumDataSourceImpl(
             }
         }
 
-    override fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>> {
-        return appDatabase.albumDao.getAllAlbumWithMusics().map { list ->
-            list.map { it.toAlbumWithMusics() }
-        }
-    }
-
     override fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
         appDatabase.albumDao.getAllFromQuickAccess().map { list ->
             list.map { it.toAlbumPreview() }

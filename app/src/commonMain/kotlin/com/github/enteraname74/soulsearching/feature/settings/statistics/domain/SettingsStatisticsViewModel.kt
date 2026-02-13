@@ -35,7 +35,7 @@ class SettingsStatisticsViewModel(
             sortDirection = SortDirection.DESC,
             sortType = SortType.NB_PLAYED,
         ),
-        commonArtistUseCase.getAllSortedByMostSongs(),
+        commonArtistUseCase.getStatisticsData(),
     ) { musics, allAlbums, allPlaylists, allArtists, allArtistsWithMostSongs ->
         SettingsStatisticsState(
             mostListenedMusics = musics.map { it.toListenedElement() },
@@ -49,7 +49,6 @@ class SettingsStatisticsViewModel(
                 .map { it.toListenedElement() },
             mostListenedAlbums = allAlbums.map { it.toListenedElement() },
             artistsWithMostSongs = allArtistsWithMostSongs
-                .getFirstsOrMax(MAX_TO_SHOW)
                 .map { it.toMostSongsListenedElement() },
         )
     }.stateIn(

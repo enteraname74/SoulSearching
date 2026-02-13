@@ -256,7 +256,7 @@ fun MainPageScreenView(
                     onSelectedMusicForBottomSheet = mainPageViewModel::showMusicBottomSheet,
                     onSelectedAlbumForBottomSheet = mainPageViewModel::showAlbumPreviewBottomSheet,
                     onSelectedPlaylistForBottomSheet = mainPageViewModel::showPlaylistBottomSheet,
-                    onSelectedArtistForBottomSheet = mainPageViewModel::showArtistBottomSheet,
+                    onSelectedArtistForBottomSheet = mainPageViewModel::showArtistPreviewBottomSheet,
                     navigateToPlaylist = mainPageViewModel::toPlaylist,
                     navigateToArtist = mainPageViewModel::toArtist,
                     navigateToAlbum = mainPageViewModel::toAlbum,

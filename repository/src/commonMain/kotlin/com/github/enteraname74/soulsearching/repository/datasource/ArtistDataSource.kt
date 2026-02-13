@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
@@ -39,6 +40,8 @@ interface ArtistDataSource {
      */
     fun getAll(): Flow<List<Artist>>
 
+    fun getAllPaged(): Flow<PagingData<ArtistPreview>>
+
     /**
      * Retrieves a flow of all ArtistWithMusics, sorted by name asc.
      */
@@ -62,4 +65,11 @@ interface ArtistDataSource {
     fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>>
 
     fun getAllFromQuickAccess(): Flow<List<ArtistPreview>>
+
+    suspend fun getDuplicatedArtist(
+        artistId: UUID,
+        artistName: String
+    ): ArtistWithMusics?
+
+    fun getStatisticsData(): Flow<List<ArtistPreview>>
 }

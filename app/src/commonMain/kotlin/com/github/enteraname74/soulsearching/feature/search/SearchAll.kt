@@ -9,7 +9,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import com.github.enteraname74.domain.model.AlbumPreview
-import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
@@ -40,7 +40,7 @@ fun SearchAll(
     onSelectedMusicForBottomSheet: (Music) -> Unit,
     onSelectedAlbumForBottomSheet: (AlbumPreview) -> Unit,
     onSelectedPlaylistForBottomSheet: (PlaylistWithMusicsNumber) -> Unit,
-    onSelectedArtistForBottomSheet: (ArtistWithMusics) -> Unit,
+    onSelectedArtistForBottomSheet: (ArtistPreview) -> Unit,
     navigateToPlaylist: (UUID) -> Unit,
     navigateToArtist: (UUID) -> Unit,
     navigateToAlbum: (UUID) -> Unit,
@@ -89,9 +89,12 @@ fun SearchAll(
             }
         }
 
-        val foundedArtists = allArtistsState.artists.filter {
-            it.artist.artistName.lowercase().contains(searchText.lowercase())
-        }
+        // TODO: Normalise with accents.
+        // TODO OPTIMIZATION: Move search in viewModel.
+        val foundedArtists = emptyList<ArtistPreview>()
+//        allArtistsState.artists.filter {
+//            it.artist.artistName.lowercase().contains(searchText.lowercase())
+//        }
         if (foundedArtists.isNotEmpty()) {
             stickyHeader(
                 key = SEARCH_ALL_ARTIST_STICKY_KEY,
@@ -105,26 +108,28 @@ fun SearchAll(
             }
             items(
                 items = foundedArtists,
-                key = { it.artist.artistId },
+                key = { it.id },
                 contentType = { SEARCH_ALL_ARTIST_CONTENT_TYPE }
-            ) { artistWithMusics ->
+            ) { albumPreview ->
                 LinearPreviewComposable(
                     modifier = Modifier
                         .animateItem(),
-                    title = artistWithMusics.artist.artistName,
-                    text = strings.musics(artistWithMusics.musics.size),
+                    title = albumPreview.name,
+                    text = strings.musics(albumPreview.totalMusics),
                     onClick = {
                         focusManager.clearFocus()
-                        navigateToArtist(artistWithMusics.artist.artistId)
+                        navigateToArtist(albumPreview.id)
                     },
                     onLongClick = {
-                        onSelectedArtistForBottomSheet(artistWithMusics)
+                        onSelectedArtistForBottomSheet(albumPreview)
                     },
-                    cover = artistWithMusics.cover,
+                    cover = albumPreview.cover,
                 )
             }
         }
 
+        // TODO: Normalise with accents.
+        // TODO OPTIMIZATION: Move search in viewModel.
         val foundedAlbums = emptyList<AlbumPreview>()
 //        allAlbumsState.albums.filter {
 //            it.album.artist.artistName.lowercase().contains(searchText.lowercase()) ||

@@ -52,11 +52,6 @@ interface AlbumDataSource {
 
     fun getAllPaged(): Flow<PagingData<AlbumPreview>>
 
-    /**
-     * Retrieves a flow of all AlbumsWithMusics, sorted by name asc.
-     */
-    fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>>
-
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>>
 
     suspend fun cleanAllMusicCovers()

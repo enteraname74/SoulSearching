@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.repository
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
@@ -45,6 +46,8 @@ interface ArtistRepository {
     @Deprecated("Avoid fetching all artist from DB because of performance issue")
     fun getAll(): Flow<List<Artist>>
 
+    fun getAllPaged(): Flow<PagingData<ArtistPreview>>
+
     /**
      * Retrieves a flow of all ArtistWithMusics.
      */
@@ -62,4 +65,11 @@ interface ArtistRepository {
     fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>>
 
     fun getAllFromQuickAccess(): Flow<List<ArtistPreview>>
+
+    suspend fun getDuplicatedArtist(
+        artistId: UUID,
+        artistName: String
+    ): ArtistWithMusics?
+
+    fun getStatisticsData(): Flow<List<ArtistPreview>>
 }

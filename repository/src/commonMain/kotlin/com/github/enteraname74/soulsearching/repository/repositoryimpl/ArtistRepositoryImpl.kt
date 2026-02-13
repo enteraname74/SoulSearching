@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
@@ -64,6 +65,9 @@ class ArtistRepositoryImpl(
     override fun getAll(): Flow<List<Artist>> =
         artistDataSource.getAll()
 
+    override fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
+        artistDataSource.getAllPaged()
+
     /**
      * Retrieves a flow of all ArtistWithMusics, sorted by name asc.
      */
@@ -84,4 +88,16 @@ class ArtistRepositoryImpl(
 
     override fun getAllFromQuickAccess(): Flow<List<ArtistPreview>> =
         artistDataSource.getAllFromQuickAccess()
+
+    override suspend fun getDuplicatedArtist(
+        artistId: UUID,
+        artistName: String
+    ): ArtistWithMusics? =
+        artistDataSource.getDuplicatedArtist(
+            artistId = artistId,
+            artistName = artistName,
+        )
+
+    override fun getStatisticsData(): Flow<List<ArtistPreview>> =
+        artistDataSource.getStatisticsData()
 }

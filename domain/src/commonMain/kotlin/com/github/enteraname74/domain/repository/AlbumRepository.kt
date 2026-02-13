@@ -52,12 +52,6 @@ interface AlbumRepository {
 
     fun getAllPaged(): Flow<PagingData<AlbumPreview>>
 
-    /**
-     * Retrieves a flow of all AlbumsWithMusics.
-     */
-    @Deprecated("Avoid fetching all album from DB because of performance issue")
-    fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>>
-
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>>
 
     suspend fun cleanAllMusicCovers()

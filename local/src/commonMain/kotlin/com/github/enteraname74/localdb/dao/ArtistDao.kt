@@ -1,12 +1,16 @@
 package com.github.enteraname74.localdb.dao
 
-import androidx.room.*
-import com.github.enteraname74.localdb.model.RoomAlbumPreview
+import androidx.paging.PagingSource
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.RoomArtist
 import com.github.enteraname74.localdb.model.RoomArtistPreview
 import com.github.enteraname74.localdb.model.RoomArtistWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 /**
  * DAO of an Artist.
@@ -48,6 +52,216 @@ interface ArtistDao {
 
     @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
     fun getAll(): Flow<List<RoomArtist>>
+
+    @Transaction
+    @Query(
+        """
+            SELECT artist.artistId AS id, 
+            artist.artistName AS name, 
+            artist.coverFolderKey,
+            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
+            (
+                CASE WHEN artist.coverId IS NULL THEN 
+                    (
+                        SELECT music.coverId FROM RoomMusic AS music 
+                        INNER JOIN RoomMusicArtist AS musicArtist 
+                        ON music.musicId = musicArtist.musicId 
+                        AND artist.artistId = musicArtist.artistId 
+                        AND music.isHidden = 0 
+                        AND music.coverId IS NOT NULL 
+                        LIMIT 1
+                    )
+                ELSE artist.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                INNER JOIN RoomMusicArtist AS musicArtist 
+                ON music.musicId = musicArtist.musicId 
+                AND artist.artistId = musicArtist.artistId 
+                AND music.isHidden = 0 
+                LIMIT 1
+            ) AS musicCoverPath,
+            artist.isInQuickAccess 
+            FROM RoomArtist AS artist 
+            ORDER BY name ASC
+        """
+    )
+    fun getAllPagedByNameAsc(): PagingSource<Int, RoomArtistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT artist.artistId AS id, 
+            artist.artistName AS name, 
+            artist.coverFolderKey,
+            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
+            (
+                CASE WHEN artist.coverId IS NULL THEN 
+                    (
+                        SELECT music.coverId FROM RoomMusic AS music 
+                        INNER JOIN RoomMusicArtist AS musicArtist 
+                        ON music.musicId = musicArtist.musicId 
+                        AND artist.artistId = musicArtist.artistId 
+                        AND music.isHidden = 0 
+                        AND music.coverId IS NOT NULL 
+                        LIMIT 1
+                    )
+                ELSE artist.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                INNER JOIN RoomMusicArtist AS musicArtist 
+                ON music.musicId = musicArtist.musicId 
+                AND artist.artistId = musicArtist.artistId 
+                AND music.isHidden = 0 
+                LIMIT 1
+            ) AS musicCoverPath,
+            artist.isInQuickAccess 
+            FROM RoomArtist AS artist 
+            ORDER BY name DESC
+        """
+    )
+    fun getAllPagedByNameDesc(): PagingSource<Int, RoomArtistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT artist.artistId AS id, 
+            artist.artistName AS name, 
+            artist.coverFolderKey,
+            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
+            (
+                CASE WHEN artist.coverId IS NULL THEN 
+                    (
+                        SELECT music.coverId FROM RoomMusic AS music 
+                        INNER JOIN RoomMusicArtist AS musicArtist 
+                        ON music.musicId = musicArtist.musicId 
+                        AND artist.artistId = musicArtist.artistId 
+                        AND music.isHidden = 0 
+                        AND music.coverId IS NOT NULL 
+                        LIMIT 1
+                    )
+                ELSE artist.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                INNER JOIN RoomMusicArtist AS musicArtist 
+                ON music.musicId = musicArtist.musicId 
+                AND artist.artistId = musicArtist.artistId 
+                AND music.isHidden = 0 
+                LIMIT 1
+            ) AS musicCoverPath,
+            artist.isInQuickAccess 
+            FROM RoomArtist AS artist 
+            ORDER BY addedDate ASC
+        """
+    )
+    fun getAllPagedByDateAsc(): PagingSource<Int, RoomArtistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT artist.artistId AS id, 
+            artist.artistName AS name, 
+            artist.coverFolderKey,
+            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
+            (
+                CASE WHEN artist.coverId IS NULL THEN 
+                    (
+                        SELECT music.coverId FROM RoomMusic AS music 
+                        INNER JOIN RoomMusicArtist AS musicArtist 
+                        ON music.musicId = musicArtist.musicId 
+                        AND artist.artistId = musicArtist.artistId 
+                        AND music.isHidden = 0 
+                        AND music.coverId IS NOT NULL 
+                        LIMIT 1
+                    )
+                ELSE artist.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                INNER JOIN RoomMusicArtist AS musicArtist 
+                ON music.musicId = musicArtist.musicId 
+                AND artist.artistId = musicArtist.artistId 
+                AND music.isHidden = 0 
+                LIMIT 1
+            ) AS musicCoverPath,
+            artist.isInQuickAccess 
+            FROM RoomArtist AS artist 
+            ORDER BY addedDate DESC
+        """
+    )
+    fun getAllPagedByDateDesc(): PagingSource<Int, RoomArtistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT artist.artistId AS id, 
+            artist.artistName AS name, 
+            artist.coverFolderKey,
+            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
+            (
+                CASE WHEN artist.coverId IS NULL THEN 
+                    (
+                        SELECT music.coverId FROM RoomMusic AS music 
+                        INNER JOIN RoomMusicArtist AS musicArtist 
+                        ON music.musicId = musicArtist.musicId 
+                        AND artist.artistId = musicArtist.artistId 
+                        AND music.isHidden = 0 
+                        AND music.coverId IS NOT NULL 
+                        LIMIT 1
+                    )
+                ELSE artist.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                INNER JOIN RoomMusicArtist AS musicArtist 
+                ON music.musicId = musicArtist.musicId 
+                AND artist.artistId = musicArtist.artistId 
+                AND music.isHidden = 0 
+                LIMIT 1
+            ) AS musicCoverPath,
+            artist.isInQuickAccess 
+            FROM RoomArtist AS artist 
+            ORDER BY nbPlayed ASC
+        """
+    )
+    fun getAllPagedByNbPlayedAsc(): PagingSource<Int, RoomArtistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT artist.artistId AS id, 
+            artist.artistName AS name, 
+            artist.coverFolderKey,
+            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
+            (
+                CASE WHEN artist.coverId IS NULL THEN 
+                    (
+                        SELECT music.coverId FROM RoomMusic AS music 
+                        INNER JOIN RoomMusicArtist AS musicArtist 
+                        ON music.musicId = musicArtist.musicId 
+                        AND artist.artistId = musicArtist.artistId 
+                        AND music.isHidden = 0 
+                        AND music.coverId IS NOT NULL 
+                        LIMIT 1
+                    )
+                ELSE artist.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                INNER JOIN RoomMusicArtist AS musicArtist 
+                ON music.musicId = musicArtist.musicId 
+                AND artist.artistId = musicArtist.artistId 
+                AND music.isHidden = 0 
+                LIMIT 1
+            ) AS musicCoverPath,
+            artist.isInQuickAccess 
+            FROM RoomArtist AS artist 
+            ORDER BY nbPlayed DESC
+        """
+    )
+    fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomArtistPreview>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
@@ -106,4 +320,53 @@ interface ArtistDao {
         """
     )
     fun getAllFromQuickAccess(): Flow<List<RoomArtistPreview>>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomArtist 
+            WHERE artistName = :artistName 
+            AND artistId != :artistId 
+            LIMIT 1
+        """
+    )
+    suspend fun getDuplicatedArtist(
+        artistId: UUID,
+        artistName: String
+    ): RoomArtistWithMusics?
+
+    @Query(
+        """
+            SELECT artist.artistId AS id, 
+            artist.artistName AS name, 
+            artist.coverFolderKey,
+            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
+            (
+                CASE WHEN artist.coverId IS NULL THEN 
+                    (
+                        SELECT music.coverId FROM RoomMusic AS music 
+                        INNER JOIN RoomMusicArtist AS musicArtist 
+                        ON music.musicId = musicArtist.musicId 
+                        AND artist.artistId = musicArtist.artistId 
+                        AND music.isHidden = 0 
+                        AND music.coverId IS NOT NULL 
+                        LIMIT 1
+                    )
+                ELSE artist.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                INNER JOIN RoomMusicArtist AS musicArtist 
+                ON music.musicId = musicArtist.musicId 
+                AND artist.artistId = musicArtist.artistId 
+                AND music.isHidden = 0 
+                LIMIT 1
+            ) AS musicCoverPath,
+            artist.isInQuickAccess 
+            FROM RoomArtist AS artist 
+            ORDER BY totalMusics DESC 
+            LIMIT 11
+        """
+    )
+    fun getStatisticsData(): Flow<List<RoomArtistPreview>>
 }

@@ -1,13 +1,17 @@
 package com.github.enteraname74.localdb.dao
 
 import androidx.paging.PagingSource
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.RoomAlbum
 import com.github.enteraname74.localdb.model.RoomAlbumPreview
 import com.github.enteraname74.localdb.model.RoomCompleteAlbum
 import com.github.enteraname74.localdb.model.RoomCompleteAlbumWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 /**
  * DAO of an Album.
@@ -240,10 +244,6 @@ interface AlbumDao {
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")
     fun getAlbumWithMusics(albumId: UUID): Flow<RoomCompleteAlbumWithMusics?>
-
-    @Transaction
-    @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")
-    fun getAllAlbumWithMusics(): Flow<List<RoomCompleteAlbumWithMusics>>
 
     @Transaction
     @Query(

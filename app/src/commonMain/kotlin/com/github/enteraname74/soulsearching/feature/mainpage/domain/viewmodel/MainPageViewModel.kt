@@ -22,7 +22,6 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
@@ -112,7 +111,6 @@ class MainPageViewModel(
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
     private val artistBottomSheetDelegateImpl: ArtistBottomSheetDelegateImpl,
-    private val getAllArtistWithMusicsSortedUseCase: GetAllArtistWithMusicsSortedUseCase,
     private val getAllPlaylistWithMusicsSortedUseCase: GetAllPlaylistWithMusicsSortedUseCase,
     private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
@@ -202,12 +200,9 @@ class MainPageViewModel(
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _artists = artistSortingInformation.flatMapLatest { sortingInformation ->
-        getAllArtistWithMusicsSortedUseCase(
-            sortDirection = sortingInformation.direction,
-            sortType = sortingInformation.type,
-        )
-    }
+    private val _artists = commonArtistUseCase
+        .getAllPaged()
+        .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _albums = commonAlbumUseCase
@@ -262,20 +257,18 @@ class MainPageViewModel(
             initialValue = AllMusicFoldersState()
         )
 
-    val allArtistsState: StateFlow<AllArtistsState> = combine(
-        _artists,
-        artistSortingInformation,
-    ) { artists, sortingInformation ->
-        AllArtistsState(
-            artists = artists,
-            sortType = sortingInformation.type,
-            sortDirection = sortingInformation.direction,
+    val allArtistsState: StateFlow<AllArtistsState> =
+        artistSortingInformation.map { sortingInformation ->
+            AllArtistsState(
+                artists = _artists,
+                sortType = sortingInformation.type,
+                sortDirection = sortingInformation.direction,
+            )
+        }.stateIn(
+            scope = viewModelScope.plus(Dispatchers.IO),
+            started = SharingStarted.Eagerly,
+            initialValue = AllArtistsState()
         )
-    }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
-        initialValue = AllArtistsState()
-    )
 
     val allAlbumsState: StateFlow<AllAlbumsState> =
         albumSortingInformation.map { sortingInformation ->
@@ -736,6 +729,15 @@ class MainPageViewModel(
                 .getAlbumWithMusics(albumPreview.id).firstOrNull() ?: return@launch
 
             showAlbumBottomSheet(albumWithMusics)
+        }
+    }
+
+    fun showArtistPreviewBottomSheet(artistPreview: ArtistPreview) {
+        viewModelScope.launch {
+            val artistWithMusics: ArtistWithMusics = commonArtistUseCase
+                .getArtistWithMusic(artistPreview.id).firstOrNull() ?: return@launch
+
+            showArtistBottomSheet(artistWithMusics)
         }
     }
 }
