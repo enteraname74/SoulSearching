@@ -137,4 +137,8 @@ internal class RoomAlbumDataSourceImpl(
         appDatabase.albumDao.getAllFromQuickAccess().map { list ->
             list.map { it.toAlbumPreview() }
         }
+
+    override suspend fun cleanAllMusicCovers() {
+        appDatabase.albumDao.cleanAllMusicCovers()
+    }
 }

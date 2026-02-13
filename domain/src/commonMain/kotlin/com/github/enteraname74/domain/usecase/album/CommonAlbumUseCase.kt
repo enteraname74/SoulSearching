@@ -17,9 +17,6 @@ class CommonAlbumUseCase(
             albumId = albumId,
         )
 
-    fun getAll(): Flow<List<Album>> =
-        albumRepository.getAll()
-
     fun getAllPaged(): Flow<PagingData<AlbumPreview>> =
         albumRepository.getAllPaged()
 
@@ -80,5 +77,9 @@ class CommonAlbumUseCase(
 
     suspend fun upsertAll(albums: List<Album>) {
         albumRepository.upsertAll(albums)
+    }
+
+    suspend fun cleanAllMusicCovers() {
+        albumRepository.cleanAllMusicCovers()
     }
 }

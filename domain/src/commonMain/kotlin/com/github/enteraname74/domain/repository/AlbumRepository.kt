@@ -58,4 +58,6 @@ interface AlbumRepository {
     fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>>
 
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>>
+
+    suspend fun cleanAllMusicCovers()
 }

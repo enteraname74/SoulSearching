@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.feature.settings.advanced
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
@@ -25,7 +24,13 @@ import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFil
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
@@ -270,14 +275,7 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadAlbums() {
         if (_state.value.shouldReloadAlbumsCovers) {
-            val allAlbums: List<Album> = commonAlbumUseCase.getAll().first()
-            commonAlbumUseCase.upsertAll(
-                albums = allAlbums.map { album ->
-                    album.copy(
-                        cover = null
-                    )
-                }
-            )
+            commonAlbumUseCase.cleanAllMusicCovers()
         }
     }
 

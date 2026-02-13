@@ -51,6 +51,7 @@ class AlbumRepositoryImpl(
             albumId = albumId
         )
 
+    @Deprecated("Avoid fetching all album from DB because of performance issue")
     override fun getAll(): Flow<List<Album>> =
         albumDataSource.getAll()
 
@@ -62,4 +63,8 @@ class AlbumRepositoryImpl(
 
     override fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
         albumDataSource.getAllFromQuickAccess()
+
+    override suspend fun cleanAllMusicCovers() {
+        albumDataSource.cleanAllMusicCovers()
+    }
 }
