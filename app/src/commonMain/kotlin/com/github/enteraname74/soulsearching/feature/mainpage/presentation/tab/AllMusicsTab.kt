@@ -33,6 +33,8 @@ fun allMusicsTab(
                     }
                mainPageViewModel.setMusicSortDirection(newDirection)
             },
+            onClick = mainPageViewModel::onMusicClicked,
+            onPlayAll = mainPageViewModel::onPlayAll,
             onMoreClick = mainPageViewModel::showMusicBottomSheet,
             onLongClick = { selectedMusic ->
                 mainPageViewModel.toggleElementInSelection(

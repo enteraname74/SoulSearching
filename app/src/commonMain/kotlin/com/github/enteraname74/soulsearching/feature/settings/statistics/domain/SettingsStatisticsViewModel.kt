@@ -8,7 +8,7 @@ import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
-import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,17 +18,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 
 class SettingsStatisticsViewModel(
-    getAllMusicsSortedUseCase: GetAllMusicsSortedUseCase,
     getAllAlbumWithMusicsSortedUseCase: GetAllAlbumWithMusicsSortedUseCase,
     getAllPlaylistWithMusicsSortedUseCase: GetAllPlaylistWithMusicsSortedUseCase,
     getAllArtistWithMusicsSortedUseCase: GetAllArtistWithMusicsSortedUseCase,
     commonArtistUseCase: CommonArtistUseCase,
+    commonMusicUseCase: CommonMusicUseCase,
 ) : ViewModel() {
     val state: StateFlow<SettingsStatisticsState> = combine(
-        getAllMusicsSortedUseCase(
-            sortDirection = SortDirection.DESC,
-            sortType = SortType.NB_PLAYED,
-        ),
+        commonMusicUseCase.getStatisticsData(),
         getAllAlbumWithMusicsSortedUseCase(
             sortDirection = SortDirection.DESC,
             sortType = SortType.NB_PLAYED,
@@ -42,12 +39,9 @@ class SettingsStatisticsViewModel(
             sortType = SortType.NB_PLAYED,
         ),
         commonArtistUseCase.getAllSortedByMostSongs(),
-    ) { allMusics, allAlbums, allPlaylists, allArtists, allArtistsWithMostSongs ->
+    ) { musics, allAlbums, allPlaylists, allArtists, allArtistsWithMostSongs ->
         SettingsStatisticsState(
-            mostListenedMusics = allMusics
-                .getFirstsOrMax(MAX_TO_SHOW)
-                .filter { it.nbPlayed >= 1 }
-                .map { it.toListenedElement() },
+            mostListenedMusics = musics.map { it.toListenedElement() },
             mostListenedArtists = allArtists
                 .getFirstsOrMax(MAX_TO_SHOW)
                 .filter { it.artist.nbPlayed >= 1 }

@@ -148,4 +148,9 @@ internal class RoomMusicDataSourceImpl(
 
     override suspend fun getAllMusicPath(): List<String> =
         appDatabase.musicDao.getAllMusicPath()
+
+    override fun getStatisticsData(): Flow<List<Music>> =
+        appDatabase.musicDao.getStatisticsData().map { list ->
+            list.map { it.toMusic() }
+        }
 }

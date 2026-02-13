@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.localdb.model.RoomCompleteMusic
 import com.github.enteraname74.localdb.model.RoomMusic
 import kotlinx.coroutines.flow.Flow
@@ -96,4 +97,15 @@ interface MusicDao {
 
     @Query("SELECT path FROM RoomMusic")
     suspend fun getAllMusicPath(): List<String>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE nbPlayed >= 1 AND isHidden = 0 
+            ORDER BY nbPlayed DESC 
+            LIMIT 11
+        """
+    )
+    fun getStatisticsData(): Flow<List<RoomCompleteMusic>>
 }

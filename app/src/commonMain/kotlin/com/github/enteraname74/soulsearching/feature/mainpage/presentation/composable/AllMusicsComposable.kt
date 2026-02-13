@@ -20,9 +20,7 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectio
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 import java.util.*
@@ -36,11 +34,12 @@ fun AllMusicsComposable(
     setSortType: (SortType) -> Unit,
     toggleSortDirection: () -> Unit = {},
     isUsingSort: Boolean = true,
+    onClick: (Music) -> Unit,
+    onPlayAll: () -> Unit,
     onLongClick: (Music) -> Unit,
     onMoreClick: (Music) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
     viewSettingsManager: ViewSettingsManager = injectElement(),
-    playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
@@ -81,11 +80,7 @@ fun AllMusicsComposable(
                         enabled = musics.itemCount != 0,
                         onClick = {
                             if (musics.itemCount != 0) {
-                                coroutineScope.launch {
-                                    // TODO OPTIMIZATION: make it work with all musics by launching it from the view model.
-//                                    playbackManager.playShuffle(musicList = musicState.musics)
-//                                    playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-                                }
+                                onPlayAll()
                             }
                         }
                     )
@@ -103,18 +98,7 @@ fun AllMusicsComposable(
                         modifier = Modifier
                             .animateItem(),
                         music = elt,
-                        onClick = {
-                            coroutineScope.launch {
-                                // TODO OPTIMIZATION: Make it work again from viewModel
-//                                playbackManager.setCurrentPlaylistAndMusic(
-//                                    music = elt,
-//                                    musicList = musicState.musics,
-//                                    isMainPlaylist = true,
-//                                    playlistId = null,
-//                                )
-                                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-                            }
-                        },
+                        onClick = { onClick(elt) },
                         onMoreClicked = {
                             coroutineScope.launch {
                                 onMoreClick(elt)

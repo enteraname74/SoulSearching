@@ -22,7 +22,6 @@ import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
-import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
@@ -49,6 +48,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.GitHubReleaseBottomSheet
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SoulMixDialog
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.*
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.*
@@ -62,6 +62,7 @@ import java.util.*
 class MainPageViewModel(
     viewSettingsManager: ViewSettingsManager,
     private val playbackManager: PlaybackManager,
+    private val playerViewManager: PlayerViewManager,
     private val isCoverUsedUseCase: IsCoverUsedUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
@@ -84,7 +85,6 @@ class MainPageViewModel(
     MultiSelectionManager by multiSelectionManagerImpl {
 
     private val settings: SoulSearchingSettings by inject()
-    private val getAllMusicsSortedUseCase: GetAllMusicsSortedUseCase by inject()
     private val deleteMusicUseCase: DeleteMusicUseCase by inject()
     private val feedbackPopUpManager: FeedbackPopUpManager by inject()
 
@@ -101,6 +101,8 @@ class MainPageViewModel(
     private val multiAlbumBottomSheetDelegateImpl: MultiAlbumBottomSheetDelegateImpl by inject()
     private val multiArtistBottomSheetDelegateImpl: MultiArtistBottomSheetDelegateImpl by inject()
     private val multiPlaylistBottomSheetDelegateImpl: MultiPlaylistBottomSheetDelegateImpl by inject()
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     val shouldShowNewVersionPin: StateFlow<Boolean> = shouldInformOfNewReleaseUseCase()
         .stateIn(
@@ -344,16 +346,16 @@ class MainPageViewModel(
             multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
-        CoroutineScope(Dispatchers.IO).launch {
+        coroutineScope.launch {
             if (!cleanMusicsLaunched) {
-                CoroutineScope(Dispatchers.IO).launch {
+                coroutineScope.launch {
                     cleanMusicsLaunched = true
                     checkAndDeleteMusicIfNotExist()
                 }
             }
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+        coroutineScope.launch {
             val allCoverIds: List<UUID> = commonCoverUseCase.getAllCoverIds()
             allCoverIds.forEach { coverId ->
                 if (!isCoverUsedUseCase(coverId = coverId)) {
@@ -362,13 +364,13 @@ class MainPageViewModel(
             }
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+        coroutineScope.launch {
             val allFolders = commonFolderUseCase.getAll().first()
             val foldersToDelete = allFolders.filter { !File(it.folderPath).exists() }
             commonFolderUseCase.deleteAll(foldersToDelete)
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+        coroutineScope.launch {
             settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED).collectLatest { isEnabled ->
                 if (isEnabled) {
                     commonReleaseUseCase.fetchLatest()
@@ -378,7 +380,7 @@ class MainPageViewModel(
             }
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+        coroutineScope.launch {
             settings.getFlowOn(SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT).collectLatest { shouldShow ->
                 if (shouldShow) {
                     _bottomSheetState.value = GitHubReleaseBottomSheet(
@@ -408,7 +410,7 @@ class MainPageViewModel(
      * Check all musics and delete the one that does not exist (if the path of the music is not valid).
      */
     fun checkAndDeleteMusicIfNotExist() {
-        CoroutineScope(Dispatchers.IO).launch {
+        coroutineScope.launch {
             var deleteCount = 0
             // TODO OPTIMIZATION: Improve check?
             val all = commonMusicUseCase.getAll().first()
@@ -638,30 +640,6 @@ class MainPageViewModel(
         _navigationState.value = MainPageNavigationState.ToSettings
     }
 
-    fun toFolder(folderPath: String) {
-        _navigationState.value = MainPageNavigationState.ToFolder(
-            folderPath = folderPath,
-        )
-    }
-
-    fun toModifyAlbum(albumId: UUID) {
-        _navigationState.value = MainPageNavigationState.ToModifyAlbum(
-            albumId = albumId,
-        )
-    }
-
-    fun toModifyArtist(artistId: UUID) {
-        _navigationState.value = MainPageNavigationState.ToModifyArtist(
-            artistId = artistId,
-        )
-    }
-
-    fun toModifyPlaylist(playlistId: UUID) {
-        _navigationState.value = MainPageNavigationState.ToModifyPlaylist(
-            playlistId = playlistId,
-        )
-    }
-
     fun handleMultiSelectionBottomSheet() {
         viewModelScope.launch {
             when (multiSelectionManagerImpl.selectionMode) {
@@ -670,6 +648,27 @@ class MainPageViewModel(
                 SelectionMode.Album -> handleMultiSelectionAlbumBottomSheet()
                 SelectionMode.Artist -> handleMultiSelectionArtistBottomSheet()
             }
+        }
+    }
+
+    fun onMusicClicked(music: Music) {
+        coroutineScope.launch {
+            // TODO OPTIMIZATION: find a way to not directly fetch all songs
+            playbackManager.setCurrentPlaylistAndMusic(
+                music = music,
+                musicList = commonMusicUseCase.getAll().first(),
+                isMainPlaylist = true,
+                playlistId = null,
+            )
+            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+        }
+    }
+
+    fun onPlayAll() {
+        coroutineScope.launch {
+            // TODO OPTIMIZATION: find a way to not directly fetch all songs
+            playbackManager.playShuffle(musicList = commonMusicUseCase.getAll().first())
+            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
         }
     }
 }

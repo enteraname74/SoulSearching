@@ -73,4 +73,7 @@ class MusicRepositoryImpl(
 
     override suspend fun getAllMusicPath(): List<String> =
         musicDataSource.getAllMusicPath()
+
+    override fun getStatisticsData(): Flow<List<Music>> =
+        musicDataSource.getStatisticsData()
 }

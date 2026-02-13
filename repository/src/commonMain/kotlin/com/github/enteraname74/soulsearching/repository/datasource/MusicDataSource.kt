@@ -56,4 +56,6 @@ interface MusicDataSource {
     suspend fun cleanAllMusicCovers()
 
     suspend fun getAllMusicPath(): List<String>
+
+    fun getStatisticsData(): Flow<List<Music>>
 }

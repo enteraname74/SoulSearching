@@ -11,6 +11,7 @@ class GetAllMusicsSortedUseCase(
     private val musicRepository: MusicRepository,
 ) {
     // TODO OPTIMIZATION: Sorting should be done from db directly
+    @Deprecated("Performance issue, Sorting should be done from db directly")
     operator fun invoke(
         sortDirection: SortDirection,
         sortType: SortType,

@@ -1,17 +1,10 @@
 package com.github.enteraname74.soulsearching.features.filemanager.cover
 
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
 import java.io.File
-import java.util.UUID
+import java.util.*
 
 interface CoverFileManager {
     fun getCoverFolder(): File
-
-    fun getCleanFileCoverForMusic(music: Music): Cover.CoverFile =
-        Cover.CoverFile(
-            initialCoverPath = music.path,
-        )
 
     suspend fun saveCover(id: UUID, data: ByteArray) {
         val coverFolder = getCoverFolder()
