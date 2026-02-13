@@ -23,6 +23,9 @@ class CommonAlbumUseCase(
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
         albumRepository.getAllFromQuickAccess()
 
+    fun getStatisticsData(): Flow<List<AlbumPreview>> =
+        albumRepository.getStatisticsData()
+
     suspend fun deleteAll(albumsIds: List<UUID>) {
         albumRepository.deleteAll(
             ids = albumsIds,

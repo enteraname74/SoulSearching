@@ -28,7 +28,6 @@ val domainModule = module {
     factoryOf(::CommonAlbumUseCase)
     factoryOf(::DeleteAlbumIfEmptyUseCase)
     factoryOf(::DeleteAlbumUseCase)
-    factoryOf(::GetAllAlbumWithMusicsSortedUseCase)
     factoryOf(::GetCorrespondingAlbumUseCase)
 
     // Artist

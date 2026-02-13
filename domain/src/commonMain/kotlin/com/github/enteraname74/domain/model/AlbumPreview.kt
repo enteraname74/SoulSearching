@@ -4,6 +4,7 @@ import java.util.UUID
 
 data class AlbumPreview(
     val id: UUID,
+    val nbPlayed: Int,
     val name: String,
     val artist: String,
     val cover: Cover?,

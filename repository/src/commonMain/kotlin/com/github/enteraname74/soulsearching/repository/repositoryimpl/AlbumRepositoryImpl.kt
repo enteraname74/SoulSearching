@@ -96,4 +96,7 @@ class AlbumRepositoryImpl(
             albumName = albumName,
             artistId = artistId,
         )
+
+    override fun getStatisticsData(): Flow<List<AlbumPreview>> =
+        albumDataSource.getStatisticsData()
 }

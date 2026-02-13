@@ -6,6 +6,7 @@ import java.util.UUID
 
 data class RoomAlbumPreview(
     val id: UUID,
+    val nbPlayed: Int,
     val name: String,
     val artist: String,
     val coverId: UUID?,
@@ -21,6 +22,7 @@ data class RoomAlbumPreview(
                 initialCoverPath = musicCoverPath,
                 fileCoverId = coverId,
             ),
+            nbPlayed = nbPlayed,
             isInQuickAccess = isInQuickAccess,
         )
 }

@@ -76,4 +76,6 @@ interface AlbumDataSource {
         albumName: String,
         artistId: UUID,
     ): Album?
+
+    fun getStatisticsData(): Flow<List<AlbumPreview>>
 }
