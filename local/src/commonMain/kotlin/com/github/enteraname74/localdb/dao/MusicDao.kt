@@ -207,6 +207,38 @@ interface MusicDao {
     @Query(
         """
             SELECT 
+                strftime('%m/%Y', monthMusic.addedDate) AS month,
+                COUNT(*) AS totalMusics, 
+                (
+                    SELECT music.coverId FROM RoomMusic AS music 
+                    WHERE music.isHidden = 0 
+                    AND music.coverId IS NOT NULL 
+                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate)
+                    ORDER BY
+                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                    addedDate DESC 
+                    LIMIT 1
+                ) AS coverId,
+                (
+                    SELECT music.path FROM RoomMusic AS music 
+                    WHERE music.isHidden = 0 
+                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) 
+                    ORDER BY addedDate DESC 
+                    LIMIT 1 
+                ) AS musicCoverPath 
+            FROM RoomMusic AS monthMusic
+            WHERE isHidden = 0 
+            AND month = :month
+            GROUP BY strftime('%Y-%m', addedDate)
+            LIMIT 1
+        """
+    )
+    fun getMonthMusicPreview(month: String): Flow<RoomMonthMusicPreview?>
+
+    @Transaction
+    @Query(
+        """
+            SELECT 
                 folderMusic.folder,
                 COUNT(*) AS totalMusics, 
                 (

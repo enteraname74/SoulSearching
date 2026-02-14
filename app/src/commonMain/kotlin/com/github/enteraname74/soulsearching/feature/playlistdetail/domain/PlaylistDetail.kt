@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.MonthMusicList
+import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicFolderList
 import com.github.enteraname74.domain.model.PlaylistPreview
@@ -75,12 +76,12 @@ fun ArtistPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDet
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )
 
-fun MonthMusicList.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDetail =
+fun MonthMusicsPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDetail =
     PlaylistDetail(
         id = null,
         type = PlaylistDetailType.Month,
         title = this.month,
-        subTitle = strings.musics(this.musics.size),
+        subTitle = strings.musics(this.totalMusics),
         cover = this.cover,
         musics = musics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },

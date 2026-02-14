@@ -69,6 +69,8 @@ interface MusicDataSource {
 
     fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>>
 
+    fun getMonthMusicPreview(month: String): Flow<MonthMusicsPreview?>
+
     fun getAllMusicFolders(): Flow<List<MusicFolderPreview>>
 
     suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music>

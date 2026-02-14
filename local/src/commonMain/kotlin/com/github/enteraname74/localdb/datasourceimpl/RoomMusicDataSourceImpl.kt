@@ -190,6 +190,9 @@ internal class RoomMusicDataSourceImpl(
             list.map { it.toMonthMusicsPreview() }
         }
 
+    override fun getMonthMusicPreview(month: String): Flow<MonthMusicsPreview?> =
+        appDatabase.musicDao.getMonthMusicPreview(month).map { it?.toMonthMusicsPreview() }
+
     override fun getAllMusicFolders(): Flow<List<MusicFolderPreview>> =
         appDatabase.musicDao.getAllMusicFoldersPreview().map { list ->
             list.map { it.toMusicFolderPreview() }

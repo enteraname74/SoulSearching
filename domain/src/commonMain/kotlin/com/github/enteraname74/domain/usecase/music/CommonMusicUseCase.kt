@@ -87,6 +87,9 @@ class CommonMusicUseCase(
     fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
         musicRepository.getAllMonthMusics()
 
+    fun getMonthMusicPreview(month: String): Flow<MonthMusicsPreview?> =
+        musicRepository.getMonthMusicPreview(month)
+
     fun getAllMusicFolders(): Flow<List<MusicFolderPreview>> =
         musicRepository.getAllMusicFolders()
 

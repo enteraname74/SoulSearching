@@ -6,7 +6,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.usecase.month.GetMonthMusicListUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
@@ -24,15 +23,21 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.presentation.SelectedMonthDestination
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
 class SelectedMonthViewModel(
     commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-    getMonthMusicListUseCase: GetMonthMusicListUseCase,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
     destination: SelectedMonthDestination,
@@ -63,7 +68,7 @@ class SelectedMonthViewModel(
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var state = getMonthMusicListUseCase(month = month).mapLatest { monthMusicList ->
+    var state = commonMusicUseCase.getMonthMusicPreview(month = month).mapLatest { monthMusicList ->
         when {
             monthMusicList == null -> SelectedMonthState.Error
             else -> SelectedMonthState.Data(

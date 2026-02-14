@@ -9,10 +9,8 @@ import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
-import com.github.enteraname74.domain.usecase.month.GetMonthMusicListUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
-import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
@@ -45,13 +43,9 @@ val domainModule = module {
     // Lyrics
     factoryOf(::CommonLyricsUseCase)
 
-    // MonthMusic
-    factoryOf(::GetMonthMusicListUseCase)
-
     // Music
     factoryOf(::CommonMusicUseCase)
     factoryOf(::DeleteMusicUseCase)
-    factoryOf(::GetAllMusicsSortedUseCase)
     factoryOf(::IsMusicInFavoritePlaylistUseCase)
     factoryOf(::ToggleMusicFavoriteStatusUseCase)
 

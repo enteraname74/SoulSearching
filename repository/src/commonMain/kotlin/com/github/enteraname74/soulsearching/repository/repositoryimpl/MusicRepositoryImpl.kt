@@ -89,6 +89,9 @@ class MusicRepositoryImpl(
     override fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
         musicDataSource.getAllMonthMusics()
 
+    override fun getMonthMusicPreview(month: String): Flow<MonthMusicsPreview?> =
+        musicDataSource.getMonthMusicPreview(month)
+
     override fun getAllMusicFolders(): Flow<List<MusicFolderPreview>> =
         musicDataSource.getAllMusicFolders()
 
