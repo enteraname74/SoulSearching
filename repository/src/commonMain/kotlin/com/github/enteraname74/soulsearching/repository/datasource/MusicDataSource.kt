@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
 import androidx.paging.PagingData
-import androidx.paging.PagingSource
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicFolderPreview
@@ -72,6 +71,8 @@ interface MusicDataSource {
     fun getMonthMusicPreview(month: String): Flow<MonthMusicsPreview?>
 
     fun getAllMusicFolders(): Flow<List<MusicFolderPreview>>
+
+    fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?>
 
     suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music>
 }

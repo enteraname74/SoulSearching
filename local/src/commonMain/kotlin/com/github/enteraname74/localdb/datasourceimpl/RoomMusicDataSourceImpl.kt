@@ -198,6 +198,9 @@ internal class RoomMusicDataSourceImpl(
             list.map { it.toMusicFolderPreview() }
         }
 
+    override fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?> =
+        appDatabase.musicDao.getMusicFolderPreview(folder).map { it?.toMusicFolderPreview() }
+
     override suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music> {
         val folders: List<String> = appDatabase.musicDao.getAllMusicFolders()
 

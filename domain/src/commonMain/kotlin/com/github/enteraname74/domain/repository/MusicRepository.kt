@@ -71,5 +71,7 @@ interface MusicRepository {
 
     fun getAllMusicFolders(): Flow<List<MusicFolderPreview>>
 
+    fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?>
+
     suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music>
 }

@@ -14,7 +14,6 @@ import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
-import com.github.enteraname74.domain.usecase.musicfolder.GetMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
@@ -51,9 +50,6 @@ val domainModule = module {
 
     // MusicArtist
     factoryOf(::CommonMusicArtistUseCase)
-
-    // MusicFolder
-    factoryOf(::GetMusicFolderListUseCase)
 
     // MusicPlaylist
     factoryOf(::CommonMusicPlaylistUseCase)

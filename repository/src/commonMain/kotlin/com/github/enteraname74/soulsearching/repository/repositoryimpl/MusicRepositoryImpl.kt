@@ -95,6 +95,9 @@ class MusicRepositoryImpl(
     override fun getAllMusicFolders(): Flow<List<MusicFolderPreview>> =
         musicDataSource.getAllMusicFolders()
 
+    override fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?> =
+        musicDataSource.getMusicFolderPreview(folder)
+
     override suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music> =
         musicDataSource.getSoulMixMusics(totalPerFolder)
 }

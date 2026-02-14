@@ -93,6 +93,9 @@ class CommonMusicUseCase(
     fun getAllMusicFolders(): Flow<List<MusicFolderPreview>> =
         musicRepository.getAllMusicFolders()
 
+    fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?> =
+        musicRepository.getMusicFolderPreview(folder)
+
     suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music> =
         musicRepository.getSoulMixMusics(totalPerFolder)
 }

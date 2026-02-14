@@ -7,7 +7,6 @@ import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.domain.usecase.musicfolder.GetMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
@@ -23,15 +22,21 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.presentation.SelectedFolderDestination
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
 class SelectedFolderViewModel(
     commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-    getMusicFolderListUseCase: GetMusicFolderListUseCase,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
     destination: SelectedFolderDestination,
@@ -50,30 +55,32 @@ class SelectedFolderViewModel(
 
     private val folderPath: String = destination.selectedFolderPath
 
-    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList(),
-        )
+    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> =
+        commonPlaylistUseCase.getAllWithMusics()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList(),
+            )
 
     private val musics: Flow<PagingData<Music>> = commonMusicUseCase
         .getAllPagedByDateAscOfFolder(folderPath)
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var state: StateFlow<SelectedFolderState> = getMusicFolderListUseCase(path = folderPath).mapLatest { musicFolderList ->
-        when {
-            musicFolderList == null -> SelectedFolderState.Error
-            else -> SelectedFolderState.Data(
-                playlistDetail = musicFolderList.toPlaylistDetail(musics)
-            )
-        }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = SelectedFolderState.Loading
-    )
+    var state: StateFlow<SelectedFolderState> = commonMusicUseCase
+        .getMusicFolderPreview(folder = folderPath).mapLatest { musicFolderList ->
+            when {
+                musicFolderList == null -> SelectedFolderState.Error
+                else -> SelectedFolderState.Data(
+                    playlistDetail = musicFolderList.toPlaylistDetail(musics)
+                )
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = SelectedFolderState.Loading
+        )
 
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
     val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
@@ -81,19 +88,24 @@ class SelectedFolderViewModel(
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
-    private val _addToPlaylistBottomSheet: MutableStateFlow<AddToPlaylistBottomSheet?> = MutableStateFlow(null)
-    val addToPlaylistBottomSheet: StateFlow<AddToPlaylistBottomSheet?> = _addToPlaylistBottomSheet.asStateFlow()
+    private val _addToPlaylistBottomSheet: MutableStateFlow<AddToPlaylistBottomSheet?> =
+        MutableStateFlow(null)
+    val addToPlaylistBottomSheet: StateFlow<AddToPlaylistBottomSheet?> =
+        _addToPlaylistBottomSheet.asStateFlow()
 
-    private val _navigationState: MutableStateFlow<SelectedFolderNavigationState> = MutableStateFlow(
-        SelectedFolderNavigationState.Idle,
-    )
+    private val _navigationState: MutableStateFlow<SelectedFolderNavigationState> =
+        MutableStateFlow(
+            SelectedFolderNavigationState.Idle,
+        )
     val navigationState: StateFlow<SelectedFolderNavigationState> = _navigationState.asStateFlow()
 
     init {
         musicBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyMusic = { _navigationState.value = SelectedFolderNavigationState.ToModifyMusic(it.musicId) },
+            onModifyMusic = {
+                _navigationState.value = SelectedFolderNavigationState.ToModifyMusic(it.musicId)
+            },
             getAllPlaylistsWithMusics = { allPlaylists.value },
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             multiSelectionManagerImpl = multiSelectionManagerImpl,
@@ -136,7 +148,9 @@ class SelectedFolderViewModel(
         viewModelScope.launch {
             val selectedIds = multiSelectionState.value.selectedIds
             if (selectedIds.size == 1) {
-                val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return@launch
+                val selectedMusic: Music =
+                    commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull()
+                        ?: return@launch
                 showMusicBottomSheet(selectedMusic = selectedMusic)
             } else {
                 showMultiMusicBottomSheet()

@@ -269,6 +269,38 @@ interface MusicDao {
     @Transaction
     @Query(
         """
+            SELECT 
+                folderMusic.folder,
+                COUNT(*) AS totalMusics, 
+                (
+                    SELECT music.coverId FROM RoomMusic AS music 
+                    WHERE music.isHidden = 0 
+                    AND music.coverId IS NOT NULL 
+                    AND music.folder = folderMusic.folder 
+                    ORDER BY
+                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                    addedDate DESC 
+                    LIMIT 1
+                ) AS coverId,
+                (
+                    SELECT music.path FROM RoomMusic AS music 
+                    WHERE music.isHidden = 0 
+                    AND music.folder = folderMusic.folder 
+                    ORDER BY addedDate DESC 
+                    LIMIT 1 
+                ) AS musicCoverPath 
+            FROM RoomMusic As folderMusic
+            WHERE isHidden = 0 
+            AND folderMusic.folder = :folder
+            GROUP BY folderMusic.folder 
+            LIMIT 1
+        """
+    )
+    fun getMusicFolderPreview(folder: String): Flow<RoomMusicFolderPreview?>
+
+    @Transaction
+    @Query(
+        """
             SELECT * FROM ROOMMUSIC 
             WHERE folder = :folder 
             AND isHidden = 0 

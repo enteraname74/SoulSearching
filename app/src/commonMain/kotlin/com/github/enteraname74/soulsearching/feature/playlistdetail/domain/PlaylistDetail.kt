@@ -9,6 +9,7 @@ import com.github.enteraname74.domain.model.MonthMusicList
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicFolderList
+import com.github.enteraname74.domain.model.MusicFolderPreview
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
@@ -87,12 +88,12 @@ fun MonthMusicsPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): Playli
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )
 
-fun MusicFolderList.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDetail =
+fun MusicFolderPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDetail =
     PlaylistDetail(
         id = null,
         type = PlaylistDetailType.Folder,
-        title = this.path,
-        subTitle = strings.musics(this.musics.size),
+        title = this.folder,
+        subTitle = strings.musics(this.totalMusics),
         cover = this.cover,
         musics = musics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
