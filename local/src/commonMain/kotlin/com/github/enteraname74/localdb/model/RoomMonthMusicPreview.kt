@@ -10,8 +10,8 @@ data class RoomMonthMusicPreview(
     val musicCoverPath: String?,
     val totalMusics: Int,
 ) {
-    fun toMonthMusicsPreview(): MonthMusicsPreview {
-        return MonthMusicsPreview(
+    fun toMonthMusicsPreview(): MonthMusicsPreview =
+        MonthMusicsPreview(
             month = month,
             cover = Cover.CoverFile(
                 fileCoverId = coverId,
@@ -19,5 +19,4 @@ data class RoomMonthMusicPreview(
             ),
             totalMusics = totalMusics
         )
-    }
 }

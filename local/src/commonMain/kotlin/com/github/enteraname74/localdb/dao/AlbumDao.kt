@@ -65,7 +65,8 @@ interface AlbumDao {
                         WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                         CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
                         music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                        music.name 
                     )
                 ELSE album.coverId END
             ) AS coverId,
@@ -73,7 +74,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition 
+                music.albumPosition, 
+                music.name 
                 LIMIT 1 
             ) AS musicCoverPath,
             album.isInQuickAccess 
@@ -95,7 +97,8 @@ interface AlbumDao {
                         WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                         CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
                         music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                        music.name 
                     )
                 ELSE album.coverId END
             ) AS coverId,
@@ -103,7 +106,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition 
+                music.albumPosition, 
+                music.name 
                 LIMIT 1
             ) AS musicCoverPath,
             album.isInQuickAccess 
@@ -125,7 +129,8 @@ interface AlbumDao {
                         WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                         CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
                         music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                        music.name 
                     )
                 ELSE album.coverId END
             ) AS coverId,
@@ -133,7 +138,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition 
+                music.albumPosition, 
+                music.name 
                 LIMIT 1
             ) AS musicCoverPath,
             album.isInQuickAccess 
@@ -155,7 +161,8 @@ interface AlbumDao {
                         WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                         CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
                         music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                        music.name 
                     )
                 ELSE album.coverId END
             ) AS coverId,
@@ -163,7 +170,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition 
+                music.albumPosition, 
+                music.name 
                 LIMIT 1 
             ) AS musicCoverPath,
             album.isInQuickAccess 
@@ -185,7 +193,8 @@ interface AlbumDao {
                         WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                         CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
                         music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                        music.name 
                     )
                 ELSE album.coverId END
             ) AS coverId,
@@ -193,7 +202,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition 
+                music.albumPosition, 
+                music.name 
                 LIMIT 1 
             ) AS musicCoverPath,
             album.isInQuickAccess 
@@ -215,7 +225,8 @@ interface AlbumDao {
                         WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                         CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
                         music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                        music.name 
                     )
                 ELSE album.coverId END
             ) AS coverId,
@@ -223,7 +234,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition 
+                music.albumPosition, 
+                music.name 
                 LIMIT 1 
             ) AS musicCoverPath,
             album.isInQuickAccess 
@@ -253,7 +265,8 @@ interface AlbumDao {
                         WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                         CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
                         music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                        music.name 
                     )
                 ELSE album.coverId END
             ) AS coverId,
@@ -261,7 +274,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition 
+                music.albumPosition, 
+                music.name 
                 LIMIT 1 
             ) AS musicCoverPath,
             album.isInQuickAccess 
@@ -329,7 +343,8 @@ interface AlbumDao {
                         WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                         CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
                         music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                        music.name 
                     )
                 ELSE album.coverId END
             ) AS coverId,
@@ -337,7 +352,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition 
+                music.albumPosition, 
+                music.name 
                 LIMIT 1 
             ) AS musicCoverPath,
             album.isInQuickAccess 
@@ -360,7 +376,8 @@ interface AlbumDao {
                         WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                         CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
                         music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END
+                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                        music.name 
                     )
                 ELSE album.coverId END
             ) AS coverId,
@@ -368,7 +385,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition 
+                music.albumPosition, 
+                music.name 
                 LIMIT 1 
             ) AS musicCoverPath,
             album.isInQuickAccess 

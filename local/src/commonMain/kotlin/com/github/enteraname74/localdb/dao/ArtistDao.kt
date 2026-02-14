@@ -69,6 +69,7 @@ interface ArtistDao {
                         AND artist.artistId = musicArtist.artistId 
                         AND music.isHidden = 0 
                         AND music.coverId IS NOT NULL 
+                        ORDER BY name ASC 
                         LIMIT 1
                     )
                 ELSE artist.coverId END
@@ -79,6 +80,7 @@ interface ArtistDao {
                 ON music.musicId = musicArtist.musicId 
                 AND artist.artistId = musicArtist.artistId 
                 AND music.isHidden = 0 
+                ORDER BY name ASC 
                 LIMIT 1
             ) AS musicCoverPath,
             artist.isInQuickAccess 
@@ -104,6 +106,7 @@ interface ArtistDao {
                         AND artist.artistId = musicArtist.artistId 
                         AND music.isHidden = 0 
                         AND music.coverId IS NOT NULL 
+                        ORDER BY name ASC 
                         LIMIT 1
                     )
                 ELSE artist.coverId END
@@ -114,6 +117,7 @@ interface ArtistDao {
                 ON music.musicId = musicArtist.musicId 
                 AND artist.artistId = musicArtist.artistId 
                 AND music.isHidden = 0 
+                ORDER BY name ASC 
                 LIMIT 1
             ) AS musicCoverPath,
             artist.isInQuickAccess 
@@ -139,6 +143,7 @@ interface ArtistDao {
                         AND artist.artistId = musicArtist.artistId 
                         AND music.isHidden = 0 
                         AND music.coverId IS NOT NULL 
+                        ORDER BY name ASC 
                         LIMIT 1
                     )
                 ELSE artist.coverId END
@@ -149,6 +154,7 @@ interface ArtistDao {
                 ON music.musicId = musicArtist.musicId 
                 AND artist.artistId = musicArtist.artistId 
                 AND music.isHidden = 0 
+                ORDER BY name ASC 
                 LIMIT 1
             ) AS musicCoverPath,
             artist.isInQuickAccess 
@@ -174,6 +180,7 @@ interface ArtistDao {
                         AND artist.artistId = musicArtist.artistId 
                         AND music.isHidden = 0 
                         AND music.coverId IS NOT NULL 
+                        ORDER BY name ASC 
                         LIMIT 1
                     )
                 ELSE artist.coverId END
@@ -184,6 +191,7 @@ interface ArtistDao {
                 ON music.musicId = musicArtist.musicId 
                 AND artist.artistId = musicArtist.artistId 
                 AND music.isHidden = 0 
+                ORDER BY name ASC 
                 LIMIT 1
             ) AS musicCoverPath,
             artist.isInQuickAccess 
@@ -209,6 +217,7 @@ interface ArtistDao {
                         AND artist.artistId = musicArtist.artistId 
                         AND music.isHidden = 0 
                         AND music.coverId IS NOT NULL 
+                        ORDER BY name ASC 
                         LIMIT 1
                     )
                 ELSE artist.coverId END
@@ -219,6 +228,7 @@ interface ArtistDao {
                 ON music.musicId = musicArtist.musicId 
                 AND artist.artistId = musicArtist.artistId 
                 AND music.isHidden = 0 
+                ORDER BY name ASC 
                 LIMIT 1
             ) AS musicCoverPath,
             artist.isInQuickAccess 
@@ -244,6 +254,7 @@ interface ArtistDao {
                         AND artist.artistId = musicArtist.artistId 
                         AND music.isHidden = 0 
                         AND music.coverId IS NOT NULL 
+                        ORDER BY name ASC 
                         LIMIT 1
                     )
                 ELSE artist.coverId END
@@ -254,6 +265,7 @@ interface ArtistDao {
                 ON music.musicId = musicArtist.musicId 
                 AND artist.artistId = musicArtist.artistId 
                 AND music.isHidden = 0 
+                ORDER BY name ASC 
                 LIMIT 1
             ) AS musicCoverPath,
             artist.isInQuickAccess 
@@ -298,6 +310,7 @@ interface ArtistDao {
                         AND artist.artistId = musicArtist.artistId 
                         AND music.isHidden = 0 
                         AND music.coverId IS NOT NULL 
+                        ORDER BY name ASC 
                         LIMIT 1
                     )
                 ELSE artist.coverId END
@@ -308,6 +321,7 @@ interface ArtistDao {
                 ON music.musicId = musicArtist.musicId 
                 AND artist.artistId = musicArtist.artistId 
                 AND music.isHidden = 0 
+                ORDER BY name ASC 
                 LIMIT 1
             ) AS musicCoverPath,
             artist.isInQuickAccess 
@@ -346,6 +360,7 @@ interface ArtistDao {
                         AND artist.artistId = musicArtist.artistId 
                         AND music.isHidden = 0 
                         AND music.coverId IS NOT NULL 
+                        ORDER BY name ASC 
                         LIMIT 1
                     )
                 ELSE artist.coverId END
@@ -356,6 +371,7 @@ interface ArtistDao {
                 ON music.musicId = musicArtist.musicId 
                 AND artist.artistId = musicArtist.artistId 
                 AND music.isHidden = 0 
+                ORDER BY name ASC 
                 LIMIT 1
             ) AS musicCoverPath,
             artist.isInQuickAccess 
@@ -385,6 +401,7 @@ interface ArtistDao {
                         AND artist.artistId = musicArtist.artistId 
                         AND music.isHidden = 0 
                         AND music.coverId IS NOT NULL 
+                        ORDER BY name ASC 
                         LIMIT 1
                     )
                 ELSE artist.coverId END
@@ -395,6 +412,7 @@ interface ArtistDao {
                 ON music.musicId = musicArtist.musicId 
                 AND artist.artistId = musicArtist.artistId 
                 AND music.isHidden = 0 
+                ORDER BY name ASC 
                 LIMIT 1
             ) AS musicCoverPath,
             artist.isInQuickAccess 
@@ -422,6 +440,7 @@ interface ArtistDao {
                         AND artist.artistId = musicArtist.artistId 
                         AND music.isHidden = 0 
                         AND music.coverId IS NOT NULL 
+                        ORDER BY name ASC 
                         LIMIT 1
                     )
                 ELSE artist.coverId END
@@ -432,6 +451,7 @@ interface ArtistDao {
                 ON music.musicId = musicArtist.musicId 
                 AND artist.artistId = musicArtist.artistId 
                 AND music.isHidden = 0 
+                ORDER BY name ASC 
                 LIMIT 1
             ) AS musicCoverPath,
             artist.isInQuickAccess 

@@ -246,14 +246,14 @@ interface MusicDao {
                     AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate)
                     ORDER BY
                     CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                    addedDate DESC 
+                    name 
                     LIMIT 1
                 ) AS coverId,
                 (
                     SELECT music.path FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
                     AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) 
-                    ORDER BY addedDate DESC 
+                    ORDER BY name 
                     LIMIT 1 
                 ) AS musicCoverPath 
             FROM RoomMusic AS monthMusic
@@ -277,14 +277,14 @@ interface MusicDao {
                     AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate)
                     ORDER BY
                     CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                    addedDate DESC 
+                    name 
                     LIMIT 1
                 ) AS coverId,
                 (
                     SELECT music.path FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
                     AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) 
-                    ORDER BY addedDate DESC 
+                    ORDER BY name 
                     LIMIT 1 
                 ) AS musicCoverPath 
             FROM RoomMusic AS monthMusic
@@ -309,14 +309,14 @@ interface MusicDao {
                     AND music.folder = folderMusic.folder 
                     ORDER BY
                     CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                    addedDate DESC 
+                    name 
                     LIMIT 1
                 ) AS coverId,
                 (
                     SELECT music.path FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
                     AND music.folder = folderMusic.folder 
-                    ORDER BY addedDate DESC 
+                    ORDER BY name 
                     LIMIT 1 
                 ) AS musicCoverPath 
             FROM RoomMusic As folderMusic
@@ -340,14 +340,14 @@ interface MusicDao {
                     AND music.folder = folderMusic.folder 
                     ORDER BY
                     CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                    addedDate DESC 
+                    name 
                     LIMIT 1
                 ) AS coverId,
                 (
                     SELECT music.path FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
                     AND music.folder = folderMusic.folder 
-                    ORDER BY addedDate DESC 
+                    ORDER BY name 
                     LIMIT 1 
                 ) AS musicCoverPath 
             FROM RoomMusic As folderMusic
