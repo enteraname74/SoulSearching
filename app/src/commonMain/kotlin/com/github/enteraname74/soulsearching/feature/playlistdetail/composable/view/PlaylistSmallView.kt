@@ -181,6 +181,11 @@ fun PlaylistSmallView(
                 val music = musics[pos]
                 music?.let {
                     MusicItemComposable(
+                        modifier = Modifier
+                            .animateItem(
+                                // TODO IMPROVE: improve screen to find a way to use placement anim
+                                placementSpec = null,
+                            ),
                         music = music,
                         onClick = playlistDetailListener::onPlayClicked,
                         onLongClick = { onLongSelectOnMusic(music) },
