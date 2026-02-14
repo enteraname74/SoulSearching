@@ -102,4 +102,7 @@ class CommonArtistUseCase(
 
     fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?> =
         artistRepository.getArtistPreview(artistId)
+
+    fun searchAll(search: String): Flow<List<ArtistPreview>> =
+        artistRepository.searchAll(search)
 }

@@ -120,4 +120,9 @@ internal class RoomPlaylistDataSourceImpl(
 
     override fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?> =
         appDatabase.playlistDao.getPlaylistPreview(playlistId).map { it?.toPlaylistPreview() }
+
+    override fun searchAll(search: String): Flow<List<PlaylistPreview>> =
+        appDatabase.playlistDao.searchAll(search).map { list ->
+            list.map { it.toPlaylistPreview() }
+        }
 }

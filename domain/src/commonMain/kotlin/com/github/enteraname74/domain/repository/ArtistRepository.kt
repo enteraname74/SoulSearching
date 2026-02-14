@@ -71,4 +71,6 @@ interface ArtistRepository {
     fun getMostListened(): Flow<List<ArtistPreview>>
 
     fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?>
+
+    fun searchAll(search: String): Flow<List<ArtistPreview>>
 }

@@ -118,6 +118,9 @@ class MusicRepositoryImpl(
             search = search,
         )
 
+    override fun searchAll(search: String): Flow<List<Music>> =
+        musicDataSource.searchAll(search)
+
     override suspend fun getAllMusicFromArtist(artistId: UUID): List<Music> =
         musicDataSource.getAllMusicFromArtist(artistId)
 

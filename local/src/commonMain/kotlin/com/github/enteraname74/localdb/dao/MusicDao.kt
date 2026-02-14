@@ -423,6 +423,37 @@ interface MusicDao {
         search: String,
     ): Flow<List<RoomCompleteMusic>>
 
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music 
+            WHERE music.isHidden = 0 
+            AND (
+                music.name LIKE '%' || :search || '%'
+                COLLATE NOCASE 
+                OR EXISTS(
+                    SELECT 1 FROM RoomAlbum AS album 
+                    WHERE album.albumId = music.albumId 
+                    AND album.albumName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE 
+                )
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    INNER JOIN RoomMusicArtist AS musicArtist 
+                    ON musicArtist.artistId = artist.artistId 
+                    AND musicArtist.musicId = music.musicId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            ) 
+            ORDER BY music.name ASC
+        """
+    )
+    fun searchAll(
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
+
     @Query(
         """
             SELECT SUM(duration) FROM RoomMusic 

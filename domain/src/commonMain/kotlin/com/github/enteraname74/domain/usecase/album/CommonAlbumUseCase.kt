@@ -33,6 +33,9 @@ class CommonAlbumUseCase(
     fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?> =
         albumRepository.getAlbumPreview(albumId)
 
+    fun searchAll(search: String): Flow<List<AlbumPreview>> =
+        albumRepository.searchAll(search)
+
     suspend fun deleteAll(albumsIds: List<UUID>) {
         albumRepository.deleteAll(
             ids = albumsIds,

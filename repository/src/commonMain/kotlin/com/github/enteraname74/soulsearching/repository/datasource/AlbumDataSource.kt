@@ -71,5 +71,7 @@ interface AlbumDataSource {
 
     fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?>
 
+    fun searchAll(search: String): Flow<List<AlbumPreview>>
+
     suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics>
 }

@@ -5,12 +5,22 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.swipeable
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
@@ -36,8 +46,9 @@ fun SearchView(
     placeholder: String,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     focusRequester: FocusRequester,
+    onSearch: (String) -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
-    searchResult: @Composable (String, FocusManager) -> Unit,
+    searchResult: @Composable (FocusManager) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
@@ -103,6 +114,7 @@ fun SearchView(
                 placeholder = placeholder,
                 updateTextMethod = {
                     searchText = it
+                    onSearch(it)
                 },
                 focusManager = focusManager,
                 focusRequester = focusRequester,
@@ -119,7 +131,7 @@ fun SearchView(
             )
 
             if (searchText.isNotBlank()) {
-                searchResult(searchText, focusManager)
+                searchResult(focusManager)
             }
         }
     }

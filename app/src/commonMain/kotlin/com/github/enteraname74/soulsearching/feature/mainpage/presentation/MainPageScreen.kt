@@ -16,7 +16,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -24,6 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -38,11 +38,8 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageNavigationState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.SearchAllState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainMenuHeaderComposable
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageHorizontalShortcut
@@ -61,22 +58,19 @@ fun MainPageRoute(
 ) {
     val playerViewManager: PlayerViewManager = injectElement()
 
-    val musicState: AllMusicsState by mainPageViewModel.allMusicsState.collectAsState()
-    val playlistState: AllPlaylistsState by mainPageViewModel.allPlaylistsState.collectAsState()
-    val albumState: AllAlbumsState by mainPageViewModel.allAlbumsState.collectAsState()
-    val artistState: AllArtistsState by mainPageViewModel.allArtistsState.collectAsState()
+    val searchAllState: SearchAllState by mainPageViewModel.searchAllState.collectAsStateWithLifecycle()
 
-    val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
-    val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
-    val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsState()
-    val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsState()
+    val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsStateWithLifecycle()
+    val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsStateWithLifecycle()
+    val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsStateWithLifecycle()
+    val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsStateWithLifecycle()
 
     val searchDraggableState = mainPageViewModel.searchDraggableState
 
-    val bottomSheetState: SoulBottomSheet? by mainPageViewModel.bottomSheetState.collectAsState()
-    val addToPlaylistsBottomSheetState: AddToPlaylistBottomSheet? by mainPageViewModel.addToPlaylistsBottomSheetState.collectAsState()
-    val dialogState: SoulDialog? by mainPageViewModel.dialogState.collectAsState()
-    val navigationState: MainPageNavigationState by mainPageViewModel.navigationState.collectAsState()
+    val bottomSheetState: SoulBottomSheet? by mainPageViewModel.bottomSheetState.collectAsStateWithLifecycle()
+    val addToPlaylistsBottomSheetState: AddToPlaylistBottomSheet? by mainPageViewModel.addToPlaylistsBottomSheetState.collectAsStateWithLifecycle()
+    val dialogState: SoulDialog? by mainPageViewModel.dialogState.collectAsStateWithLifecycle()
+    val navigationState: MainPageNavigationState by mainPageViewModel.navigationState.collectAsStateWithLifecycle()
     bottomSheetState?.BottomSheet()
     addToPlaylistsBottomSheetState?.BottomSheet()
     dialogState?.Dialog()
@@ -95,14 +89,11 @@ fun MainPageRoute(
     MainPageScreenView(
         mainPageViewModel = mainPageViewModel,
         searchDraggableState = searchDraggableState,
-        musicState = musicState,
-        allPlaylistsState = playlistState,
-        allAlbumsState = albumState,
-        allArtistsState = artistState,
         tabs = tabs,
         currentEnumPage = currentPage,
         isUsingVerticalAccessBar = isUsingVerticalAccessBar,
         shouldShowNewVersionPin = shouldShowNewVersionPin,
+        searchAllState = searchAllState,
     )
 }
 
@@ -112,10 +103,7 @@ fun MainPageRoute(
 fun MainPageScreenView(
     mainPageViewModel: MainPageViewModel,
     searchDraggableState: SwipeableState<BottomSheetStates>,
-    musicState: AllMusicsState,
-    allPlaylistsState: AllPlaylistsState,
-    allAlbumsState: AllAlbumsState,
-    allArtistsState: AllArtistsState,
+    searchAllState: SearchAllState,
     tabs: List<PagerScreen>,
     shouldShowNewVersionPin: Boolean,
     currentEnumPage: ElementEnum?,
@@ -245,14 +233,11 @@ fun MainPageScreenView(
                 draggableState = searchDraggableState,
                 placeholder = strings.searchAll,
                 maxHeight = maxHeight,
-                focusRequester = searchBarFocusRequester
-            ) { searchText, focusManager ->
+                focusRequester = searchBarFocusRequester,
+                onSearch = mainPageViewModel::onSearch,
+            ) { focusManager ->
                 SearchAll(
-                    searchText = searchText,
-                    musicState = musicState,
-                    allAlbumsState = allAlbumsState,
-                    allArtistsState = allArtistsState,
-                    allPlaylistsState = allPlaylistsState,
+                    searchAllState = searchAllState,
                     onSelectedMusicForBottomSheet = mainPageViewModel::showMusicBottomSheet,
                     onSelectedAlbumForBottomSheet = mainPageViewModel::showAlbumPreviewBottomSheet,
                     onSelectedPlaylistForBottomSheet = mainPageViewModel::showPlaylistPreviewBottomSheet,

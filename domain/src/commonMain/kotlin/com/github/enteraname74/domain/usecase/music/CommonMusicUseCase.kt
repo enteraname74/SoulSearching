@@ -113,6 +113,11 @@ class CommonMusicUseCase(
             month = month,
             search = search,
         )
+
+    fun searchAll(
+        search: String,
+    ): Flow<List<Music>> =
+        musicRepository.searchAll(search)
     
     fun getAlbumDuration(albumId: UUID): Flow<Duration> =
         musicRepository.getAlbumDuration(albumId)

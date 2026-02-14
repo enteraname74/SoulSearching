@@ -18,10 +18,7 @@ import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.SearchAllState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.composable.LinearPreviewComposable
 import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
@@ -32,11 +29,7 @@ import java.util.UUID
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchAll(
-    searchText: String,
-    musicState: AllMusicsState,
-    allAlbumsState: AllAlbumsState,
-    allArtistsState: AllArtistsState,
-    allPlaylistsState: AllPlaylistsState,
+    searchAllState: SearchAllState,
     onSelectedMusicForBottomSheet: (Music) -> Unit,
     onSelectedAlbumForBottomSheet: (AlbumPreview) -> Unit,
     onSelectedPlaylistForBottomSheet: (PlaylistPreview) -> Unit,
@@ -53,13 +46,7 @@ fun SearchAll(
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
     LazyColumnCompat {
-        // TODO: Normalise with accents.
-        // TODO OPTIMIZATION: Move search in viewModel.
-        val foundedPlaylists = emptyList<PlaylistPreview>()
-//        allPlaylistsState.playlists.filter {
-//            it.name.lowercase().contains(searchText.lowercase())
-//        }
-        if (foundedPlaylists.isNotEmpty()) {
+        if (searchAllState.playlists.isNotEmpty()) {
             stickyHeader(
                 key = SEARCH_ALL_PLAYLIST_STICKY_KEY,
                 contentType = SEARCH_ALL_PLAYLIST_STICKY_CONTENT_TYPE,
@@ -71,34 +58,28 @@ fun SearchAll(
                 )
             }
             items(
-                items = foundedPlaylists,
+                items = searchAllState.playlists,
                 key = { it.id },
                 contentType = { SEARCH_ALL_PLAYLISTS_CONTENT_TYPE }
-            ) { playlistWithMusics ->
+            ) { playlistPreview ->
                 LinearPreviewComposable(
                     modifier = Modifier
                         .animateItem(),
-                    title = playlistWithMusics.name,
-                    text = strings.musics(playlistWithMusics.totalMusics),
+                    title = playlistPreview.name,
+                    text = strings.musics(playlistPreview.totalMusics),
                     onClick = {
                         focusManager.clearFocus()
-                        navigateToPlaylist(playlistWithMusics.id)
+                        navigateToPlaylist(playlistPreview.id)
                     },
                     onLongClick = {
-                        onSelectedPlaylistForBottomSheet(playlistWithMusics)
+                        onSelectedPlaylistForBottomSheet(playlistPreview)
                     },
-                    cover = playlistWithMusics.cover,
+                    cover = playlistPreview.cover,
                 )
             }
         }
 
-        // TODO: Normalise with accents.
-        // TODO OPTIMIZATION: Move search in viewModel.
-        val foundedArtists = emptyList<ArtistPreview>()
-//        allArtistsState.artists.filter {
-//            it.artist.artistName.lowercase().contains(searchText.lowercase())
-//        }
-        if (foundedArtists.isNotEmpty()) {
+        if (searchAllState.artists.isNotEmpty()) {
             stickyHeader(
                 key = SEARCH_ALL_ARTIST_STICKY_KEY,
                 contentType = SEARCH_ALL_ARTIST_STICKY_CONTENT_TYPE,
@@ -110,35 +91,28 @@ fun SearchAll(
                 )
             }
             items(
-                items = foundedArtists,
+                items = searchAllState.artists,
                 key = { it.id },
                 contentType = { SEARCH_ALL_ARTIST_CONTENT_TYPE }
-            ) { albumPreview ->
+            ) { artistPreview ->
                 LinearPreviewComposable(
                     modifier = Modifier
                         .animateItem(),
-                    title = albumPreview.name,
-                    text = strings.musics(albumPreview.totalMusics),
+                    title = artistPreview.name,
+                    text = strings.musics(artistPreview.totalMusics),
                     onClick = {
                         focusManager.clearFocus()
-                        navigateToArtist(albumPreview.id)
+                        navigateToArtist(artistPreview.id)
                     },
                     onLongClick = {
-                        onSelectedArtistForBottomSheet(albumPreview)
+                        onSelectedArtistForBottomSheet(artistPreview)
                     },
-                    cover = albumPreview.cover,
+                    cover = artistPreview.cover,
                 )
             }
         }
 
-        // TODO: Normalise with accents.
-        // TODO OPTIMIZATION: Move search in viewModel.
-        val foundedAlbums = emptyList<AlbumPreview>()
-//        allAlbumsState.albums.filter {
-//            it.album.artist.artistName.lowercase().contains(searchText.lowercase()) ||
-//                    it.album.albumName.lowercase().contains(searchText.lowercase())
-//        }
-        if (foundedAlbums.isNotEmpty()) {
+        if (searchAllState.albums.isNotEmpty()) {
             stickyHeader(
                 key = SEARCH_ALL_ALBUM_STICKY_KEY,
                 contentType = SEARCH_ALL_ALBUM_STICKY_CONTENT_TYPE,
@@ -150,7 +124,7 @@ fun SearchAll(
                 )
             }
             items(
-                items = foundedAlbums,
+                items = searchAllState.albums,
                 key = { it.id },
                 contentType = { SEARCH_ALL_ALBUM_CONTENT_TYPE },
             ) { albumPreview ->
@@ -173,17 +147,7 @@ fun SearchAll(
             }
         }
 
-        // TODO: Normalise with accents.
-        // TODO OPTIMIZATION: Move search in viewModel.
-        val foundedMusics = emptyList<Music>()
-//        musicState.musics.filter {
-//            it.name.lowercase().contains(searchText.lowercase())
-//                    || it.artistsNames.lowercase().contains(searchText.lowercase())
-//                    || it.album.albumName.lowercase().contains(searchText.lowercase())
-//
-//        }
-
-        if (foundedMusics.isNotEmpty()) {
+        if (searchAllState.musics.isNotEmpty()) {
             stickyHeader(
                 key = SEARCH_ALL_MUSIC_STICKY_KEY,
                 contentType = SEARCH_ALL_MUSIC_STICKY_CONTENT_TYPE,
@@ -195,7 +159,7 @@ fun SearchAll(
                 )
             }
             items(
-                items = foundedMusics,
+                items = searchAllState.musics,
                 key = { it.musicId },
                 contentType = { SEARCH_ALL_MUSIC_CONTENT_TYPE }
             ) { music ->
@@ -207,7 +171,7 @@ fun SearchAll(
                         coroutineScope.launch {
                             playbackManager.setCurrentPlaylistAndMusic(
                                 music = music,
-                                musicList = foundedMusics as ArrayList<Music>,
+                                musicList = searchAllState.musics,
                                 playlistId = null,
                                 isMainPlaylist = isMainPlaylist,
                                 isForcingNewPlaylist = true

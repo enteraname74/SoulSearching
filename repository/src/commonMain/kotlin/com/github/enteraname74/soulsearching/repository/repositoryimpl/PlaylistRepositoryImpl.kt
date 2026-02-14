@@ -65,4 +65,7 @@ class PlaylistRepositoryImpl(
 
     override fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?> =
         playlistDataSource.getPlaylistPreview(playlistId)
+
+    override fun searchAll(search: String): Flow<List<PlaylistPreview>> =
+        playlistDataSource.searchAll(search)
 }

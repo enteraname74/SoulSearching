@@ -64,6 +64,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMu
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllQuickAccessState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageNavigationState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.SearchAllState
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.GitHubReleaseBottomSheet
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SoulMixDialog
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allAlbumsTab
@@ -87,6 +88,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -205,6 +208,32 @@ class MainPageViewModel(
         .getAllPaged()
         .cachedIn(viewModelScope)
 
+    private val _search: MutableStateFlow<String> = MutableStateFlow("")
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val searchAllState: StateFlow<SearchAllState> = _search.flatMapLatest { search ->
+        if (search.isNotBlank()) {
+            combine(
+                commonMusicUseCase.searchAll(search),
+                commonAlbumUseCase.searchAll(search),
+                commonArtistUseCase.searchAll(search),
+                commonPlaylistUseCase.searchAll(search),
+            ) { musics, albums, artists, playlists ->
+                SearchAllState(
+                    musics = musics,
+                    albums = albums,
+                    playlists = playlists,
+                    artists = artists,
+                )
+            }
+        } else {
+            flowOf(SearchAllState())
+        }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Lazily,
+        SearchAllState()
+    )
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val allQuickAccessState: StateFlow<AllQuickAccessState> =
         getAllQuickAccessElementsUseCase().mapLatest { elements ->
@@ -272,16 +301,16 @@ class MainPageViewModel(
 
     val allPlaylistsState: StateFlow<AllPlaylistsState> =
         playlistSortingInformation.map { sortingInformation ->
-        AllPlaylistsState(
-            playlists = _playlists,
-            sortType = sortingInformation.type,
-            sortDirection = sortingInformation.direction,
+            AllPlaylistsState(
+                playlists = _playlists,
+                sortType = sortingInformation.type,
+                sortDirection = sortingInformation.direction,
+            )
+        }.stateIn(
+            scope = viewModelScope.plus(Dispatchers.IO),
+            started = SharingStarted.Lazily,
+            initialValue = AllPlaylistsState()
         )
-    }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Lazily,
-        initialValue = AllPlaylistsState()
-    )
 
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
@@ -738,5 +767,9 @@ class MainPageViewModel(
             playbackManager.playSoulMix()
             playerViewManager.animateTo(BottomSheetStates.EXPANDED)
         }
+    }
+
+    fun onSearch(search: String) {
+        _search.value = search
     }
 }

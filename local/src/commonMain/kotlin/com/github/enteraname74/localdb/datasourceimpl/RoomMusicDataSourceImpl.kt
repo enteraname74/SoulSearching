@@ -226,6 +226,11 @@ internal class RoomMusicDataSourceImpl(
             list.map { it.toMusic() }
         }
 
+    override fun searchAll(search: String): Flow<List<Music>> =
+        appDatabase.musicDao.searchAll(search).map { list ->
+            list.map { it.toMusic() }
+        }
+
     override suspend fun getAllMusicFromArtist(artistId: UUID): List<Music> =
         appDatabase.musicDao.getAllMusicFromArtist(artistId).map { it.toMusic() }
 

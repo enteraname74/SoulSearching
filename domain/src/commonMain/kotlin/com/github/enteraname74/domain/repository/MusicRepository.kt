@@ -83,6 +83,10 @@ interface MusicRepository {
         search: String,
     ): Flow<List<Music>>
 
+    fun searchAll(
+        search: String,
+    ): Flow<List<Music>>
+
     suspend fun getAllMusicFromArtist(artistId: UUID): List<Music>
     suspend fun getAllMusicFromPlaylist(playlistId: UUID): List<Music>
 

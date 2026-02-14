@@ -49,4 +49,6 @@ interface PlaylistRepository {
     fun getMostListened(): Flow<List<PlaylistPreview>>
 
     fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?>
+
+    fun searchAll(search: String): Flow<List<PlaylistPreview>>
 }

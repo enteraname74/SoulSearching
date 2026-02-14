@@ -461,4 +461,43 @@ interface ArtistDao {
         """
     )
     fun getArtistPreview(artistId: UUID): Flow<RoomArtistPreview?>
+
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT artist.artistId AS id, 
+            artist.artistName AS name, 
+            artist.coverFolderKey,
+            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
+            (
+                CASE WHEN artist.coverId IS NULL THEN 
+                    (
+                        SELECT music.coverId FROM RoomMusic AS music 
+                        INNER JOIN RoomMusicArtist AS musicArtist 
+                        ON music.musicId = musicArtist.musicId 
+                        AND artist.artistId = musicArtist.artistId 
+                        AND music.isHidden = 0 
+                        AND music.coverId IS NOT NULL 
+                        ORDER BY name ASC 
+                        LIMIT 1
+                    )
+                ELSE artist.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                INNER JOIN RoomMusicArtist AS musicArtist 
+                ON music.musicId = musicArtist.musicId 
+                AND artist.artistId = musicArtist.artistId 
+                AND music.isHidden = 0 
+                ORDER BY name ASC 
+                LIMIT 1
+            ) AS musicCoverPath,
+            artist.isInQuickAccess 
+            FROM RoomArtist AS artist 
+            WHERE artist.artistName LIKE '%' || :search || '%' COLLATE NOCASE 
+            ORDER BY name ASC
+        """
+    )
+    fun searchAll(search: String): Flow<List<RoomArtistPreview>>
 }

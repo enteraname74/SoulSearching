@@ -178,13 +178,9 @@ fun PlaylistScreen(
                     draggableState = searchDraggableState,
                     placeholder = strings.searchForMusics,
                     maxHeight = maxHeight,
-                    focusRequester = searchBarFocusRequester
-                ) { searchText, focusManager ->
-
-                    LaunchedEffect(searchText) {
-                        playlistDetailListener.onSearch(searchText)
-                    }
-
+                    focusRequester = searchBarFocusRequester,
+                    onSearch = playlistDetailListener::onSearch,
+                ) { focusManager ->
                     SearchMusics(
                         foundMusics = playlistDetail.searchMusics,
                         isMainPlaylist = false,

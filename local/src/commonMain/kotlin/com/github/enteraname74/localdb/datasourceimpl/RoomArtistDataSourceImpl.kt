@@ -165,4 +165,9 @@ internal class RoomArtistDataSourceImpl(
 
     override fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?> =
         appDatabase.artistDao.getArtistPreview(artistId).map { it?.toArtistPreview() }
+
+    override fun searchAll(search: String): Flow<List<ArtistPreview>> =
+        appDatabase.artistDao.searchAll(search).map { list ->
+            list.map { it.toArtistPreview() }
+        }
 }

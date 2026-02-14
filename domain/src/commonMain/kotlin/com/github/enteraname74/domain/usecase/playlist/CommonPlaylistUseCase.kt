@@ -69,4 +69,7 @@ class CommonPlaylistUseCase(
 
     fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?> =
         playlistRepository.getPlaylistPreview(playlistId)
+
+    fun searchAll(search: String): Flow<List<PlaylistPreview>> =
+        playlistRepository.searchAll(search)
 }

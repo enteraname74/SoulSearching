@@ -96,6 +96,9 @@ class AlbumRepositoryImpl(
     override fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?> =
         albumDataSource.getAlbumPreview(albumId)
 
+    override fun searchAll(search: String): Flow<List<AlbumPreview>> =
+        albumDataSource.searchAll(search)
+
     override suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics> =
         albumDataSource.getAlbumsOfArtistName(artistName)
 }

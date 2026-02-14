@@ -103,4 +103,7 @@ class ArtistRepositoryImpl(
 
     override fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?> =
         artistDataSource.getArtistPreview(artistId)
+
+    override fun searchAll(search: String): Flow<List<ArtistPreview>> =
+        artistDataSource.searchAll(search)
 }
