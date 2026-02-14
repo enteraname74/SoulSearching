@@ -2,6 +2,7 @@ package com.github.enteraname74.localdb.dao
 
 import androidx.room.*
 import com.github.enteraname74.localdb.model.RoomPlaylist
+import com.github.enteraname74.localdb.model.RoomPlaylistPreview
 import com.github.enteraname74.localdb.model.RoomPlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -38,10 +39,45 @@ interface PlaylistDao {
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
     fun getPlaylistWithMusics(playlistId : UUID): Flow<RoomPlaylistWithMusics?>
 
-    @Transaction
-    @Query("SELECT * FROM RoomPlaylist")
-    suspend fun getAllPlaylistsWithMusics() : List<RoomPlaylistWithMusics>
+    @Query("UPDATE RoomPlaylist SET coverId = NULL")
+    suspend fun cleanAllCovers()
 
-    @Query("SELECT COUNT(*) FROM RoomPlaylist WHERE coverId = :coverId")
-    suspend fun getNumberOfPlaylistsWithCoverId(coverId : UUID) : Int
+    @Transaction
+    @Query(
+        """
+            SELECT playlist.playlistId AS id, 
+            playlist.name, 
+            playlist.isFavorite,
+            (
+                SELECT COUNT(*) 
+                FROM RoomMusicPlaylist AS musicPlaylist 
+                WHERE musicPlaylist.playlistId = playlist.playlistId
+            ) AS totalMusics, 
+            (
+                CASE WHEN playlist.coverId IS NULL THEN 
+                    (
+                        SELECT music.coverId FROM RoomMusic AS music 
+                        INNER JOIN RoomMusicPlaylist AS musicPlaylist 
+                        ON music.musicId = musicPlaylist.musicId 
+                        AND playlist.playlistId = musicPlaylist.playlistId 
+                        AND music.isHidden = 0 
+                        AND music.coverId IS NOT NULL 
+                        LIMIT 1
+                    )
+                ELSE playlist.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                INNER JOIN RoomMusicPlaylist AS musicPlaylist 
+                ON music.musicId = musicPlaylist.musicId 
+                AND playlist.playlistId = musicPlaylist.playlistId 
+                AND music.isHidden = 0 
+                LIMIT 1
+            ) AS musicCoverPath,
+            playlist.isInQuickAccess 
+            FROM RoomPlaylist AS playlist 
+            WHERE playlist.isInQuickAccess = 1
+        """
+    )
+    fun getAllFromQuickAccess(): Flow<List<RoomPlaylistPreview>>
 }

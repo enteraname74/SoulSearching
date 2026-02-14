@@ -51,27 +51,27 @@ fun allPlaylistsTab(
                 },
                 sortType = playlistState.sortType,
                 sortDirection = playlistState.sortDirection,
-                key = { it.playlist.playlistId },
+                key = { it.id },
                 contentType = { ALL_PLAYLISTS_CONTENT_TYPE }
             ) { element ->
                 BigPreviewComposable(
                     modifier = Modifier
                         .animateItem(),
                     cover = element.cover,
-                    title = element.playlist.name,
-                    text = strings.musics(element.musicsNumber),
+                    title = element.name,
+                    text = strings.musics(element.totalMusics),
                     imageSize = null,
                     onClick = {
-                        navigateToPlaylist(element.playlist.playlistId)
+                        navigateToPlaylist(element.id)
                     },
                     onLongClick = {
                         mainPageViewModel.toggleElementInSelection(
-                            id = element.playlist.playlistId,
+                            id = element.id,
                             mode = SelectionMode.Playlist,
                         )
                     },
-                    isFavoritePlaylist = element.playlist.isFavorite,
-                    isSelected = multiSelectionState.selectedIds.contains(element.playlist.playlistId),
+                    isFavoritePlaylist = element.isFavorite,
+                    isSelected = multiSelectionState.selectedIds.contains(element.id),
                     isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                 )
             }

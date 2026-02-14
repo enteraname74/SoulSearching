@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.QuickAccessible
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -113,12 +113,12 @@ private fun QuickAccessible.ToPreview(
             )
         }
 
-        is PlaylistWithMusicsNumber -> {
+        is PlaylistPreview -> {
             BigPreviewComposable(
                 modifier = modifier,
-                cover = this.playlist.cover,
-                title = this.playlist.name,
-                text = strings.musics(total = this.musicsNumber),
+                cover = this.cover,
+                title = this.name,
+                text = strings.musics(total = this.totalMusics),
                 imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }

@@ -19,11 +19,14 @@ data class PlaylistWithMusics(
     /**
      * Convert a PlaylistWithMusics to a PlaylistWithMusicsNumber.
      */
-    fun toPlaylistWithMusicsNumber(): PlaylistWithMusicsNumber {
-        return PlaylistWithMusicsNumber(
-            playlist = playlist,
-            musicsNumber = musics.filter { !it.isHidden }.size,
+    fun toPlaylistPreview(): PlaylistPreview {
+        return PlaylistPreview(
+            id = playlist.playlistId,
+            isFavorite = playlist.isFavorite,
+            name = playlist.name,
+            totalMusics = musics.filter { !it.isHidden }.size,
             cover = cover,
+            isInQuickAccess = playlist.isInQuickAccess,
         )
     }
 }

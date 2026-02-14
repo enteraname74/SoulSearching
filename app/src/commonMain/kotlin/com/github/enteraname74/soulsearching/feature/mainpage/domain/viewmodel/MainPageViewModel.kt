@@ -15,8 +15,8 @@ import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.enteraname74.domain.model.QuickAccessible
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
@@ -288,7 +288,7 @@ class MainPageViewModel(
         playlistSortingInformation,
     ) { playlists, sortingInformation ->
         AllPlaylistsState(
-            playlists = playlists.map { it.toPlaylistWithMusicsNumber() },
+            playlists = playlists.map { it.toPlaylistPreview() },
             sortType = sortingInformation.type,
             sortDirection = sortingInformation.direction,
         )
@@ -509,8 +509,8 @@ class MainPageViewModel(
             )
 
             is Music -> MainPageNavigationState.Idle
-            is PlaylistWithMusicsNumber -> MainPageNavigationState.ToPlaylist(
-                playlistId = quickAccessible.playlist.playlistId,
+            is PlaylistPreview -> MainPageNavigationState.ToPlaylist(
+                playlistId = quickAccessible.id,
             )
         }
     }
@@ -534,9 +534,11 @@ class MainPageViewModel(
                     selectedMusic = quickAccessible,
                 )
 
-                is PlaylistWithMusicsNumber -> showPlaylistBottomSheet(
-                    selectedPlaylist = quickAccessible,
-                )
+                is PlaylistPreview -> commonPlaylistUseCase
+                    .getWithMusics(playlistId = quickAccessible.id)
+                    .firstOrNull()?.let {
+                        showPlaylistBottomSheet(selectedPlaylist = it)
+                    }
             }
         }
     }
@@ -663,7 +665,7 @@ class MainPageViewModel(
             val selectedPlaylist: PlaylistWithMusics =
                 commonPlaylistUseCase.getWithMusics(playlistId = selectedIds[0]).firstOrNull()
                     ?: return
-            showPlaylistBottomSheet(selectedPlaylist = selectedPlaylist.toPlaylistWithMusicsNumber())
+            showPlaylistBottomSheet(selectedPlaylist = selectedPlaylist)
         } else {
             multiPlaylistBottomSheetDelegateImpl.showMultiPlaylistBottomSheet()
         }
@@ -738,6 +740,15 @@ class MainPageViewModel(
                 .getArtistWithMusic(artistPreview.id).firstOrNull() ?: return@launch
 
             showArtistBottomSheet(artistWithMusics)
+        }
+    }
+
+    fun showPlaylistPreviewBottomSheet(playlistPreview: PlaylistPreview) {
+        viewModelScope.launch {
+            val playlistWithMusics: PlaylistWithMusics = commonPlaylistUseCase
+                .getWithMusics(playlistPreview.id).firstOrNull() ?: return@launch
+
+            showPlaylistBottomSheet(playlistWithMusics)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
@@ -50,4 +51,11 @@ class PlaylistRepositoryImpl(
         playlistDataSource.getPlaylistWithMusics(
             playlistId = playlistId
         )
+
+    override suspend fun cleanAllCovers() {
+        playlistDataSource.cleanAllCovers()
+    }
+
+    override fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>> =
+        playlistDataSource.getAllFromQuickAccess()
 }

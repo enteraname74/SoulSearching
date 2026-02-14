@@ -5,6 +5,7 @@ import com.github.enteraname74.localdb.model.toPlaylist
 import com.github.enteraname74.localdb.model.toPlaylistWIthMusics
 import com.github.enteraname74.localdb.model.toRoomPlaylist
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
 import kotlinx.coroutines.flow.Flow
@@ -60,4 +61,13 @@ internal class RoomPlaylistDataSourceImpl(
         return appDatabase.playlistDao.getPlaylistWithMusics(playlistId = playlistId)
             .map { it?.toPlaylistWIthMusics() }
     }
+
+    override suspend fun cleanAllCovers() {
+        appDatabase.playlistDao.cleanAllCovers()
+    }
+
+    override fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>> =
+        appDatabase.playlistDao.getAllFromQuickAccess().map { list ->
+            list.map { it.toPlaylistPreview() }
+        }
 }

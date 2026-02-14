@@ -7,10 +7,8 @@ import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.PlaylistRemove
-import androidx.compose.material.icons.rounded.Queue
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetElementInformation
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRow
 import com.github.enteraname74.soulsearching.composables.bottomsheets.QuickAccessBottomSheetMenu
@@ -18,7 +16,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 fun PlaylistBottomSheetMenu(
-    selectedPlaylist: PlaylistWithMusicsNumber,
+    selectedPlaylist: PlaylistPreview,
     modifyAction : () -> Unit,
     playNextAction: () -> Unit,
     addToQueueAction: () -> Unit,
@@ -31,8 +29,8 @@ fun PlaylistBottomSheetMenu(
 
     Column {
         BottomSheetElementInformation(
-            title = selectedPlaylist.playlist.name,
-            subTitle = strings.musics(total = selectedPlaylist.musicsNumber),
+            title = selectedPlaylist.name,
+            subTitle = strings.musics(total = selectedPlaylist.totalMusics),
             cover = selectedPlaylist.cover,
         )
         QuickAccessBottomSheetMenu(
@@ -61,7 +59,7 @@ fun PlaylistBottomSheetMenu(
                     onClick = removeFromPlayedListAction,
                 )
             }
-            if (!selectedPlaylist.playlist.isFavorite) {
+            if (!selectedPlaylist.isFavorite) {
                 BottomSheetRow(
                     icon = Icons.Rounded.Delete,
                     text = strings.deletePlaylist,

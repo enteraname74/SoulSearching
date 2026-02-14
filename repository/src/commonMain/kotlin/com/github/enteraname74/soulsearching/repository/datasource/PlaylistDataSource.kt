@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -45,4 +46,8 @@ interface PlaylistDataSource {
      * Retrieves a flow of a PlaylistWithMusics.
      */
     fun getPlaylistWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?>
+
+    suspend fun cleanAllCovers()
+
+    fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>>
 }

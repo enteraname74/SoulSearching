@@ -11,7 +11,7 @@ import androidx.compose.ui.focus.FocusManager
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
@@ -39,7 +39,7 @@ fun SearchAll(
     allPlaylistsState: AllPlaylistsState,
     onSelectedMusicForBottomSheet: (Music) -> Unit,
     onSelectedAlbumForBottomSheet: (AlbumPreview) -> Unit,
-    onSelectedPlaylistForBottomSheet: (PlaylistWithMusicsNumber) -> Unit,
+    onSelectedPlaylistForBottomSheet: (PlaylistPreview) -> Unit,
     onSelectedArtistForBottomSheet: (ArtistPreview) -> Unit,
     navigateToPlaylist: (UUID) -> Unit,
     navigateToArtist: (UUID) -> Unit,
@@ -54,7 +54,7 @@ fun SearchAll(
 
     LazyColumnCompat {
         val foundedPlaylists = allPlaylistsState.playlists.filter {
-            it.playlist.name.lowercase().contains(searchText.lowercase())
+            it.name.lowercase().contains(searchText.lowercase())
         }
         if (foundedPlaylists.isNotEmpty()) {
             stickyHeader(
@@ -69,17 +69,17 @@ fun SearchAll(
             }
             items(
                 items = foundedPlaylists,
-                key = { it.playlist.playlistId },
+                key = { it.id },
                 contentType = { SEARCH_ALL_PLAYLISTS_CONTENT_TYPE }
             ) { playlistWithMusics ->
                 LinearPreviewComposable(
                     modifier = Modifier
                         .animateItem(),
-                    title = playlistWithMusics.playlist.name,
-                    text = strings.musics(playlistWithMusics.musicsNumber),
+                    title = playlistWithMusics.name,
+                    text = strings.musics(playlistWithMusics.totalMusics),
                     onClick = {
                         focusManager.clearFocus()
-                        navigateToPlaylist(playlistWithMusics.playlist.playlistId)
+                        navigateToPlaylist(playlistWithMusics.id)
                     },
                     onLongClick = {
                         onSelectedPlaylistForBottomSheet(playlistWithMusics)

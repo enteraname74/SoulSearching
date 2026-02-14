@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -26,6 +27,7 @@ interface PlaylistRepository {
     /**
      * Retrieves a flow of all Playlist, sorted by name asc.
      */
+    @Deprecated("Avoid fetching all playlist from DB because of performance issue")
     fun getAll(): Flow<List<Playlist>>
 
     /**
@@ -42,4 +44,8 @@ interface PlaylistRepository {
      * Retrieves a flow of a PlaylistWithMusics.
      */
     fun getPlaylistWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?>
+
+    suspend fun cleanAllCovers()
+
+    fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>>
 }

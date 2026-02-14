@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeletePlaylistDialog
@@ -16,7 +15,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 interface PlaylistBottomSheetDelegate {
-    fun showPlaylistBottomSheet(selectedPlaylist: PlaylistWithMusicsNumber)
+    fun showPlaylistBottomSheet(selectedPlaylist: PlaylistWithMusics)
 }
 
 class PlaylistBottomSheetDelegateImpl(
@@ -59,10 +58,10 @@ class PlaylistBottomSheetDelegateImpl(
         )
     }
 
-    override fun showPlaylistBottomSheet(selectedPlaylist: PlaylistWithMusicsNumber) {
+    override fun showPlaylistBottomSheet(selectedPlaylist: PlaylistWithMusics) {
         setBottomSheetState(
             PlaylistBottomSheet(
-                selectedPlaylist = selectedPlaylist,
+                selectedPlaylist = selectedPlaylist.toPlaylistPreview(),
                 onClose = { setBottomSheetState(null) },
                 onDeletePlaylist = { showDeletePlaylistDialog(playlistToDelete = selectedPlaylist.playlist) },
                 onModifyPlaylist = { onModifyPlaylist(selectedPlaylist.playlist) },
@@ -70,7 +69,7 @@ class PlaylistBottomSheetDelegateImpl(
                     CoroutineScope(Dispatchers.IO).launch {
                         commonPlaylistUseCase.upsert(
                             playlist = selectedPlaylist.playlist.copy(
-                                isInQuickAccess = !selectedPlaylist.isInQuickAccess,
+                                isInQuickAccess = !selectedPlaylist.playlist.isInQuickAccess,
                             )
                         )
                         multiSelectionManagerImpl?.clearMultiSelection()

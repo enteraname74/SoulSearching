@@ -3,7 +3,7 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -14,7 +14,7 @@ import org.koin.core.component.inject
 
 class PlaylistBottomSheet(
     private val onClose: () -> Unit,
-    private val selectedPlaylist: PlaylistWithMusicsNumber,
+    private val selectedPlaylist: PlaylistPreview,
     private val onModifyPlaylist: () -> Unit,
     private val onPlayNext: () -> Unit,
     private val onAddToQueue: () -> Unit,
