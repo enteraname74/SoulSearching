@@ -45,4 +45,6 @@ interface PlaylistRepository {
     suspend fun cleanAllCovers()
 
     fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>>
+
+    fun getMostListened(): Flow<List<PlaylistPreview>>
 }

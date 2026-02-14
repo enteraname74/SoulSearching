@@ -20,7 +20,6 @@ import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListU
 import com.github.enteraname74.domain.usecase.musicfolder.GetMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
 import org.koin.core.module.dsl.factoryOf
@@ -69,7 +68,6 @@ val domainModule = module {
 
     // Playlist
     factoryOf(::CommonPlaylistUseCase)
-    factoryOf(::GetAllPlaylistWithMusicsSortedUseCase)
 
     // QuickAccess
     factoryOf(::GetAllQuickAccessElementsUseCase)

@@ -60,4 +60,7 @@ class CommonPlaylistUseCase(
     suspend fun cleanAllCovers() {
         playlistRepository.cleanAllCovers()
     }
+
+    fun getMostListened(): Flow<List<PlaylistPreview>> =
+        playlistRepository.getMostListened()
 }

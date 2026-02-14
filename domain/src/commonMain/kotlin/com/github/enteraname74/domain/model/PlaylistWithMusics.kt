@@ -27,6 +27,7 @@ data class PlaylistWithMusics(
             totalMusics = musics.filter { !it.isHidden }.size,
             cover = cover,
             isInQuickAccess = playlist.isInQuickAccess,
+            nbPlayed = playlist.nbPlayed,
         )
     }
 }

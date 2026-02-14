@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import java.util.UUID
@@ -45,9 +46,9 @@ fun ArtistPreview.toMostSongsListenedElement(): ListenedElement = ListenedElemen
     id = id,
 )
 
-fun PlaylistWithMusics.toListenedElement(): ListenedElement = ListenedElement(
-    title = playlist.name,
-    text = { strings.plays(playlist.nbPlayed) },
+fun PlaylistPreview.toListenedElement(): ListenedElement = ListenedElement(
+    title = name,
+    text = { strings.plays(nbPlayed) },
     cover = cover,
-    id = playlist.playlistId,
+    id = id,
 )

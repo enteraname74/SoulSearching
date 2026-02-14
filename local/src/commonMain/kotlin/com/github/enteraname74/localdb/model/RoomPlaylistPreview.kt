@@ -9,6 +9,7 @@ data class RoomPlaylistPreview(
     val isFavorite: Boolean,
     val name: String,
     val totalMusics : Int,
+    val nbPlayed: Int,
     val coverId: UUID?,
     val musicCoverPath: String?,
     val isInQuickAccess: Boolean,
@@ -23,6 +24,7 @@ data class RoomPlaylistPreview(
                 initialCoverPath = musicCoverPath,
                 fileCoverId = coverId,
             ),
-            isInQuickAccess = isInQuickAccess
+            isInQuickAccess = isInQuickAccess,
+            nbPlayed = nbPlayed,
         )
 }

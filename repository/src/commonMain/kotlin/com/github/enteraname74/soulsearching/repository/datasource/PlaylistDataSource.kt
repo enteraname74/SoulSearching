@@ -48,4 +48,6 @@ interface PlaylistDataSource {
     suspend fun cleanAllCovers()
 
     fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>>
+
+    fun getMostListened(): Flow<List<PlaylistPreview>>
 }

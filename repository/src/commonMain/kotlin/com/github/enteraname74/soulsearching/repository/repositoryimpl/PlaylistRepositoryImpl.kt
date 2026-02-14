@@ -59,4 +59,7 @@ class PlaylistRepositoryImpl(
 
     override fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>> =
         playlistDataSource.getAllFromQuickAccess()
+
+    override fun getMostListened(): Flow<List<PlaylistPreview>> =
+        playlistDataSource.getMostListened()
 }

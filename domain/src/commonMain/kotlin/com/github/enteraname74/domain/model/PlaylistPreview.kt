@@ -10,6 +10,7 @@ data class PlaylistPreview(
     val isFavorite: Boolean,
     val name: String,
     val totalMusics : Int,
+    val nbPlayed: Int,
     val cover: Cover?,
     override val isInQuickAccess: Boolean,
 ): QuickAccessible
