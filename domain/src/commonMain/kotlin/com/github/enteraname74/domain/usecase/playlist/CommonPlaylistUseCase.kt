@@ -13,6 +13,9 @@ import java.util.*
 class CommonPlaylistUseCase(
     private val playlistRepository: PlaylistRepository,
 ) {
+    fun getFromId(playlistId: UUID): Flow<Playlist?> =
+        playlistRepository.getFromId(playlistId)
+
     suspend fun deleteAll(playlistIds: List<UUID>) {
         playlistRepository.deleteAll(playlistIds)
     }
@@ -63,4 +66,7 @@ class CommonPlaylistUseCase(
 
     fun getMostListened(): Flow<List<PlaylistPreview>> =
         playlistRepository.getMostListened()
+
+    fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?> =
+        playlistRepository.getPlaylistPreview(playlistId)
 }

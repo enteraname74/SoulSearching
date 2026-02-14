@@ -12,6 +12,10 @@ import java.util.UUID
 class CommonAlbumUseCase(
     private val albumRepository: AlbumRepository
 ) {
+
+    fun getFromId(albumId: UUID): Flow<Album?> =
+        albumRepository.getFromId(albumId)
+
     fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?> =
         albumRepository.getAlbumWithMusics(
             albumId = albumId,
@@ -25,6 +29,9 @@ class CommonAlbumUseCase(
 
     fun getMostListened(): Flow<List<AlbumPreview>> =
         albumRepository.getMostListened()
+
+    fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?> =
+        albumRepository.getAlbumPreview(albumId)
 
     suspend fun deleteAll(albumsIds: List<UUID>) {
         albumRepository.deleteAll(

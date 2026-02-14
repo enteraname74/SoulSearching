@@ -405,4 +405,40 @@ interface ArtistDao {
         """
     )
     fun getMostListened(): Flow<List<RoomArtistPreview>>
+
+    @Transaction
+    @Query(
+        """
+            SELECT artist.artistId AS id, 
+            artist.artistName AS name, 
+            artist.coverFolderKey,
+            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
+            (
+                CASE WHEN artist.coverId IS NULL THEN 
+                    (
+                        SELECT music.coverId FROM RoomMusic AS music 
+                        INNER JOIN RoomMusicArtist AS musicArtist 
+                        ON music.musicId = musicArtist.musicId 
+                        AND artist.artistId = musicArtist.artistId 
+                        AND music.isHidden = 0 
+                        AND music.coverId IS NOT NULL 
+                        LIMIT 1
+                    )
+                ELSE artist.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                INNER JOIN RoomMusicArtist AS musicArtist 
+                ON music.musicId = musicArtist.musicId 
+                AND artist.artistId = musicArtist.artistId 
+                AND music.isHidden = 0 
+                LIMIT 1
+            ) AS musicCoverPath,
+            artist.isInQuickAccess 
+            FROM RoomArtist AS artist 
+            WHERE artist.artistId = :artistId
+            LIMIT 1
+        """
+    )
+    fun getArtistPreview(artistId: UUID): Flow<RoomArtistPreview?>
 }

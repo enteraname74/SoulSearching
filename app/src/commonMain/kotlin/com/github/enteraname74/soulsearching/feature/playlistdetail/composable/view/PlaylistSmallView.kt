@@ -11,10 +11,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -77,58 +75,46 @@ fun PlaylistSmallView(
     var topBarHeight: Int by rememberSaveable { mutableIntStateOf(0) }
     var pageHeaderSize: Int by rememberSaveable { mutableIntStateOf(0) }
 
-    val backgroundAlpha: Float by remember {
-        derivedStateOf {
-            if (lazyListState.firstVisibleItemIndex >= 1) {
-                1f
-            } else if (pageHeaderSize == 0) {
-                0f
-            } else {
-                (lazyListState.firstVisibleItemScrollOffset.toFloat() / pageHeaderSize)
-                    .coerceIn(
-                        minimumValue = 0f,
-                        maximumValue = 1f,
-                    )
-            }
+    val backgroundAlpha: Float =
+        if (lazyListState.firstVisibleItemIndex >= 1) {
+            1f
+        } else if (pageHeaderSize == 0) {
+            0f
+        } else {
+            (lazyListState.firstVisibleItemScrollOffset.toFloat() / pageHeaderSize)
+                .coerceIn(
+                    minimumValue = 0f,
+                    maximumValue = 1f,
+                )
         }
-    }
 
     val topBarHeightDp = topBarHeight.toDp()
 
-    val panelTopPadding: Dp by remember {
-        derivedStateOf {
-            if (lazyListState.firstVisibleItemIndex >= 1) {
-                topBarHeightDp
-            } else if (topBarHeight == 0) {
-                0.dp
-            } else {
-                topBarHeightDp
-                    .times(lazyListState.firstVisibleItemScrollOffset.toFloat() / pageHeaderSize)
-                    .coerceIn(0.dp, topBarHeightDp)
-            }
+    val panelTopPadding: Dp =
+        if (lazyListState.firstVisibleItemIndex >= 1) {
+            topBarHeightDp
+        } else if (topBarHeight == 0) {
+            0.dp
+        } else {
+            topBarHeightDp
+                .times(lazyListState.firstVisibleItemScrollOffset.toFloat() / pageHeaderSize)
+                .coerceIn(0.dp, topBarHeightDp)
         }
-    }
 
 
-    val backgroundColor: @Composable () -> Color by remember {
-        derivedStateOf {
-            if (lazyListState.firstVisibleItemIndex >= 1) {
-                { SoulSearchingColorTheme.colorScheme.primary }
-            } else {
-                { Color.Transparent }
-            }
+    val backgroundColor: @Composable () -> Color =
+        if (lazyListState.firstVisibleItemIndex >= 1) {
+            { SoulSearchingColorTheme.colorScheme.primary }
+        } else {
+            { Color.Transparent }
         }
-    }
 
-    val topBarTitle: String? by remember {
-        derivedStateOf {
-            if (lazyListState.firstVisibleItemIndex >= 1) {
-                playlistDetail.title
-            } else {
-                null
-            }
+    val topBarTitle: String? =
+        if (lazyListState.firstVisibleItemIndex >= 1) {
+            playlistDetail.title
+        } else {
+            null
         }
-    }
 
     val musics = playlistDetail.musics.collectAsLazyPagingItems()
 

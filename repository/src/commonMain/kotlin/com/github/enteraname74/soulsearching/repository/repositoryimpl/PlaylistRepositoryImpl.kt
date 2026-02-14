@@ -62,4 +62,7 @@ class PlaylistRepositoryImpl(
 
     override fun getMostListened(): Flow<List<PlaylistPreview>> =
         playlistDataSource.getMostListened()
+
+    override fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?> =
+        playlistDataSource.getPlaylistPreview(playlistId)
 }

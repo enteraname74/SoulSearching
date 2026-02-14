@@ -61,12 +61,11 @@ class SelectedPlaylistViewModel(
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var state = commonPlaylistUseCase.getWithMusics(playlistId).mapLatest { playlistWithMusics ->
+    var state = commonPlaylistUseCase.getPlaylistPreview(playlistId).mapLatest { playlistWithMusics ->
         when {
             playlistWithMusics == null -> SelectedPlaylistState.Error
             else -> SelectedPlaylistState.Data(
                 playlistDetail = playlistWithMusics.toPlaylistDetail(musics),
-                selectedPlaylist = playlistWithMusics.playlist,
             )
         }
     }.stateIn(
@@ -143,7 +142,9 @@ class SelectedPlaylistViewModel(
     private fun handleMultiSelectionBottomSheet() {
         viewModelScope.launch {
             val selectedIds = multiSelectionState.value.selectedIds
-            val currentPlaylist = (state.value as SelectedPlaylistState.Data).selectedPlaylist
+            val currentPlaylist = commonPlaylistUseCase
+                .getFromId(playlistId).firstOrNull() ?: return@launch
+
             if (selectedIds.size == 1) {
                 val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return@launch
                 showMusicBottomSheet(
@@ -155,6 +156,19 @@ class SelectedPlaylistViewModel(
                     currentPlaylist = currentPlaylist,
                 )
             }
+        }
+    }
+
+    fun showMusicBottomSheetWithPlaylist(
+        music: Music,
+    ) {
+        viewModelScope.launch {
+            showMusicBottomSheet(
+                selectedMusic = music,
+                currentPlaylist = commonPlaylistUseCase
+                    .getFromId(playlistId)
+                    .firstOrNull()
+            )
         }
     }
 

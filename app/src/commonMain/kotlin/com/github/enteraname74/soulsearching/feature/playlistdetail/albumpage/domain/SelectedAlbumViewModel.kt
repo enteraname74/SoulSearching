@@ -70,17 +70,16 @@ class SelectedAlbumViewModel(
     var state: StateFlow<SelectedAlbumState> =
 
         combine(
-            commonAlbumUseCase.getAlbumWithMusics(albumId = albumId),
+            commonAlbumUseCase.getAlbumPreview(albumId = albumId),
             settings.getFlowOn(SoulSearchingSettingsKeys.Album.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW),
-        ) { albumWithMusics, showTrackPosition ->
+        ) { albumPreview, showTrackPosition ->
             when {
-                albumWithMusics == null -> SelectedAlbumState.Error
+                albumPreview == null -> SelectedAlbumState.Error
                 else -> SelectedAlbumState.Data(
-                    playlistDetail = albumWithMusics.toPlaylistDetail(
+                    playlistDetail = albumPreview.toPlaylistDetail(
                         shouldShowTrackPosition = showTrackPosition,
                         musics = musics,
                     ),
-                    artistId = albumWithMusics.album.artist.artistId,
                 )
             }
         }.stateIn(
@@ -146,8 +145,13 @@ class SelectedAlbumViewModel(
     }
 
     override fun onSubtitleClicked() {
-        val artistId: UUID = (state.value as? SelectedAlbumState.Data)?.artistId ?: return
-        _navigationState.value = SelectedAlbumNavigationState.ToArtist(artistId = artistId)
+        viewModelScope.launch {
+            val artistId = commonAlbumUseCase
+                .getFromId(albumId)
+                .firstOrNull()
+                ?.artist?.artistId ?: return@launch
+            _navigationState.value = SelectedAlbumNavigationState.ToArtist(artistId = artistId)
+        }
     }
 
     override fun onCloseSelection() {

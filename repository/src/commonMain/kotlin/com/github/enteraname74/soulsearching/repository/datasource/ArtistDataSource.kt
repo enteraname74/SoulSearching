@@ -71,4 +71,6 @@ interface ArtistDataSource {
     suspend fun cleanAllCovers()
 
     fun getMostListened(): Flow<List<ArtistPreview>>
+
+    fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?>
 }

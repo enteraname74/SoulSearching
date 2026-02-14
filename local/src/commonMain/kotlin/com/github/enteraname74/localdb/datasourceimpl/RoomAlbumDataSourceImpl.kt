@@ -164,6 +164,9 @@ internal class RoomAlbumDataSourceImpl(
             list.map { it.toAlbumPreview() }
         }
 
+    override fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?> =
+        appDatabase.albumDao.getAlbumPreview(albumId).map { it?.toAlbumPreview() }
+
     override suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics> =
         appDatabase.albumDao.getAlbumsOfArtistName(artistName).map { it.toAlbumWithMusics() }
 }

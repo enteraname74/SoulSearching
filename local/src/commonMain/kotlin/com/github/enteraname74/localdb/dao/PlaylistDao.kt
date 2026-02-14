@@ -361,4 +361,45 @@ interface PlaylistDao {
         """
     )
     fun getMostListened(): Flow<List<RoomPlaylistPreview>>
+
+    @Transaction
+    @Query(
+        """
+            SELECT playlist.playlistId AS id, 
+            playlist.name, 
+            playlist.isFavorite,
+            (
+                SELECT COUNT(*) 
+                FROM RoomMusicPlaylist AS musicPlaylist 
+                WHERE musicPlaylist.playlistId = playlist.playlistId
+            ) AS totalMusics, 
+            (
+                CASE WHEN playlist.coverId IS NULL THEN 
+                    (
+                        SELECT music.coverId FROM RoomMusic AS music 
+                        INNER JOIN RoomMusicPlaylist AS musicPlaylist 
+                        ON music.musicId = musicPlaylist.musicId 
+                        AND playlist.playlistId = musicPlaylist.playlistId 
+                        AND music.isHidden = 0 
+                        AND music.coverId IS NOT NULL 
+                        LIMIT 1
+                    )
+                ELSE playlist.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                INNER JOIN RoomMusicPlaylist AS musicPlaylist 
+                ON music.musicId = musicPlaylist.musicId 
+                AND playlist.playlistId = musicPlaylist.playlistId 
+                AND music.isHidden = 0 
+                LIMIT 1
+            ) AS musicCoverPath,
+            playlist.isInQuickAccess,
+            playlist.nbPlayed 
+            FROM RoomPlaylist AS playlist 
+            WHERE playlist.playlistId = :playlistId 
+            LIMIT 1
+        """
+    )
+    fun getPlaylistPreview(playlistId: UUID): Flow<RoomPlaylistPreview?>
 }

@@ -99,4 +99,7 @@ class CommonArtistUseCase(
 
     fun getMostListened(): Flow<List<ArtistPreview>> =
         artistRepository.getMostListened()
+
+    fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?> =
+        artistRepository.getArtistPreview(artistId)
 }

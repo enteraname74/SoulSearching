@@ -50,4 +50,6 @@ interface PlaylistDataSource {
     fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>>
 
     fun getMostListened(): Flow<List<PlaylistPreview>>
+
+    fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?>
 }

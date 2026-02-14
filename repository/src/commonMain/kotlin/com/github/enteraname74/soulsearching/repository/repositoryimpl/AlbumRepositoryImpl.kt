@@ -93,6 +93,9 @@ class AlbumRepositoryImpl(
     override fun getMostListened(): Flow<List<AlbumPreview>> =
         albumDataSource.getMostListened()
 
+    override fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?> =
+        albumDataSource.getAlbumPreview(albumId)
+
     override suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics> =
         albumDataSource.getAlbumsOfArtistName(artistName)
 }

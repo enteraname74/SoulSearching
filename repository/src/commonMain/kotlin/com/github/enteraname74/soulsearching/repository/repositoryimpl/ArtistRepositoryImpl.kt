@@ -100,4 +100,7 @@ class ArtistRepositoryImpl(
 
     override fun getMostListened(): Flow<List<ArtistPreview>> =
         artistDataSource.getMostListened()
+
+    override fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?> =
+        artistDataSource.getArtistPreview(artistId)
 }

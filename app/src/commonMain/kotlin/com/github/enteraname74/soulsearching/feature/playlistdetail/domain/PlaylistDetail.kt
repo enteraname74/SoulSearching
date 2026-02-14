@@ -2,12 +2,18 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.domain
 
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.ext.duration
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.AlbumPreview
+import com.github.enteraname74.domain.model.ArtistPreview
+import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.MonthMusicList
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicFolderList
+import com.github.enteraname74.domain.model.PlaylistPreview
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 data class PlaylistDetail(
     val id: UUID?,
@@ -27,26 +33,26 @@ enum class PlaylistDetailType {
     Folder;
 }
 
-fun PlaylistWithMusics.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDetail =
+fun PlaylistPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDetail =
     PlaylistDetail(
-        id = this.playlist.playlistId,
+        id = this.id,
         type = PlaylistDetailType.Playlist,
-        title = this.playlist.name,
-        subTitle = strings.musics(this.musics.size),
+        title = this.name,
+        subTitle = strings.musics(this.totalMusics),
         cover = this.cover,
         musics = musics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )
 
-fun AlbumWithMusics.toPlaylistDetail(
+fun AlbumPreview.toPlaylistDetail(
     shouldShowTrackPosition: Boolean,
     musics: Flow<PagingData<Music>>
 ): PlaylistDetail =
     PlaylistDetail(
-        id = this.album.albumId,
+        id = this.id,
         type = PlaylistDetailType.Album,
-        title = this.album.albumName,
-        subTitle = this.album.artist.artistName,
+        title = this.name,
+        subTitle = this.artist,
         cover = this.cover,
         musics = musics,
         musicItemLeadingSpec = { musicPosition ->
@@ -58,12 +64,12 @@ fun AlbumWithMusics.toPlaylistDetail(
         }
     )
 
-fun ArtistWithMusics.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDetail =
+fun ArtistPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDetail =
     PlaylistDetail(
-        id = this.artist.artistId,
+        id = this.id,
         type = PlaylistDetailType.Artist,
-        title = this.artist.artistName,
-        subTitle = strings.musics(this.musics.size),
+        title = this.name,
+        subTitle = strings.musics(this.totalMusics),
         cover = this.cover,
         musics = musics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },

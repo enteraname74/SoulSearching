@@ -162,4 +162,7 @@ internal class RoomArtistDataSourceImpl(
         appDatabase.artistDao.getMostListened().map { list ->
             list.map { it.toArtistPreview() }
         }
+
+    override fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?> =
+        appDatabase.artistDao.getArtistPreview(artistId).map { it?.toArtistPreview() }
 }

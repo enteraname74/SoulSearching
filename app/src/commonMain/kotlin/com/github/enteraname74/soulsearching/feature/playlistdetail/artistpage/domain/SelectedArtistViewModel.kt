@@ -71,12 +71,12 @@ class SelectedArtistViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     var state: StateFlow<SelectedArtistState> = combine(
         commonAlbumUseCase.getAlbumsWithMusicsOfArtist(artistId = artistId),
-        commonArtistUseCase.getArtistWithMusic(artistId = artistId),
-    ) { albums, artistWithMusics ->
+        commonArtistUseCase.getArtistPreview(artistId = artistId),
+    ) { albums, artistPreview ->
         when {
-            artistWithMusics == null -> SelectedArtistState.Error
+            artistPreview == null -> SelectedArtistState.Error
             else -> SelectedArtistState.Data(
-                playlistDetail = artistWithMusics.toPlaylistDetail(musics),
+                playlistDetail = artistPreview.toPlaylistDetail(musics),
                 artistAlbums = albums,
             )
         }
