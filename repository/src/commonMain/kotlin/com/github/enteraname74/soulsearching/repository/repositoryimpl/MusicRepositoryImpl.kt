@@ -15,7 +15,7 @@ import kotlin.time.Duration
  */
 class MusicRepositoryImpl(
     private val musicDataSource: MusicDataSource,
-): MusicRepository {
+) : MusicRepository {
     override suspend fun upsert(music: Music) {
         musicDataSource.upsert(music = music)
     }
@@ -71,6 +71,51 @@ class MusicRepositoryImpl(
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
         musicDataSource.getAllMusicFromAlbum(
             albumId = albumId
+        )
+
+    override fun searchFromAlbum(
+        albumId: UUID,
+        search: String
+    ): Flow<List<Music>> =
+        musicDataSource.searchFromAlbum(
+            albumId = albumId,
+            search = search,
+        )
+
+    override fun searchFromPlaylist(
+        playlistId: UUID,
+        search: String
+    ): Flow<List<Music>> =
+        musicDataSource.searchFromPlaylist(
+            playlistId = playlistId,
+            search = search,
+        )
+
+    override fun searchFromArtist(
+        artistId: UUID,
+        search: String
+    ): Flow<List<Music>> =
+        musicDataSource.searchFromArtist(
+            artistId = artistId,
+            search = search,
+        )
+
+    override fun searchFromFolder(
+        folder: String,
+        search: String
+    ): Flow<List<Music>> =
+        musicDataSource.searchFromFolder(
+            folder = folder,
+            search = search,
+        )
+
+    override fun searchFromMonth(
+        month: String,
+        search: String
+    ): Flow<List<Music>> =
+        musicDataSource.searchFromMonth(
+            month = month,
+            search = search,
         )
 
     override suspend fun getAllMusicFromArtist(artistId: UUID): List<Music> =

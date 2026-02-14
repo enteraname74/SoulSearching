@@ -25,6 +25,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.presentation.SelectedMonthDestination
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,6 +33,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -71,17 +74,32 @@ class SelectedMonthViewModel(
         .getAllPagedByNameAscOfMonth(month)
         .cachedIn(viewModelScope)
 
+    private var _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val searchResult: Flow<List<Music>> = _searchQuery.flatMapLatest { search ->
+        if (search.isNotBlank()) {
+            commonMusicUseCase.searchFromMonth(
+                month = month,
+                search = search,
+            )
+        } else {
+            flowOf(emptyList())
+        }
+    }
+
     var state =
         combine(
             commonMusicUseCase.getMonthMusicPreview(month = month),
             commonMusicUseCase.getMonthMusicsDuration(month),
-        ) { monthMusicPreview, duration ->
+            searchResult
+        ) { monthMusicPreview, duration, searchMusics ->
         when {
             monthMusicPreview == null -> SelectedMonthState.Error
             else -> SelectedMonthState.Data(
                 playlistDetail = monthMusicPreview.toPlaylistDetail(
                     musics = musics,
                     duration = duration,
+                    searchMusics = searchMusics,
                 ),
             )
         }
@@ -192,5 +210,9 @@ class SelectedMonthViewModel(
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)
             }
         }
+    }
+
+    override fun onSearch(search: String) {
+        _searchQuery.value = search
     }
 }

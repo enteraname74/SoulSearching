@@ -162,6 +162,43 @@ interface MusicDao {
     )
     suspend fun getAllMusicFromAlbum(albumId : UUID) : List<RoomCompleteMusic>
 
+
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            WHERE music.isHidden = 0 
+            AND (
+                music.name LIKE '%' || :search || '%'
+                COLLATE NOCASE 
+                OR EXISTS(
+                    SELECT 1 FROM RoomAlbum AS album 
+                    WHERE album.albumId = music.albumId 
+                    AND album.albumName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE 
+                )
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    INNER JOIN RoomMusicArtist AS musicArtist 
+                    ON musicArtist.artistId = artist.artistId 
+                    AND musicArtist.musicId = music.musicId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            )
+            AND albumId = :albumId
+            ORDER BY 
+            CASE WHEN albumPosition IS NULL THEN 1 ELSE 0 END, 
+            albumPosition,
+            name
+        """
+    )
+    fun searchFromAlbum(
+        albumId: UUID,
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
+
     @Query(
         """
             SELECT SUM(duration) FROM RoomMusic 
@@ -184,6 +221,41 @@ interface MusicDao {
     )
     suspend fun getAllMusicFromArtist(artistId : UUID) : List<RoomCompleteMusic>
 
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            INNER JOIN RoomMusicArtist as musicArtist
+            ON music.musicId = musicArtist.musicId 
+            AND musicArtist.artistId = :artistId 
+            AND music.isHidden = 0 
+            AND (
+                music.name LIKE '%' || :search || '%'
+                COLLATE NOCASE 
+                OR EXISTS(
+                    SELECT 1 FROM RoomAlbum AS album 
+                    WHERE album.albumId = music.albumId 
+                    AND album.albumName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE 
+                )
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    INNER JOIN RoomMusicArtist AS musicArtist 
+                    ON musicArtist.artistId = artist.artistId 
+                    AND musicArtist.musicId = music.musicId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            )
+            ORDER BY name ASC
+        """
+    )
+    fun searchFromArtist(
+        artistId: UUID,
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
+
     @Query(
         """
             SELECT SUM(music.duration) FROM RoomMusic AS music
@@ -202,11 +274,46 @@ interface MusicDao {
             INNER JOIN RoomMusicPlaylist as musicPlaylist
             ON music.musicId = musicPlaylist.musicId 
             AND musicPlaylist.playlistId = :playlistId 
-            AND music.isHidden = 0 
+            AND music.isHidden = 0
             ORDER BY name ASC
         """
     )
     suspend fun getAllMusicFromPlaylist(playlistId : UUID) : List<RoomCompleteMusic>
+
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            INNER JOIN RoomMusicPlaylist as musicPlaylist
+            ON music.musicId = musicPlaylist.musicId 
+            AND musicPlaylist.playlistId = :playlistId 
+            AND music.isHidden = 0 
+            AND (
+                music.name LIKE '%' || :search || '%'
+                COLLATE NOCASE 
+                OR EXISTS(
+                    SELECT 1 FROM RoomAlbum AS album 
+                    WHERE album.albumId = music.albumId 
+                    AND album.albumName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE 
+                )
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    INNER JOIN RoomMusicArtist AS musicArtist 
+                    ON musicArtist.artistId = artist.artistId 
+                    AND musicArtist.musicId = music.musicId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            ) 
+            ORDER BY name ASC
+        """
+    )
+    fun searchFromPlaylist(
+        playlistId: UUID,
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
 
     @Query(
         """
@@ -230,6 +337,39 @@ interface MusicDao {
     )
     suspend fun getAllMusicFromMonth(month: String) : List<RoomCompleteMusic>
 
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            WHERE music.isHidden = 0 
+            AND strftime('%m/%Y', music.addedDate) = :month
+            AND (
+                music.name LIKE '%' || :search || '%'
+                COLLATE NOCASE 
+                OR EXISTS(
+                    SELECT 1 FROM RoomAlbum AS album 
+                    WHERE album.albumId = music.albumId 
+                    AND album.albumName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE 
+                )
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    INNER JOIN RoomMusicArtist AS musicArtist 
+                    ON musicArtist.artistId = artist.artistId 
+                    AND musicArtist.musicId = music.musicId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            ) 
+            ORDER BY music.name ASC
+        """
+    )
+    fun searchFromMonth(
+        month: String,
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
+
     @Query(
         """
             SELECT SUM(duration) FROM RoomMusic 
@@ -249,6 +389,39 @@ interface MusicDao {
         """
     )
     suspend fun getAllMusicFromFolder(folder : String) : List<RoomCompleteMusic>
+
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music 
+            WHERE music.isHidden = 0 
+            AND music.folder = :folder
+            AND (
+                music.name LIKE '%' || :search || '%'
+                COLLATE NOCASE 
+                OR EXISTS(
+                    SELECT 1 FROM RoomAlbum AS album 
+                    WHERE album.albumId = music.albumId 
+                    AND album.albumName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE 
+                )
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    INNER JOIN RoomMusicArtist AS musicArtist 
+                    ON musicArtist.artistId = artist.artistId 
+                    AND musicArtist.musicId = music.musicId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            ) 
+            ORDER BY music.name ASC
+        """
+    )
+    fun searchFromFolder(
+        folder: String,
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
 
     @Query(
         """

@@ -33,6 +33,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.p
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -40,6 +41,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -86,17 +89,32 @@ class SelectedArtistViewModel(
         .getAllPagedByNameAscOfArtist(artistId)
         .cachedIn(viewModelScope)
 
+    private var _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val searchResult: Flow<List<Music>> = _searchQuery.flatMapLatest { search ->
+        if (search.isNotBlank()) {
+            commonMusicUseCase.searchFromArtist(
+                artistId = artistId,
+                search = search,
+            )
+        } else {
+            flowOf(emptyList())
+        }
+    }
+
     var state: StateFlow<SelectedArtistState> = combine(
         commonAlbumUseCase.getAlbumsWithMusicsOfArtist(artistId = artistId),
         commonArtistUseCase.getArtistPreview(artistId = artistId),
         commonMusicUseCase.getArtistDuration(artistId),
-    ) { albums, artistPreview, duration ->
+        searchResult
+    ) { albums, artistPreview, duration, searchMusics ->
         when {
             artistPreview == null -> SelectedArtistState.Error
             else -> SelectedArtistState.Data(
                 playlistDetail = artistPreview.toPlaylistDetail(
                     musics = musics,
                     duration = duration,
+                    searchMusics = searchMusics,
                 ),
                 artistAlbums = albums,
             )
@@ -253,5 +271,9 @@ class SelectedArtistViewModel(
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)
             }
         }
+    }
+
+    override fun onSearch(search: String) {
+        _searchQuery.value = search
     }
 }

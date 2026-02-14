@@ -171,6 +171,61 @@ internal class RoomMusicDataSourceImpl(
             albumId = albumId
         ).map { it.toMusic() }
 
+    override fun searchFromAlbum(
+        albumId: UUID,
+        search: String
+    ): Flow<List<Music>> =
+        appDatabase.musicDao.searchFromAlbum(
+            albumId = albumId,
+            search = search,
+        ).map { list ->
+            list.map { it.toMusic() }
+        }
+
+    override fun searchFromPlaylist(
+        playlistId: UUID,
+        search: String
+    ): Flow<List<Music>> =
+        appDatabase.musicDao.searchFromPlaylist(
+            playlistId = playlistId,
+            search = search,
+        ).map { list ->
+            list.map { it.toMusic() }
+        }
+
+    override fun searchFromArtist(
+        artistId: UUID,
+        search: String
+    ): Flow<List<Music>> =
+        appDatabase.musicDao.searchFromArtist(
+            artistId = artistId,
+            search = search,
+        ).map { list ->
+            list.map { it.toMusic() }
+        }
+
+    override fun searchFromFolder(
+        folder: String,
+        search: String
+    ): Flow<List<Music>> =
+        appDatabase.musicDao.searchFromFolder(
+            folder = folder,
+            search = search,
+        ).map { list ->
+            list.map { it.toMusic() }
+        }
+
+    override fun searchFromMonth(
+        month: String,
+        search: String
+    ): Flow<List<Music>> =
+        appDatabase.musicDao.searchFromMonth(
+            month = month,
+            search = search,
+        ).map { list ->
+            list.map { it.toMusic() }
+        }
+
     override suspend fun getAllMusicFromArtist(artistId: UUID): List<Music> =
         appDatabase.musicDao.getAllMusicFromArtist(artistId).map { it.toMusic() }
 

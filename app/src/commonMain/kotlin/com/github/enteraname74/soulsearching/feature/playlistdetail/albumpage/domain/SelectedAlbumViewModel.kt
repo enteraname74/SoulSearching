@@ -28,6 +28,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.pr
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,6 +36,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -57,7 +60,6 @@ class SelectedAlbumViewModel(
     MultiSelectionManager by multiSelectionManagerImpl,
     PlaylistDetailListener {
 
-
     val multiSelectionState = multiSelectionManagerImpl.state
         .stateIn(
             scope = viewModelScope,
@@ -78,12 +80,26 @@ class SelectedAlbumViewModel(
         .getAllPagedOfAlbum(albumId)
         .cachedIn(viewModelScope)
 
+    private var _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val searchResult: Flow<List<Music>> = _searchQuery.flatMapLatest { search ->
+        if (search.isNotBlank()) {
+            commonMusicUseCase.searchFromAlbum(
+                albumId = albumId,
+                search = search,
+            )
+        } else {
+            flowOf(emptyList())
+        }
+    }
+
     var state: StateFlow<SelectedAlbumState> =
         combine(
             commonAlbumUseCase.getAlbumPreview(albumId = albumId),
             commonMusicUseCase.getAlbumDuration(albumId),
+            searchResult,
             settings.getFlowOn(SoulSearchingSettingsKeys.Album.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW),
-        ) { albumPreview, duration, showTrackPosition ->
+        ) { albumPreview, duration, searchMusics, showTrackPosition ->
             when {
                 albumPreview == null -> SelectedAlbumState.Error
                 else -> SelectedAlbumState.Data(
@@ -91,6 +107,7 @@ class SelectedAlbumViewModel(
                         shouldShowTrackPosition = showTrackPosition,
                         musics = musics,
                         duration = duration,
+                        searchMusics = searchMusics,
                     ),
                 )
             }
@@ -224,5 +241,9 @@ class SelectedAlbumViewModel(
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)
             }
         }
+    }
+
+    override fun onSearch(search: String) {
+        _searchQuery.value = search
     }
 }

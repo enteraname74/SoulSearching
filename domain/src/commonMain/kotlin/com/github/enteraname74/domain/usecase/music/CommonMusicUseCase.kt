@@ -69,6 +69,51 @@ class CommonMusicUseCase(
     suspend fun getAllMusicFromAlbum(albumId: UUID) : List<Music> =
         musicRepository.getAllMusicFromAlbum(albumId)
 
+    fun searchFromAlbum(
+        albumId: UUID,
+        search: String,
+    ): Flow<List<Music>> =
+        musicRepository.searchFromAlbum(
+            albumId = albumId,
+            search = search,
+        )
+
+    fun searchFromPlaylist(
+        playlistId: UUID,
+        search: String
+    ): Flow<List<Music>> =
+        musicRepository.searchFromPlaylist(
+            playlistId = playlistId,
+            search = search,
+        )
+
+    fun searchFromArtist(
+        artistId: UUID,
+        search: String
+    ): Flow<List<Music>> =
+        musicRepository.searchFromArtist(
+            artistId = artistId,
+            search = search,
+        )
+
+    fun searchFromFolder(
+        folder: String,
+        search: String
+    ): Flow<List<Music>> =
+        musicRepository.searchFromFolder(
+            folder = folder,
+            search = search,
+        )
+
+    fun searchFromMonth(
+        month: String,
+        search: String
+    ): Flow<List<Music>> =
+        musicRepository.searchFromMonth(
+            month = month,
+            search = search,
+        )
+    
     fun getAlbumDuration(albumId: UUID): Flow<Duration> =
         musicRepository.getAlbumDuration(albumId)
 

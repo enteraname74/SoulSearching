@@ -57,6 +57,32 @@ interface MusicRepository {
      * Retrieves all musics of an Album.
      */
     suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music>
+
+    fun searchFromAlbum(
+        albumId: UUID,
+        search: String,
+    ): Flow<List<Music>>
+
+    fun searchFromPlaylist(
+        playlistId: UUID,
+        search: String,
+    ): Flow<List<Music>>
+
+    fun searchFromArtist(
+        artistId: UUID,
+        search: String,
+    ): Flow<List<Music>>
+
+    fun searchFromFolder(
+        folder: String,
+        search: String,
+    ): Flow<List<Music>>
+
+    fun searchFromMonth(
+        month: String,
+        search: String,
+    ): Flow<List<Music>>
+
     suspend fun getAllMusicFromArtist(artistId: UUID): List<Music>
     suspend fun getAllMusicFromPlaylist(playlistId: UUID): List<Music>
 

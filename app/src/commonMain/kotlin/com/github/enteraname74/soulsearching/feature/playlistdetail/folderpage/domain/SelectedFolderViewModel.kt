@@ -32,7 +32,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -73,18 +74,33 @@ class SelectedFolderViewModel(
         .getAllPagedByNameAscOfFolder(folderPath)
         .cachedIn(viewModelScope)
 
+    private var _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val searchResult: Flow<List<Music>> = _searchQuery.flatMapLatest { search ->
+        if (search.isNotBlank()) {
+            commonMusicUseCase.searchFromFolder(
+                folder = folderPath,
+                search = search,
+            )
+        } else {
+            flowOf(emptyList())
+        }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     var state: StateFlow<SelectedFolderState> =
         combine(
             commonMusicUseCase.getMusicFolderPreview(folder = folderPath),
-            commonMusicUseCase.getFolderMusicsDuration(folderPath)
-        ) { musicFolderPreview, duration ->
+            commonMusicUseCase.getFolderMusicsDuration(folderPath),
+            searchResult
+        ) { musicFolderPreview, duration, searchMusics ->
             when {
                 musicFolderPreview == null -> SelectedFolderState.Error
                 else -> SelectedFolderState.Data(
                     playlistDetail = musicFolderPreview.toPlaylistDetail(
                         musics = musics,
                         duration = duration,
+                        searchMusics = searchMusics,
                     )
                 )
             }
@@ -201,5 +217,9 @@ class SelectedFolderViewModel(
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)
             }
         }
+    }
+
+    override fun onSearch(search: String) {
+        _searchQuery.value = search
     }
 }

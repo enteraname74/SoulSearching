@@ -26,6 +26,7 @@ data class PlaylistDetail(
     val cover: Cover?,
     val musics: Flow<PagingData<Music>>,
     val duration: Duration,
+    val searchMusics: List<Music>,
     val musicItemLeadingSpec: (musicPosition: Int) -> MusicItemLeadingSpec,
 )
 
@@ -40,6 +41,7 @@ enum class PlaylistDetailType {
 fun PlaylistPreview.toPlaylistDetail(
     musics: Flow<PagingData<Music>>,
     duration: Duration,
+    searchMusics: List<Music>,
 ): PlaylistDetail =
     PlaylistDetail(
         id = this.id,
@@ -49,6 +51,7 @@ fun PlaylistPreview.toPlaylistDetail(
         cover = this.cover,
         musics = musics,
         duration = duration,
+        searchMusics = searchMusics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )
 
@@ -56,6 +59,7 @@ fun AlbumPreview.toPlaylistDetail(
     shouldShowTrackPosition: Boolean,
     musics: Flow<PagingData<Music>>,
     duration: Duration,
+    searchMusics: List<Music>,
 ): PlaylistDetail =
     PlaylistDetail(
         id = this.id,
@@ -65,6 +69,7 @@ fun AlbumPreview.toPlaylistDetail(
         cover = this.cover,
         musics = musics,
         duration = duration,
+        searchMusics = searchMusics,
         musicItemLeadingSpec = { musicPosition ->
             if (shouldShowTrackPosition) {
                 MusicItemLeadingSpec.Position(pos = musicPosition)
@@ -77,6 +82,7 @@ fun AlbumPreview.toPlaylistDetail(
 fun ArtistPreview.toPlaylistDetail(
     musics: Flow<PagingData<Music>>,
     duration: Duration,
+    searchMusics: List<Music>,
 ): PlaylistDetail =
     PlaylistDetail(
         id = this.id,
@@ -86,12 +92,14 @@ fun ArtistPreview.toPlaylistDetail(
         cover = this.cover,
         musics = musics,
         duration = duration,
+        searchMusics = searchMusics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )
 
 fun MonthMusicsPreview.toPlaylistDetail(
     musics: Flow<PagingData<Music>>,
     duration: Duration,
+    searchMusics: List<Music>,
 ): PlaylistDetail =
     PlaylistDetail(
         id = null,
@@ -101,12 +109,14 @@ fun MonthMusicsPreview.toPlaylistDetail(
         cover = this.cover,
         musics = musics,
         duration = duration,
+        searchMusics = searchMusics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )
 
 fun MusicFolderPreview.toPlaylistDetail(
     musics: Flow<PagingData<Music>>,
     duration: Duration,
+    searchMusics: List<Music>,
 ): PlaylistDetail =
     PlaylistDetail(
         id = null,
@@ -116,5 +126,6 @@ fun MusicFolderPreview.toPlaylistDetail(
         cover = this.cover,
         musics = musics,
         duration = duration,
+        searchMusics = searchMusics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )

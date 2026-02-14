@@ -25,8 +25,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchMusics(
-    searchText: String,
-    allMusics: List<Music>,
+    foundMusics: List<Music>,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
     onSelectedMusicForBottomSheet: (Music) -> Unit,
@@ -39,15 +38,7 @@ fun SearchMusics(
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
     LazyColumnCompat {
-        // TODO: Normalise with accents.
-        val foundedMusics = allMusics.filter {
-            it.name.lowercase().contains(searchText.lowercase())
-                    || it.artistsNames.lowercase().contains(searchText.lowercase())
-                    || it.album.albumName.lowercase().contains(searchText.lowercase())
-
-        }
-
-        if (foundedMusics.isNotEmpty()) {
+        if (foundMusics.isNotEmpty()) {
             stickyHeader(
                 key = SEARCH_MUSIC_STICKY_HEADER_KEY,
                 contentType = SEARCH_MUSIC_STICKY_HEADER_CONTENT_TYPE,
@@ -63,7 +54,7 @@ fun SearchMusics(
             items(
                 key = { it.musicId },
                 contentType = { SEARCH_MUSIC_CONTENT_TYPE },
-                items = foundedMusics,
+                items = foundMusics,
             ) { music ->
                 MusicItemComposable(
                     modifier = Modifier
@@ -73,7 +64,7 @@ fun SearchMusics(
                         coroutineScope.launch {
                             playbackManager.setCurrentPlaylistAndMusic(
                                 music = selectedMusic,
-                                musicList = foundedMusics as ArrayList<Music>,
+                                musicList = foundMusics,
                                 playlistId = null,
                                 isMainPlaylist = isMainPlaylist,
                                 isForcingNewPlaylist = true

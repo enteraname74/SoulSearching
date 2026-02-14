@@ -180,10 +180,13 @@ fun PlaylistScreen(
                     maxHeight = maxHeight,
                     focusRequester = searchBarFocusRequester
                 ) { searchText, focusManager ->
+
+                    LaunchedEffect(searchText) {
+                        playlistDetailListener.onSearch(searchText)
+                    }
+
                     SearchMusics(
-                        searchText = searchText,
-                        // TODO OPTIMIZATION: Handle all musics from VM
-                        allMusics = emptyList(),
+                        foundMusics = playlistDetail.searchMusics,
                         isMainPlaylist = false,
                         focusManager = focusManager,
                         onSelectedMusicForBottomSheet = onShowMusicBottomSheet,

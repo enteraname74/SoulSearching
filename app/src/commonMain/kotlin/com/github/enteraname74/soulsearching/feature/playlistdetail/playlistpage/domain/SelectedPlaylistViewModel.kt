@@ -66,16 +66,31 @@ class SelectedPlaylistViewModel(
         .getAllPagedByNameAscOfPlaylist(playlistId)
         .cachedIn(viewModelScope)
 
+    private var _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val searchResult: Flow<List<Music>> = _searchQuery.flatMapLatest { search ->
+        if (search.isNotBlank()) {
+            commonMusicUseCase.searchFromPlaylist(
+                playlistId = playlistId,
+                search = search,
+            )
+        } else {
+            flowOf(emptyList())
+        }
+    }
+
     var state = combine(
         commonMusicUseCase.getPlaylistDuration(playlistId),
-        commonPlaylistUseCase.getPlaylistPreview(playlistId)
-    ) { duration, playlistPreview ->
+        commonPlaylistUseCase.getPlaylistPreview(playlistId),
+        searchResult
+    ) { duration, playlistPreview, searchMusics ->
         when {
             playlistPreview == null -> SelectedPlaylistState.Error
             else -> SelectedPlaylistState.Data(
                 playlistDetail = playlistPreview.toPlaylistDetail(
                     musics = musics,
                     duration = duration,
+                    searchMusics = searchMusics,
                 ),
             )
         }
@@ -221,5 +236,9 @@ class SelectedPlaylistViewModel(
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)
             }
         }
+    }
+
+    override fun onSearch(search: String) {
+        _searchQuery.value = search
     }
 }
