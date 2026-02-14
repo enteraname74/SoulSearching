@@ -263,10 +263,6 @@ interface ArtistDao {
     )
     fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomArtistPreview>
 
-    @Transaction
-    @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
-    fun getAllArtistWithMusics(): Flow<List<RoomArtistWithMusics>>
-
     @Query("SELECT * FROM RoomArtist WHERE artistName = :artistName LIMIT 1")
     suspend fun getFromName(artistName: String): RoomArtist?
 
@@ -368,8 +364,45 @@ interface ArtistDao {
             LIMIT 11
         """
     )
-    fun getStatisticsData(): Flow<List<RoomArtistPreview>>
+    fun getArtistsWistMostMusics(): Flow<List<RoomArtistPreview>>
 
     @Query("UPDATE RoomArtist SET coverId = NULL")
     suspend fun cleanAllCovers()
+
+    @Transaction
+    @Query(
+        """
+            SELECT artist.artistId AS id, 
+            artist.artistName AS name, 
+            artist.coverFolderKey,
+            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
+            (
+                CASE WHEN artist.coverId IS NULL THEN 
+                    (
+                        SELECT music.coverId FROM RoomMusic AS music 
+                        INNER JOIN RoomMusicArtist AS musicArtist 
+                        ON music.musicId = musicArtist.musicId 
+                        AND artist.artistId = musicArtist.artistId 
+                        AND music.isHidden = 0 
+                        AND music.coverId IS NOT NULL 
+                        LIMIT 1
+                    )
+                ELSE artist.coverId END
+            ) AS coverId,
+            (
+                SELECT music.path FROM RoomMusic AS music 
+                INNER JOIN RoomMusicArtist AS musicArtist 
+                ON music.musicId = musicArtist.musicId 
+                AND artist.artistId = musicArtist.artistId 
+                AND music.isHidden = 0 
+                LIMIT 1
+            ) AS musicCoverPath,
+            artist.isInQuickAccess 
+            FROM RoomArtist AS artist 
+            WHERE nbPlayed >= 1 
+            ORDER BY nbPlayed DESC 
+            LIMIT 11
+        """
+    )
+    fun getMostListened(): Flow<List<RoomArtistPreview>>
 }

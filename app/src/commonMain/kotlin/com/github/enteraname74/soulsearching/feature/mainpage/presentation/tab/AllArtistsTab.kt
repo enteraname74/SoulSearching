@@ -13,7 +13,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Eleme
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageListPaged
 import java.util.UUID
 
 fun allArtistsTab(
@@ -27,7 +27,7 @@ fun allArtistsTab(
         val multiSelectionState: MultiSelectionState by mainPageViewModel.multiSelectionState.collectAsState()
 
         val artists = artistState.artists.collectAsLazyPagingItems()
-        MainPageList(
+        MainPageListPaged(
             list = artists,
             title = strings.artists,
             toggleSortDirection = {

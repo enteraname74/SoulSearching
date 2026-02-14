@@ -165,8 +165,8 @@ internal class RoomAlbumDataSourceImpl(
             artistId = artistId,
         )?.toAlbum()
 
-    override fun getStatisticsData(): Flow<List<AlbumPreview>> =
-        appDatabase.albumDao.getStatisticsData().map { list ->
+    override fun getMostListened(): Flow<List<AlbumPreview>> =
+        appDatabase.albumDao.getMostListened().map { list ->
             list.map { it.toAlbumPreview() }
         }
 

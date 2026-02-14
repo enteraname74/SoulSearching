@@ -79,7 +79,7 @@ fun <T> MainPageList(
 }
 
 @Composable
-fun <T : Any> MainPageList(
+fun <T : Any> MainPageListPaged(
     list: LazyPagingItems<T>,
     title: String,
     rightComposable: @Composable () -> Unit = {},

@@ -21,7 +21,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import java.util.*
+import java.util.UUID
 
 /**
  * Implementation of the ArtistDataSource with Room's DAO.
@@ -113,12 +113,6 @@ internal class RoomArtistDataSourceImpl(
             }
         }
 
-    override fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> {
-        return appDatabase.artistDao.getAllArtistWithMusics().map { list ->
-            list.map { it.toArtistWithMusics() }
-        }
-    }
-
     override suspend fun getFromName(artistName: String): Artist? {
         return appDatabase.artistDao.getFromName(
             artistName = artistName
@@ -155,12 +149,17 @@ internal class RoomArtistDataSourceImpl(
             artistName = artistName,
         )?.toArtistWithMusics()
 
-    override fun getStatisticsData(): Flow<List<ArtistPreview>> =
-        appDatabase.artistDao.getStatisticsData().map { list ->
+    override fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>> =
+        appDatabase.artistDao.getArtistsWistMostMusics().map { list ->
             list.map { it.toArtistPreview() }
         }
 
     override suspend fun cleanAllCovers() {
         appDatabase.artistDao.cleanAllCovers()
     }
+
+    override fun getMostListened(): Flow<List<ArtistPreview>> =
+        appDatabase.artistDao.getMostListened().map { list ->
+            list.map { it.toArtistPreview() }
+        }
 }

@@ -72,7 +72,7 @@ interface AlbumRepository {
         artistId: UUID,
     ): Album?
 
-    fun getStatisticsData(): Flow<List<AlbumPreview>>
+    fun getMostListened(): Flow<List<AlbumPreview>>
 
     suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics>
 }

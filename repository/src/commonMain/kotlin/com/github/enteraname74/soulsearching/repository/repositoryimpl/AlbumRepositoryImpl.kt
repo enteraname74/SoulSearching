@@ -94,8 +94,8 @@ class AlbumRepositoryImpl(
             artistId = artistId,
         )
 
-    override fun getStatisticsData(): Flow<List<AlbumPreview>> =
-        albumDataSource.getStatisticsData()
+    override fun getMostListened(): Flow<List<AlbumPreview>> =
+        albumDataSource.getMostListened()
 
     override suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics> =
         albumDataSource.getAlbumsOfArtistName(artistName)

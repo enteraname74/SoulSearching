@@ -351,7 +351,7 @@ interface AlbumDao {
             LIMIT 11
         """
     )
-    fun getStatisticsData(): Flow<List<RoomAlbumPreview>>
+    fun getMostListened(): Flow<List<RoomAlbumPreview>>
 
     @Transaction
     @Query(

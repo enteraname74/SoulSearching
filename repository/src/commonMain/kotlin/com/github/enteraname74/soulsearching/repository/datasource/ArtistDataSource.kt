@@ -43,11 +43,6 @@ interface ArtistDataSource {
     fun getAllPaged(): Flow<PagingData<ArtistPreview>>
 
     /**
-     * Retrieves a flow of all ArtistWithMusics, sorted by name asc.
-     */
-    fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>>
-
-    /**
      * Tries to find an artist from its name.
      */
     suspend fun getFromName(artistName: String): Artist?
@@ -71,7 +66,9 @@ interface ArtistDataSource {
         artistName: String
     ): ArtistWithMusics?
 
-    fun getStatisticsData(): Flow<List<ArtistPreview>>
+    fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>>
 
     suspend fun cleanAllCovers()
+
+    fun getMostListened(): Flow<List<ArtistPreview>>
 }

@@ -1,16 +1,22 @@
 package com.github.enteraname74.domain.di
 
-import com.github.enteraname74.domain.usecase.album.*
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
+import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
+import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
+import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
 import com.github.enteraname74.domain.usecase.month.GetMonthMusicListUseCase
-import com.github.enteraname74.domain.usecase.music.*
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
+import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
+import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
 import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.musicfolder.GetMusicFolderListUseCase
@@ -33,7 +39,6 @@ val domainModule = module {
     // Artist
     factoryOf(::CommonArtistUseCase)
     factoryOf(::DeleteArtistUseCase)
-    factoryOf(::GetAllArtistWithMusicsSortedUseCase)
 
     // Folder
     factoryOf(::CommonFolderUseCase)

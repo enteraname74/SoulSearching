@@ -13,7 +13,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Eleme
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageListPaged
 import java.util.UUID
 
 fun allAlbumsTab(
@@ -28,7 +28,7 @@ fun allAlbumsTab(
 
         val albums = albumState.albums.collectAsLazyPagingItems()
 
-        MainPageList(
+        MainPageListPaged(
             list = albums,
             title = strings.albums,
             setSortType = mainPageViewModel::setAlbumSortType,

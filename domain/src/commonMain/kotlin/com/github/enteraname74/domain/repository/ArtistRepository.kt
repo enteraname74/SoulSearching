@@ -4,7 +4,6 @@ import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -49,12 +48,6 @@ interface ArtistRepository {
     fun getAllPaged(): Flow<PagingData<ArtistPreview>>
 
     /**
-     * Retrieves a flow of all ArtistWithMusics.
-     */
-    @Deprecated("Avoid fetching all artist from DB because of performance issue")
-    fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>>
-
-    /**
      * Retrieves a flow of an ArtistWithMusics.
      */
     fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics?>
@@ -71,7 +64,9 @@ interface ArtistRepository {
         artistName: String
     ): ArtistWithMusics?
 
-    fun getStatisticsData(): Flow<List<ArtistPreview>>
+    fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>>
 
     suspend fun cleanAllCovers()
+
+    fun getMostListened(): Flow<List<ArtistPreview>>
 }

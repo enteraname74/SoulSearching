@@ -106,5 +106,5 @@ interface MusicDao {
             LIMIT 11
         """
     )
-    fun getStatisticsData(): Flow<List<RoomCompleteMusic>>
+    fun getMostListened(): Flow<List<RoomCompleteMusic>>
 }

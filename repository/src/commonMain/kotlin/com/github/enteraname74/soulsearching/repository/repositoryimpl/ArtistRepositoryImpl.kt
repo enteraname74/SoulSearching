@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 /**
  * Repository of an Artist.
@@ -69,13 +69,6 @@ class ArtistRepositoryImpl(
         artistDataSource.getAllPaged()
 
     /**
-     * Retrieves a flow of all ArtistWithMusics, sorted by name asc.
-     */
-    @Deprecated("Avoid fetching all artist from DB because of performance issue")
-    override fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> =
-        artistDataSource.getAllArtistWithMusics()
-
-    /**
      * Retrieves a flow of an ArtistWithMusics.
      */
     override fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics?> =
@@ -98,10 +91,13 @@ class ArtistRepositoryImpl(
             artistName = artistName,
         )
 
-    override fun getStatisticsData(): Flow<List<ArtistPreview>> =
-        artistDataSource.getStatisticsData()
+    override fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>> =
+        artistDataSource.getArtistsWistMostMusics()
 
     override suspend fun cleanAllCovers() {
         artistDataSource.cleanAllCovers()
     }
+
+    override fun getMostListened(): Flow<List<ArtistPreview>> =
+        artistDataSource.getMostListened()
 }

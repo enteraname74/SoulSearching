@@ -64,6 +64,6 @@ class CommonMusicUseCase(
     suspend fun getAllMusicPath(): List<String> =
         musicRepository.getAllMusicPath()
 
-    fun getStatisticsData(): Flow<List<Music>> =
-        musicRepository.getStatisticsData()
+    fun getMostListened(): Flow<List<Music>> =
+        musicRepository.getMostListened()
 }

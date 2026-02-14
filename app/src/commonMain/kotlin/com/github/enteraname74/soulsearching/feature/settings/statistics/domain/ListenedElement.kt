@@ -31,11 +31,11 @@ fun AlbumPreview.toListenedElement(): ListenedElement = ListenedElement(
     id = id,
 )
 
-fun ArtistWithMusics.toListenedElement(): ListenedElement = ListenedElement(
-    title = artist.artistName,
-    text = { strings.plays(artist.nbPlayed) },
+fun ArtistPreview.toListenedElement(): ListenedElement = ListenedElement(
+    title = name,
+    text = { strings.plays(totalMusics) },
     cover = cover,
-    id = artist.artistId,
+    id = id,
 )
 
 fun ArtistPreview.toMostSongsListenedElement(): ListenedElement = ListenedElement(

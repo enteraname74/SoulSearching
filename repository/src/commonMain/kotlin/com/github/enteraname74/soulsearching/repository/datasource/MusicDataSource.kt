@@ -52,5 +52,5 @@ interface MusicDataSource {
 
     suspend fun getAllMusicPath(): List<String>
 
-    fun getStatisticsData(): Flow<List<Music>>
+    fun getMostListened(): Flow<List<Music>>
 }
