@@ -56,7 +56,7 @@ fun AllMusicsComposable(
                 contentType = ALL_MUSICS_MONTH_STICKY_HEADER,
             ) {
                 MusicMonthsHorizontalList(
-                    months = musicState.monthMusics,
+                    months = musicState.monthMusicPreviews,
                     onMonthClicked = navigateToMonth,
                     onMonthLongClicked = {}
                 )

@@ -1,7 +1,7 @@
 package com.github.enteraname74.domain.model
 
-data class MonthMusics(
+data class MonthMusicsPreview(
     val month: String,
     val cover: Cover?,
-    val allMusicsSize: Int,
+    val totalMusics: Int,
 )

@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
 import androidx.paging.PagingData
+import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -53,4 +54,6 @@ interface MusicDataSource {
     suspend fun getAllMusicPath(): List<String>
 
     fun getMostListened(): Flow<List<Music>>
+
+    fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>>
 }

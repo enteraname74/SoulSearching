@@ -24,7 +24,6 @@ import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
-import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
@@ -110,7 +109,6 @@ class MainPageViewModel(
     private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
-    getAllMonthMusicUseCase: GetAllMonthMusicUseCase,
     getAllMusicFolderListUseCase: GetAllMusicFolderListUseCase,
     getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
 ) : ViewModel(), KoinComponent,
@@ -223,13 +221,13 @@ class MainPageViewModel(
 
     val allMusicsState: StateFlow<AllMusicsState> = combine(
         musicSortingInformation,
-        getAllMonthMusicUseCase(),
+        commonMusicUseCase.getAllMonthMusics(),
     ) { sortingInformation, allMonthMusics ->
         AllMusicsState(
             musics = _musics,
             sortType = sortingInformation.type,
             sortDirection = sortingInformation.direction,
-            monthMusics = allMonthMusics,
+            monthMusicPreviews = allMonthMusics,
         )
     }.stateIn(
         scope = viewModelScope.plus(Dispatchers.IO),

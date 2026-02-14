@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
+import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
@@ -68,4 +69,7 @@ class MusicRepositoryImpl(
 
     override fun getMostListened(): Flow<List<Music>> =
         musicDataSource.getMostListened()
+
+    override fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
+        musicDataSource.getAllMonthMusics()
 }

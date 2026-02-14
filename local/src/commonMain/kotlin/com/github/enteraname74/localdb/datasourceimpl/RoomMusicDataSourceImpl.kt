@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import androidx.room.useWriterConnection
+import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
@@ -160,5 +161,10 @@ internal class RoomMusicDataSourceImpl(
     override fun getMostListened(): Flow<List<Music>> =
         appDatabase.musicDao.getMostListened().map { list ->
             list.map { it.toMusic() }
+        }
+
+    override fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
+        appDatabase.musicDao.getAllMonthMusics().map { list ->
+            list.map { it.toMonthMusicsPreview() }
         }
 }

@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.usecase.music
 
 import androidx.paging.PagingData
+import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
@@ -66,4 +67,7 @@ class CommonMusicUseCase(
 
     fun getMostListened(): Flow<List<Music>> =
         musicRepository.getMostListened()
+
+    fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
+        musicRepository.getAllMonthMusics()
 }

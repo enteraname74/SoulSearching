@@ -9,7 +9,6 @@ import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
-import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
 import com.github.enteraname74.domain.usecase.month.GetMonthMusicListUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
@@ -49,7 +48,6 @@ val domainModule = module {
     factoryOf(::CommonLyricsUseCase)
 
     // MonthMusic
-    factoryOf(::GetAllMonthMusicUseCase)
     factoryOf(::GetMonthMusicListUseCase)
 
     // Music

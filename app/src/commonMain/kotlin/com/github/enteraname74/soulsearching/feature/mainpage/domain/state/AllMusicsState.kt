@@ -12,5 +12,5 @@ data class AllMusicsState(
     val musics: Flow<PagingData<Music>> = flowOf(),
     var sortType: SortType = SortType.DEFAULT,
     var sortDirection: SortDirection = SortDirection.DEFAULT,
-    var monthMusics: List<MonthMusics> = listOf(),
+    var monthMusicPreviews: List<MonthMusicsPreview> = listOf(),
 )

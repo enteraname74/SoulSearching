@@ -352,7 +352,7 @@ interface AlbumDao {
     @Transaction
     @Query(
         """
-            SELECT * FROM RoomAlbum AS album 
+            SELECT album.* FROM RoomAlbum AS album 
             INNER JOIN RoomArtist AS artist 
             ON album.artistId = artist.artistId 
             AND artist.artistName = :artistName
