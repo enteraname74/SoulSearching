@@ -60,6 +60,7 @@ fun SoulMenuExpand(
                 horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
             ) {
                 SoulMenuBody(
+                    modifier = Modifier.fillMaxWidth(),
                     title = title,
                     text = subTitle,
                     titleColor = textColor,

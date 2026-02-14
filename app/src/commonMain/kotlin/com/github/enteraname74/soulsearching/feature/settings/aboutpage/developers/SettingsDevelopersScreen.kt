@@ -1,6 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.settings.aboutpage.developers
 
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalUriHandler
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
@@ -42,7 +44,8 @@ private fun SettingsDevelopersScreenView(
                     uriHandler.openUri(
                         uri = developer.link,
                     )
-                }
+                },
+                trailIcon = Icons.AutoMirrored.Rounded.OpenInNew,
             )
         }
     }

@@ -119,7 +119,7 @@ private fun SettingsAdvancedComposable(
             SoulMenuElement(
                 title = strings.splitMultipleArtistsTitle,
                 subTitle = strings.splitMultipleArtistsText,
-                icon = Icons.Rounded.Groups,
+                leadIcon = Icons.Rounded.Groups,
                 onClick = { onAction(SettingsAdvancedAction.ToMultipleArtists) },
             )
         }
@@ -127,7 +127,7 @@ private fun SettingsAdvancedComposable(
             SoulMenuElement(
                 title = strings.artistCoverMethodTitle,
                 subTitle = strings.artistCoverMethodText,
-                icon = Icons.Rounded.Image,
+                leadIcon = Icons.Rounded.Image,
                 onClick = { onAction(SettingsAdvancedAction.ToArtistCoverMethod) },
             )
         }

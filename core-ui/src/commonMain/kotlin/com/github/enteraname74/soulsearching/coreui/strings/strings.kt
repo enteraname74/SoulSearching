@@ -270,6 +270,8 @@ interface Strings {
     val developersTitle: String
     val developersText: String
     val versionNameTitle: String
+    val projectSiteTitle: String
+    val projectSiteText: String
     val versionNameActionText: String get() = "Soul Searching - Average White Band - 1976"
 
     val noNewMusics: String
@@ -308,7 +310,6 @@ interface Strings {
     val elementDetailPlay: String
     val elementDetailShuffle: String
     val elementDetailTitles: String
-
     val and: String
 
     /**

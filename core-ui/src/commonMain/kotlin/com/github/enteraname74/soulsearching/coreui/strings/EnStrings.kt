@@ -264,7 +264,8 @@ object EnStrings : Strings {
     override val developersTitle = "Developers"
     override val developersText = "The developers behind the Soul Searching project"
     override val versionNameTitle = "Application's version name"
-
+    override val projectSiteTitle = "Project's website and source code"
+    override val projectSiteText = "Source code, submit a suggestion"
     override val noNewMusics = "No new songs to add!"
     override val savingNewMusics = "Saving new songs…"
 

@@ -5,7 +5,10 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.NewReleases
+import androidx.compose.material.icons.rounded.OpenInBrowser
+import androidx.compose.material.icons.rounded.OpenInNew
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -13,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -121,6 +125,7 @@ private fun Screen(
     }
 
     val coroutineScope = rememberCoroutineScope()
+    val uriHandler = LocalUriHandler.current
 
     SettingPage(
         navigateBack = navigateBack,
@@ -146,6 +151,16 @@ private fun Screen(
         }
         item {
             SoulMenuElement(
+                title = strings.projectSiteTitle,
+                subTitle = strings.projectSiteText,
+                onClick = {
+                    uriHandler.openUri(PROJECT_SITE)
+                },
+                trailIcon = Icons.AutoMirrored.Rounded.OpenInNew,
+            )
+        }
+        item {
+            SoulMenuElement(
                 title = strings.versionNameTitle,
                 subTitle = AppVersion.versionName,
                 onClick = {
@@ -164,3 +179,4 @@ private fun Screen(
     }
 }
 
+private const val PROJECT_SITE = "https://github.com/enteraname74/SoulSearching"

@@ -54,7 +54,7 @@ private fun DataScreen(
             SoulMenuElement(
                 title = strings.extractedColorTitle,
                 subTitle = strings.extractedColorText,
-                icon = Icons.Rounded.Colorize,
+                leadIcon = Icons.Rounded.Colorize,
                 onClick = navigateToSeed,
             )
         }

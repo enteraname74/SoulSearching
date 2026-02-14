@@ -55,7 +55,7 @@ fun SettingsScreenView(
             SoulMenuElement(
                 title = strings.manageMusicsTitle,
                 subTitle = strings.manageMusicsText,
-                icon = Icons.Rounded.MusicNote,
+                leadIcon = Icons.Rounded.MusicNote,
                 onClick = navigateToManageMusics
             )
         }
@@ -63,7 +63,7 @@ fun SettingsScreenView(
             SoulMenuElement(
                 title = strings.colorThemeTitle,
                 subTitle = strings.colorThemeText,
-                icon = Icons.Rounded.Palette,
+                leadIcon = Icons.Rounded.Palette,
                 onClick = navigateToColorTheme
             )
         }
@@ -71,7 +71,7 @@ fun SettingsScreenView(
             SoulMenuElement(
                 title = strings.personalizationTitle,
                 subTitle = strings.personalizationText,
-                icon = Icons.Rounded.Edit,
+                leadIcon = Icons.Rounded.Edit,
                 onClick = navigateToPersonalisation
             )
         }
@@ -79,7 +79,7 @@ fun SettingsScreenView(
             SoulMenuElement(
                 title = strings.statisticsTitle,
                 subTitle = strings.statisticsText,
-                icon = Icons.Rounded.BarChart,
+                leadIcon = Icons.Rounded.BarChart,
                 onClick = navigateToStatistics
             )
         }
@@ -87,7 +87,7 @@ fun SettingsScreenView(
             SoulMenuElement(
                 title = strings.advancedSettingsTitle,
                 subTitle = strings.advancedSettingsText,
-                icon = Icons.Rounded.Handyman,
+                leadIcon = Icons.Rounded.Handyman,
                 onClick = navigateToAdvanced,
             )
         }
@@ -95,7 +95,7 @@ fun SettingsScreenView(
             SoulMenuElement(
                 title = strings.aboutTitle,
                 subTitle = strings.aboutText,
-                icon = Icons.Rounded.Info,
+                leadIcon = Icons.Rounded.Info,
                 onClick = navigateToAbout,
                 isBadged = shouldShowNewVersionPin,
             )

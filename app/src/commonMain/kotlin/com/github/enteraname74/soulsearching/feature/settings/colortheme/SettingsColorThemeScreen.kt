@@ -62,7 +62,7 @@ fun SettingsColorThemeScreenView(
             SoulMenuElement(
                 title = strings.themeSelectionTitle,
                 subTitle = strings.themeSelectionText,
-                icon = Icons.Rounded.FormatPaint,
+                leadIcon = Icons.Rounded.FormatPaint,
                 onClick = navigateToThemeSelection,
                 padding = PaddingValues(0.dp)
             )
