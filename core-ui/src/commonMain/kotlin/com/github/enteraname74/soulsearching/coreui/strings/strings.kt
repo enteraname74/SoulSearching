@@ -269,6 +269,10 @@ interface Strings {
     val leadDeveloper: String
     val developersTitle: String
     val developersText: String
+
+    val changelogTitle: String
+    val changelogText: String
+    val changelogUpdateRequired: String
     val versionNameTitle: String
     val versionNameActionText: String get() = "Soul Searching - Average White Band - 1976"
 

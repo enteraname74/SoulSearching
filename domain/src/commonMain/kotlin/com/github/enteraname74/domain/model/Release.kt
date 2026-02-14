@@ -10,4 +10,5 @@ data class Release(
     val name: String,
     val tag: String,
     val githubUrl: String,
+    val changelog: String?,
 )

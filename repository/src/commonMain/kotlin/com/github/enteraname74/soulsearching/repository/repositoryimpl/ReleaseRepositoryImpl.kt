@@ -37,13 +37,6 @@ class ReleaseRepositoryImpl(
         )
     }
 
-    override suspend fun setLatestViewedReleaseTag(tag: String) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Release.LATEST_VIEWED_RELEASE.key,
-            value = tag,
-        )
-    }
-
     override suspend fun deleteLatestRelease() {
         settings.delete(
             element = SoulSearchingSettingsKeys.Release.LATEST_VIEWED_RELEASE,

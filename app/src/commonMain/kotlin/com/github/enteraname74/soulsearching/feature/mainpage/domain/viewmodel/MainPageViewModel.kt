@@ -371,8 +371,6 @@ class MainPageViewModel(
             settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED).collectLatest { isEnabled ->
                 if (isEnabled) {
                     commonReleaseUseCase.fetchLatest()
-                } else {
-                    commonReleaseUseCase.deleteLatest()
                 }
             }
         }
