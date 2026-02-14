@@ -23,7 +23,8 @@ internal class PlaybackListManager(
     private val playerMusicRepository: PlayerMusicRepository,
     private val commonMusicUseCase: CommonMusicUseCase,
 ) {
-    private val _state: MutableStateFlow<PlaybackListState> = MutableStateFlow(PlaybackListState.NoData)
+    private val _state: MutableStateFlow<PlaybackListState> =
+        MutableStateFlow(PlaybackListState.NoData)
     val state: StateFlow<PlaybackListState> = _state.asStateFlow()
 
     private var updateMusicNbPlayedJob: Job? = null
@@ -332,15 +333,16 @@ internal class PlaybackListManager(
      * We can also check with a isMainPlaylist value (the main playlist, with all songs, does not have
      * a UUID).
      */
-    private suspend fun isSamePlaylist(isMainPlaylist: Boolean, playlistId: UUID?): Boolean = withDataState {
-        return@withDataState if (playlistId == null && this.playlistId == null) {
-            isMainPlaylist == this.isMainPlaylist
-        } else if (playlistId != null && this.playlistId != null) {
-            (playlistId.compareTo(this.playlistId) == 0) && (isMainPlaylist == this.isMainPlaylist)
-        } else {
-            false
-        }
-    } ?: false
+    private suspend fun isSamePlaylist(isMainPlaylist: Boolean, playlistId: UUID?): Boolean =
+        withDataState {
+            return@withDataState if (playlistId == null && this.playlistId == null) {
+                isMainPlaylist == this.isMainPlaylist
+            } else if (playlistId != null && this.playlistId != null) {
+                (playlistId.compareTo(this.playlistId) == 0) && (isMainPlaylist == this.isMainPlaylist)
+            } else {
+                false
+            }
+        } ?: false
 
     /**
      * Remove songs from the current playlist.
@@ -579,14 +581,11 @@ internal class PlaybackListManager(
         _state.value = PlaybackListState.NoData
     }
 
-    suspend fun playSoulMix(musicLists: List<List<Music>>) {
-        val totalByList: Int = settings.get(SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST)
+    suspend fun playSoulMix() {
+        val totalByFolder: Int =
+            settings.get(SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST)
 
-        val musicList: List<Music> = buildList {
-            musicLists.forEach { initialList ->
-                addAll(initialList.shuffled().getFirstsOrMax(total = totalByList))
-            }
-        }.shuffled()
+        val musicList: List<Music> = commonMusicUseCase.getSoulMixMusics(totalByFolder)
 
         if (musicList.isEmpty()) return
 

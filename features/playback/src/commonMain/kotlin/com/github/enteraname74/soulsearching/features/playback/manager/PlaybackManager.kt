@@ -348,8 +348,8 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
         playbackListManager.playShuffle(musicList = musicList)
     }
 
-    suspend fun playSoulMix(musicLists: List<List<Music>>) {
-        playbackListManager.playSoulMix(musicLists = musicLists)
+    suspend fun playSoulMix() {
+        playbackListManager.playSoulMix()
     }
 
     suspend fun setCurrentPlaylistAndMusic(

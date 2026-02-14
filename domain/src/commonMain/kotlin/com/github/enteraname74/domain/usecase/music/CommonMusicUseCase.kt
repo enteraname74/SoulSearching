@@ -3,6 +3,7 @@ package com.github.enteraname74.domain.usecase.music
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicFolderPreview
 import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -70,4 +71,10 @@ class CommonMusicUseCase(
 
     fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
         musicRepository.getAllMonthMusics()
+
+    fun getAllMusicFolders(): Flow<List<MusicFolderPreview>> =
+        musicRepository.getAllMusicFolders()
+
+    suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music> =
+        musicRepository.getSoulMixMusics(totalPerFolder)
 }

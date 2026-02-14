@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicFolderPreview
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
 import kotlinx.coroutines.flow.Flow
@@ -72,4 +73,10 @@ class MusicRepositoryImpl(
 
     override fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
         musicDataSource.getAllMonthMusics()
+
+    override fun getAllMusicFolders(): Flow<List<MusicFolderPreview>> =
+        musicDataSource.getAllMusicFolders()
+
+    override suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music> =
+        musicDataSource.getSoulMixMusics(totalPerFolder)
 }

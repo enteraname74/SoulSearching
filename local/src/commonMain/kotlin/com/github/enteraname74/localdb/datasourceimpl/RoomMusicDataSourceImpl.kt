@@ -7,6 +7,7 @@ import androidx.paging.map
 import androidx.room.useWriterConnection
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicFolderPreview
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
@@ -108,39 +109,42 @@ internal class RoomMusicDataSourceImpl(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getAllPaged(): Flow<PagingData<Music>> =
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY).flatMapLatest { direction ->
-            settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY).flatMapLatest { type ->
-                val sortDirection = SortDirection.from(direction) ?: SortDirection.DEFAULT
-                val sortType = SortType.from(type) ?: SortType.DEFAULT
+        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY)
+            .flatMapLatest { direction ->
+                settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY)
+                    .flatMapLatest { type ->
+                        val sortDirection = SortDirection.from(direction) ?: SortDirection.DEFAULT
+                        val sortType = SortType.from(type) ?: SortType.DEFAULT
 
-                Pager(
-                    config = PagingConfig(
-                        pageSize = PagingUtils.PAGE_SIZE,
-                        enablePlaceholders = false,
-                    ),
-                    pagingSourceFactory = {
-                        when(sortDirection) {
-                            SortDirection.ASC -> {
-                                when (sortType) {
-                                    SortType.NAME -> appDatabase.musicDao.getAllPagedByNameAsc()
-                                    SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateAsc()
-                                    SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedAsc()
+                        Pager(
+                            config = PagingConfig(
+                                pageSize = PagingUtils.PAGE_SIZE,
+                                enablePlaceholders = false,
+                            ),
+                            pagingSourceFactory = {
+                                when (sortDirection) {
+                                    SortDirection.ASC -> {
+                                        when (sortType) {
+                                            SortType.NAME -> appDatabase.musicDao.getAllPagedByNameAsc()
+                                            SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateAsc()
+                                            SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedAsc()
+                                        }
+                                    }
+
+                                    SortDirection.DESC -> {
+                                        when (sortType) {
+                                            SortType.NAME -> appDatabase.musicDao.getAllPagedByNameDesc()
+                                            SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateDesc()
+                                            SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedDesc()
+                                        }
+                                    }
                                 }
                             }
-                            SortDirection.DESC -> {
-                                when (sortType) {
-                                    SortType.NAME -> appDatabase.musicDao.getAllPagedByNameDesc()
-                                    SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateDesc()
-                                    SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedDesc()
-                                }
-                            }
+                        ).flow.map { pagingData ->
+                            pagingData.map { it.toMusic() }
                         }
                     }
-                ).flow.map { pagingData ->
-                    pagingData.map { it.toMusic() }
-                }
             }
-        }
 
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
         appDatabase.musicDao.getAllMusicFromAlbum(
@@ -167,4 +171,24 @@ internal class RoomMusicDataSourceImpl(
         appDatabase.musicDao.getAllMonthMusics().map { list ->
             list.map { it.toMonthMusicsPreview() }
         }
+
+    override fun getAllMusicFolders(): Flow<List<MusicFolderPreview>> =
+        appDatabase.musicDao.getAllMusicFoldersPreview().map { list ->
+            list.map { it.toMusicFolderPreview() }
+        }
+
+    override suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music> {
+        val folders: List<String> = appDatabase.musicDao.getAllMusicFolders()
+
+        return buildList {
+            folders.forEach { folder ->
+                addAll(
+                    appDatabase.musicDao.getSoulMixMusics(
+                        totalPerFolder = totalPerFolder,
+                        folder = folder,
+                    ).map { it.toMusic() }
+                )
+            }
+        }.shuffled()
+    }
 }

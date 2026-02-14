@@ -26,7 +26,6 @@ import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
-import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
@@ -109,7 +108,6 @@ class MainPageViewModel(
     private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
-    getAllMusicFolderListUseCase: GetAllMusicFolderListUseCase,
     getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
 ) : ViewModel(), KoinComponent,
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
@@ -235,11 +233,10 @@ class MainPageViewModel(
         initialValue = AllMusicsState(),
     )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val allMusicFoldersState: StateFlow<AllMusicFoldersState> =
-        getAllMusicFolderListUseCase().mapLatest { allMusicFolders ->
+        commonMusicUseCase.getAllMusicFolders().map { allMusicFolders ->
             AllMusicFoldersState(
-                allMusicFolders = allMusicFolders.sortedBy { it.name },
+                allMusicFolders = allMusicFolders,
             )
         }.stateIn(
             scope = viewModelScope.plus(Dispatchers.IO),
@@ -594,13 +591,14 @@ class MainPageViewModel(
 
                 ElementEnum.FOLDERS -> add(
                     allMusicFoldersTab(
-                        mainPageViewModel = this@MainPageViewModel,
+                        state = allMusicFoldersState,
                         navigateToFolder = { folderPath ->
                             _navigationState.value = MainPageNavigationState.ToFolder(
                                 folderPath = folderPath,
                             )
                         },
                         showSoulMixDialog = ::showSoulMixDialog,
+                        onSoulMixClicked = ::onSoulMixClicked
                     )
                 )
             }
@@ -732,6 +730,13 @@ class MainPageViewModel(
                 .getWithMusics(playlistPreview.id).firstOrNull() ?: return@launch
 
             showPlaylistBottomSheet(playlistWithMusics)
+        }
+    }
+
+    fun onSoulMixClicked() {
+        viewModelScope.launch {
+            playbackManager.playSoulMix()
+            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
         }
     }
 }

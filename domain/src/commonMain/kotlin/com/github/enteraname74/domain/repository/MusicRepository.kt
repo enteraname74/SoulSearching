@@ -3,6 +3,7 @@ package com.github.enteraname74.domain.repository
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicFolderPreview
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -55,4 +56,8 @@ interface MusicRepository {
     fun getMostListened(): Flow<List<Music>>
 
     fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>>
+
+    fun getAllMusicFolders(): Flow<List<MusicFolderPreview>>
+
+    suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music>
 }

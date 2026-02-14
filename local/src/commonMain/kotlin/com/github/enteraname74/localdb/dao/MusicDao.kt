@@ -9,6 +9,7 @@ import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.RoomCompleteMusic
 import com.github.enteraname74.localdb.model.RoomMonthMusicPreview
 import com.github.enteraname74.localdb.model.RoomMusic
+import com.github.enteraname74.localdb.model.RoomMusicFolderPreview
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -98,6 +99,9 @@ interface MusicDao {
     @Query("SELECT path FROM RoomMusic")
     suspend fun getAllMusicPath(): List<String>
 
+    @Query("SELECT DISTINCT folder FROM RoomMusic")
+    suspend fun getAllMusicFolders(): List<String>
+
     @Transaction
     @Query(
         """
@@ -139,4 +143,49 @@ interface MusicDao {
         """
     )
     fun getAllMonthMusics(): Flow<List<RoomMonthMusicPreview>>
+
+    @Transaction
+    @Query(
+        """
+            SELECT 
+                folderMusic.folder,
+                COUNT(*) AS totalMusics, 
+                (
+                    SELECT music.coverId FROM RoomMusic AS music 
+                    WHERE music.isHidden = 0 
+                    AND music.coverId IS NOT NULL 
+                    AND music.folder = folderMusic.folder 
+                    ORDER BY
+                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                    addedDate DESC 
+                    LIMIT 1
+                ) AS coverId,
+                (
+                    SELECT music.path FROM RoomMusic AS music 
+                    WHERE music.isHidden = 0 
+                    AND music.folder = folderMusic.folder 
+                    ORDER BY addedDate DESC 
+                    LIMIT 1 
+                ) AS musicCoverPath 
+            FROM RoomMusic As folderMusic
+            WHERE isHidden = 0 
+            GROUP BY folderMusic.folder
+            ORDER BY totalMusics DESC
+        """
+    )
+    fun getAllMusicFoldersPreview(): Flow<List<RoomMusicFolderPreview>>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM ROOMMUSIC 
+            WHERE folder = :folder 
+            AND isHidden = 0 
+            LIMIT :totalPerFolder
+        """
+    )
+    suspend fun getSoulMixMusics(
+        totalPerFolder: Int,
+        folder: String,
+    ): List<RoomCompleteMusic>
 }
