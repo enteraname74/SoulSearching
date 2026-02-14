@@ -3,6 +3,7 @@ package com.github.enteraname74.localdb.datasourceimpl
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.PagingSource
 import androidx.paging.map
 import androidx.room.useWriterConnection
 import com.github.enteraname74.domain.model.MonthMusicsPreview
@@ -13,7 +14,9 @@ import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.localdb.AppDatabase
+import com.github.enteraname74.localdb.dao.MusicDao
 import com.github.enteraname74.localdb.ext.toRoomMusicArtists
+import com.github.enteraname74.localdb.model.RoomCompleteMusic
 import com.github.enteraname74.localdb.model.toRoomAlbum
 import com.github.enteraname74.localdb.model.toRoomArtist
 import com.github.enteraname74.localdb.model.toRoomMusic
@@ -146,6 +149,21 @@ internal class RoomMusicDataSourceImpl(
                     }
             }
 
+    override fun getAllPagedByDateAscOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
+        withPaging { getAllPagedByDateAscOfAlbum(albumId) }
+
+    override fun getAllPagedByDateAscOfFolder(folder: String): Flow<PagingData<Music>> =
+        withPaging { getAllPagedByDateAscOfFolder(folder) }
+
+    override fun getAllPagedByDateAscOfMonth(month: String): Flow<PagingData<Music>> =
+        withPaging { getAllPagedByDateAscOfMonth(month) }
+
+    override fun getAllPagedByDateAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>> =
+        withPaging { getAllPagedByDateAscOfPlaylist(playlistId) }
+
+    override fun getAllPagedByDateAscOfArtist(artistId: UUID): Flow<PagingData<Music>> =
+        withPaging { getAllPagedByDateAscOfArtist(artistId) }
+
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
         appDatabase.musicDao.getAllMusicFromAlbum(
             albumId = albumId
@@ -191,4 +209,21 @@ internal class RoomMusicDataSourceImpl(
             }
         }.shuffled()
     }
+
+    private fun withPaging(
+        source: MusicDao.() -> PagingSource<Int, RoomCompleteMusic>,
+    ): Flow<PagingData<Music>> =
+        Pager(
+            config = PagingConfig(
+                pageSize = PagingUtils.PAGE_SIZE,
+                enablePlaceholders = false,
+            ),
+            pagingSourceFactory = {
+                with(appDatabase.musicDao) {
+                    source()
+                }
+            }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toMusic() }
+        }
 }

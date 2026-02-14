@@ -52,6 +52,21 @@ class MusicRepositoryImpl(
     override fun getAllPaged(): Flow<PagingData<Music>> =
         musicDataSource.getAllPaged()
 
+    override fun getAllPagedByDateAscOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
+        musicDataSource.getAllPagedByDateAscOfAlbum(albumId)
+
+    override fun getAllPagedByDateAscOfFolder(folder: String): Flow<PagingData<Music>> =
+        musicDataSource.getAllPagedByDateAscOfFolder(folder)
+
+    override fun getAllPagedByDateAscOfMonth(month: String): Flow<PagingData<Music>> =
+        musicDataSource.getAllPagedByDateAscOfMonth(month)
+
+    override fun getAllPagedByDateAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>> =
+        musicDataSource.getAllPagedByDateAscOfPlaylist(playlistId)
+
+    override fun getAllPagedByDateAscOfArtist(artistId: UUID): Flow<PagingData<Music>> =
+        musicDataSource.getAllPagedByDateAscOfArtist(artistId)
+
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
         musicDataSource.getAllMusicFromAlbum(
             albumId = albumId

@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.d
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.month.GetMonthMusicListUseCase
@@ -56,12 +58,16 @@ class SelectedMonthViewModel(
             initialValue = emptyList(),
         )
 
+    private val musics: Flow<PagingData<Music>> = commonMusicUseCase
+        .getAllPagedByDateAscOfMonth(month)
+        .cachedIn(viewModelScope)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     var state = getMonthMusicListUseCase(month = month).mapLatest { monthMusicList ->
         when {
             monthMusicList == null -> SelectedMonthState.Error
             else -> SelectedMonthState.Data(
-                playlistDetail = monthMusicList.toPlaylistDetail(),
+                playlistDetail = monthMusicList.toPlaylistDetail(musics),
             )
         }
     }.stateIn(

@@ -42,6 +42,16 @@ interface MusicRepository {
 
     fun getAllPaged(): Flow<PagingData<Music>>
 
+    fun getAllPagedByDateAscOfAlbum(albumId: UUID): Flow<PagingData<Music>>
+
+    fun getAllPagedByDateAscOfFolder(folder: String): Flow<PagingData<Music>>
+
+    fun getAllPagedByDateAscOfMonth(month: String): Flow<PagingData<Music>>
+
+    fun getAllPagedByDateAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>>
+
+    fun getAllPagedByDateAscOfArtist(artistId: UUID): Flow<PagingData<Music>>
+
     /**
      * Retrieves all musics of an Album.
      */

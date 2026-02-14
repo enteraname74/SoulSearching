@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
 import androidx.paging.PagingData
+import androidx.paging.PagingSource
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicFolderPreview
@@ -42,6 +43,16 @@ interface MusicDataSource {
     fun getAllFromQuickAccess(): Flow<List<Music>>
 
     fun getAllPaged(): Flow<PagingData<Music>>
+
+    fun getAllPagedByDateAscOfAlbum(albumId: UUID): Flow<PagingData<Music>>
+
+    fun getAllPagedByDateAscOfFolder(folder: String): Flow<PagingData<Music>>
+
+    fun getAllPagedByDateAscOfMonth(month: String): Flow<PagingData<Music>>
+
+    fun getAllPagedByDateAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>>
+
+    fun getAllPagedByDateAscOfArtist(artistId: UUID): Flow<PagingData<Music>>
 
     /**
      * Retrieves all musics of an Album.

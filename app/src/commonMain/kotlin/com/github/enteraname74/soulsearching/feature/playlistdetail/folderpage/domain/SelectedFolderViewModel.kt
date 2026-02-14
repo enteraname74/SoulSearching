@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
@@ -55,13 +57,16 @@ class SelectedFolderViewModel(
             initialValue = emptyList(),
         )
 
+    private val musics: Flow<PagingData<Music>> = commonMusicUseCase
+        .getAllPagedByDateAscOfFolder(folderPath)
+        .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var state: StateFlow<SelectedFolderState> = getMusicFolderListUseCase(path = folderPath).mapLatest { musicFolderList ->
         when {
             musicFolderList == null -> SelectedFolderState.Error
             else -> SelectedFolderState.Data(
-                playlistDetail = musicFolderList.toPlaylistDetail()
+                playlistDetail = musicFolderList.toPlaylistDetail(musics)
             )
         }
     }.stateIn(

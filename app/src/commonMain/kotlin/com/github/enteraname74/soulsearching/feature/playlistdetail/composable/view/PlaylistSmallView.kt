@@ -5,28 +5,29 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
@@ -37,7 +38,6 @@ import com.github.enteraname74.soulsearching.coreui.ext.blurCompat
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
@@ -46,15 +46,13 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationActio
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidth
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.DurationIndication
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PageHeader
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPanel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.launch
+import java.util.UUID
 import kotlin.math.max
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -69,17 +67,15 @@ fun PlaylistSmallView(
     onShowMusicBottomSheet: (Music) -> Unit,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
-    playerViewManager: PlayerViewManager = injectElement(),
     multiSelectionState: MultiSelectionState,
     onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
-    var topBarHeight: Int by rememberSaveable { mutableStateOf(0) }
-    var pageHeaderSize: Int by rememberSaveable { mutableStateOf(0) }
+    var topBarHeight: Int by rememberSaveable { mutableIntStateOf(0) }
+    var pageHeaderSize: Int by rememberSaveable { mutableIntStateOf(0) }
 
     val backgroundAlpha: Float by remember {
         derivedStateOf {
@@ -99,28 +95,42 @@ fun PlaylistSmallView(
 
     val topBarHeightDp = topBarHeight.toDp()
 
-    val panelTopPadding: Dp =
-        if (lazyListState.firstVisibleItemIndex >= 1) {
-            topBarHeightDp
-        } else if (topBarHeight == 0) {
-            0.dp
-        } else {
-            topBarHeightDp
-                .times(lazyListState.firstVisibleItemScrollOffset.toFloat() / pageHeaderSize)
-                .coerceIn(0.dp, topBarHeightDp)
+    val panelTopPadding: Dp by remember {
+        derivedStateOf {
+            if (lazyListState.firstVisibleItemIndex >= 1) {
+                topBarHeightDp
+            } else if (topBarHeight == 0) {
+                0.dp
+            } else {
+                topBarHeightDp
+                    .times(lazyListState.firstVisibleItemScrollOffset.toFloat() / pageHeaderSize)
+                    .coerceIn(0.dp, topBarHeightDp)
+            }
         }
-
-    val backgroundColor: Color = if (lazyListState.firstVisibleItemIndex >= 1) {
-        SoulSearchingColorTheme.colorScheme.primary
-    } else {
-        Color.Transparent
     }
 
-    val topBarTitle: String? = if (lazyListState.firstVisibleItemIndex >= 1) {
-        playlistDetail.title
-    } else {
-        null
+
+    val backgroundColor: @Composable () -> Color by remember {
+        derivedStateOf {
+            if (lazyListState.firstVisibleItemIndex >= 1) {
+                { SoulSearchingColorTheme.colorScheme.primary }
+            } else {
+                { Color.Transparent }
+            }
+        }
     }
+
+    val topBarTitle: String? by remember {
+        derivedStateOf {
+            if (lazyListState.firstVisibleItemIndex >= 1) {
+                playlistDetail.title
+            } else {
+                null
+            }
+        }
+    }
+
+    val musics = playlistDetail.musics.collectAsLazyPagingItems()
 
     BlurredBackground(
         cover = playlistDetail.cover,
@@ -139,7 +149,7 @@ fun PlaylistSmallView(
                 override val onClick: () -> Unit = searchAction
             },
             colors = SoulTopBarDefaults.primary(
-                containerColor = backgroundColor,
+                containerColor = backgroundColor(),
             )
         )
         LazyColumnCompat(
@@ -166,7 +176,7 @@ fun PlaylistSmallView(
                             top = panelTopPadding,
                             bottom = UiConstants.Spacing.mediumPlus,
                         ),
-                    containerColor = backgroundColor,
+                    containerColor = backgroundColor(),
                     editAction = playlistDetailListener.onEdit,
                     shuffleAction = {
                         playlistDetailListener.onUpdateNbPlayed()
@@ -179,35 +189,39 @@ fun PlaylistSmallView(
                 optionalContent()
             }
             items(
-                count = playlistDetail.musics.size,
-                key = { playlistDetail.musics[it].musicId },
+                count = musics.itemCount,
+                key = { musics[it]?.musicId ?: UUID.randomUUID() },
                 contentType = { PLAYLIST_MUSIC_CONTENT_TYPE }
             ) { pos ->
-                val elt = playlistDetail.musics[pos]
-                MusicItemComposable(
-                    music = elt,
-                    onClick = { music ->
-                        playlistDetailListener.onUpdateNbPlayed()
-                        coroutineScope.launch {
-                            playbackManager.setCurrentPlaylistAndMusic(
-                                music = music,
-                                musicList = playlistDetail.musics,
-                                playlistId = playlistDetail.id,
-                                isMainPlaylist = false
-                            )
-                            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-                        }
-                    },
-                    onLongClick = { onLongSelectOnMusic(elt) },
-                    onMoreClicked = { onShowMusicBottomSheet(elt) },
-                    textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
-                    isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
-                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
-                    leadingSpec = playlistDetail.musicItemLeadingSpec(pos)
-                )
+                val music = musics[pos]
+                music?.let {
+                    MusicItemComposable(
+                        music = music,
+                        onClick = {
+                            // TODO OPTIMIZATION: Move to listener
+//                            playlistDetailListener.onUpdateNbPlayed()
+//                            coroutineScope.launch {
+//                                playbackManager.setCurrentPlaylistAndMusic(
+//                                    music = music,
+//                                    musicList = playlistDetail.musics,
+//                                    playlistId = playlistDetail.id,
+//                                    isMainPlaylist = false
+//                                )
+//                                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+//                            }
+                        },
+                        onLongClick = { onLongSelectOnMusic(music) },
+                        onMoreClicked = { onShowMusicBottomSheet(music) },
+                        textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                        isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
+                        isSelected = multiSelectionState.selectedIds.contains(music.musicId),
+                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                        leadingSpec = playlistDetail.musicItemLeadingSpec(pos)
+                    )
+                }
             }
-            item { DurationIndication(musics = playlistDetail.musics) }
+            // TODO OPTIMIZATION: Fetch duration from another way.
+            item { DurationIndication(musics = emptyList()) }
             item { SoulPlayerSpacer() }
         }
     }

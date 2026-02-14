@@ -35,6 +35,21 @@ class CommonMusicUseCase(
     fun getAllPaged(): Flow<PagingData<Music>> =
         musicRepository.getAllPaged()
 
+    fun getAllPagedByDateAscOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
+        musicRepository.getAllPagedByDateAscOfAlbum(albumId)
+
+    fun getAllPagedByDateAscOfFolder(folder: String): Flow<PagingData<Music>> =
+        musicRepository.getAllPagedByDateAscOfFolder(folder)
+
+    fun getAllPagedByDateAscOfMonth(month: String): Flow<PagingData<Music>> =
+        musicRepository.getAllPagedByDateAscOfMonth(month)
+
+    fun getAllPagedByDateAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>> =
+        musicRepository.getAllPagedByDateAscOfPlaylist(playlistId)
+
+    fun getAllPagedByDateAscOfArtist(artistId: UUID): Flow<PagingData<Music>> =
+        musicRepository.getAllPagedByDateAscOfArtist(artistId)
+
     fun getFromId(musicId: UUID): Flow<Music?> =
         musicRepository.getFromId(musicId = musicId)
 

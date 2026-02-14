@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpag
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
@@ -54,12 +56,16 @@ class SelectedPlaylistViewModel(
 
     private val playlistId: UUID = destination.selectedPlaylistId
 
+    private val musics: Flow<PagingData<Music>> = commonMusicUseCase
+        .getAllPagedByDateAscOfPlaylist(playlistId)
+        .cachedIn(viewModelScope)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     var state = commonPlaylistUseCase.getWithMusics(playlistId).mapLatest { playlistWithMusics ->
         when {
             playlistWithMusics == null -> SelectedPlaylistState.Error
             else -> SelectedPlaylistState.Data(
-                playlistDetail = playlistWithMusics.toPlaylistDetail(),
+                playlistDetail = playlistWithMusics.toPlaylistDetail(musics),
                 selectedPlaylist = playlistWithMusics.playlist,
             )
         }

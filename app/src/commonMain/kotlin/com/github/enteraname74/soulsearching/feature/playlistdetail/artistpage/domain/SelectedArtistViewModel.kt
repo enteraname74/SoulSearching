@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
@@ -62,6 +64,10 @@ class SelectedArtistViewModel(
             initialValue = emptyList(),
         )
 
+    private val musics: Flow<PagingData<Music>> = commonMusicUseCase
+        .getAllPagedByDateAscOfArtist(artistId)
+        .cachedIn(viewModelScope)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     var state: StateFlow<SelectedArtistState> = combine(
         commonAlbumUseCase.getAlbumsWithMusicsOfArtist(artistId = artistId),
@@ -70,7 +76,7 @@ class SelectedArtistViewModel(
         when {
             artistWithMusics == null -> SelectedArtistState.Error
             else -> SelectedArtistState.Data(
-                playlistDetail = artistWithMusics.toPlaylistDetail(),
+                playlistDetail = artistWithMusics.toPlaylistDetail(musics),
                 artistAlbums = albums,
             )
         }
