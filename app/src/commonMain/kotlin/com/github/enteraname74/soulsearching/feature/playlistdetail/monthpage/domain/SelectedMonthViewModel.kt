@@ -18,10 +18,13 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.presentation.SelectedMonthDestination
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,6 +42,8 @@ class SelectedMonthViewModel(
     private val commonMusicUseCase: CommonMusicUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
+    private val playbackManager: PlaybackManager,
+    private val playerViewManager: PlayerViewManager,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
     destination: SelectedMonthDestination,
 ) : ViewModel(),
@@ -64,7 +69,7 @@ class SelectedMonthViewModel(
         )
 
     private val musics: Flow<PagingData<Music>> = commonMusicUseCase
-        .getAllPagedByDateAscOfMonth(month)
+        .getAllPagedByNameAscOfMonth(month)
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -153,5 +158,34 @@ class SelectedMonthViewModel(
 
     fun navigateBack() {
         _navigationState.value = SelectedMonthNavigationState.Back
+    }
+
+    override fun onShuffleClicked() {
+        viewModelScope.launch {
+            val musics: List<Music> = commonMusicUseCase.getAllMusicFromMonth(month)
+
+            if (musics.isNotEmpty()) {
+                onUpdateNbPlayed()
+                playbackManager.playShuffle(musicList = musics)
+                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            }
+        }
+    }
+
+    override fun onPlayClicked(music: Music?) {
+        viewModelScope.launch {
+            val musics: List<Music> = commonMusicUseCase.getAllMusicFromMonth(month)
+
+            if (musics.isNotEmpty()) {
+                onUpdateNbPlayed()
+                playbackManager.setCurrentPlaylistAndMusic(
+                    music = music ?:  musics.first(),
+                    musicList = musics,
+                    playlistId = null,
+                    isMainPlaylist = false
+                )
+                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            }
+        }
     }
 }

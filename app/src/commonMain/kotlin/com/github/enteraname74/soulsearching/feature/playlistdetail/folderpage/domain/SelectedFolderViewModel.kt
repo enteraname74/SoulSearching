@@ -18,9 +18,12 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.presentation.SelectedFolderDestination
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,6 +41,8 @@ class SelectedFolderViewModel(
     private val commonMusicUseCase: CommonMusicUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
+    private val playbackManager: PlaybackManager,
+    private val playerViewManager: PlayerViewManager,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
     destination: SelectedFolderDestination,
 ) : ViewModel(),
@@ -64,7 +69,7 @@ class SelectedFolderViewModel(
             )
 
     private val musics: Flow<PagingData<Music>> = commonMusicUseCase
-        .getAllPagedByDateAscOfFolder(folderPath)
+        .getAllPagedByNameAscOfFolder(folderPath)
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -160,5 +165,34 @@ class SelectedFolderViewModel(
 
     fun navigateBack() {
         _navigationState.value = SelectedFolderNavigationState.Back
+    }
+
+    override fun onShuffleClicked() {
+        viewModelScope.launch {
+            val musics: List<Music> = commonMusicUseCase.getAllMusicFromFolder(folderPath)
+
+            if (musics.isNotEmpty()) {
+                onUpdateNbPlayed()
+                playbackManager.playShuffle(musicList = musics)
+                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            }
+        }
+    }
+
+    override fun onPlayClicked(music: Music?) {
+        viewModelScope.launch {
+            val musics: List<Music> = commonMusicUseCase.getAllMusicFromFolder(folderPath)
+
+            if (musics.isNotEmpty()) {
+                onUpdateNbPlayed()
+                playbackManager.setCurrentPlaylistAndMusic(
+                    music = music ?: musics.first(),
+                    musicList = musics,
+                    playlistId = null,
+                    isMainPlaylist = false
+                )
+                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            }
+        }
     }
 }

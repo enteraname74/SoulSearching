@@ -52,25 +52,37 @@ class MusicRepositoryImpl(
     override fun getAllPaged(): Flow<PagingData<Music>> =
         musicDataSource.getAllPaged()
 
-    override fun getAllPagedByDateAscOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
-        musicDataSource.getAllPagedByDateAscOfAlbum(albumId)
+    override fun getAllPagedOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
+        musicDataSource.getAllPagedOfAlbum(albumId)
 
-    override fun getAllPagedByDateAscOfFolder(folder: String): Flow<PagingData<Music>> =
-        musicDataSource.getAllPagedByDateAscOfFolder(folder)
+    override fun getAllPagedByNameAscOfFolder(folder: String): Flow<PagingData<Music>> =
+        musicDataSource.getAllPagedByNameAscOfFolder(folder)
 
-    override fun getAllPagedByDateAscOfMonth(month: String): Flow<PagingData<Music>> =
-        musicDataSource.getAllPagedByDateAscOfMonth(month)
+    override fun getAllPagedByNameAscOfMonth(month: String): Flow<PagingData<Music>> =
+        musicDataSource.getAllPagedByNameAscOfMonth(month)
 
-    override fun getAllPagedByDateAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>> =
-        musicDataSource.getAllPagedByDateAscOfPlaylist(playlistId)
+    override fun getAllPagedByNameAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>> =
+        musicDataSource.getAllPagedByNameAscOfPlaylist(playlistId)
 
-    override fun getAllPagedByDateAscOfArtist(artistId: UUID): Flow<PagingData<Music>> =
-        musicDataSource.getAllPagedByDateAscOfArtist(artistId)
+    override fun getAllPagedByNameAscOfArtist(artistId: UUID): Flow<PagingData<Music>> =
+        musicDataSource.getAllPagedByNameAscOfArtist(artistId)
 
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
         musicDataSource.getAllMusicFromAlbum(
             albumId = albumId
         )
+
+    override suspend fun getAllMusicFromArtist(artistId: UUID): List<Music> =
+        musicDataSource.getAllMusicFromArtist(artistId)
+
+    override suspend fun getAllMusicFromPlaylist(playlistId: UUID): List<Music> =
+        musicDataSource.getAllMusicFromPlaylist(playlistId)
+
+    override suspend fun getAllMusicFromMonth(month: String): List<Music> =
+        musicDataSource.getAllMusicFromMonth(month)
+
+    override suspend fun getAllMusicFromFolder(folder: String): List<Music> =
+        musicDataSource.getAllMusicFromFolder(folder)
 
     override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
         musicDataSource.updateMusicsAlbum(newAlbumId, legacyAlbumId)

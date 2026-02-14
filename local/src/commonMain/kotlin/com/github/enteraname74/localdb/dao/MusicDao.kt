@@ -76,10 +76,13 @@ interface MusicDao {
             SELECT * FROM RoomMusic 
             WHERE isHidden = 0 
             AND albumId = :albumId
-            ORDER BY addedDate ASC
+            ORDER BY 
+            CASE WHEN albumPosition IS NULL THEN 1 ELSE 0 END, 
+            albumPosition,
+            name
         """
     )
-    fun getAllPagedByDateAscOfAlbum(albumId: UUID): PagingSource<Int, RoomCompleteMusic>
+    fun getAllPagedOfAlbum(albumId: UUID): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
     @Query(
@@ -87,10 +90,10 @@ interface MusicDao {
             SELECT * FROM RoomMusic 
             WHERE isHidden = 0 
             AND folder = :folder
-            ORDER BY addedDate ASC
+            ORDER BY name ASC
         """
     )
-    fun getAllPagedByDateAscOfFolder(folder: String): PagingSource<Int, RoomCompleteMusic>
+    fun getAllPagedByNameAscOfFolder(folder: String): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
     @Query(
@@ -98,10 +101,10 @@ interface MusicDao {
             SELECT * FROM RoomMusic 
             WHERE isHidden = 0 
             AND strftime('%m/%Y', addedDate) = :month
-            ORDER BY addedDate ASC
+            ORDER BY name ASC
         """
     )
-    fun getAllPagedByDateAscOfMonth(month: String): PagingSource<Int, RoomCompleteMusic>
+    fun getAllPagedByNameAscOfMonth(month: String): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
     @Query(
@@ -111,10 +114,10 @@ interface MusicDao {
             ON music.musicId = musicPlaylist.musicId 
             AND musicPlaylist.playlistId = :playlistId 
             AND music.isHidden = 0 
-            ORDER BY addedDate ASC
+            ORDER BY name ASC
         """
     )
-    fun getAllPagedByDateAscOfPlaylist(playlistId: UUID): PagingSource<Int, RoomCompleteMusic>
+    fun getAllPagedByNameAscOfPlaylist(playlistId: UUID): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
     @Query(
@@ -124,10 +127,10 @@ interface MusicDao {
             ON music.musicId = musicArtist.musicId 
             AND musicArtist.artistId = :artistId 
             AND music.isHidden = 0 
-            ORDER BY addedDate ASC
+            ORDER BY name ASC
         """
     )
-    fun getAllPagedByDateAscOfArtist(artistId: UUID): PagingSource<Int, RoomCompleteMusic>
+    fun getAllPagedByNameAscOfArtist(artistId: UUID): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate DESC")
@@ -146,8 +149,66 @@ interface MusicDao {
     suspend fun getAllFromId(ids: List<UUID>): List<RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE albumId = :albumId AND RoomMusic.isHidden = 0")
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND albumId = :albumId
+            ORDER BY 
+            CASE WHEN albumPosition IS NULL THEN 1 ELSE 0 END, 
+            albumPosition,
+            name
+        """
+    )
     suspend fun getAllMusicFromAlbum(albumId : UUID) : List<RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            INNER JOIN RoomMusicArtist as musicArtist
+            ON music.musicId = musicArtist.musicId 
+            AND musicArtist.artistId = :artistId 
+            AND music.isHidden = 0 
+            ORDER BY name ASC
+        """
+    )
+    suspend fun getAllMusicFromArtist(artistId : UUID) : List<RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            INNER JOIN RoomMusicPlaylist as musicPlaylist
+            ON music.musicId = musicPlaylist.musicId 
+            AND musicPlaylist.playlistId = :playlistId 
+            AND music.isHidden = 0 
+            ORDER BY name ASC
+        """
+    )
+    suspend fun getAllMusicFromPlaylist(playlistId : UUID) : List<RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND strftime('%m/%Y', addedDate) = :month
+            ORDER BY name ASC
+        """
+    )
+    suspend fun getAllMusicFromMonth(month: String) : List<RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND folder = :folder
+            ORDER BY name ASC
+        """
+    )
+    suspend fun getAllMusicFromFolder(folder : String) : List<RoomCompleteMusic>
 
     @Query("UPDATE RoomMusic SET albumId = :newAlbumId WHERE albumId = :legacyAlbumId")
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)

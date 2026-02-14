@@ -149,25 +149,37 @@ internal class RoomMusicDataSourceImpl(
                     }
             }
 
-    override fun getAllPagedByDateAscOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
-        withPaging { getAllPagedByDateAscOfAlbum(albumId) }
+    override fun getAllPagedOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
+        withPaging { getAllPagedOfAlbum(albumId) }
 
-    override fun getAllPagedByDateAscOfFolder(folder: String): Flow<PagingData<Music>> =
-        withPaging { getAllPagedByDateAscOfFolder(folder) }
+    override fun getAllPagedByNameAscOfFolder(folder: String): Flow<PagingData<Music>> =
+        withPaging { getAllPagedByNameAscOfFolder(folder) }
 
-    override fun getAllPagedByDateAscOfMonth(month: String): Flow<PagingData<Music>> =
-        withPaging { getAllPagedByDateAscOfMonth(month) }
+    override fun getAllPagedByNameAscOfMonth(month: String): Flow<PagingData<Music>> =
+        withPaging { getAllPagedByNameAscOfMonth(month) }
 
-    override fun getAllPagedByDateAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>> =
-        withPaging { getAllPagedByDateAscOfPlaylist(playlistId) }
+    override fun getAllPagedByNameAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>> =
+        withPaging { getAllPagedByNameAscOfPlaylist(playlistId) }
 
-    override fun getAllPagedByDateAscOfArtist(artistId: UUID): Flow<PagingData<Music>> =
-        withPaging { getAllPagedByDateAscOfArtist(artistId) }
+    override fun getAllPagedByNameAscOfArtist(artistId: UUID): Flow<PagingData<Music>> =
+        withPaging { getAllPagedByNameAscOfArtist(artistId) }
 
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
         appDatabase.musicDao.getAllMusicFromAlbum(
             albumId = albumId
         ).map { it.toMusic() }
+
+    override suspend fun getAllMusicFromArtist(artistId: UUID): List<Music> =
+        appDatabase.musicDao.getAllMusicFromArtist(artistId).map { it.toMusic() }
+
+    override suspend fun getAllMusicFromPlaylist(playlistId: UUID): List<Music> =
+        appDatabase.musicDao.getAllMusicFromPlaylist(playlistId).map { it.toMusic() }
+
+    override suspend fun getAllMusicFromMonth(month: String): List<Music> =
+        appDatabase.musicDao.getAllMusicFromMonth(month).map { it.toMusic() }
+
+    override suspend fun getAllMusicFromFolder(folder: String): List<Music> =
+        appDatabase.musicDao.getAllMusicFromFolder(folder).map { it.toMusic() }
 
     override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
         appDatabase.musicDao.updateMusicsAlbum(newAlbumId, legacyAlbumId)

@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
-import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
@@ -48,7 +47,6 @@ import com.github.enteraname74.soulsearching.feature.search.SearchView
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.PlaylistDetailCover
 import com.github.enteraname74.soulsearching.theme.orDefault
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -94,33 +92,6 @@ fun PlaylistScreen(
         navigateBack()
     }
 
-    val shuffleAction = {
-        // TODO OPTIMIZATION: Call from VM
-//        if (playlistDetail.musics.isNotEmpty()) {
-//            playlistDetailListener.onUpdateNbPlayed()
-//            coroutineScope.launch {
-//                playbackManager.playShuffle(musicList = playlistDetail.musics)
-//                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-//            }
-//        }
-    }
-
-    val playAction = {
-        // TODO OPTIMIZATION: Call from VM
-//        if (playlistDetail.musics.isNotEmpty()) {
-//            playlistDetailListener.onUpdateNbPlayed()
-//            coroutineScope.launch {
-//                playbackManager.setCurrentPlaylistAndMusic(
-//                    music = playlistDetail.musics.first(),
-//                    musicList = playlistDetail.musics,
-//                    playlistId = playlistDetail.id,
-//                    isMainPlaylist = false
-//                )
-//                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-//            }
-//        }
-    }
-
     val playlistPalette: SoulSearchingPalette? by colorThemeManager.playlistsColorTheme.collectAsState()
 
     CompositionLocalProvider(
@@ -163,8 +134,6 @@ fun PlaylistScreen(
                     WindowSize.Small -> {
                         PlaylistSmallView(
                             navigateBack = navigateBack,
-                            playAction = playAction,
-                            shuffleAction = shuffleAction,
                             searchAction = searchAction,
                             onShowMusicBottomSheet = onShowMusicBottomSheet,
                             playlistDetail = playlistDetail,
@@ -180,8 +149,6 @@ fun PlaylistScreen(
                         if (PlaylistViewUiUtils.canShowColumnLayout()) {
                             PlaylistLargeView(
                                 navigateBack = navigateBack,
-                                shuffleAction = shuffleAction,
-                                playAction = playAction,
                                 searchAction = searchAction,
                                 onShowMusicBottomSheet = onShowMusicBottomSheet,
                                 playlistDetail = playlistDetail,
@@ -194,8 +161,6 @@ fun PlaylistScreen(
                         } else {
                             PlaylistRowView(
                                 navigateBack = navigateBack,
-                                playAction = playAction,
-                                shuffleAction = shuffleAction,
                                 searchAction = searchAction,
                                 onShowMusicBottomSheet = onShowMusicBottomSheet,
                                 playlistDetail = playlistDetail,

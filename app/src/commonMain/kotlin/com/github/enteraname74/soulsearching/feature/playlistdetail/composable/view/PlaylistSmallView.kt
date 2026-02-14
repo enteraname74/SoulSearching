@@ -59,8 +59,6 @@ fun PlaylistSmallView(
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
     navigateBack: () -> Unit,
-    playAction: () -> Unit,
-    shuffleAction: () -> Unit,
     searchAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
@@ -166,9 +164,9 @@ fun PlaylistSmallView(
                     editAction = playlistDetailListener.onEdit,
                     shuffleAction = {
                         playlistDetailListener.onUpdateNbPlayed()
-                        shuffleAction()
+                        playlistDetailListener.onShuffleClicked()
                     },
-                    playAction = playAction,
+                    playAction = playlistDetailListener::onPlayClicked,
                 )
             }
             item {
@@ -183,19 +181,7 @@ fun PlaylistSmallView(
                 music?.let {
                     MusicItemComposable(
                         music = music,
-                        onClick = {
-                            // TODO OPTIMIZATION: Move to listener
-//                            playlistDetailListener.onUpdateNbPlayed()
-//                            coroutineScope.launch {
-//                                playbackManager.setCurrentPlaylistAndMusic(
-//                                    music = music,
-//                                    musicList = playlistDetail.musics,
-//                                    playlistId = playlistDetail.id,
-//                                    isMainPlaylist = false
-//                                )
-//                                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-//                            }
-                        },
+                        onClick = playlistDetailListener::onPlayClicked,
                         onLongClick = { onLongSelectOnMusic(music) },
                         onMoreClicked = { onShowMusicBottomSheet(music) },
                         textColor = SoulSearchingColorTheme.colorScheme.onPrimary,

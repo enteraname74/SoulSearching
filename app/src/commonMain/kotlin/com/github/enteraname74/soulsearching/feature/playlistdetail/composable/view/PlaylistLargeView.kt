@@ -77,8 +77,6 @@ fun PlaylistLargeView(
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
     navigateBack: () -> Unit,
-    playAction: () -> Unit,
-    shuffleAction: () -> Unit,
     searchAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
@@ -115,8 +113,6 @@ fun PlaylistLargeView(
                         },
                     playlistDetail = playlistDetail,
                     onCoverLoaded = onCoverLoaded,
-                    shuffleAction = shuffleAction,
-                    playAction = playAction,
                     searchAction = searchAction,
                     playlistDetailListener = playlistDetailListener,
                     navigateBack = navigateBack,
@@ -142,19 +138,7 @@ fun PlaylistLargeView(
                         .animateItem()
                         .padding(horizontal = UiConstants.Spacing.huge),
                     music = music,
-                    onClick = {
-                        // TODO OPTIMIZATION: Move to listener
-//                    playlistDetailListener.onUpdateNbPlayed()
-//                    coroutineScope.launch {
-//                        playbackManager.setCurrentPlaylistAndMusic(
-//                            music = music,
-//                            musicList = playlistDetail.musics,
-//                            playlistId = playlistDetail.id,
-//                            isMainPlaylist = false
-//                        )
-//                        playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-//                    }
-                    },
+                    onClick = playlistDetailListener::onPlayClicked,
                     onLongClick = { onLongSelectOnMusic(music) },
                     onMoreClicked = { onShowMusicBottomSheet(music) },
                     textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -179,9 +163,7 @@ private fun Header(
     navigateBack: () -> Unit,
     playlistDetail: PlaylistDetail,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
-    shuffleAction: () -> Unit,
     searchAction: () -> Unit,
-    playAction: () -> Unit,
     playlistDetailListener: PlaylistDetailListener,
     modifier: Modifier = Modifier,
 ) {
@@ -251,27 +233,23 @@ private fun Header(
                         fontSize = PLAYLIST_TITLE_SIZE,
                         lineHeight = PLAYLIST_TITLE_LINE_HEIGHT,
                     )
-                    playlistDetail.subTitle?.let {
-                        Text(
-                            modifier = Modifier.clickableWithHandCursor {
-                                playlistDetailListener.onSubtitleClicked()
-                            },
-                            color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                            text = it,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 15.sp
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.clickableWithHandCursor {
+                            playlistDetailListener.onSubtitleClicked()
+                        },
+                        color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                        text = playlistDetail.subTitle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 15.sp
+                    )
                     Actions(
                         modifier = Modifier
                             .padding(
                                 top = UiConstants.Spacing.medium,
                             ),
                         playlistDetailListener = playlistDetailListener,
-                        shuffleAction = shuffleAction,
-                        playAction = playAction,
                     )
                 }
             }
@@ -284,8 +262,6 @@ private fun Header(
 private fun Actions(
     modifier: Modifier = Modifier,
     playlistDetailListener: PlaylistDetailListener,
-    shuffleAction: () -> Unit,
-    playAction: () -> Unit,
 ) {
     FlowRow(
         modifier = modifier,
@@ -295,7 +271,7 @@ private fun Actions(
         Button(
             title = strings.elementDetailPlay,
             icon = Icons.Rounded.PlayArrow,
-            action = playAction,
+            action = playlistDetailListener::onPlayClicked,
             colors = SoulButtonDefaults.colors(
                 contentColor = SoulSearchingColorTheme.colorScheme.secondary,
                 containerColor = SoulSearchingColorTheme.colorScheme.onSecondary,
@@ -304,7 +280,7 @@ private fun Actions(
         Button(
             title = strings.elementDetailShuffle,
             icon = Icons.Rounded.Shuffle,
-            action = shuffleAction,
+            action = playlistDetailListener::onShuffleClicked,
         )
         playlistDetailListener.onEdit?.let {
             Button(

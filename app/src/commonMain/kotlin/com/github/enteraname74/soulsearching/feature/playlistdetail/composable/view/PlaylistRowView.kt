@@ -54,9 +54,7 @@ import java.util.UUID
 @Composable
 fun PlaylistRowView(
     navigateBack: () -> Unit,
-    shuffleAction: () -> Unit,
     searchAction: () -> Unit,
-    playAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
     playlistDetail: PlaylistDetail,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
@@ -90,8 +88,6 @@ fun PlaylistRowView(
         )
         Content(
             modifier = Modifier.fillMaxSize(),
-            shuffleAction = shuffleAction,
-            playAction = playAction,
             onShowMusicBottomSheet = onShowMusicBottomSheet,
             playlistDetail = playlistDetail,
             playlistDetailListener = playlistDetailListener,
@@ -107,8 +103,6 @@ fun PlaylistRowView(
 @Composable
 private fun Content(
     topBarHeight: Dp,
-    shuffleAction: () -> Unit,
-    playAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
@@ -152,8 +146,8 @@ private fun Content(
         ) {
             PlaylistPanel(
                 editAction = playlistDetailListener.onEdit,
-                shuffleAction = shuffleAction,
-                playAction = playAction,
+                shuffleAction = playlistDetailListener::onShuffleClicked,
+                playAction = playlistDetailListener::onPlayClicked,
             )
             LazyColumnCompat {
                 item {
@@ -171,19 +165,7 @@ private fun Content(
                             modifier = Modifier
                                 .animateItem(),
                             music = music,
-                            onClick = {
-                                // TODO OPTIMIZATION: Move to listener
-//                                playlistDetailListener.onUpdateNbPlayed()
-//                                coroutineScope.launch {
-//                                    playbackManager.setCurrentPlaylistAndMusic(
-//                                        music = music,
-//                                        musicList = playlistDetail.musics,
-//                                        playlistId = playlistDetail.id,
-//                                        isMainPlaylist = false,
-//                                    )
-//                                    playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-//                                }
-                            },
+                            onClick = playlistDetailListener::onPlayClicked,
                             onLongClick = { onLongSelectOnMusic(music) },
                             onMoreClicked = { onShowMusicBottomSheet(music) },
                             isPlayedMusic = currentPlayedSong?.musicId == music.musicId,

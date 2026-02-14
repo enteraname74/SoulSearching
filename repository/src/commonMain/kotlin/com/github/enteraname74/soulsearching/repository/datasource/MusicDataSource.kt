@@ -43,20 +43,28 @@ interface MusicDataSource {
 
     fun getAllPaged(): Flow<PagingData<Music>>
 
-    fun getAllPagedByDateAscOfAlbum(albumId: UUID): Flow<PagingData<Music>>
+    fun getAllPagedOfAlbum(albumId: UUID): Flow<PagingData<Music>>
 
-    fun getAllPagedByDateAscOfFolder(folder: String): Flow<PagingData<Music>>
+    fun getAllPagedByNameAscOfFolder(folder: String): Flow<PagingData<Music>>
 
-    fun getAllPagedByDateAscOfMonth(month: String): Flow<PagingData<Music>>
+    fun getAllPagedByNameAscOfMonth(month: String): Flow<PagingData<Music>>
 
-    fun getAllPagedByDateAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>>
+    fun getAllPagedByNameAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>>
 
-    fun getAllPagedByDateAscOfArtist(artistId: UUID): Flow<PagingData<Music>>
+    fun getAllPagedByNameAscOfArtist(artistId: UUID): Flow<PagingData<Music>>
 
     /**
      * Retrieves all musics of an Album.
      */
     suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music>
+
+    suspend fun getAllMusicFromArtist(artistId: UUID): List<Music>
+
+    suspend fun getAllMusicFromPlaylist(playlistId: UUID): List<Music>
+
+    suspend fun getAllMusicFromMonth(month: String) : List<Music>
+
+    suspend fun getAllMusicFromFolder(folder: String) : List<Music>
 
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
 

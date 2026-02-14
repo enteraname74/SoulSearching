@@ -35,23 +35,38 @@ class CommonMusicUseCase(
     fun getAllPaged(): Flow<PagingData<Music>> =
         musicRepository.getAllPaged()
 
-    fun getAllPagedByDateAscOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
-        musicRepository.getAllPagedByDateAscOfAlbum(albumId)
+    fun getAllPagedOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
+        musicRepository.getAllPagedOfAlbum(albumId)
 
-    fun getAllPagedByDateAscOfFolder(folder: String): Flow<PagingData<Music>> =
-        musicRepository.getAllPagedByDateAscOfFolder(folder)
+    fun getAllPagedByNameAscOfFolder(folder: String): Flow<PagingData<Music>> =
+        musicRepository.getAllPagedByNameAscOfFolder(folder)
 
-    fun getAllPagedByDateAscOfMonth(month: String): Flow<PagingData<Music>> =
-        musicRepository.getAllPagedByDateAscOfMonth(month)
+    fun getAllPagedByNameAscOfMonth(month: String): Flow<PagingData<Music>> =
+        musicRepository.getAllPagedByNameAscOfMonth(month)
 
-    fun getAllPagedByDateAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>> =
-        musicRepository.getAllPagedByDateAscOfPlaylist(playlistId)
+    fun getAllPagedByNameAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>> =
+        musicRepository.getAllPagedByNameAscOfPlaylist(playlistId)
 
-    fun getAllPagedByDateAscOfArtist(artistId: UUID): Flow<PagingData<Music>> =
-        musicRepository.getAllPagedByDateAscOfArtist(artistId)
+    fun getAllPagedByNameAscOfArtist(artistId: UUID): Flow<PagingData<Music>> =
+        musicRepository.getAllPagedByNameAscOfArtist(artistId)
 
     fun getFromId(musicId: UUID): Flow<Music?> =
         musicRepository.getFromId(musicId = musicId)
+
+    suspend fun getAllMusicFromMonth(month: String) : List<Music> =
+        musicRepository.getAllMusicFromMonth(month)
+
+    suspend fun getAllMusicFromFolder(folder: String) : List<Music> =
+        musicRepository.getAllMusicFromFolder(folder)
+
+    suspend fun getAllMusicFromArtist(artistId: UUID) : List<Music> =
+        musicRepository.getAllMusicFromArtist(artistId)
+
+    suspend fun getAllMusicFromPlaylist(playlistId: UUID) : List<Music> =
+        musicRepository.getAllMusicFromPlaylist(playlistId)
+
+    suspend fun getAllMusicFromAlbum(albumId: UUID) : List<Music> =
+        musicRepository.getAllMusicFromAlbum(albumId)
 
     suspend fun incrementNbPlayed(musicId: UUID) {
         val music: Music = musicRepository.getFromId(musicId).first() ?: return
