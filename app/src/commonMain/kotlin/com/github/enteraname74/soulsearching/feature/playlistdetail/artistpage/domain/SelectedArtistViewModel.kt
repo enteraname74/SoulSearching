@@ -11,7 +11,14 @@ import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
-import com.github.enteraname74.soulsearching.commondelegate.*
+import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.commondelegate.MultiAlbumBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.MultiAlbumBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
@@ -26,10 +33,16 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.p
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
 class SelectedArtistViewModel(
     commonPlaylistUseCase: CommonPlaylistUseCase,
@@ -73,15 +86,18 @@ class SelectedArtistViewModel(
         .getAllPagedByNameAscOfArtist(artistId)
         .cachedIn(viewModelScope)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     var state: StateFlow<SelectedArtistState> = combine(
         commonAlbumUseCase.getAlbumsWithMusicsOfArtist(artistId = artistId),
         commonArtistUseCase.getArtistPreview(artistId = artistId),
-    ) { albums, artistPreview ->
+        commonMusicUseCase.getArtistDuration(artistId),
+    ) { albums, artistPreview, duration ->
         when {
             artistPreview == null -> SelectedArtistState.Error
             else -> SelectedArtistState.Data(
-                playlistDetail = artistPreview.toPlaylistDetail(musics),
+                playlistDetail = artistPreview.toPlaylistDetail(
+                    musics = musics,
+                    duration = duration,
+                ),
                 artistAlbums = albums,
             )
         }

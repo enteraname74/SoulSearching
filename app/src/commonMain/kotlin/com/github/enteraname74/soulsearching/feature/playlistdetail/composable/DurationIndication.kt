@@ -13,10 +13,11 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import kotlin.time.Duration
 
 @Composable
 internal fun DurationIndication(
-    musics: List<Music>
+    duration: Duration,
 ) {
     Text(
         modifier = Modifier
@@ -24,7 +25,7 @@ internal fun DurationIndication(
             .padding(UiConstants.Spacing.medium),
         textAlign = TextAlign.Center,
         color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-        text = strings.duration(musics = musics),
+        text = strings.duration(duration = duration),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         fontWeight = FontWeight.ExtraBold,

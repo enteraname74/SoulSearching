@@ -25,14 +25,13 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.presentation.SelectedMonthDestination
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -72,12 +71,18 @@ class SelectedMonthViewModel(
         .getAllPagedByNameAscOfMonth(month)
         .cachedIn(viewModelScope)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    var state = commonMusicUseCase.getMonthMusicPreview(month = month).mapLatest { monthMusicList ->
+    var state =
+        combine(
+            commonMusicUseCase.getMonthMusicPreview(month = month),
+            commonMusicUseCase.getMonthMusicsDuration(month),
+        ) { monthMusicPreview, duration ->
         when {
-            monthMusicList == null -> SelectedMonthState.Error
+            monthMusicPreview == null -> SelectedMonthState.Error
             else -> SelectedMonthState.Data(
-                playlistDetail = monthMusicList.toPlaylistDetail(musics),
+                playlistDetail = monthMusicPreview.toPlaylistDetail(
+                    musics = musics,
+                    duration = duration,
+                ),
             )
         }
     }.stateIn(

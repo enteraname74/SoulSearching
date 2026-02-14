@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicFolderPreview
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlin.time.Duration
 
 interface MusicRepository {
 
@@ -62,6 +63,12 @@ interface MusicRepository {
     suspend fun getAllMusicFromMonth(month: String) : List<Music>
 
     suspend fun getAllMusicFromFolder(folder: String) : List<Music>
+
+    fun getAlbumDuration(albumId: UUID): Flow<Duration>
+    fun getArtistDuration(artistId: UUID): Flow<Duration>
+    fun getPlaylistDuration(playlistId: UUID): Flow<Duration>
+    fun getMonthMusicsDuration(month: String): Flow<Duration>
+    fun getFolderMusicsDuration(folder: String): Flow<Duration>
 
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
 

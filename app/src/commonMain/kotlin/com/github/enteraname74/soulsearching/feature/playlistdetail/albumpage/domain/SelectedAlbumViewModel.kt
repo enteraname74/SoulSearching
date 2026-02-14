@@ -28,10 +28,16 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.pr
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
 class SelectedAlbumViewModel(
     commonPlaylistUseCase: CommonPlaylistUseCase,
@@ -72,19 +78,19 @@ class SelectedAlbumViewModel(
         .getAllPagedOfAlbum(albumId)
         .cachedIn(viewModelScope)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     var state: StateFlow<SelectedAlbumState> =
-
         combine(
             commonAlbumUseCase.getAlbumPreview(albumId = albumId),
+            commonMusicUseCase.getAlbumDuration(albumId),
             settings.getFlowOn(SoulSearchingSettingsKeys.Album.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW),
-        ) { albumPreview, showTrackPosition ->
+        ) { albumPreview, duration, showTrackPosition ->
             when {
                 albumPreview == null -> SelectedAlbumState.Error
                 else -> SelectedAlbumState.Data(
                     playlistDetail = albumPreview.toPlaylistDetail(
                         shouldShowTrackPosition = showTrackPosition,
                         musics = musics,
+                        duration = duration,
                     ),
                 )
             }

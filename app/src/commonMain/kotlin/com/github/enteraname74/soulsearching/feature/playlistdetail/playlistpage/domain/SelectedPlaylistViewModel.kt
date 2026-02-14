@@ -52,12 +52,13 @@ class SelectedPlaylistViewModel(
             initialValue = MultiSelectionState(emptyList()),
         )
 
-    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList()
-        )
+    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> =
+        commonPlaylistUseCase.getAllWithMusics()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList()
+            )
 
     private val playlistId: UUID = destination.selectedPlaylistId
 
@@ -65,12 +66,17 @@ class SelectedPlaylistViewModel(
         .getAllPagedByNameAscOfPlaylist(playlistId)
         .cachedIn(viewModelScope)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    var state = commonPlaylistUseCase.getPlaylistPreview(playlistId).mapLatest { playlistWithMusics ->
+    var state = combine(
+        commonMusicUseCase.getPlaylistDuration(playlistId),
+        commonPlaylistUseCase.getPlaylistPreview(playlistId)
+    ) { duration, playlistPreview ->
         when {
-            playlistWithMusics == null -> SelectedPlaylistState.Error
+            playlistPreview == null -> SelectedPlaylistState.Error
             else -> SelectedPlaylistState.Data(
-                playlistDetail = playlistWithMusics.toPlaylistDetail(musics),
+                playlistDetail = playlistPreview.toPlaylistDetail(
+                    musics = musics,
+                    duration = duration,
+                ),
             )
         }
     }.stateIn(
@@ -85,19 +91,24 @@ class SelectedPlaylistViewModel(
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
-    private val _addToPlaylistBottomSheet: MutableStateFlow<AddToPlaylistBottomSheet?> = MutableStateFlow(null)
-    val addToPlaylistBottomSheet: StateFlow<AddToPlaylistBottomSheet?> = _addToPlaylistBottomSheet.asStateFlow()
+    private val _addToPlaylistBottomSheet: MutableStateFlow<AddToPlaylistBottomSheet?> =
+        MutableStateFlow(null)
+    val addToPlaylistBottomSheet: StateFlow<AddToPlaylistBottomSheet?> =
+        _addToPlaylistBottomSheet.asStateFlow()
 
-    private val _navigationState: MutableStateFlow<SelectedPlaylistNavigationState> = MutableStateFlow(
-        SelectedPlaylistNavigationState.Idle,
-    )
+    private val _navigationState: MutableStateFlow<SelectedPlaylistNavigationState> =
+        MutableStateFlow(
+            SelectedPlaylistNavigationState.Idle,
+        )
     val navigationState: StateFlow<SelectedPlaylistNavigationState> = _navigationState.asStateFlow()
 
     init {
         musicBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyMusic = { _navigationState.value = SelectedPlaylistNavigationState.ToModifyMusic(it.musicId) },
+            onModifyMusic = {
+                _navigationState.value = SelectedPlaylistNavigationState.ToModifyMusic(it.musicId)
+            },
             getAllPlaylistsWithMusics = { allPlaylists.value },
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
@@ -151,7 +162,9 @@ class SelectedPlaylistViewModel(
                 .getFromId(playlistId).firstOrNull() ?: return@launch
 
             if (selectedIds.size == 1) {
-                val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return@launch
+                val selectedMusic: Music =
+                    commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull()
+                        ?: return@launch
                 showMusicBottomSheet(
                     selectedMusic = selectedMusic,
                     currentPlaylist = currentPlaylist,

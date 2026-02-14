@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -73,12 +74,18 @@ class SelectedFolderViewModel(
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var state: StateFlow<SelectedFolderState> = commonMusicUseCase
-        .getMusicFolderPreview(folder = folderPath).mapLatest { musicFolderList ->
+    var state: StateFlow<SelectedFolderState> =
+        combine(
+            commonMusicUseCase.getMusicFolderPreview(folder = folderPath),
+            commonMusicUseCase.getFolderMusicsDuration(folderPath)
+        ) { musicFolderPreview, duration ->
             when {
-                musicFolderList == null -> SelectedFolderState.Error
+                musicFolderPreview == null -> SelectedFolderState.Error
                 else -> SelectedFolderState.Data(
-                    playlistDetail = musicFolderList.toPlaylistDetail(musics)
+                    playlistDetail = musicFolderPreview.toPlaylistDetail(
+                        musics = musics,
+                        duration = duration,
+                    )
                 )
             }
         }.stateIn(

@@ -162,6 +162,15 @@ interface MusicDao {
     )
     suspend fun getAllMusicFromAlbum(albumId : UUID) : List<RoomCompleteMusic>
 
+    @Query(
+        """
+            SELECT SUM(duration) FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND albumId = :albumId
+        """
+    )
+    fun getAlbumDuration(albumId : UUID) : Flow<Long>
+
     @Transaction
     @Query(
         """
@@ -174,6 +183,17 @@ interface MusicDao {
         """
     )
     suspend fun getAllMusicFromArtist(artistId : UUID) : List<RoomCompleteMusic>
+
+    @Query(
+        """
+            SELECT SUM(music.duration) FROM RoomMusic AS music
+            INNER JOIN RoomMusicArtist as musicArtist
+            ON music.musicId = musicArtist.musicId 
+            AND musicArtist.artistId = :artistId 
+            AND music.isHidden = 0
+        """
+    )
+    fun getArtistDuration(artistId : UUID) : Flow<Long>
 
     @Transaction
     @Query(
@@ -188,6 +208,17 @@ interface MusicDao {
     )
     suspend fun getAllMusicFromPlaylist(playlistId : UUID) : List<RoomCompleteMusic>
 
+    @Query(
+        """
+            SELECT SUM(music.duration) FROM RoomMusic AS music
+            INNER JOIN RoomMusicPlaylist as musicPlaylist
+            ON music.musicId = musicPlaylist.musicId 
+            AND musicPlaylist.playlistId = :playlistId 
+            AND music.isHidden = 0
+        """
+    )
+    fun getPlaylistDuration(playlistId : UUID) : Flow<Long>
+
     @Transaction
     @Query(
         """
@@ -199,6 +230,15 @@ interface MusicDao {
     )
     suspend fun getAllMusicFromMonth(month: String) : List<RoomCompleteMusic>
 
+    @Query(
+        """
+            SELECT SUM(duration) FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND strftime('%m/%Y', addedDate) = :month
+        """
+    )
+    fun getMonthMusicsDuration(month: String) : Flow<Long>
+
     @Transaction
     @Query(
         """
@@ -209,6 +249,15 @@ interface MusicDao {
         """
     )
     suspend fun getAllMusicFromFolder(folder : String) : List<RoomCompleteMusic>
+
+    @Query(
+        """
+            SELECT SUM(duration) FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND folder = :folder
+        """
+    )
+    fun getFolderMusicsDuration(folder: String) : Flow<Long>
 
     @Query("UPDATE RoomMusic SET albumId = :newAlbumId WHERE albumId = :legacyAlbumId")
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)

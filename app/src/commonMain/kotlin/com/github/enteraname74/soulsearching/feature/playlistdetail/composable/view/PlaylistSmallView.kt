@@ -52,6 +52,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import java.util.UUID
 import kotlin.math.max
+import kotlin.time.Duration
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -192,8 +193,9 @@ fun PlaylistSmallView(
                     )
                 }
             }
-            // TODO OPTIMIZATION: Fetch duration from another way.
-            item { DurationIndication(musics = emptyList()) }
+            if (playlistDetail.duration != Duration.ZERO) {
+                item { DurationIndication(duration = playlistDetail.duration) }
+            }
             item { SoulPlayerSpacer() }
         }
     }

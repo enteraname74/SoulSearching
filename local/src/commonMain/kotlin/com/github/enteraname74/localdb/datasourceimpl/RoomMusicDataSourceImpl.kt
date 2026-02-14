@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import java.util.UUID
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Implementation of the MusicDataSource with Room's DAO.
@@ -180,6 +182,21 @@ internal class RoomMusicDataSourceImpl(
 
     override suspend fun getAllMusicFromFolder(folder: String): List<Music> =
         appDatabase.musicDao.getAllMusicFromFolder(folder).map { it.toMusic() }
+
+    override fun getAlbumDuration(albumId: UUID): Flow<Duration> =
+        appDatabase.musicDao.getAlbumDuration(albumId).map { it.milliseconds }
+
+    override fun getArtistDuration(artistId: UUID): Flow<Duration> =
+        appDatabase.musicDao.getArtistDuration(artistId).map { it.milliseconds }
+
+    override fun getPlaylistDuration(playlistId: UUID): Flow<Duration> =
+        appDatabase.musicDao.getPlaylistDuration(playlistId).map { it.milliseconds }
+
+    override fun getMonthMusicsDuration(month: String): Flow<Duration> =
+        appDatabase.musicDao.getMonthMusicsDuration(month).map { it.milliseconds }
+
+    override fun getFolderMusicsDuration(folder: String): Flow<Duration> =
+        appDatabase.musicDao.getFolderMusicsDuration(folder).map { it.milliseconds }
 
     override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
         appDatabase.musicDao.updateMusicsAlbum(newAlbumId, legacyAlbumId)

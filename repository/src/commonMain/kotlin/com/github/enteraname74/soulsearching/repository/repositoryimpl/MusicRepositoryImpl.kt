@@ -8,6 +8,7 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlin.time.Duration
 
 /**
  * Repository for handling Music related work.
@@ -83,6 +84,21 @@ class MusicRepositoryImpl(
 
     override suspend fun getAllMusicFromFolder(folder: String): List<Music> =
         musicDataSource.getAllMusicFromFolder(folder)
+
+    override fun getAlbumDuration(albumId: UUID): Flow<Duration> =
+        musicDataSource.getAlbumDuration(albumId)
+
+    override fun getArtistDuration(artistId: UUID): Flow<Duration> =
+        musicDataSource.getArtistDuration(artistId)
+
+    override fun getPlaylistDuration(playlistId: UUID): Flow<Duration> =
+        musicDataSource.getPlaylistDuration(playlistId)
+
+    override fun getMonthMusicsDuration(month: String): Flow<Duration> =
+        musicDataSource.getMonthMusicsDuration(month)
+
+    override fun getFolderMusicsDuration(folder: String): Flow<Duration> =
+        musicDataSource.getFolderMusicsDuration(folder)
 
     override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
         musicDataSource.updateMusicsAlbum(newAlbumId, legacyAlbumId)

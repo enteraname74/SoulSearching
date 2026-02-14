@@ -8,6 +8,7 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import java.util.UUID
+import kotlin.time.Duration
 
 class CommonMusicUseCase(
     private val musicRepository: MusicRepository,
@@ -67,6 +68,21 @@ class CommonMusicUseCase(
 
     suspend fun getAllMusicFromAlbum(albumId: UUID) : List<Music> =
         musicRepository.getAllMusicFromAlbum(albumId)
+
+    fun getAlbumDuration(albumId: UUID): Flow<Duration> =
+        musicRepository.getAlbumDuration(albumId)
+
+    fun getArtistDuration(artistId: UUID): Flow<Duration> =
+        musicRepository.getArtistDuration(artistId)
+
+    fun getPlaylistDuration(playlistId: UUID): Flow<Duration> =
+        musicRepository.getPlaylistDuration(playlistId)
+
+    fun getMonthMusicsDuration(month: String): Flow<Duration> =
+        musicRepository.getMonthMusicsDuration(month)
+
+    fun getFolderMusicsDuration(folder: String): Flow<Duration> =
+        musicRepository.getFolderMusicsDuration(folder)
 
     suspend fun incrementNbPlayed(musicId: UUID) {
         val music: Music = musicRepository.getFromId(musicId).first() ?: return

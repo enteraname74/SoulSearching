@@ -16,6 +16,7 @@ import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlin.time.Duration
 
 data class PlaylistDetail(
     val id: UUID?,
@@ -24,6 +25,7 @@ data class PlaylistDetail(
     val subTitle: String,
     val cover: Cover?,
     val musics: Flow<PagingData<Music>>,
+    val duration: Duration,
     val musicItemLeadingSpec: (musicPosition: Int) -> MusicItemLeadingSpec,
 )
 
@@ -35,7 +37,10 @@ enum class PlaylistDetailType {
     Folder;
 }
 
-fun PlaylistPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDetail =
+fun PlaylistPreview.toPlaylistDetail(
+    musics: Flow<PagingData<Music>>,
+    duration: Duration,
+): PlaylistDetail =
     PlaylistDetail(
         id = this.id,
         type = PlaylistDetailType.Playlist,
@@ -43,12 +48,14 @@ fun PlaylistPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistD
         subTitle = strings.musics(this.totalMusics),
         cover = this.cover,
         musics = musics,
+        duration = duration,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )
 
 fun AlbumPreview.toPlaylistDetail(
     shouldShowTrackPosition: Boolean,
-    musics: Flow<PagingData<Music>>
+    musics: Flow<PagingData<Music>>,
+    duration: Duration,
 ): PlaylistDetail =
     PlaylistDetail(
         id = this.id,
@@ -57,6 +64,7 @@ fun AlbumPreview.toPlaylistDetail(
         subTitle = this.artist,
         cover = this.cover,
         musics = musics,
+        duration = duration,
         musicItemLeadingSpec = { musicPosition ->
             if (shouldShowTrackPosition) {
                 MusicItemLeadingSpec.Position(pos = musicPosition)
@@ -66,7 +74,10 @@ fun AlbumPreview.toPlaylistDetail(
         }
     )
 
-fun ArtistPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDetail =
+fun ArtistPreview.toPlaylistDetail(
+    musics: Flow<PagingData<Music>>,
+    duration: Duration,
+): PlaylistDetail =
     PlaylistDetail(
         id = this.id,
         type = PlaylistDetailType.Artist,
@@ -74,10 +85,14 @@ fun ArtistPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDet
         subTitle = strings.musics(this.totalMusics),
         cover = this.cover,
         musics = musics,
+        duration = duration,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )
 
-fun MonthMusicsPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDetail =
+fun MonthMusicsPreview.toPlaylistDetail(
+    musics: Flow<PagingData<Music>>,
+    duration: Duration,
+): PlaylistDetail =
     PlaylistDetail(
         id = null,
         type = PlaylistDetailType.Month,
@@ -85,10 +100,14 @@ fun MonthMusicsPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): Playli
         subTitle = strings.musics(this.totalMusics),
         cover = this.cover,
         musics = musics,
+        duration = duration,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )
 
-fun MusicFolderPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): PlaylistDetail =
+fun MusicFolderPreview.toPlaylistDetail(
+    musics: Flow<PagingData<Music>>,
+    duration: Duration,
+): PlaylistDetail =
     PlaylistDetail(
         id = null,
         type = PlaylistDetailType.Folder,
@@ -96,5 +115,6 @@ fun MusicFolderPreview.toPlaylistDetail(musics: Flow<PagingData<Music>>): Playli
         subTitle = strings.musics(this.totalMusics),
         cover = this.cover,
         musics = musics,
+        duration = duration,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )

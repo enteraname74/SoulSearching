@@ -346,14 +346,13 @@ interface Strings {
      */
     fun artistCoverMethodExampleTitle(artist: String): String
     fun colorPaletteSeed(seed: ColorPaletteSeed): String
-    fun duration(musics: List<Music>): String {
-        val totalDuration: Duration = musics.duration()
 
-        val hours = totalDuration.inWholeHours
+    fun duration(duration: Duration): String {
+        val hours = duration.inWholeHours
         return if (hours > 0) {
-            "$hours ${hours(hours)} $and ${minutes(totalDuration.inWholeMinutes.mod(60).toLong())}"
+            "$hours ${hours(hours)} $and ${minutes(duration.inWholeMinutes.mod(60).toLong())}"
         } else {
-            minutes(totalDuration.inWholeMinutes)
+            minutes(duration.inWholeMinutes)
         }
     }
 
