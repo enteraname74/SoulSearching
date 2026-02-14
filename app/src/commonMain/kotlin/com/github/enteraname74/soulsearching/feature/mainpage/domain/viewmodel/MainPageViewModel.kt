@@ -181,7 +181,7 @@ class MainPageViewModel(
         commonPlaylistUseCase.getAllWithMusics()
             .stateIn(
                 scope = viewModelScope.plus(Dispatchers.IO),
-                started = SharingStarted.Lazily,
+                started = SharingStarted.Eagerly,
                 initialValue = emptyList()
             )
 
