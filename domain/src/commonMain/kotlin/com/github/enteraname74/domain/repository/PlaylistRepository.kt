@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.repository
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
@@ -44,6 +45,8 @@ interface PlaylistRepository {
      * Retrieves a flow of a PlaylistWithMusics.
      */
     fun getPlaylistWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?>
+
+    fun getAllPaged(): Flow<PagingData<PlaylistPreview>>
 
     suspend fun cleanAllCovers()
 

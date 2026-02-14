@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.usecase.playlist
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
@@ -33,6 +34,9 @@ class CommonPlaylistUseCase(
 
     fun getWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?> =
         playlistRepository.getPlaylistWithMusics(playlistId)
+
+    fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
+        playlistRepository.getAllPaged()
 
     suspend fun incrementNbPlayed(playlistId: UUID) {
         val playlist: Playlist = playlistRepository.getFromId(playlistId).first() ?: return

@@ -17,7 +17,7 @@ data class PlaylistWithMusics(
     }
 
     /**
-     * Convert a PlaylistWithMusics to a PlaylistWithMusicsNumber.
+     * Convert a [PlaylistWithMusics] to a [PlaylistPreview].
      */
     fun toPlaylistPreview(): PlaylistPreview {
         return PlaylistPreview(

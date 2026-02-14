@@ -53,9 +53,12 @@ fun SearchAll(
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
     LazyColumnCompat {
-        val foundedPlaylists = allPlaylistsState.playlists.filter {
-            it.name.lowercase().contains(searchText.lowercase())
-        }
+        // TODO: Normalise with accents.
+        // TODO OPTIMIZATION: Move search in viewModel.
+        val foundedPlaylists = emptyList<PlaylistPreview>()
+//        allPlaylistsState.playlists.filter {
+//            it.name.lowercase().contains(searchText.lowercase())
+//        }
         if (foundedPlaylists.isNotEmpty()) {
             stickyHeader(
                 key = SEARCH_ALL_PLAYLIST_STICKY_KEY,

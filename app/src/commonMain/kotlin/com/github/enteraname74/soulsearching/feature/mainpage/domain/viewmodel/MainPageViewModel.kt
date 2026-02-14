@@ -91,7 +91,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -111,7 +110,6 @@ class MainPageViewModel(
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
     private val artistBottomSheetDelegateImpl: ArtistBottomSheetDelegateImpl,
-    private val getAllPlaylistWithMusicsSortedUseCase: GetAllPlaylistWithMusicsSortedUseCase,
     private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
@@ -149,14 +147,14 @@ class MainPageViewModel(
     val shouldShowNewVersionPin: StateFlow<Boolean> = shouldInformOfNewReleaseUseCase()
         .stateIn(
             scope = viewModelScope.plus(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = false
         )
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManagerImpl.state
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = MultiSelectionState(emptyList())
         )
 
@@ -170,7 +168,7 @@ class MainPageViewModel(
             buildTabs(elements = elementEnums)
         }.stateIn(
             scope = viewModelScope.plus(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = emptyList()
         )
 
@@ -178,7 +176,7 @@ class MainPageViewModel(
         SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR,
     ).stateIn(
         scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
+        started = SharingStarted.Lazily,
         initialValue = true,
     )
 
@@ -190,7 +188,7 @@ class MainPageViewModel(
         commonPlaylistUseCase.getAllWithMusics()
             .stateIn(
                 scope = viewModelScope.plus(Dispatchers.IO),
-                started = SharingStarted.Eagerly,
+                started = SharingStarted.Lazily,
                 initialValue = emptyList()
             )
 
@@ -210,12 +208,9 @@ class MainPageViewModel(
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _playlists = playlistSortingInformation.flatMapLatest { sortingInformation ->
-        getAllPlaylistWithMusicsSortedUseCase(
-            sortDirection = sortingInformation.direction,
-            sortType = sortingInformation.type,
-        )
-    }
+    private val _playlists = commonPlaylistUseCase
+        .getAllPaged()
+        .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val allQuickAccessState: StateFlow<AllQuickAccessState> =
@@ -241,7 +236,7 @@ class MainPageViewModel(
         )
     }.stateIn(
         scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
+        started = SharingStarted.Lazily,
         initialValue = AllMusicsState(),
     )
 
@@ -253,7 +248,7 @@ class MainPageViewModel(
             )
         }.stateIn(
             scope = viewModelScope.plus(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = AllMusicFoldersState()
         )
 
@@ -266,7 +261,7 @@ class MainPageViewModel(
             )
         }.stateIn(
             scope = viewModelScope.plus(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = AllArtistsState()
         )
 
@@ -279,22 +274,20 @@ class MainPageViewModel(
             )
         }.stateIn(
             scope = viewModelScope.plus(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = AllAlbumsState()
         )
 
-    val allPlaylistsState: StateFlow<AllPlaylistsState> = combine(
-        _playlists,
-        playlistSortingInformation,
-    ) { playlists, sortingInformation ->
+    val allPlaylistsState: StateFlow<AllPlaylistsState> =
+        playlistSortingInformation.map { sortingInformation ->
         AllPlaylistsState(
-            playlists = playlists.map { it.toPlaylistPreview() },
+            playlists = _playlists,
             sortType = sortingInformation.type,
             sortDirection = sortingInformation.direction,
         )
     }.stateIn(
         scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
+        started = SharingStarted.Lazily,
         initialValue = AllPlaylistsState()
     )
 

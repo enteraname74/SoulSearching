@@ -5,6 +5,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -16,8 +17,8 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Eleme
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
-import java.util.*
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageListPaged
+import java.util.UUID
 
 fun allPlaylistsTab(
     mainPageViewModel: MainPageViewModel,
@@ -29,8 +30,9 @@ fun allPlaylistsTab(
             val playlistState: AllPlaylistsState by mainPageViewModel.allPlaylistsState.collectAsState()
             val multiSelectionState: MultiSelectionState by mainPageViewModel.multiSelectionState.collectAsState()
 
-            MainPageList(
-                list = playlistState.playlists,
+            val playlists = playlistState.playlists.collectAsLazyPagingItems()
+            MainPageListPaged(
+                list = playlists,
                 title = strings.playlists,
                 rightComposable = {
                     SoulIconButton(
@@ -51,8 +53,8 @@ fun allPlaylistsTab(
                 },
                 sortType = playlistState.sortType,
                 sortDirection = playlistState.sortDirection,
-                key = { it.id },
-                contentType = { ALL_PLAYLISTS_CONTENT_TYPE }
+                key = { it?.id },
+                contentType = ALL_PLAYLISTS_CONTENT_TYPE,
             ) { element ->
                 BigPreviewComposable(
                     modifier = Modifier

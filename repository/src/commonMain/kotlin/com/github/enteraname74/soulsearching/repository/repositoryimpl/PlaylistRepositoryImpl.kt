@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
@@ -51,6 +52,9 @@ class PlaylistRepositoryImpl(
         playlistDataSource.getPlaylistWithMusics(
             playlistId = playlistId
         )
+
+    override fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
+        playlistDataSource.getAllPaged()
 
     override suspend fun cleanAllCovers() {
         playlistDataSource.cleanAllCovers()

@@ -67,5 +67,5 @@ val localModule: Module = module {
     single<MusicDataSource> { RoomMusicDataSourceImpl(get(), get()) }
     single<MusicPlaylistDataSource> { RoomMusicPlaylistDataSourceImpl(get()) }
     single<PlayerMusicDataSource> { RoomPlayerMusicDataSourceImpl(get()) }
-    single<PlaylistDataSource> { RoomPlaylistDataSourceImpl(get()) }
+    single<PlaylistDataSource> { RoomPlaylistDataSourceImpl(get(), get()) }
 }
