@@ -23,14 +23,12 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
-import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
 import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegate
@@ -106,7 +104,6 @@ class MainPageViewModel(
     viewSettingsManager: ViewSettingsManager,
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
-    private val isCoverUsedUseCase: IsCoverUsedUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
     private val artistBottomSheetDelegateImpl: ArtistBottomSheetDelegateImpl,
@@ -388,12 +385,7 @@ class MainPageViewModel(
         }
 
         coroutineScope.launch {
-            val allCoverIds: List<UUID> = commonCoverUseCase.getAllCoverIds()
-            allCoverIds.forEach { coverId ->
-                if (!isCoverUsedUseCase(coverId = coverId)) {
-                    commonCoverUseCase.delete(coverId = coverId)
-                }
-            }
+            commonCoverUseCase.deleteUnusedFileCovers()
         }
 
         coroutineScope.launch {

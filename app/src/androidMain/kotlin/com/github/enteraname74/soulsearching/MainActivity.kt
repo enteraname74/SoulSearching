@@ -27,13 +27,14 @@ import com.github.enteraname74.soulsearching.ui.theme.SoulSearchingTheme
 import kotlinx.coroutines.runBlocking
 import org.jaudiotagger.tag.TagOptionSingleton
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 
 class MainActivity : AppCompatActivity() {
     // Main page view models
-    private val mainPageViewModel: MainPageViewModel by inject()
-    private val applicationViewModel: ApplicationViewModel by inject()
+    private val mainPageViewModel: MainPageViewModel by viewModel()
+    private val applicationViewModel: ApplicationViewModel by viewModel()
     private val playbackManager: PlaybackManager by inject()
 
 

@@ -51,12 +51,6 @@ internal class RoomPlaylistDataSourceImpl(
         )
     }
 
-    override fun getAll(): Flow<List<Playlist>> {
-        return appDatabase.playlistDao.getAll().map { list ->
-            list.map { it.toPlaylist() }
-        }
-    }
-
     override fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>> {
         return appDatabase.playlistDao.getAllPlaylistWithMusics().map { list ->
             list.map { it.toPlaylistWIthMusics() }

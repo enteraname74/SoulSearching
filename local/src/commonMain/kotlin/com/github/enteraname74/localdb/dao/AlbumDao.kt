@@ -54,10 +54,6 @@ interface AlbumDao {
     fun getAllAlbumsWithMusicsFromArtist(artistId: UUID): Flow<List<RoomCompleteAlbumWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")
-    fun getAll(): Flow<List<RoomCompleteAlbum>>
-
-    @Transaction
     @Query(
         """
             SELECT album.albumId AS id, album.albumName AS name, album.nbPlayed, 

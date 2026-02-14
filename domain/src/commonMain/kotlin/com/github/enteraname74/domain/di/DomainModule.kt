@@ -7,7 +7,6 @@ import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
-import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
@@ -45,7 +44,6 @@ val domainModule = module {
 
     // ImageCover
     factoryOf(::CommonCoverUseCase)
-    factoryOf(::IsCoverUsedUseCase)
 
     // Lyrics
     factoryOf(::CommonLyricsUseCase)

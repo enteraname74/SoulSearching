@@ -44,8 +44,6 @@ class Navigator(private val backStack: NavBackStack<NavKey>) {
         // We don't want to navigate to the same route as the current one
         if (currentRoute == route) return
         backStack.add(route)
-
-        println("Navigator -- stack: ${stack.map { it }}")
     }
 
     fun goBack(to: NavKey? = null) {

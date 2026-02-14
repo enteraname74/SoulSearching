@@ -31,6 +31,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val musicArtistDao: MusicArtistDao
     abstract val playerMusicDao: PlayerMusicDao
     abstract val folderDao: FolderDao
+    abstract val coverDao: CoverDao
 }
 
 // The Room compiler generates the `actual` implementations.

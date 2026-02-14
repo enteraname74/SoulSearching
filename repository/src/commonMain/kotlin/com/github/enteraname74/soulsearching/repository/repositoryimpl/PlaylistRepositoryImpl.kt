@@ -31,9 +31,6 @@ class PlaylistRepositoryImpl(
         playlistDataSource.deleteAll(playlistIds)
     }
 
-    override fun getAll(): Flow<List<Playlist>> =
-        playlistDataSource.getAll()
-
     override fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>> =
         playlistDataSource.getAllPlaylistWithMusics()
 

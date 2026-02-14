@@ -85,12 +85,6 @@ internal class RoomAlbumDataSourceImpl(
         ).map { it?.toAlbumWithMusics() }
     }
 
-    override fun getAll(): Flow<List<Album>> {
-        return appDatabase.albumDao.getAll().map { list ->
-            list.map { it.toAlbum() }
-        }
-    }
-
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getAllPaged(): Flow<PagingData<AlbumPreview>> =
         settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_ALBUMS_DIRECTION_KEY).flatMapLatest { direction ->

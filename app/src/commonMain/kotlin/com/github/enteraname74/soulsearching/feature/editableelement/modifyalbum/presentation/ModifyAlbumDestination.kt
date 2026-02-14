@@ -26,7 +26,6 @@ data class ModifyAlbumDestination(
                         parametersOf(key)
                     },
                     onNavigationState = {
-                        println("ALBUM -- nav state: $it")
                         when (it) {
                             ModifyAlbumNavigationState.Back -> {
                                 navigator.goBack()

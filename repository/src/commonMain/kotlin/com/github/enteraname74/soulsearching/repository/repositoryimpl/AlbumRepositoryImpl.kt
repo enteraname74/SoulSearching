@@ -51,10 +51,6 @@ class AlbumRepositoryImpl(
             albumId = albumId
         )
 
-    @Deprecated("Avoid fetching all album from DB because of performance issue")
-    override fun getAll(): Flow<List<Album>> =
-        albumDataSource.getAll()
-
     override fun getAllPaged(): Flow<PagingData<AlbumPreview>> =
         albumDataSource.getAllPaged()
 

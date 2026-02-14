@@ -5,7 +5,7 @@ import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 interface PlaylistRepository {
     /**
@@ -24,12 +24,6 @@ interface PlaylistRepository {
      * Deletes the playlists identified in the given list of ids.
      */
     suspend fun deleteAll(playlistIds: List<UUID>)
-
-    /**
-     * Retrieves a flow of all Playlist, sorted by name asc.
-     */
-    @Deprecated("Avoid fetching all playlist from DB because of performance issue")
-    fun getAll(): Flow<List<Playlist>>
 
     /**
      * Retrieves a flow of all PlaylistWithMusics, sorted by name asc.

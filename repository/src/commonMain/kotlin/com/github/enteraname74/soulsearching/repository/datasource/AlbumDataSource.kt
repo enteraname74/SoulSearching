@@ -45,11 +45,6 @@ interface AlbumDataSource {
      */
     fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?>
 
-    /**
-     * Retrieves a flow of all Album, sorted bu name asc.
-     */
-    fun getAll(): Flow<List<Album>>
-
     fun getAllPaged(): Flow<PagingData<AlbumPreview>>
 
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>>
