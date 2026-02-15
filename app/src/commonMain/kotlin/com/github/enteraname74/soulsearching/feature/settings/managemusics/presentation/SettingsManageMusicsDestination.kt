@@ -23,11 +23,7 @@ data object SettingsManageMusicsDestination: SettingPage {
                     navigator.navigate(SettingsUsedFoldersDestination)
                 },
                 navigateToAddMusics = {
-                    navigator.navigate(
-                        SettingsAddMusicsDestination(
-                            shouldShowSaveScreen = false,
-                        )
-                    )
+                    navigator.navigate(SettingsAddMusicsDestination)
                 },
             )
         }

@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.composable.SoulCircularProgressIndicator
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 
 @Composable
 fun LoadingScaffold(
@@ -43,6 +44,9 @@ fun LoadingScaffold(
                 )
             ),
         ) {
+            SoulBackHandler(state) {
+                // no-op when loading
+            }
             LoadingView()
         }
     }

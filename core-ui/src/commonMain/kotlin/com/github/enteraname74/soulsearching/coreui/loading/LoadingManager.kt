@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.loading
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,13 +26,12 @@ class LoadingManager {
         stopLoading()
     }
 
-    fun withLoadingOnIO(
-        block: suspend () -> Unit,
+    fun withLoadingOnScope(
+        scope: CoroutineScope,
+        block: suspend () -> Unit
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            withLoading(
-                block = block,
-            )
+        scope.launch {
+            withLoading(block = block)
         }
     }
 }

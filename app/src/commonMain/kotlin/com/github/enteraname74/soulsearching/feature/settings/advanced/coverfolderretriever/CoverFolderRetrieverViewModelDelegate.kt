@@ -10,6 +10,8 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolde
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
 import com.github.enteraname74.soulsearching.features.serialization.SerializationUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 abstract class CoverFolderRetrieverViewModelDelegate(
     private val settings: SoulSearchingSettings,
@@ -63,7 +65,7 @@ abstract class CoverFolderRetrieverViewModelDelegate(
     abstract suspend fun handleToggleActivation(isActivated: Boolean)
 
     override fun onToggleActivation() {
-        loadingManager.withLoadingOnIO {
+        loadingManager.withLoadingOnScope(CoroutineScope(Dispatchers.IO)) {
             val newIsActivated = !coverFolderRetriever.isActivated
             settings.set(
                 key = settingsKey,

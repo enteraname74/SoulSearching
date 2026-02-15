@@ -7,8 +7,8 @@ import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.ArtistChoice
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistChoiceState
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistsChoiceNavigationState
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.MultipleArtistHandlingStep
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.MultipleArtistListener
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddNewsSongsStepManager
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddNewsSongsStepState
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.AddNewSongsMultipleArtistManagerImpl
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.FetchAllMultipleArtistManagerImpl
@@ -16,12 +16,11 @@ import com.github.enteraname74.soulsearching.features.musicmanager.multipleartis
 import com.github.enteraname74.soulsearching.features.musicmanager.persistence.MusicPersistence
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,29 +28,17 @@ import kotlinx.coroutines.launch
 class MultipleArtistsChoiceViewModel(
     private val musicFetcher: MusicFetcher,
     private val loadingManager: LoadingManager,
-    private val multipleArtistListener: MultipleArtistListener,
+    private val addNewsSongsStepManager: AddNewsSongsStepManager,
     destination: MultipleArtistsChoiceDestination,
 ): ViewModel() {
     val mode = destination.mode
     private val artists: MutableStateFlow<List<ArtistChoice>?> = MutableStateFlow(null)
-    private val toggleState: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
-    val state: StateFlow<MultipleArtistChoiceState> = combine(
-        artists,
-        toggleState
-    ) { artists, toggleState ->
+    val state: StateFlow<MultipleArtistChoiceState> = artists.map { artists ->
         when {
-            artists != null -> {
-                if (artists.isEmpty()) {
-                    MultipleArtistChoiceState.NoMultipleArtists
-                } else {
-                    MultipleArtistChoiceState.UserAction(
-                        toggleAllState = toggleState,
-                        artists = artists,
-                    )
-                }
-            }
-            else -> MultipleArtistChoiceState.Loading
+            artists == null ->  MultipleArtistChoiceState.Loading
+            artists.isEmpty() -> MultipleArtistChoiceState.NoMultipleArtists
+            else -> MultipleArtistChoiceState.UserAction(artists = artists)
         }
     }.stateIn(
         scope = viewModelScope,
@@ -64,8 +51,8 @@ class MultipleArtistsChoiceViewModel(
     )
     val navigationState: StateFlow<MultipleArtistsChoiceNavigationState> = _navigationState.asStateFlow()
 
-    fun init() {
-        CoroutineScope(Dispatchers.IO).launch {
+    init {
+        viewModelScope.launch {
             artists.value = when (mode) {
                 MultipleArtistsChoiceMode.GeneralCheck -> RepositoryMultipleArtistManagerImpl()
                     .getPotentialMultipleArtists()
@@ -75,12 +62,6 @@ class MultipleArtistsChoiceViewModel(
                 is MultipleArtistsChoiceMode.NewSongs -> mode.multipleArtists
             }.map {
                 ArtistChoice(artist = it)
-            }
-
-            if (mode is MultipleArtistsChoiceMode.NewSongs) {
-                // To fix clipping from previous screen when changing state while going to this screen
-                delay(500)
-                multipleArtistListener.toStep(MultipleArtistHandlingStep.UserChoice)
             }
         }
     }
@@ -93,11 +74,10 @@ class MultipleArtistsChoiceViewModel(
         _navigationState.value = MultipleArtistsChoiceNavigationState.Idle
     }
 
-    fun toggleAll() {
-        toggleState.value = !toggleState.value
+    fun toggleAll(selected: Boolean) {
         artists.update { artists ->
             artists?.map {
-                it.copy(isSelected = toggleState.value)
+                it.copy(isSelected = selected)
             }
         }
     }
@@ -145,7 +125,7 @@ class MultipleArtistsChoiceViewModel(
             }
 
             if (mode is MultipleArtistsChoiceMode.NewSongs) {
-                multipleArtistListener.toStep(MultipleArtistHandlingStep.SongsSaved)
+                addNewsSongsStepManager.toStep(AddNewsSongsStepState.SongsSaved)
             }
             _navigationState.value = MultipleArtistsChoiceNavigationState.Quit
         }
