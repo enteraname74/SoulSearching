@@ -12,7 +12,7 @@ import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCa
 import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.*
+import java.util.UUID
 
 class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinComponent {
     private val commonMusicUseCase: CommonMusicUseCase by inject()
@@ -104,10 +104,7 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
     }
 
     suspend fun getPotentialMultipleArtists(): List<Artist> =
-        commonArtistUseCase.getAll()
-            .firstOrNull()
-            ?.filter { it.isComposedOfMultipleArtists() }
-            ?: emptyList()
+        commonArtistUseCase.getPotentialMultipleArtists()
 
     override suspend fun handleMultipleArtists(artistsToDivide: List<Artist>) {
         super.handleMultipleArtists(artistsToDivide)

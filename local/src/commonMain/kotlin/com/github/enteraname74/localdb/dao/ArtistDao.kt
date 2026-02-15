@@ -50,9 +50,6 @@ interface ArtistDao {
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
     fun getFromId(artistId: UUID): Flow<RoomArtist?>
 
-    @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
-    fun getAll(): Flow<List<RoomArtist>>
-
     @Transaction
     @Query(
         """
@@ -500,4 +497,14 @@ interface ArtistDao {
         """
     )
     fun searchAll(search: String): Flow<List<RoomArtistPreview>>
+
+    @Query(
+        """
+            SELECT * FROM RoomArtist 
+            WHERE instr(artistName, ',') > 0
+            OR instr(artistName, '&') > 0 
+            ORDER BY artistName
+        """
+    )
+    suspend fun getPotentialMultipleArtists(): List<RoomArtist>
 }

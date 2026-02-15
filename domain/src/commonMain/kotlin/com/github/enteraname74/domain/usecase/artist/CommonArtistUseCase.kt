@@ -12,10 +12,6 @@ import java.util.UUID
 class CommonArtistUseCase(
     private val artistRepository: ArtistRepository,
 ) {
-    @Deprecated("Avoid fetching all artist from DB because of performance issue")
-    fun getAll(): Flow<List<Artist>> =
-        artistRepository.getAll()
-
     fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
         artistRepository.getAllPaged()
 
@@ -105,4 +101,7 @@ class CommonArtistUseCase(
 
     fun searchAll(search: String): Flow<List<ArtistPreview>> =
         artistRepository.searchAll(search)
+
+    suspend fun getPotentialMultipleArtists(): List<Artist> =
+        artistRepository.getPotentialMultipleArtists()
 }

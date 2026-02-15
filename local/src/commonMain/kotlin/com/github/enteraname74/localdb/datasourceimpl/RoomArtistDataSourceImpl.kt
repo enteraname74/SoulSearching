@@ -71,12 +71,6 @@ internal class RoomArtistDataSourceImpl(
         ).map { it?.toArtist() }
     }
 
-    override fun getAll(): Flow<List<Artist>> {
-        return appDatabase.artistDao.getAll().map { list ->
-            list.map { it.toArtist() }
-        }
-    }
-
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
         settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_DIRECTION_KEY).flatMapLatest { direction ->
@@ -170,4 +164,7 @@ internal class RoomArtistDataSourceImpl(
         appDatabase.artistDao.searchAll(search).map { list ->
             list.map { it.toArtistPreview() }
         }
+
+    override suspend fun getPotentialMultipleArtists(): List<Artist> =
+        appDatabase.artistDao.getPotentialMultipleArtists().map { it.toArtist() }
 }

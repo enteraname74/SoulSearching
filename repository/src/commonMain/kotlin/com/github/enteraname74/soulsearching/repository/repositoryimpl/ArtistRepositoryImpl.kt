@@ -58,13 +58,6 @@ class ArtistRepositoryImpl(
         artistDataSource.toggleCoverFolderMode(isActivated)
     }
 
-    /**
-     * Retrieves a flow of all Artist, sorted by name asc.
-     */
-    @Deprecated("Avoid fetching all artist from DB because of performance issue")
-    override fun getAll(): Flow<List<Artist>> =
-        artistDataSource.getAll()
-
     override fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
         artistDataSource.getAllPaged()
 
@@ -106,4 +99,7 @@ class ArtistRepositoryImpl(
 
     override fun searchAll(search: String): Flow<List<ArtistPreview>> =
         artistDataSource.searchAll(search)
+
+    override suspend fun getPotentialMultipleArtists(): List<Artist> =
+        artistDataSource.getPotentialMultipleArtists()
 }
