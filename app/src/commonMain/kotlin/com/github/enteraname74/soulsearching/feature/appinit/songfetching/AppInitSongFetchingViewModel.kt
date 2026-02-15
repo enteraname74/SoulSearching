@@ -47,7 +47,7 @@ class AppInitSongFetchingViewModel(
             if (multipleArtistManager.doDataHaveMultipleArtists()) {
                 _navigationState.value = AppInitSongFetchingNavigationState.ToMultipleArtists
             } else {
-                MusicPersistence(optimizedCachedData = musicFetcher.optimizedCachedData).saveAll()
+                MusicPersistence().saveAll(musicFetcher.optimizedCachedData.musicsByPath.values.toList())
             }
         }
     }

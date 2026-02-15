@@ -13,13 +13,18 @@ import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmu
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.SettingsAddMusicsDestination
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.SelectableMusicItem
-import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.FetchAllMultipleArtistManagerImpl
+import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.AddNewSongsMultipleArtistManagerImpl
 import com.github.enteraname74.soulsearching.features.musicmanager.persistence.MusicPersistence
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
 class SettingsAddMusicsViewModel(
     private val musicFetcher: MusicFetcher,
@@ -136,7 +141,7 @@ class SettingsAddMusicsViewModel(
                 fetchedMusics = fetchedMusics,
             )
 
-            musicFetcher.cacheSelectedMusics(
+            val musicsToSave: List<Music> = musicFetcher.cacheSelectedMusics(
                 musics = selectedMusics,
                 onSongSaved = { progress ->
                     _state.value = SettingsAddMusicsState.SavingSongs(
@@ -146,15 +151,15 @@ class SettingsAddMusicsViewModel(
                 },
             )
 
-            val multipleArtistManager = FetchAllMultipleArtistManagerImpl(
+            val multipleArtistManager = AddNewSongsMultipleArtistManagerImpl(
                 optimizedCachedData = musicFetcher.optimizedCachedData,
             )
             if (multipleArtistManager.doMusicsHaveMultipleArtists(musics = selectedMusics)) {
                 _navigationState.value = SettingsAddMusicsNavigationState.ToMultipleArtists(
-                    multipleArtists = getMultipleArtists(musicFetcher.optimizedCachedData.musicsByPath.values.toList())
+                    multipleArtists = getMultipleArtists(musicsToSave)
                 )
             } else {
-                MusicPersistence(musicFetcher.optimizedCachedData).saveAll()
+                MusicPersistence().saveAll(musicsToSave)
                 _state.value = SettingsAddMusicsState.SongsSaved
             }
         }
