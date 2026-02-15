@@ -22,7 +22,12 @@ class MusicPersistence(
     suspend fun saveAll() {
         commonMusicsUseCase.upsertAll(optimizedCachedData.musicsByPath.values.toList())
         commonFolderUseCase.upsertAll(
-            optimizedCachedData.musicsByPath.values.map { Folder(folderPath = it.folder) }.distinctBy { it.folderPath }
+            optimizedCachedData.musicsByPath.values.map {
+                Folder(
+                    folderPath = it.folder,
+                    isSelected = true,
+                )
+            }.distinctBy { it.folderPath }
         )
 
         optimizedCachedData.clear()

@@ -49,12 +49,13 @@ class SettingsAddMusicsViewModel(
             is SettingsAddMusicsState.Data -> state
             SettingsAddMusicsState.Fetching -> state
             is SettingsAddMusicsState.SavingSongs -> {
-                when(multipleArtistListenerState) {
+                when (multipleArtistListenerState) {
                     MultipleArtistHandlingStep.Idle -> state
                     MultipleArtistHandlingStep.UserChoice -> SettingsAddMusicsState.Data(state.fetchedMusics)
                     MultipleArtistHandlingStep.SongsSaved -> SettingsAddMusicsState.SongsSaved
                 }
             }
+
             SettingsAddMusicsState.SongsSaved -> state
         }
     }.stateIn(
@@ -63,10 +64,12 @@ class SettingsAddMusicsViewModel(
         initialValue = SettingsAddMusicsState.Fetching
     )
 
-    private val _navigationState: MutableStateFlow<SettingsAddMusicsNavigationState> = MutableStateFlow(
-        SettingsAddMusicsNavigationState.Idle
-    )
-    val navigationState: StateFlow<SettingsAddMusicsNavigationState> = _navigationState.asStateFlow()
+    private val _navigationState: MutableStateFlow<SettingsAddMusicsNavigationState> =
+        MutableStateFlow(
+            SettingsAddMusicsNavigationState.Idle
+        )
+    val navigationState: StateFlow<SettingsAddMusicsNavigationState> =
+        _navigationState.asStateFlow()
 
     fun toggleMusicSelectedState(musicId: UUID) {
         (_state.value as? SettingsAddMusicsState.Data)?.fetchedMusics?.let { songs ->
@@ -104,7 +107,12 @@ class SettingsAddMusicsViewModel(
             )
 
             // We save the folders to let the user easily removed unwanted one before adding new songs
-            val folders: List<Folder> = newMusics.map { Folder(it.music.folder) }.distinctBy { it.folderPath }
+            val folders: List<Folder> = newMusics.map {
+                Folder(
+                    folderPath = it.music.folder,
+                    isSelected = true,
+                )
+            }.distinctBy { it.folderPath }
 
             commonFolderUseCase.upsertAll(
                 allFolders = folders,

@@ -13,9 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -24,69 +22,47 @@ class SettingsAllFoldersViewModel(
     private val commonMusicUseCase: CommonMusicUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
-): ViewModel() {
-    private val isFetchingFolders: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    private val folders: MutableStateFlow<List<Folder>> = MutableStateFlow(emptyList())
+) : ViewModel() {
+
+    private val workScope = CoroutineScope(Dispatchers.IO)
+    private val folderPathSelectionState: MutableStateFlow<Map<String, Boolean>> =
+        MutableStateFlow(mapOf())
+
     val state: StateFlow<FolderState> = combine(
-        isFetchingFolders,
-        folders,
-    ) { isFetchingFolders, folders ->
-        when {
-            isFetchingFolders -> FolderState.Fetching
-            else -> FolderState.Data(folders.sortedBy { it.folderPath })
-        }
+        commonFolderUseCase.getAll(),
+        folderPathSelectionState,
+    ) { folders, pathSelectionState ->
+        FolderState(
+            folders
+                .sortedBy { it.name }
+                .map { folder ->
+                    folder.copy(
+                        isSelected = pathSelectionState[folder.folderPath] ?: folder.isSelected,
+                    )
+                }
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
-        initialValue = FolderState.Fetching,
+        initialValue = FolderState(),
     )
-
-    init {
-        updateFolders()
-    }
-
-    private fun updateFolders() {
-        CoroutineScope(Dispatchers.IO).launch {
-            isFetchingFolders.value = true
-            val folders: List<Folder> = commonFolderUseCase.getAll().first()
-            this@SettingsAllFoldersViewModel.folders.value = folders
-            isFetchingFolders.value = false
-        }
-    }
 
     fun setFolderSelectionStatus(
         folder: Folder,
         isSelected: Boolean,
     ) {
-        if (state.value !is FolderState.Data) {
-            return
-        }
-        folders.update {
-            it.map { savedFolder ->
-                if (savedFolder.folderPath == folder.folderPath) {
-                    savedFolder.copy(
-                        isSelected = isSelected
-                    )
-                } else {
-                    savedFolder.copy()
-                }
-            }
-        }
+        folderPathSelectionState.value += folder.folderPath to isSelected
     }
 
     fun saveSelection() {
-        CoroutineScope(Dispatchers.IO).launch {
+        workScope.launch {
             loadingManager.withLoading {
-                val folders = folders.value
+                commonFolderUseCase.upsertAll(allFolders = state.value.folders)
 
-                commonFolderUseCase.upsertAll(
-                    allFolders = folders
-                )
                 val musicIds: List<UUID> = commonMusicUseCase.getAllIdsFromUnselectedFolders()
                 commonMusicUseCase.deleteAllFromUnselectedFolders()
                 playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicIds)
             }
-            updateFolders()
         }
     }
 }
