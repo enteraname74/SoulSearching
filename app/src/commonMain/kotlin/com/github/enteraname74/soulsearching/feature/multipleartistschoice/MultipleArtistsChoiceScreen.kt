@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
+import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
@@ -166,6 +167,12 @@ private fun UserActionScreen(
                         }
                     )
                 }
+                item(
+                    key = PlayerSpacerContentType,
+                    contentType = PlayerSpacerKey,
+                ) {
+                    SoulPlayerSpacer()
+                }
             }
         }
     }
@@ -176,3 +183,5 @@ private const val WarningCardContentKey: String = "WarningCardContentKey"
 private const val SelectionTextContentType: String = "SelectionTextContentType"
 private const val SelectionTextKey: String = "SelectionTextKey"
 private const val ArtistChoicesContentType: String = "ArtistChoicesContentType"
+private const val PlayerSpacerContentType: String = "PlayerSpacerContentType"
+private const val PlayerSpacerKey: String = "PlayerSpacerKey"

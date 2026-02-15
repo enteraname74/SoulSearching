@@ -60,6 +60,8 @@ class MultipleArtistsChoiceViewModel(
                     optimizedCachedData = musicFetcher.optimizedCachedData,
                 ).getPotentialMultipleArtists()
                 is MultipleArtistsChoiceMode.NewSongs -> mode.multipleArtists
+            }.sortedBy {
+                it.artistName
             }.map {
                 ArtistChoice(artist = it)
             }
