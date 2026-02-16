@@ -9,11 +9,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulChoiceButtonData
 import com.github.enteraname74.soulsearching.coreui.composable.SoulDivider
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuAction
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuDropdown
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.ext.filledIcon
+import com.github.enteraname74.soulsearching.ext.text
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationState
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -124,6 +128,25 @@ private fun Data(
             )
         }
         item {
+            SoulMenuDropdown(
+                title = strings.initialSectionTitle,
+                subTitle = strings.initialSectionText,
+                padding = PaddingValues(
+                    horizontal = UiConstants.Spacing.large,
+                    vertical = UiConstants.Spacing.medium,
+                ),
+                choices = state.selectableTabs.map {
+                    SoulChoiceButtonData(
+                        icon = it.filledIcon(),
+                        data = it,
+                        title = it.text()
+                    )
+                },
+                selectedChoiceName = state.initialTab.text(),
+                onChoice = viewModel::setInitialTab,
+            )
+        }
+        item {
             SoulDivider()
         }
         item {
@@ -153,3 +176,7 @@ private fun Data(
     }
 }
 
+@Composable
+private fun InitialTabSelection() {
+
+}

@@ -237,6 +237,8 @@ object FrStrings : Strings {
     override val showMusicsByFolders = "Afficher les musiques par dossiers"
     override val showMusicsByMonths = "Afficher les musiques par mois"
     override val showAlbumTrackNumber = "Afficher la position des musiques"
+    override val initialSectionTitle = "Section à l'ouverture"
+    override val initialSectionText = "Sélectionner la section à afficher au lancement de l'application"
     override val useVerticalAccessBarTitle = "Utiliser la barre d'accès verticale"
     override val useHorizontalAccessBarText = "Utiliser la barre d'accès horizontale"
 

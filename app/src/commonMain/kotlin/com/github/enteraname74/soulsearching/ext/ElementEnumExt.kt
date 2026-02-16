@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 
-fun ElementEnum.navigationFilledIcon(): ImageVector =
+fun ElementEnum.filledIcon(): ImageVector =
     when (this) {
         ElementEnum.QUICK_ACCESS -> Icons.Filled.DoubleArrow
         ElementEnum.PLAYLISTS -> Icons.AutoMirrored.Filled.QueueMusic
@@ -19,7 +19,7 @@ fun ElementEnum.navigationFilledIcon(): ImageVector =
         ElementEnum.FOLDERS -> Icons.Filled.Folder
     }
 
-fun ElementEnum.navigationOutlinedIcon(): ImageVector =
+fun ElementEnum.outlinedIcon(): ImageVector =
     when (this) {
         ElementEnum.QUICK_ACCESS -> Icons.Outlined.DoubleArrow
         ElementEnum.PLAYLISTS -> Icons.AutoMirrored.Outlined.QueueMusic
@@ -29,7 +29,7 @@ fun ElementEnum.navigationOutlinedIcon(): ImageVector =
         ElementEnum.FOLDERS -> Icons.Outlined.Folder
     }
 
-fun ElementEnum.navigationTitle(): String =
+fun ElementEnum.text(): String =
     when (this) {
         ElementEnum.QUICK_ACCESS -> strings.quickAccess
         ElementEnum.PLAYLISTS -> strings.playlists

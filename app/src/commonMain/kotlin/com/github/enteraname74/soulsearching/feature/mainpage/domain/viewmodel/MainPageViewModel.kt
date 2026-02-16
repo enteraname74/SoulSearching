@@ -55,6 +55,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
 import java.util.*
+import kotlin.math.max
 
 @Suppress("Deprecation")
 class MainPageViewModel(
@@ -119,13 +120,15 @@ class MainPageViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val tabs: StateFlow<List<PagerScreen>> = viewSettingsManager.visibleElements.mapLatest { elementsVisibility ->
-        val elementEnums = buildListOfElementEnums(elementsVisibility = elementsVisibility)
-        buildTabs(elements = elementEnums)
+        buildTabs(elements = elementsVisibility.toElementEnums())
     }.stateIn(
         scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = emptyList()
     )
+
+    private var _initialPage: MutableStateFlow<Int?> = MutableStateFlow(null)
+    val initialPage: StateFlow<Int?> = _initialPage.asStateFlow()
 
     val isUsingVerticalAccessBar: StateFlow<Boolean> = settings.getFlowOn(
         SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR,
@@ -286,6 +289,15 @@ class MainPageViewModel(
     private var cleanMusicsLaunched: Boolean = false
 
     init {
+        val savedInitial: ElementEnum? = ElementEnum.fromRaw(
+            settings.get(ElementEnum.INITIAL_TAB_SETTINGS_KEY)
+        )
+
+        val tabs = viewSettingsManager.getElementVisibility().toElementEnums()
+        _initialPage.value = savedInitial?.let {
+            max(tabs.indexOf(savedInitial), 0)
+        } ?: 0
+
         musicBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
@@ -487,17 +499,6 @@ class MainPageViewModel(
                 selectedPlaylist = quickAccessible,
             )
         }
-    }
-
-    private fun buildListOfElementEnums(
-        elementsVisibility: ElementsVisibility,
-    ): List<ElementEnum> = buildList {
-        if (elementsVisibility.isQuickAccessShown) add(ElementEnum.QUICK_ACCESS)
-        add(ElementEnum.MUSICS)
-        if (elementsVisibility.arePlaylistsShown) add(ElementEnum.PLAYLISTS)
-        if (elementsVisibility.areAlbumsShown) add(ElementEnum.ALBUMS)
-        if (elementsVisibility.areArtistsShown) add(ElementEnum.ARTISTS)
-        if (elementsVisibility.areMusicFoldersShown) add(ElementEnum.FOLDERS)
     }
 
     private fun buildTabs(elements: List<ElementEnum>): List<PagerScreen> = buildList {

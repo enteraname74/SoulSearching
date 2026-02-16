@@ -17,8 +17,8 @@ import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.ext.navigationFilledIcon
-import com.github.enteraname74.soulsearching.ext.navigationTitle
+import com.github.enteraname74.soulsearching.ext.filledIcon
+import com.github.enteraname74.soulsearching.ext.text
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 
 @Composable
@@ -65,14 +65,14 @@ fun MainPageVerticalShortcut(
                             }
                         ),
                     colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),
-                    imageVector = it.navigationFilledIcon(),
+                    imageVector = it.filledIcon(),
                     contentDescription = ""
                 )
                 Text(
                     modifier = Modifier
                         .rotate(-90f)
                         .vertical(),
-                    text = it.navigationTitle(),
+                    text = it.text(),
                     color = if (isCurrentPosition) {
                         SoulSearchingColorTheme.colorScheme.onPrimary
                     } else {

@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -20,9 +19,9 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.ext.isComingFromPlaylistDetails
-import com.github.enteraname74.soulsearching.ext.navigationFilledIcon
-import com.github.enteraname74.soulsearching.ext.navigationOutlinedIcon
-import com.github.enteraname74.soulsearching.ext.navigationTitle
+import com.github.enteraname74.soulsearching.ext.filledIcon
+import com.github.enteraname74.soulsearching.ext.outlinedIcon
+import com.github.enteraname74.soulsearching.ext.text
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
@@ -141,9 +140,9 @@ private fun navigationRows(
 
             add(
                 NavigationRowSpec(
-                    title = tab.type.navigationTitle(),
-                    filledIcon = tab.type.navigationFilledIcon(),
-                    outlinedIcon = tab.type.navigationOutlinedIcon(),
+                    title = tab.type.text(),
+                    filledIcon = tab.type.filledIcon(),
+                    outlinedIcon = tab.type.outlinedIcon(),
                     onClick = {
                         setCurrentPage(tab.type)
                         playerAction()

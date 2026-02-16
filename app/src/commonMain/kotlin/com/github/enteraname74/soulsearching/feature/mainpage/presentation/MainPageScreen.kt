@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -51,22 +52,23 @@ fun MainPageRoute(
 ) {
     val playerViewManager: PlayerViewManager = injectElement()
 
-    val musicState: AllMusicsState by mainPageViewModel.allMusicsState.collectAsState()
-    val playlistState: AllPlaylistsState by mainPageViewModel.allPlaylistsState.collectAsState()
-    val albumState: AllAlbumsState by mainPageViewModel.allAlbumsState.collectAsState()
-    val artistState: AllArtistsState by mainPageViewModel.allArtistsState.collectAsState()
+    val musicState: AllMusicsState by mainPageViewModel.allMusicsState.collectAsStateWithLifecycle()
+    val playlistState: AllPlaylistsState by mainPageViewModel.allPlaylistsState.collectAsStateWithLifecycle()
+    val albumState: AllAlbumsState by mainPageViewModel.allAlbumsState.collectAsStateWithLifecycle()
+    val artistState: AllArtistsState by mainPageViewModel.allArtistsState.collectAsStateWithLifecycle()
 
-    val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
-    val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
-    val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsState()
-    val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsState()
+    val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsStateWithLifecycle()
+    val initialPage: Int? by mainPageViewModel.initialPage.collectAsStateWithLifecycle()
+    val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsStateWithLifecycle()
+    val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsStateWithLifecycle()
+    val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsStateWithLifecycle()
 
     val searchDraggableState = mainPageViewModel.searchDraggableState
 
-    val bottomSheetState: SoulBottomSheet? by mainPageViewModel.bottomSheetState.collectAsState()
-    val addToPlaylistsBottomSheetState: AddToPlaylistBottomSheet? by mainPageViewModel.addToPlaylistsBottomSheetState.collectAsState()
-    val dialogState: SoulDialog? by mainPageViewModel.dialogState.collectAsState()
-    val navigationState: MainPageNavigationState by mainPageViewModel.navigationState.collectAsState()
+    val bottomSheetState: SoulBottomSheet? by mainPageViewModel.bottomSheetState.collectAsStateWithLifecycle()
+    val addToPlaylistsBottomSheetState: AddToPlaylistBottomSheet? by mainPageViewModel.addToPlaylistsBottomSheetState.collectAsStateWithLifecycle()
+    val dialogState: SoulDialog? by mainPageViewModel.dialogState.collectAsStateWithLifecycle()
+    val navigationState: MainPageNavigationState by mainPageViewModel.navigationState.collectAsStateWithLifecycle()
     bottomSheetState?.BottomSheet()
     addToPlaylistsBottomSheetState?.BottomSheet()
     dialogState?.Dialog()
@@ -93,6 +95,7 @@ fun MainPageRoute(
         currentEnumPage = currentPage,
         isUsingVerticalAccessBar = isUsingVerticalAccessBar,
         shouldShowNewVersionPin = shouldShowNewVersionPin,
+        initialPage = initialPage,
     )
 }
 
@@ -110,9 +113,11 @@ fun MainPageScreenView(
     shouldShowNewVersionPin: Boolean,
     currentEnumPage: ElementEnum?,
     isUsingVerticalAccessBar: Boolean,
+    initialPage: Int?
 ) {
     val pagerState = rememberPagerState(
-        pageCount = { tabs.size }
+        pageCount = { tabs.size },
+        initialPage = initialPage?.takeIf { it < tabs.size } ?: 0
     )
 
     LaunchedEffect(currentEnumPage) {

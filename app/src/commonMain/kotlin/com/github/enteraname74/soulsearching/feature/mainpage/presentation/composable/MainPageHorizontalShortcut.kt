@@ -12,7 +12,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.list.LazyRowCompat
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.ext.navigationTitle
+import com.github.enteraname74.soulsearching.ext.text
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 
 @Composable
@@ -44,7 +44,7 @@ fun MainPageHorizontalShortcut(
                     .clickableWithHandCursor {
                         switchPageAction(pos)
                     },
-                text = visibleElement.navigationTitle(),
+                text = visibleElement.text(),
                 color = if (isCurrentPosition) {
                     SoulSearchingColorTheme.colorScheme.onPrimary
                 } else {

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
@@ -49,14 +50,27 @@ class ViewSettingsManager(
         )
     }
 
+    fun getElementVisibility(): ElementsVisibility =
+        with(settings) {
+            ElementsVisibility(
+                isQuickAccessShown = get(SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN),
+                arePlaylistsShown = get(SoulSearchingSettingsKeys.MainPage.IS_PLAYLISTS_SHOWN),
+                areAlbumsShown = get(SoulSearchingSettingsKeys.MainPage.IS_ALBUMS_SHOWN),
+                areArtistsShown = get(SoulSearchingSettingsKeys.MainPage.IS_ARTISTS_SHOWN),
+                areMusicFoldersShown = get(SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_FOLDERS_SHOWN)
+            )
+        }
+
     /**
      * Initialize the manager.
      */
     private fun initializeManager() {
         with(settings) {
             isMusicFileModificationOn = get(SoulSearchingSettingsKeys.IS_MUSIC_FILE_MODIFICATION_ON)
-            areMusicsByMonthsShown = get(SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_MONTHS_SHOWN)
-            shouldShowAlbumTrackNumber = get(SoulSearchingSettingsKeys.Album.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW)
+            areMusicsByMonthsShown =
+                get(SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_MONTHS_SHOWN)
+            shouldShowAlbumTrackNumber =
+                get(SoulSearchingSettingsKeys.Album.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW)
         }
     }
 

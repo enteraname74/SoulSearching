@@ -251,6 +251,8 @@ interface Strings {
     val showMusicsByFolders: String
     val showMusicsByMonths: String
     val showAlbumTrackNumber: String
+    val initialSectionTitle: String
+    val initialSectionText: String
     val useVerticalAccessBarTitle: String
     val useHorizontalAccessBarText: String
 
