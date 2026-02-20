@@ -6,12 +6,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
+import android.support.v4.media.session.MediaSessionCompat
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.core.content.ContextCompat
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.notification.receivers.NextMusicNotificationReceiver
 import com.github.enteraname74.soulsearching.features.playback.notification.receivers.PausePlayNotificationReceiver
 import com.github.enteraname74.soulsearching.features.playback.notification.receivers.PreviousMusicNotificationReceiver
@@ -89,15 +90,16 @@ class SoulSearchingNotificationBelowAndroid13(
     }
 
     private fun buildNotification(
-        state: SoulSearchingAndroidNotificationState.Active,
+        updateData: UpdateData,
+        mediaSessionToken: MediaSessionCompat.Token,
     ): Notification {
-        val pausePlayIcon = if (state.isPlaying) {
+        val pausePlayIcon = if (updateData.isPlaying) {
             R.drawable.ic_pause
         } else {
             R.drawable.ic_play_arrow
         }
 
-        val favoriteIcon = if (state.isInFavorite) {
+        val favoriteIcon = if (updateData.isInFavorite) {
             R.drawable.ic_favorite_filled
         } else {
             R.drawable.ic_favorite
@@ -105,7 +107,10 @@ class SoulSearchingNotificationBelowAndroid13(
 
         return notificationBuilder
             .clearActions()
-            .soulNotificationBuilder(state)
+            .soulNotificationBuilder(
+                updateData = updateData,
+                mediaSessionToken = mediaSessionToken,
+            )
             .addAction(R.drawable.ic_skip_previous, "previous", previousMusicIntent)
             .addAction(pausePlayIcon, "pausePlay", pausePlayIntent)
             .addAction(R.drawable.ic_skip_next, "next", nextMusicIntent)
@@ -113,14 +118,20 @@ class SoulSearchingNotificationBelowAndroid13(
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setShowActionsInCompactView(0, 1, 2, 3)
-                    .setMediaSession(state.mediaSessionToken)
+                    .setMediaSession(mediaSessionToken)
             )
-            .setLargeIcon(state.cover?.asAndroidBitmap())
+            .setLargeIcon(updateData.cover?.asAndroidBitmap())
             .build()
     }
 
-    override fun provideNotification(state: SoulSearchingAndroidNotificationState.Active): Notification =
-        buildNotification(state = state)
+    override fun provideNotification(
+        updateData: UpdateData,
+        mediaSessionToken: MediaSessionCompat.Token,
+    ): Notification =
+        buildNotification(
+            updateData = updateData,
+            mediaSessionToken = mediaSessionToken,
+        )
 
     companion object {
         const val STOP_RECEIVE = "STOP RECEIVE"

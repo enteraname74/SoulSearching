@@ -38,7 +38,7 @@ class MultiMusicBottomSheet(
     private fun Content(
         closeWithAnim: () -> Unit,
     ) {
-        val playbackState by playbackManager.mainState.collectAsState(PlaybackManagerState.Stopped)
+        val playbackState by playbackManager.state.collectAsState(PlaybackManagerState.Stopped)
 
         MultiMusicBottomSheetMenu(
             musicBottomSheetState = musicBottomSheetState,
@@ -58,7 +58,7 @@ class MultiMusicBottomSheet(
                 closeWithAnim()
                 onAddToQueue()
             },
-            isPlayedListEmpty = (playbackState as? PlaybackManagerState.Data)?.playedList?.isEmpty() != false,
+            isPlayedListEmpty = (playbackState as? PlaybackManagerState.Data)?.isEmpty() != false,
         )
     }
 }

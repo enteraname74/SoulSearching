@@ -38,8 +38,13 @@ interface SoulSearchingPlayer {
      */
     fun togglePlayPause() {
         try {
-            if (isPlaying()) pause()
-            else play()
+            when (isPlaying()) {
+                true -> pause()
+                false -> play()
+                null -> {
+                    // no-op
+                }
+            }
         } catch (_: Exception) {}
     }
 
@@ -61,7 +66,7 @@ interface SoulSearchingPlayer {
     /**
      * Check if the player is playing.
      */
-    fun isPlaying(): Boolean
+    fun isPlaying(): Boolean?
 
     /**
      * Dismiss the player.

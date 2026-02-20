@@ -3,6 +3,8 @@ package com.github.enteraname74.soulsearching.feature.player.domain
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
@@ -11,7 +13,6 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
@@ -34,7 +35,17 @@ import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /**
@@ -45,7 +56,6 @@ class PlayerViewModel(
     settings: SoulSearchingSettings,
     private val colorThemeManager: ColorThemeManager,
     private val commonLyricsUseCase: CommonLyricsUseCase,
-    private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
@@ -64,22 +74,6 @@ class PlayerViewModel(
             started = SharingStarted.Eagerly,
             initialValue = MultiSelectionState(emptyList()),
         )
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val currentMusicFavoriteStatusState: Flow<Boolean> =
-        playbackManager.mainState.flatMapLatest { playbackState ->
-            when (playbackState) {
-                is PlaybackManagerState.Data -> {
-                    isMusicInFavoritePlaylistUseCase(
-                        musicId = playbackState.currentMusic.musicId,
-                    )
-                }
-
-                PlaybackManagerState.Stopped -> {
-                    flowOf(false)
-                }
-            }
-        }
 
     val currentSongProgressionState = playbackManager.currentSongProgressionState
 
@@ -139,23 +133,32 @@ class PlayerViewModel(
         )
     )
 
+    private val playedList: Flow<PagingData<Music>> = playbackManager.paginatedList
+        .cachedIn(viewModelScope)
+
     val state: StateFlow<PlayerViewState> = combine(
-        playbackManager.mainState,
+        playbackManager.state,
         commonPlaylistUseCase.getAllWithMusics(),
-        currentMusicFavoriteStatusState,
-    ) { playbackMainState, playlists, isCurrentMusicInFavorite ->
+    ) { playbackMainState, playlists ->
+
+        println("PLAYBACK -- main state: $playbackMainState")
+
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
                     currentMusic = playbackMainState.currentMusic,
                     currentMusicIndex = playbackMainState.currentMusicIndex,
-                    isCurrentMusicInFavorite = isCurrentMusicInFavorite,
-                    playedList = playbackMainState.playedList,
+                    isCurrentMusicInFavorite = playbackMainState.isCurrentMusicInFavorite,
                     playerMode = playbackMainState.playerMode,
                     isPlaying = playbackMainState.isPlaying,
                     playlistsWithMusics = playlists,
-                    aroundSongs = getAroundSongs(playbackMainState.currentMusic),
+                    aroundSongs = listOfNotNull(
+                        playbackMainState.previous,
+                        playbackMainState.currentMusic,
+                        playbackMainState.next,
+                    ),
                     initPlayerWithMinimiseView = playbackMainState.minimisePlayer,
+                    playedList = playedList,
                 )
             }
 
@@ -211,34 +214,6 @@ class PlayerViewModel(
         (state.value as? PlayerViewState.Data)?.playlistsWithMusics ?: emptyList()
 
     /**
-     * Retrieve a list containing the current song and its around songs (previous and next).
-     * If no songs are played, return a list containing null. If the played list contains only
-     * the current song, it will return a list with only the current song.
-     */
-    private suspend fun getAroundSongs(
-        currentSong: Music,
-    ): List<Music?> {
-        val playerState = (state.value as? PlayerViewState.Data) ?: return emptyList()
-        if (!viewSettingsState.value.canSwipeCover) return emptyList()
-
-        val currentSongIndex = playerState.currentMusicIndex
-
-        if (currentSongIndex == -1) return emptyList()
-
-        if (playerState.playedList.size == 1) return listOf(
-            null,
-            currentSong,
-            null,
-        )
-
-        return listOf(
-            playbackManager.getPreviousMusic(),
-            currentSong,
-            playbackManager.getNextMusic()
-        )
-    }
-
-    /**
      * Set the current music cover.
      */
     fun setCurrentMusicCover(cover: ImageBitmap?) {
@@ -259,7 +234,9 @@ class PlayerViewModel(
      * Set the playing state.
      */
     fun togglePlayPause() {
-        playbackManager.togglePlayPause()
+        viewModelScope.launch {
+            playbackManager.togglePlayPause()
+        }
     }
 
     /**
@@ -267,7 +244,7 @@ class PlayerViewModel(
      */
     fun changePlayerMode() {
         CoroutineScope(Dispatchers.IO).launch {
-            playbackManager.changePlayerMode()
+            playbackManager.switchPlayerMode()
         }
     }
 

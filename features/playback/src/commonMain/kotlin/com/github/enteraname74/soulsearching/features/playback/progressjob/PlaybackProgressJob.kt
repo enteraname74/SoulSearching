@@ -1,14 +1,15 @@
 package com.github.enteraname74.soulsearching.features.playback.progressjob
 
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 internal class PlaybackProgressJob(
-    private val settings: SoulSearchingSettings,
     private val callback: PlaybackProgressJobCallbacks,
 ) {
     /**
@@ -20,6 +21,8 @@ internal class PlaybackProgressJob(
     private val _state: MutableStateFlow<Int> = MutableStateFlow(0)
     val state: StateFlow<Int> = _state.asStateFlow()
 
+    private val workScope = CoroutineScope(Dispatchers.IO)
+
     /**
      * Launch a duration job, used for updating the UI to indicate the current position
      * in the played music.
@@ -27,15 +30,12 @@ internal class PlaybackProgressJob(
     fun launchDurationJobIfNecessary() {
         setPosition(pos = callback.getMusicPosition())
         if (durationJob != null) return
-        durationJob = CoroutineScope(Dispatchers.IO).launch {
+        durationJob = workScope.launch {
             while (true) {
                 delay(DELAY_BEFORE_SENDING_VALUE)
                 val position = callback.getMusicPosition()
                 _state.value = position
-                settings.set(
-                    key = SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_POSITION_KEY.key,
-                    value = position,
-                )
+                callback.setNewProgress(position)
             }
         }
     }

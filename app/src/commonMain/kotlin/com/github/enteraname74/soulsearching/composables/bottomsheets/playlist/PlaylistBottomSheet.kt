@@ -37,7 +37,7 @@ class PlaylistBottomSheet(
     private fun Content(
         closeWithAnim: () -> Unit,
     ) {
-        val playbackState by playbackManager.mainState.collectAsState(PlaybackManagerState.Stopped)
+        val playbackState by playbackManager.state.collectAsState(PlaybackManagerState.Stopped)
 
         PlaylistBottomSheetMenu(
             selectedPlaylist = selectedPlaylist,

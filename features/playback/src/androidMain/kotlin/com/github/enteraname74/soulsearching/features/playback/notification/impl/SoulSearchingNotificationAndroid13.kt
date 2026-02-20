@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.features.playback.notification.imp
 
 import android.app.Notification
 import android.content.Context
+import android.support.v4.media.session.MediaSessionCompat
+import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 
 /**
  * Specification of a SoulSearchingNotification for Android 13 and above.
@@ -12,8 +14,14 @@ class SoulSearchingNotificationAndroid13(
     context = context,
 ) {
 
-    override fun provideNotification(state: SoulSearchingAndroidNotificationState.Active): Notification =
+    override fun provideNotification(
+        updateData: UpdateData,
+        mediaSessionToken: MediaSessionCompat.Token,
+    ): Notification =
         notificationBuilder
-            .soulNotificationBuilder(state)
+            .soulNotificationBuilder(
+                updateData = updateData,
+                mediaSessionToken = mediaSessionToken,
+            )
             .build()
 }

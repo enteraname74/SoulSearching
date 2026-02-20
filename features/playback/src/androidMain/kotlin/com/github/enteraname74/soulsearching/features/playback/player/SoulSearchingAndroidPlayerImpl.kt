@@ -20,7 +20,7 @@ import java.io.File
  * Implementation of the SoulSearchingAndroidPlayer
  */
 class SoulSearchingAndroidPlayerImpl(
-    private val context: Context,
+    context: Context,
 ) :
     SoulSearchingPlayer,
     MediaPlayer.OnCompletionListener,
@@ -85,13 +85,10 @@ class SoulSearchingAndroidPlayerImpl(
         launchMusic()
     }
 
-    override fun isPlaying(): Boolean {
-        return try {
+    override fun isPlaying(): Boolean? =
+        runCatching {
             player.isPlaying
-        } catch (e: IllegalStateException) {
-            false
-        }
-    }
+        }.getOrNull()
 
     override fun launchMusic() {
         try {
@@ -147,7 +144,7 @@ class SoulSearchingAndroidPlayerImpl(
     override fun getMusicPosition(): Int {
         return try {
             player.currentPosition
-        } catch (e: IllegalStateException) {
+        } catch (_: IllegalStateException) {
             0
         }
     }

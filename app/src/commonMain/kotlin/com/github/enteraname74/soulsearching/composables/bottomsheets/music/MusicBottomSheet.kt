@@ -60,7 +60,7 @@ class MusicBottomSheet(
         closeWithAnim: () -> Unit,
     ) {
         val coroutineScope = rememberCoroutineScope()
-        val playbackState by playbackManager.mainState.collectAsState(PlaybackManagerState.Stopped)
+        val playbackState by playbackManager.state.collectAsState(PlaybackManagerState.Stopped)
 
         MusicBottomSheetMenu(
             selectedMusic = selectedMusic,
@@ -94,8 +94,8 @@ class MusicBottomSheet(
                 onAddToQueue()
             },
             isInQuickAccess = selectedMusic.isInQuickAccess,
-            isCurrentlyPlaying = playbackManager.isSameMusicAsCurrentPlayedOne(selectedMusic.musicId),
-            isPlayedListEmpty = (playbackState as? PlaybackManagerState.Data)?.playedList?.isEmpty() != false,
+            isCurrentlyPlaying = (playbackState as? PlaybackManagerState.Data)?.currentMusic?.musicId == selectedMusic.musicId,
+            isPlayedListEmpty = (playbackState as? PlaybackManagerState.Data)?.isEmpty() != false,
         )
     }
 }

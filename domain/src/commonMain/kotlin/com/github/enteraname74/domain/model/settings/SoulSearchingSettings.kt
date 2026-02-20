@@ -1,6 +1,6 @@
 package com.github.enteraname74.domain.model.settings
 
-import com.github.enteraname74.domain.model.PlayerMode
+import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import kotlinx.coroutines.flow.Flow

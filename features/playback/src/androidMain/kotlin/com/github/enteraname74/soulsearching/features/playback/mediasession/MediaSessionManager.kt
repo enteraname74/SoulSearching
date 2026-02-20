@@ -16,12 +16,12 @@ import androidx.core.graphics.scale
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
+import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /**
  * Manage media session related things.
@@ -39,19 +39,19 @@ class MediaSessionManager(
         BitmapFactory.decodeResource(context.resources, R.drawable.new_notification_default)
             .scale(DEFAULT_NOTIFICATION_SIZE, DEFAULT_NOTIFICATION_SIZE, false)
 
-    suspend fun getUpdatedMediaSessionToken(
-        playbackState: PlaybackManagerState.Data,
+    fun getUpdatedMediaSessionToken(
+        updateData: UpdateData,
     ): MediaSessionCompat.Token {
         if (mediaSession == null) {
             init(
-                isPlaying = playbackState.isPlaying,
-                isFavorite = playbackState.isCurrentMusicInFavorite,
+                isPlaying = updateData.isPlaying,
+                isFavorite = updateData.isInFavorite,
             )
         } else {
-            updateMetadata(playbackState)
+            updateMetadata(updateData)
             updateState(
-                isPlaying = playbackState.isPlaying,
-                isFavorite = playbackState.isCurrentMusicInFavorite,
+                isPlaying = updateData.isPlaying,
+                isFavorite = updateData.isInFavorite,
             )
         }
         return mediaSession!!.sessionToken
@@ -80,7 +80,9 @@ class MediaSessionManager(
                 val keyEvent = mediaButtonIntent.extras?.get(Intent.EXTRA_KEY_EVENT) as KeyEvent
                 if (keyEvent.action == KeyEvent.ACTION_DOWN) {
                     when (keyEvent.keyCode) {
-                        KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY -> playbackManager.togglePlayPause()
+                        KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY -> runBlocking {
+                            playbackManager.togglePlayPause()
+                        }
                     }
                 }
                 return super.onMediaButtonEvent(mediaButtonIntent)
@@ -141,8 +143,8 @@ class MediaSessionManager(
     /**
      * Update media session data with information the current played song in the player view model.
      */
-    private suspend fun updateMetadata(playbackState: PlaybackManagerState.Data) {
-        val bitmap = playbackManager.currentCoverState.first()?.asAndroidBitmap() ?: standardNotificationBitmap
+    private fun updateMetadata(updateData: UpdateData) {
+        val bitmap = updateData.cover?.asAndroidBitmap() ?: standardNotificationBitmap
 
         mediaSession?.setMetadata(
             MediaMetadataCompat.Builder()
@@ -152,28 +154,32 @@ class MediaSessionManager(
                 )
                 .putLong(
                     MediaMetadataCompat.METADATA_KEY_DURATION,
-                    playbackState.currentMusic.duration
+                    updateData.music.duration
                 )
                 .putString(
                     MediaMetadata.METADATA_KEY_DISPLAY_TITLE,
-                    playbackState.currentMusic.name
+                    updateData.music.name
                 )
                 .putLong(
                     MediaMetadata.METADATA_KEY_TRACK_NUMBER,
-                    playbackState.currentMusicIndex.toLong()
+                    updateData.position
                 )
                 .putLong(
                     MediaMetadata.METADATA_KEY_NUM_TRACKS,
-                    playbackState.playedList.size.toLong()
+                    updateData.playedListSize
                 )
                 // For old versions of Android
                 .putString(
                     MediaMetadata.METADATA_KEY_TITLE,
-                    playbackState.currentMusic.name
+                    updateData.music.name
                 )
                 .putString(
                     MediaMetadata.METADATA_KEY_ARTIST,
-                    playbackState.currentMusic.artistsNames
+                    updateData.music.artistsNames
+                )
+                .putString(
+                    MediaMetadata.METADATA_KEY_ALBUM,
+                    updateData.music.album.albumName,
                 )
                 // A small bitmap for the artwork is also recommended
                 .putBitmap(

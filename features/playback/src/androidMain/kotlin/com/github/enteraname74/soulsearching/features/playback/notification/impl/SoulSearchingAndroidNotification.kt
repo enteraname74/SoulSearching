@@ -6,14 +6,14 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.compose.ui.graphics.ImageBitmap
+import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.soulsearching.features.playback.PlayerService
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaSessionManager
+import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.features.playback.notification.receivers.DeletedNotificationIntentReceiver
 import kotlinx.coroutines.Dispatchers
@@ -59,22 +59,26 @@ abstract class SoulSearchingAndroidNotification(
     private var hasServiceBeenLaunched: Boolean = false
 
     protected fun NotificationCompat.Builder.soulNotificationBuilder(
-        state: SoulSearchingAndroidNotificationState.Active
+        updateData: UpdateData,
+        mediaSessionToken: MediaSessionCompat.Token,
     ): NotificationCompat.Builder =
         this
             .setSmallIcon(R.drawable.app_logo)
-            .setContentTitle(state.music.name)
-            .setContentText(state.music.artistsNames)
+            .setContentTitle(updateData.music.name)
+            .setContentText(updateData.music.artistsNames)
             .setContentIntent(activityPendingIntent)
             .setDeleteIntent(deleteNotificationIntent)
             .setSilent(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
-                    .setMediaSession(state.mediaSessionToken)
+                    .setMediaSession(mediaSessionToken)
             )
 
-    abstract fun provideNotification(state: SoulSearchingAndroidNotificationState.Active): Notification
+    abstract fun provideNotification(
+        updateData: UpdateData,
+        mediaSessionToken: MediaSessionCompat.Token,
+    ): Notification
 
     private fun release() {
         val notificationManager =
@@ -83,22 +87,16 @@ abstract class SoulSearchingAndroidNotification(
     }
 
     override suspend fun updateNotification(
-        playbackManagerState: PlaybackManagerState.Data,
-        cover: ImageBitmap?,
+        updateData: UpdateData,
     ) {
         withContext(Dispatchers.Main) {
             val mediaSessionToken = mediaSessionManager.getUpdatedMediaSessionToken(
-                playbackState = playbackManagerState,
+                updateData = updateData,
             )
 
             notification = provideNotification(
-                state = SoulSearchingAndroidNotificationState.Active(
-                    music = playbackManagerState.currentMusic,
-                    cover = cover,
-                    isPlaying = playbackManagerState.isPlaying,
-                    mediaSessionToken = mediaSessionToken,
-                    isInFavorite = playbackManagerState.isCurrentMusicInFavorite,
-                )
+                updateData = updateData,
+                mediaSessionToken = mediaSessionToken,
             )
             if (!hasServiceBeenLaunched) {
                 PlayerService.launchService(context = context)

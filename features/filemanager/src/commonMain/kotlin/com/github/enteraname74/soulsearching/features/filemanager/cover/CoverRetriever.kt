@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.features.filemanager.cover
 
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.decodeToImageBitmap
 import com.github.enteraname74.domain.model.Cover
 
 class CoverRetriever(
@@ -25,8 +27,29 @@ class CoverRetriever(
                     else -> null
                 }
             }
-            else -> null
         }
+
+    suspend fun getCoverImageBitmap(cover: Cover): ImageBitmap? =
+        when(cover) {
+            is Cover.CoverFile -> {
+                when {
+                    cover.fileCoverId != null -> {
+                        coverFileManager.getCoverData(
+                            coverId = cover.fileCoverId!!,
+                        )?.decodeToImageBitmap()
+                    }
+                    cover.initialCoverPath != null -> {
+                        cachedCoverManager.getCachedImage(
+                            key = cover.initialCoverPath!!,
+                        ) ?: cachedCoverManager.fetchCoverOfMusicFile(
+                            musicPath = cover.initialCoverPath!!,
+                        )
+                    }
+                    else -> null
+                }
+            }
+        }
+
 
     suspend fun getAllUniqueCover(covers: List<Cover>): List<ByteArray> =
         covers.mapNotNull { getCoverByteArray(it) }.distinctBy { it.contentHashCode() }

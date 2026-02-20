@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 19,
-    "identityHash": "a200a235d06e2abb5a6d3e399a7cda55",
+    "identityHash": "e8b8a26ec9a4cc8397eee37c50e99bfc",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -442,36 +442,54 @@
       },
       {
         "tableName": "RoomPlayerMusic",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `playerMusicId` BLOB NOT NULL, FOREIGN KEY(`playerMusicId`) REFERENCES `RoomMusic`(`musicId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`musicId` BLOB NOT NULL, `playedListId` BLOB NOT NULL, `order` REAL NOT NULL, `shuffledOrder` REAL NOT NULL, `lastPlayedMillis` INTEGER, PRIMARY KEY(`musicId`, `playedListId`), FOREIGN KEY(`musicId`) REFERENCES `RoomMusic`(`musicId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playedListId`) REFERENCES `RoomPlayerPlayedList`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
+            "fieldPath": "musicId",
+            "columnName": "musicId",
+            "affinity": "BLOB",
             "notNull": true
           },
           {
-            "fieldPath": "playerMusicId",
-            "columnName": "playerMusicId",
+            "fieldPath": "playedListId",
+            "columnName": "playedListId",
             "affinity": "BLOB",
             "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shuffledOrder",
+            "columnName": "shuffledOrder",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastPlayedMillis",
+            "columnName": "lastPlayedMillis",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
           "columnNames": [
-            "id"
+            "musicId",
+            "playedListId"
           ]
         },
         "indices": [
           {
-            "name": "index_RoomPlayerMusic_playerMusicId",
+            "name": "index_RoomPlayerMusic_playedListId",
             "unique": false,
             "columnNames": [
-              "playerMusicId"
+              "playedListId"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomPlayerMusic_playerMusicId` ON `${TABLE_NAME}` (`playerMusicId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomPlayerMusic_playedListId` ON `${TABLE_NAME}` (`playedListId`)"
           }
         ],
         "foreignKeys": [
@@ -480,13 +498,65 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "playerMusicId"
+              "musicId"
             ],
             "referencedColumns": [
               "musicId"
             ]
+          },
+          {
+            "table": "RoomPlayerPlayedList",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "playedListId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
+      },
+      {
+        "tableName": "RoomPlayerPlayedList",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `playlistId` BLOB, `isMainPlaylist` INTEGER NOT NULL, `mode` TEXT NOT NULL, `state` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playlistId",
+            "columnName": "playlistId",
+            "affinity": "BLOB"
+          },
+          {
+            "fieldPath": "isMainPlaylist",
+            "columnName": "isMainPlaylist",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mode",
+            "columnName": "mode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "state",
+            "columnName": "state",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
       },
       {
         "tableName": "RoomFolder",
@@ -513,9 +583,15 @@
         }
       }
     ],
+    "views": [
+      {
+        "viewName": "CurrentPlayerMusicsView",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS WITH currentPlayedList AS (\n        SELECT *\n        FROM RoomPlayerPlayedList  \n        ORDER BY state != 'Cached'\n        LIMIT 1\n    )\n    SELECT \n        m.*,\n        CASE\n            WHEN c.mode = 'Shuffle'\n            THEN m.shuffledOrder\n            ELSE m.`order`\n        END AS currentOrder,\n        c.mode \n    FROM RoomPlayerMusic m\n    INNER JOIN currentPlayedList c ON m.playedListId = c.id\n    ORDER BY currentOrder"
+      }
+    ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a200a235d06e2abb5a6d3e399a7cda55')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e8b8a26ec9a4cc8397eee37c50e99bfc')"
     ]
   }
 }

@@ -30,9 +30,14 @@ kotlin {
             }
         }
         commonMain.dependencies {
-            implementation(project(":domain"))
             implementation(compose.ui)
             implementation(libs.koin.core)
+
+            implementation(libs.androidx.paging.compose)
+            implementation(libs.androidx.paging.common)
+
+            implementation(project(":domain"))
+            implementation(project(":filemanager"))
         }
 
         androidMain.dependencies {

@@ -32,7 +32,7 @@ class MultiPlaylistBottomSheet(
 
     @Composable
     private fun Content() {
-        val playbackState by playbackManager.mainState.collectAsState(PlaybackManagerState.Stopped)
+        val playbackState by playbackManager.state.collectAsState(PlaybackManagerState.Stopped)
 
         MultiPlaylistBottomSheetMenu(
             total = selectedIds.size,

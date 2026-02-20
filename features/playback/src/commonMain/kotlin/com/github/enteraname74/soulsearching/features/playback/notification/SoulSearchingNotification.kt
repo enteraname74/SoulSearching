@@ -1,12 +1,8 @@
 package com.github.enteraname74.soulsearching.features.playback.notification
 
-import androidx.compose.ui.graphics.ImageBitmap
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
+import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 
 interface SoulSearchingNotification {
-    suspend fun updateNotification(
-        playbackManagerState: PlaybackManagerState.Data,
-        cover: ImageBitmap?,
-    )
+    suspend fun updateNotification(updateData: UpdateData)
     fun dismissNotification()
 }

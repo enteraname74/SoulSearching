@@ -8,6 +8,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
@@ -28,8 +29,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PlayerPanelContent(
-    playbackManager: PlaybackManager = injectElement(),
-    playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
     playerState: PlayerViewState.Data,
     lyricsState: LyricsFetchState,
     onMoreClickedOnMusic: (Music) -> Unit,
@@ -41,10 +40,13 @@ fun PlayerPanelContent(
     containerColor: Color,
     isExpanded: Boolean,
     buttonColors: SoulButtonColors,
-    selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
     modifier: Modifier = Modifier,
+    playbackManager: PlaybackManager = injectElement(),
+    playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
+    selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val playedList = playerState.playedList.collectAsLazyPagingItems()
 
     val pages = listOf(
         TabData(
@@ -52,7 +54,7 @@ fun PlayerPanelContent(
             screen = {
                 PlayerListView(
                     playbackManager = playbackManager,
-                    playedList = playerState.playedList,
+                    playedList = playedList,
                     onMoreClickedOnMusic = onMoreClickedOnMusic,
                     contentColor = contentColor,
                     containerColor = containerColor,

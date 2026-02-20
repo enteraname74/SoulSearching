@@ -34,7 +34,7 @@ class MultiAlbumBottomSheet(
     private fun Content(
         closeWithAnim: () -> Unit,
     ) {
-        val playbackState by playbackManager.mainState.collectAsState(PlaybackManagerState.Stopped)
+        val playbackState by playbackManager.state.collectAsState(PlaybackManagerState.Stopped)
 
         MultiAlbumBottomSheetMenu(
             total = selectedIds.size,

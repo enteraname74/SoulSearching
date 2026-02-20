@@ -34,6 +34,7 @@ kotlin {
             implementation(libs.components.resources)
             implementation(libs.koin.core)
             implementation(libs.jaudiotagger)
+
             implementation(libs.coroutines.core)
             implementation(libs.coroutines.core.jvm)
             implementation(project(":core-ui"))
