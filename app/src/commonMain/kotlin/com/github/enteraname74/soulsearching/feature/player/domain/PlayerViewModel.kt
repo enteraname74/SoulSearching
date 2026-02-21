@@ -81,7 +81,12 @@ class PlayerViewModel(
             initialValue = MultiSelectionState(emptyList()),
         )
 
-    val currentSongProgressionState = playbackManager.currentSongProgressionState
+    val currentSongProgressionState: StateFlow<Int> = playbackManager.currentSongProgressionState
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = 0,
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val lyricsState: StateFlow<LyricsFetchState> = settings.getFlowOn(
@@ -181,8 +186,10 @@ class PlayerViewModel(
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
-    private val _addToPlaylistBottomSheet: MutableStateFlow<AddToPlaylistBottomSheet?> = MutableStateFlow(null)
-    val addToPlaylistBottomSheet: StateFlow<AddToPlaylistBottomSheet?> = _addToPlaylistBottomSheet.asStateFlow()
+    private val _addToPlaylistBottomSheet: MutableStateFlow<AddToPlaylistBottomSheet?> =
+        MutableStateFlow(null)
+    val addToPlaylistBottomSheet: StateFlow<AddToPlaylistBottomSheet?> =
+        _addToPlaylistBottomSheet.asStateFlow()
 
     private val _navigationState: MutableStateFlow<PlayerNavigationState> = MutableStateFlow(
         PlayerNavigationState.Idle,
@@ -219,7 +226,8 @@ class PlayerViewModel(
                 }
             }.collectLatest { state ->
                 val isCollapsed = playerViewManager.currentValue == BottomSheetStates.COLLAPSED
-                val canMaximize = state == PlayedListState.Playing || state == PlayedListState.Paused
+                val canMaximize =
+                    state == PlayedListState.Playing || state == PlayedListState.Paused
                 val shouldMaximize = canMaximize && isCollapsed
 
                 val shouldMinimize = state == PlayedListState.Loading && isCollapsed
@@ -325,7 +333,9 @@ class PlayerViewModel(
         viewModelScope.launch {
             val selectedIds = multiSelectionState.value.selectedIds
             if (selectedIds.size == 1) {
-                val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return@launch
+                val selectedMusic: Music =
+                    commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull()
+                        ?: return@launch
                 showMusicBottomSheet(selectedMusic = selectedMusic)
             } else {
                 showMultiMusicBottomSheet()

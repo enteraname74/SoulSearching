@@ -1,8 +1,8 @@
 package com.github.enteraname74.domain.model.settings
 
-import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
+import com.github.enteraname74.domain.model.player.PlayerMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -14,14 +14,6 @@ interface SoulSearchingSettings {
     fun <T> set(key: String, value: T)
     fun <T> get(settingElement: SoulSearchingSettingElement<T>): T
     fun <T> delete(element: SoulSearchingSettingElement<T>)
-
-    /**
-     * Set the current played music index and position to the settings.
-     */
-    fun saveCurrentMusicInformation(
-        currentMusicIndex: Int,
-        currentMusicPosition: Int
-    )
 
     fun <DataType> updateFlowValue(key: String) {
         SettingsFlowSystem.update<DataType>(key = key)
@@ -105,18 +97,6 @@ object SoulSearchingSettingsKeys {
     }
 
     object Player {
-        val PLAYER_MUSIC_INDEX_KEY = settingElementOf(
-            key = "PLAYER_MUSIC_INDEX",
-            defaultValue = -1,
-        )
-        val PLAYER_MUSIC_POSITION_KEY = settingElementOf(
-            key = "PLAYER_MUSIC_POSITION",
-            defaultValue = 0,
-        )
-        val PLAYER_MODE_KEY = settingElementOf(
-            key = "PLAYER_MODE_KEY",
-            defaultValue = PlayerMode.Normal,
-        )
         val IS_PLAYER_SWIPE_ENABLED = settingElementOf(
             key = "IS_PLAYER_SWIPE_ENABLED",
             defaultValue = true,

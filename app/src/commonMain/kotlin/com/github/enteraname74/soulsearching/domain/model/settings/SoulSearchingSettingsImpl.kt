@@ -1,9 +1,8 @@
 package com.github.enteraname74.soulsearching.domain.model.settings
 
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingElement
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 
@@ -46,16 +45,5 @@ class SoulSearchingSettingsImpl(
     override fun <T> delete(element: SoulSearchingSettingElement<T>) {
         settings.remove(key = element.key)
         updateFlowValue<T>(key = element.key)
-    }
-
-    /**
-     * Set the current played music index and position to the settings.
-     */
-    override fun saveCurrentMusicInformation(
-        currentMusicIndex: Int,
-        currentMusicPosition: Int
-    ) {
-        set(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_INDEX_KEY.key, currentMusicIndex)
-        set(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_POSITION_KEY.key, currentMusicPosition)
     }
 }

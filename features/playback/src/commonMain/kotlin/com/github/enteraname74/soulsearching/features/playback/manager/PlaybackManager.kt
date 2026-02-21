@@ -24,8 +24,6 @@ import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRet
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
-import com.github.enteraname74.soulsearching.features.playback.progressjob.PlaybackProgressJob
-import com.github.enteraname74.soulsearching.features.playback.progressjob.PlaybackProgressJobCallbacks
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,7 +40,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -61,22 +58,6 @@ class PlaybackManager(
 
     private val workScope = CoroutineScope(Dispatchers.IO)
     private var updateMusicNbPlayedJob: Job? = null
-    private val playbackProgressJob: PlaybackProgressJob = PlaybackProgressJob(
-        callback = object : PlaybackProgressJobCallbacks {
-            override fun isPlaying(): Boolean =
-                player.isPlaying() == true
-
-            override fun getMusicPosition(): Int =
-                player.getMusicPosition()
-
-            override suspend fun setNewProgress(progress: Int) {
-                settings.set(
-                    key = SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_POSITION_KEY.key,
-                    value = progress,
-                )
-            }
-        },
-    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val currentMusicFavoriteStatusState: Flow<Boolean> =
@@ -97,7 +78,8 @@ class PlaybackManager(
             )
     }
 
-    val currentSongProgressionState: StateFlow<Int> = playbackProgressJob.state
+    val currentSongProgressionState: Flow<Int> =
+        playerRepository.getCurrentProgress()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val currentCover: Flow<ImageBitmap?> =
@@ -177,6 +159,7 @@ class PlaybackManager(
         listenToState()
         playerListener()
         notificationListener()
+        handleProgress()
     }
 
     private fun init() {
@@ -186,7 +169,7 @@ class PlaybackManager(
             as we want to only load the played list, and not launch it immediately
              */
             playerRepository.setPlayedListState(PlayedListState.Loading)
-            startSeek = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_POSITION_KEY)
+            startSeek = playerRepository.getCurrentProgress().firstOrNull()
             isInit.value = true
         }
     }
@@ -212,6 +195,21 @@ class PlaybackManager(
         }
     }
 
+    private fun handleProgress() {
+        workScope.launch {
+            playerRepository.getCurrentMusic()
+                .map { it?.playedListId }
+                .distinctUntilChanged()
+                .collectLatest { _ ->
+                    println("PLAYBACK -- progress -- will update progress used")
+                    while (true) {
+                        delay(DELAY_BEFORE_SENDING_VALUE)
+                        playerRepository.setProgress(player.getProgress())
+                    }
+                }
+        }
+    }
+
     private fun playerListener() {
         launchWithInit {
             playerRepository.getCurrentMusic()
@@ -230,7 +228,6 @@ class PlaybackManager(
                             PlayedListState.Playing -> {
                                 player.setMusic(currentMusic)
                                 player.launchMusic()
-                                playbackProgressJob.launchDurationJobIfNecessary()
                             }
 
                             PlayedListState.Paused, PlayedListState.Loading -> {
@@ -240,7 +237,6 @@ class PlaybackManager(
                                     seekTo = startSeek ?: 0,
                                 )
                                 startSeek = 0
-                                playbackProgressJob.launchDurationJobIfNecessary()
                             }
 
                             PlayedListState.Cached -> {
@@ -284,14 +280,12 @@ class PlaybackManager(
                     PlayedListState.Playing -> {
                         if (player.isPlaying() == false) {
                             player.play()
-                            playbackProgressJob.launchDurationJobIfNecessary()
                         }
                     }
 
                     PlayedListState.Paused -> {
                         if (player.isPlaying() == true) {
                             player.pause()
-                            playbackProgressJob.launchDurationJobIfNecessary()
                         }
                     }
 
@@ -311,14 +305,13 @@ class PlaybackManager(
      * Retrieves the current position in the current played song in milliseconds.
      */
     fun getMusicPosition(): Int =
-        player.getMusicPosition()
+        player.getProgress()
 
     /**
      * Stop the playback.
      * It will stop the service, dismiss the player and reset the player view model data.
      */
     suspend fun stopPlayback(resetPlayedList: Boolean = true) {
-        playbackProgressJob.releaseDurationJob()
         if (resetPlayedList) {
             playerRepository.deleteCurrentPlayedList()
         } else {
@@ -354,7 +347,6 @@ class PlaybackManager(
     fun seekToPosition(position: Int) {
         player.seekToPosition(position)
         updateNotification()
-        playbackProgressJob.launchDurationJobIfNecessary()
     }
 
     fun handleKeyEvent(event: KeyEvent) {
@@ -427,7 +419,6 @@ class PlaybackManager(
     }
 
     suspend fun setAndPlayMusic(music: Music) {
-        playbackProgressJob.setPosition(pos = 0)
         playerRepository.setCurrent(music.musicId)
         launchMusicCount(musicId = music.musicId)
     }
@@ -557,5 +548,6 @@ class PlaybackManager(
     companion object {
         private const val REWIND_THRESHOLD: Long = 5_000
         private const val WAIT_TIME_BEFORE_UPDATE_NB_PLAYED: Long = 3_000
+        private const val DELAY_BEFORE_SENDING_VALUE: Long = 200L
     }
 }

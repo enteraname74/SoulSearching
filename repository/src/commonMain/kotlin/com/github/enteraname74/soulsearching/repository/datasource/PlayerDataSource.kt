@@ -25,6 +25,7 @@ interface PlayerDataSource {
     fun getCurrentState(): Flow<PlayedListState?>
     fun getCurrentPlayedList(): Flow<PlayerPlayedList?>
     fun getCurrentPosition(): Flow<Int?>
+    fun getCurrentProgress(): Flow<Int>
     suspend fun upsertAllMusics(playerMusics: List<PlayerMusic>)
     suspend fun upsertPlayedList(
         playedList: PlayerPlayedList,
@@ -48,6 +49,7 @@ interface PlayerDataSource {
     suspend fun setState(state: PlayedListState)
 
     suspend fun setCurrent(musicId: UUID)
+    suspend fun setProgress(progress: Int)
 
     suspend fun switchPlayerMode()
 

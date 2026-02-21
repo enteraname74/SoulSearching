@@ -6,6 +6,7 @@ import com.github.enteraname74.localdb.converters.LocalDateTimeConverters
 import com.github.enteraname74.localdb.dao.*
 import com.github.enteraname74.localdb.model.*
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
+import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
 import com.github.enteraname74.localdb.model.player.RoomPlayerPlayedList
 import com.github.enteraname74.localdb.view.CurrentPlayerMusicsView
 
@@ -20,6 +21,7 @@ import com.github.enteraname74.localdb.view.CurrentPlayerMusicsView
         RoomMusicPlaylist::class,
         RoomMusicArtist::class,
         RoomPlayerMusic::class,
+        RoomPlayerMusicProgress::class,
         RoomPlayerPlayedList::class,
         RoomFolder::class
     ],
@@ -40,6 +42,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val playerPlayedListDao: PlayerPlayedListDao
     abstract val folderDao: FolderDao
     abstract val coverDao: CoverDao
+    abstract val playerMusicProgressDao: PlayerMusicProgressDao
 }
 
 // The Room compiler generates the `actual` implementations.

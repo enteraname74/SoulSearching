@@ -50,6 +50,13 @@ class PlayerRepositoryImpl(
     override fun getCurrentPosition(): Flow<Int?> =
         playerDataSource.getCurrentPosition()
 
+    override fun getCurrentProgress(): Flow<Int> =
+        playerDataSource.getCurrentProgress()
+
+    override suspend fun setProgress(progress: Int) {
+        playerDataSource.setProgress(progress)
+    }
+
     override suspend fun deleteAll(musicIds: List<UUID>) {
         withContext(workScope) {
             playerDataSource.deleteAll(musicIds)

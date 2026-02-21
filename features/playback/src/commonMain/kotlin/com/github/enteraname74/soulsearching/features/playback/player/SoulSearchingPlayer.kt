@@ -61,7 +61,7 @@ interface SoulSearchingPlayer {
     /**
      * Seek to a given position in the current played music.
      */
-    fun seekToPosition(position: Int)
+    fun seekToPosition(millis: Int)
 
     /**
      * Check if the player is playing.
@@ -74,9 +74,9 @@ interface SoulSearchingPlayer {
     fun dismiss()
 
     /**
-     * Retrieve the current position in the current played song in milliseconds.
+     * Retrieve the progress in the current played song in milliseconds.
      */
-    fun getMusicPosition(): Int
+    fun getProgress(): Int
 
     /**
      * Retrieve the current music duration.

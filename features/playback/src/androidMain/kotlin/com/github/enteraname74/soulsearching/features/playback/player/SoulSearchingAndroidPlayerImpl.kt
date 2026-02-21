@@ -129,9 +129,9 @@ class SoulSearchingAndroidPlayerImpl(
         }
     }
 
-    override fun seekToPosition(position: Int) {
+    override fun seekToPosition(millis: Int) {
         try {
-            player.seekTo(position)
+            player.seekTo(millis)
         } catch (_: IllegalStateException) {
 
         }
@@ -141,7 +141,7 @@ class SoulSearchingAndroidPlayerImpl(
         pause()
     }
 
-    override fun getMusicPosition(): Int {
+    override fun getProgress(): Int {
         return try {
             player.currentPosition
         } catch (_: IllegalStateException) {

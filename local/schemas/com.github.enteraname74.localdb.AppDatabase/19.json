@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 19,
-    "identityHash": "cb74e21c079481a7f78b08b6e3cfa814",
+    "identityHash": "3d29336d5d2c83a7e1ae05d67a05e9e3",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -442,7 +442,7 @@
       },
       {
         "tableName": "RoomPlayerMusic",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`musicId` BLOB NOT NULL, `playedListId` BLOB NOT NULL, `order` REAL NOT NULL, `shuffledOrder` REAL NOT NULL, `lastPlayedMillis` INTEGER, PRIMARY KEY(`musicId`, `playedListId`), FOREIGN KEY(`musicId`) REFERENCES `RoomMusic`(`musicId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playedListId`) REFERENCES `RoomPlayerPlayedList`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`musicId` BLOB NOT NULL, `playedListId` BLOB NOT NULL, `order` REAL NOT NULL, `shuffledOrder` REAL NOT NULL, `lastPlayedMillis` INTEGER, `id` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`musicId`) REFERENCES `RoomMusic`(`musicId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playedListId`) REFERENCES `RoomPlayerPlayedList`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "musicId",
@@ -472,13 +472,18 @@
             "fieldPath": "lastPlayedMillis",
             "columnName": "lastPlayedMillis",
             "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "musicId",
-            "playedListId"
+            "id"
           ]
         },
         "indices": [
@@ -502,6 +507,71 @@
             ],
             "referencedColumns": [
               "musicId"
+            ]
+          },
+          {
+            "table": "RoomPlayerPlayedList",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "playedListId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "RoomPlayerMusicProgress",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playedListId` BLOB NOT NULL, `playerMusicId` TEXT NOT NULL, `progress` INTEGER NOT NULL, PRIMARY KEY(`playedListId`), FOREIGN KEY(`playerMusicId`) REFERENCES `RoomPlayerMusic`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playedListId`) REFERENCES `RoomPlayerPlayedList`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "playedListId",
+            "columnName": "playedListId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playerMusicId",
+            "columnName": "playerMusicId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "progress",
+            "columnName": "progress",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "playedListId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_RoomPlayerMusicProgress_playedListId",
+            "unique": false,
+            "columnNames": [
+              "playedListId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomPlayerMusicProgress_playedListId` ON `${TABLE_NAME}` (`playedListId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "RoomPlayerMusic",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "playerMusicId"
+            ],
+            "referencedColumns": [
+              "id"
             ]
           },
           {
@@ -591,7 +661,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cb74e21c079481a7f78b08b6e3cfa814')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3d29336d5d2c83a7e1ae05d67a05e9e3')"
     ]
   }
 }
