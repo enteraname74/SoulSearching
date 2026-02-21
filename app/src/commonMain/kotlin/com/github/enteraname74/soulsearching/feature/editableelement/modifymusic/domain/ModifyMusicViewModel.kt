@@ -225,7 +225,6 @@ class ModifyMusicViewModel(
                 )
             )
 
-            playbackManager.updateMusic(updatedMusic)
             if (
                 playbackManager.isSameMusicAsCurrentPlayedOne(musicId = updatedMusic.musicId)
                 && state.editableElement.newCover != null

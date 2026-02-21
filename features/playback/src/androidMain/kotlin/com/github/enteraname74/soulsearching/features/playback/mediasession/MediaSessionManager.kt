@@ -47,6 +47,7 @@ class MediaSessionManager(
                 isPlaying = updateData.isPlaying,
                 isFavorite = updateData.isInFavorite,
             )
+            updateMetadata(updateData)
         } else {
             updateMetadata(updateData)
             updateState(

@@ -18,19 +18,28 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyartis
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistDestination
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateArtistUseCase
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import java.util.UUID
 
 class ModifyArtistViewModel(
     private val commonArtistUseCase: CommonArtistUseCase,
     private val commonCoverUseCase: CommonCoverUseCase,
     private val updateArtistUseCase: UpdateArtistUseCase,
     private val loadingManager: LoadingManager,
-    private val playbackManager: PlaybackManager,
     private val coverRetriever: CoverRetriever,
     destination: ModifyArtistDestination,
 ) : ViewModel() {
@@ -157,13 +166,6 @@ class ModifyArtistViewModel(
                 )
 
                 updateArtistUseCase(newArtistWithMusicsInformation = newArtistInformation)
-
-                val newArtistWithMusics: ArtistWithMusics = commonArtistUseCase.getArtistWithMusic(
-                    artistId = newArtistInformation.artist.artistId,
-                ).first() ?: return@withLoading
-
-                // We need to update the artist's songs that are in the played list.
-                for (music in newArtistWithMusics.musics) playbackManager.updateMusic(music)
             }
 
             _navigationState.value = ModifyArtistNavigationState.Back

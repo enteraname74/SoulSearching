@@ -61,11 +61,14 @@ interface PlayerMusicDao {
         """
             SELECT * FROM CurrentPlayerMusicsView 
             WHERE currentOrder > :order 
-            ORDER BY currentOrder ASC
+            AND musicId NOT IN (:musicIdsToSkip)
             LIMIT 1
         """
     )
-    fun getNextMusic(order: Double): Flow<RoomCompletePlayerMusic?>
+    fun getNextMusic(
+        order: Double,
+        musicIdsToSkip: List<UUID>,
+    ): Flow<RoomCompletePlayerMusic?>
 
     @Transaction
     @Query(
@@ -91,10 +94,14 @@ interface PlayerMusicDao {
     @Transaction
     @Query(
         """
-            SELECT * FROM CurrentPlayerMusicsView LIMIT 1
+            SELECT * FROM CurrentPlayerMusicsView 
+            WHERE musicId NOT IN (:musicIdsToSkip)
+            LIMIT 1
         """
     )
-    fun getFirst(): Flow<RoomCompletePlayerMusic?>
+    fun getFirst(
+        musicIdsToSkip: List<UUID>
+    ): Flow<RoomCompletePlayerMusic?>
 
     @Upsert
     suspend fun upsertAll(playerMusics: List<RoomPlayerMusic>)
@@ -156,7 +163,7 @@ interface PlayerMusicDao {
                 SELECT currentOrder
                 FROM CurrentPlayerMusicsView
                 WHERE musicId = :musicId
-            );
+            )
         """
     )
     fun getPositionInList(musicId: UUID): Flow<Int>

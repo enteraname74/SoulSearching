@@ -15,7 +15,9 @@ interface PlayerDataSource {
     fun getAllPaginated(): Flow<PagingData<Music>>
     fun getSize(): Flow<Int>
     fun getCurrentMusic(): Flow<PlayerMusic?>
-    fun getNextMusic(): Flow<PlayerMusic?>
+    fun getNextMusic(
+        musicIdsToSkip: List<UUID> = emptyList()
+    ): Flow<PlayerMusic?>
     fun getLastMusic(): Flow<PlayerMusic?>
     fun getPreviousMusic(): Flow<PlayerMusic?>
 
@@ -24,8 +26,10 @@ interface PlayerDataSource {
     fun getCurrentPlayedList(): Flow<PlayerPlayedList?>
     fun getCurrentPosition(): Flow<Int?>
     suspend fun upsertAllMusics(playerMusics: List<PlayerMusic>)
-    suspend fun upsertPlayedList(playedList: PlayerPlayedList)
-    suspend fun deleteMusic(musicId: UUID)
+    suspend fun upsertPlayedList(
+        playedList: PlayerPlayedList,
+        playerMusics: List<PlayerMusic>,
+    )
     suspend fun deleteAll(musicIds: List<UUID>)
     suspend fun deletePlayedList(playedListId: UUID)
 

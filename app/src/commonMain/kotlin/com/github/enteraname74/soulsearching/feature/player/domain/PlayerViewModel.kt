@@ -9,6 +9,7 @@ import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.lyrics.MusicLyrics
+import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
@@ -25,7 +26,9 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
@@ -40,10 +43,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -53,6 +58,7 @@ import kotlinx.coroutines.launch
  */
 class PlayerViewModel(
     private val playbackManager: PlaybackManager,
+    private val playerViewManager: PlayerViewManager,
     settings: SoulSearchingSettings,
     private val colorThemeManager: ColorThemeManager,
     private val commonLyricsUseCase: CommonLyricsUseCase,
@@ -140,9 +146,6 @@ class PlayerViewModel(
         playbackManager.state,
         commonPlaylistUseCase.getAllWithMusics(),
     ) { playbackMainState, playlists ->
-
-        println("PLAYBACK -- main state: $playbackMainState")
-
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
@@ -157,7 +160,6 @@ class PlayerViewModel(
                         playbackMainState.currentMusic,
                         playbackMainState.next,
                     ),
-                    initPlayerWithMinimiseView = playbackMainState.minimisePlayer,
                     playedList = playedList,
                 )
             }
@@ -208,6 +210,28 @@ class PlayerViewModel(
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
+
+        viewModelScope.launch {
+            playbackManager.state.map {
+                when (it) {
+                    is PlaybackManagerState.Data -> it.currentState
+                    PlaybackManagerState.Stopped -> null
+                }
+            }.collectLatest { state ->
+                val isCollapsed = playerViewManager.currentValue == BottomSheetStates.COLLAPSED
+                val canMaximize = state == PlayedListState.Playing || state == PlayedListState.Paused
+                val shouldMaximize = canMaximize && isCollapsed
+
+                val shouldMinimize = state == PlayedListState.Loading && isCollapsed
+                val shouldDismiss = state == PlayedListState.Cached || state == null
+
+                when {
+                    shouldDismiss -> playerViewManager.animateTo(BottomSheetStates.COLLAPSED)
+                    shouldMaximize -> playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+                    shouldMinimize -> playerViewManager.animateTo(BottomSheetStates.MINIMISED)
+                }
+            }
+        }
     }
 
     private fun getPlaylistsWithMusics(): List<PlaylistWithMusics> =

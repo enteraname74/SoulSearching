@@ -160,9 +160,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) {
-            runBlocking {
-                playbackManager.stopPlayback(resetPlayedList = false)
-            }
+            // TODO maybe not useful anymore?
             unloadKoinModules(appModule)
             loadKoinModules(appModule)
         }

@@ -81,4 +81,20 @@ interface PlayerPlayedListDao {
         """
     )
     suspend fun deleteCurrent()
+
+    @Query(
+        """
+            DELETE FROM RoomPlayerPlayedList 
+            WHERE playlistId IS NULL
+        """
+    )
+    suspend fun deleteMainAndSearch()
+
+    @Query(
+        """
+            DELETE FROM RoomPlayerPlayedList 
+            WHERE playlistId = :playlistId
+        """
+    )
+    suspend fun deletePlaylist(playlistId: UUID)
 }

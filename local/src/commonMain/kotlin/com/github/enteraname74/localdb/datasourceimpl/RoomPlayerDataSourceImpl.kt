@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import java.util.UUID
 import kotlin.time.Clock
 
@@ -56,21 +57,24 @@ internal class RoomPlayerDataSourceImpl(
         playerMusicDao.getSize()
 
     override fun getCurrentMusic(): Flow<PlayerMusic?> {
-        return playerMusicDao.getCurrentMusic().map {
-            val all = playerPlayedListDao.getAll()
-            println("PLAYBACK -- DAO -- all lists: ${all}")
+        return playerMusicDao.getCurrentMusic().mapNotNull {
             it?.toPlayerMusic()
         }
     }
 
 
-    override fun getNextMusic(): Flow<PlayerMusic?> =
+    override fun getNextMusic(
+        musicIdsToSkip: List<UUID>,
+    ): Flow<PlayerMusic?> =
         withGlobalState { data ->
             when {
                 data.mode == PlayerMode.Loop -> playerMusicDao.getCurrentMusic()
                 data.currentOrder == null -> flowOf(null)
-                data.nextIsFirst -> playerMusicDao.getFirst()
-                else -> playerMusicDao.getNextMusic(order = data.currentOrder)
+                data.nextIsFirst -> playerMusicDao.getFirst(musicIdsToSkip)
+                else -> playerMusicDao.getNextMusic(
+                    order = data.currentOrder,
+                    musicIdsToSkip = musicIdsToSkip,
+                )
             }
         }.map { it?.toPlayerMusic() }
 
@@ -99,12 +103,20 @@ internal class RoomPlayerDataSourceImpl(
         )
     }
 
-    override suspend fun deleteMusic(musicId: UUID) {
-        playerMusicDao.delete(musicId = musicId)
-    }
-
     override suspend fun deleteAll(musicIds: List<UUID>) {
-        playerMusicDao.deleteAll(musicIds)
+        val currentId = playerMusicDao.getCurrentMusic().firstOrNull()?.playerMusic?.musicId ?: return
+        if (currentId in musicIds) {
+            val next = getNextMusic().firstOrNull()?.music?.musicId ?: return
+            println("PLAYBACK -- AFTER NEXT")
+            setCurrent(next)
+        }
+        appDatabase.useWriterConnection {
+            playerMusicDao.deleteAll(musicIds)
+            val totalAfterDeletion = playerMusicDao.getSize().firstOrNull() ?: 0
+            if (totalAfterDeletion == 0) {
+                deleteCurrentPlayedList()
+            }
+        }
     }
 
     override fun getCurrentMode(): Flow<PlayerMode?> =
@@ -114,7 +126,9 @@ internal class RoomPlayerDataSourceImpl(
         playerPlayedListDao.getCurrentState()
 
     override fun getCurrentPlayedList(): Flow<PlayerPlayedList?> =
-        playerPlayedListDao.getCurrentPlayedList().map { it?.toPlayerPlayedList() }
+        playerPlayedListDao.getCurrentPlayedList().map {
+            it?.toPlayerPlayedList()
+        }
 
     override fun getCurrentPosition(): Flow<Int?> =
         playerMusicDao.getCurrentMusic().flatMapLatest { currentMusic ->
@@ -129,12 +143,26 @@ internal class RoomPlayerDataSourceImpl(
             }
         }
 
-    override suspend fun upsertPlayedList(playedList: PlayerPlayedList) {
+    override suspend fun upsertPlayedList(
+        playedList: PlayerPlayedList,
+        playerMusics: List<PlayerMusic>,
+    ) {
         appDatabase.useWriterConnection {
+            // We delete the same played list if any
+            playedList.playlistId?.let {
+                playerPlayedListDao.deletePlaylist(playlistId = it)
+            }
+            // We will also delete the main list and/or search lists
+            playerPlayedListDao.deleteMainAndSearch()
+
             // Hide all played list
             playerPlayedListDao.cacheAll()
+
             // Move focus to the new one
             playerPlayedListDao.upsert(playedList.toRoomPlayerPlayedList())
+            playerMusicDao.upsertAll(
+                playerMusics = playerMusics.map { it.toRoomPlayerMusic() }
+            )
         }
     }
 
@@ -239,6 +267,7 @@ internal class RoomPlayerDataSourceImpl(
                     // Only need to move the mode
                     playerPlayedListDao.setMode(nextMode)
                 }
+
                 PlayerMode.Shuffle -> {
                     // Need to shuffle the musics
                     shuffle()
@@ -270,7 +299,7 @@ internal class RoomPlayerDataSourceImpl(
     private fun <T> withGlobalState(transform: suspend (GlobalState) -> Flow<T>): Flow<T> =
         combine(
             playerMusicDao.getCurrentMusic(),
-            playerMusicDao.getFirst(),
+            playerMusicDao.getFirst(emptyList()),
             playerMusicDao.getLast(),
             playerPlayedListDao.getCurrentMode(),
         ) { current, first, last, mode ->

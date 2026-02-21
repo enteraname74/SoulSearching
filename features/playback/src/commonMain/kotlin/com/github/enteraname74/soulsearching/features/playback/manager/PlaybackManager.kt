@@ -32,6 +32,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -80,8 +81,8 @@ class PlaybackManager(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val currentMusicFavoriteStatusState: Flow<Boolean> =
         playerRepository.getCurrentMusic().flatMapLatest { current ->
-            current?.let {
-                isMusicInFavoritePlaylistUseCase(musicId = current.music.musicId)
+            current?.music?.musicId?.let {
+                isMusicInFavoritePlaylistUseCase(musicId = it)
             } ?: flowOf(false)
         }
 
@@ -97,10 +98,12 @@ class PlaybackManager(
     }
 
     val currentSongProgressionState: StateFlow<Int> = playbackProgressJob.state
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val currentCover: Flow<ImageBitmap?> = playerRepository.getCurrentMusic().mapNotNull { currentMusic ->
-        currentMusic?.music?.cover?.let { coverRetriever.getCoverImageBitmap(it) }
-    }
+    private val currentCover: Flow<ImageBitmap?> =
+        playerRepository.getCurrentMusic().map { currentMusic ->
+            currentMusic?.music?.cover?.let { coverRetriever.getCoverImageBitmap(it) }
+        }
 
     val paginatedList: Flow<PagingData<Music>> = playerRepository.getAllPaginated()
 
@@ -120,8 +123,6 @@ class PlaybackManager(
             val previous: Music? = (array[7] as PlayerMusic?)?.music
             val currentPlayedList: PlayerPlayedList? = array[1] as PlayerPlayedList?
 
-            println("PLAYBACK -- STATE -- playedListState: ${currentPlayedList?.state}")
-
             if (currentMusic == null || currentPlayedList == null || currentPlayedList.state == PlayedListState.Cached) {
                 PlaybackManagerState.Stopped
             } else {
@@ -130,38 +131,96 @@ class PlaybackManager(
                     next = next,
                     previous = previous,
                     isCurrentMusicInFavorite = array[5] as Boolean,
-                    currentMusicIndex = ((array[4] as Int?) ?: 0 )- 1,
+                    currentMusicIndex = ((array[4] as Int?) ?: 0) - 1,
                     listSize = array[3] as Int,
                     playerMode = currentPlayedList.mode,
                     isPlaying = currentPlayedList.state == PlayedListState.Playing,
-                    minimisePlayer = currentPlayedList.state == PlayedListState.Loading,
+                    currentState = currentPlayedList.state,
                 )
             }
         }.distinctUntilChanged()
 
+    private val notificationDataFlow: Flow<UpdateData?> =
+        combine(
+            playerRepository.getCurrentMusic(),
+            playerRepository.getCurrentPlayedList(),
+            currentCover,
+            playerRepository.getSize(),
+            playerRepository.getCurrentPosition(),
+            currentMusicFavoriteStatusState,
+        ) { array ->
+            val currentMusic: Music? = (array[0] as PlayerMusic?)?.music
+            val currentPlayedList: PlayerPlayedList? = array[1] as PlayerPlayedList?
+
+            if (currentMusic == null || currentPlayedList == null) {
+                null
+            } else {
+                UpdateData(
+                    music = currentMusic,
+                    isPlaying = currentPlayedList.state == PlayedListState.Playing,
+                    cover = array[2] as ImageBitmap?,
+                    isInFavorite = array[5] as Boolean,
+                    playedListSize = (array[3] as Int).toLong(),
+                    position = (array[4] as Int?)?.toLong() ?: 1L,
+                )
+            }
+        }.distinctUntilChanged()
+
+    private var isInit: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private var startSeek: Int? = null
+
     init {
         player.registerListener(this)
+        init()
 
+        listenPlayerVolume()
+        listenToState()
+        playerListener()
+        notificationListener()
+    }
+
+    private fun init() {
+        workScope.launch {
+            /*
+            At launch, we will set the current played list (if any) state to be Loading,
+            as we want to only load the played list, and not launch it immediately
+             */
+            playerRepository.setPlayedListState(PlayedListState.Loading)
+            startSeek = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_POSITION_KEY)
+            isInit.value = true
+        }
+    }
+
+    private fun listenPlayerVolume() {
         workScope.launch {
             settings.getFlowOn(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME)
                 .collectLatest { volume ->
                     player.setPlayerVolume(volume)
                 }
         }
+    }
 
-        listenToState()
-        playerListener()
-        notificationListener()
+    private fun launchWithInit(
+        block: suspend () -> Unit,
+    ) {
+        workScope.launch {
+            isInit.collectLatest { isInit ->
+                if (isInit) {
+                    block()
+                }
+            }
+        }
     }
 
     private fun playerListener() {
-        workScope.launch {
+        launchWithInit {
             playerRepository.getCurrentMusic()
                 .map { it?.music?.path }
                 .distinctUntilChanged()
                 .collectLatest { currentMusicPath ->
                     println("PLAYBACK -- new music path to set: $currentMusicPath")
-                    val currentMusic: Music? = playerRepository.getCurrentMusic().firstOrNull()?.music
+                    val currentMusic: Music? =
+                        playerRepository.getCurrentMusic().firstOrNull()?.music
                     if (currentMusicPath == null || currentMusic == null) {
                         player.dismiss()
                     } else {
@@ -176,7 +235,11 @@ class PlaybackManager(
 
                             PlayedListState.Paused, PlayedListState.Loading -> {
                                 player.setMusic(currentMusic)
-                                player.onlyLoadMusic(0)
+                                // TODO PLAYER: what if the current music no longer exist at app launch? Maybe move to DB to listen to changes, in a proper table
+                                player.onlyLoadMusic(
+                                    seekTo = startSeek ?: 0,
+                                )
+                                startSeek = 0
                                 playbackProgressJob.launchDurationJobIfNecessary()
                             }
 
@@ -193,57 +256,30 @@ class PlaybackManager(
         }
     }
 
-    data class NotificationData(
-        val currentMusic: PlayerMusic?,
-        val currentPlayedList: PlayerPlayedList?,
-        val currentCover: ImageBitmap?,
-        val isInFavorite: Boolean,
-        val listSize: Long,
-        val position: Long,
-    )
-
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun notificationListener() {
-        workScope.launch {
-            combine(
-                playerRepository.getCurrentMusic(),
-                playerRepository.getCurrentPlayedList(),
-                currentCover,
-                playerRepository.getSize(),
-                playerRepository.getCurrentPosition(),
-                currentMusicFavoriteStatusState,
-            ) { array ->
-                NotificationData(
-                    currentMusic = array[0] as PlayerMusic?,
-                    currentPlayedList = array[1] as PlayerPlayedList?,
-                    currentCover = array[2] as ImageBitmap?,
-                    isInFavorite = array[5] as Boolean,
-                    listSize = (array[3] as Int).toLong(),
-                    position = (array[4] as Int?)?.toLong() ?: 1L,
-                )
-            }.collectLatest { data ->
-                if (data.currentMusic == null || data.currentPlayedList == null) {
-                    notification.dismissNotification()
+        launchWithInit {
+            notificationDataFlow.collectLatest { data ->
+                if (data == null) {
+                    notification.dismiss()
                 } else {
-                    notification.updateNotification(
-                        updateData = UpdateData(
-                            cover = data.currentCover,
-                            music = data.currentMusic.music,
-                            position = data.position,
-                            playedListSize = data.listSize,
-                            isPlaying = data.currentPlayedList.state == PlayedListState.Playing,
-                            isInFavorite = data.isInFavorite,
-                        )
-                    )
+                    notification.update(updateData = data)
                 }
             }
         }
     }
 
-    private fun listenToState() {
+    private fun updateNotification() {
         workScope.launch {
-            playerRepository.getCurrentState().collectLatest { state ->
-                println("PLAYBACK -- state: $state")
+            val data: UpdateData = notificationDataFlow.firstOrNull() ?: return@launch
+            notification.update(data)
+        }
+    }
+
+    private fun listenToState() {
+        launchWithInit {
+            playerRepository.getCurrentState().distinctUntilChanged().collectLatest { state ->
+                println("PLAYBACK -- listenToState -- state: $state")
                 when (state) {
                     PlayedListState.Playing -> {
                         if (player.isPlaying() == false) {
@@ -262,6 +298,7 @@ class PlaybackManager(
                     PlayedListState.Cached, null -> {
                         player.dismiss()
                     }
+
                     else -> {
                         // no-op
                     }
@@ -282,7 +319,6 @@ class PlaybackManager(
      */
     suspend fun stopPlayback(resetPlayedList: Boolean = true) {
         playbackProgressJob.releaseDurationJob()
-        updateCover(cover = null)
         if (resetPlayedList) {
             playerRepository.deleteCurrentPlayedList()
         } else {
@@ -317,6 +353,7 @@ class PlaybackManager(
      */
     fun seekToPosition(position: Int) {
         player.seekToPosition(position)
+        updateNotification()
         playbackProgressJob.launchDurationJobIfNecessary()
     }
 
@@ -348,7 +385,8 @@ class PlaybackManager(
         val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
 
         if (playerMode == PlayerMode.Loop) {
-            val currentMusicId: UUID = playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
+            val currentMusicId: UUID =
+                playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
 
             player.seekToPosition(0)
             launchMusicCount(currentMusicId)
@@ -362,10 +400,12 @@ class PlaybackManager(
      */
     suspend fun previous() {
         val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
-        val shouldRewind = settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD
+        val shouldRewind =
+            settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD
 
         if (shouldRewind || playerMode == PlayerMode.Loop) {
-            val currentMusicId: UUID = playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
+            val currentMusicId: UUID =
+                playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
 
             player.seekToPosition(0)
             launchMusicCount(currentMusicId)
@@ -398,10 +438,6 @@ class PlaybackManager(
             delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
             commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }
-    }
-
-    @Deprecated("Should no longer be useful")
-    fun updateMusic(music: Music) {
     }
 
     suspend fun switchPlayerMode() {
@@ -516,6 +552,7 @@ class PlaybackManager(
     override suspend fun onError() {
         skipAndRemoveCurrentSong()
     }
+
 
     companion object {
         private const val REWIND_THRESHOLD: Long = 5_000

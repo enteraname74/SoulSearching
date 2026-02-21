@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 19,
-    "identityHash": "e8b8a26ec9a4cc8397eee37c50e99bfc",
+    "identityHash": "cb74e21c079481a7f78b08b6e3cfa814",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -586,12 +586,12 @@
     "views": [
       {
         "viewName": "CurrentPlayerMusicsView",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS WITH currentPlayedList AS (\n        SELECT *\n        FROM RoomPlayerPlayedList  \n        ORDER BY state != 'Cached'\n        LIMIT 1\n    )\n    SELECT \n        m.*,\n        CASE\n            WHEN c.mode = 'Shuffle'\n            THEN m.shuffledOrder\n            ELSE m.`order`\n        END AS currentOrder,\n        c.mode \n    FROM RoomPlayerMusic m\n    INNER JOIN currentPlayedList c ON m.playedListId = c.id\n    ORDER BY currentOrder"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS WITH currentPlayedList AS (\n        SELECT * FROM RoomPlayerPlayedList  \n        WHERE state != \"Cached\"\n        LIMIT 1\n    )\n    SELECT \n        m.*,\n        CASE\n            WHEN c.mode = 'Shuffle'\n            THEN m.shuffledOrder\n            ELSE m.`order`\n        END AS currentOrder,\n        c.mode \n    FROM RoomPlayerMusic m\n    INNER JOIN currentPlayedList c ON m.playedListId = c.id\n    ORDER BY currentOrder"
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e8b8a26ec9a4cc8397eee37c50e99bfc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cb74e21c079481a7f78b08b6e3cfa814')"
     ]
   }
 }

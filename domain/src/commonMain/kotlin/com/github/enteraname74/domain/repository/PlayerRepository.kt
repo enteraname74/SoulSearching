@@ -21,7 +21,6 @@ interface PlayerRepository {
     fun getCurrentMode(): Flow<PlayerMode?>
     fun getCurrentPlayedList(): Flow<PlayerPlayedList?>
     fun getCurrentPosition(): Flow<Int?>
-    suspend fun deleteMusic(musicId: UUID)
 
     suspend fun deleteAll(musicIds: List<UUID>)
 

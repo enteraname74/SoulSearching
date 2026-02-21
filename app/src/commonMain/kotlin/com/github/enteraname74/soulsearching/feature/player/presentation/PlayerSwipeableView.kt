@@ -1,13 +1,18 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation
 
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material.ExperimentalMaterialApi
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.swipeable
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
@@ -23,12 +28,12 @@ import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
-import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.presentation.screen.PlayerSwipeableDataScreen
 import com.github.enteraname74.soulsearching.feature.player.presentation.screen.PlayerSwipeableLoadingScreen
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
@@ -191,16 +196,6 @@ fun PlayerDraggableView(
                                 }
                             }
                         }
-
-                        LaunchedEffect(playerViewManager.currentValue) {
-                            if (playerViewManager.currentValue != BottomSheetStates.COLLAPSED) {
-                                coroutineScope.launch {
-                                    playerViewManager.animateTo(
-                                        newState = BottomSheetStates.COLLAPSED
-                                    )
-                                }
-                            }
-                        }
                     }
 
                     is PlayerViewState.Data -> {
@@ -248,19 +243,6 @@ fun PlayerDraggableView(
                         if ((previousDraggableState != BottomSheetStates.COLLAPSED && previousDraggableState != null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
                             LaunchedEffect(Unit) {
                                 playerViewModel.stopPlayback()
-                            }
-                        } else if ((previousDraggableState == BottomSheetStates.COLLAPSED || previousDraggableState == null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
-                            // In this case, the playback is on but the view has not been shown
-                            LaunchedEffect(Unit) {
-                                coroutineScope.launch {
-                                    playerViewManager.animateTo(
-                                        if ((state as PlayerViewState.Data).initPlayerWithMinimiseView) {
-                                            BottomSheetStates.MINIMISED
-                                        } else {
-                                            BottomSheetStates.EXPANDED
-                                        }
-                                    )
-                                }
                             }
                         }
                     }

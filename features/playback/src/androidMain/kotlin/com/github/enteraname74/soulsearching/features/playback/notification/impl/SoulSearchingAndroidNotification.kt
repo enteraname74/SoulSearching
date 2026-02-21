@@ -86,7 +86,7 @@ abstract class SoulSearchingAndroidNotification(
         notificationManager.cancel(CHANNEL_ID)
     }
 
-    override suspend fun updateNotification(
+    override suspend fun update(
         updateData: UpdateData,
     ) {
         withContext(Dispatchers.Main) {
@@ -107,7 +107,7 @@ abstract class SoulSearchingAndroidNotification(
         }
     }
 
-    override fun dismissNotification() {
+    override fun dismiss() {
         PlayerService.stopService(context = context)
         release()
         hasServiceBeenLaunched = false

@@ -1,15 +1,16 @@
 package com.github.enteraname74.localdb.view
 
 import androidx.room.DatabaseView
+import androidx.room.Embedded
 import com.github.enteraname74.domain.model.player.PlayerMode
+import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
 import java.util.UUID
 
 @DatabaseView(
     """
     WITH currentPlayedList AS (
-        SELECT *
-        FROM RoomPlayerPlayedList  
-        ORDER BY state != 'Cached'
+        SELECT * FROM RoomPlayerPlayedList  
+        WHERE state != "Cached"
         LIMIT 1
     )
     SELECT 
@@ -26,11 +27,7 @@ import java.util.UUID
     """
 )
 data class CurrentPlayerMusicsView(
-    val musicId: UUID,
-    val playedListId: UUID,
-    val order: Double,
-    val shuffledOrder: Double,
-    val lastPlayedMillis: Long?,
+    @Embedded val playerMusic: RoomPlayerMusic,
     val currentOrder: Double,
     val mode: PlayerMode,
 )

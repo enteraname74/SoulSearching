@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.feature.settings.advanced
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
@@ -18,7 +17,6 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedNavigationState
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedPermissionState
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedState
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +24,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -38,7 +35,6 @@ class SettingsAdvancedViewModel(
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonReleaseUseCase: CommonReleaseUseCase,
     private val loadingManager: LoadingManager,
-    private val playbackManager: PlaybackManager,
     private val settings: SoulSearchingSettings,
     destination: SettingsAdvancedDestination
 ) : ViewModel() {
@@ -245,14 +241,7 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadSongs() {
         if (_state.value.shouldReloadSongsCovers) {
-            // TODO OPTIMIZATION: Remove call to all songs
-            val allSongs: List<Music> = commonMusicUseCase.getAll().first()
-
             commonMusicUseCase.cleanAllMusicCovers()
-
-            allSongs.forEach { music ->
-                playbackManager.updateMusic(music)
-            }
         }
     }
 

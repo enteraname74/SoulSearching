@@ -50,12 +50,6 @@ class PlayerRepositoryImpl(
     override fun getCurrentPosition(): Flow<Int?> =
         playerDataSource.getCurrentPosition()
 
-    override suspend fun deleteMusic(musicId: UUID) {
-        withContext(workScope) {
-            playerDataSource.deleteMusic(musicId)
-        }
-    }
-
     override suspend fun deleteAll(musicIds: List<UUID>) {
         withContext(workScope) {
             playerDataSource.deleteAll(musicIds)
@@ -72,8 +66,10 @@ class PlayerRepositoryImpl(
         withContext(workScope) {
             if (shouldSkipSetup(playedListSetup)) return@withContext
 
-            playerDataSource.upsertPlayedList(playedListSetup.toPlayedList())
-            playerDataSource.upsertAllMusics(playedListSetup.toPlayerMusics())
+            playerDataSource.upsertPlayedList(
+                playedList = playedListSetup.toPlayedList(),
+                playerMusics = playedListSetup.toPlayerMusics(),
+            )
         }
     }
 
@@ -135,9 +131,9 @@ class PlayerRepositoryImpl(
                         .firstOrNull()
                         ?.let(currentPlayedList::getOrder) ?: return@withContext
 
-                    // We are at the last music of the list
-                    if (nextOrder < currentOrder) {
-                        nextOrder + 1
+                    // We are at the last music of the list or the next one is the first one
+                    if (nextOrder <= currentOrder) {
+                        currentOrder + 1
                     } else {
                         (currentOrder + nextOrder) / 2
                     }
@@ -206,7 +202,7 @@ class PlayerRepositoryImpl(
                         ?.let(currentPlayedList::getOrder) ?: return@withContext
 
                     // We are at the last music of the list
-                    if (nextOrder < currentOrder) {
+                    if (nextOrder <= currentOrder) {
                         evenlySpacedExclusive(
                             count = filteredList.size,
                             a = currentOrder,
@@ -291,16 +287,19 @@ class PlayerRepositoryImpl(
 
     override suspend fun playNext() {
         withContext(workScope) {
-            val next: PlayerMusic = playerDataSource.getNextMusic().firstOrNull() ?: return@withContext
-            playerDataSource.setCurrent(musicId = next.music.musicId)
+            val nextId: UUID = playerDataSource
+                .getNextMusic().firstOrNull()?.music?.musicId ?: return@withContext
+
+            playerDataSource.setCurrent(musicId = nextId)
             playerDataSource.setState(PlayedListState.Playing)
         }
     }
 
     override suspend fun playPrevious() {
         withContext(workScope) {
-            val previous: PlayerMusic = playerDataSource.getPreviousMusic().firstOrNull() ?: return@withContext
-            playerDataSource.setCurrent(musicId = previous.music.musicId)
+            val previousId: UUID = playerDataSource
+                .getPreviousMusic().firstOrNull()?.music?.musicId ?: return@withContext
+            playerDataSource.setCurrent(musicId = previousId)
             playerDataSource.setState(PlayedListState.Playing)
         }
     }
@@ -314,7 +313,7 @@ class PlayerRepositoryImpl(
 
             when (state) {
                 PlayedListState.Playing -> playerDataSource.setState(PlayedListState.Paused)
-                PlayedListState.Paused -> playerDataSource.setState(PlayedListState.Playing)
+                PlayedListState.Paused, PlayedListState.Loading -> playerDataSource.setState(PlayedListState.Playing)
                 else -> {
                     // no-op
                 }
