@@ -240,6 +240,11 @@ class PlayerViewModel(
                 }
             }
         }
+        viewModelScope.launch {
+            playbackManager.currentCover.collectLatest { cover ->
+                colorThemeManager.setCurrentCover(cover = cover)
+            }
+        }
     }
 
     private fun getPlaylistsWithMusics(): List<PlaylistWithMusics> =
@@ -248,9 +253,9 @@ class PlayerViewModel(
     /**
      * Set the current music cover.
      */
+    @Deprecated("Listen to currentCover from")
     fun setCurrentMusicCover(cover: ImageBitmap?) {
-        playbackManager.updateCover(cover = cover)
-        colorThemeManager.setCurrentCover(cover = cover)
+
     }
 
     /**

@@ -69,20 +69,20 @@ class PlaybackManager(
 
     // TODO PLAYER: improve this mess!
     @OptIn(ExperimentalCoroutinesApi::class)
-    val currentSong: StateFlow<Music?> by lazy {
-        playerRepository.getCurrentMusic().map { it?.music }
-            .stateIn(
-                scope = CoroutineScope(Dispatchers.IO),
+    val currentSong: StateFlow<Music?> =
+        playerRepository.getCurrentMusic().map {
+            it?.music
+        }.stateIn(
+                scope = workScope,
                 started = SharingStarted.Eagerly,
                 initialValue = null,
             )
-    }
 
     val currentSongProgressionState: Flow<Int> =
         playerRepository.getCurrentProgress()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val currentCover: Flow<ImageBitmap?> =
+    val currentCover: Flow<ImageBitmap?> =
         playerRepository.getCurrentMusic().map { currentMusic ->
             currentMusic?.music?.cover?.let { coverRetriever.getCoverImageBitmap(it) }
         }
@@ -201,7 +201,6 @@ class PlaybackManager(
                 .map { it?.playedListId }
                 .distinctUntilChanged()
                 .collectLatest { _ ->
-                    println("PLAYBACK -- progress -- will update progress used")
                     while (true) {
                         delay(DELAY_BEFORE_SENDING_VALUE)
                         playerRepository.setProgress(player.getProgress())

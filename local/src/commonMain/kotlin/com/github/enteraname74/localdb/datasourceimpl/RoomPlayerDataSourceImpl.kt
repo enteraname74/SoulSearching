@@ -28,6 +28,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import java.util.UUID
 import kotlin.time.Clock
+import kotlin.time.measureTime
+import kotlin.time.measureTimedValue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class RoomPlayerDataSourceImpl(
@@ -59,7 +61,7 @@ internal class RoomPlayerDataSourceImpl(
         playerMusicDao.getSize()
 
     override fun getCurrentMusic(): Flow<PlayerMusic?> {
-        return playerMusicDao.getCurrentMusic().mapNotNull {
+        return playerMusicDao.getCurrentMusic().map {
             it?.toPlayerMusic()
         }
     }
@@ -225,7 +227,7 @@ internal class RoomPlayerDataSourceImpl(
             ?.copy(shuffledOrder = 0.0) ?: return
 
         // All without the current music
-        val allExceptCurrent: List<RoomPlayerMusic> = playerMusicDao
+        val allExceptCurrent = playerMusicDao
             .getAll()
             .takeIf { it.isNotEmpty() }
             ?.minus(current) ?: return
@@ -244,7 +246,7 @@ internal class RoomPlayerDataSourceImpl(
                 )
             }
 
-        playerMusicDao.upsertAll(
+        playerMusicDao.updateAll(
             // We re-add the current music
             playerMusics = shuffledList + current,
         )

@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.player.RoomCompletePlayerMusic
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
@@ -105,6 +106,9 @@ interface PlayerMusicDao {
 
     @Upsert
     suspend fun upsertAll(playerMusics: List<RoomPlayerMusic>)
+
+    @Update
+    suspend fun updateAll(playerMusics: List<RoomPlayerMusic>)
 
     @Query(
         """

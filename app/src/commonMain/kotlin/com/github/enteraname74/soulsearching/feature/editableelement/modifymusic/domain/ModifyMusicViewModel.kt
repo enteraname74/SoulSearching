@@ -25,17 +25,27 @@ import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCo
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateMusicUseCase
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.decodeToImageBitmap
-import java.util.*
+import java.util.UUID
 
 class ModifyMusicViewModel(
-    private val playbackManager: PlaybackManager,
     commonMusicUseCase: CommonMusicUseCase,
     private val commonAlbumUseCase: CommonAlbumUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
@@ -146,7 +156,8 @@ class ModifyMusicViewModel(
         CoroutineScope(Dispatchers.IO).launch {
             loadingManager.withLoading {
                 val coverImage: ImageBitmap? =
-                    cachedCoverManager.getCachedImage(musicPath) ?: cachedCoverManager.fetchCoverOfMusicFile(musicPath)
+                    cachedCoverManager.getCachedImage(musicPath)
+                        ?: cachedCoverManager.fetchCoverOfMusicFile(musicPath)
                 newCover.value = coverImage?.toByteArray()
             }
         }
@@ -211,7 +222,7 @@ class ModifyMusicViewModel(
                 .filter { it.isNotEmpty() }
                 .distinct()
 
-            val updatedMusic = updateMusicUseCase(
+            updateMusicUseCase(
                 updateInformation = UpdateMusicUseCase.UpdateInformation(
                     legacyMusic = state.initialMusic,
                     newName = form.getMusicName().trim(),
@@ -224,17 +235,6 @@ class ModifyMusicViewModel(
                     newArtistsNames = cleanedNewArtistsName,
                 )
             )
-
-            if (
-                playbackManager.isSameMusicAsCurrentPlayedOne(musicId = updatedMusic.musicId)
-                && state.editableElement.newCover != null
-            ) {
-                playbackManager.updateCover(
-                    cover = runCatching {
-                        state.editableElement.newCover.decodeToImageBitmap()
-                    }.getOrNull()
-                )
-            }
 
             loadingManager.stopLoading()
 
