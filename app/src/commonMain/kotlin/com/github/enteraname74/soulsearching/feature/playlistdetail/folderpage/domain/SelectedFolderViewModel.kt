@@ -101,6 +101,8 @@ class SelectedFolderViewModel(
                         musics = musics,
                         duration = duration,
                         searchMusics = searchMusics,
+                        // TODO PLAYER: Add support for folder
+                        cachedPlaylist = null,
                     )
                 )
             }
@@ -221,5 +223,18 @@ class SelectedFolderViewModel(
 
     override fun onSearch(search: String) {
         _searchQuery.value = search
+    }
+
+    override fun continuePlayedList(playedListId: UUID) {
+        viewModelScope.launch {
+            playbackManager.continuePlayedList(playedListId)
+            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+        }
+    }
+
+    override fun deletePlayedList(playedListId: UUID) {
+        viewModelScope.launch {
+            playbackManager.deletePlayedList(playedListId)
+        }
     }
 }

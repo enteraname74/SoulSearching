@@ -7,6 +7,7 @@ import androidx.paging.map
 import androidx.room.useWriterConnection
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
@@ -21,15 +22,13 @@ import com.github.enteraname74.soulsearching.repository.datasource.PlayerDataSou
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import java.util.UUID
 import kotlin.time.Clock
-import kotlin.time.measureTime
-import kotlin.time.measureTimedValue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class RoomPlayerDataSourceImpl(
@@ -134,6 +133,27 @@ internal class RoomPlayerDataSourceImpl(
             it?.toPlayerPlayedList()
         }
 
+    override fun getCachedPlayedList(playlistId: UUID): Flow<PlayedListToContinue?> =
+        listDao.getCachedPlayedList(playlistId).flatMapLatest { list ->
+            if (list != null) {
+                playerMusicDao.getCurrentOfPlayedList(list.id).map { music ->
+                    if (music != null) {
+                        PlayedListToContinue(
+                            playedListId = list.id,
+                            currentMusic = PlayedListToContinue.CurrentMusic(
+                                name = music.completeMusic.music.name,
+                                artists = music.completeMusic.toMusic().artistsNames,
+                            )
+                        )
+                    } else {
+                        null
+                    }
+                }
+            } else {
+                flowOf(null)
+            }
+        }.distinctUntilChanged()
+
     override fun getCurrentPosition(): Flow<Int?> =
         playerMusicDao.getCurrentMusic().flatMapLatest { currentMusic ->
             listDao.getCurrentMode().flatMapLatest { mode ->
@@ -216,6 +236,17 @@ internal class RoomPlayerDataSourceImpl(
 
     override suspend fun setState(state: PlayedListState) {
         listDao.setState(state)
+    }
+
+    override suspend fun continuePlayedList(playedListId: UUID) {
+        appDatabase.useWriterConnection {
+            listDao.deleteMainAndSearch()
+            listDao.cacheAll()
+            listDao.setStateOfId(
+                state = PlayedListState.Playing,
+                playedListId = playedListId,
+            )
+        }
     }
 
     private suspend fun shuffle() {

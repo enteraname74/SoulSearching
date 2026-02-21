@@ -5,6 +5,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.player.AddMusicMode
 import com.github.enteraname74.domain.model.player.PlayedListSetup
 import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
@@ -47,6 +48,9 @@ class PlayerRepositoryImpl(
     override fun getCurrentPlayedList(): Flow<PlayerPlayedList?> =
         playerDataSource.getCurrentPlayedList()
 
+    override fun getCachedPlayedList(playlistId: UUID): Flow<PlayedListToContinue?> =
+        playerDataSource.getCachedPlayedList(playlistId)
+
     override fun getCurrentPosition(): Flow<Int?> =
         playerDataSource.getCurrentPosition()
 
@@ -66,6 +70,18 @@ class PlayerRepositoryImpl(
     override suspend fun deleteCurrentPlayedList() {
         withContext(workScope) {
             playerDataSource.deleteCurrentPlayedList()
+        }
+    }
+
+    override suspend fun deletePlayedList(playedListId: UUID) {
+        withContext(workScope) {
+            playerDataSource.deletePlayedList(playedListId)
+        }
+    }
+
+    override suspend fun continuePlayedList(playedListId: UUID) {
+        withContext(workScope) {
+            playerDataSource.continuePlayedList(playedListId)
         }
     }
 

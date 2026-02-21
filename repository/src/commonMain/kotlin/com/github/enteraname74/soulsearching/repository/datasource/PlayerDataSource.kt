@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.datasource
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
@@ -24,6 +25,7 @@ interface PlayerDataSource {
     fun getCurrentMode(): Flow<PlayerMode?>
     fun getCurrentState(): Flow<PlayedListState?>
     fun getCurrentPlayedList(): Flow<PlayerPlayedList?>
+    fun getCachedPlayedList(playlistId: UUID): Flow<PlayedListToContinue?>
     fun getCurrentPosition(): Flow<Int?>
     fun getCurrentProgress(): Flow<Int>
     suspend fun upsertAllMusics(playerMusics: List<PlayerMusic>)
@@ -47,6 +49,10 @@ interface PlayerDataSource {
     suspend fun handleListChange(musicIdsToKeep: List<UUID>)
 
     suspend fun setState(state: PlayedListState)
+
+    suspend fun continuePlayedList(
+        playedListId: UUID,
+    )
 
     suspend fun setCurrent(musicId: UUID)
     suspend fun setProgress(progress: Int)

@@ -21,7 +21,7 @@ import java.util.UUID
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("playedListId")],
+    indices = [Index("playedListId"), Index("playerMusicId")],
 )
 data class RoomPlayerMusicProgress(
     @PrimaryKey

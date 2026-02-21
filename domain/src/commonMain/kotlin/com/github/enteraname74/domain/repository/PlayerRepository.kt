@@ -5,6 +5,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.player.AddMusicMode
 import com.github.enteraname74.domain.model.player.PlayedListSetup
 import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
@@ -20,12 +21,15 @@ interface PlayerRepository {
     fun getPreviousMusic(): Flow<PlayerMusic?>
     fun getCurrentMode(): Flow<PlayerMode?>
     fun getCurrentPlayedList(): Flow<PlayerPlayedList?>
+    fun getCachedPlayedList(playlistId: UUID): Flow<PlayedListToContinue?>
     fun getCurrentPosition(): Flow<Int?>
     fun getCurrentProgress(): Flow<Int>
 
     suspend fun deleteAll(musicIds: List<UUID>)
 
     suspend fun deleteCurrentPlayedList()
+
+    suspend fun deletePlayedList(playedListId: UUID)
 
     suspend fun setup(playedListSetup: PlayedListSetup)
 
@@ -45,6 +49,10 @@ interface PlayerRepository {
     suspend fun addAll(
         musics: List<Music>,
         mode: AddMusicMode,
+    )
+
+    suspend fun continuePlayedList(
+        playedListId: UUID,
     )
 
     suspend fun switchPlayerMode()

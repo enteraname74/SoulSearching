@@ -12,6 +12,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.player.AddMusicMode
 import com.github.enteraname74.domain.model.player.PlayedListSetup
 import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
@@ -215,7 +216,6 @@ class PlaybackManager(
                 .map { it?.music?.path }
                 .distinctUntilChanged()
                 .collectLatest { currentMusicPath ->
-                    println("PLAYBACK -- new music path to set: $currentMusicPath")
                     val currentMusic: Music? =
                         playerRepository.getCurrentMusic().firstOrNull()?.music
                     if (currentMusicPath == null || currentMusic == null) {
@@ -274,7 +274,6 @@ class PlaybackManager(
     private fun listenToState() {
         launchWithInit {
             playerRepository.getCurrentState().distinctUntilChanged().collectLatest { state ->
-                println("PLAYBACK -- listenToState -- state: $state")
                 when (state) {
                     PlayedListState.Playing -> {
                         if (player.isPlaying() == false) {
@@ -298,6 +297,17 @@ class PlaybackManager(
                 }
             }
         }
+    }
+
+    fun getCachedPlaylist(playlistId: UUID): Flow<PlayedListToContinue?> =
+        playerRepository.getCachedPlayedList(playlistId)
+
+    suspend fun continuePlayedList(playedListId: UUID) {
+        playerRepository.continuePlayedList(playedListId)
+    }
+
+    suspend fun deletePlayedList(playedListId: UUID) {
+        playerRepository.deletePlayedList(playedListId)
     }
 
     /**

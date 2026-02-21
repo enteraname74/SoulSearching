@@ -14,4 +14,6 @@ interface PlaylistDetailListener {
     fun onShuffleClicked()
     fun onPlayClicked(music: Music? = null)
     fun onSearch(search: String)
+    fun continuePlayedList(playedListId: UUID)
+    fun deletePlayedList(playedListId: UUID)
 }

@@ -305,6 +305,10 @@ object FrStrings : Strings {
     override val elementDetailTitles = "Titres"
 
     override val and = "et"
+
+    override val continuePlayedListTitle = "Reprendre où vous vous êtes arrêté"
+    override val continuePlayedListAction = "Reprendre"
+
     override fun musics(total: Int): String {
         return when (total) {
             1 -> "1 musique"

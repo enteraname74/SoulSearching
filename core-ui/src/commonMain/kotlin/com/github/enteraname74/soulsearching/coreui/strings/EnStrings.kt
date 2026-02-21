@@ -305,6 +305,9 @@ object EnStrings : Strings {
 
     override val and: String = "and"
 
+    override val continuePlayedListTitle = "Resume where you left off"
+    override val continuePlayedListAction = "Resume"
+
     override fun musics(total: Int): String {
         return when (total) {
             0 -> "No songs"

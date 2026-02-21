@@ -50,6 +50,19 @@ interface PlayerMusicDao {
     @Transaction
     @Query(
         """
+            SELECT * FROM RoomPlayerMusic  
+            WHERE playedListId = :playedListId
+            ORDER BY lastPlayedMillis DESC 
+            LIMIT 1
+        """
+    )
+    fun getCurrentOfPlayedList(
+        playedListId: UUID,
+    ): Flow<RoomCompletePlayerMusic?>
+
+    @Transaction
+    @Query(
+        """
             SELECT * FROM CurrentPlayerMusicsView
             ORDER BY lastPlayedMillis DESC 
             LIMIT 1

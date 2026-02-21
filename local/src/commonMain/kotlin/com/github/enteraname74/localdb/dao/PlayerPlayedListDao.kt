@@ -21,6 +21,16 @@ interface PlayerPlayedListDao {
     )
     fun getCurrentPlayedList(): Flow<RoomPlayerPlayedList?>
 
+    @Query(
+        """
+            SELECT * FROM RoomPlayerPlayedList 
+            WHERE state = "Cached" 
+            AND playlistId = :playlistId
+            LIMIT 1
+        """
+    )
+    fun getCachedPlayedList(playlistId: UUID): Flow<RoomPlayerPlayedList?>
+
     @Query("SELECT * FROM RoomPlayerPlayedList")
     suspend fun getAll(): List<RoomPlayerPlayedList>
 
@@ -67,6 +77,18 @@ interface PlayerPlayedListDao {
         """
     )
     suspend fun setState(state: PlayedListState)
+
+    @Query(
+        """
+            UPDATE RoomPlayerPlayedList 
+            SET state = :state 
+            WHERE id = :playedListId
+        """
+    )
+    suspend fun setStateOfId(
+        state: PlayedListState,
+        playedListId: UUID,
+    )
 
     @Upsert
     suspend fun upsert(playedList: RoomPlayerPlayedList)

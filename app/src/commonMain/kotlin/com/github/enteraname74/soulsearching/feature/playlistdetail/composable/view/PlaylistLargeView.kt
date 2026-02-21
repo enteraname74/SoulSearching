@@ -65,6 +65,7 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationActio
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.DurationIndication
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistContinueCard
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPartTitle
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
@@ -120,6 +121,28 @@ fun PlaylistLargeView(
                 )
             }
         }
+        playlistDetail.cachedPlaylist?.let {
+            item(
+                key = PLAYLIST_CONTINUE_KEY,
+                contentType = PLAYLIST_CONTINUE_CONTENT_TYPE,
+            ) {
+                PlaylistContinueCard(
+                    modifier = Modifier
+                        .padding(
+                            start = UiConstants.Spacing.medium,
+                            end = UiConstants.Spacing.medium,
+                            bottom = UiConstants.Spacing.mediumPlus,
+                        )
+                        .animateItem(
+                            // TODO IMPROVE: improve screen to find a way to use placement anim
+                            placementSpec = null,
+                        ),
+                    playedListToContinue = it,
+                    onContinue = { playlistDetailListener.continuePlayedList(it.playedListId) },
+                    onDelete = { playlistDetailListener.deletePlayedList(it.playedListId) },
+                )
+            }
+        }
         item {
             optionalContent()
         }
@@ -153,7 +176,7 @@ fun PlaylistLargeView(
                 )
             }
         }
-        if (playlistDetail.duration != Duration.ZERO) {
+        if (playlistDetail.duration != Duration.ZERO && musics.itemCount > 0) {
             item { DurationIndication(duration = playlistDetail.duration) }
         }
         item { SoulPlayerSpacer() }
@@ -363,6 +386,8 @@ private fun BlurredBackground(
     }
 }
 
+private const val PLAYLIST_CONTINUE_KEY = "PLAYLIST_CONTINUE_KEY"
+private const val PLAYLIST_CONTINUE_CONTENT_TYPE = "PLAYLIST_CONTINUE_CONTENT_TYPE"
 private const val PLAYLIST_MUSIC_CONTENT_TYPE: String = "PLAYLIST_MUSIC_CONTENT_TYPE"
 private val PLAYLIST_COVER_SIZE: Dp = 250.dp
 private val PLAYLIST_TITLE_SIZE: TextUnit = 54.sp

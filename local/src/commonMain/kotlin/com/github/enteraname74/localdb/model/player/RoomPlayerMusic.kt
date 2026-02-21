@@ -26,7 +26,7 @@ import java.util.*
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("playedListId")],
+    indices = [Index("playedListId"), Index("musicId")],
 )
 data class RoomPlayerMusic(
     @PrimaryKey

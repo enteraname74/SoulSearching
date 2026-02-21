@@ -106,8 +106,9 @@ class SelectedArtistViewModel(
         commonAlbumUseCase.getAlbumsWithMusicsOfArtist(artistId = artistId),
         commonArtistUseCase.getArtistPreview(artistId = artistId),
         commonMusicUseCase.getArtistDuration(artistId),
-        searchResult
-    ) { albums, artistPreview, duration, searchMusics ->
+        searchResult,
+        playbackManager.getCachedPlaylist(artistId),
+    ) { albums, artistPreview, duration, searchMusics, cachedPlaylist ->
         when {
             artistPreview == null -> SelectedArtistState.Error
             else -> SelectedArtistState.Data(
@@ -115,6 +116,7 @@ class SelectedArtistViewModel(
                     musics = musics,
                     duration = duration,
                     searchMusics = searchMusics,
+                    cachedPlaylist = cachedPlaylist,
                 ),
                 artistAlbums = albums,
             )
@@ -275,5 +277,18 @@ class SelectedArtistViewModel(
 
     override fun onSearch(search: String) {
         _searchQuery.value = search
+    }
+
+    override fun continuePlayedList(playedListId: UUID) {
+        viewModelScope.launch {
+            playbackManager.continuePlayedList(playedListId)
+            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+        }
+    }
+
+    override fun deletePlayedList(playedListId: UUID) {
+        viewModelScope.launch {
+            playbackManager.deletePlayedList(playedListId)
+        }
     }
 }
