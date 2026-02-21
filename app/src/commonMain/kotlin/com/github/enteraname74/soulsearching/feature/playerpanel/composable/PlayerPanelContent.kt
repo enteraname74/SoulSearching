@@ -1,12 +1,19 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.enteraname74.domain.model.Music
@@ -22,8 +29,8 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.TabData
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
-import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 
@@ -58,7 +65,6 @@ fun PlayerPanelContent(
                     onMoreClickedOnMusic = onMoreClickedOnMusic,
                     contentColor = contentColor,
                     containerColor = containerColor,
-                    isExpanded = isExpanded,
                     buttonColors = buttonColors,
                     currentMusicIndex = playerState.currentMusicIndex,
                     onLongSelectOnMusic = onLongSelectOnMusic,
@@ -94,7 +100,8 @@ fun PlayerPanelContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    bottom = UiConstants.Spacing.small
+                    bottom = UiConstants.Spacing.small +
+                            getNavigationBarPadding().toDp()
                 ),
         ) {
             pages.forEachIndexed { index, page ->

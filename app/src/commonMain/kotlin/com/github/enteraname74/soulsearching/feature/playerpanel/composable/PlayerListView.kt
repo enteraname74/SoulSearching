@@ -76,7 +76,6 @@ import kotlin.math.roundToInt
 fun PlayerListView(
     playbackManager: PlaybackManager = injectElement(),
     currentMusicIndex: Int,
-    isExpanded: Boolean,
     playedList: LazyPagingItems<Music>,
     onLongSelectOnMusic: (Music) -> Unit,
     onMoreClickedOnMusic: (Music) -> Unit,
@@ -95,129 +94,116 @@ fun PlayerListView(
             .fillMaxSize()
             .navigationBarsPadding()
     ) {
-        if (isExpanded) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(UiConstants.Spacing.small),
-                contentAlignment = Alignment.CenterEnd,
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(UiConstants.Spacing.small),
+            contentAlignment = Alignment.CenterEnd,
+        ) {
+            SoulButton(
+                colors = buttonColors,
+                onClick = {
+                    coroutineScope.launch {
+                        if (currentMusicIndex != -1) {
+                            playerListState.animateScrollToItem(
+                                currentMusicIndex
+                            )
+                        }
+                    }
+                }
             ) {
-                SoulButton(
-                    colors = buttonColors,
-                    onClick = {
-                        coroutineScope.launch {
-                            if (currentMusicIndex != -1) {
-                                playerListState.animateScrollToItem(
-                                    currentMusicIndex
+                Text(
+                    text = strings.currentSong,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    color = buttonColors.contentColor,
+                    fontSize = 12.sp
+                )
+            }
+        }
+
+        val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
+
+        // TODO PLAYER: Improve reordering
+        var uiList by remember(playedList.itemSnapshotList) {
+            mutableStateOf(playedList.itemSnapshotList.items)
+        }
+
+        val reorderableLazyListState = rememberReorderableLazyListState(playerListState) { from, to ->
+            uiList = uiList.toMutableList().apply {
+                add(to.index, removeAt(from.index))
+            }
+        }
+
+        LaunchedEffect(playedList) {
+            // If the played list was updated, but we were in a dragged state, we don't update the ui list.
+            if (!reorderableLazyListState.isAnyItemDragging) {
+                uiList = playedList.itemSnapshotList.items
+            }
+        }
+
+        LazyColumnCompat(
+            state = playerListState,
+            contentPadding = PaddingValues(
+                bottom = getNavigationBarPadding().toDp()
+            )
+        ) {
+            items(
+                count = playedList.itemCount,
+                key = { playedList[it]?.musicId ?: UUID.randomUUID() },
+                contentType = { PLAYER_LIST_CONTENT_TYPE }
+            ) { index ->
+                playedList[index]?.let { elt ->
+                    ReorderableItem(
+                        state = reorderableLazyListState,
+                        key = elt.musicId
+                    ) { isDragging ->
+                        val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
+
+                        Surface(shadowElevation = elevation) {
+                            Swipeable(
+                                modifier = Modifier
+                                    .animateItem(),
+                                music = elt,
+                                contentColor = contentColor,
+                                containerColor = containerColor,
+                            ) {
+                                MusicItemComposable(
+                                    modifier = Modifier
+                                        .background(containerColor),
+                                    music = elt,
+                                    reorderableModifier = Modifier
+                                        .draggableHandle(
+                                            onDragStopped = {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    playbackManager.updatePlayedListAfterReorder(
+                                                        newList = uiList
+                                                    )
+                                                }
+                                            }
+                                        ),
+                                    onClick = { music ->
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            playbackManager.setAndPlayMusic(music)
+                                        }
+                                    },
+                                    onMoreClicked = {
+                                        coroutineScope.launch {
+                                            onMoreClickedOnMusic(elt)
+                                        }
+                                    },
+                                    onLongClick = { onLongSelectOnMusic(elt) },
+                                    textColor = contentColor,
+                                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
+                                    isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
+                                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                                    selectedIconColors = selectedIconColors,
                                 )
                             }
                         }
-                    }
-                ) {
-                    Text(
-                        text = strings.currentSong,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        color = buttonColors.contentColor,
-                        fontSize = 12.sp
-                    )
-                }
-            }
 
-            val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
-
-            // TODO PLAYER: Improve reordering
-            var uiList by remember(playedList.itemSnapshotList) {
-                mutableStateOf(playedList.itemSnapshotList.items)
-            }
-
-            val reorderableLazyListState = rememberReorderableLazyListState(playerListState) { from, to ->
-                uiList = uiList.toMutableList().apply {
-                    add(to.index, removeAt(from.index))
-                }
-            }
-
-            LaunchedEffect(playedList) {
-                // If the played list was updated, but we were in a dragged state, we don't update the ui list.
-                if (!reorderableLazyListState.isAnyItemDragging) {
-                    uiList = playedList.itemSnapshotList.items
-                }
-            }
-
-            LazyColumnCompat(
-                state = playerListState,
-                contentPadding = PaddingValues(
-                    bottom = getNavigationBarPadding().toDp()
-                )
-            ) {
-                items(
-                    count = playedList.itemCount,
-                    key = { playedList[it]?.musicId ?: UUID.randomUUID() },
-                    contentType = { PLAYER_LIST_CONTENT_TYPE }
-                ) { index ->
-                    playedList[index]?.let { elt ->
-                        ReorderableItem(
-                            state = reorderableLazyListState,
-                            key = elt.musicId
-                        ) { isDragging ->
-                            val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
-
-                            Surface(shadowElevation = elevation) {
-                                Swipeable(
-                                    modifier = Modifier
-                                        .animateItem(),
-                                    music = elt,
-                                    contentColor = contentColor,
-                                    containerColor = containerColor,
-                                ) {
-                                    MusicItemComposable(
-                                        modifier = Modifier
-                                            .background(containerColor),
-                                        music = elt,
-                                        reorderableModifier = Modifier
-                                            .draggableHandle(
-                                                onDragStopped = {
-                                                    CoroutineScope(Dispatchers.IO).launch {
-                                                        playbackManager.updatePlayedListAfterReorder(
-                                                            newList = uiList
-                                                        )
-                                                    }
-                                                }
-                                            ),
-                                        onClick = { music ->
-                                            CoroutineScope(Dispatchers.IO).launch {
-                                                playbackManager.setAndPlayMusic(music)
-                                            }
-                                        },
-                                        onMoreClicked = {
-                                            coroutineScope.launch {
-                                                onMoreClickedOnMusic(elt)
-                                            }
-                                        },
-                                        onLongClick = { onLongSelectOnMusic(elt) },
-                                        textColor = contentColor,
-                                        isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
-                                        isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
-                                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
-                                        selectedIconColors = selectedIconColors,
-                                    )
-                                }
-                            }
-
-                        }
                     }
                 }
-            }
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = getNavigationBarPadding().toDp())
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = contentColor
-                )
             }
         }
     }
