@@ -7,7 +7,7 @@ import kotlin.time.Clock
 data class PlayedListSetup(
     val musics: List<Music>,
     val selectedMusic: Music?,
-    val listId: UUID?,
+    val listId: String?,
     val isMain: Boolean,
     val state: PlayedListState,
     val seekTo: Long? = null,
@@ -59,7 +59,7 @@ data class PlayedListSetup(
 
         fun fromSelection(
             musics: List<Music>,
-            state: PlayedListState = PlayedListState.Loading
+            state: PlayedListState = PlayedListState.Loading,
         ): PlayedListSetup =
             PlayedListSetup(
                 musics = musics,

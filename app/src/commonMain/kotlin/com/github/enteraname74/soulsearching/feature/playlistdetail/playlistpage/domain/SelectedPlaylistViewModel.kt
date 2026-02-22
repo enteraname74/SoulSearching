@@ -83,7 +83,7 @@ class SelectedPlaylistViewModel(
         commonMusicUseCase.getPlaylistDuration(playlistId),
         commonPlaylistUseCase.getPlaylistPreview(playlistId),
         searchResult,
-        playbackManager.getCachedPlaylist(playlistId),
+        playbackManager.getCachedPlaylist(playlistId.toString()),
     ) { duration, playlistPreview, searchMusics, cachedPlaylist ->
         when {
             playlistPreview == null -> SelectedPlaylistState.Error
@@ -232,7 +232,7 @@ class SelectedPlaylistViewModel(
                 playbackManager.setCurrentPlaylistAndMusic(
                     music = music ?: musics.first(),
                     musicList = musics,
-                    playlistId = playlistId,
+                    playlistId = playlistId.toString(),
                     isMainPlaylist = false
                 )
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)

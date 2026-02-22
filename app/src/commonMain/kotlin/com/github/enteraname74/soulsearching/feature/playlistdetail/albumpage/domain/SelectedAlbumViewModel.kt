@@ -99,7 +99,7 @@ class SelectedAlbumViewModel(
             commonMusicUseCase.getAlbumDuration(albumId),
             searchResult,
             settings.getFlowOn(SoulSearchingSettingsKeys.Album.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW),
-            playbackManager.getCachedPlaylist(albumId),
+            playbackManager.getCachedPlaylist(albumId.toString()),
         ) { albumPreview, duration, searchMusics, showTrackPosition, cachedPlaylist ->
             when {
                 albumPreview == null -> SelectedAlbumState.Error
@@ -237,7 +237,7 @@ class SelectedAlbumViewModel(
                 playbackManager.setCurrentPlaylistAndMusic(
                     music = music ?: musics.first(),
                     musicList = musics,
-                    playlistId = albumId,
+                    playlistId = albumId.toString(),
                     isMainPlaylist = false
                 )
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)

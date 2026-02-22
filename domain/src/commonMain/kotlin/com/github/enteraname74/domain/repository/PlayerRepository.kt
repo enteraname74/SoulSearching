@@ -22,7 +22,7 @@ interface PlayerRepository {
     fun getPreviousMusic(): Flow<PlayerMusic?>
     fun getCurrentMode(): Flow<PlayerMode?>
     fun getCurrentPlayedList(): Flow<PlayerPlayedList?>
-    fun getCachedPlayedList(playlistId: UUID): Flow<PlayedListToContinue?>
+    fun getCachedPlayedList(playlistId: String): Flow<PlayedListToContinue?>
     fun getCurrentPosition(): Flow<Int?>
     fun getCurrentProgress(): Flow<Int>
 

@@ -299,7 +299,7 @@ class PlaybackManager(
         }
     }
 
-    fun getCachedPlaylist(playlistId: UUID): Flow<PlayedListToContinue?> =
+    fun getCachedPlaylist(playlistId: String): Flow<PlayedListToContinue?> =
         playerRepository.getCachedPlayedList(playlistId)
 
     suspend fun continuePlayedList(playedListId: UUID) {
@@ -490,17 +490,6 @@ class PlaybackManager(
         )
     }
 
-    suspend fun isSameMusicAsCurrentPlayedOne(musicId: UUID): Boolean =
-        playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId == musicId
-
-    // TODO PLAYER: Should be removed with new system?
-    /**
-     * Update the cover of the current played music.
-     */
-    fun updateCover(cover: ImageBitmap?) {
-
-    }
-
     suspend fun playShuffle(musicList: List<Music>) {
         if (musicList.isEmpty()) return
 
@@ -531,7 +520,7 @@ class PlaybackManager(
     suspend fun setCurrentPlaylistAndMusic(
         music: Music,
         musicList: List<Music>,
-        playlistId: UUID?,
+        playlistId: String?,
         isMainPlaylist: Boolean = false,
         isForcingNewPlaylist: Boolean = false
     ) {

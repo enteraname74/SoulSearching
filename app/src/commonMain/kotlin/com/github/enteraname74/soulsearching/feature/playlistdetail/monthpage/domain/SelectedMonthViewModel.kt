@@ -91,8 +91,9 @@ class SelectedMonthViewModel(
         combine(
             commonMusicUseCase.getMonthMusicPreview(month = month),
             commonMusicUseCase.getMonthMusicsDuration(month),
-            searchResult
-        ) { monthMusicPreview, duration, searchMusics ->
+            searchResult,
+            playbackManager.getCachedPlaylist(month),
+        ) { monthMusicPreview, duration, searchMusics, cachedPlaylist ->
         when {
             monthMusicPreview == null -> SelectedMonthState.Error
             else -> SelectedMonthState.Data(
@@ -100,8 +101,7 @@ class SelectedMonthViewModel(
                     musics = musics,
                     duration = duration,
                     searchMusics = searchMusics,
-                    // TODO PLAYER: Add support for month
-                    cachedPlaylist = null,
+                    cachedPlaylist = cachedPlaylist,
                 ),
             )
         }
@@ -206,7 +206,7 @@ class SelectedMonthViewModel(
                 playbackManager.setCurrentPlaylistAndMusic(
                     music = music ?:  musics.first(),
                     musicList = musics,
-                    playlistId = null,
+                    playlistId = month,
                     isMainPlaylist = false
                 )
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)

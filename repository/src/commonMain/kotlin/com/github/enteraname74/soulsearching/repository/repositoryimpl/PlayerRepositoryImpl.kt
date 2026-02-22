@@ -51,7 +51,7 @@ class PlayerRepositoryImpl(
     override fun getCurrentPlayedList(): Flow<PlayerPlayedList?> =
         playerDataSource.getCurrentPlayedList()
 
-    override fun getCachedPlayedList(playlistId: UUID): Flow<PlayedListToContinue?> =
+    override fun getCachedPlayedList(playlistId: String): Flow<PlayedListToContinue?> =
         playerDataSource.getCachedPlayedList(playlistId)
 
     override fun getCurrentPosition(): Flow<Int?> =
@@ -126,7 +126,7 @@ class PlayerRepositoryImpl(
             val isSamePlaylist = if (currentPlayedList.playlistId == null && playedListSetup.listId == null) {
                 currentPlayedList.isMainPlaylist == playedListSetup.isMain
             } else if (currentPlayedList.playlistId != null && playedListSetup.listId != null) {
-                currentPlayedList.playlistId!!.compareTo(playedListSetup.listId) == 0
+                currentPlayedList.playlistId == playedListSetup.listId
             } else {
                 false
             }

@@ -92,8 +92,9 @@ class SelectedFolderViewModel(
         combine(
             commonMusicUseCase.getMusicFolderPreview(folder = folderPath),
             commonMusicUseCase.getFolderMusicsDuration(folderPath),
-            searchResult
-        ) { musicFolderPreview, duration, searchMusics ->
+            searchResult,
+            playbackManager.getCachedPlaylist(folderPath),
+        ) { musicFolderPreview, duration, searchMusics, cachedPlaylist ->
             when {
                 musicFolderPreview == null -> SelectedFolderState.Error
                 else -> SelectedFolderState.Data(
@@ -101,8 +102,7 @@ class SelectedFolderViewModel(
                         musics = musics,
                         duration = duration,
                         searchMusics = searchMusics,
-                        // TODO PLAYER: Add support for folder
-                        cachedPlaylist = null,
+                        cachedPlaylist = cachedPlaylist,
                     )
                 )
             }
@@ -213,7 +213,7 @@ class SelectedFolderViewModel(
                 playbackManager.setCurrentPlaylistAndMusic(
                     music = music ?: musics.first(),
                     musicList = musics,
-                    playlistId = null,
+                    playlistId = folderPath,
                     isMainPlaylist = false
                 )
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)

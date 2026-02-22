@@ -107,7 +107,7 @@ class SelectedArtistViewModel(
         commonArtistUseCase.getArtistPreview(artistId = artistId),
         commonMusicUseCase.getArtistDuration(artistId),
         searchResult,
-        playbackManager.getCachedPlaylist(artistId),
+        playbackManager.getCachedPlaylist(artistId.toString()),
     ) { albums, artistPreview, duration, searchMusics, cachedPlaylist ->
         when {
             artistPreview == null -> SelectedArtistState.Error
@@ -267,7 +267,7 @@ class SelectedArtistViewModel(
                 playbackManager.setCurrentPlaylistAndMusic(
                     music = music ?: musics.first(),
                     musicList = musics,
-                    playlistId = artistId,
+                    playlistId = artistId.toString(),
                     isMainPlaylist = false
                 )
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)

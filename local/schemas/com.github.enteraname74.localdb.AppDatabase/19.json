@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 19,
-    "identityHash": "a4ba5ce0c77eb6828640818fed1855ed",
+    "identityHash": "1d3f0d0952c9097e2bcf743fe3c85a76",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -607,7 +607,7 @@
       },
       {
         "tableName": "RoomPlayerPlayedList",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `playlistId` BLOB, `isMainPlaylist` INTEGER NOT NULL, `mode` TEXT NOT NULL, `state` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `playlistId` TEXT, `isMainPlaylist` INTEGER NOT NULL, `mode` TEXT NOT NULL, `state` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -618,7 +618,7 @@
           {
             "fieldPath": "playlistId",
             "columnName": "playlistId",
-            "affinity": "BLOB"
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "isMainPlaylist",
@@ -679,7 +679,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a4ba5ce0c77eb6828640818fed1855ed')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1d3f0d0952c9097e2bcf743fe3c85a76')"
     ]
   }
 }

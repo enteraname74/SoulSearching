@@ -26,7 +26,7 @@ interface PlayerDataSource {
     fun getCurrentMode(): Flow<PlayerMode?>
     fun getCurrentState(): Flow<PlayedListState?>
     fun getCurrentPlayedList(): Flow<PlayerPlayedList?>
-    fun getCachedPlayedList(playlistId: UUID): Flow<PlayedListToContinue?>
+    fun getCachedPlayedList(playlistId: String): Flow<PlayedListToContinue?>
     fun getCurrentPosition(): Flow<Int?>
     fun getCurrentProgress(): Flow<Int>
     suspend fun upsertAllMusics(playerMusics: List<PlayerMusic>)

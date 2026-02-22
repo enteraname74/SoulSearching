@@ -29,7 +29,7 @@ interface PlayerPlayedListDao {
             LIMIT 1
         """
     )
-    fun getCachedPlayedList(playlistId: UUID): Flow<RoomPlayerPlayedList?>
+    fun getCachedPlayedList(playlistId: String): Flow<RoomPlayerPlayedList?>
 
     @Query("SELECT * FROM RoomPlayerPlayedList")
     suspend fun getAll(): List<RoomPlayerPlayedList>
@@ -118,5 +118,5 @@ interface PlayerPlayedListDao {
             WHERE playlistId = :playlistId
         """
     )
-    suspend fun deletePlaylist(playlistId: UUID)
+    suspend fun deletePlaylist(playlistId: String)
 }

@@ -181,7 +181,7 @@ internal class RoomPlayerDataSourceImpl(
             it?.toPlayerPlayedList()
         }
 
-    override fun getCachedPlayedList(playlistId: UUID): Flow<PlayedListToContinue?> =
+    override fun getCachedPlayedList(playlistId: String): Flow<PlayedListToContinue?> =
         listDao.getCachedPlayedList(playlistId).flatMapLatest { list ->
             if (list != null) {
                 playerMusicDao.getCurrentOfPlayedList(list.id).map { music ->

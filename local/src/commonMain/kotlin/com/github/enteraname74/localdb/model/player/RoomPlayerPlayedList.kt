@@ -11,7 +11,7 @@ import java.util.UUID
 data class RoomPlayerPlayedList(
     @PrimaryKey
     val id: UUID,
-    val playlistId: UUID?,
+    val playlistId: String?,
     val isMainPlaylist: Boolean,
     val mode: PlayerMode,
     val state: PlayedListState,

@@ -4,7 +4,7 @@ import java.util.UUID
 
 data class PlayerPlayedList(
     val id: UUID,
-    val playlistId: UUID?,
+    val playlistId: String?,
     val isMainPlaylist: Boolean,
     val mode: PlayerMode,
     val state: PlayedListState,
