@@ -25,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -124,23 +123,29 @@ fun PlayerListView(
 
         val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
-        // TODO PLAYER: Improve reordering
-        var uiList by remember(playedList.itemSnapshotList) {
-            mutableStateOf(playedList.itemSnapshotList.items)
+//        // TODO PLAYER: Improve reordering
+//        var uiList by remember(playedList.itemSnapshotList) {
+//            mutableStateOf(playedList.itemSnapshotList.items)
+//        }
+
+        var fromMusicId: String? by rememberSaveable {
+            mutableStateOf(null)
+        }
+        var afterMusicId: String? by rememberSaveable {
+            mutableStateOf(null)
         }
 
         val reorderableLazyListState = rememberReorderableLazyListState(playerListState) { from, to ->
-            uiList = uiList.toMutableList().apply {
-                add(to.index, removeAt(from.index))
-            }
+            fromMusicId = from.key.toString()
+            afterMusicId = to.key.toString()
         }
 
-        LaunchedEffect(playedList) {
-            // If the played list was updated, but we were in a dragged state, we don't update the ui list.
-            if (!reorderableLazyListState.isAnyItemDragging) {
-                uiList = playedList.itemSnapshotList.items
-            }
-        }
+//        LaunchedEffect(playedList) {
+//            // If the played list was updated, but we were in a dragged state, we don't update the ui list.
+//            if (!reorderableLazyListState.isAnyItemDragging) {
+//                uiList = playedList.itemSnapshotList.items
+//            }
+//        }
 
         LazyColumnCompat(
             state = playerListState,
@@ -176,8 +181,12 @@ fun PlayerListView(
                                         .draggableHandle(
                                             onDragStopped = {
                                                 CoroutineScope(Dispatchers.IO).launch {
-                                                    playbackManager.updatePlayedListAfterReorder(
-                                                        newList = uiList
+                                                    if (fromMusicId == null || afterMusicId == null) return@launch
+
+                                                    println("PLAYBACK -- ORDER -- WILL REORDER")
+                                                    playbackManager.moveMusic(
+                                                        fromMusicId = UUID.fromString(fromMusicId),
+                                                        afterMusicId = UUID.fromString(afterMusicId),
                                                     )
                                                 }
                                             }

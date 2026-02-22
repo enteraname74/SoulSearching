@@ -47,6 +47,15 @@ interface PlayerMusicDao {
     )
     fun getCurrentMusic(): Flow<RoomCompletePlayerMusic?>
 
+    @Query(
+        """
+            SELECT * FROM CurrentPlayerMusicsView 
+            WHERE musicId = :musicId 
+            LIMIT 1
+        """
+    )
+    suspend fun getOfCurrentList(musicId: UUID): RoomPlayerMusic?
+
     @Transaction
     @Query(
         """

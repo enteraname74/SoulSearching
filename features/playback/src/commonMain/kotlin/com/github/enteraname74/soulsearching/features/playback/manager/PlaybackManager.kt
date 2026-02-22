@@ -466,10 +466,14 @@ class PlaybackManager(
     /**
      * Updates the played list after a reorder in it.
      */
-    suspend fun updatePlayedListAfterReorder(
-        newList: List<Music>
+    suspend fun moveMusic(
+        fromMusicId: UUID,
+        afterMusicId: UUID
     ) {
-
+        playerRepository.moveMusic(
+            fromMusicId = fromMusicId,
+            afterMusicId = afterMusicId,
+        )
     }
 
     suspend fun addMultipleMusicsToPlayNext(musics: List<Music>) {

@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.localdb.model.RoomMusic
 import java.util.*
@@ -36,7 +37,24 @@ data class RoomPlayerMusic(
     val order: Double,
     val shuffledOrder: Double,
     val lastPlayedMillis: Long?,
-)
+) {
+    fun usedOrder(mode: PlayerMode): Double =
+        if (mode == PlayerMode.Shuffle) {
+            shuffledOrder
+        } else {
+            order
+        }
+
+    fun updateUsedOrder(
+        mode: PlayerMode,
+        newOrder: Double,
+    ): RoomPlayerMusic =
+        if (mode == PlayerMode.Shuffle) {
+            copy(shuffledOrder = newOrder)
+        } else {
+            copy(order = newOrder)
+        }
+}
 
 internal fun PlayerMusic.toRoomPlayerMusic(): RoomPlayerMusic =
     RoomPlayerMusic(

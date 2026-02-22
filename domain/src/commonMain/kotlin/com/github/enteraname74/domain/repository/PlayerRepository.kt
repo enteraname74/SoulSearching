@@ -33,6 +33,11 @@ interface PlayerRepository {
 
     suspend fun setup(playedListSetup: PlayedListSetup)
 
+    suspend fun moveMusic(
+        fromMusicId: UUID,
+        afterMusicId: UUID
+    )
+
     suspend fun add(
         music: Music,
         mode: AddMusicMode

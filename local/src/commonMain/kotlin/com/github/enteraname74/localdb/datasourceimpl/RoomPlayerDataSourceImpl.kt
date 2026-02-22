@@ -106,6 +106,43 @@ internal class RoomPlayerDataSourceImpl(
         )
     }
 
+    override suspend fun moveMusic(fromMusicId: UUID, afterMusicId: UUID) {
+        val musicToMove: RoomPlayerMusic = playerMusicDao.getOfCurrentList(fromMusicId) ?: return
+        val mode: PlayerMode = listDao.getCurrentMode().firstOrNull() ?: return
+
+        val musicToMoveOrder: Double = musicToMove.usedOrder(mode)
+        val beforeMusic: RoomPlayerMusic = playerMusicDao.getOfCurrentList(afterMusicId) ?: return
+        val aboveOrder: Double? = playerMusicDao.getPreviousMusic(beforeMusic.usedOrder(mode))
+            .firstOrNull()
+            ?.playerMusic
+            ?.usedOrder(mode)
+
+
+        val afterMusic: RoomPlayerMusic = playerMusicDao.getOfCurrentList(afterMusicId) ?: return
+        val afterMusicOrder: Double = afterMusic.usedOrder(mode)
+
+        println("PLAYBACK -- ORDER -- got currentOrder: $musicToMoveOrder")
+        println("PLAYBACK -- ORDER -- got previous: $aboveOrder")
+        println("PLAYBACK -- ORDER -- got after: $afterMusicOrder")
+
+        val newOrder = if (aboveOrder == null) {
+            afterMusicOrder - 1
+        } else {
+            (aboveOrder + afterMusicOrder) / 2
+        }
+
+        println("PLAYBACK -- ORDER -- got new: $newOrder")
+
+        playerMusicDao.updateAll(
+            playerMusics = listOf(
+                musicToMove.updateUsedOrder(
+                    mode = mode,
+                    newOrder = newOrder,
+                )
+            )
+        )
+    }
+
     override suspend fun deleteAll(musicIds: List<UUID>) {
         val currentId = playerMusicDao.getCurrentMusic().firstOrNull()?.playerMusic?.musicId ?: return
         if (currentId in musicIds) {

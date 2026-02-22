@@ -29,5 +29,6 @@ import java.util.UUID
 data class CurrentPlayerMusicsView(
     @Embedded val playerMusic: RoomPlayerMusic,
     val currentOrder: Double,
+    // TODO PLAYER: Mayble not useful?
     val mode: PlayerMode,
 )

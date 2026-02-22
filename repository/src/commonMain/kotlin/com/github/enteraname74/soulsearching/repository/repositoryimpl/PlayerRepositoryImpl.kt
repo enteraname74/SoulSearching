@@ -96,6 +96,15 @@ class PlayerRepositoryImpl(
         }
     }
 
+    override suspend fun moveMusic(fromMusicId: UUID, afterMusicId: UUID) {
+        withContext(workScope) {
+            playerDataSource.moveMusic(
+                fromMusicId = fromMusicId,
+                afterMusicId = afterMusicId,
+            )
+        }
+    }
+
     private suspend fun shouldSkipSetup(
         playedListSetup: PlayedListSetup,
     ): Boolean =
