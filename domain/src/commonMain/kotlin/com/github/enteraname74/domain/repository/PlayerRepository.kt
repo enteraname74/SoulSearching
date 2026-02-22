@@ -14,6 +14,7 @@ import java.util.UUID
 
 interface PlayerRepository {
     fun getAllPaginated(): Flow<PagingData<Music>>
+    fun getAll(): Flow<List<Music>>
     fun getSize(): Flow<Int>
     fun getCurrentMusic(): Flow<PlayerMusic?>
     fun getCurrentState(): Flow<PlayedListState?>

@@ -53,7 +53,6 @@ fun PlayerPanelContent(
     selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val playedList = playerState.playedList.collectAsLazyPagingItems()
 
     val pages = listOf(
         TabData(
@@ -61,7 +60,7 @@ fun PlayerPanelContent(
             screen = {
                 PlayerListView(
                     playbackManager = playbackManager,
-                    playedList = playedList,
+                    playedList = playerState.playedList,
                     onMoreClickedOnMusic = onMoreClickedOnMusic,
                     contentColor = contentColor,
                     containerColor = containerColor,

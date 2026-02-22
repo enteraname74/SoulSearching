@@ -7,7 +7,6 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
-import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.player.AddMusicMode
 import com.github.enteraname74.domain.model.player.PlayedListSetup
@@ -88,7 +87,8 @@ class PlaybackManager(
             currentMusic?.music?.cover?.let { coverRetriever.getCoverImageBitmap(it) }
         }
 
-    val paginatedList: Flow<PagingData<Music>> = playerRepository.getAllPaginated()
+    // TODO PLAYER: Find a way to make drag and drop and paging list work together
+    val playedList: Flow<List<Music>> = playerRepository.getAll()
 
     val state: Flow<PlaybackManagerState> =
         combine(

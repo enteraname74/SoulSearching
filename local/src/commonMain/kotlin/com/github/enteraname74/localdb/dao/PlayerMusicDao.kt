@@ -25,6 +25,12 @@ interface PlayerMusicDao {
 
     @Transaction
     @Query(
+        "SELECT * FROM CurrentPlayerMusicsView"
+    )
+    fun getAllAsFlow(): Flow<List<RoomCompletePlayerMusic>>
+
+    @Transaction
+    @Query(
         "SELECT COUNT(*) FROM CurrentPlayerMusicsView"
     )
     fun getSize(): Flow<Int>

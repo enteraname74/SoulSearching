@@ -144,13 +144,11 @@ class PlayerViewModel(
         )
     )
 
-    private val playedList: Flow<PagingData<Music>> = playbackManager.paginatedList
-        .cachedIn(viewModelScope)
-
     val state: StateFlow<PlayerViewState> = combine(
         playbackManager.state,
         commonPlaylistUseCase.getAllWithMusics(),
-    ) { playbackMainState, playlists ->
+        playbackManager.playedList
+    ) { playbackMainState, playlists, playedList ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(

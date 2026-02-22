@@ -56,6 +56,20 @@ internal class RoomPlayerDataSourceImpl(
             }
         }
 
+    override fun getAll(): Flow<List<Music>> =
+        listDao.getCurrentMode().flatMapLatest { mode ->
+            when (mode) {
+                PlayerMode.Loop -> playerMusicDao.getCurrentMusic().map {
+                    listOfNotNull(
+                        it?.completeMusic?.toMusic()
+                    )
+                }
+                else -> playerMusicDao.getAllAsFlow().map { list ->
+                    list.map { it.completeMusic.toMusic() }
+                }
+            }
+        }
+
     override fun getSize(): Flow<Int> =
         playerMusicDao.getSize()
 
@@ -110,7 +124,6 @@ internal class RoomPlayerDataSourceImpl(
         val musicToMove: RoomPlayerMusic = playerMusicDao.getOfCurrentList(fromMusicId) ?: return
         val mode: PlayerMode = listDao.getCurrentMode().firstOrNull() ?: return
 
-        val musicToMoveOrder: Double = musicToMove.usedOrder(mode)
         val beforeMusic: RoomPlayerMusic = playerMusicDao.getOfCurrentList(afterMusicId) ?: return
         val aboveOrder: Double? = playerMusicDao.getPreviousMusic(beforeMusic.usedOrder(mode))
             .firstOrNull()
@@ -119,19 +132,17 @@ internal class RoomPlayerDataSourceImpl(
 
 
         val afterMusic: RoomPlayerMusic = playerMusicDao.getOfCurrentList(afterMusicId) ?: return
+        val last: RoomPlayerMusic = playerMusicDao.getLast().firstOrNull()?.playerMusic ?: return
         val afterMusicOrder: Double = afterMusic.usedOrder(mode)
 
-        println("PLAYBACK -- ORDER -- got currentOrder: $musicToMoveOrder")
-        println("PLAYBACK -- ORDER -- got previous: $aboveOrder")
-        println("PLAYBACK -- ORDER -- got after: $afterMusicOrder")
+        val isAtTopOfList = aboveOrder == null
+        val isAtBottomOfList = afterMusic.id == last.id
 
-        val newOrder = if (aboveOrder == null) {
-            afterMusicOrder - 1
-        } else {
-            (aboveOrder + afterMusicOrder) / 2
+        val newOrder = when {
+            isAtTopOfList -> afterMusicOrder - 1
+            isAtBottomOfList -> last.usedOrder(mode) + 1
+            else -> (aboveOrder + afterMusicOrder) / 2
         }
-
-        println("PLAYBACK -- ORDER -- got new: $newOrder")
 
         playerMusicDao.updateAll(
             playerMusics = listOf(

@@ -14,6 +14,7 @@ import java.util.UUID
  */
 interface PlayerDataSource {
     fun getAllPaginated(): Flow<PagingData<Music>>
+    fun getAll(): Flow<List<Music>>
     fun getSize(): Flow<Int>
     fun getCurrentMusic(): Flow<PlayerMusic?>
     fun getNextMusic(

@@ -12,7 +12,7 @@ sealed interface PlayerViewState {
         val currentMusic: Music,
         val currentMusicIndex: Int,
         val isCurrentMusicInFavorite: Boolean,
-        val playedList: Flow<PagingData<Music>>,
+        val playedList: List<Music>,
         val playerMode: PlayerMode,
         val isPlaying: Boolean,
         val playlistsWithMusics: List<PlaylistWithMusics>,

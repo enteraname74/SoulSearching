@@ -27,6 +27,9 @@ class PlayerRepositoryImpl(
     override fun getAllPaginated(): Flow<PagingData<Music>> =
         playerDataSource.getAllPaginated()
 
+    override fun getAll(): Flow<List<Music>> =
+        playerDataSource.getAll()
+
     override fun getSize(): Flow<Int> =
         playerDataSource.getSize()
 
