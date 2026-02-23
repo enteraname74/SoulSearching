@@ -25,14 +25,13 @@ import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerV
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @Composable
 fun PlayerPanelContent(
-    playbackManager: PlaybackManager = injectElement(),
-    playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
     playerState: PlayerViewState.Data,
     lyricsState: LyricsFetchState,
-    onMoreClickedOnMusic: (Music) -> Unit,
+    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
     onActivateRemoteLyrics: () -> Unit,
     multiSelectionState: MultiSelectionState,
@@ -41,8 +40,10 @@ fun PlayerPanelContent(
     containerColor: Color,
     isExpanded: Boolean,
     buttonColors: SoulButtonColors,
-    selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
     modifier: Modifier = Modifier,
+    playbackManager: PlaybackManager = injectElement(),
+    playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
+    selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
 ) {
     val coroutineScope = rememberCoroutineScope()
 

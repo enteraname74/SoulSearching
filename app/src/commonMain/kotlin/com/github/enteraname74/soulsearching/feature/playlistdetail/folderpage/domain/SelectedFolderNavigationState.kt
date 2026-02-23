@@ -6,4 +6,5 @@ sealed interface SelectedFolderNavigationState {
     data object Idle : SelectedFolderNavigationState
     data class ToModifyMusic(val musicId: UUID) : SelectedFolderNavigationState
     data object Back: SelectedFolderNavigationState
+    data class ToMusicBottomSheet(val musicId: UUID) : SelectedFolderNavigationState
 }

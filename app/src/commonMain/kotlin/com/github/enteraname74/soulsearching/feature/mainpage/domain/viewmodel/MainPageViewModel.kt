@@ -37,8 +37,6 @@ import com.github.enteraname74.soulsearching.commondelegate.MultiAlbumBottomShee
 import com.github.enteraname74.soulsearching.commondelegate.MultiArtistBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.MultiPlaylistBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
@@ -105,7 +103,6 @@ class MainPageViewModel(
     viewSettingsManager: ViewSettingsManager,
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
-    private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
     private val artistBottomSheetDelegateImpl: ArtistBottomSheetDelegateImpl,
     private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
@@ -113,7 +110,6 @@ class MainPageViewModel(
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
     getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
 ) : ViewModel(), KoinComponent,
-    MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
     ArtistBottomSheetDelegate by artistBottomSheetDelegateImpl,
     AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl,
     PlaylistBottomSheetDelegate by playlistBottomSheetDelegateImpl,
@@ -179,14 +175,6 @@ class MainPageViewModel(
     @OptIn(ExperimentalMaterialApi::class)
     val searchDraggableState: SwipeableState<BottomSheetStates> =
         SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
-
-    private val allPlaylistsForBottomSheet: StateFlow<List<PlaylistWithMusics>> =
-        commonPlaylistUseCase.getAllWithMusics()
-            .stateIn(
-                scope = viewModelScope.plus(Dispatchers.IO),
-                started = SharingStarted.Eagerly,
-                initialValue = emptyList()
-            )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _musics: Flow<PagingData<Music>> = commonMusicUseCase
@@ -336,17 +324,6 @@ class MainPageViewModel(
     private var cleanMusicsLaunched: Boolean = false
 
     init {
-        musicBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            setAddToPlaylistBottomSheetState = { _addToPlaylistsBottomSheetState.value = it },
-            getAllPlaylistsWithMusics = { allPlaylistsForBottomSheet.value },
-            onModifyMusic = {
-                _navigationState.value = MainPageNavigationState.ToModifyMusic(it.musicId)
-            },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-
         artistBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
@@ -540,7 +517,7 @@ class MainPageViewModel(
                     }
 
                 is Music -> showMusicBottomSheet(
-                    selectedMusic = quickAccessible,
+                    musicId = quickAccessible.musicId,
                 )
 
                 is PlaylistPreview -> commonPlaylistUseCase
@@ -634,12 +611,10 @@ class MainPageViewModel(
         }
     }
 
-    private suspend fun handleMultiSelectionMusicBottomSheet() {
+    private fun handleMultiSelectionMusicBottomSheet() {
         val selectedIds = multiSelectionState.value.selectedIds
         if (selectedIds.size == 1) {
-            val selectedMusic: Music =
-                commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return
-            showMusicBottomSheet(selectedMusic = selectedMusic)
+            showMusicBottomSheet(musicId = selectedIds[0])
         } else {
             multiMusicBottomSheetDelegateImpl.showMultiMusicBottomSheet()
         }
@@ -771,5 +746,9 @@ class MainPageViewModel(
 
     fun onSearch(search: String) {
         _search.value = search
+    }
+
+    fun showMusicBottomSheet(musicId: UUID) {
+        _navigationState.value = MainPageNavigationState.ToMusicBottomSheet(musicId = musicId)
     }
 }

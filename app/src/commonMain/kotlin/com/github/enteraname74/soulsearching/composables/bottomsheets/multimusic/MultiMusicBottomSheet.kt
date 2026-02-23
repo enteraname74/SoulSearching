@@ -5,7 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetMode
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import org.koin.core.component.KoinComponent
@@ -21,7 +21,7 @@ class MultiMusicBottomSheet(
     private val onRemoveFromPlayedList: () -> Unit,
     private val onRemoveFromPlaylist: () -> Unit,
     private val onAddToPlaylist: () -> Unit,
-    private val musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
+    private val musicBottomSheetMode: MusicBottomSheetMode = MusicBottomSheetMode.NORMAL,
 ): SoulBottomSheet, KoinComponent {
     private val playbackManager: PlaybackManager by inject()
 
@@ -41,7 +41,7 @@ class MultiMusicBottomSheet(
         val playbackState by playbackManager.mainState.collectAsState(PlaybackManagerState.Stopped)
 
         MultiMusicBottomSheetMenu(
-            musicBottomSheetState = musicBottomSheetState,
+            musicBottomSheetMode = musicBottomSheetMode,
             total = selectedIds.size,
             deleteAll = onDeleteAll,
             removeFromPlaylistAction = onRemoveFromPlaylist,

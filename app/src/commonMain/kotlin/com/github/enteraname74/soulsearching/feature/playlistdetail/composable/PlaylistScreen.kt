@@ -57,7 +57,6 @@ fun PlaylistScreen(
     playlistDetailListener: PlaylistDetailListener,
     multiSelectionManagerImpl: MultiSelectionManagerImpl,
     navigateBack: () -> Unit,
-    onShowMusicBottomSheet: (Music) -> Unit,
     multiSelectionState: MultiSelectionState,
     onLongSelectOnMusic: (Music) -> Unit,
     colorThemeManager: ColorThemeManager = injectElement(),
@@ -135,7 +134,6 @@ fun PlaylistScreen(
                         PlaylistSmallView(
                             navigateBack = navigateBack,
                             searchAction = searchAction,
-                            onShowMusicBottomSheet = onShowMusicBottomSheet,
                             playlistDetail = playlistDetail,
                             playlistDetailListener = playlistDetailListener,
                             optionalContent = optionalContent,
@@ -150,7 +148,6 @@ fun PlaylistScreen(
                             PlaylistLargeView(
                                 navigateBack = navigateBack,
                                 searchAction = searchAction,
-                                onShowMusicBottomSheet = onShowMusicBottomSheet,
                                 playlistDetail = playlistDetail,
                                 playlistDetailListener = playlistDetailListener,
                                 optionalContent = optionalContent,
@@ -162,7 +159,6 @@ fun PlaylistScreen(
                             PlaylistRowView(
                                 navigateBack = navigateBack,
                                 searchAction = searchAction,
-                                onShowMusicBottomSheet = onShowMusicBottomSheet,
                                 playlistDetail = playlistDetail,
                                 playlistDetailListener = playlistDetailListener,
                                 optionalContent = optionalContent,
@@ -185,7 +181,7 @@ fun PlaylistScreen(
                         foundMusics = playlistDetail.searchMusics,
                         isMainPlaylist = false,
                         focusManager = focusManager,
-                        onSelectedMusicForBottomSheet = onShowMusicBottomSheet,
+                        onSelectedMusicForBottomSheet = playlistDetailListener::showMusicBottomSheet,
                     )
                 }
             }

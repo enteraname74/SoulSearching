@@ -56,7 +56,6 @@ import kotlin.time.Duration
 fun PlaylistRowView(
     navigateBack: () -> Unit,
     searchAction: () -> Unit,
-    onShowMusicBottomSheet: (Music) -> Unit,
     playlistDetail: PlaylistDetail,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playlistDetailListener: PlaylistDetailListener,
@@ -89,7 +88,6 @@ fun PlaylistRowView(
         )
         Content(
             modifier = Modifier.fillMaxSize(),
-            onShowMusicBottomSheet = onShowMusicBottomSheet,
             playlistDetail = playlistDetail,
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
@@ -104,7 +102,6 @@ fun PlaylistRowView(
 @Composable
 private fun Content(
     topBarHeight: Dp,
-    onShowMusicBottomSheet: (Music) -> Unit,
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
@@ -168,7 +165,9 @@ private fun Content(
                             music = music,
                             onClick = playlistDetailListener::onPlayClicked,
                             onLongClick = { onLongSelectOnMusic(music) },
-                            onMoreClicked = { onShowMusicBottomSheet(music) },
+                            onMoreClicked = {
+                                playlistDetailListener.showMusicBottomSheet(music.musicId)
+                            },
                             isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                             isSelected = multiSelectionState.selectedIds.contains(music.musicId),
                             isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),

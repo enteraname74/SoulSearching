@@ -55,7 +55,6 @@ fun SelectedArtistScreenView(
                 playlistDetail = dataState.playlistDetail,
                 playlistDetailListener = selectedArtistViewModel,
                 navigateBack = navigateBack,
-                onShowMusicBottomSheet = selectedArtistViewModel::showMusicBottomSheet,
                 optionalContent = {
                     if (dataState.artistAlbums.isNotEmpty()) {
                         ArtistAlbums(

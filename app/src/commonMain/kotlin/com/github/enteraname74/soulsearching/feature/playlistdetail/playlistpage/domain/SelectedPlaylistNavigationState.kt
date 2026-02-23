@@ -7,4 +7,5 @@ sealed interface SelectedPlaylistNavigationState {
     data class ToModifyMusic(val musicId: UUID): SelectedPlaylistNavigationState
     data class ToEdit(val playlistId: UUID): SelectedPlaylistNavigationState
     data object Back : SelectedPlaylistNavigationState
+    data class ToMusicBottomSheet(val musicId: UUID) : SelectedPlaylistNavigationState
 }

@@ -15,7 +15,7 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetMode
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,20 +49,20 @@ class MultiMusicBottomSheetDelegateImpl(
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
     private var setAddToPlaylistBottomSheetState: (AddToPlaylistBottomSheet?) -> Unit = {}
-    private var musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL
+    private var musicBottomSheetMode: MusicBottomSheetMode = MusicBottomSheetMode.NORMAL
     private var multiSelectionManagerImpl: MultiSelectionManagerImpl? = null
 
     fun initDelegate(
         setDialogState: (SoulDialog?) -> Unit,
         setBottomSheetState: (SoulBottomSheet?) -> Unit,
         setAddToPlaylistBottomSheetState: (AddToPlaylistBottomSheet?) -> Unit,
-        musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
+        musicBottomSheetMode: MusicBottomSheetMode = MusicBottomSheetMode.NORMAL,
         multiSelectionManagerImpl: MultiSelectionManagerImpl,
     ) {
         this.setDialogState = setDialogState
         this.setBottomSheetState = setBottomSheetState
         this.setAddToPlaylistBottomSheetState = setAddToPlaylistBottomSheetState
-        this.musicBottomSheetState = musicBottomSheetState
+        this.musicBottomSheetMode = musicBottomSheetMode
         this.multiSelectionManagerImpl = multiSelectionManagerImpl
     }
 
@@ -211,7 +211,7 @@ class MultiMusicBottomSheetDelegateImpl(
                     multiSelectionManagerImpl?.clearMultiSelection()
                     setBottomSheetState(null)
                 },
-                musicBottomSheetState = musicBottomSheetState,
+                musicBottomSheetMode = musicBottomSheetMode,
             )
         )
     }

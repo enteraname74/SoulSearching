@@ -14,7 +14,7 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomShee
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRow
 import com.github.enteraname74.soulsearching.composables.bottomsheets.QuickAccessBottomSheetMenu
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetMode
 
 @Composable
 fun MusicBottomSheetMenu(
@@ -27,10 +27,9 @@ fun MusicBottomSheetMenu(
     addToPlaylistAction: () -> Unit,
     playNextAction : () -> Unit,
     addToQueueAction: () -> Unit,
-    musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    isInQuickAccess: Boolean,
+    musicBottomSheetMode: MusicBottomSheetMode = MusicBottomSheetMode.NORMAL,
     isCurrentlyPlaying: Boolean,
-    isPlayedListEmpty: Boolean,
+    isInPlayedList: Boolean,
 ) {
     Column {
         BottomSheetElementInformation(
@@ -40,7 +39,7 @@ fun MusicBottomSheetMenu(
         )
 
         QuickAccessBottomSheetMenu(
-            isElementInQuickAccess = isInQuickAccess,
+            isElementInQuickAccess = selectedMusic.isInQuickAccess,
             quickAccessAction = quickAccessAction,
         ) {
             BottomSheetRow(
@@ -65,14 +64,14 @@ fun MusicBottomSheetMenu(
                     onClick = addToQueueAction,
                 )
             }
-            if (musicBottomSheetState == MusicBottomSheetState.PLAYLIST) {
+            if (musicBottomSheetMode == MusicBottomSheetMode.PLAYLIST) {
                 BottomSheetRow(
                     icon = Icons.Rounded.Delete,
                     text = strings.removeFromPlaylist,
                     onClick = removeFromPlaylistAction,
                 )
             }
-            if (!isPlayedListEmpty) {
+            if (isInPlayedList) {
                 BottomSheetRow(
                     icon = Icons.Rounded.PlaylistRemove,
                     text = strings.removeFromPlayedList,

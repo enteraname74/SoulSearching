@@ -39,6 +39,7 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.composa
 import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelDraggableView
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @Composable
 fun BoxScope.PlayerSwipeableDataScreen(
@@ -50,7 +51,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
     onArtistClicked: (selectedArtist: Artist) -> Unit,
     onAlbumClicked: () -> Unit,
     closeSelection: () -> Unit,
-    showMusicBottomSheet: (music: Music) -> Unit,
+    showMusicBottomSheet: (musicId: UUID) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
     multiSelectionState: MultiSelectionState,
     toggleFavoriteState: () -> Unit,
@@ -159,7 +160,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 null
             },
             onSongInfoClicked = {
-                showMusicBottomSheet(state.currentMusic)
+                showMusicBottomSheet(state.currentMusic.musicId)
             }
         )
 
@@ -180,7 +181,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 horizontalPadding = imageHorizontalPadding,
                 topPadding = imageTopPadding,
                 onLongClick = {
-                    showMusicBottomSheet(state.currentMusic)
+                    showMusicBottomSheet(state.currentMusic.musicId)
                 },
                 canSwipeCover = settingsState.canSwipeCover,
                 aroundSongs = state.aroundSongs,

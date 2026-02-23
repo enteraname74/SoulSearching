@@ -56,9 +56,6 @@ fun SelectedPlaylistScreenView(
             playlistDetail = (state as SelectedPlaylistState.Data).playlistDetail,
             playlistDetailListener = selectedPlaylistViewModel,
             navigateBack = navigateBack,
-            onShowMusicBottomSheet = { selectedMusic ->
-                selectedPlaylistViewModel.showMusicBottomSheetWithPlaylist(music = selectedMusic)
-            },
             multiSelectionManagerImpl = selectedPlaylistViewModel.multiSelectionManagerImpl,
             onLongSelectOnMusic = {
                 selectedPlaylistViewModel.toggleElementInSelection(

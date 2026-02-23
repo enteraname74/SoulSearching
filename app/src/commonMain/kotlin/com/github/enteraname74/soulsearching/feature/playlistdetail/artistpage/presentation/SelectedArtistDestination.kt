@@ -3,7 +3,9 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.domain.util.serializer.UUIDSerializer
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetMode
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistDestination
@@ -77,6 +79,13 @@ data class SelectedArtistDestination(
                                     colorThemeManager.removePlaylistTheme()
                                 }
                                 navigator.goBack()
+                            }
+
+                            is SelectedArtistNavigationState.ToMusicBottomSheet -> {
+                                MusicBottomSheetDestination(
+                                    musicId = it.musicId,
+                                    mode = MusicBottomSheetMode.ALBUM_OR_ARTIST,
+                                )
                             }
                         }
                     }

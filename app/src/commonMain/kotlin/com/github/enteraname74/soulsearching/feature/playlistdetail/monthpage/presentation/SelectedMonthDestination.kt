@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.p
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
@@ -47,6 +48,12 @@ data class SelectedMonthDestination(
                                     colorThemeManager.removePlaylistTheme()
                                 }
                                 navigator.goBack()
+                            }
+
+                            is SelectedMonthNavigationState.ToMusicBottomSheet -> {
+                                navigator.navigate(
+                                    MusicBottomSheetDestination(it.musicId)
+                                )
                             }
                         }
                     }

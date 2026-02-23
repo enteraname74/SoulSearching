@@ -52,7 +52,6 @@ fun SelectedAlbumScreenView(
             playlistDetail = (state as SelectedAlbumState.Data).playlistDetail,
             playlistDetailListener = selectedAlbumViewModel,
             navigateBack = navigateBack,
-            onShowMusicBottomSheet = selectedAlbumViewModel::showMusicBottomSheet,
             multiSelectionManagerImpl = selectedAlbumViewModel.multiSelectionManagerImpl,
             onLongSelectOnMusic = {
                 selectedAlbumViewModel.toggleElementInSelection(

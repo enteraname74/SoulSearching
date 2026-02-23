@@ -334,6 +334,7 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
         )
     }
 
+    // TODO: Add flow to check for bottom sheet
     fun isSameMusicAsCurrentPlayedOne(musicId: UUID): Boolean =
         playbackListManager.isSameMusicAsCurrentPlayedOne(musicId = musicId)
 

@@ -52,7 +52,6 @@ fun SelectedFolderScreenView(
             playlistDetail = (state as SelectedFolderState.Data).playlistDetail,
             playlistDetailListener = selectedFolderViewModel,
             navigateBack = navigateBack,
-            onShowMusicBottomSheet = selectedFolderViewModel::showMusicBottomSheet,
             multiSelectionManagerImpl = selectedFolderViewModel.multiSelectionManagerImpl,
             onLongSelectOnMusic = {
                 selectedFolderViewModel.toggleElementInSelection(

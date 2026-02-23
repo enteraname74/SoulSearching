@@ -9,4 +9,5 @@ sealed interface PlayerNavigationState {
     data class ToArtist(val artistId: UUID): PlayerNavigationState
     data class ToAlbum(val albumId: UUID): PlayerNavigationState
     data object ToRemoteLyricsSettings : PlayerNavigationState
+    data class ToMusicBottomSheet(val musicId: UUID) : PlayerNavigationState
 }

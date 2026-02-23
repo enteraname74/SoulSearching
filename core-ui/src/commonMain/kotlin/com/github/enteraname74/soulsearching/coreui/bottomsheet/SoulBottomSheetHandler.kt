@@ -27,6 +27,32 @@ fun SoulBottomSheetHandler(
             SoulDrawer(
                 onClose = onClose,
                 colors = colors,
+                content = { content({}) },
+            )
+        }
+        else -> {
+            BottomSheet(
+                onClose = onClose,
+                colors = colors,
+                content = { content({}) },
+            )
+        }
+    }
+}
+
+@Composable
+fun SoulBottomSheetHandlerDOS(
+    onClose: () -> Unit,
+    colors: SoulBottomSheetColors = SoulBottomSheetDefaults.colors(),
+    content: @Composable (closeWithAnim: (callback: () -> Unit) -> Unit) -> Unit,
+) {
+    val windowSize = rememberWindowSize()
+
+    when (windowSize) {
+        WindowSize.Large -> {
+            SoulDrawer(
+                onClose = onClose,
+                colors = colors,
                 content = content,
             )
         }
@@ -45,16 +71,17 @@ fun SoulBottomSheetHandler(
 private fun BottomSheet(
     onClose: () -> Unit,
     colors: SoulBottomSheetColors = SoulBottomSheetDefaults.colors(),
-    content: @Composable (closeWithAnim: () -> Unit) -> Unit,
+    content: @Composable (closeWithAnim: (callback: () -> Unit) -> Unit) -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
 
-    val closeWithAnim: () -> Unit = {
+    val closeWithAnim: (callback: () -> Unit) -> Unit = { callback ->
         coroutineScope.launch {
             bottomSheetState.hide()
         }.invokeOnCompletion {
             onClose()
+            callback()
         }
     }
 

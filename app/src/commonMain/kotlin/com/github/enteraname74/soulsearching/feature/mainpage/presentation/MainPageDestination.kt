@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
@@ -24,6 +25,8 @@ data object MainPageDestination : NavKey {
         navigator: Navigator,
     ) {
         entryProviderScope.entry<MainPageDestination> {
+            println("NAVIGATION -- ${navigator.stack.map { it }}")
+
             MainPageRoute(
                 onNavigation = {
                     when (it) {
@@ -110,6 +113,14 @@ data object MainPageDestination : NavKey {
                         }
                         MainPageNavigationState.ToSettings -> {
                             navigator.navigate(SettingsDestination)
+                        }
+
+                        is MainPageNavigationState.ToMusicBottomSheet -> {
+                            navigator.navigate(
+                                MusicBottomSheetDestination(
+                                    musicId = it.musicId,
+                                )
+                            )
                         }
                     }
                 }

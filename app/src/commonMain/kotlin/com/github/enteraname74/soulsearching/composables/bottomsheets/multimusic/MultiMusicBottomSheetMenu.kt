@@ -15,7 +15,7 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomShee
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRow
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetMode
 
 @Composable
 fun MultiMusicBottomSheetMenu(
@@ -27,7 +27,7 @@ fun MultiMusicBottomSheetMenu(
     playNextAction : () -> Unit,
     addToQueueAction: () -> Unit,
     isPlayedListEmpty: Boolean,
-    musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
+    musicBottomSheetMode: MusicBottomSheetMode = MusicBottomSheetMode.NORMAL,
 ) {
     Column(
         modifier = Modifier
@@ -55,7 +55,7 @@ fun MultiMusicBottomSheetMenu(
             text = strings.addToQueue,
             onClick = addToQueueAction,
         )
-        if (musicBottomSheetState == MusicBottomSheetState.PLAYLIST) {
+        if (musicBottomSheetMode == MusicBottomSheetMode.PLAYLIST) {
             BottomSheetRow(
                 icon = Icons.Rounded.Delete,
                 text = strings.removeFromPlaylist,

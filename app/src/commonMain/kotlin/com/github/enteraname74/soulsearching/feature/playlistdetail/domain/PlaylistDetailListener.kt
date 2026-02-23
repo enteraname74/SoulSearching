@@ -14,4 +14,5 @@ interface PlaylistDetailListener {
     fun onShuffleClicked()
     fun onPlayClicked(music: Music? = null)
     fun onSearch(search: String)
+    fun showMusicBottomSheet(musicId: UUID)
 }

@@ -61,7 +61,6 @@ fun PlaylistSmallView(
     playlistDetailListener: PlaylistDetailListener,
     navigateBack: () -> Unit,
     searchAction: () -> Unit,
-    onShowMusicBottomSheet: (Music) -> Unit,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
     multiSelectionState: MultiSelectionState,
@@ -189,7 +188,9 @@ fun PlaylistSmallView(
                         music = music,
                         onClick = playlistDetailListener::onPlayClicked,
                         onLongClick = { onLongSelectOnMusic(music) },
-                        onMoreClicked = { onShowMusicBottomSheet(music) },
+                        onMoreClicked = {
+                            playlistDetailListener.showMusicBottomSheet(music.musicId)
+                        },
                         textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                         isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                         isSelected = multiSelectionState.selectedIds.contains(music.musicId),

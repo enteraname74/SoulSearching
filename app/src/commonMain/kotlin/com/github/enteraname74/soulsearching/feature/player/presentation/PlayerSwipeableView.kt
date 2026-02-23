@@ -47,6 +47,7 @@ fun PlayerDraggableView(
     navigateToArtist: (UUID) -> Unit,
     navigateToModifyMusic: (UUID) -> Unit,
     navigateToRemoteLyricsSettings: () -> Unit,
+    showMusicBottomSheet: (musicId: UUID) -> Unit,
     playerViewModel: PlayerViewModel,
     colorThemeManager: ColorThemeManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
@@ -117,6 +118,11 @@ fun PlayerDraggableView(
                     navigateToRemoteLyricsSettings()
                     playerViewModel.consumeNavigation()
                 }
+            }
+
+            is PlayerNavigationState.ToMusicBottomSheet -> {
+                showMusicBottomSheet((navigationState as PlayerNavigationState.ToMusicBottomSheet).musicId)
+                playerViewModel.consumeNavigation()
             }
         }
     }
