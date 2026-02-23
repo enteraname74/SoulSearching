@@ -1,7 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,6 +31,7 @@ import java.util.UUID
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchAll(
+    lazyListState: LazyListState,
     searchAllState: SearchAllState,
     onSelectedMusicForBottomSheet: (Music) -> Unit,
     onSelectedAlbumForBottomSheet: (AlbumPreview) -> Unit,
@@ -45,7 +48,9 @@ fun SearchAll(
     val coroutineScope = rememberCoroutineScope()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
-    LazyColumnCompat {
+    LazyColumnCompat(
+        state = lazyListState,
+    ) {
         if (searchAllState.playlists.isNotEmpty()) {
             stickyHeader(
                 key = SEARCH_ALL_PLAYLIST_STICKY_KEY,
