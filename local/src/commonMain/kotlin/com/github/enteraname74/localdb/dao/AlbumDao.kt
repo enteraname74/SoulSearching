@@ -193,18 +193,18 @@ interface AlbumDao {
     // TODO: Normalise with accents.
     @Query(
         """
-            SELECT * FROM RoomAlbumPreview 
+            SELECT * FROM RoomAlbumPreview AS preview
             WHERE (
-                name LIKE '%' || :search || '%'
+                preview.name LIKE '%' || :search || '%'
                 COLLATE NOCASE
                 OR EXISTS(
                     SELECT 1 FROM RoomArtist AS artist
-                    WHERE artist.artistId = artistId 
+                    WHERE artist.artistId = preview.artistId 
                     AND artist.artistName LIKE '%' || :search || '%' 
                     COLLATE NOCASE
                 )
             ) 
-            ORDER BY name ASC
+            ORDER BY preview.name ASC
         """
     )
     fun searchAll(search: String): Flow<List<RoomAlbumPreview>>
