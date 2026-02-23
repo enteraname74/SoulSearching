@@ -490,13 +490,19 @@ class PlaybackManager(
         )
     }
 
-    suspend fun playShuffle(musicList: List<Music>) {
+    suspend fun playShuffle(
+        musicList: List<Music>,
+        playlistId: String?,
+        isMain: Boolean,
+    ) {
         if (musicList.isEmpty()) return
 
         playerRepository.setup(
             playedListSetup = PlayedListSetup.fromSelection(
                 musics = musicList.shuffled(),
                 state = PlayedListState.Playing,
+                playlistId = playlistId,
+                isMain = isMain,
             ),
         )
     }
@@ -513,6 +519,8 @@ class PlaybackManager(
             playedListSetup = PlayedListSetup.fromSelection(
                 musics = musicList,
                 state = PlayedListState.Playing,
+                isMain = false,
+                playlistId = null,
             ),
         )
     }

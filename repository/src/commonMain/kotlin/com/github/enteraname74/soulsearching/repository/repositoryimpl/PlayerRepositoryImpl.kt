@@ -213,7 +213,13 @@ class PlayerRepositoryImpl(
 
             // If we are not in a list
             if (currentPlayedList == null) {
-                setup(playedListSetup = PlayedListSetup.fromSelection(musics))
+                setup(
+                    playedListSetup = PlayedListSetup.fromSelection(
+                        musics = musics,
+                        playlistId = null,
+                        isMain = false,
+                    )
+                )
                 return@withContext
             }
 

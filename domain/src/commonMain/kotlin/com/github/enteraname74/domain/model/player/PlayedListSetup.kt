@@ -59,14 +59,16 @@ data class PlayedListSetup(
 
         fun fromSelection(
             musics: List<Music>,
+            playlistId: String?,
+            isMain: Boolean,
             state: PlayedListState = PlayedListState.Loading,
         ): PlayedListSetup =
             PlayedListSetup(
                 musics = musics,
                 selectedMusic = musics.first(),
                 seekTo = null,
-                listId = null,
-                isMain = false,
+                listId = playlistId,
+                isMain = isMain,
                 state = state,
                 mode = PlayerMode.Normal,
             )

@@ -730,7 +730,11 @@ class MainPageViewModel(
     fun onPlayAll() {
         coroutineScope.launch {
             // TODO OPTIMIZATION: find a way to not directly fetch all songs
-            playbackManager.playShuffle(musicList = commonMusicUseCase.getAllSorted())
+            playbackManager.playShuffle(
+                musicList = commonMusicUseCase.getAllSorted(),
+                playlistId = null,
+                isMain = true,
+            )
             playerViewManager.animateTo(BottomSheetStates.EXPANDED)
         }
     }
