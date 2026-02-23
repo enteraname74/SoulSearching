@@ -33,6 +33,9 @@ class CommonMusicUseCase(
     fun getAll(): Flow<List<Music>> =
         musicRepository.getAll()
 
+    suspend fun getAllSorted(): List<Music> =
+        musicRepository.getAllSorted()
+
     fun getAllPaged(): Flow<PagingData<Music>> =
         musicRepository.getAllPaged()
 
