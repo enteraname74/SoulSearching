@@ -511,63 +511,14 @@ interface MusicDao {
     fun getMostListened(): Flow<List<RoomCompleteMusic>>
 
     @Transaction
-    @Query(
-        """
-            SELECT 
-                strftime('%m/%Y', monthMusic.addedDate) AS month,
-                COUNT(*) AS totalMusics, 
-                (
-                    SELECT music.coverId FROM RoomMusic AS music 
-                    WHERE music.isHidden = 0 
-                    AND music.coverId IS NOT NULL 
-                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate)
-                    ORDER BY
-                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                    name 
-                    LIMIT 1
-                ) AS coverId,
-                (
-                    SELECT music.path FROM RoomMusic AS music 
-                    WHERE music.isHidden = 0 
-                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) 
-                    ORDER BY name 
-                    LIMIT 1 
-                ) AS musicCoverPath 
-            FROM RoomMusic AS monthMusic
-            WHERE isHidden = 0
-            GROUP BY strftime('%Y-%m', addedDate)
-            ORDER BY strftime('%Y-%m', addedDate) DESC
-        """
-    )
+    @Query("SELECT * FROM RoomMonthMusicPreview" )
     fun getAllMonthMusics(): Flow<List<RoomMonthMusicPreview>>
 
     @Transaction
     @Query(
         """
-            SELECT 
-                strftime('%m/%Y', monthMusic.addedDate) AS month,
-                COUNT(*) AS totalMusics, 
-                (
-                    SELECT music.coverId FROM RoomMusic AS music 
-                    WHERE music.isHidden = 0 
-                    AND music.coverId IS NOT NULL 
-                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate)
-                    ORDER BY
-                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                    name 
-                    LIMIT 1
-                ) AS coverId,
-                (
-                    SELECT music.path FROM RoomMusic AS music 
-                    WHERE music.isHidden = 0 
-                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) 
-                    ORDER BY name 
-                    LIMIT 1 
-                ) AS musicCoverPath 
-            FROM RoomMusic AS monthMusic
-            WHERE isHidden = 0 
-            AND month = :month
-            GROUP BY strftime('%Y-%m', addedDate)
+            SELECT * FROM RoomMonthMusicPreview 
+            WHERE month = :month
             LIMIT 1
         """
     )
@@ -576,29 +527,7 @@ interface MusicDao {
     @Transaction
     @Query(
         """
-            SELECT 
-                folderMusic.folder,
-                COUNT(*) AS totalMusics, 
-                (
-                    SELECT music.coverId FROM RoomMusic AS music 
-                    WHERE music.isHidden = 0 
-                    AND music.coverId IS NOT NULL 
-                    AND music.folder = folderMusic.folder 
-                    ORDER BY
-                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                    name 
-                    LIMIT 1
-                ) AS coverId,
-                (
-                    SELECT music.path FROM RoomMusic AS music 
-                    WHERE music.isHidden = 0 
-                    AND music.folder = folderMusic.folder 
-                    ORDER BY name 
-                    LIMIT 1 
-                ) AS musicCoverPath 
-            FROM RoomMusic As folderMusic
-            WHERE isHidden = 0 
-            GROUP BY folderMusic.folder
+            SELECT * FROM RoomMusicFolderPreview 
             ORDER BY totalMusics DESC
         """
     )
@@ -607,30 +536,8 @@ interface MusicDao {
     @Transaction
     @Query(
         """
-            SELECT 
-                folderMusic.folder,
-                COUNT(*) AS totalMusics, 
-                (
-                    SELECT music.coverId FROM RoomMusic AS music 
-                    WHERE music.isHidden = 0 
-                    AND music.coverId IS NOT NULL 
-                    AND music.folder = folderMusic.folder 
-                    ORDER BY
-                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                    name 
-                    LIMIT 1
-                ) AS coverId,
-                (
-                    SELECT music.path FROM RoomMusic AS music 
-                    WHERE music.isHidden = 0 
-                    AND music.folder = folderMusic.folder 
-                    ORDER BY name 
-                    LIMIT 1 
-                ) AS musicCoverPath 
-            FROM RoomMusic As folderMusic
-            WHERE isHidden = 0 
-            AND folderMusic.folder = :folder
-            GROUP BY folderMusic.folder 
+            SELECT * FROM RoomMusicFolderPreview 
+            WHERE folder = :folder
             LIMIT 1
         """
     )

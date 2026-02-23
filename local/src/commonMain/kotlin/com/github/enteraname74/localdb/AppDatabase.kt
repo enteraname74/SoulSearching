@@ -18,6 +18,13 @@ import com.github.enteraname74.localdb.model.*
         RoomMusicArtist::class,
         RoomPlayerMusic::class,
         RoomFolder::class
+    ],
+    views = [
+        RoomMusicFolderPreview::class,
+        RoomMonthMusicPreview::class,
+        RoomAlbumPreview::class,
+        RoomArtistPreview::class,
+        RoomPlaylistPreview::class,
     ]
 )
 @ConstructedBy(AppDatabaseConstructor::class)

@@ -1,13 +1,16 @@
 package com.github.enteraname74.localdb.dao
 
 import androidx.paging.PagingSource
-import androidx.room.*
-import com.github.enteraname74.localdb.model.RoomCompleteMusic
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.RoomPlaylist
 import com.github.enteraname74.localdb.model.RoomPlaylistPreview
 import com.github.enteraname74.localdb.model.RoomPlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 /**
  * DAO of a Playlist.
@@ -44,38 +47,7 @@ interface PlaylistDao {
     @Transaction
     @Query(
         """
-            SELECT playlist.playlistId AS id, 
-            playlist.name, 
-            playlist.isFavorite,
-            (
-                SELECT COUNT(*) 
-                FROM RoomMusicPlaylist AS musicPlaylist 
-                WHERE musicPlaylist.playlistId = playlist.playlistId
-            ) AS totalMusics, 
-            (
-                CASE WHEN playlist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                        ON music.musicId = musicPlaylist.musicId 
-                        AND playlist.playlistId = musicPlaylist.playlistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        LIMIT 1
-                    )
-                ELSE playlist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                ON music.musicId = musicPlaylist.musicId 
-                AND playlist.playlistId = musicPlaylist.playlistId 
-                AND music.isHidden = 0 
-                LIMIT 1
-            ) AS musicCoverPath,
-            playlist.isInQuickAccess, 
-            playlist.nbPlayed 
-            FROM RoomPlaylist AS playlist 
+            SELECT * FROM RoomPlaylistPreview 
             ORDER BY name ASC
         """
     )
@@ -84,38 +56,7 @@ interface PlaylistDao {
     @Transaction
     @Query(
         """
-            SELECT playlist.playlistId AS id, 
-            playlist.name, 
-            playlist.isFavorite,
-            (
-                SELECT COUNT(*) 
-                FROM RoomMusicPlaylist AS musicPlaylist 
-                WHERE musicPlaylist.playlistId = playlist.playlistId
-            ) AS totalMusics, 
-            (
-                CASE WHEN playlist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                        ON music.musicId = musicPlaylist.musicId 
-                        AND playlist.playlistId = musicPlaylist.playlistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        LIMIT 1
-                    )
-                ELSE playlist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                ON music.musicId = musicPlaylist.musicId 
-                AND playlist.playlistId = musicPlaylist.playlistId 
-                AND music.isHidden = 0 
-                LIMIT 1
-            ) AS musicCoverPath,
-            playlist.isInQuickAccess, 
-            playlist.nbPlayed 
-            FROM RoomPlaylist AS playlist 
+            SELECT * FROM RoomPlaylistPreview 
             ORDER BY name DESC
         """
     )
@@ -124,38 +65,7 @@ interface PlaylistDao {
     @Transaction
     @Query(
         """
-            SELECT playlist.playlistId AS id, 
-            playlist.name, 
-            playlist.isFavorite,
-            (
-                SELECT COUNT(*) 
-                FROM RoomMusicPlaylist AS musicPlaylist 
-                WHERE musicPlaylist.playlistId = playlist.playlistId
-            ) AS totalMusics, 
-            (
-                CASE WHEN playlist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                        ON music.musicId = musicPlaylist.musicId 
-                        AND playlist.playlistId = musicPlaylist.playlistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        LIMIT 1
-                    )
-                ELSE playlist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                ON music.musicId = musicPlaylist.musicId 
-                AND playlist.playlistId = musicPlaylist.playlistId 
-                AND music.isHidden = 0 
-                LIMIT 1
-            ) AS musicCoverPath,
-            playlist.isInQuickAccess, 
-            playlist.nbPlayed 
-            FROM RoomPlaylist AS playlist 
+            SELECT * FROM RoomPlaylistPreview 
             ORDER BY addedDate ASC
         """
     )
@@ -164,38 +74,7 @@ interface PlaylistDao {
     @Transaction
     @Query(
         """
-            SELECT playlist.playlistId AS id, 
-            playlist.name, 
-            playlist.isFavorite,
-            (
-                SELECT COUNT(*) 
-                FROM RoomMusicPlaylist AS musicPlaylist 
-                WHERE musicPlaylist.playlistId = playlist.playlistId
-            ) AS totalMusics, 
-            (
-                CASE WHEN playlist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                        ON music.musicId = musicPlaylist.musicId 
-                        AND playlist.playlistId = musicPlaylist.playlistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        LIMIT 1
-                    )
-                ELSE playlist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                ON music.musicId = musicPlaylist.musicId 
-                AND playlist.playlistId = musicPlaylist.playlistId 
-                AND music.isHidden = 0 
-                LIMIT 1
-            ) AS musicCoverPath,
-            playlist.isInQuickAccess, 
-            playlist.nbPlayed 
-            FROM RoomPlaylist AS playlist 
+            SELECT * FROM RoomPlaylistPreview 
             ORDER BY addedDate DESC
         """
     )
@@ -203,38 +82,8 @@ interface PlaylistDao {
 
     @Transaction
     @Query(
-        """SELECT playlist.playlistId AS id, 
-            playlist.name, 
-            playlist.isFavorite,
-            (
-                SELECT COUNT(*) 
-                FROM RoomMusicPlaylist AS musicPlaylist 
-                WHERE musicPlaylist.playlistId = playlist.playlistId
-            ) AS totalMusics, 
-            (
-                CASE WHEN playlist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                        ON music.musicId = musicPlaylist.musicId 
-                        AND playlist.playlistId = musicPlaylist.playlistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        LIMIT 1
-                    )
-                ELSE playlist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                ON music.musicId = musicPlaylist.musicId 
-                AND playlist.playlistId = musicPlaylist.playlistId 
-                AND music.isHidden = 0 
-                LIMIT 1
-            ) AS musicCoverPath,
-            playlist.isInQuickAccess, 
-            playlist.nbPlayed 
-            FROM RoomPlaylist AS playlist 
+        """
+            SELECT * FROM RoomPlaylistPreview 
             ORDER BY nbPlayed ASC
         """
     )
@@ -243,38 +92,7 @@ interface PlaylistDao {
     @Transaction
     @Query(
         """
-            SELECT playlist.playlistId AS id, 
-            playlist.name, 
-            playlist.isFavorite,
-            (
-                SELECT COUNT(*) 
-                FROM RoomMusicPlaylist AS musicPlaylist 
-                WHERE musicPlaylist.playlistId = playlist.playlistId
-            ) AS totalMusics, 
-            (
-                CASE WHEN playlist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                        ON music.musicId = musicPlaylist.musicId 
-                        AND playlist.playlistId = musicPlaylist.playlistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        LIMIT 1
-                    )
-                ELSE playlist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                ON music.musicId = musicPlaylist.musicId 
-                AND playlist.playlistId = musicPlaylist.playlistId 
-                AND music.isHidden = 0 
-                LIMIT 1
-            ) AS musicCoverPath,
-            playlist.isInQuickAccess, 
-            playlist.nbPlayed  
-            FROM RoomPlaylist AS playlist 
+            SELECT * FROM RoomPlaylistPreview 
             ORDER BY nbPlayed DESC
         """
     )
@@ -283,39 +101,8 @@ interface PlaylistDao {
     @Transaction
     @Query(
         """
-            SELECT playlist.playlistId AS id, 
-            playlist.name, 
-            playlist.isFavorite,
-            (
-                SELECT COUNT(*) 
-                FROM RoomMusicPlaylist AS musicPlaylist 
-                WHERE musicPlaylist.playlistId = playlist.playlistId
-            ) AS totalMusics, 
-            (
-                CASE WHEN playlist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                        ON music.musicId = musicPlaylist.musicId 
-                        AND playlist.playlistId = musicPlaylist.playlistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        LIMIT 1
-                    )
-                ELSE playlist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                ON music.musicId = musicPlaylist.musicId 
-                AND playlist.playlistId = musicPlaylist.playlistId 
-                AND music.isHidden = 0 
-                LIMIT 1
-            ) AS musicCoverPath,
-            playlist.isInQuickAccess, 
-            playlist.nbPlayed 
-            FROM RoomPlaylist AS playlist 
-            WHERE playlist.isInQuickAccess = 1
+            SELECT * FROM RoomPlaylistPreview 
+            WHERE isInQuickAccess = 1
         """
     )
     fun getAllFromQuickAccess(): Flow<List<RoomPlaylistPreview>>
@@ -323,38 +110,7 @@ interface PlaylistDao {
     @Transaction
     @Query(
         """
-            SELECT playlist.playlistId AS id, 
-            playlist.name, 
-            playlist.isFavorite,
-            (
-                SELECT COUNT(*) 
-                FROM RoomMusicPlaylist AS musicPlaylist 
-                WHERE musicPlaylist.playlistId = playlist.playlistId
-            ) AS totalMusics, 
-            (
-                CASE WHEN playlist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                        ON music.musicId = musicPlaylist.musicId 
-                        AND playlist.playlistId = musicPlaylist.playlistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        LIMIT 1
-                    )
-                ELSE playlist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                ON music.musicId = musicPlaylist.musicId 
-                AND playlist.playlistId = musicPlaylist.playlistId 
-                AND music.isHidden = 0 
-                LIMIT 1
-            ) AS musicCoverPath,
-            playlist.isInQuickAccess,
-            playlist.nbPlayed 
-            FROM RoomPlaylist AS playlist 
+            SELECT * FROM RoomPlaylistPreview 
             WHERE nbPlayed >= 1 
             ORDER BY nbPlayed DESC 
             LIMIT 11
@@ -365,39 +121,8 @@ interface PlaylistDao {
     @Transaction
     @Query(
         """
-            SELECT playlist.playlistId AS id, 
-            playlist.name, 
-            playlist.isFavorite,
-            (
-                SELECT COUNT(*) 
-                FROM RoomMusicPlaylist AS musicPlaylist 
-                WHERE musicPlaylist.playlistId = playlist.playlistId
-            ) AS totalMusics, 
-            (
-                CASE WHEN playlist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                        ON music.musicId = musicPlaylist.musicId 
-                        AND playlist.playlistId = musicPlaylist.playlistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        LIMIT 1
-                    )
-                ELSE playlist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                ON music.musicId = musicPlaylist.musicId 
-                AND playlist.playlistId = musicPlaylist.playlistId 
-                AND music.isHidden = 0 
-                LIMIT 1
-            ) AS musicCoverPath,
-            playlist.isInQuickAccess,
-            playlist.nbPlayed 
-            FROM RoomPlaylist AS playlist 
-            WHERE playlist.playlistId = :playlistId 
+            SELECT * FROM RoomPlaylistPreview 
+            WHERE id = :playlistId 
             LIMIT 1
         """
     )
@@ -407,39 +132,8 @@ interface PlaylistDao {
     @Transaction
     @Query(
         """
-            SELECT playlist.playlistId AS id, 
-            playlist.name, 
-            playlist.isFavorite,
-            (
-                SELECT COUNT(*) 
-                FROM RoomMusicPlaylist AS musicPlaylist 
-                WHERE musicPlaylist.playlistId = playlist.playlistId
-            ) AS totalMusics, 
-            (
-                CASE WHEN playlist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                        ON music.musicId = musicPlaylist.musicId 
-                        AND playlist.playlistId = musicPlaylist.playlistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        LIMIT 1
-                    )
-                ELSE playlist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicPlaylist AS musicPlaylist 
-                ON music.musicId = musicPlaylist.musicId 
-                AND playlist.playlistId = musicPlaylist.playlistId 
-                AND music.isHidden = 0 
-                LIMIT 1
-            ) AS musicCoverPath,
-            playlist.isInQuickAccess, 
-            playlist.nbPlayed 
-            FROM RoomPlaylist AS playlist 
-            WHERE playlist.name LIKE '%' || :search || '%' COLLATE NOCASE 
+            SELECT * FROM RoomPlaylistPreview 
+            WHERE name LIKE '%' || :search || '%' COLLATE NOCASE 
         """
     )
     fun searchAll(search: String): Flow<List<RoomPlaylistPreview>>
