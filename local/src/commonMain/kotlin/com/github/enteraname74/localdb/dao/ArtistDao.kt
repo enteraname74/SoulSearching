@@ -56,35 +56,7 @@ interface ArtistDao {
     @Transaction
     @Query(
         """
-            SELECT artist.artistId AS id, 
-            artist.artistName AS name, 
-            artist.coverFolderKey,
-            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
-            (
-                CASE WHEN artist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicArtist AS musicArtist 
-                        ON music.musicId = musicArtist.musicId 
-                        AND artist.artistId = musicArtist.artistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        ORDER BY name ASC 
-                        LIMIT 1
-                    )
-                ELSE artist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicArtist AS musicArtist 
-                ON music.musicId = musicArtist.musicId 
-                AND artist.artistId = musicArtist.artistId 
-                AND music.isHidden = 0 
-                ORDER BY name ASC 
-                LIMIT 1
-            ) AS musicCoverPath,
-            artist.isInQuickAccess 
-            FROM RoomArtist AS artist 
+            SELECT * FROM RoomArtistPreview 
             ORDER BY name ASC
         """
     )
@@ -93,35 +65,7 @@ interface ArtistDao {
     @Transaction
     @Query(
         """
-            SELECT artist.artistId AS id, 
-            artist.artistName AS name, 
-            artist.coverFolderKey,
-            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
-            (
-                CASE WHEN artist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicArtist AS musicArtist 
-                        ON music.musicId = musicArtist.musicId 
-                        AND artist.artistId = musicArtist.artistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        ORDER BY name ASC 
-                        LIMIT 1
-                    )
-                ELSE artist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicArtist AS musicArtist 
-                ON music.musicId = musicArtist.musicId 
-                AND artist.artistId = musicArtist.artistId 
-                AND music.isHidden = 0 
-                ORDER BY name ASC 
-                LIMIT 1
-            ) AS musicCoverPath,
-            artist.isInQuickAccess 
-            FROM RoomArtist AS artist 
+            SELECT * FROM RoomArtistPreview 
             ORDER BY name DESC
         """
     )
@@ -130,35 +74,7 @@ interface ArtistDao {
     @Transaction
     @Query(
         """
-            SELECT artist.artistId AS id, 
-            artist.artistName AS name, 
-            artist.coverFolderKey,
-            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
-            (
-                CASE WHEN artist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicArtist AS musicArtist 
-                        ON music.musicId = musicArtist.musicId 
-                        AND artist.artistId = musicArtist.artistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        ORDER BY name ASC 
-                        LIMIT 1
-                    )
-                ELSE artist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicArtist AS musicArtist 
-                ON music.musicId = musicArtist.musicId 
-                AND artist.artistId = musicArtist.artistId 
-                AND music.isHidden = 0 
-                ORDER BY name ASC 
-                LIMIT 1
-            ) AS musicCoverPath,
-            artist.isInQuickAccess 
-            FROM RoomArtist AS artist 
+            SELECT * FROM RoomArtistPreview 
             ORDER BY addedDate ASC
         """
     )
@@ -167,35 +83,7 @@ interface ArtistDao {
     @Transaction
     @Query(
         """
-            SELECT artist.artistId AS id, 
-            artist.artistName AS name, 
-            artist.coverFolderKey,
-            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
-            (
-                CASE WHEN artist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicArtist AS musicArtist 
-                        ON music.musicId = musicArtist.musicId 
-                        AND artist.artistId = musicArtist.artistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        ORDER BY name ASC 
-                        LIMIT 1
-                    )
-                ELSE artist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicArtist AS musicArtist 
-                ON music.musicId = musicArtist.musicId 
-                AND artist.artistId = musicArtist.artistId 
-                AND music.isHidden = 0 
-                ORDER BY name ASC 
-                LIMIT 1
-            ) AS musicCoverPath,
-            artist.isInQuickAccess 
-            FROM RoomArtist AS artist 
+            SELECT * FROM RoomArtistPreview 
             ORDER BY addedDate DESC
         """
     )
@@ -204,35 +92,7 @@ interface ArtistDao {
     @Transaction
     @Query(
         """
-            SELECT artist.artistId AS id, 
-            artist.artistName AS name, 
-            artist.coverFolderKey,
-            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
-            (
-                CASE WHEN artist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicArtist AS musicArtist 
-                        ON music.musicId = musicArtist.musicId 
-                        AND artist.artistId = musicArtist.artistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        ORDER BY name ASC 
-                        LIMIT 1
-                    )
-                ELSE artist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicArtist AS musicArtist 
-                ON music.musicId = musicArtist.musicId 
-                AND artist.artistId = musicArtist.artistId 
-                AND music.isHidden = 0 
-                ORDER BY name ASC 
-                LIMIT 1
-            ) AS musicCoverPath,
-            artist.isInQuickAccess 
-            FROM RoomArtist AS artist 
+            SELECT * FROM RoomArtistPreview 
             ORDER BY nbPlayed ASC
         """
     )
@@ -241,35 +101,7 @@ interface ArtistDao {
     @Transaction
     @Query(
         """
-            SELECT artist.artistId AS id, 
-            artist.artistName AS name, 
-            artist.coverFolderKey,
-            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
-            (
-                CASE WHEN artist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicArtist AS musicArtist 
-                        ON music.musicId = musicArtist.musicId 
-                        AND artist.artistId = musicArtist.artistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        ORDER BY name ASC 
-                        LIMIT 1
-                    )
-                ELSE artist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicArtist AS musicArtist 
-                ON music.musicId = musicArtist.musicId 
-                AND artist.artistId = musicArtist.artistId 
-                AND music.isHidden = 0 
-                ORDER BY name ASC 
-                LIMIT 1
-            ) AS musicCoverPath,
-            artist.isInQuickAccess 
-            FROM RoomArtist AS artist 
+            SELECT * FROM RoomArtistPreview 
             ORDER BY nbPlayed DESC
         """
     )
@@ -297,36 +129,8 @@ interface ArtistDao {
     @Transaction
     @Query(
         """
-            SELECT artist.artistId AS id, 
-            artist.artistName AS name, 
-            artist.coverFolderKey,
-            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
-            (
-                CASE WHEN artist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicArtist AS musicArtist 
-                        ON music.musicId = musicArtist.musicId 
-                        AND artist.artistId = musicArtist.artistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        ORDER BY name ASC 
-                        LIMIT 1
-                    )
-                ELSE artist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicArtist AS musicArtist 
-                ON music.musicId = musicArtist.musicId 
-                AND artist.artistId = musicArtist.artistId 
-                AND music.isHidden = 0 
-                ORDER BY name ASC 
-                LIMIT 1
-            ) AS musicCoverPath,
-            artist.isInQuickAccess 
-            FROM RoomArtist AS artist 
-            WHERE artist.isInQuickAccess = 1
+            SELECT * FROM RoomArtistPreview 
+            WHERE isInQuickAccess = 1
         """
     )
     fun getAllFromQuickAccess(): Flow<List<RoomArtistPreview>>
@@ -347,35 +151,7 @@ interface ArtistDao {
 
     @Query(
         """
-            SELECT artist.artistId AS id, 
-            artist.artistName AS name, 
-            artist.coverFolderKey,
-            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
-            (
-                CASE WHEN artist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicArtist AS musicArtist 
-                        ON music.musicId = musicArtist.musicId 
-                        AND artist.artistId = musicArtist.artistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        ORDER BY name ASC 
-                        LIMIT 1
-                    )
-                ELSE artist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicArtist AS musicArtist 
-                ON music.musicId = musicArtist.musicId 
-                AND artist.artistId = musicArtist.artistId 
-                AND music.isHidden = 0 
-                ORDER BY name ASC 
-                LIMIT 1
-            ) AS musicCoverPath,
-            artist.isInQuickAccess 
-            FROM RoomArtist AS artist 
+            SELECT * FROM RoomArtistPreview 
             ORDER BY totalMusics DESC 
             LIMIT 11
         """
@@ -388,35 +164,7 @@ interface ArtistDao {
     @Transaction
     @Query(
         """
-            SELECT artist.artistId AS id, 
-            artist.artistName AS name, 
-            artist.coverFolderKey,
-            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
-            (
-                CASE WHEN artist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicArtist AS musicArtist 
-                        ON music.musicId = musicArtist.musicId 
-                        AND artist.artistId = musicArtist.artistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        ORDER BY name ASC 
-                        LIMIT 1
-                    )
-                ELSE artist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicArtist AS musicArtist 
-                ON music.musicId = musicArtist.musicId 
-                AND artist.artistId = musicArtist.artistId 
-                AND music.isHidden = 0 
-                ORDER BY name ASC 
-                LIMIT 1
-            ) AS musicCoverPath,
-            artist.isInQuickAccess 
-            FROM RoomArtist AS artist 
+            SELECT * FROM RoomArtistPreview 
             WHERE nbPlayed >= 1 
             ORDER BY nbPlayed DESC 
             LIMIT 11
@@ -427,36 +175,8 @@ interface ArtistDao {
     @Transaction
     @Query(
         """
-            SELECT artist.artistId AS id, 
-            artist.artistName AS name, 
-            artist.coverFolderKey,
-            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
-            (
-                CASE WHEN artist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicArtist AS musicArtist 
-                        ON music.musicId = musicArtist.musicId 
-                        AND artist.artistId = musicArtist.artistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        ORDER BY name ASC 
-                        LIMIT 1
-                    )
-                ELSE artist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicArtist AS musicArtist 
-                ON music.musicId = musicArtist.musicId 
-                AND artist.artistId = musicArtist.artistId 
-                AND music.isHidden = 0 
-                ORDER BY name ASC 
-                LIMIT 1
-            ) AS musicCoverPath,
-            artist.isInQuickAccess 
-            FROM RoomArtist AS artist 
-            WHERE artist.artistId = :artistId
+            SELECT * FROM RoomArtistPreview 
+            WHERE id = :artistId
             LIMIT 1
         """
     )
@@ -466,36 +186,8 @@ interface ArtistDao {
     @Transaction
     @Query(
         """
-            SELECT artist.artistId AS id, 
-            artist.artistName AS name, 
-            artist.coverFolderKey,
-            (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
-            (
-                CASE WHEN artist.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        INNER JOIN RoomMusicArtist AS musicArtist 
-                        ON music.musicId = musicArtist.musicId 
-                        AND artist.artistId = musicArtist.artistId 
-                        AND music.isHidden = 0 
-                        AND music.coverId IS NOT NULL 
-                        ORDER BY name ASC 
-                        LIMIT 1
-                    )
-                ELSE artist.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                INNER JOIN RoomMusicArtist AS musicArtist 
-                ON music.musicId = musicArtist.musicId 
-                AND artist.artistId = musicArtist.artistId 
-                AND music.isHidden = 0 
-                ORDER BY name ASC 
-                LIMIT 1
-            ) AS musicCoverPath,
-            artist.isInQuickAccess 
-            FROM RoomArtist AS artist 
-            WHERE artist.artistName LIKE '%' || :search || '%' COLLATE NOCASE 
+            SELECT * FROM RoomArtistPreview 
+            WHERE name LIKE '%' || :search || '%' COLLATE NOCASE 
             ORDER BY name ASC
         """
     )

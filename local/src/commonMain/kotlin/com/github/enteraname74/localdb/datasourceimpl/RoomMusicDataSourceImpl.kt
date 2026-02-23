@@ -107,6 +107,36 @@ internal class RoomMusicDataSourceImpl(
         }
     }
 
+    override suspend fun getAllSorted(): List<Music> {
+        val direction: SortDirection = SortDirection
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY))
+            ?: SortDirection.DEFAULT
+
+        val type: SortType = SortType
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY))
+            ?: SortType.DEFAULT
+
+        return with(appDatabase.musicDao) {
+            when (direction) {
+                SortDirection.ASC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameAsc()
+                        SortType.ADDED_DATE -> getAllByDateAsc()
+                        SortType.NB_PLAYED -> getAllByNbPlayedAsc()
+                    }
+                }
+
+                SortDirection.DESC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameDesc()
+                        SortType.ADDED_DATE -> getAllByDateDesc()
+                        SortType.NB_PLAYED -> getAllByNbPlayedDesc()
+                    }
+                }
+            }
+        }.map { it.toMusic() }
+    }
+
     override fun getAllFromQuickAccess(): Flow<List<Music>> =
         appDatabase.musicDao.getAllFromQuickAccess().map { list ->
             list.map { it.toMusic() }

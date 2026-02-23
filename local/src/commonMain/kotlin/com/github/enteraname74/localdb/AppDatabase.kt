@@ -26,7 +26,12 @@ import com.github.enteraname74.localdb.view.CurrentPlayerMusicsView
         RoomFolder::class
     ],
     views = [
-        CurrentPlayerMusicsView::class
+        CurrentPlayerMusicsView::class,
+        RoomMusicFolderPreview::class,
+        RoomMonthMusicPreview::class,
+        RoomAlbumPreview::class,
+        RoomArtistPreview::class,
+        RoomPlaylistPreview::class,
     ]
 )
 @ConstructedBy(AppDatabaseConstructor::class)

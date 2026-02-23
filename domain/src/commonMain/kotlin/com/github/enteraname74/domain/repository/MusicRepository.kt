@@ -39,6 +39,8 @@ interface MusicRepository {
     @Deprecated("Avoid fetching all music from DB because of performance issue")
     fun getAll(): Flow<List<Music>>
 
+    suspend fun getAllSorted(): List<Music>
+
     fun getAllFromQuickAccess(): Flow<List<Music>>
 
     fun getAllPaged(): Flow<PagingData<Music>>
