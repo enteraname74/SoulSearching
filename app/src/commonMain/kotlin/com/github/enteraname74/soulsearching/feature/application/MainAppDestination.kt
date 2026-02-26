@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -127,7 +126,7 @@ private fun navigationRows(
                     if (navigator.isComingFromPlaylistDetails()) {
                         colorThemeManager.removePlaylistTheme()
                     }
-                    navigator.navigate(SettingsDestination)
+                    navigator.push(SettingsDestination)
                 },
                 filledIcon = Icons.Rounded.Settings,
                 outlinedIcon = Icons.Outlined.Settings,
@@ -150,7 +149,7 @@ private fun navigationRows(
                         if (navigator.isComingFromPlaylistDetails()) {
                             colorThemeManager.removePlaylistTheme()
                         }
-                        navigator.navigate(MainPageDestination)
+                        navigator.push(MainPageDestination)
                     },
                     isSelected = (navigator.currentRoute is MainPageDestination) && pageCheck
                 )

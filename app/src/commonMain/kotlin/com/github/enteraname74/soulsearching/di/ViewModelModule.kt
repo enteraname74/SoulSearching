@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.di
 
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetViewModel
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
@@ -83,4 +84,5 @@ internal val viewModelModule: Module = module {
 
     // Bottom sheets
     viewModelOf(::MusicBottomSheetViewModel)
+    viewModelOf(::AddToPlaylistBottomSheetViewModel)
 }

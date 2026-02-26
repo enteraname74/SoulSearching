@@ -14,7 +14,6 @@ import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUse
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
@@ -179,9 +178,6 @@ class PlayerViewModel(
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
-    private val _addToPlaylistBottomSheet: MutableStateFlow<AddToPlaylistBottomSheet?> = MutableStateFlow(null)
-    val addToPlaylistBottomSheet: StateFlow<AddToPlaylistBottomSheet?> = _addToPlaylistBottomSheet.asStateFlow()
-
     private val _navigationState: MutableStateFlow<PlayerNavigationState> = MutableStateFlow(
         PlayerNavigationState.Idle,
     )
@@ -196,7 +192,6 @@ class PlayerViewModel(
         multiMusicBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
     }

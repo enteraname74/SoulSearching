@@ -43,7 +43,7 @@ fun MainAppNavigationHandler(
         ),
         onBack = {
             if (!isLoading) {
-                navigator.goBack()
+                navigator.pop()
             }
         },
         transitionSpec = {

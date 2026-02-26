@@ -64,12 +64,10 @@ fun PlayerDraggableView(
     val bottomSheetState by playerViewModel.bottomSheetState.collectAsState()
     val dialogState by playerViewModel.dialogState.collectAsState()
     val navigationState by playerViewModel.navigationState.collectAsState()
-    val addToPlaylistBottomSheet by playerViewModel.addToPlaylistBottomSheet.collectAsState()
     val playerColorTheme by colorThemeManager.playerColorTheme.collectAsState()
 
     bottomSheetState?.BottomSheet()
     dialogState?.Dialog()
-    addToPlaylistBottomSheet?.BottomSheet()
 
     val previousDraggableState by playerViewManager.previousState.collectAsState()
 

@@ -14,7 +14,7 @@ data object SettingsArtistCoverMethodDestination: SettingPage {
     ) {
         entryProviderScope.entry<SettingsArtistCoverMethodDestination> {
             SettingsArtistCoverMethodRoute(
-                navigateBack = { navigator.goBack() },
+                navigateBack = { navigator.pop() },
             )
         }
     }

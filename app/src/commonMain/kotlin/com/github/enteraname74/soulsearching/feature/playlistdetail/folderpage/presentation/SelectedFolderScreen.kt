@@ -22,11 +22,9 @@ fun SelectedFolderRoute(
     val bottomSheetState by viewModel.bottomSheetState.collectAsState()
     val dialogState by viewModel.dialogState.collectAsState()
     val navigationState by viewModel.navigationState.collectAsState()
-    val addToPlaylistBottomSheet by viewModel.addToPlaylistBottomSheet.collectAsState()
 
     bottomSheetState?.BottomSheet()
     dialogState?.Dialog()
-    addToPlaylistBottomSheet?.BottomSheet()
 
     LaunchedEffect(navigationState) {
         onNavigationState(navigationState)

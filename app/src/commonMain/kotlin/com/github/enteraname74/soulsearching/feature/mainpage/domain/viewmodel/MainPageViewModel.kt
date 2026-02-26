@@ -39,7 +39,6 @@ import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomShee
 import com.github.enteraname74.soulsearching.commondelegate.MultiPlaylistBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
@@ -303,11 +302,6 @@ class MainPageViewModel(
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
-    private val _addToPlaylistsBottomSheetState: MutableStateFlow<AddToPlaylistBottomSheet?> =
-        MutableStateFlow(null)
-    val addToPlaylistsBottomSheetState: StateFlow<AddToPlaylistBottomSheet?> =
-        _addToPlaylistsBottomSheetState.asStateFlow()
-
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
     val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
 
@@ -354,7 +348,6 @@ class MainPageViewModel(
         multiMusicBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            setAddToPlaylistBottomSheetState = { _addToPlaylistsBottomSheetState.value = it },
             multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 

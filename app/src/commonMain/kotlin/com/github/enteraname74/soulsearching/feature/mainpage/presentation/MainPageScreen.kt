@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
@@ -68,11 +67,9 @@ fun MainPageRoute(
     val searchDraggableState = mainPageViewModel.searchDraggableState
 
     val bottomSheetState: SoulBottomSheet? by mainPageViewModel.bottomSheetState.collectAsStateWithLifecycle()
-    val addToPlaylistsBottomSheetState: AddToPlaylistBottomSheet? by mainPageViewModel.addToPlaylistsBottomSheetState.collectAsStateWithLifecycle()
     val dialogState: SoulDialog? by mainPageViewModel.dialogState.collectAsStateWithLifecycle()
     val navigationState: MainPageNavigationState by mainPageViewModel.navigationState.collectAsStateWithLifecycle()
     bottomSheetState?.BottomSheet()
-    addToPlaylistsBottomSheetState?.BottomSheet()
     dialogState?.Dialog()
 
     LaunchedEffect(playerViewManager.currentValue) {

@@ -36,7 +36,7 @@ data class SelectedMonthDestination(
                                 /*no-op*/
                             }
                             is SelectedMonthNavigationState.ToModifyMusic -> {
-                                navigator.navigate(
+                                navigator.push(
                                     ModifyMusicDestination(
                                         selectedMusicId = it.musicId,
                                     )
@@ -47,11 +47,11 @@ data class SelectedMonthDestination(
                                 if (!navigator.isPreviousScreenAPlaylistDetails()) {
                                     colorThemeManager.removePlaylistTheme()
                                 }
-                                navigator.goBack()
+                                navigator.pop()
                             }
 
                             is SelectedMonthNavigationState.ToMusicBottomSheet -> {
-                                navigator.navigate(
+                                navigator.push(
                                     MusicBottomSheetDestination(it.musicId)
                                 )
                             }

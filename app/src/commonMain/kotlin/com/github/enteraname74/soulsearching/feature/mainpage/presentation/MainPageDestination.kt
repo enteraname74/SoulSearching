@@ -35,7 +35,7 @@ data object MainPageDestination : NavKey {
                         }
 
                         is MainPageNavigationState.ToAdvancedSettings -> {
-                            navigator.navigate(
+                            navigator.push(
                                 SettingsAdvancedDestination(
                                     focusedElement = it.focusedElement,
                                 )
@@ -43,7 +43,7 @@ data object MainPageDestination : NavKey {
                         }
 
                         is MainPageNavigationState.ToAlbum -> {
-                            navigator.navigate(
+                            navigator.push(
                                 SelectedAlbumDestination(
                                     selectedAlbumId = it.albumId
                                 )
@@ -51,7 +51,7 @@ data object MainPageDestination : NavKey {
                         }
 
                         is MainPageNavigationState.ToArtist -> {
-                            navigator.navigate(
+                            navigator.push(
                                 SelectedArtistDestination(
                                     selectedArtistId = it.artistId,
                                 )
@@ -59,7 +59,7 @@ data object MainPageDestination : NavKey {
                         }
 
                         is MainPageNavigationState.ToFolder -> {
-                            navigator.navigate(
+                            navigator.push(
                                 SelectedFolderDestination(
                                     selectedFolderPath = it.folderPath,
                                 )
@@ -67,7 +67,7 @@ data object MainPageDestination : NavKey {
                         }
 
                         is MainPageNavigationState.ToModifyAlbum -> {
-                            navigator.navigate(
+                            navigator.push(
                                 ModifyAlbumDestination(
                                     selectedAlbumId = it.albumId
                                 )
@@ -75,7 +75,7 @@ data object MainPageDestination : NavKey {
                         }
 
                         is MainPageNavigationState.ToModifyArtist -> {
-                            navigator.navigate(
+                            navigator.push(
                                 ModifyArtistDestination(
                                     selectedArtistId = it.artistId,
                                 )
@@ -83,7 +83,7 @@ data object MainPageDestination : NavKey {
                         }
 
                         is MainPageNavigationState.ToModifyMusic -> {
-                            navigator.navigate(
+                            navigator.push(
                                 ModifyMusicDestination(
                                     selectedMusicId = it.musicId
                                 )
@@ -91,32 +91,32 @@ data object MainPageDestination : NavKey {
                         }
 
                         is MainPageNavigationState.ToModifyPlaylist -> {
-                            navigator.navigate(
+                            navigator.push(
                                 ModifyPlaylistDestination(
                                     selectedPlaylistId = it.playlistId,
                                 )
                             )
                         }
                         is MainPageNavigationState.ToMonth -> {
-                            navigator.navigate(
+                            navigator.push(
                                 SelectedMonthDestination(
                                     month = it.month
                                 )
                             )
                         }
                         is MainPageNavigationState.ToPlaylist -> {
-                            navigator.navigate(
+                            navigator.push(
                                 SelectedPlaylistDestination(
                                     selectedPlaylistId = it.playlistId,
                                 )
                             )
                         }
                         MainPageNavigationState.ToSettings -> {
-                            navigator.navigate(SettingsDestination)
+                            navigator.push(SettingsDestination)
                         }
 
                         is MainPageNavigationState.ToMusicBottomSheet -> {
-                            navigator.navigate(
+                            navigator.push(
                                 MusicBottomSheetDestination(
                                     musicId = it.musicId,
                                 )

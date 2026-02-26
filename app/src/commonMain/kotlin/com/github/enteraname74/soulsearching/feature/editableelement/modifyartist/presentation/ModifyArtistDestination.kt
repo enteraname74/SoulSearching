@@ -28,7 +28,7 @@ data class ModifyArtistDestination(
                     onNavigationState = {
                         when (it) {
                             ModifyArtistNavigationState.Back -> {
-                                navigator.goBack()
+                                navigator.pop()
                             }
                             ModifyArtistNavigationState.Idle -> {
                                 /*no-op*/

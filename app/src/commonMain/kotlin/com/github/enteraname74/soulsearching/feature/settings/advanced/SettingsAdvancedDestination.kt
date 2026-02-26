@@ -32,13 +32,13 @@ data class SettingsAdvancedDestination(
                                 /*no-op*/
                             }
                             SettingsAdvancedNavigationState.NavigateBack -> {
-                                navigator.goBack()
+                                navigator.pop()
                             }
                             SettingsAdvancedNavigationState.ToArtistCoverMethod -> {
-                                navigator.navigate(SettingsArtistCoverMethodDestination)
+                                navigator.push(SettingsArtistCoverMethodDestination)
                             }
                             SettingsAdvancedNavigationState.ToMultipleArtists -> {
-                                navigator.navigate(
+                                navigator.push(
                                     MultipleArtistsChoiceDestination(
                                         mode = MultipleArtistsChoiceMode.GeneralCheck,
                                     )

@@ -4,7 +4,6 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.domain.util.serializer.UUIDSerializer
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetMode
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
@@ -43,25 +42,25 @@ data class SelectedAlbumDestination(
                                 if (!navigator.isPreviousScreenAPlaylistDetails()) {
                                     colorThemeManager.removePlaylistTheme()
                                 }
-                                navigator.goBack()
+                                navigator.pop()
                             }
                             SelectedAlbumNavigationState.Idle -> {
                                 /*no-op*/
                             }
                             is SelectedAlbumNavigationState.ToArtist -> {
-                               navigator.navigate(
+                               navigator.push(
                                    SelectedArtistDestination(
                                        selectedArtistId = it.artistId,
                                    )
                                )
                             }
                             is SelectedAlbumNavigationState.ToEdit -> {
-                                navigator.navigate(
+                                navigator.push(
                                     ModifyAlbumDestination(selectedAlbumId = it.albumId)
                                 )
                             }
                             is SelectedAlbumNavigationState.ToModifyMusic -> {
-                                navigator.navigate(
+                                navigator.push(
                                     ModifyMusicDestination(
                                         selectedMusicId = it.musicId,
                                     )
@@ -69,7 +68,7 @@ data class SelectedAlbumDestination(
                             }
 
                             is SelectedAlbumNavigationState.ToMusicBottomSheet -> {
-                                navigator.navigate(
+                                navigator.push(
                                     MusicBottomSheetDestination(
                                         musicId = it.musicId,
                                         mode = MusicBottomSheetMode.ALBUM_OR_ARTIST,

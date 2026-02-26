@@ -75,31 +75,31 @@ fun PlayerViewScaffold(
         PlayerDraggableView(
             maxHeight = maxHeight,
             navigateToAlbum = { albumId ->
-                navigator.navigate(
+                navigator.push(
                     SelectedAlbumDestination(selectedAlbumId = albumId)
                 )
             },
             navigateToArtist = { artistId ->
-                navigator.navigate(
+                navigator.push(
                     SelectedArtistDestination(selectedArtistId = artistId)
                 )
             },
             navigateToModifyMusic = { musicId ->
-                navigator.navigate(
+                navigator.push(
                     ModifyMusicDestination(
                         selectedMusicId = musicId
                     )
                 )
             },
             navigateToRemoteLyricsSettings = {
-                navigator.navigate(
+                navigator.push(
                     SettingsAdvancedDestination(
                         focusedElement = SettingsAdvancedScreenFocusedElement.LyricsPermission,
                     )
                 )
             },
             showMusicBottomSheet = {
-                navigator.navigate(MusicBottomSheetDestination(it))
+                navigator.push(MusicBottomSheetDestination(it))
             },
             playerViewModel = playerViewModel,
         )

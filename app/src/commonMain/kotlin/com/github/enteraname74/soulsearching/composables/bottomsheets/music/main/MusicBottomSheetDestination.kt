@@ -4,6 +4,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.domain.util.serializer.UUIDSerializer
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetMode
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
 import com.github.enteraname74.soulsearching.navigation.BottomSheetSceneStrategy
@@ -36,12 +37,15 @@ data class MusicBottomSheetDestination(
                     override val navigateBack: () -> Unit = { closeWithAnim { } }
                     override val toModifyMusic: (musicId: UUID) -> Unit = { musicId ->
                         closeWithAnim {
-                            navigator.navigate(ModifyMusicDestination(musicId))
+                            navigator.push(ModifyMusicDestination(musicId))
                         }
                     }
                     override val toAddToPlaylists: (musicId: UUID) -> Unit = {
-                        // TODO BOTTOM SHEET: Add to playlists bottom sheet
-                        closeWithAnim { }
+                        navigator.push(
+                            AddToPlaylistBottomSheetDestination(
+                                selectedMusicIds = listOf(it),
+                            )
+                        )
                     }
                 }
 

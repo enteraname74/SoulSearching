@@ -37,7 +37,7 @@ data class SelectedFolderDestination(
                             }
 
                             is SelectedFolderNavigationState.ToModifyMusic -> {
-                                navigator.navigate(
+                                navigator.push(
                                     ModifyMusicDestination(
                                         selectedMusicId = it.musicId,
                                     )
@@ -48,11 +48,11 @@ data class SelectedFolderDestination(
                                 if (!navigator.isPreviousScreenAPlaylistDetails()) {
                                     colorThemeManager.removePlaylistTheme()
                                 }
-                                navigator.goBack()
+                                navigator.pop()
                             }
 
                             is SelectedFolderNavigationState.ToMusicBottomSheet -> {
-                                navigator.navigate(MusicBottomSheetDestination(it.musicId))
+                                navigator.push(MusicBottomSheetDestination(it.musicId))
                             }
                         }
                     }

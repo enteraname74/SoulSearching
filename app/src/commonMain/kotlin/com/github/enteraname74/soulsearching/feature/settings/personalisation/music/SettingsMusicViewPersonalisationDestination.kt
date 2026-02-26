@@ -14,7 +14,7 @@ data object SettingsMusicViewPersonalisationDestination: SettingPage {
     ) {
         entryProviderScope.entry<SettingsMusicViewPersonalisationDestination> {
             SettingsMusicViewPersonalisationRoute(
-                navigateBack = navigator::goBack,
+                navigateBack = navigator::pop,
             )
         }
     }

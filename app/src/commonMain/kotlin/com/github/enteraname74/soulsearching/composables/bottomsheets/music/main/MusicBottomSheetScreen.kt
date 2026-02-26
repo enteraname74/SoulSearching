@@ -3,14 +3,15 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.music.mai
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetMenu
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 
 @Composable
 fun MusicBottomSheetScreen(
     viewModel: MusicBottomSheetViewModel,
 ) {
     val state: MusicBottomSheetState by viewModel.state.collectAsStateWithLifecycle()
+
+    state.bottomSheetState?.BottomSheet()
+    state.dialogState?.Dialog()
 
     state.selectedMusic?.let {
         MusicBottomSheetMenu(

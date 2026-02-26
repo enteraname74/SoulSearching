@@ -23,7 +23,7 @@ data object AppInitSongFetchingDestination : NavKey {
                         }
 
                         AppInitSongFetchingNavigationState.ToMultipleArtists -> {
-                            navigator.navigate(
+                            navigator.push(
                                 MultipleArtistsChoiceDestination(MultipleArtistsChoiceMode.InitialFetch)
                             ) {
                                 clearBackStack = true

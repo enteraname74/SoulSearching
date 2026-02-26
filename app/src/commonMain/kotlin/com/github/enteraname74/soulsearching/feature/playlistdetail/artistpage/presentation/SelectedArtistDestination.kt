@@ -44,7 +44,7 @@ data class SelectedArtistDestination(
                             }
 
                             is SelectedArtistNavigationState.ToAlbum -> {
-                                navigator.navigate(
+                                navigator.push(
                                     SelectedAlbumDestination(
                                         selectedAlbumId = it.albumId,
                                     )
@@ -52,7 +52,7 @@ data class SelectedArtistDestination(
                             }
 
                             is SelectedArtistNavigationState.ToEdit -> {
-                                navigator.navigate(
+                                navigator.push(
                                     ModifyArtistDestination(
                                         selectedArtistId = it.artistId,
                                     )
@@ -60,7 +60,7 @@ data class SelectedArtistDestination(
                             }
 
                             is SelectedArtistNavigationState.ToModifyAlbum -> {
-                                navigator.navigate(
+                                navigator.push(
                                     ModifyAlbumDestination(
                                         selectedAlbumId = it.albumId,
                                     )
@@ -68,7 +68,7 @@ data class SelectedArtistDestination(
                             }
 
                             is SelectedArtistNavigationState.ToModifyMusic -> {
-                                navigator.navigate(
+                                navigator.push(
                                     ModifyMusicDestination(
                                         selectedMusicId = it.musicId,
                                     )
@@ -78,7 +78,7 @@ data class SelectedArtistDestination(
                                 if (!navigator.isPreviousScreenAPlaylistDetails()) {
                                     colorThemeManager.removePlaylistTheme()
                                 }
-                                navigator.goBack()
+                                navigator.pop()
                             }
 
                             is SelectedArtistNavigationState.ToMusicBottomSheet -> {

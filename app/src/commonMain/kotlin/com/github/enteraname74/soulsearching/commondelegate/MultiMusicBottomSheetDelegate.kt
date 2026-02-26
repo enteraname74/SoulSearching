@@ -1,14 +1,11 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.multimusic.MultiMusicBottomSheet
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiMusicDialog
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMultiMusicFromPlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -19,12 +16,9 @@ import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheet
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
 interface MultiMusicBottomSheetDelegate {
     fun showMultiMusicBottomSheet(
@@ -39,29 +33,19 @@ class MultiMusicBottomSheetDelegateImpl(
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
 ): MultiMusicBottomSheetDelegate {
-    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
-        .stateIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList(),
-        )
-
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
-    private var setAddToPlaylistBottomSheetState: (AddToPlaylistBottomSheet?) -> Unit = {}
     private var musicBottomSheetMode: MusicBottomSheetMode = MusicBottomSheetMode.NORMAL
     private var multiSelectionManagerImpl: MultiSelectionManagerImpl? = null
 
     fun initDelegate(
         setDialogState: (SoulDialog?) -> Unit,
         setBottomSheetState: (SoulBottomSheet?) -> Unit,
-        setAddToPlaylistBottomSheetState: (AddToPlaylistBottomSheet?) -> Unit,
         musicBottomSheetMode: MusicBottomSheetMode = MusicBottomSheetMode.NORMAL,
         multiSelectionManagerImpl: MultiSelectionManagerImpl,
     ) {
         this.setDialogState = setDialogState
         this.setBottomSheetState = setBottomSheetState
-        this.setAddToPlaylistBottomSheetState = setAddToPlaylistBottomSheetState
         this.musicBottomSheetMode = musicBottomSheetMode
         this.multiSelectionManagerImpl = multiSelectionManagerImpl
     }
@@ -85,49 +69,6 @@ class MultiMusicBottomSheetDelegateImpl(
                     }
                 },
                 onClose = { setDialogState(null) },
-            )
-        )
-    }
-
-    /**
-     * Add a music to multiple playlists.
-     */
-    private fun addMusicToPlaylists(musicId: UUID, selectedPlaylists: List<PlaylistWithMusics>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            for (selectedPlaylist in selectedPlaylists) {
-                if (selectedPlaylist.musics.find { it.musicId == musicId } == null) {
-                    commonMusicPlaylistUseCase.upsert(
-                        MusicPlaylist(
-                            musicId = musicId,
-                            playlistId = selectedPlaylist.playlist.playlistId,
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    private fun showAddToPlaylistsBottomSheet(
-        selectedIds: List<UUID>
-    ) {
-        setAddToPlaylistBottomSheetState(
-            AddToPlaylistBottomSheet(
-                onClose = {
-                    setAddToPlaylistBottomSheetState(null)
-                },
-                addMusicToSelectedPlaylists = { selectedPlaylists ->
-                    selectedIds.forEach { musicId ->
-                        addMusicToPlaylists(
-                            musicId = musicId,
-                            selectedPlaylists = selectedPlaylists,
-                        )
-                    }
-                    multiSelectionManagerImpl?.clearMultiSelection()
-                    setBottomSheetState(null)
-                },
-                playlistsWithMusics = allPlaylists.value,
-                setDialogState = setDialogState,
-                selectedMusicIds = selectedIds,
             )
         )
     }
@@ -177,11 +118,7 @@ class MultiMusicBottomSheetDelegateImpl(
                         )
                     }
                 },
-                onAddToPlaylist = {
-                    showAddToPlaylistsBottomSheet(
-                        selectedIds = selectedIds,
-                    )
-                },
+                onAddToPlaylist = { },
                 onPlayNext = {
                     CoroutineScope(Dispatchers.IO).launch {
                         val selectedMusics: List<Music> = selectedIds.mapNotNull { commonMusicUseCase.getFromId(it).firstOrNull() }

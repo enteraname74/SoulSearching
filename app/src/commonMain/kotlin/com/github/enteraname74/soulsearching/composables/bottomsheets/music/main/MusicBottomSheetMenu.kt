@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.composables.bottomsheets.music
+package com.github.enteraname74.soulsearching.composables.bottomsheets.music.main
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons

@@ -8,6 +8,7 @@ import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicDialog
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMusicFromPlaylistDialog
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -41,12 +42,15 @@ class MusicBottomSheetViewModel(
     private val mode: MusicBottomSheetMode = params.mode
 
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
-    val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
+
+    private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
 
     val state: StateFlow<MusicBottomSheetState> = combine(
         commonMusicUseCase.getFromId(musicId),
         playbackManager.mainState,
-    ) { music, playbackState ->
+        _dialogState,
+        _bottomSheetState,
+    ) { music, playbackState, dialogState, bottomSheetState ->
         MusicBottomSheetState(
             selectedMusic = music,
             isCurrentlyPlaying = playbackManager.isSameMusicAsCurrentPlayedOne(musicId),
@@ -54,6 +58,8 @@ class MusicBottomSheetViewModel(
                 ?.playedList
                 ?.any { it.musicId == musicId } == true,
             mode = mode,
+            dialogState = dialogState,
+            bottomSheetState = bottomSheetState,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -124,7 +130,7 @@ class MusicBottomSheetViewModel(
 
     fun showRemoveFromPlaylistDialog() {
         if (playlistId == null) return
-        RemoveMusicFromPlaylistDialog(
+        _dialogState.value = RemoveMusicFromPlaylistDialog(
             onConfirm = ::removeFromPlaylist,
             onClose = { _dialogState.value = null }
         )

@@ -42,7 +42,7 @@ data class SelectedPlaylistDestination(
                             }
 
                             is SelectedPlaylistNavigationState.ToEdit -> {
-                                navigator.navigate(
+                                navigator.push(
                                     ModifyPlaylistDestination(
                                         selectedPlaylistId = it.playlistId,
                                     )
@@ -50,7 +50,7 @@ data class SelectedPlaylistDestination(
                             }
 
                             is SelectedPlaylistNavigationState.ToModifyMusic -> {
-                                navigator.navigate(
+                                navigator.push(
                                     ModifyMusicDestination(
                                         selectedMusicId = it.musicId,
                                     )
@@ -61,11 +61,11 @@ data class SelectedPlaylistDestination(
                                 if (!navigator.isPreviousScreenAPlaylistDetails()) {
                                     colorThemeManager.removePlaylistTheme()
                                 }
-                                navigator.goBack()
+                                navigator.pop()
                             }
 
                             is SelectedPlaylistNavigationState.ToMusicBottomSheet -> {
-                                navigator.navigate(
+                                navigator.push(
                                     MusicBottomSheetDestination(
                                         musicId = it.musicId,
                                         playlistId = key.selectedPlaylistId,
