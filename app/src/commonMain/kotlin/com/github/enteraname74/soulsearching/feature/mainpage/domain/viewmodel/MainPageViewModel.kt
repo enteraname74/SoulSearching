@@ -16,7 +16,6 @@ import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
-import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.QuickAccessible
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
@@ -33,8 +32,6 @@ import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDele
 import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.ArtistBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.ArtistBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
@@ -99,14 +96,12 @@ class MainPageViewModel(
     private val playerViewManager: PlayerViewManager,
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
     private val artistBottomSheetDelegateImpl: ArtistBottomSheetDelegateImpl,
-    private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
     private val multiSelectionManager: MultiSelectionManager,
     getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
 ) : ViewModel(), KoinComponent,
     ArtistBottomSheetDelegate by artistBottomSheetDelegateImpl,
     AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl,
-    PlaylistBottomSheetDelegate by playlistBottomSheetDelegateImpl,
     SortingInformationDelegate by sortingInformationDelegateImpl {
 
     private val settings: SoulSearchingSettings by inject()
@@ -454,11 +449,9 @@ class MainPageViewModel(
                     musicIds = listOf(quickAccessible.musicId),
                 )
 
-                is PlaylistPreview -> commonPlaylistUseCase
-                    .getWithMusics(playlistId = quickAccessible.id)
-                    .firstOrNull()?.let {
-                        showPlaylistBottomSheet(selectedPlaylist = it)
-                    }
+                is PlaylistPreview -> showPlaylistBottomSheet(
+                    playlistIds = listOf(quickAccessible.id),
+                )
             }
         }
     }
@@ -631,10 +624,9 @@ class MainPageViewModel(
 
     fun showPlaylistPreviewBottomSheet(playlistPreview: PlaylistPreview) {
         viewModelScope.launch {
-            val playlistWithMusics: PlaylistWithMusics = commonPlaylistUseCase
-                .getWithMusics(playlistPreview.id).firstOrNull() ?: return@launch
-
-            showPlaylistBottomSheet(playlistWithMusics)
+            showPlaylistBottomSheet(
+                playlistIds = listOf(playlistPreview.id),
+            )
         }
     }
 
@@ -651,6 +643,12 @@ class MainPageViewModel(
 
     fun showMusicBottomSheet(musicIds: List<UUID>) {
         _navigationState.value = MainPageNavigationState.ToMusicBottomSheet(musicIds = musicIds)
+    }
+
+    private fun showPlaylistBottomSheet(playlistIds: List<UUID>) {
+        _navigationState.value = MainPageNavigationState.ToPlaylistBottomSheet(
+            playlistIds = playlistIds,
+        )
     }
 
     fun clearMultiSelection() {

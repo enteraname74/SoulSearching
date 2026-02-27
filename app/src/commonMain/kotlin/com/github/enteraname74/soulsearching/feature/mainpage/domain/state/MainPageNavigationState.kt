@@ -17,6 +17,7 @@ sealed interface MainPageNavigationState {
     data class ToFolder(val folderPath: String): MainPageNavigationState
     data object ToSettings: MainPageNavigationState
     data class ToMusicBottomSheet(val musicIds: List<UUID>) : MainPageNavigationState
+    data class ToPlaylistBottomSheet(val playlistIds: List<UUID>) : MainPageNavigationState
 
     data class ToAdvancedSettings(
         val focusedElement: SettingsAdvancedScreenFocusedElement?,

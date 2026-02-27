@@ -16,6 +16,9 @@ class CommonPlaylistUseCase(
     fun getFromId(playlistId: UUID): Flow<Playlist?> =
         playlistRepository.getFromId(playlistId)
 
+    fun getFromIds(playlistIds: List<UUID>): Flow<List<PlaylistWithMusics>> =
+        playlistRepository.getFromIds(playlistIds)
+
     suspend fun deleteAll(playlistIds: List<UUID>) {
         playlistRepository.deleteAll(playlistIds)
     }

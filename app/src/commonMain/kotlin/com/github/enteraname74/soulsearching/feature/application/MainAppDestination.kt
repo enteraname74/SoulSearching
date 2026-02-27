@@ -11,6 +11,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.github.enteraname74.soulsearching.PlayerViewScaffold
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationRowSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -99,6 +100,14 @@ private fun MainAppRoute(
                             MusicBottomSheetDestination(
                                 musicIds = navigationState.musicIds,
                                 playlistId = navigationState.playlistId,
+                            )
+                        )
+                    }
+
+                    is MultiSelectionNavigationState.ToPlaylistBottomSheet -> {
+                        navigator.push(
+                            PlaylistBottomSheetDestination(
+                                playlistIds = navigationState.playlistIds,
                             )
                         )
                     }

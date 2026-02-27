@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.music.mai
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
@@ -49,12 +48,12 @@ class MusicBottomSheetViewModel(
     private val musicIds: List<UUID> = params.musicIds
     private val playlistId: UUID? = params.playlistId
 
-    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+    private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
     val state: StateFlow<MusicBottomSheetState> = combine(
         commonMusicUseCase.getFromIds(musicIds),
         playbackManager.mainState,
-        _dialogState,
+        dialogState,
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
         )
@@ -124,7 +123,7 @@ class MusicBottomSheetViewModel(
                 BottomSheetRowSpec(
                     icon = Icons.Rounded.Edit,
                     title = strings.modifyMusic,
-                    onClick = ::modifyMusic,
+                    onClick = ::toModifyMusic,
                 )
             )
         }
@@ -139,9 +138,7 @@ class MusicBottomSheetViewModel(
 
         if (removeFromPlayedList) {
             add(
-                BottomSheetRowSpec(
-                    icon = Icons.Rounded.PlaylistRemove,
-                    title = strings.removeFromPlayedList,
+                BottomSheetRowSpec.removeFromPlayedList(
                     onClick = ::removeFromPlayedList,
                 )
             )
@@ -198,7 +195,7 @@ class MusicBottomSheetViewModel(
     private fun deleteMusics() {
         viewModelScope.launch {
             deleteMusicUseCase(musicIds = musicIds)
-            _dialogState.value = null
+            dialogState.value = null
             multiSelectionManager.clearMultiSelection()
             // TODO PLAYER: This call should be unnecessary
             playbackManager.removeSongsFromPlayedPlaylist(musicIds)
@@ -215,19 +212,20 @@ class MusicBottomSheetViewModel(
                     musicId = musicId,
                     playlistId = playlistId,
                 )
-                _dialogState.value = null
+                dialogState.value = null
                 multiSelectionManager.clearMultiSelection()
                 navScope.navigateBack()
             }
         }
     }
 
-    private fun modifyMusic() {
-        if (state.value.musics.size > 1) return
-        viewModelScope.launch {
-            minimisePlayerViewsIfNeeded()
-            multiSelectionManager.clearMultiSelection()
-            navScope.toModifyMusic(musicIds.first())
+    private fun toModifyMusic() {
+        musicIds.firstOrNull()?.let {
+            viewModelScope.launch {
+                minimisePlayerViewsIfNeeded()
+                multiSelectionManager.clearMultiSelection()
+                navScope.toModifyMusic(it)
+            }
         }
     }
 
@@ -246,30 +244,30 @@ class MusicBottomSheetViewModel(
     }
 
     private fun showDeleteDialog() {
-        _dialogState.value = if (state.value.musics.size == 1) {
+        dialogState.value = if (state.value.musics.size == 1) {
             DeleteMusicDialog(
                 onDelete = { deleteMusics() },
-                onClose = { _dialogState.value = null }
+                onClose = { dialogState.value = null }
             )
         } else {
             DeleteMultiMusicDialog(
                 onDelete = { deleteMusics() },
-                onClose = { _dialogState.value = null }
+                onClose = { dialogState.value = null }
             )
         }
     }
 
     private fun showRemoveFromPlaylistDialog() {
         if (playlistId == null) return
-        _dialogState.value = if (state.value.musics.size == 1) {
+        dialogState.value = if (state.value.musics.size == 1) {
             RemoveMusicFromPlaylistDialog(
                 onConfirm = ::removeFromPlaylist,
-                onClose = { _dialogState.value = null }
+                onClose = { dialogState.value = null }
             )
         } else {
             RemoveMultiMusicFromPlaylistDialog(
                 onConfirm = ::removeFromPlaylist,
-                onClose = { _dialogState.value = null }
+                onClose = { dialogState.value = null }
             )
         }
     }

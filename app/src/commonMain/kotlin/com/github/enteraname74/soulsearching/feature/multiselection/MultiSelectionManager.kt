@@ -62,14 +62,14 @@ class MultiSelectionManager {
     }
 
     fun showBottomSheet() {
-        when (_selectionMode) {
-            SelectionMode.Music -> _navigationState.value =
-                MultiSelectionNavigationState.ToMusicBottomSheet(
-                    musicIds = _state.value.selectedIds,
-                    playlistId = _state.value.playlistId,
-                )
-
-            SelectionMode.Playlist -> TODO()
+        _navigationState.value = when (_selectionMode) {
+            SelectionMode.Music -> MultiSelectionNavigationState.ToMusicBottomSheet(
+                musicIds = _state.value.selectedIds,
+                playlistId = _state.value.playlistId,
+            )
+            SelectionMode.Playlist -> MultiSelectionNavigationState.ToPlaylistBottomSheet(
+                playlistIds = _state.value.selectedIds,
+            )
             SelectionMode.Album -> TODO()
             SelectionMode.Artist -> TODO()
         }
