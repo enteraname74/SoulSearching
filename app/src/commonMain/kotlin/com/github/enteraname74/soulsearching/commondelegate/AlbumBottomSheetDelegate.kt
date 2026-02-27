@@ -8,7 +8,7 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.album.Albu
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteAlbumDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,19 +26,7 @@ class AlbumBottomSheetDelegateImpl(
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
     private var onModifyAlbum: (album: Album) -> Unit = {}
-    private var multiSelectionManagerImpl: MultiSelectionManagerImpl? = null
-
-    fun initDelegate(
-        setDialogState: (SoulDialog?) -> Unit,
-        setBottomSheetState: (SoulBottomSheet?) -> Unit,
-        onModifyAlbum: (album: Album) -> Unit,
-        multiSelectionManagerImpl: MultiSelectionManagerImpl,
-    ) {
-        this.setDialogState = setDialogState
-        this.setBottomSheetState = setBottomSheetState
-        this.onModifyAlbum = onModifyAlbum
-        this.multiSelectionManagerImpl = multiSelectionManagerImpl
-    }
+    private var multiSelectionManager: MultiSelectionManager? = null
 
     private fun showDeleteAlbumDialog(album: Album) {
         setDialogState(
@@ -47,12 +35,12 @@ class AlbumBottomSheetDelegateImpl(
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
                         deleteAlbumUseCase(album.albumId)
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
 
                         setDialogState(null)
                         // We make sure to close the bottom sheet after deleting the selected music.
                         setBottomSheetState(null)
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                     }
                 },
                 onClose = { setDialogState(null) }
@@ -74,7 +62,7 @@ class AlbumBottomSheetDelegateImpl(
                                 isInQuickAccess = !albumWithMusics.album.isInQuickAccess,
                             )
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -83,7 +71,7 @@ class AlbumBottomSheetDelegateImpl(
                         playbackManager.addMultipleMusicsToPlayNext(
                             musics = albumWithMusics.musics,
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -92,7 +80,7 @@ class AlbumBottomSheetDelegateImpl(
                         playbackManager.addMultipleMusicsToQueue(
                             musics = albumWithMusics.musics,
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -101,7 +89,7 @@ class AlbumBottomSheetDelegateImpl(
                         playbackManager.removeSongsFromPlayedPlaylist(
                             musicIds = albumWithMusics.musics.map { it.musicId },
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 }

@@ -10,9 +10,9 @@ interface PlaylistDetailListener {
     fun onUpdateNbPlayed()
     fun onSubtitleClicked() {}
     fun onCloseSelection()
-    fun onMoreClickedOnSelection()
+    fun onLongClickOnMusic(musicId: UUID)
     fun onShuffleClicked()
     fun onPlayClicked(music: Music? = null)
     fun onSearch(search: String)
-    fun showMusicBottomSheet(musicId: UUID)
+    fun showMusicBottomSheet(musicIds: List<UUID>)
 }

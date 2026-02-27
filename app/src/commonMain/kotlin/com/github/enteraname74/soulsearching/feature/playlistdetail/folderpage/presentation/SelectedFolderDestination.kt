@@ -52,7 +52,7 @@ data class SelectedFolderDestination(
                             }
 
                             is SelectedFolderNavigationState.ToMusicBottomSheet -> {
-                                navigator.push(MusicBottomSheetDestination(it.musicId))
+                                navigator.push(MusicBottomSheetDestination(it.musicIds))
                             }
                         }
                     }

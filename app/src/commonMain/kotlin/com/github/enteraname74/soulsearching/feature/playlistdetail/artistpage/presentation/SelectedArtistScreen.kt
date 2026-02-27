@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.screen.SoulErrorScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -59,21 +58,13 @@ fun SelectedArtistScreenView(
                             albums = dataState.artistAlbums,
                             onAlbumClick = selectedArtistViewModel::toAlbum,
                             onAlbumLongClick = { albumWithMusics ->
-                                selectedArtistViewModel.toggleElementInSelection(
-                                    id = albumWithMusics.album.albumId,
-                                    mode = SelectionMode.Album,
+                                selectedArtistViewModel.onLongClickOnAlbum(
+                                    albumId = albumWithMusics.album.albumId,
                                 )
                             },
                             multiSelectionState = multiSelectionState,
                         )
                     }
-                },
-                multiSelectionManagerImpl = selectedArtistViewModel.multiSelectionManagerImpl,
-                onLongSelectOnMusic = {
-                    selectedArtistViewModel.toggleElementInSelection(
-                        id = it.musicId,
-                        mode = SelectionMode.Music,
-                    )
                 },
                 multiSelectionState = multiSelectionState,
             )

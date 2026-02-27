@@ -2,10 +2,10 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.music.mai
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.enteraname74.domain.util.serializer.UUIDListSerializer
 import com.github.enteraname74.domain.util.serializer.UUIDSerializer
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetDestination
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetMode
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
 import com.github.enteraname74.soulsearching.navigation.BottomSheetSceneStrategy
 import com.github.enteraname74.soulsearching.navigation.LocalBottomSheetCloseWithAnimAction
@@ -17,11 +17,10 @@ import java.util.UUID
 
 @Serializable
 data class MusicBottomSheetDestination(
-    @Serializable(UUIDSerializer::class)
-    val musicId: UUID,
+    @Serializable(UUIDListSerializer::class)
+    val musicIds: List<UUID>,
     @Serializable(UUIDSerializer::class)
     val playlistId: UUID? = null,
-    val mode: MusicBottomSheetMode = MusicBottomSheetMode.NORMAL,
 ) : BottomSheetDestination {
     companion object {
         fun register(
@@ -40,10 +39,10 @@ data class MusicBottomSheetDestination(
                             navigator.push(ModifyMusicDestination(musicId))
                         }
                     }
-                    override val toAddToPlaylists: (musicId: UUID) -> Unit = {
+                    override val toAddToPlaylists: (musicId: List<UUID>) -> Unit = {
                         navigator.push(
                             AddToPlaylistBottomSheetDestination(
-                                selectedMusicIds = listOf(it),
+                                selectedMusicIds = it,
                             )
                         )
                     }

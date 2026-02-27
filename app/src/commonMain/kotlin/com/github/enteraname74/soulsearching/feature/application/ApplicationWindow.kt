@@ -18,6 +18,7 @@ fun ApplicationRoute() {
     )
     val navigator = remember { Navigator(backStack) }
 
+
     ApplicationNavigationHandler(
         navigator = navigator,
         backStack = backStack,

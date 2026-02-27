@@ -9,16 +9,17 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetElementInformation
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRow
+import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
 import com.github.enteraname74.soulsearching.composables.bottomsheets.QuickAccessBottomSheetMenu
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetMode
 
 @Composable
 fun MusicBottomSheetMenu(
-    selectedMusic: Music,
+    topInformation: BottomSheetTopInformation,
+    itemsVisibility: MusicBottomSheetItemsVisibility,
+    deleteText: String,
     modifyAction: () -> Unit,
     removeAction: () -> Unit,
     removeFromPlaylistAction: () -> Unit,
@@ -27,19 +28,16 @@ fun MusicBottomSheetMenu(
     addToPlaylistAction: () -> Unit,
     playNextAction : () -> Unit,
     addToQueueAction: () -> Unit,
-    musicBottomSheetMode: MusicBottomSheetMode = MusicBottomSheetMode.NORMAL,
-    isCurrentlyPlaying: Boolean,
-    isInPlayedList: Boolean,
 ) {
     Column {
         BottomSheetElementInformation(
-            title = selectedMusic.name,
-            subTitle = selectedMusic.informationText,
-            cover = selectedMusic.cover,
+            title = topInformation.title,
+            subTitle = topInformation.subTitle,
+            cover = topInformation.cover,
         )
 
         QuickAccessBottomSheetMenu(
-            isElementInQuickAccess = selectedMusic.isInQuickAccess,
+            isElementInQuickAccess = itemsVisibility.isInQuickAccess,
             quickAccessAction = quickAccessAction,
         ) {
             BottomSheetRow(
@@ -47,12 +45,14 @@ fun MusicBottomSheetMenu(
                 text = strings.addToPlaylist,
                 onClick = addToPlaylistAction,
             )
-            BottomSheetRow(
-                icon = Icons.Rounded.Edit,
-                text = strings.modifyMusic,
-                onClick = modifyAction,
-            )
-            if (!isCurrentlyPlaying) {
+            if (itemsVisibility.editEnabled) {
+                BottomSheetRow(
+                    icon = Icons.Rounded.Edit,
+                    text = strings.modifyMusic,
+                    onClick = modifyAction,
+                )
+            }
+            if (itemsVisibility.queueActions) {
                 BottomSheetRow(
                     icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
                     text = strings.playNext,
@@ -64,14 +64,14 @@ fun MusicBottomSheetMenu(
                     onClick = addToQueueAction,
                 )
             }
-            if (musicBottomSheetMode == MusicBottomSheetMode.PLAYLIST) {
+            if (itemsVisibility.inPlaylist) {
                 BottomSheetRow(
                     icon = Icons.Rounded.Delete,
                     text = strings.removeFromPlaylist,
                     onClick = removeFromPlaylistAction,
                 )
             }
-            if (isInPlayedList) {
+            if (itemsVisibility.removeFromPlayedList) {
                 BottomSheetRow(
                     icon = Icons.Rounded.PlaylistRemove,
                     text = strings.removeFromPlayedList,
@@ -80,7 +80,7 @@ fun MusicBottomSheetMenu(
             }
             BottomSheetRow(
                 icon = Icons.Rounded.Delete,
-                text = strings.deleteMusic,
+                text = deleteText,
                 onClick = removeAction,
             )
         }

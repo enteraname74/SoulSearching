@@ -35,8 +35,8 @@ import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconColors
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement

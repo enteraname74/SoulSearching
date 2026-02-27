@@ -9,20 +9,12 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.commondelegate.MultiAlbumBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.MultiAlbumBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetMode
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistDestination
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
@@ -45,22 +37,13 @@ class SelectedArtistViewModel(
     commonAlbumUseCase: CommonAlbumUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
-    private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
-    private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
-    private val multiAlbumBottomSheetDelegateImpl: MultiAlbumBottomSheetDelegateImpl,
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
-    val multiSelectionManagerImpl: MultiSelectionManagerImpl,
+    private val multiSelectionManager: MultiSelectionManager,
     destination: SelectedArtistDestination,
-) :
-    ViewModel(),
-    PlaylistDetailListener,
-    AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl,
-    MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
-    MultiAlbumBottomSheetDelegate by multiAlbumBottomSheetDelegateImpl,
-    MultiSelectionManager by multiSelectionManagerImpl {
+) : ViewModel(), PlaylistDetailListener {
 
-    val multiSelectionState = multiSelectionManagerImpl.state
+    val multiSelectionState = multiSelectionManager.state
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -120,30 +103,8 @@ class SelectedArtistViewModel(
     )
     val navigationState: StateFlow<SelectedArtistNavigationState> = _navigationState.asStateFlow()
 
-    init {
-        albumBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyAlbum = { _navigationState.value = SelectedArtistNavigationState.ToModifyAlbum(it.albumId) },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-
-        multiAlbumBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-
-        multiMusicBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-            musicBottomSheetMode = MusicBottomSheetMode.ALBUM_OR_ARTIST,
-        )
-    }
-
     fun consumeNavigation() {
-        multiSelectionManagerImpl.clearMultiSelection()
+        multiSelectionManager.clearMultiSelection()
         _navigationState.value = SelectedArtistNavigationState.Idle
     }
 
@@ -169,20 +130,21 @@ class SelectedArtistViewModel(
     }
 
     override fun onCloseSelection() {
-        multiSelectionManagerImpl.clearMultiSelection()
+        multiSelectionManager.clearMultiSelection()
     }
 
-    override fun onMoreClickedOnSelection() {
-        handleMultiSelectionBottomSheet()
+    override fun onLongClickOnMusic(musicId: UUID) {
+        multiSelectionManager.toggleElementInSelection(
+            id = musicId,
+            mode = SelectionMode.Music,
+        )
     }
 
-    private fun handleMultiSelectionMusicBottomSheet() {
-        val selectedIds = multiSelectionState.value.selectedIds
-        if (selectedIds.size == 1) {
-            showMusicBottomSheet(musicId = selectedIds[0])
-        } else {
-            showMultiMusicBottomSheet()
-        }
+    fun onLongClickOnAlbum(albumId: UUID) {
+        multiSelectionManager.toggleElementInSelection(
+            id = albumId,
+            mode = SelectionMode.Album,
+        )
     }
 
     private fun handleMultiSelectionAlbumBottomSheet() {
@@ -192,18 +154,18 @@ class SelectedArtistViewModel(
                 (state.value as? SelectedArtistState.Data)?.artistAlbums?.find {
                     it.album.albumId ==  selectedIds[0]
                 } ?: return
-            showAlbumBottomSheet(albumWithMusics = selectedAlbum)
+//            showAlbumBottomSheet(albumWithMusics = selectedAlbum)
         } else {
-            showMultiAlbumBottomSheet()
+//            showMultiAlbumBottomSheet()
         }
     }
 
     private fun handleMultiSelectionBottomSheet() {
         viewModelScope.launch {
 
-            if (multiSelectionManagerImpl.selectionMode == SelectionMode.Music) {
-                handleMultiSelectionMusicBottomSheet()
-            } else if (multiSelectionManagerImpl.selectionMode == SelectionMode.Album) {
+            if (multiSelectionManager.selectionMode == SelectionMode.Music) {
+                showMusicBottomSheet(multiSelectionState.value.selectedIds)
+            } else if (multiSelectionManager.selectionMode == SelectionMode.Album) {
                 handleMultiSelectionAlbumBottomSheet()
             }
         }
@@ -246,7 +208,7 @@ class SelectedArtistViewModel(
         _searchQuery.value = search
     }
 
-    override fun showMusicBottomSheet(musicId: UUID) {
-        _navigationState.value = SelectedArtistNavigationState.ToMusicBottomSheet(musicId)
+    override fun showMusicBottomSheet(musicIds: List<UUID>) {
+        _navigationState.value = SelectedArtistNavigationState.ToMusicBottomSheet(musicIds)
     }
 }

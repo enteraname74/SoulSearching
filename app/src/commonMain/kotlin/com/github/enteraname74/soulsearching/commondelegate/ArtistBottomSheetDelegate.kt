@@ -8,7 +8,7 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.Art
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteArtistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,19 +26,7 @@ class ArtistBottomSheetDelegateImpl(
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
     private var onModifyArtist: (artist: Artist) -> Unit = {}
-    private var multiSelectionManagerImpl: MultiSelectionManagerImpl? = null
-
-    fun initDelegate(
-        setDialogState: (SoulDialog?) -> Unit,
-        setBottomSheetState: (SoulBottomSheet?) -> Unit,
-        onModifyArtist: (artist: Artist) -> Unit,
-        multiSelectionManagerImpl: MultiSelectionManagerImpl,
-    ) {
-        this.setDialogState = setDialogState
-        this.setBottomSheetState = setBottomSheetState
-        this.onModifyArtist = onModifyArtist
-        this.multiSelectionManagerImpl = multiSelectionManagerImpl
-    }
+    private var multiSelectionManager: MultiSelectionManager? = null
 
     private fun showDeleteArtistDialog(artistWithMusics: ArtistWithMusics) {
         setDialogState(
@@ -51,7 +39,7 @@ class ArtistBottomSheetDelegateImpl(
                     setDialogState(null)
                     // We make sure to close the bottom sheet after deleting the selected music.
                     setBottomSheetState(null)
-                    multiSelectionManagerImpl?.clearMultiSelection()
+                    multiSelectionManager?.clearMultiSelection()
                 },
                 onClose = { setDialogState(null) }
             )
@@ -72,7 +60,7 @@ class ArtistBottomSheetDelegateImpl(
                                 isInQuickAccess = !selectedArtist.artist.isInQuickAccess,
                             )
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -81,7 +69,7 @@ class ArtistBottomSheetDelegateImpl(
                         playbackManager.addMultipleMusicsToPlayNext(
                             musics = selectedArtist.musics,
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -90,7 +78,7 @@ class ArtistBottomSheetDelegateImpl(
                         playbackManager.addMultipleMusicsToQueue(
                             musics = selectedArtist.musics,
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -99,7 +87,7 @@ class ArtistBottomSheetDelegateImpl(
                         playbackManager.removeSongsFromPlayedPlaylist(
                             musicIds = selectedArtist.musics.map { it.musicId },
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 }

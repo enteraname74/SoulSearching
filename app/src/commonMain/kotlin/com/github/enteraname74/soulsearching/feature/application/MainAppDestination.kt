@@ -10,6 +10,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.github.enteraname74.soulsearching.PlayerViewScaffold
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationRowSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -26,6 +27,8 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Eleme
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionScaffold
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
@@ -85,14 +88,33 @@ private fun MainAppRoute(
             )
         }
 
-        PlayerViewScaffold(
-            navigator = navigator,
-            playerViewModel = playerViewModel,
+        MultiSelectionScaffold(
+            onNavigationState = { navigationState ->
+                when (navigationState) {
+                    MultiSelectionNavigationState.Idle -> {
+                        // no-op
+                    }
+                    is MultiSelectionNavigationState.ToMusicBottomSheet -> {
+                        navigator.push(
+                            MusicBottomSheetDestination(
+                                musicIds = navigationState.musicIds,
+                                playlistId = navigationState.playlistId,
+                            )
+                        )
+                    }
+                }
+
+            }
         ) {
-            MainAppNavigationHandler(
+            PlayerViewScaffold(
                 navigator = navigator,
-                backStack = backStack,
-            )
+                playerViewModel = playerViewModel,
+            ) {
+                MainAppNavigationHandler(
+                    navigator = navigator,
+                    backStack = backStack,
+                )
+            }
         }
     }
 }

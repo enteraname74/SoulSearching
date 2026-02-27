@@ -6,14 +6,12 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
@@ -34,17 +32,14 @@ import java.util.UUID
 
 class SelectedFolderViewModel(
     private val commonMusicUseCase: CommonMusicUseCase,
-    private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
-    val multiSelectionManagerImpl: MultiSelectionManagerImpl,
+    private val multiSelectionManager: MultiSelectionManager,
     destination: SelectedFolderDestination,
 ) : ViewModel(),
-    PlaylistDetailListener,
-    MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
-    MultiSelectionManager by multiSelectionManagerImpl {
+    PlaylistDetailListener {
 
-    val multiSelectionState = multiSelectionManagerImpl.state
+    val multiSelectionState = multiSelectionManager.state
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -105,16 +100,8 @@ class SelectedFolderViewModel(
         )
     val navigationState: StateFlow<SelectedFolderNavigationState> = _navigationState.asStateFlow()
 
-    init {
-        multiMusicBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-    }
-
     fun consumeNavigation() {
-        multiSelectionManagerImpl.clearMultiSelection()
+        multiSelectionManager.clearMultiSelection()
         _navigationState.value = SelectedFolderNavigationState.Idle
     }
 
@@ -131,22 +118,14 @@ class SelectedFolderViewModel(
     }
 
     override fun onCloseSelection() {
-        multiSelectionManagerImpl.clearMultiSelection()
+        multiSelectionManager.clearMultiSelection()
     }
 
-    override fun onMoreClickedOnSelection() {
-        handleMultiSelectionBottomSheet()
-    }
-
-    private fun handleMultiSelectionBottomSheet() {
-        viewModelScope.launch {
-            val selectedIds = multiSelectionState.value.selectedIds
-            if (selectedIds.size == 1) {
-                showMusicBottomSheet(musicId = selectedIds[0])
-            } else {
-                showMultiMusicBottomSheet()
-            }
-        }
+    override fun onLongClickOnMusic(musicId: UUID) {
+        multiSelectionManager.toggleElementInSelection(
+            id = musicId,
+            mode = SelectionMode.Music,
+        )
     }
 
     fun navigateBack() {
@@ -186,7 +165,7 @@ class SelectedFolderViewModel(
         _searchQuery.value = search
     }
 
-    override fun showMusicBottomSheet(musicId: UUID) {
-        _navigationState.value = SelectedFolderNavigationState.ToMusicBottomSheet(musicId)
+    override fun showMusicBottomSheet(musicIds: List<UUID>) {
+        _navigationState.value = SelectedFolderNavigationState.ToMusicBottomSheet(musicIds)
     }
 }

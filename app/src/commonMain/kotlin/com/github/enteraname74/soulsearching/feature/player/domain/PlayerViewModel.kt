@@ -12,13 +12,10 @@ import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
@@ -52,15 +49,12 @@ class PlayerViewModel(
     private val commonLyricsUseCase: CommonLyricsUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
-    private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
-    val multiSelectionManagerImpl: MultiSelectionManagerImpl,
+    val multiSelectionManager: MultiSelectionManager,
     commonPlaylistUseCase: CommonPlaylistUseCase,
-) : ViewModel(),
-    MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
-    MultiSelectionManager by multiSelectionManagerImpl {
+) : ViewModel() {
 
 
-    val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManagerImpl.state
+    val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -184,16 +178,8 @@ class PlayerViewModel(
     val navigationState: StateFlow<PlayerNavigationState> = _navigationState.asStateFlow()
 
     fun consumeNavigation() {
-        multiSelectionManagerImpl.clearMultiSelection()
+        multiSelectionManager.clearMultiSelection()
         _navigationState.value = PlayerNavigationState.Idle
-    }
-
-    init {
-        multiMusicBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
     }
 
     /**
@@ -306,18 +292,7 @@ class PlayerViewModel(
         _navigationState.value = PlayerNavigationState.ToRemoteLyricsSettings
     }
 
-    fun handleMultiSelectionBottomSheet() {
-        viewModelScope.launch {
-            val selectedIds = multiSelectionState.value.selectedIds
-            if (selectedIds.size == 1) {
-                showMusicBottomSheet(musicId = selectedIds[0])
-            } else {
-                showMultiMusicBottomSheet()
-            }
-        }
-    }
-
-    fun showMusicBottomSheet(musicId: UUID) {
-        _navigationState.value = PlayerNavigationState.ToMusicBottomSheet(musicId)
+    fun showMusicBottomSheet(musicIds: List<UUID>) {
+        _navigationState.value = PlayerNavigationState.ToMusicBottomSheet(musicIds)
     }
 }

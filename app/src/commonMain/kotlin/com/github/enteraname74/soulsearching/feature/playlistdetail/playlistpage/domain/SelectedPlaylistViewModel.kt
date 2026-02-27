@@ -7,15 +7,12 @@ import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetMode
+import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
@@ -28,7 +25,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
@@ -38,17 +34,13 @@ import java.util.UUID
 class SelectedPlaylistViewModel(
     private val commonMusicUseCase: CommonMusicUseCase,
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
-    private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
-    val multiSelectionManagerImpl: MultiSelectionManagerImpl,
+    private val multiSelectionManager: MultiSelectionManager,
     destination: SelectedPlaylistDestination,
-) : ViewModel(),
-    PlaylistDetailListener,
-    MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
-    MultiSelectionManager by multiSelectionManagerImpl {
+) : ViewModel(), PlaylistDetailListener {
 
-    val multiSelectionState = multiSelectionManagerImpl.state
+    val multiSelectionState = multiSelectionManager.state
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -107,17 +99,8 @@ class SelectedPlaylistViewModel(
         )
     val navigationState: StateFlow<SelectedPlaylistNavigationState> = _navigationState.asStateFlow()
 
-    init {
-        multiMusicBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-            musicBottomSheetMode = MusicBottomSheetMode.PLAYLIST,
-        )
-    }
-
     fun consumeNavigation() {
-        multiSelectionManagerImpl.clearMultiSelection()
+        multiSelectionManager.clearMultiSelection()
         _navigationState.value = SelectedPlaylistNavigationState.Idle
     }
 
@@ -140,27 +123,15 @@ class SelectedPlaylistViewModel(
     }
 
     override fun onCloseSelection() {
-        multiSelectionManagerImpl.clearMultiSelection()
+        multiSelectionManager.clearMultiSelection()
     }
 
-    override fun onMoreClickedOnSelection() {
-        handleMultiSelectionBottomSheet()
-    }
-
-    private fun handleMultiSelectionBottomSheet() {
-        viewModelScope.launch {
-            val selectedIds = multiSelectionState.value.selectedIds
-            val currentPlaylist = commonPlaylistUseCase
-                .getFromId(playlistId).firstOrNull() ?: return@launch
-
-            if (selectedIds.size == 1) {
-                showMusicBottomSheet(selectedIds[0])
-            } else {
-                showMultiMusicBottomSheet(
-                    currentPlaylist = currentPlaylist,
-                )
-            }
-        }
+    override fun onLongClickOnMusic(musicId: UUID) {
+        multiSelectionManager.toggleElementInSelection(
+            id = musicId,
+            mode = SelectionMode.Music,
+            playlistId = playlistId,
+        )
     }
 
     fun navigateBack() {
@@ -200,7 +171,7 @@ class SelectedPlaylistViewModel(
         _searchQuery.value = search
     }
 
-    override fun showMusicBottomSheet(musicId: UUID) {
-        _navigationState.value = SelectedPlaylistNavigationState.ToMusicBottomSheet(musicId)
+    override fun showMusicBottomSheet(musicIds: List<UUID>) {
+        _navigationState.value = SelectedPlaylistNavigationState.ToMusicBottomSheet(musicIds)
     }
 }

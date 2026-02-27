@@ -36,7 +36,7 @@ import com.github.enteraname74.soulsearching.coreui.ext.blurCompat
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.ext.toPx
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
@@ -60,7 +60,6 @@ fun PlaylistRowView(
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playlistDetailListener: PlaylistDetailListener,
     multiSelectionState: MultiSelectionState,
-    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
     var topBarHeight: Int by rememberSaveable {
@@ -92,7 +91,6 @@ fun PlaylistRowView(
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
             onCoverLoaded = onCoverLoaded,
-            onLongSelectOnMusic = onLongSelectOnMusic,
             multiSelectionState = multiSelectionState,
             topBarHeight = topBarHeight.toDp(),
         )
@@ -108,7 +106,6 @@ private fun Content(
     modifier: Modifier = Modifier,
     optionalContent: @Composable () -> Unit = {},
     multiSelectionState: MultiSelectionState,
-    onLongSelectOnMusic: (Music) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
 ) {
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
@@ -164,9 +161,9 @@ private fun Content(
                                 .animateItem(),
                             music = music,
                             onClick = playlistDetailListener::onPlayClicked,
-                            onLongClick = { onLongSelectOnMusic(music) },
+                            onLongClick = { playlistDetailListener.onLongClickOnMusic(music.musicId) },
                             onMoreClicked = {
-                                playlistDetailListener.showMusicBottomSheet(music.musicId)
+                                playlistDetailListener.showMusicBottomSheet(listOf(music.musicId))
                             },
                             isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                             isSelected = multiSelectionState.selectedIds.contains(music.musicId),

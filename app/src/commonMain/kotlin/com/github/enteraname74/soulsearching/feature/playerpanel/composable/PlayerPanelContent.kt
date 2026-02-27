@@ -11,12 +11,10 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
-import com.github.enteraname74.soulsearching.coreui.ext.toDp
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconColors
-import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconDefaults
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
+import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconDefaults
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.TabData
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates

@@ -7,13 +7,13 @@ import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiPlayl
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
 interface MultiPlaylistBottomSheetDelegate {
     fun showMultiPlaylistBottomSheet()
@@ -26,17 +26,7 @@ class MultiPlaylistBottomSheetDelegateImpl(
 ) : MultiPlaylistBottomSheetDelegate {
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
-    private var multiSelectionManagerImpl: MultiSelectionManagerImpl? = null
-
-    fun initDelegate(
-        setDialogState: (SoulDialog?) -> Unit,
-        setBottomSheetState: (SoulBottomSheet?) -> Unit,
-        multiSelectionManagerImpl: MultiSelectionManagerImpl,
-    ) {
-        this.setDialogState = setDialogState
-        this.setBottomSheetState = setBottomSheetState
-        this.multiSelectionManagerImpl = multiSelectionManagerImpl
-    }
+    private var multiSelectionManager: MultiSelectionManager? = null
 
     private fun showDeleteMultiPlaylistDialog(
         selectedIdsToDelete: List<UUID>,
@@ -47,7 +37,7 @@ class MultiPlaylistBottomSheetDelegateImpl(
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
                             commonPlaylistUseCase.deleteAll(selectedIdsToDelete)
-                            multiSelectionManagerImpl?.clearMultiSelection()
+                            multiSelectionManager?.clearMultiSelection()
                             setDialogState(null)
                             setBottomSheetState(null)
                         }
@@ -59,7 +49,7 @@ class MultiPlaylistBottomSheetDelegateImpl(
     }
 
     override fun showMultiPlaylistBottomSheet() {
-        val selectedIds = multiSelectionManagerImpl?.state?.value?.selectedIds ?: return
+        val selectedIds = multiSelectionManager?.state?.value?.selectedIds ?: return
 
         setBottomSheetState(
             MultiPlaylistBottomSheet(
@@ -83,7 +73,7 @@ class MultiPlaylistBottomSheetDelegateImpl(
                             musics = musics,
                         )
 
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -104,7 +94,7 @@ class MultiPlaylistBottomSheetDelegateImpl(
                             musics = musics,
                         )
 
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -120,7 +110,7 @@ class MultiPlaylistBottomSheetDelegateImpl(
                             }
                         }
 
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 }

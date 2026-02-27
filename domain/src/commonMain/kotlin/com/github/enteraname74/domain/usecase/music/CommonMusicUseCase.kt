@@ -54,6 +54,9 @@ class CommonMusicUseCase(
     fun getFromId(musicId: UUID): Flow<Music?> =
         musicRepository.getFromId(musicId = musicId)
 
+    fun getFromIds(ids: List<UUID>): Flow<List<Music>> =
+        musicRepository.getFromIds(ids)
+
     suspend fun getAllMusicFromMonth(month: String) : List<Music> =
         musicRepository.getAllMusicFromMonth(month)
 

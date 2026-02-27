@@ -43,6 +43,10 @@ interface MusicDao {
     fun getFromId(musicId : UUID): Flow<RoomCompleteMusic?>
 
     @Transaction
+    @Query("SELECT DISTINCT * FROM RoomMusic WHERE musicId IN (:ids)")
+    fun getFromIds(ids: List<UUID>): Flow<List<RoomCompleteMusic>>
+
+    @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
     fun getAll(): Flow<List<RoomCompleteMusic>>
 

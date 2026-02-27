@@ -33,6 +33,8 @@ interface MusicDataSource {
      */
     fun getFromId(musicId: UUID): Flow<Music?>
 
+    fun getFromIds(ids: List<UUID>): Flow<List<Music>>
+
     suspend fun getAllIdsFromUnselectedFolders(): List<UUID>
 
     /**

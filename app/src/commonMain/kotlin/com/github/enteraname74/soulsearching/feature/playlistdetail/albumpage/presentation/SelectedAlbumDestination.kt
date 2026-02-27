@@ -5,7 +5,6 @@ import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.domain.util.serializer.UUIDSerializer
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetMode
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
@@ -17,7 +16,7 @@ import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import java.util.*
+import java.util.UUID
 
 @Serializable
 data class SelectedAlbumDestination(
@@ -70,8 +69,7 @@ data class SelectedAlbumDestination(
                             is SelectedAlbumNavigationState.ToMusicBottomSheet -> {
                                 navigator.push(
                                     MusicBottomSheetDestination(
-                                        musicId = it.musicId,
-                                        mode = MusicBottomSheetMode.ALBUM_OR_ARTIST,
+                                        musicIds = it.musicIds,
                                     )
                                 )
                             }

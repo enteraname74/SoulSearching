@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.screen.SoulErrorScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -50,13 +49,6 @@ fun SelectedFolderScreenView(
             playlistDetail = (state as SelectedFolderState.Data).playlistDetail,
             playlistDetailListener = selectedFolderViewModel,
             navigateBack = navigateBack,
-            multiSelectionManagerImpl = selectedFolderViewModel.multiSelectionManagerImpl,
-            onLongSelectOnMusic = {
-                selectedFolderViewModel.toggleElementInSelection(
-                    id = it.musicId,
-                    mode = SelectionMode.Music,
-                )
-            },
             multiSelectionState = multiSelectionState,
         )
         SelectedFolderState.Loading -> SoulLoadingScreen(

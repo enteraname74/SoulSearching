@@ -4,7 +4,6 @@ import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDele
 import com.github.enteraname74.soulsearching.commondelegate.ArtistBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.MultiAlbumBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.MultiArtistBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.MultiPlaylistBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.SortingInformationDelegateImpl
@@ -18,7 +17,6 @@ internal val delegateModule = module {
     factoryOf(::AlbumBottomSheetDelegateImpl)
     factoryOf(::ArtistBottomSheetDelegateImpl)
 
-    factoryOf(::MultiMusicBottomSheetDelegateImpl)
     factoryOf(::MultiAlbumBottomSheetDelegateImpl)
     factoryOf(::MultiArtistBottomSheetDelegateImpl)
     factoryOf(::MultiPlaylistBottomSheetDelegateImpl)

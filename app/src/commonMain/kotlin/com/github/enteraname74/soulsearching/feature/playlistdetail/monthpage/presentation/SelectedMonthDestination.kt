@@ -52,7 +52,7 @@ data class SelectedMonthDestination(
 
                             is SelectedMonthNavigationState.ToMusicBottomSheet -> {
                                 navigator.push(
-                                    MusicBottomSheetDestination(it.musicId)
+                                    MusicBottomSheetDestination(it.musicIds)
                                 )
                             }
                         }

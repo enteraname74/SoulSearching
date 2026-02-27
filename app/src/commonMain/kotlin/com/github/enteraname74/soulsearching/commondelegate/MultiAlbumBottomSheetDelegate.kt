@@ -7,13 +7,13 @@ import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiAlbum
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
 interface MultiAlbumBottomSheetDelegate {
     fun showMultiAlbumBottomSheet()
@@ -26,17 +26,7 @@ class MultiAlbumBottomSheetDelegateImpl(
 ): MultiAlbumBottomSheetDelegate {
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
-    private var multiSelectionManagerImpl: MultiSelectionManagerImpl? = null
-
-    fun initDelegate(
-        setDialogState: (SoulDialog?) -> Unit,
-        setBottomSheetState: (SoulBottomSheet?) -> Unit,
-        multiSelectionManagerImpl: MultiSelectionManagerImpl,
-    ) {
-        this.setDialogState = setDialogState
-        this.setBottomSheetState = setBottomSheetState
-        this.multiSelectionManagerImpl = multiSelectionManagerImpl
-    }
+    private var multiSelectionManager: MultiSelectionManager? = null
 
     private fun showDeleteMultiAlbumDialog(
         selectedIdsToDelete: List<UUID>,
@@ -56,7 +46,7 @@ class MultiAlbumBottomSheetDelegateImpl(
                                 }
                             }
                             commonAlbumUseCase.deleteAll(selectedIdsToDelete)
-                            multiSelectionManagerImpl?.clearMultiSelection()
+                            multiSelectionManager?.clearMultiSelection()
                         }
                         setDialogState(null)
                         setBottomSheetState(null)
@@ -68,7 +58,7 @@ class MultiAlbumBottomSheetDelegateImpl(
     }
 
     override fun showMultiAlbumBottomSheet() {
-        val selectedIds = multiSelectionManagerImpl?.state?.value?.selectedIds ?: return
+        val selectedIds = multiSelectionManager?.state?.value?.selectedIds ?: return
 
         setBottomSheetState(
             MultiAlbumBottomSheet(
@@ -92,7 +82,7 @@ class MultiAlbumBottomSheetDelegateImpl(
                             musics = musics,
                         )
 
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -113,7 +103,7 @@ class MultiAlbumBottomSheetDelegateImpl(
                             musics = musics,
                         )
 
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -129,7 +119,7 @@ class MultiAlbumBottomSheetDelegateImpl(
                             }
                         }
 
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 }

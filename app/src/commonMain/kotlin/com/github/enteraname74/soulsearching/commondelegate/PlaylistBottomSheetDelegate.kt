@@ -7,7 +7,7 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.P
 import com.github.enteraname74.soulsearching.composables.dialog.DeletePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,19 +26,7 @@ class PlaylistBottomSheetDelegateImpl(
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
     private var onModifyPlaylist: (playlist: Playlist) -> Unit = {}
-    private var multiSelectionManagerImpl: MultiSelectionManagerImpl? = null
-
-    fun initDelegate(
-        setDialogState: (SoulDialog?) -> Unit,
-        setBottomSheetState: (SoulBottomSheet?) -> Unit,
-        onModifyPlaylist: (playlist: Playlist) -> Unit,
-        multiSelectionManagerImpl: MultiSelectionManagerImpl,
-    ) {
-        this.setDialogState = setDialogState
-        this.setBottomSheetState = setBottomSheetState
-        this.onModifyPlaylist = onModifyPlaylist
-        this.multiSelectionManagerImpl = multiSelectionManagerImpl
-    }
+    private var multiSelectionManager: MultiSelectionManager? = null
 
     private fun showDeletePlaylistDialog(playlistToDelete: Playlist) {
         setDialogState(
@@ -48,7 +36,7 @@ class PlaylistBottomSheetDelegateImpl(
                     CoroutineScope(Dispatchers.IO).launch {
                         commonPlaylistUseCase.delete(playlistToDelete)
                     }
-                    multiSelectionManagerImpl?.clearMultiSelection()
+                    multiSelectionManager?.clearMultiSelection()
                     setDialogState(null)
                     // We make sure to close the bottom sheet after deleting the selected music.
                     setBottomSheetState(null)
@@ -72,7 +60,7 @@ class PlaylistBottomSheetDelegateImpl(
                                 isInQuickAccess = !selectedPlaylist.playlist.isInQuickAccess,
                             )
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -85,7 +73,7 @@ class PlaylistBottomSheetDelegateImpl(
                         playbackManager.addMultipleMusicsToPlayNext(
                             musics = playlistWithMusics.musics,
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -98,7 +86,7 @@ class PlaylistBottomSheetDelegateImpl(
                         playbackManager.addMultipleMusicsToQueue(
                             musics = playlistWithMusics.musics,
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 },
@@ -111,7 +99,7 @@ class PlaylistBottomSheetDelegateImpl(
                         playbackManager.removeSongsFromPlayedPlaylist(
                             musicIds = playlistWithMusics.musics.map { it.musicId },
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                        multiSelectionManager?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
                 }

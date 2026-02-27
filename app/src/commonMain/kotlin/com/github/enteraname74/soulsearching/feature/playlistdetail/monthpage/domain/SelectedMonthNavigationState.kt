@@ -6,5 +6,5 @@ sealed interface SelectedMonthNavigationState {
     data object Idle: SelectedMonthNavigationState
     data class ToModifyMusic(val musicId: UUID): SelectedMonthNavigationState
     data object Back : SelectedMonthNavigationState
-    data class ToMusicBottomSheet(val musicId: UUID) : SelectedMonthNavigationState
+    data class ToMusicBottomSheet(val musicIds: List<UUID>) : SelectedMonthNavigationState
 }

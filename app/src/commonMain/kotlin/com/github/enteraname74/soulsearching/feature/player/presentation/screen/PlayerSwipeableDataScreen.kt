@@ -19,7 +19,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.animated
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -65,13 +65,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
-
-    LaunchedEffect(playerViewManager.currentValue) {
-        if (playerViewManager.currentValue != BottomSheetStates.EXPANDED) {
-            closeSelection()
-        }
-    }
-
     val coroutineScope = rememberCoroutineScope()
     val alphaTransition = PlayerUiUtils.getAlphaTransition()
 

@@ -25,8 +25,6 @@ data object MainPageDestination : NavKey {
         navigator: Navigator,
     ) {
         entryProviderScope.entry<MainPageDestination> {
-            println("NAVIGATION -- ${navigator.stack.map { it }}")
-
             MainPageRoute(
                 onNavigation = {
                     when (it) {
@@ -117,9 +115,7 @@ data object MainPageDestination : NavKey {
 
                         is MainPageNavigationState.ToMusicBottomSheet -> {
                             navigator.push(
-                                MusicBottomSheetDestination(
-                                    musicId = it.musicId,
-                                )
+                                MusicBottomSheetDestination(it.musicIds)
                             )
                         }
                     }

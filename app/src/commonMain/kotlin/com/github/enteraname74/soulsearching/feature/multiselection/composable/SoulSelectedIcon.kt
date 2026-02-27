@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.coreui.multiselection.composable
+package com.github.enteraname74.soulsearching.feature.multiselection.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,9 +17,9 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 
 @Composable
 fun SoulSelectedIcon(
-    colors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
     size: Dp,
     modifier: Modifier = Modifier,
+    colors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
 ) {
     Box(
         modifier = modifier
