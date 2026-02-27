@@ -11,7 +11,7 @@ import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetElementInformation
-import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRow
+import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowUi
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
@@ -34,24 +34,24 @@ fun MultiAlbumBottomSheetMenu(
             subTitle = strings.selectedElements(total = total),
             cover = null,
         )
-        BottomSheetRow(
+        BottomSheetRowUi(
             icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
             text = strings.playNext,
             onClick = playNextAction,
         )
-        BottomSheetRow(
+        BottomSheetRowUi(
             icon = Icons.AutoMirrored.Rounded.QueueMusic,
             text = strings.addToQueue,
             onClick = addToQueueAction,
         )
         if (!isPlayedListEmpty) {
-            BottomSheetRow(
+            BottomSheetRowUi(
                 icon = Icons.Rounded.PlaylistRemove,
                 text = strings.removeFromPlayedList,
                 onClick = removeFromPlayedListAction,
             )
         }
-        BottomSheetRow(
+        BottomSheetRowUi(
             icon = Icons.Rounded.Delete,
             text = strings.deleteSelectedAlbums,
             onClick = deleteAction

@@ -10,7 +10,7 @@ import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetElementInformation
-import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRow
+import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowUi
 import com.github.enteraname74.soulsearching.composables.bottomsheets.QuickAccessBottomSheetMenu
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 
@@ -37,29 +37,29 @@ fun ArtistBottomSheetMenu(
             isElementInQuickAccess = isInQuickAccess,
             quickAccessAction = quickAccessAction,
         ) {
-            BottomSheetRow(
+            BottomSheetRowUi(
                 icon = Icons.Rounded.Edit,
                 text = strings.modifyArtist,
                 onClick = modifyAction
             )
-            BottomSheetRow(
+            BottomSheetRowUi(
                 icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
                 text = strings.playNext,
                 onClick = playNextAction,
             )
-            BottomSheetRow(
+            BottomSheetRowUi(
                 icon = Icons.AutoMirrored.Rounded.QueueMusic,
                 text = strings.addToQueue,
                 onClick = addToQueueAction,
             )
             if (!isPlayedListEmpty) {
-                BottomSheetRow(
+                BottomSheetRowUi(
                     icon = Icons.Rounded.PlaylistRemove,
                     text = strings.removeFromPlayedList,
                     onClick = removeFromPlayedListAction,
                 )
             }
-            BottomSheetRow(
+            BottomSheetRowUi(
                 icon = Icons.Rounded.Delete,
                 text = strings.deleteArtist,
                 onClick = deleteAction

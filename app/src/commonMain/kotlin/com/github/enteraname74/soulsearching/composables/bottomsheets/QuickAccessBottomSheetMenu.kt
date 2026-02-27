@@ -10,6 +10,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 
+@Deprecated("Use new BottomSheetRowSpec system")
 @Composable
 fun QuickAccessBottomSheetMenu(
     isElementInQuickAccess: Boolean,
@@ -23,7 +24,7 @@ fun QuickAccessBottomSheetMenu(
 
     Column {
         if (isQuickAccessShown) {
-            BottomSheetRow(
+            BottomSheetRowUi(
                 icon = Icons.Rounded.DoubleArrow,
                 text = if (isElementInQuickAccess) {
                     strings.removeFromQuickAccess

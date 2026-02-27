@@ -1,11 +1,18 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.music.main
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
+import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiMusicDialog
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicDialog
@@ -36,6 +43,7 @@ class MusicBottomSheetViewModel(
     private val commonMusicPlaylistUseCase: CommonMusicPlaylistUseCase,
     private val playbackManager: PlaybackManager,
     private val navScope: MusicBottomSheetNavScope,
+    settings: SoulSearchingSettings,
     params: MusicBottomSheetDestination,
 ) : ViewModel() {
     private val musicIds: List<UUID> = params.musicIds
@@ -47,14 +55,19 @@ class MusicBottomSheetViewModel(
         commonMusicUseCase.getFromIds(musicIds),
         playbackManager.mainState,
         _dialogState,
-    ) { musics, playbackState, dialogState ->
+        settings.getFlowOn(
+            settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
+        )
+    ) { musics, playbackState, dialogState, isQuickAccessShown ->
         MusicBottomSheetState(
             musics = musics,
             bottomSheetTopInformation = buildTopInformation(musics),
-            itemsVisibility = buildItemsVisibility(
+            rowSpecs = buildRowSpecs(
                 musics = musics,
-                playedList = (playbackState as? PlaybackManagerState.Data)?.playedList ?: emptyList(),
+                playedList = (playbackState as? PlaybackManagerState.Data)?.playedList
+                    ?: emptyList(),
                 currentPlayedMusic = (playbackState as? PlaybackManagerState.Data)?.currentMusic,
+                isQuickAccessShown = isQuickAccessShown,
             ),
             dialogState = dialogState,
         )
@@ -64,31 +77,98 @@ class MusicBottomSheetViewModel(
         initialValue = MusicBottomSheetState(),
     )
 
-    private fun buildItemsVisibility(
+    private fun buildRowSpecs(
         musics: List<Music>,
         playedList: List<Music>,
-        currentPlayedMusic: Music?
-    ): MusicBottomSheetItemsVisibility =
-        if (musics.size == 1) {
-            val music = musics.first()
-            val isSameMusic = currentPlayedMusic != null && music.musicId == currentPlayedMusic.musicId
-            MusicBottomSheetItemsVisibility(
-                removeFromPlayedList = playedList.any { it.musicId == music.musicId },
-                queueActions = !isSameMusic || playedList.isEmpty(),
-                isInQuickAccess = music.isInQuickAccess,
-                editEnabled = true,
-                inPlaylist = playlistId != null,
-            )
+        currentPlayedMusic: Music?,
+        isQuickAccessShown: Boolean,
+    ): List<BottomSheetRowSpec> = buildList {
+        val editEnabled: Boolean = musics.size == 1
+        val queueAction: Boolean = if (musics.size == 1) {
+            val isSameMusic =
+                currentPlayedMusic != null && musics.first().musicId == currentPlayedMusic.musicId
+            !isSameMusic || playedList.isEmpty()
         } else {
-            MusicBottomSheetItemsVisibility(
-                removeFromPlayedList = playedList.isNotEmpty(),
-                queueActions = true,
-                isInQuickAccess = musics.all { it.isInQuickAccess },
-                editEnabled = false,
-                inPlaylist = playlistId != null,
+            true
+        }
+        val removeFromPlayedList: Boolean = if (musics.size == 1) {
+            playedList.any { it.musicId == musics.first().musicId }
+        } else {
+            playedList.isNotEmpty()
+        }
+
+        if (isQuickAccessShown) {
+            val isInQuickAccess: Boolean = if (musics.size == 1) {
+                musics.first().isInQuickAccess
+            } else {
+                musics.all { it.isInQuickAccess }
+            }
+            add(
+                BottomSheetRowSpec.quickAccess(
+                    onClick = { handleQuickAccess(!isInQuickAccess) },
+                    isInQuickAccess = if (musics.size == 1) {
+                        musics.first().isInQuickAccess
+                    } else {
+                        musics.all { it.isInQuickAccess }
+                    }
+                )
+            )
+        }
+        add(
+            BottomSheetRowSpec.addToPlaylist(
+                onClick = ::addToPlaylists
+            )
+        )
+        if (editEnabled) {
+            add(
+                BottomSheetRowSpec(
+                    icon = Icons.Rounded.Edit,
+                    title = strings.modifyMusic,
+                    onClick = ::modifyMusic,
+                )
+            )
+        }
+        if (queueAction) {
+            addAll(
+                listOf(
+                    BottomSheetRowSpec.playNext(::playNext),
+                    BottomSheetRowSpec.addToQueue(::addToQueue),
+                )
             )
         }
 
+        if (removeFromPlayedList) {
+            add(
+                BottomSheetRowSpec(
+                    icon = Icons.Rounded.PlaylistRemove,
+                    title = strings.removeFromPlayedList,
+                    onClick = ::removeFromPlayedList,
+                )
+            )
+        }
+
+        if (playlistId != null) {
+            add(
+                BottomSheetRowSpec(
+                    icon = Icons.Rounded.Delete,
+                    title = strings.removeFromPlaylist,
+                    onClick = ::showRemoveFromPlaylistDialog,
+                )
+            )
+        }
+
+        add(
+            BottomSheetRowSpec(
+                icon = Icons.Rounded.Delete,
+                title = if (musics.size == 1) {
+                    strings.deleteMusic
+                } else {
+                    strings.deleteSelectedMusics
+                },
+                onClick = ::showDeleteDialog,
+            )
+        )
+    }
 
     private fun buildTopInformation(musics: List<Music>): BottomSheetTopInformation =
         if (musics.size == 1) {
@@ -142,7 +222,7 @@ class MusicBottomSheetViewModel(
         }
     }
 
-    fun modifyMusic() {
+    private fun modifyMusic() {
         if (state.value.musics.size > 1) return
         viewModelScope.launch {
             minimisePlayerViewsIfNeeded()
@@ -151,12 +231,12 @@ class MusicBottomSheetViewModel(
         }
     }
 
-    fun handleQuickAccess() {
+    private fun handleQuickAccess(newValue: Boolean) {
         viewModelScope.launch {
             commonMusicUseCase.upsertAll(
                 allMusics = state.value.musics.map {
                     it.copy(
-                        isInQuickAccess = !state.value.itemsVisibility.isInQuickAccess,
+                        isInQuickAccess = newValue,
                     )
                 }
             )
@@ -165,7 +245,7 @@ class MusicBottomSheetViewModel(
         }
     }
 
-    fun showDeleteDialog() {
+    private fun showDeleteDialog() {
         _dialogState.value = if (state.value.musics.size == 1) {
             DeleteMusicDialog(
                 onDelete = { deleteMusics() },
@@ -179,7 +259,7 @@ class MusicBottomSheetViewModel(
         }
     }
 
-    fun showRemoveFromPlaylistDialog() {
+    private fun showRemoveFromPlaylistDialog() {
         if (playlistId == null) return
         _dialogState.value = if (state.value.musics.size == 1) {
             RemoveMusicFromPlaylistDialog(
@@ -194,13 +274,11 @@ class MusicBottomSheetViewModel(
         }
     }
 
-    fun addToPlaylists() {
+    private fun addToPlaylists() {
         navScope.toAddToPlaylists(musicIds)
     }
 
-    fun removeFromPlayedList() {
-        if (!state.value.itemsVisibility.removeFromPlayedList) return
-
+    private fun removeFromPlayedList() {
         viewModelScope.launch {
             // TODO PLAYER: Should no longer be useful
             playbackManager.removeSongsFromPlayedPlaylist(musicIds)
@@ -209,7 +287,7 @@ class MusicBottomSheetViewModel(
         }
     }
 
-    fun playNext() {
+    private fun playNext() {
         viewModelScope.launch {
             playbackManager.addMultipleMusicsToPlayNext(state.value.musics)
             multiSelectionManager.clearMultiSelection()
@@ -217,7 +295,7 @@ class MusicBottomSheetViewModel(
         }
     }
 
-    fun addToQueue() {
+    private fun addToQueue() {
         viewModelScope.launch {
             playbackManager.addMultipleMusicsToQueue(state.value.musics)
             multiSelectionManager.clearMultiSelection()
