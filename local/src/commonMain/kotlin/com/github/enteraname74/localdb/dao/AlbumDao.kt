@@ -56,30 +56,7 @@ interface AlbumDao {
     @Transaction
     @Query(
         """
-            SELECT album.albumId AS id, album.albumName AS name, album.nbPlayed, 
-            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
-            (
-                CASE WHEN album.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                        CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                        music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                        music.name 
-                    )
-                ELSE album.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                music.name 
-                LIMIT 1 
-            ) AS musicCoverPath,
-            album.isInQuickAccess 
-            FROM RoomAlbum AS album 
+            SELECT * FROM RoomAlbumPreview 
             ORDER BY name ASC
         """
     )
@@ -88,30 +65,7 @@ interface AlbumDao {
     @Transaction
     @Query(
         """
-            SELECT album.albumId AS id, album.albumName AS name, album.nbPlayed, 
-            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
-            (
-                CASE WHEN album.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                        CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                        music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                        music.name 
-                    )
-                ELSE album.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                music.name 
-                LIMIT 1
-            ) AS musicCoverPath,
-            album.isInQuickAccess 
-            FROM RoomAlbum AS album 
+            SELECT * FROM RoomAlbumPreview 
             ORDER BY name DESC
         """
     )
@@ -120,30 +74,7 @@ interface AlbumDao {
     @Transaction
     @Query(
         """
-            SELECT album.albumId AS id, album.albumName AS name, album.nbPlayed, 
-            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
-            (
-                CASE WHEN album.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                        CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                        music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                        music.name 
-                    )
-                ELSE album.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                music.name 
-                LIMIT 1
-            ) AS musicCoverPath,
-            album.isInQuickAccess 
-            FROM RoomAlbum AS album 
+            SELECT * FROM RoomAlbumPreview 
             ORDER BY addedDate ASC
         """
     )
@@ -152,30 +83,7 @@ interface AlbumDao {
     @Transaction
     @Query(
         """
-            SELECT album.albumId AS id, album.albumName AS name, album.nbPlayed, 
-            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
-            (
-                CASE WHEN album.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                        CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                        music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                        music.name 
-                    )
-                ELSE album.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                music.name 
-                LIMIT 1 
-            ) AS musicCoverPath,
-            album.isInQuickAccess 
-            FROM RoomAlbum AS album 
+            SELECT * FROM RoomAlbumPreview 
             ORDER BY addedDate DESC
         """
     )
@@ -184,30 +92,7 @@ interface AlbumDao {
     @Transaction
     @Query(
         """
-            SELECT album.albumId AS id, album.albumName AS name, album.nbPlayed, 
-            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
-            (
-                CASE WHEN album.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                        CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                        music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                        music.name 
-                    )
-                ELSE album.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                music.name 
-                LIMIT 1 
-            ) AS musicCoverPath,
-            album.isInQuickAccess 
-            FROM RoomAlbum AS album 
+            SELECT * FROM RoomAlbumPreview 
             ORDER BY nbPlayed ASC
         """
     )
@@ -216,30 +101,7 @@ interface AlbumDao {
     @Transaction
     @Query(
         """
-            SELECT album.albumId AS id, album.albumName AS name, album.nbPlayed, 
-            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
-            (
-                CASE WHEN album.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                        CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                        music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                        music.name 
-                    )
-                ELSE album.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                music.name 
-                LIMIT 1 
-            ) AS musicCoverPath,
-            album.isInQuickAccess 
-            FROM RoomAlbum AS album 
+            SELECT * FROM RoomAlbumPreview 
             ORDER BY nbPlayed DESC
         """
     )
@@ -256,31 +118,8 @@ interface AlbumDao {
     @Transaction
     @Query(
         """
-            SELECT album.albumId AS id, album.albumName AS name, album.nbPlayed, 
-            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
-            (
-                CASE WHEN album.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                        CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                        music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                        music.name 
-                    )
-                ELSE album.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                music.name 
-                LIMIT 1 
-            ) AS musicCoverPath,
-            album.isInQuickAccess 
-            FROM RoomAlbum AS album 
-            WHERE album.isInQuickAccess = 1
+            SELECT * FROM RoomAlbumPreview 
+            WHERE isInQuickAccess = 1
         """
     )
     fun getAllFromQuickAccess(): Flow<List<RoomAlbumPreview>>
@@ -334,30 +173,7 @@ interface AlbumDao {
 
     @Query(
         """
-            SELECT album.albumId AS id, album.albumName AS name, album.nbPlayed, 
-            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
-            (
-                CASE WHEN album.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                        CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                        music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                        music.name 
-                    )
-                ELSE album.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                music.name 
-                LIMIT 1 
-            ) AS musicCoverPath,
-            album.isInQuickAccess 
-            FROM RoomAlbum AS album 
+            SELECT * FROM RoomAlbumPreview 
             WHERE nbPlayed >= 1
             ORDER BY nbPlayed DESC 
             LIMIT 11
@@ -367,31 +183,8 @@ interface AlbumDao {
 
     @Query(
         """
-            SELECT album.albumId AS id, album.albumName AS name, album.nbPlayed, 
-            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
-            (
-                CASE WHEN album.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                        CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                        music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                        music.name 
-                    )
-                ELSE album.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                music.name 
-                LIMIT 1 
-            ) AS musicCoverPath,
-            album.isInQuickAccess 
-            FROM RoomAlbum AS album 
-            WHERE album.albumId = :albumId
+            SELECT * FROM RoomAlbumPreview 
+            WHERE id = :albumId
             LIMIT 1
         """
     )
@@ -400,41 +193,18 @@ interface AlbumDao {
     // TODO: Normalise with accents.
     @Query(
         """
-            SELECT album.albumId AS id, album.albumName AS name, album.nbPlayed, 
-            (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
-            (
-                CASE WHEN album.coverId IS NULL THEN 
-                    (
-                        SELECT music.coverId FROM RoomMusic AS music 
-                        WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                        CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                        music.albumPosition, 
-                        CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
-                        music.name 
-                    )
-                ELSE album.coverId END
-            ) AS coverId,
-            (
-                SELECT music.path FROM RoomMusic AS music 
-                WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
-                CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                music.name 
-                LIMIT 1 
-            ) AS musicCoverPath,
-            album.isInQuickAccess 
-            FROM RoomAlbum AS album 
+            SELECT * FROM RoomAlbumPreview AS preview
             WHERE (
-                album.albumName LIKE '%' || :search || '%'
+                preview.name LIKE '%' || :search || '%'
                 COLLATE NOCASE
                 OR EXISTS(
                     SELECT 1 FROM RoomArtist AS artist
-                    WHERE artist.artistId = album.artistId 
+                    WHERE artist.artistId = preview.artistId 
                     AND artist.artistName LIKE '%' || :search || '%' 
                     COLLATE NOCASE
                 )
             ) 
-            ORDER BY album.albumName ASC
+            ORDER BY preview.name ASC
         """
     )
     fun searchAll(search: String): Flow<List<RoomAlbumPreview>>
