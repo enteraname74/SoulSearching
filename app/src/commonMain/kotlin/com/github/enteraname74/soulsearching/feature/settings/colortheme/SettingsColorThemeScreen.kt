@@ -1,8 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.FormatPaint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,6 +9,8 @@ import com.github.enteraname74.soulsearching.app.generated.resources.Res
 import com.github.enteraname74.soulsearching.app.generated.resources.dynamic_main
 import com.github.enteraname74.soulsearching.app.generated.resources.dynamic_player
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_format_paint_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeType
@@ -62,7 +62,7 @@ fun SettingsColorThemeScreenView(
             SoulMenuElement(
                 title = strings.themeSelectionTitle,
                 subTitle = strings.themeSelectionText,
-                icon = Icons.Rounded.FormatPaint,
+                icon = CoreRes.drawable.ic_format_paint_filled,
                 onClick = navigateToThemeSelection,
                 padding = PaddingValues(0.dp)
             )

@@ -1,32 +1,38 @@
 package com.github.enteraname74.soulsearching.ext
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.QueueMusic
-import androidx.compose.material.icons.automirrored.outlined.QueueMusic
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_album
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_album_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_folder
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_folder_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_person
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_person_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_queue_music
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_quick_access_filled
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
+import org.jetbrains.compose.resources.DrawableResource
 
-fun ElementEnum.navigationFilledIcon(): ImageVector =
+fun ElementEnum.navigationFilledIcon(): DrawableResource =
     when (this) {
-        ElementEnum.QUICK_ACCESS -> Icons.Filled.DoubleArrow
-        ElementEnum.PLAYLISTS -> Icons.AutoMirrored.Filled.QueueMusic
-        ElementEnum.ALBUMS -> Icons.Filled.Album
-        ElementEnum.ARTISTS -> Icons.Filled.Person
-        ElementEnum.MUSICS -> Icons.Filled.MusicNote
-        ElementEnum.FOLDERS -> Icons.Filled.Folder
+        ElementEnum.QUICK_ACCESS -> CoreRes.drawable.ic_quick_access_filled
+        ElementEnum.PLAYLISTS -> CoreRes.drawable.ic_queue_music
+        ElementEnum.ALBUMS -> CoreRes.drawable.ic_album_filled
+        ElementEnum.ARTISTS -> CoreRes.drawable.ic_person_filled
+        ElementEnum.MUSICS -> CoreRes.drawable.ic_music_note_filled
+        ElementEnum.FOLDERS -> CoreRes.drawable.ic_folder_filled
     }
 
-fun ElementEnum.navigationOutlinedIcon(): ImageVector =
+// TODO ICONS: Find a way to have outlined icons of missing ones
+fun ElementEnum.navigationOutlinedIcon(): DrawableResource =
     when (this) {
-        ElementEnum.QUICK_ACCESS -> Icons.Outlined.DoubleArrow
-        ElementEnum.PLAYLISTS -> Icons.AutoMirrored.Outlined.QueueMusic
-        ElementEnum.ALBUMS -> Icons.Outlined.Album
-        ElementEnum.ARTISTS -> Icons.Outlined.Person
-        ElementEnum.MUSICS -> Icons.Outlined.MusicNote
-        ElementEnum.FOLDERS -> Icons.Outlined.Folder
+        ElementEnum.QUICK_ACCESS -> CoreRes.drawable.ic_quick_access_filled
+        ElementEnum.PLAYLISTS -> CoreRes.drawable.ic_queue_music
+        ElementEnum.ALBUMS -> CoreRes.drawable.ic_album
+        ElementEnum.ARTISTS -> CoreRes.drawable.ic_person
+        ElementEnum.MUSICS -> CoreRes.drawable.ic_music_note_filled
+        ElementEnum.FOLDERS -> CoreRes.drawable.ic_folder
     }
 
 fun ElementEnum.navigationTitle(): String =

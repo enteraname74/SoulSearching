@@ -2,16 +2,20 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifymusi
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.textfield.*
-import java.util.*
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextFieldHolderImpl
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldLeadingIconSpec
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
+import java.util.UUID
 
 sealed interface ModifyMusicFormState {
     data object NoData : ModifyMusicFormState
@@ -137,7 +141,7 @@ sealed interface ModifyMusicFormState {
                             null
                         } else {
                             SoulTextFieldLeadingIconSpec(
-                                icon = Icons.Rounded.Delete,
+                                icon =  CoreRes.drawable.ic_delete_filled,
                                 onClick = {
                                     onDeleteArtist(artist.artistId)
                                 }

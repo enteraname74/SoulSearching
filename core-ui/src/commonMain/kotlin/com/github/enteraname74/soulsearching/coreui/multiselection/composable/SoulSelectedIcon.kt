@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.image.SoulIconLegacy
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -30,7 +30,7 @@ fun SoulSelectedIcon(
             ),
         contentAlignment = Alignment.Center,
     ) {
-        SoulIcon(
+        SoulIconLegacy(
             tint = colors.contentColor,
             icon = Icons.Rounded.Done,
             size = (size - ICON_PADDING),

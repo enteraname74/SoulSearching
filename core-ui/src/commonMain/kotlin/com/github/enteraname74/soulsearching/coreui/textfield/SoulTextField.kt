@@ -29,7 +29,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
-import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.image.SoulIconLegacy
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -195,7 +195,7 @@ class SoulTextFieldHolderImpl(
             isReadOnly = isReadOnly,
             leadingIcon = leadingIconSpec?.let {
                 {
-                    SoulIcon(
+                    SoulIconLegacy(
                         icon = it.icon,
                         contentDescription = null,
                         tint = colors.contentColor,

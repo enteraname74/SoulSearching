@@ -27,7 +27,7 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetH
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
-import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.image.SoulIconLegacy
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -121,7 +121,7 @@ class AddToPlaylistBottomSheet(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
             ) {
-                SoulIcon(
+                SoulIconLegacy(
                     icon = Icons.Rounded.Add,
                     tint = SoulSearchingColorTheme.colorScheme.onSecondary,
                     size = UiConstants.ImageSize.medium,

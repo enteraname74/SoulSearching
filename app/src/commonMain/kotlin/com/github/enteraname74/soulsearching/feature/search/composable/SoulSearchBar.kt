@@ -5,10 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Cancel
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -22,6 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cancel_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_keyboard_arrow_down
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_search
 import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
@@ -42,7 +42,7 @@ fun SoulSearchBar(
     ) {
 
         SoulIconButton(
-            icon = Icons.Rounded.KeyboardArrowDown,
+            icon = CoreRes.drawable.ic_keyboard_arrow_down,
             contentDescription = strings.cancel,
             onClick = onClose,
             colors = SoulButtonDefaults.colors(
@@ -67,9 +67,9 @@ fun SoulSearchBar(
             leadingIcon = {
                 if (searchText.isNotBlank()) {
                     SoulIcon(
-                        icon = Icons.Rounded.Cancel,
+                        icon = CoreRes.drawable.ic_cancel_filled,
                         contentDescription = strings.cancel,
-                        tint = SoulSearchingColorTheme.colorScheme.onSecondary,
+                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
                         modifier = Modifier
                             .clickableWithHandCursor {
                                 updateTextMethod("")
@@ -77,9 +77,9 @@ fun SoulSearchBar(
                     )
                 } else {
                     SoulIcon(
-                        icon = Icons.Rounded.Search,
+                        icon = CoreRes.drawable.ic_search,
                         contentDescription = strings.cancel,
-                        tint = SoulSearchingColorTheme.colorScheme.onSecondary,
+                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
                     )
                 }
             },

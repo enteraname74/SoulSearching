@@ -1,11 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable
 
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -19,6 +22,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_keyboard_arrow_down
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_menu
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_more_vertical
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -56,7 +63,7 @@ fun PlayerTopInformation(
         val statusBarPadding: Int = getStatusBarPadding()
 
         SoulIcon(
-            icon = Icons.Rounded.KeyboardArrowDown,
+            icon = CoreRes.drawable.ic_keyboard_arrow_down,
             modifier = Modifier
                 .padding(top = UiConstants.Spacing.medium)
                 .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
@@ -72,7 +79,6 @@ fun PlayerTopInformation(
                     }
                 },
             size = UiConstants.ImageSize.medium,
-            tint = SoulSearchingColorTheme.colorScheme.onPrimary,
         )
         Column(
             modifier = Modifier
@@ -135,25 +141,23 @@ fun PlayerTopInformation(
         }
         if (onShowPanel != null) {
             SoulIcon(
-                icon = Icons.Rounded.Menu,
+                icon = CoreRes.drawable.ic_menu,
                 modifier = Modifier
                     .padding(top = UiConstants.Spacing.medium)
                     .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
                         onShowPanel()
                     },
                 size = UiConstants.ImageSize.medium,
-                tint = SoulSearchingColorTheme.colorScheme.onPrimary,
             )
         } else {
             SoulIcon(
-                icon = Icons.Rounded.MoreVert,
+                icon = CoreRes.drawable.ic_more_vertical,
                 modifier = Modifier
                     .padding(top = UiConstants.Spacing.medium)
                     .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
                         onSongInfoClicked()
                     },
                 size = UiConstants.ImageSize.medium,
-                tint = SoulSearchingColorTheme.colorScheme.onPrimary,
             )
         }
     }

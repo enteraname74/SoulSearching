@@ -3,11 +3,11 @@ package com.github.enteraname74.soulsearching.feature.settings.managemusics.addm
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DownloadDone
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_download_done
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateScreen
 import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonSpec
@@ -18,7 +18,7 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.FETCHED_MUSICS_SPACER_CONTENT_TYPE
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.composable.MusicSelectableComposable
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.SelectableMusicItem
-import java.util.*
+import java.util.UUID
 
 @Composable
 fun SettingsAddMusicsDataScreen(
@@ -36,7 +36,7 @@ fun SettingsAddMusicsDataScreen(
         if (fetchedMusics.isEmpty()) {
             SoulTemplateScreen(
                 leftAction = TopBarNavigationAction(onClick = navigateBack),
-                icon = Icons.Rounded.DownloadDone,
+                icon = CoreRes.drawable.ic_download_done,
                 title = strings.addMusicsTitle,
                 text = strings.noNewMusics,
                 buttonSpec = TemplateScreenButtonSpec(

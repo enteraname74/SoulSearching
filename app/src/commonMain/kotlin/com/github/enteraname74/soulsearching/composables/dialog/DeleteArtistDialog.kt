@@ -1,15 +1,13 @@
 package com.github.enteraname74.soulsearching.composables.dialog
 
-import androidx.compose.foundation.Image
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.ColorFilter
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,12 +38,9 @@ class DeleteArtistDialog(
             dismissText = strings.cancel,
             title = strings.deleteArtistDialogTitle,
             icon = {
-                Image(
-                    imageVector = Icons.Rounded.Delete,
+                SoulIcon(
+                    icon = CoreRes.drawable.ic_delete_filled,
                     contentDescription = strings.delete,
-                    colorFilter = ColorFilter.tint(
-                        SoulSearchingColorTheme.colorScheme.onPrimary
-                    )
                 )
             }
         )

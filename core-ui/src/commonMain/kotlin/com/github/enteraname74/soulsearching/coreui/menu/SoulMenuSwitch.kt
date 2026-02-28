@@ -1,8 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.menu
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -10,11 +8,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
-import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.button.SoulIconButtonLegacy
 import com.github.enteraname74.soulsearching.coreui.button.SoulSwitch
 import com.github.enteraname74.soulsearching.coreui.button.SoulSwitchDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
 fun SoulMenuSwitch(
@@ -61,7 +60,7 @@ fun SoulMenuSwitch(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
             trailingIcon?.let { iconSpec ->
-                SoulIconButton(
+                SoulIconButtonLegacy(
                     size = UiConstants.ImageSize.medium,
                     icon = iconSpec.icon,
                     onClick = iconSpec.onClick,
@@ -84,6 +83,6 @@ fun SoulMenuSwitch(
 }
 
 data class SoulMenuLeadingIconSpec(
-    val icon: ImageVector,
+    val icon: DrawableResource,
     val onClick: () -> Unit,
 )

@@ -43,6 +43,12 @@ kotlin {
     }
 }
 
+compose.resources {
+    publicResClass = true
+    nameOfResClass = "CoreRes"
+    generateResClass = always
+}
+
 android {
     namespace = "com.github.enteraname74.soulsearching.coreui"
     compileSdk = libs.versions.android.compile.sdk.get().toInt()

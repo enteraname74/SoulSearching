@@ -14,11 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +44,11 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_search
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_shuffle
 import com.github.enteraname74.soulsearching.coreui.ext.blurCompat
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
@@ -70,6 +69,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.ext.title
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import org.jetbrains.compose.resources.DrawableResource
 import java.util.UUID
 import kotlin.time.Duration
 
@@ -181,7 +181,7 @@ private fun Header(
                 onClick = navigateBack,
             ),
             rightAction = object: TopBarActionSpec {
-                override val icon: ImageVector = Icons.Rounded.Search
+                override val icon: DrawableResource = CoreRes.drawable.ic_search
                 override val onClick: () -> Unit = searchAction
             }
         )
@@ -272,7 +272,7 @@ private fun Actions(
     ) {
         Button(
             title = strings.elementDetailPlay,
-            icon = Icons.Rounded.PlayArrow,
+            icon = CoreRes.drawable.ic_play_filled,
             action = playlistDetailListener::onPlayClicked,
             colors = SoulButtonDefaults.colors(
                 contentColor = SoulSearchingColorTheme.colorScheme.secondary,
@@ -281,13 +281,13 @@ private fun Actions(
         )
         Button(
             title = strings.elementDetailShuffle,
-            icon = Icons.Rounded.Shuffle,
+            icon = CoreRes.drawable.ic_shuffle,
             action = playlistDetailListener::onShuffleClicked,
         )
         playlistDetailListener.onEdit?.let {
             Button(
                 title = strings.elementDetailEdit,
-                icon = Icons.Rounded.Edit,
+                icon = CoreRes.drawable.ic_edit_filled,
                 action = it,
             )
         }
@@ -297,7 +297,7 @@ private fun Actions(
 @Composable
 private fun Button(
     title: String,
-    icon: ImageVector,
+    icon: DrawableResource,
     action: () -> Unit,
     colors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
 ) {
@@ -315,7 +315,7 @@ private fun Button(
         ) {
             SoulIcon(
                 icon = icon,
-                tint = colors.contentColor
+                color = colors.contentColor
             )
             Text(
                 text = title,

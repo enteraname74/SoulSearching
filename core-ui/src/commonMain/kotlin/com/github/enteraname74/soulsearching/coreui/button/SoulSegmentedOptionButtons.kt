@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.image.SoulIconLegacy
 
 @Composable
 fun SoulSegmentedOptionButton(
@@ -183,7 +183,7 @@ data class SoulSegmentedOptionIconButton(
     override fun Content(
         contentColor: Color,
     ) {
-        SoulIcon(
+        SoulIconLegacy(
             icon = data,
             tint = contentColor,
             contentDescription = contentDescription,

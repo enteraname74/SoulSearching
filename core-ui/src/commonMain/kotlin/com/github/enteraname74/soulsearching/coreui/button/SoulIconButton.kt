@@ -11,9 +11,12 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.Dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.image.SoulIconLegacy
+import org.jetbrains.compose.resources.DrawableResource
 
+@Deprecated("Use SoulIconButton with DrawableResource instead")
 @Composable
-fun SoulIconButton(
+fun SoulIconButtonLegacy(
     icon: ImageVector,
     badgeColor: Color? = null,
     contentDescription: String? = null,
@@ -33,11 +36,42 @@ fun SoulIconButton(
             containerColor = colors.containerColor,
         )
     ) {
-        SoulIcon(
+        SoulIconLegacy(
             icon = icon,
             badgeColor = badgeColor,
             contentDescription = contentDescription,
             tint = colors.contentColor,
+            size = size,
+        )
+    }
+}
+
+@Composable
+fun SoulIconButton(
+    icon: DrawableResource,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    badgeColor: Color? = null,
+    contentDescription: String? = null,
+    enabled: Boolean = true,
+    size: Dp = UiConstants.ImageSize.smallPlus,
+    colors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
+) {
+    IconButton(
+        modifier = modifier
+            .pointerHoverIcon(PointerIcon.Hand),
+        onClick = onClick,
+        enabled = enabled,
+        colors = IconButtonDefaults.iconButtonColors(
+            contentColor = colors.contentColor,
+            containerColor = colors.containerColor,
+        )
+    ) {
+        SoulIcon(
+            icon = icon,
+            badgeColor = badgeColor,
+            contentDescription = contentDescription,
+            color = colors.contentColor,
             size = size,
         )
     }

@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.screens
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DownloadDone
 import androidx.compose.runtime.Composable
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_download_done
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateScreen
 import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -15,7 +15,7 @@ fun SettingsAddMusicsSavedSongsScreen(
 ) {
     SoulTemplateScreen(
         leftAction = TopBarNavigationAction(onClick = navigateBack),
-        icon = Icons.Rounded.DownloadDone,
+        icon = CoreRes.drawable.ic_download_done,
         title = strings.addMusicsTitle,
         text = strings.songsSaved,
         buttonSpec = TemplateScreenButtonSpec(

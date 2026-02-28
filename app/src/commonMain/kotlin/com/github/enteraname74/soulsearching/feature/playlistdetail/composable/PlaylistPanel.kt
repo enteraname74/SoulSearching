@@ -5,11 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +13,10 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedIconButton
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_shuffle
 import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
@@ -68,7 +67,7 @@ private fun ImagesButton(
             editAction?.let { action ->
                 add(
                     SoulSegmentedIconButton(
-                        data = Icons.Rounded.Edit,
+                        data =  CoreRes.drawable.ic_edit_filled,
                         onClick = action,
                         contentPadding = SoulButtonDefaults.contentPadding(),
                     )
@@ -76,14 +75,14 @@ private fun ImagesButton(
             }
             add(
                 SoulSegmentedIconButton(
-                    data = Icons.Rounded.PlayArrow,
+                    data =  CoreRes.drawable.ic_play_filled,
                     onClick = playAction,
                     contentPadding = SoulButtonDefaults.contentPadding(),
                 )
             )
             add(
                 SoulSegmentedIconButton(
-                    data = Icons.Rounded.Shuffle,
+                    data =  CoreRes.drawable.ic_shuffle,
                     onClick = shuffleAction,
                     contentPadding = SoulButtonDefaults.contentPadding(),
                 )

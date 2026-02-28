@@ -5,18 +5,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AddPhotoAlternate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.soulsearching.composables.StartTopBar
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add_photo_alternate
 import com.github.enteraname74.soulsearching.coreui.list.LazyVerticalGridCompat
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
@@ -27,7 +26,8 @@ import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import kotlinx.coroutines.flow.StateFlow
-import java.util.*
+import org.jetbrains.compose.resources.DrawableResource
+import java.util.UUID
 
 class MusicCoversBottomSheet(
     private val musicCover: Cover,
@@ -119,7 +119,7 @@ class MusicCoversBottomSheet(
                 StartTopBar(
                     title = strings.coverSelection,
                     rightAction = object : TopBarActionSpec {
-                        override val icon: ImageVector = Icons.Rounded.AddPhotoAlternate
+                        override val icon: DrawableResource = CoreRes.drawable.ic_add_photo_alternate
                         override val onClick: () -> Unit = {
                             imagePickerLauncher.launch()
                         }
