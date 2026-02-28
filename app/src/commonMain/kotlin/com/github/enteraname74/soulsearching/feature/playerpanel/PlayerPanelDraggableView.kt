@@ -20,6 +20,7 @@ import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
@@ -35,7 +36,6 @@ import kotlin.math.roundToInt
 @Suppress("Deprecation")
 fun PlayerPanelDraggableView(
     maxHeight: Float,
-    playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
     playerState: PlayerViewState.Data,
     lyricsState: LyricsFetchState,
     onMoreClickedOnMusic: (musicId: UUID) -> Unit,
@@ -47,6 +47,8 @@ fun PlayerPanelDraggableView(
     textColor: Color,
     subTextColor: Color,
     buttonColors: SoulButtonColors,
+    playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
+    multiSelectionManager: MultiSelectionManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -58,8 +60,11 @@ fun PlayerPanelDraggableView(
 
     SoulBackHandler(isExpanded) {
         coroutineScope.launch {
-            closeSelection()
-            playerMusicListViewManager.animateTo(BottomSheetStates.COLLAPSED)
+            if (multiSelectionManager.isActive()) {
+                closeSelection()
+            } else {
+                playerMusicListViewManager.animateTo(BottomSheetStates.COLLAPSED)
+            }
         }
     }
 

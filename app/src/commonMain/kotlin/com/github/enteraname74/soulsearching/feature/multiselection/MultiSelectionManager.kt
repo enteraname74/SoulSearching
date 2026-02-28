@@ -53,6 +53,8 @@ class MultiSelectionManager {
         }
     }
 
+    fun isActive(): Boolean = _state.value.selectedIds.isNotEmpty()
+
     fun clearMultiSelection() {
         _state.value = MultiSelectionState()
     }

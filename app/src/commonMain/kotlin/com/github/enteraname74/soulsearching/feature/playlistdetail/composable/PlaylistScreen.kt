@@ -31,6 +31,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPaddin
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.view.PlaylistLargeView
@@ -54,11 +55,18 @@ fun PlaylistScreen(
     playlistDetailListener: PlaylistDetailListener,
     navigateBack: () -> Unit,
     multiSelectionState: MultiSelectionState,
+    multiSelectionManager: MultiSelectionManager = injectElement(),
     colorThemeManager: ColorThemeManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
     optionalContent: @Composable () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
+
+    SoulBackHandler(
+        enabled = multiSelectionManager.isActive(),
+    ) {
+        multiSelectionManager.clearMultiSelection()
+    }
 
     LaunchedEffect(playerViewManager.currentValue) {
         if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
@@ -80,10 +88,6 @@ fun PlaylistScreen(
                 playlistDetailCover = PlaylistDetailCover.fromImageBitmap(bitmap)
             )
         }
-    }
-
-    SoulBackHandler(playerViewManager.currentValue != BottomSheetStates.EXPANDED) {
-        navigateBack()
     }
 
     val playlistPalette: SoulSearchingPalette? by colorThemeManager.playlistsColorTheme.collectAsState()
