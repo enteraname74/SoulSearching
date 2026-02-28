@@ -95,5 +95,15 @@ interface SoulSearchingPlayer {
          */
         suspend fun onCompletion()
         suspend fun onError()
+
+        /**
+         * Called when loosing playing capability (other app is playing an audio)
+         */
+        suspend fun onPause()
+
+        /**
+         * Called when receiving playing capability
+         */
+        suspend fun onPlay()
     }
 }

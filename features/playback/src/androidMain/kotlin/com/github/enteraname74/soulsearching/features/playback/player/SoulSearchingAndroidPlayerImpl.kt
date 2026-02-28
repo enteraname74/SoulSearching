@@ -204,9 +204,11 @@ class SoulSearchingAndroidPlayerImpl(
 
     override fun onPlay() {
         play()
+        runBlocking { listener?.onPlay() }
     }
 
     override fun onPause() {
         pause()
+        runBlocking { listener?.onPause() }
     }
 }

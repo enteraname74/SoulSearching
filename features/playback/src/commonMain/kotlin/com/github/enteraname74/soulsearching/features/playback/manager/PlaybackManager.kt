@@ -390,6 +390,7 @@ class PlaybackManager(
                 playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
 
             player.seekToPosition(0)
+            playerRepository.setPlayedListState(PlayedListState.Playing)
             launchMusicCount(currentMusicId)
         } else {
             playerRepository.playNext()
@@ -411,6 +412,7 @@ class PlaybackManager(
 
             player.seekToPosition(0)
             updateNotification()
+            playerRepository.setPlayedListState(PlayedListState.Playing)
             launchMusicCount(currentMusicId)
         } else {
             playerRepository.playPrevious()
@@ -547,6 +549,13 @@ class PlaybackManager(
         skipAndRemoveCurrentSong()
     }
 
+    override suspend fun onPause() {
+        pause()
+    }
+
+    override suspend fun onPlay() {
+        play()
+    }
 
     companion object {
         private const val REWIND_THRESHOLD: Long = 5_000
