@@ -67,7 +67,6 @@ class PlaybackManager(
             } ?: flowOf(false)
         }
 
-    // TODO PLAYER: improve this mess!
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentSong: StateFlow<Music?> =
         playerRepository.getCurrentMusic().map {
@@ -384,8 +383,9 @@ class PlaybackManager(
      */
     suspend fun next() {
         val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
+        val size: Int = playerRepository.getSize().firstOrNull() ?: return
 
-        if (playerMode == PlayerMode.Loop) {
+        if (playerMode == PlayerMode.Loop || size == 1) {
             val currentMusicId: UUID =
                 playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
 
@@ -401,27 +401,21 @@ class PlaybackManager(
      */
     suspend fun previous() {
         val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
+        val size: Int = playerRepository.getSize().firstOrNull() ?: return
         val shouldRewind =
             settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD
 
-        if (shouldRewind || playerMode == PlayerMode.Loop) {
+        if (shouldRewind || playerMode == PlayerMode.Loop || size == 1) {
             val currentMusicId: UUID =
                 playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
 
             player.seekToPosition(0)
+            updateNotification()
             launchMusicCount(currentMusicId)
         } else {
             playerRepository.playPrevious()
         }
     }
-
-    @Deprecated("No longer useful, use a state instead")
-    suspend fun getNextMusic(): Music? =
-        playerRepository.getNextMusic().firstOrNull()?.music
-
-    @Deprecated("No longer useful, use a state instead")
-    suspend fun getPreviousMusic(): Music? =
-        playerRepository.getPreviousMusic().firstOrNull()?.music
 
     private suspend fun skipAndRemoveCurrentSong() {
         playerRepository.removeCurrentAndPlayNext()
@@ -462,7 +456,6 @@ class PlaybackManager(
         )
     }
 
-    // TODO PLAYER: Adapt with new system
     /**
      * Updates the played list after a reorder in it.
      */
