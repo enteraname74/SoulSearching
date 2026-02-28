@@ -111,7 +111,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
     ) {
 
         val imageSize = PlayerUiUtils.getImageSize()
-        var playerTopInformationHeight by rememberSaveable { mutableStateOf(0) }
+        var playerTopInformationHeight by rememberSaveable { mutableIntStateOf(0) }
 
 
         AnimatedVisibility(
@@ -176,6 +176,10 @@ fun BoxScope.PlayerSwipeableDataScreen(
             val controlsBoxWidth = playerControlsWidth + (imageHorizontalPadding * 2)
 
             PlayerMusicCover(
+                modifier = Modifier
+                    .padding(
+                        start = UiConstants.Spacing.small * (1 - alphaTransition)
+                    ),
                 imageSize = imageSize,
                 horizontalPadding = imageHorizontalPadding,
                 topPadding = imageTopPadding,

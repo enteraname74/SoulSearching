@@ -162,7 +162,7 @@ class PlayerViewModel(
                         playbackMainState.previous,
                         playbackMainState.currentMusic,
                         playbackMainState.next,
-                    ),
+                    ).distinctBy { it.musicId },
                     playedList = playedList,
                 )
             }
