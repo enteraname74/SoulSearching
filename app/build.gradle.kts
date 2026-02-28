@@ -70,9 +70,8 @@ kotlin {
                 implementation(libs.androidx.paging.compose)
                 implementation(libs.androidx.paging.common)
 
-                implementation(libs.androidx.navigation3.runtime)
-                implementation(libs.androidx.navigation3.ui)
-                implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+                implementation(libs.navigation3.ui)
+                implementation(libs.navigation3.viewmodel)
             }
         }
         androidMain {

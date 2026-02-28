@@ -18,12 +18,9 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.absolutePath
 import io.github.vinceglb.filekit.bookmarkData
-import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
 import io.github.vinceglb.filekit.dialogs.compose.rememberDirectoryPickerLauncher
 import io.github.vinceglb.filekit.fromBookmarkData
 import kotlinx.coroutines.runBlocking
-
-expect fun buildDialogSettings(): FileKitDialogSettings
 
 @Composable
 fun CoverFolderRetrieverFolderSelection(
@@ -31,7 +28,7 @@ fun CoverFolderRetrieverFolderSelection(
     currentFolder: String?,
 ) {
     val folderPicker = rememberDirectoryPickerLauncher(
-        dialogSettings = buildDialogSettings(),
+        title = strings.coverFolderRetrieverPathSelectionTitle,
     ) { platformFile ->
         runBlocking {
             platformFile?.let {
