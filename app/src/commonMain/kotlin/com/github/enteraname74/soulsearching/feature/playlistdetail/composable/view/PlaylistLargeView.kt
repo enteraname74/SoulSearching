@@ -54,7 +54,7 @@ import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
@@ -79,11 +79,9 @@ fun PlaylistLargeView(
     playlistDetailListener: PlaylistDetailListener,
     navigateBack: () -> Unit,
     searchAction: () -> Unit,
-    onShowMusicBottomSheet: (Music) -> Unit,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
     multiSelectionState: MultiSelectionState,
-    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
@@ -140,8 +138,10 @@ fun PlaylistLargeView(
                         .padding(horizontal = UiConstants.Spacing.huge),
                     music = music,
                     onClick = playlistDetailListener::onPlayClicked,
-                    onLongClick = { onLongSelectOnMusic(music) },
-                    onMoreClicked = { onShowMusicBottomSheet(music) },
+                    onLongClick = { playlistDetailListener.onLongClickOnMusic(music.musicId) },
+                    onMoreClicked = {
+                        playlistDetailListener.showMusicBottomSheet(listOf(music.musicId))
+                    },
                     textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                     isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                     isSelected = multiSelectionState.selectedIds.contains(music.musicId),

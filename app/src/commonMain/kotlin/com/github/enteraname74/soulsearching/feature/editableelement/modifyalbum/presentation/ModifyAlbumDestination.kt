@@ -28,7 +28,7 @@ data class ModifyAlbumDestination(
                     onNavigationState = {
                         when (it) {
                             ModifyAlbumNavigationState.Back -> {
-                                navigator.goBack()
+                                navigator.pop()
                             }
                             ModifyAlbumNavigationState.Idle -> {
                                 /*no-op*/

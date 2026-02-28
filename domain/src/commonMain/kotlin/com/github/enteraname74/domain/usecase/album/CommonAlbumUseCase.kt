@@ -16,6 +16,9 @@ class CommonAlbumUseCase(
     fun getFromId(albumId: UUID): Flow<Album?> =
         albumRepository.getFromId(albumId)
 
+    fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>> =
+        albumRepository.getFromIds(albumIds)
+
     fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?> =
         albumRepository.getAlbumWithMusics(
             albumId = albumId,
@@ -36,6 +39,9 @@ class CommonAlbumUseCase(
     fun searchAll(search: String): Flow<List<AlbumPreview>> =
         albumRepository.searchAll(search)
 
+    /**
+     * Call [DeleteAlbumUseCase] for a clean delete of related songs and artists if needed
+     */
     suspend fun deleteAll(albumsIds: List<UUID>) {
         albumRepository.deleteAll(
             ids = albumsIds,

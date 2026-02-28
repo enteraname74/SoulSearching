@@ -34,18 +34,18 @@ data class MultipleArtistsChoiceDestination(
                             MultipleArtistsChoiceNavigationState.Quit -> {
                                 when (key.mode) {
                                     MultipleArtistsChoiceMode.InitialFetch -> {
-                                        navigator.navigate(MainAppDestination) {
+                                        navigator.push(MainAppDestination) {
                                             clearBackStack = true
                                         }
                                     }
                                     is MultipleArtistsChoiceMode.NewSongs, is MultipleArtistsChoiceMode.GeneralCheck -> {
-                                        navigator.goBack()
+                                        navigator.pop()
                                     }
                                 }
                             }
 
                             MultipleArtistsChoiceNavigationState.NavigateBack -> {
-                                navigator.goBack()
+                                navigator.pop()
                             }
                         }
                     }

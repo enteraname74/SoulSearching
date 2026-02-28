@@ -42,6 +42,9 @@ class PlaylistRepositoryImpl(
             playlistId = playlistId
         )
 
+    override fun getFromIds(playlistIds: List<UUID>): Flow<List<PlaylistWithMusics>> =
+        playlistDataSource.getFromIds(playlistIds)
+
     /**
      * Retrieves a flow of a PlaylistWithMusics.
      */

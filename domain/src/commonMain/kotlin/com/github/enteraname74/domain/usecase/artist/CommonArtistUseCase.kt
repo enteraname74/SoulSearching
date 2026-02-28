@@ -22,12 +22,18 @@ class CommonArtistUseCase(
     fun getAllFromQuickAccess(): Flow<List<ArtistPreview>> =
         artistRepository.getAllFromQuickAccess()
 
+    /**
+     * Use [DeleteArtistUseCase] for a clean deletion of the songs and albums of an artist.
+     */
     suspend fun delete(artist: Artist) {
         artistRepository.delete(
             artist = artist,
         )
     }
 
+    /**
+     * Use [DeleteArtistUseCase] for a clean deletion of the songs and albums of artists.
+     */
     suspend fun deleteAll(artistsIds: List<UUID>) {
         artistRepository.deleteAll(
             artistsIds = artistsIds,
@@ -80,6 +86,9 @@ class CommonArtistUseCase(
             )
         )
     }
+
+    fun getFromIds(artistIds: List<UUID>) : Flow<List<ArtistWithMusics>> =
+        artistRepository.getFromIds(artistIds)
 
     suspend fun upsertAll(allArtists: List<Artist>) {
         artistRepository.upsertAll(allArtists)

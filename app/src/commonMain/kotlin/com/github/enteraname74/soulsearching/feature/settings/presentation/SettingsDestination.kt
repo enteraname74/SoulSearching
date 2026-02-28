@@ -21,25 +21,25 @@ data object SettingsDestination: SettingPage {
         entryProviderScope.entry<SettingsDestination> {
             SettingsRoute(
                 navigateBack = {
-                    navigator.goBack()
+                    navigator.pop()
                 },
                 toAbout = {
-                    navigator.navigate(SettingsAboutDestination)
+                    navigator.push(SettingsAboutDestination)
                 },
                 toColorTheme = {
-                    navigator.navigate(SettingsColorThemeDestination)
+                    navigator.push(SettingsColorThemeDestination)
                 },
                 toManageMusics = {
-                    navigator.navigate(SettingsManageMusicsDestination)
+                    navigator.push(SettingsManageMusicsDestination)
                 },
                 toPersonalisation = {
-                    navigator.navigate(SettingsPersonalisationDestination)
+                    navigator.push(SettingsPersonalisationDestination)
                 },
                 toStatistics = {
-                    navigator.navigate(SettingsStatisticsDestination)
+                    navigator.push(SettingsStatisticsDestination)
                 },
                 toAdvancedSettings = {
-                    navigator.navigate(SettingsAdvancedDestination(focusedElement = null))
+                    navigator.push(SettingsAdvancedDestination(focusedElement = null))
                 }
             )
         }

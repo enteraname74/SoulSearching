@@ -43,4 +43,9 @@ class DeleteArtistUseCase(
             commonArtistUseCase.deleteIfEmpty(it.artistId)
         }
     }
+
+    // TODO OPTIMIZATION: Improve deletion of multiple artists?
+    suspend operator fun invoke(artists: List<ArtistWithMusics>) {
+        artists.forEach { this(it) }
+    }
 }

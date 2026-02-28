@@ -15,7 +15,7 @@ data object SettingsUsedFoldersDestination : SettingPage {
         entryProviderScope.entry<SettingsUsedFoldersDestination> {
             SettingsUsedFoldersRoute(
                 navigateBack = {
-                    navigator.goBack()
+                    navigator.pop()
                 }
             )
         }

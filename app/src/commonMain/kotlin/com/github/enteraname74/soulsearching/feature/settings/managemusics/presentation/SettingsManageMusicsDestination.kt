@@ -17,13 +17,13 @@ data object SettingsManageMusicsDestination: SettingPage {
         entryProviderScope.entry<SettingsManageMusicsDestination> {
             SettingsManageMusicsRoute(
                 finishAction = {
-                    navigator.goBack()
+                    navigator.pop()
                 },
                 navigateToFolders = {
-                    navigator.navigate(SettingsUsedFoldersDestination)
+                    navigator.push(SettingsUsedFoldersDestination)
                 },
                 navigateToAddMusics = {
-                    navigator.navigate(
+                    navigator.push(
                         SettingsAddMusicsDestination(
                             shouldShowSaveScreen = false,
                         )

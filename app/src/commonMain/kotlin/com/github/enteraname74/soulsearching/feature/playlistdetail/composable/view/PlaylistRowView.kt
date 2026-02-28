@@ -35,7 +35,7 @@ import com.github.enteraname74.soulsearching.coreui.ext.blurCompat
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.ext.toPx
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
@@ -56,12 +56,10 @@ import kotlin.time.Duration
 fun PlaylistRowView(
     navigateBack: () -> Unit,
     searchAction: () -> Unit,
-    onShowMusicBottomSheet: (Music) -> Unit,
     playlistDetail: PlaylistDetail,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playlistDetailListener: PlaylistDetailListener,
     multiSelectionState: MultiSelectionState,
-    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
     var topBarHeight: Int by rememberSaveable {
@@ -89,12 +87,10 @@ fun PlaylistRowView(
         )
         Content(
             modifier = Modifier.fillMaxSize(),
-            onShowMusicBottomSheet = onShowMusicBottomSheet,
             playlistDetail = playlistDetail,
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
             onCoverLoaded = onCoverLoaded,
-            onLongSelectOnMusic = onLongSelectOnMusic,
             multiSelectionState = multiSelectionState,
             topBarHeight = topBarHeight.toDp(),
         )
@@ -104,14 +100,12 @@ fun PlaylistRowView(
 @Composable
 private fun Content(
     topBarHeight: Dp,
-    onShowMusicBottomSheet: (Music) -> Unit,
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     modifier: Modifier = Modifier,
     optionalContent: @Composable () -> Unit = {},
     multiSelectionState: MultiSelectionState,
-    onLongSelectOnMusic: (Music) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
 ) {
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
@@ -167,8 +161,10 @@ private fun Content(
                                 .animateItem(),
                             music = music,
                             onClick = playlistDetailListener::onPlayClicked,
-                            onLongClick = { onLongSelectOnMusic(music) },
-                            onMoreClicked = { onShowMusicBottomSheet(music) },
+                            onLongClick = { playlistDetailListener.onLongClickOnMusic(music.musicId) },
+                            onMoreClicked = {
+                                playlistDetailListener.showMusicBottomSheet(listOf(music.musicId))
+                            },
                             isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                             isSelected = multiSelectionState.selectedIds.contains(music.musicId),
                             isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),

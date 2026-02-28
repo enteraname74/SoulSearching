@@ -35,6 +35,8 @@ interface PlaylistRepository {
      */
     fun getFromId(playlistId: UUID): Flow<Playlist?>
 
+    fun getFromIds(playlistIds: List<UUID>): Flow<List<PlaylistWithMusics>>
+
     /**
      * Retrieves a flow of a PlaylistWithMusics.
      */

@@ -40,6 +40,9 @@ class MusicRepositoryImpl(
         musicId = musicId
     )
 
+    override fun getFromIds(ids: List<UUID>): Flow<List<Music>> =
+        musicDataSource.getFromIds(ids)
+
     override suspend fun getAllIdsFromUnselectedFolders(): List<UUID> =
         musicDataSource.getAllIdsFromUnselectedFolders()
 

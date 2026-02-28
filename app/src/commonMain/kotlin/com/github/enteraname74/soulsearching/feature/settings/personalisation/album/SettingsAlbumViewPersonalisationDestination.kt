@@ -13,7 +13,7 @@ data object SettingsAlbumViewPersonalisationDestination: NavKey {
     ) {
         entryProviderScope.entry<SettingsAlbumViewPersonalisationDestination> {
             SettingsAlbumViewPersonalisationRoute(
-                navigateBack = navigator::goBack,
+                navigateBack = navigator::pop,
             )
         }
     }

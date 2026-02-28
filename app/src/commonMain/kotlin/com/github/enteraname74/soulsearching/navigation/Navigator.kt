@@ -25,7 +25,7 @@ class Navigator(private val backStack: NavBackStack<NavKey>) {
         }
     }
 
-    fun navigate(
+    fun push(
         route: NavKey,
         parametersBlock: NavigationParameters.() -> Unit = { NavigationParameters.default() },
     ) {
@@ -46,7 +46,7 @@ class Navigator(private val backStack: NavBackStack<NavKey>) {
         backStack.add(route)
     }
 
-    fun goBack(to: NavKey? = null) {
+    fun pop(to: NavKey? = null) {
         // Ensure that we will not have an empty backstack -> leads to crashes
         if (stack.size == 1) return
 
