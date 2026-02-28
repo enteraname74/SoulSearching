@@ -47,15 +47,13 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
 
                 implementation(libs.kmpalette)
-                implementation(libs.components.resources)
                 implementation(libs.multiplatform.settings)
 
-                implementation(compose.ui)
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.material3)
-                implementation(compose.components.resources)
+                implementation(libs.compose.foundation)
+                implementation(libs.compose.material)
+                implementation(libs.compose.material3)
+                implementation(libs.compose.resources)
+                implementation(libs.compose.ui)
 
                 implementation(libs.jaudiotagger)
                 implementation(libs.androidx.annotation)

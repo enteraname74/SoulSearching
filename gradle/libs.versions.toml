@@ -1,42 +1,42 @@
 [versions]
 accompanist = "0.36.0"
 accompanist-system-ui-controller = "0.36.0"
-agp = "8.12.3"
+agp = "8.13.2"
 android-target-sdk = "36"
 android-compile-sdk = "36"
 android-min-sdk = "26"
-androidx-activity-compose = "1.12.0"
+androidx-activity-compose = "1.12.4"
 androidx-core = "1.17.0"
 androidx-lifecycle = "2.10.0"
 annotation = "1.9.1"
 appcompat = "1.7.1"
 application-version-name = "0.14.0"
-cloudy = "0.2.7"
-coil = "3.3.0"
-compose = "1.9.3"
+cloudy = "0.5.0"
+coil = "3.4.0"
+compose = "1.11.0-alpha03"
 coroutines-core = "1.10.2"
 dbus = "3.3.2"
 documentfile = "1.1.0"
 ffmpeg = "6.0-2"
-file-kit = "0.12.0"
-gson = "2.13.2"
+# maybe go back to 0.12.0 if agp cries
+file-kit = "0.13.0"
 jaudiotagger = "3.0.1"
 jlibnotify = "1.2.3"
 kmpalette = "3.1.0"
-kotlin = "2.2.21"
-kotlinx-serialization = "1.9.0"
+kotlin = "2.3.10"
+kotlinx-serialization = "1.10.0"
 koin = "4.1.1"
 ksp = "2.3.3"
-ktor = "2.3.12"
+ktor = "3.4.0"
 media = "1.7.1"
 multiplatform-settings = "1.3.0"
-nav3-core = "1.0.0"
+nav3-core = "1.1.0-alpha05"
 reorderable = "3.0.0"
 room = "2.8.4"
 sqlite = "2.6.2"
-vlcj = "4.11.0"
-media3-exoplayer = "1.8.0"
-paging = "3.4.0-alpha04"
+vlcj = "4.12.1"
+media3-exoplayer = "1.9.2"
+paging = "3.4.1"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
@@ -60,7 +60,11 @@ androidx-paging-common = { module = "androidx.paging:paging-common", version.ref
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 
-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
+compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "compose" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose" }
+compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose" }
 compose-cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-core" }
@@ -72,7 +76,6 @@ dbus = { module = "com.github.hypfvieh:dbus-java", version.ref = "dbus" }
 ffmpeg = { module = "com.arthenica:ffmpeg-kit-full", version.ref = "ffmpeg" }
 file-kit = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref = "file-kit" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jaudiotagger = { module = "net.jthink:jaudiotagger", version.ref = "jaudiotagger" }
 jlibnotify = { module = "es.blackleg:jlibnotify", version.ref = "jlibnotify" }
 kmpalette = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }

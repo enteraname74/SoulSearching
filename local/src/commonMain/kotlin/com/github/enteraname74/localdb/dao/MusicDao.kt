@@ -84,7 +84,7 @@ interface MusicDao {
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate ASC")
-    fun getAllByDateAsc(): List<RoomCompleteMusic>
+    suspend fun getAllByDateAsc(): List<RoomCompleteMusic>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate DESC")
