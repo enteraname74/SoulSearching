@@ -105,6 +105,11 @@ class SoulSearchingAndroidPlayerImpl(
         when (audioManager.requestAudioFocus()) {
             AudioManager.AUDIOFOCUS_GAIN -> {
                 try {
+                    /*
+                    Sometimes the player has a correct currentPosition but the real position is not the same,
+                    we will align both with this.
+                     */
+                    player.seekTo(player.currentPosition)
                     player.start()
                     _state.value = true
                 } catch (_: IllegalStateException) {
@@ -130,10 +135,8 @@ class SoulSearchingAndroidPlayerImpl(
     }
 
     override fun seekToPosition(millis: Int) {
-        try {
+        runCatching {
             player.seekTo(millis)
-        } catch (_: IllegalStateException) {
-
         }
     }
 

@@ -15,9 +15,12 @@ interface PlayerMusicProgressDao {
     @Query(
         """
             SELECT * FROM RoomPlayerMusicProgress 
-            WHERE playedListId = :listId
+            WHERE playedListId = :listId AND playerMusicId = :playerMusicId
             LIMIT 1
         """
     )
-    fun getCurrent(listId: UUID): Flow<RoomPlayerMusicProgress?>
+    fun getCurrent(
+        listId: UUID,
+        playerMusicId: String,
+    ): Flow<RoomPlayerMusicProgress?>
 }

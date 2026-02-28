@@ -342,9 +342,16 @@ internal class RoomPlayerDataSourceImpl(
 
     override fun getCurrentProgress(): Flow<Int> =
         listDao.getCurrentPlayedList().flatMapLatest { list ->
-            list?.id?.let { id ->
-                progressDao.getCurrent(id).map { it?.progress ?: 0 }
-            } ?: flowOf(0)
+            playerMusicDao.getCurrentMusic().flatMapLatest { completePlayerMusic ->
+                if (list == null || completePlayerMusic == null) {
+                    flowOf(0)
+                } else {
+                    progressDao.getCurrent(
+                        listId = list.id,
+                        playerMusicId = completePlayerMusic.playerMusic.id,
+                    ).map { it?.progress ?: 0 }
+                }
+            }
         }
 
     override suspend fun setProgress(progress: Int) {

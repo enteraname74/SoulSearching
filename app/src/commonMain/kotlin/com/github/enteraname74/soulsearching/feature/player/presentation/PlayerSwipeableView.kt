@@ -221,7 +221,6 @@ fun PlayerDraggableView(
                             changePlayerMode = playerViewModel::changePlayerMode,
                             previous = playerViewModel::previous,
                             next = playerViewModel::next,
-                            updateCover = playerViewModel::setCurrentMusicCover,
                             togglePlayPause = playerViewModel::togglePlayPause,
                             currentMusicProgression = currentMusicProgressionState,
                             settingsState = settingsState,

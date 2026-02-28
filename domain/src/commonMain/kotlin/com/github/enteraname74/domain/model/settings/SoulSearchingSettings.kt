@@ -67,7 +67,6 @@ object SoulSearchingSettingsKeys {
             key = "SORT_MUSICS_DIRECTION",
             defaultValue = SortDirection.DEFAULT.value,
         )
-
         val SORT_ALBUMS_TYPE_KEY = settingElementOf(
             key = "SORT_ALBUMS_TYPE",
             defaultValue = SortType.DEFAULT.value,

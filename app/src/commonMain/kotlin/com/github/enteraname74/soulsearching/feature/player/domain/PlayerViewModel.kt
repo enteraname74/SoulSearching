@@ -249,14 +249,6 @@ class PlayerViewModel(
         (state.value as? PlayerViewState.Data)?.playlistsWithMusics ?: emptyList()
 
     /**
-     * Set the current music cover.
-     */
-    @Deprecated("Listen to currentCover from")
-    fun setCurrentMusicCover(cover: ImageBitmap?) {
-
-    }
-
-    /**
      * Set the current music position.
      */
     fun seekTo(position: Int) {

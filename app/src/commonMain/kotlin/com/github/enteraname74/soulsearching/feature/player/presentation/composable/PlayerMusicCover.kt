@@ -11,7 +11,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Cover
@@ -39,7 +38,6 @@ fun PlayerMusicCover(
     canSwipeCover: Boolean,
     aroundSongs: List<Music?>,
     currentMusic: Music,
-    onCoverLoaded: (ImageBitmap?) -> Unit,
     modifier: Modifier = Modifier,
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
@@ -104,11 +102,6 @@ fun PlayerMusicCover(
                         cover = song?.cover,
                         size = imageSize,
                         offset = playerViewManager.offset,
-                        onCoverLoaded = if (song?.musicId == currentMusic.musicId) {
-                            onCoverLoaded
-                        } else {
-                            null
-                        },
                     )
                 }
             } else {
@@ -116,7 +109,6 @@ fun PlayerMusicCover(
                     cover = currentMusic.cover,
                     size = imageSize,
                     offset = playerViewManager.offset,
-                    onCoverLoaded = onCoverLoaded,
                     modifier = imageModifier,
                 )
             }
@@ -130,7 +122,6 @@ private fun MusicCover(
     size: Dp,
     modifier: Modifier = Modifier,
     offset: Float,
-    onCoverLoaded: ((bitmap: ImageBitmap?) -> Unit)?,
 ) {
     SoulImage(
         modifier = modifier,
@@ -138,7 +129,6 @@ private fun MusicCover(
         size = size,
         roundedPercent = (offset / 100).roundToInt()
             .coerceIn(3, 10),
-        onSuccess = onCoverLoaded,
         builderOptions = {
             this.size(CoverUtils.IMAGE_SIZE)
         }

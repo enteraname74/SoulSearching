@@ -59,7 +59,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
     previous: () -> Unit,
     togglePlayPause: () -> Unit,
     next: () -> Unit,
-    updateCover: (ImageBitmap?) -> Unit,
     onActivateRemoteLyrics: () -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
@@ -80,18 +79,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
         } else {
             SoulSearchingColorTheme.colorScheme.secondary
         }.animated(label = PlayerUiUtils.PLAYER_BACKGROUND_COLOR_LABEL)
-
-    var bitmap: ImageBitmap? by remember {
-        mutableStateOf(null)
-    }
-
-    val onCoverLoaded: (ImageBitmap?) -> Unit = {
-        bitmap = it
-    }
-
-    LaunchedEffect(bitmap) {
-        updateCover(bitmap)
-    }
 
     Box(
         modifier = Modifier
@@ -188,7 +175,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 },
                 canSwipeCover = settingsState.canSwipeCover,
                 aroundSongs = state.aroundSongs,
-                onCoverLoaded = onCoverLoaded,
                 currentMusic = state.currentMusic,
             )
 

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 19,
-    "identityHash": "d9613b36050f0d993fe8cf522b86a3d9",
+    "identityHash": "dca4b09a9b17e101c31f541c3ce79780",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -533,8 +533,14 @@
       },
       {
         "tableName": "RoomPlayerMusicProgress",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playedListId` BLOB NOT NULL, `playerMusicId` TEXT NOT NULL, `progress` INTEGER NOT NULL, PRIMARY KEY(`playedListId`), FOREIGN KEY(`playerMusicId`) REFERENCES `RoomPlayerMusic`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playedListId`) REFERENCES `RoomPlayerPlayedList`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `playedListId` BLOB NOT NULL, `playerMusicId` TEXT NOT NULL, `progress` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
           {
             "fieldPath": "playedListId",
             "columnName": "playedListId",
@@ -557,53 +563,9 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "playedListId"
+            "id"
           ]
-        },
-        "indices": [
-          {
-            "name": "index_RoomPlayerMusicProgress_playedListId",
-            "unique": false,
-            "columnNames": [
-              "playedListId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomPlayerMusicProgress_playedListId` ON `${TABLE_NAME}` (`playedListId`)"
-          },
-          {
-            "name": "index_RoomPlayerMusicProgress_playerMusicId",
-            "unique": false,
-            "columnNames": [
-              "playerMusicId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomPlayerMusicProgress_playerMusicId` ON `${TABLE_NAME}` (`playerMusicId`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "RoomPlayerMusic",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "playerMusicId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          },
-          {
-            "table": "RoomPlayerPlayedList",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "playedListId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
+        }
       },
       {
         "tableName": "RoomPlayerPlayedList",
@@ -699,7 +661,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd9613b36050f0d993fe8cf522b86a3d9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dca4b09a9b17e101c31f541c3ce79780')"
     ]
   }
 }
