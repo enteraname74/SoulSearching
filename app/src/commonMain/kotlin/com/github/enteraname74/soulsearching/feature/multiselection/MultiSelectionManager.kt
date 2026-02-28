@@ -70,8 +70,12 @@ class MultiSelectionManager {
             SelectionMode.Playlist -> MultiSelectionNavigationState.ToPlaylistBottomSheet(
                 playlistIds = _state.value.selectedIds,
             )
-            SelectionMode.Album -> TODO()
-            SelectionMode.Artist -> TODO()
+            SelectionMode.Album -> MultiSelectionNavigationState.ToAlbumBottomSheet(
+                albumIds = _state.value.selectedIds,
+            )
+            SelectionMode.Artist -> MultiSelectionNavigationState.ToArtistBottomSheet(
+                artistIds = _state.value.selectedIds,
+            )
         }
     }
 }

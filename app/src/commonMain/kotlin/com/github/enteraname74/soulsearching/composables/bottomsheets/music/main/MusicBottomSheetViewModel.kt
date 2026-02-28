@@ -18,6 +18,7 @@ import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicDialo
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMultiMusicFromPlaylistDialog
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMusicFromPlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
@@ -42,6 +43,7 @@ class MusicBottomSheetViewModel(
     private val commonMusicPlaylistUseCase: CommonMusicPlaylistUseCase,
     private val playbackManager: PlaybackManager,
     private val navScope: MusicBottomSheetNavScope,
+    private val loadingManager: LoadingManager,
     settings: SoulSearchingSettings,
     params: MusicBottomSheetDestination,
 ) : ViewModel() {
@@ -194,8 +196,8 @@ class MusicBottomSheetViewModel(
 
     private fun deleteMusics() {
         viewModelScope.launch {
-            deleteMusicUseCase(musicIds = musicIds)
             dialogState.value = null
+            loadingManager.withLoading { deleteMusicUseCase(musicIds = musicIds) }
             multiSelectionManager.clearMultiSelection()
             // TODO PLAYER: This call should be unnecessary
             playbackManager.removeSongsFromPlayedPlaylist(musicIds)
@@ -207,15 +209,17 @@ class MusicBottomSheetViewModel(
         if (playlistId == null) return
 
         viewModelScope.launch {
-            musicIds.forEach { musicId ->
-                commonMusicPlaylistUseCase.delete(
-                    musicId = musicId,
-                    playlistId = playlistId,
-                )
-                dialogState.value = null
-                multiSelectionManager.clearMultiSelection()
-                navScope.navigateBack()
+            loadingManager.withLoading {
+                musicIds.forEach { musicId ->
+                    commonMusicPlaylistUseCase.delete(
+                        musicId = musicId,
+                        playlistId = playlistId,
+                    )
+                }
             }
+            dialogState.value = null
+            multiSelectionManager.clearMultiSelection()
+            navScope.navigateBack()
         }
     }
 
@@ -231,13 +235,15 @@ class MusicBottomSheetViewModel(
 
     private fun handleQuickAccess(newValue: Boolean) {
         viewModelScope.launch {
-            commonMusicUseCase.upsertAll(
-                allMusics = state.value.musics.map {
-                    it.copy(
-                        isInQuickAccess = newValue,
-                    )
-                }
-            )
+            loadingManager.withLoading {
+                commonMusicUseCase.upsertAll(
+                    allMusics = state.value.musics.map {
+                        it.copy(
+                            isInQuickAccess = newValue,
+                        )
+                    }
+                )
+            }
             multiSelectionManager.clearMultiSelection()
             navScope.navigateBack()
         }

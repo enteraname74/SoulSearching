@@ -30,6 +30,8 @@ interface ArtistRepository {
      */
     fun getFromId(artistId: UUID): Flow<Artist?>
 
+    fun getFromIds(artistIds: List<UUID>) : Flow<List<ArtistWithMusics>>
+
     /**
      * Retrieves an Artist from its name.
      */

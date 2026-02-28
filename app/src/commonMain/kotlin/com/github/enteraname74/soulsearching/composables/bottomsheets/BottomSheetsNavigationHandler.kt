@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetDestination
@@ -26,6 +28,16 @@ object BottomSheetsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+
+        ArtistBottomSheetDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+
+        AlbumBottomSheetDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
     }
 
     fun serializerModule(
@@ -35,6 +47,8 @@ object BottomSheetsNavigationHandler {
             subclass(MusicBottomSheetDestination::class, MusicBottomSheetDestination.serializer())
             subclass(AddToPlaylistBottomSheetDestination::class, AddToPlaylistBottomSheetDestination.serializer())
             subclass(PlaylistBottomSheetDestination::class, PlaylistBottomSheetDestination.serializer())
+            subclass(ArtistBottomSheetDestination::class, ArtistBottomSheetDestination.serializer())
+            subclass(AlbumBottomSheetDestination::class, AlbumBottomSheetDestination.serializer())
         }
     }
 }

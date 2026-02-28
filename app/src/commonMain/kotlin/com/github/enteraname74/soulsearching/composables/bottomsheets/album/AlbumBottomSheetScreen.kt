@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
+package com.github.enteraname74.soulsearching.composables.bottomsheets.album
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -6,10 +6,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.soulsearching.composables.bottomsheets.MultipleChoiceBottomSheetView
 
 @Composable
-internal fun PlaylistBottomSheetScreen(
-    viewModel: PlaylistBottomSheetViewModel,
+internal fun AlbumBottomSheetScreen(
+    viewModel: AlbumBottomSheetViewModel,
 ) {
-    val state: PlaylistBottomSheetState by viewModel.state.collectAsStateWithLifecycle()
+    val state: AlbumBottomSheetState by viewModel.state.collectAsStateWithLifecycle()
     state.dialogState?.Dialog()
 
     MultipleChoiceBottomSheetView(

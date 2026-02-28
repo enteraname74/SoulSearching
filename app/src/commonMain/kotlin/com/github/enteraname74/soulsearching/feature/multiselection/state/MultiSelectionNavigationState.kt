@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.multiselection.state
 
 import java.util.UUID
 
-// TODO BOTTOM SHEETS: Add all other bottom sheets
 sealed interface MultiSelectionNavigationState {
     data object Idle : MultiSelectionNavigationState
 
@@ -13,5 +12,13 @@ sealed interface MultiSelectionNavigationState {
 
     data class ToPlaylistBottomSheet(
         val playlistIds: List<UUID>,
+    ) : MultiSelectionNavigationState
+
+    data class ToArtistBottomSheet(
+        val artistIds: List<UUID>,
+    ) : MultiSelectionNavigationState
+
+    data class ToAlbumBottomSheet(
+        val albumIds: List<UUID>,
     ) : MultiSelectionNavigationState
 }

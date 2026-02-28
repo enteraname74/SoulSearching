@@ -1,19 +1,20 @@
-package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
+package com.github.enteraname74.soulsearching.composables.bottomsheets.album
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
+import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
-import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiPlaylistDialog
-import com.github.enteraname74.soulsearching.composables.dialog.DeletePlaylistDialog
+import com.github.enteraname74.soulsearching.composables.dialog.DeleteAlbumDialog
+import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiAlbumDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -28,32 +29,33 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class PlaylistBottomSheetViewModel(
-    private val commonPlaylistUseCase: CommonPlaylistUseCase,
+class AlbumBottomSheetViewModel(
+    private val commonAlbumUseCase: CommonAlbumUseCase,
+    private val deleteAlbumUseCase: DeleteAlbumUseCase,
     private val playbackManager: PlaybackManager,
     private val multiSelectionManager: MultiSelectionManager,
     private val loadingManager: LoadingManager,
-    private val navScope: PlaylistBottomSheetNavScope,
+    private val navScope: AlbumBottomSheetNavScope,
     settings: SoulSearchingSettings,
-    params:  PlaylistBottomSheetDestination,
-) : ViewModel() {
-    private val playlistIds: List<UUID> = params.playlistIds
+    params:  AlbumBottomSheetDestination,
+): ViewModel() {
+    private val albumIds: List<UUID> = params.albumIds
 
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
-    val state: StateFlow<PlaylistBottomSheetState> = combine(
-        commonPlaylistUseCase.getFromIds(playlistIds),
+    val state: StateFlow<AlbumBottomSheetState> = combine(
+        commonAlbumUseCase.getFromIds(albumIds),
         playbackManager.mainState,
         dialogState,
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
         )
-    ) { playlists, playbackState, dialogState, isQuickAccessShown ->
-        PlaylistBottomSheetState(
-            playlists = playlists,
-            bottomSheetTopInformation = buildTopInformation(playlists),
+    ) { albums, playbackState, dialogState, isQuickAccessShown ->
+        AlbumBottomSheetState(
+            albums = albums,
+            bottomSheetTopInformation = buildTopInformation(albums),
             rowSpecs = buildRowSpecs(
-                playlists = playlists,
+                playlists = albums,
                 isQuickAccessShown = isQuickAccessShown,
                 playedList = (playbackState as? PlaybackManagerState.Data)?.playedList
                     ?: emptyList(),
@@ -63,26 +65,21 @@ class PlaylistBottomSheetViewModel(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
-        initialValue = PlaylistBottomSheetState(),
+        initialValue = AlbumBottomSheetState(),
     )
 
     private fun buildRowSpecs(
-        playlists: List<PlaylistWithMusics>,
+        playlists: List<AlbumWithMusics>,
         playedList: List<Music>,
         isQuickAccessShown: Boolean,
     ) : List<BottomSheetRowSpec> = buildList {
         val editEnabled: Boolean = playlists.size == 1
-        val showDelete: Boolean = if (playlists.size == 1) {
-            !playlists.first().playlist.isFavorite
-        } else {
-            true
-        }
 
         if (isQuickAccessShown) {
             val isInQuickAccess: Boolean = if (playlists.size == 1) {
-                playlists.first().playlist.isInQuickAccess
+                playlists.first().album.isInQuickAccess
             } else {
-                playlists.all { it.playlist.isInQuickAccess }
+                playlists.all { it.album.isInQuickAccess }
             }
 
             add(
@@ -97,8 +94,8 @@ class PlaylistBottomSheetViewModel(
             add(
                 BottomSheetRowSpec(
                     icon = Icons.Rounded.Edit,
-                    title = strings.modifyPlaylist,
-                    onClick = ::toModifyPlaylist,
+                    title = strings.modifyAlbum,
+                    onClick = ::toModifyalbum,
                 )
             )
         }
@@ -116,64 +113,64 @@ class PlaylistBottomSheetViewModel(
             )
         }
 
-        if (showDelete) {
-            add(
-                BottomSheetRowSpec(
-                    icon = Icons.Rounded.Delete,
-                    title = if (playlists.size == 1) {
-                        strings.deletePlaylist
-                    } else {
-                        strings.deleteSelectedPlaylists
-                    },
-                    onClick = ::showDeleteDialog,
-                )
+        add(
+            BottomSheetRowSpec(
+                icon = Icons.Rounded.Delete,
+                title = if (playlists.size == 1) {
+                    strings.deleteAlbum
+                } else {
+                    strings.deleteSelectedAlbums
+                },
+                onClick = ::showDeleteDialog,
             )
-        }
+        )
     }
 
-    private fun toModifyPlaylist() {
-        playlistIds.firstOrNull()?.let {
+    private fun toModifyalbum() {
+        albumIds.firstOrNull()?.let {
             viewModelScope.launch {
                 multiSelectionManager.clearMultiSelection()
-                navScope.toModifyPlaylist(it)
+                navScope.toModifyAlbum(it)
             }
         }
     }
 
-    private fun buildTopInformation(playlists: List<PlaylistWithMusics>): BottomSheetTopInformation =
-        if (playlists.size == 1) {
-            val playlist = playlists.first()
+    private fun buildTopInformation(albums: List<AlbumWithMusics>): BottomSheetTopInformation =
+        if (albums.size == 1) {
+            val album = albums.first()
             BottomSheetTopInformation(
-                title = playlist.playlist.name,
-                subTitle = strings.musics(total = playlist.musics.filter { !it.isHidden }.size),
-                cover = playlist.cover,
+                title = album.album.albumName,
+                subTitle = strings.musics(total = album.musics.filter { !it.isHidden }.size),
+                cover = album.cover,
             )
         } else {
             BottomSheetTopInformation(
                 title = strings.multipleSelection,
-                subTitle = strings.selectedElements(total = playlists.size),
+                subTitle = strings.selectedElements(total = albums.size),
                 cover = null,
             )
         }
 
     private fun showDeleteDialog() {
-        dialogState.value = if (state.value.playlists.size == 1) {
-            DeletePlaylistDialog(
-                onDelete = ::deletePlaylists,
+        dialogState.value = if (state.value.albums.size == 1) {
+            DeleteAlbumDialog(
+                onDelete = ::deleteAlbums,
                 onClose = { dialogState.value = null },
             )
         } else {
-            DeleteMultiPlaylistDialog(
-                onDelete = ::deletePlaylists,
+            DeleteMultiAlbumDialog(
+                onDelete = ::deleteAlbums,
                 onClose = { dialogState.value = null },
             )
         }
     }
 
-    private fun deletePlaylists() {
+    private fun deleteAlbums() {
         viewModelScope.launch {
             dialogState.value = null
-            loadingManager.withLoading { commonPlaylistUseCase.deleteAll(playlistIds) }
+            loadingManager.withLoading {
+                deleteAlbumUseCase(state.value.albums.map { it.album.albumId })
+            }
             multiSelectionManager.clearMultiSelection()
             navScope.navigateBack()
         }
@@ -182,9 +179,9 @@ class PlaylistBottomSheetViewModel(
     private fun handleQuickAccess(newValue: Boolean) {
         viewModelScope.launch {
             loadingManager.withLoading {
-                commonPlaylistUseCase.upsertAll(
-                    playlists = state.value.playlists.map {
-                        it.playlist.copy(
+                commonAlbumUseCase.upsertAll(
+                    albums = state.value.albums.map {
+                        it.album.copy(
                             isInQuickAccess = newValue,
                         )
                     }
@@ -199,7 +196,7 @@ class PlaylistBottomSheetViewModel(
         viewModelScope.launch {
             loadingManager.withLoading {
                 val musics: List<Music> =
-                    state.value.playlists
+                    state.value.albums
                         .flatMap { it.musics }
                         .distinctBy { it.musicId }
 
@@ -216,7 +213,7 @@ class PlaylistBottomSheetViewModel(
         viewModelScope.launch {
             loadingManager.withLoading {
                 val musics: List<Music> =
-                    state.value.playlists
+                    state.value.albums
                         .flatMap { it.musics }
                         .distinctBy { it.musicId }
 
@@ -233,7 +230,7 @@ class PlaylistBottomSheetViewModel(
         viewModelScope.launch {
             loadingManager.withLoading {
                 val musicIds: List<UUID> =
-                    state.value.playlists
+                    state.value.albums
                         .flatMap { it.musics }
                         .distinctBy { it.musicId }
                         .map { it.musicId }

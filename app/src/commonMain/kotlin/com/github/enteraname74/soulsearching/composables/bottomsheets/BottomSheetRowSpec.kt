@@ -1,7 +1,11 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
 import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
@@ -102,38 +106,5 @@ data class BottomSheetRowSpec(
                 title = strings.removeFromPlayedList,
                 onClick = onClick,
             )
-    }
-}
-
-@Deprecated("Use new BottomSheetRow system")
-@Composable
-fun BottomSheetRowUi(
-    icon: ImageVector,
-    text: String,
-    onClick: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickableWithHandCursor {
-                onClick()
-            }
-            .padding(
-                vertical = UiConstants.Spacing.mediumPlus,
-                horizontal = UiConstants.Spacing.large,
-            ),
-        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            modifier = Modifier.size(UiConstants.ImageSize.medium),
-            imageVector = icon,
-            contentDescription = text,
-            colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onSecondary)
-        )
-        Text(
-            text = text,
-            color = SoulSearchingColorTheme.colorScheme.onSecondary
-        )
     }
 }

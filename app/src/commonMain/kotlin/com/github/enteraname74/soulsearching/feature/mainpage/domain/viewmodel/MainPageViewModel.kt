@@ -10,9 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.AlbumPreview
-import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.ArtistPreview
-import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
@@ -28,10 +26,6 @@ import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
-import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.commondelegate.ArtistBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.ArtistBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
@@ -76,7 +70,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -95,13 +88,9 @@ class MainPageViewModel(
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
-    private val artistBottomSheetDelegateImpl: ArtistBottomSheetDelegateImpl,
-    private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
     private val multiSelectionManager: MultiSelectionManager,
     getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
 ) : ViewModel(), KoinComponent,
-    ArtistBottomSheetDelegate by artistBottomSheetDelegateImpl,
-    AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl,
     SortingInformationDelegate by sortingInformationDelegateImpl {
 
     private val settings: SoulSearchingSettings by inject()
@@ -433,17 +422,13 @@ class MainPageViewModel(
     private fun showQuickAccessBottomSheet(quickAccessible: QuickAccessible) {
         coroutineScope.launch {
             when (quickAccessible) {
-                is AlbumPreview -> commonAlbumUseCase
-                    .getAlbumWithMusics(albumId = quickAccessible.id)
-                    .firstOrNull()?.let {
-                        showAlbumBottomSheet(albumWithMusics = it)
-                    }
+                is AlbumPreview -> showAlbumBottomSheet(
+                    albumIds = listOf(quickAccessible.id),
+                )
 
-                is ArtistPreview -> commonArtistUseCase
-                    .getArtistWithMusic(artistId = quickAccessible.id)
-                    .firstOrNull()?.let {
-                        showArtistBottomSheet(selectedArtist = it)
-                    }
+                is ArtistPreview -> showArtistBottomSheet(
+                    artistIds = listOf(quickAccessible.id),
+                )
 
                 is Music -> showMusicBottomSheet(
                     musicIds = listOf(quickAccessible.musicId),
@@ -604,32 +589,6 @@ class MainPageViewModel(
         }
     }
 
-    fun showAlbumPreviewBottomSheet(albumPreview: AlbumPreview) {
-        viewModelScope.launch {
-            val albumWithMusics: AlbumWithMusics = commonAlbumUseCase
-                .getAlbumWithMusics(albumPreview.id).firstOrNull() ?: return@launch
-
-            showAlbumBottomSheet(albumWithMusics)
-        }
-    }
-
-    fun showArtistPreviewBottomSheet(artistPreview: ArtistPreview) {
-        viewModelScope.launch {
-            val artistWithMusics: ArtistWithMusics = commonArtistUseCase
-                .getArtistWithMusic(artistPreview.id).firstOrNull() ?: return@launch
-
-            showArtistBottomSheet(artistWithMusics)
-        }
-    }
-
-    fun showPlaylistPreviewBottomSheet(playlistPreview: PlaylistPreview) {
-        viewModelScope.launch {
-            showPlaylistBottomSheet(
-                playlistIds = listOf(playlistPreview.id),
-            )
-        }
-    }
-
     fun onSoulMixClicked() {
         viewModelScope.launch {
             playbackManager.playSoulMix()
@@ -645,9 +604,21 @@ class MainPageViewModel(
         _navigationState.value = MainPageNavigationState.ToMusicBottomSheet(musicIds = musicIds)
     }
 
-    private fun showPlaylistBottomSheet(playlistIds: List<UUID>) {
+    fun showPlaylistBottomSheet(playlistIds: List<UUID>) {
         _navigationState.value = MainPageNavigationState.ToPlaylistBottomSheet(
             playlistIds = playlistIds,
+        )
+    }
+
+    fun showArtistBottomSheet(artistIds: List<UUID>) {
+        _navigationState.value = MainPageNavigationState.ToArtistBottomSheet(
+            artistIds = artistIds,
+        )
+    }
+
+    fun showAlbumBottomSheet(albumIds: List<UUID>) {
+        _navigationState.value = MainPageNavigationState.ToAlbumBottomSheet(
+            albumIds = albumIds,
         )
     }
 

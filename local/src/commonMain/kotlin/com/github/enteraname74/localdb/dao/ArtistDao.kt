@@ -47,8 +47,12 @@ interface ArtistDao {
     @Query("SELECT artistName FROM RoomArtist WHERE LOWER(artistName) LIKE LOWER('%' || :search || '%')")
     suspend fun getArtistNamesContainingSearch(search: String): List<String>
 
-    @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
+    @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId LIMIT 1")
     fun getFromId(artistId: UUID): Flow<RoomArtist?>
+
+    @Transaction
+    @Query("SELECT * FROM RoomArtist WHERE artistId IN (:artistIds)")
+    fun getFromIds(artistIds: List<UUID>): Flow<List<RoomArtistWithMusics>>
 
     @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
     fun getAll(): Flow<List<RoomArtist>>

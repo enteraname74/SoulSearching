@@ -39,6 +39,8 @@ interface AlbumRepository {
      */
     fun getFromId(albumId: UUID): Flow<Album?>
 
+    fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>>
+
     /**
      * Retrieves a flow of an AlbumWithMusics from an album's id.
      */

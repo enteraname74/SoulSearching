@@ -9,6 +9,7 @@ import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistU
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,6 +26,7 @@ import java.util.UUID
 class AddToPlaylistBottomSheetViewModel(
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonMusicPlaylistUseCase: CommonMusicPlaylistUseCase,
+    private val loadingManager: LoadingManager,
     private val params: AddToPlaylistBottomSheetDestination,
     private val navScope: AddToPlaylistBottomSheetNavScope,
 ) : ViewModel() {
@@ -86,14 +88,16 @@ class AddToPlaylistBottomSheetViewModel(
     private suspend fun addMusicsToPlaylist(
         playlistIds: List<UUID>
     ) {
-        params.selectedMusicIds.forEach { musicId ->
-            playlistIds.forEach { playlistId ->
-                commonMusicPlaylistUseCase.upsert(
-                    MusicPlaylist(
-                        musicId = musicId,
-                        playlistId = playlistId,
+        loadingManager.withLoading {
+            params.selectedMusicIds.forEach { musicId ->
+                playlistIds.forEach { playlistId ->
+                    commonMusicPlaylistUseCase.upsert(
+                        MusicPlaylist(
+                            musicId = musicId,
+                            playlistId = playlistId,
+                        )
                     )
-                )
+                }
             }
         }
     }

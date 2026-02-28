@@ -79,6 +79,11 @@ internal class RoomAlbumDataSourceImpl(
         ).map { it?.toAlbum() }
     }
 
+    override fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>> =
+        appDatabase.albumDao.getFromIds(albumIds).map { list ->
+            list.map { it.toAlbumWithMusics() }
+        }
+
     override fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?> {
         return appDatabase.albumDao.getAlbumWithMusics(
             albumId = albumId

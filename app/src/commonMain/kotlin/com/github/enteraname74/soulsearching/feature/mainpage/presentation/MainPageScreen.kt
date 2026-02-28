@@ -232,9 +232,15 @@ fun MainPageScreenView(
                 onSelectedMusicForBottomSheet = {
                     mainPageViewModel.showMusicBottomSheet(listOf(it))
                 },
-                onSelectedAlbumForBottomSheet = mainPageViewModel::showAlbumPreviewBottomSheet,
-                onSelectedPlaylistForBottomSheet = mainPageViewModel::showPlaylistPreviewBottomSheet,
-                onSelectedArtistForBottomSheet = mainPageViewModel::showArtistPreviewBottomSheet,
+                onSelectedAlbumForBottomSheet = {
+                    mainPageViewModel.showAlbumBottomSheet(listOf(it.id))
+                },
+                onSelectedPlaylistForBottomSheet = {
+                    mainPageViewModel.showPlaylistBottomSheet(listOf(it.id))
+                },
+                onSelectedArtistForBottomSheet = {
+                    mainPageViewModel.showArtistBottomSheet(listOf(it.id))
+                },
                 navigateToPlaylist = mainPageViewModel::toPlaylist,
                 navigateToArtist = mainPageViewModel::toArtist,
                 navigateToAlbum = mainPageViewModel::toAlbum,

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
@@ -145,30 +144,6 @@ class SelectedArtistViewModel(
             id = albumId,
             mode = SelectionMode.Album,
         )
-    }
-
-    private fun handleMultiSelectionAlbumBottomSheet() {
-        val selectedIds = multiSelectionState.value.selectedIds
-        if (selectedIds.size == 1) {
-            val selectedAlbum: AlbumWithMusics =
-                (state.value as? SelectedArtistState.Data)?.artistAlbums?.find {
-                    it.album.albumId ==  selectedIds[0]
-                } ?: return
-//            showAlbumBottomSheet(albumWithMusics = selectedAlbum)
-        } else {
-//            showMultiAlbumBottomSheet()
-        }
-    }
-
-    private fun handleMultiSelectionBottomSheet() {
-        viewModelScope.launch {
-
-            if (multiSelectionManager.selectionMode == SelectionMode.Music) {
-                showMusicBottomSheet(multiSelectionState.value.selectedIds)
-            } else if (multiSelectionManager.selectionMode == SelectionMode.Album) {
-                handleMultiSelectionAlbumBottomSheet()
-            }
-        }
     }
 
     fun navigateBack() {
