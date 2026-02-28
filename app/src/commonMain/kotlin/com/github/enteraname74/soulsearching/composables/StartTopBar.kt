@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
-import com.github.enteraname74.soulsearching.coreui.button.SoulIconButtonLegacy
+import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
 
@@ -18,8 +18,8 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
 fun StartTopBar(
     title: String,
     rightAction: TopBarActionSpec,
-    contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     modifier: Modifier = Modifier,
+    contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -33,7 +33,7 @@ fun StartTopBar(
             style = UiConstants.Typography.bodyMediumTitle,
             overflow = TextOverflow.Ellipsis,
         )
-        SoulIconButtonLegacy(
+        SoulIconButton(
             icon = rightAction.icon,
             contentDescription = rightAction.contentDescription,
             onClick = rightAction.onClick,

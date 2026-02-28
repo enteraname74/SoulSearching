@@ -17,12 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.soulsearching.coreui.image.SoulIconLegacy
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
 fun SoulSegmentedOptionButton(
@@ -172,20 +172,20 @@ data class SoulSegmentedOptionTextButton(
 }
 
 data class SoulSegmentedOptionIconButton(
-    override val data: ImageVector,
+    override val data: DrawableResource,
     override val onClick: () -> Unit,
     override val isSelected: Boolean,
     override val contentPadding: PaddingValues,
     val contentDescription: String? = null,
-) : SoulSegmentedOptionButtonSpec<ImageVector> {
+) : SoulSegmentedOptionButtonSpec<DrawableResource> {
 
     @Composable
     override fun Content(
         contentColor: Color,
     ) {
-        SoulIconLegacy(
+        SoulIcon(
             icon = data,
-            tint = contentColor,
+            color = contentColor,
             contentDescription = contentDescription,
         )
     }

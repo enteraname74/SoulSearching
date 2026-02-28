@@ -14,7 +14,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
-import com.github.enteraname74.soulsearching.coreui.image.SoulIconLegacy
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -90,10 +90,10 @@ fun SoulDropdownTextField(
                 keyboardOptions = keyboardOptions,
                 leadingIcon = leadingIconSpec?.let {
                     {
-                        SoulIconLegacy(
+                        SoulIcon(
                             icon = it.icon,
                             contentDescription = null,
-                            tint = colors.contentColor,
+                            color = colors.contentColor,
                             modifier = Modifier.clickableWithHandCursor {
                                 it.onClick()
                             }

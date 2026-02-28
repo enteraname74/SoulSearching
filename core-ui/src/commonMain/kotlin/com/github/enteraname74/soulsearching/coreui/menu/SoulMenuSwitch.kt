@@ -1,14 +1,17 @@
 package com.github.enteraname74.soulsearching.coreui.menu
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
-import com.github.enteraname74.soulsearching.coreui.button.SoulIconButtonLegacy
+import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulSwitch
 import com.github.enteraname74.soulsearching.coreui.button.SoulSwitchDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
@@ -60,7 +63,7 @@ fun SoulMenuSwitch(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
             trailingIcon?.let { iconSpec ->
-                SoulIconButtonLegacy(
+                SoulIconButton(
                     size = UiConstants.ImageSize.medium,
                     icon = iconSpec.icon,
                     onClick = iconSpec.onClick,

@@ -1,8 +1,5 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.music.main
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
@@ -17,6 +14,9 @@ import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiMusic
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicDialog
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMultiMusicFromPlaylistDialog
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMusicFromPlaylistDialog
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -123,7 +123,7 @@ class MusicBottomSheetViewModel(
         if (editEnabled) {
             add(
                 BottomSheetRowSpec(
-                    icon = Icons.Rounded.Edit,
+                    icon = CoreRes.drawable.ic_edit_filled,
                     title = strings.modifyMusic,
                     onClick = ::toModifyMusic,
                 )
@@ -149,7 +149,7 @@ class MusicBottomSheetViewModel(
         if (playlistId != null) {
             add(
                 BottomSheetRowSpec(
-                    icon = Icons.Rounded.Delete,
+                    icon = CoreRes.drawable.ic_delete_filled,
                     title = strings.removeFromPlaylist,
                     onClick = ::showRemoveFromPlaylistDialog,
                 )
@@ -158,7 +158,7 @@ class MusicBottomSheetViewModel(
 
         add(
             BottomSheetRowSpec(
-                icon = Icons.Rounded.Delete,
+                icon = CoreRes.drawable.ic_delete_filled,
                 title = if (musics.size == 1) {
                     strings.deleteMusic
                 } else {

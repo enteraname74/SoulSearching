@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,12 +30,12 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_skip_next_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_skip_previous_filled
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
-import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.utils.Utils
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.ext.icon
+import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
@@ -131,8 +132,9 @@ private fun PlayerControls(
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        SoulIcon(
-            icon = playerMode.icon(),
+        Icon(
+            painter = painterResource(playerMode.icon()),
+            contentDescription = null,
             modifier = Modifier
                 .weight(ExternalIconsWeight)
                 .clip(CircleShape)
@@ -141,59 +143,67 @@ private fun PlayerControls(
                 .clickableWithHandCursor {
                     changePlayerMode()
                 },
-            color = contentColor,
+            tint = contentColor,
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
-        SoulIcon(
-            icon = CoreRes.drawable.ic_skip_previous_filled,
+        Icon(
+            painter = painterResource(CoreRes.drawable.ic_skip_previous_filled),
+            contentDescription = null,
             modifier = Modifier
                 .weight(InternalIconsWeight)
                 .clip(CircleShape)
                 .height(UiConstants.ImageSize.large)
                 .widthIn(max = UiConstants.ImageSize.large)
                 .clickableWithHandCursor { previous() },
-            color = contentColor
+            tint = contentColor
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
-        SoulIcon(
-            icon = if (isPlaying) {
-                CoreRes.drawable.ic_pause_filled
-            } else {
-                CoreRes.drawable.ic_play_filled
-            },
+        Icon(
+            painter = painterResource(
+                if (isPlaying) {
+                    CoreRes.drawable.ic_pause_filled
+                } else {
+                    CoreRes.drawable.ic_play_filled
+                }
+            ),
+            contentDescription = null,
             modifier = Modifier
                 .weight(MainIconWeight)
                 .clip(CircleShape)
                 .height(UiConstants.Player.playerPlayerButtonSize)
                 .widthIn(max = UiConstants.Player.playerPlayerButtonSize)
                 .clickableWithHandCursor { togglePlayPause() },
-            color = contentColor
+            tint = contentColor
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
-        SoulIcon(
-            icon = CoreRes.drawable.ic_skip_next_filled,
+        Icon(
+            painter = painterResource(CoreRes.drawable.ic_skip_next_filled),
+            contentDescription = null,
             modifier = Modifier
                 .weight(InternalIconsWeight)
                 .clip(CircleShape)
                 .height(UiConstants.ImageSize.large)
                 .widthIn(max = UiConstants.ImageSize.large)
                 .clickableWithHandCursor { next() },
-            color = contentColor
+            tint = contentColor
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
-        SoulIcon(
-            icon = if (isMusicInFavorite) {
-                CoreRes.drawable.ic_favorite_filled
-            } else {
-                CoreRes.drawable.ic_favorite
-            },
+        Icon(
+            painter = painterResource(
+                if (isMusicInFavorite) {
+                    CoreRes.drawable.ic_favorite_filled
+                } else {
+                    CoreRes.drawable.ic_favorite
+                }
+            ),
+            contentDescription = null,
             modifier = Modifier
                 .weight(ExternalIconsWeight)
                 .clip(CircleShape)
                 .height(UiConstants.ImageSize.medium)
                 .widthIn(max = UiConstants.ImageSize.medium)
                 .clickableWithHandCursor { toggleFavoriteState() },
-            color = contentColor
+            tint = contentColor
         )
     }
 }
