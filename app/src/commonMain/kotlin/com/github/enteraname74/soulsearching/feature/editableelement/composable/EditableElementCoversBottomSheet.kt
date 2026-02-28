@@ -26,7 +26,7 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetH
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add_photo_alternate
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add_photo_alternate_filled
 import com.github.enteraname74.soulsearching.coreui.list.LazyVerticalGridCompat
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
@@ -92,7 +92,7 @@ class EditableElementCoversBottomSheet(
                         onClick = closeWithAnim,
                     ),
                     rightAction = object : TopBarActionSpec {
-                        override val icon: DrawableResource = CoreRes.drawable.ic_add_photo_alternate
+                        override val icon: DrawableResource = CoreRes.drawable.ic_add_photo_alternate_filled
                         override val onClick: () -> Unit = {
                             imagePickerLauncher.launch()
                         }

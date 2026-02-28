@@ -15,7 +15,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add_photo_alternate
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add_photo_alternate_filled
 import com.github.enteraname74.soulsearching.coreui.list.LazyVerticalGridCompat
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
@@ -119,7 +119,7 @@ class MusicCoversBottomSheet(
                 StartTopBar(
                     title = strings.coverSelection,
                     rightAction = object : TopBarActionSpec {
-                        override val icon: DrawableResource = CoreRes.drawable.ic_add_photo_alternate
+                        override val icon: DrawableResource = CoreRes.drawable.ic_add_photo_alternate_filled
                         override val onClick: () -> Unit = {
                             imagePickerLauncher.launch()
                         }
