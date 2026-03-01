@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.features.playback.list
 
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlayerMode
+import com.github.enteraname74.domain.model.player.PlayerMode
 import java.util.UUID
 
 sealed interface PlaybackListState {

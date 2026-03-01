@@ -19,19 +19,28 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateAlbumUseCase
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import java.util.UUID
 
 class ModifyAlbumViewModel(
     private val commonAlbumUseCase: CommonAlbumUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
     private val commonCoverUseCase: CommonCoverUseCase,
     private val updateAlbumUseCase: UpdateAlbumUseCase,
-    private val playbackManager: PlaybackManager,
     private val loadingManager: LoadingManager,
     private val coverRetriever: CoverRetriever,
     destination: ModifyAlbumDestination,
@@ -153,7 +162,7 @@ class ModifyAlbumViewModel(
                 } ?: (state.initialAlbum.album.cover as? Cover.CoverFile)?.fileCoverId
 
                 // We update the information of the album.
-                val updatedAlbum = updateAlbumUseCase(
+                updateAlbumUseCase(
                     updateInformation = UpdateAlbumUseCase.UpdateInformation(
                         legacyAlbum = state.initialAlbum.album,
                         newName = form.getAlbumName().trim(),
@@ -163,15 +172,6 @@ class ModifyAlbumViewModel(
                         ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) }
                     )
                 )
-
-                // We retrieve the updated album
-                val newAlbumWithMusics: AlbumWithMusics = commonAlbumUseCase.getAlbumWithMusics(
-                    albumId = updatedAlbum.albumId
-                ).first() ?: return@withLoading
-
-                // We need to update the album's songs that are in the played list.
-                for (music in newAlbumWithMusics.musics) playbackManager.updateMusic(music)
-
             }
 
             _navigationState.value = ModifyAlbumNavigationState.Back

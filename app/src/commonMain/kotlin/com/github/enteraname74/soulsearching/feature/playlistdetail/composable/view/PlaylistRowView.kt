@@ -28,6 +28,7 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.composables.SoulImage
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_search
@@ -44,6 +45,7 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationActio
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.DurationIndication
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PageHeader
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistContinueCard
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPanel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
@@ -145,6 +147,29 @@ private fun Content(
                 playAction = playlistDetailListener::onPlayClicked,
             )
             LazyColumnCompat {
+                playlistDetail.cachedPlaylist?.let {
+                    item(
+                        key = PLAYLIST_CONTINUE_KEY,
+                        contentType = PLAYLIST_CONTINUE_CONTENT_TYPE,
+                    ) {
+                        PlaylistContinueCard(
+                            modifier = Modifier
+                                .padding(
+                                    start = UiConstants.Spacing.medium,
+                                    end = UiConstants.Spacing.medium,
+                                    bottom = UiConstants.Spacing.mediumPlus,
+                                )
+                                .animateItem(
+                                    // TODO IMPROVE: improve screen to find a way to use placement anim
+                                    placementSpec = null,
+                                ),
+                            playedListToContinue = it,
+                            onContinue = { playlistDetailListener.continuePlayedList(it.playedListId) },
+                            onDelete = { playlistDetailListener.deletePlayedList(it.playedListId) },
+                        )
+                    }
+                }
+
                 item {
                     optionalContent()
                 }
@@ -172,7 +197,7 @@ private fun Content(
                         )
                     }
                 }
-                if (playlistDetail.duration != Duration.ZERO) {
+                if (playlistDetail.duration != Duration.ZERO && musics.itemCount > 0) {
                     item { DurationIndication(duration = playlistDetail.duration) }
                 }
                 item {
@@ -222,4 +247,6 @@ private fun BlurredBackground(
     }
 }
 
+private const val PLAYLIST_CONTINUE_KEY = "PLAYLIST_CONTINUE_KEY"
+private const val PLAYLIST_CONTINUE_CONTENT_TYPE = "PLAYLIST_CONTINUE_CONTENT_TYPE"
 private const val PLAYLIST_MUSICS_CONTENT_TYPE: String = "PLAYLIST_MUSICS_CONTENT_TYPE"

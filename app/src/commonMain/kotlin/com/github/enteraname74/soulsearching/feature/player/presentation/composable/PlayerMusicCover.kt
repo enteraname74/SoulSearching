@@ -1,6 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -9,13 +11,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.chainIf
 import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -29,8 +31,6 @@ import kotlin.math.roundToInt
 
 @Composable
 fun PlayerMusicCover(
-    playbackManager: PlaybackManager = injectElement(),
-    playerViewManager: PlayerViewManager = injectElement(),
     imageSize: Dp,
     horizontalPadding: Dp,
     topPadding: Dp,
@@ -38,7 +38,9 @@ fun PlayerMusicCover(
     canSwipeCover: Boolean,
     aroundSongs: List<Music?>,
     currentMusic: Music,
-    onCoverLoaded: (ImageBitmap?) -> Unit,
+    modifier: Modifier = Modifier,
+    playbackManager: PlaybackManager = injectElement(),
+    playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val imageModifier = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
         Modifier.combinedClickableWithRightClick(
@@ -49,22 +51,22 @@ fun PlayerMusicCover(
         Modifier
     }
 
+    val canUsePager = aroundSongs.filterNotNull().size > 1 && canSwipeCover
+
     Box(
-        modifier = Modifier
-            .padding(UiConstants.Spacing.small)
+        modifier = modifier
+            .padding(vertical = UiConstants.Spacing.small)
     ) {
         Box(
             modifier = Modifier
-                .padding(
-                    start = horizontalPadding,
-                    top = topPadding,
-                    end = horizontalPadding,
-                )
+                .padding(top = topPadding)
+                .chainIf(!canUsePager) {
+                    Modifier.padding(
+                        horizontal = horizontalPadding,
+                    )
+                }
         ) {
-            if (
-                aroundSongs.filterNotNull().size > 1
-                && canSwipeCover
-            ) {
+            if (canUsePager) {
                 val pagerState = remember(aroundSongs) {
                     object : PagerState(currentPage = 1) {
                         override val pageCount: Int = aroundSongs.size
@@ -83,8 +85,13 @@ fun PlayerMusicCover(
                 }
 
                 HorizontalPager(
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     state = pagerState,
-                    pageSpacing = 120.dp,
+                    pageSpacing = horizontalPadding + 64.dp,
+                    contentPadding = PaddingValues(
+                        horizontal = horizontalPadding,
+                    ),
                     userScrollEnabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
                 ) { currentSongPos ->
 
@@ -95,11 +102,6 @@ fun PlayerMusicCover(
                         cover = song?.cover,
                         size = imageSize,
                         offset = playerViewManager.offset,
-                        onCoverLoaded = if (song?.musicId == currentMusic.musicId) {
-                            onCoverLoaded
-                        } else {
-                            null
-                        },
                     )
                 }
             } else {
@@ -107,7 +109,6 @@ fun PlayerMusicCover(
                     cover = currentMusic.cover,
                     size = imageSize,
                     offset = playerViewManager.offset,
-                    onCoverLoaded = onCoverLoaded,
                     modifier = imageModifier,
                 )
             }
@@ -121,7 +122,6 @@ private fun MusicCover(
     size: Dp,
     modifier: Modifier = Modifier,
     offset: Float,
-    onCoverLoaded: ((bitmap: ImageBitmap?) -> Unit)?,
 ) {
     SoulImage(
         modifier = modifier,
@@ -129,7 +129,6 @@ private fun MusicCover(
         size = size,
         roundedPercent = (offset / 100).roundToInt()
             .coerceIn(3, 10),
-        onSuccess = onCoverLoaded,
         builderOptions = {
             this.size(CoverUtils.IMAGE_SIZE)
         }

@@ -1,165 +1,317 @@
 package com.github.enteraname74.soulsearching.features.playback.manager
 
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.input.key.*
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.player.AddMusicMode
+import com.github.enteraname74.domain.model.player.PlayedListSetup
+import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayedListToContinue
+import com.github.enteraname74.domain.model.player.PlayerMode
+import com.github.enteraname74.domain.model.player.PlayerMusic
+import com.github.enteraname74.domain.model.player.PlayerPlayedList
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.repository.PlayerMusicRepository
+import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
-import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListCallbacks
-import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListManager
-import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListState
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
+import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
-import com.github.enteraname74.soulsearching.features.playback.progressjob.PlaybackProgressJob
-import com.github.enteraname74.soulsearching.features.playback.progressjob.PlaybackProgressJobCallbacks
+import com.github.enteraname74.soulsearching.features.playback.progressJob.PlaybackProgressJob
+import com.github.enteraname74.soulsearching.features.playback.progressJob.PlaybackProgressJobCallbacks
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.*
+import java.util.UUID
 
-class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
+class PlaybackManager(
+    private val playerRepository: PlayerRepository,
+    private val settings: SoulSearchingSettings,
+    private val commonMusicUseCase: CommonMusicUseCase,
+    private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
+    private val coverRetriever: CoverRetriever,
+) : KoinComponent, SoulSearchingPlayer.Listener {
+    private val notification: SoulSearchingNotification by inject()
+    private val player: SoulSearchingPlayer by inject()
 
-    private val playerMusicRepository: PlayerMusicRepository by inject()
-    private val commonMusicUseCase: CommonMusicUseCase by inject()
-    private val settings: SoulSearchingSettings by inject()
-
-    private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase by inject()
-
-    val player: SoulSearchingPlayer by inject()
-    val notification: SoulSearchingNotification by inject()
+    private val workScope = CoroutineScope(Dispatchers.IO)
+    private var updateMusicNbPlayedJob: Job? = null
 
     private val playbackProgressJob: PlaybackProgressJob = PlaybackProgressJob(
-        settings = settings,
+        playerRepository = playerRepository,
         callback = object : PlaybackProgressJobCallbacks {
             override fun isPlaying(): Boolean =
-                player.isPlaying()
+                player.isPlaying() == true
 
             override fun getMusicPosition(): Int =
                 this@PlaybackManager.getMusicPosition()
         },
     )
-    private val playbackListManager: PlaybackListManager =
-        PlaybackListManager(
-            settings = settings,
-            playbackCallback = object : PlaybackListCallbacks {
-                override suspend fun onlyLoadMusic(seekTo: Int, music: Music) =
-                    this@PlaybackManager.onlyLoadMusic(seekTo, music)
-
-                override suspend fun getMusicPosition(): Int =
-                    this@PlaybackManager.getMusicPosition()
-
-                override suspend fun stopPlayback() =
-                    this@PlaybackManager.stopPlayback()
-
-                override suspend fun next() =
-                    this@PlaybackManager.next()
-
-                override suspend fun setAndPlayMusic(music: Music) =
-                    this@PlaybackManager.setAndPlayMusic(music)
-            },
-            player = player,
-            playerMusicRepository = playerMusicRepository,
-            commonMusicUseCase = commonMusicUseCase,
-        )
-
-    init {
-        player.registerListener(this)
-    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val currentMusicFavoriteStatusState: Flow<Boolean> =
-        playbackListManager.state.flatMapLatest { playbackListState ->
-            when (playbackListState) {
-                is PlaybackListState.Data -> isMusicInFavoritePlaylistUseCase(
-                    musicId = playbackListState.currentMusic.musicId
-                )
-                PlaybackListState.NoData -> flowOf(false)
-            }
+        playerRepository.getCurrentMusic().flatMapLatest { current ->
+            current?.music?.musicId?.let {
+                isMusicInFavoritePlaylistUseCase(musicId = it)
+            } ?: flowOf(false)
         }
 
-    val mainState: StateFlow<PlaybackManagerState> by lazy {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val currentSong: StateFlow<Music?> =
+        playerRepository.getCurrentMusic().map {
+            it?.music
+        }.stateIn(
+                scope = workScope,
+                started = SharingStarted.Eagerly,
+                initialValue = null,
+            )
+
+    val currentSongProgressionState: Flow<Int> = playbackProgressJob.state
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val currentCover: Flow<ImageBitmap?> =
+        playerRepository.getCurrentMusic().map { currentMusic ->
+            currentMusic?.music?.cover?.let { coverRetriever.getCoverImageBitmap(it) }
+        }
+
+    // TODO PLAYER: Find a way to make drag and drop and paging list work together
+    val playedList: Flow<List<Music>> = playerRepository.getAll()
+
+    val state: Flow<PlaybackManagerState> =
         combine(
-            playbackListManager.state,
-            player.state,
-            _currentCoverState,
-            currentMusicFavoriteStatusState
-        ) { listState, playerState, cover, isCurrentMusicInFavorite ->
-            when (listState) {
-                is PlaybackListState.NoData -> {
-                    notification.dismissNotification()
-                    PlaybackManagerState.Stopped
+            playerRepository.getCurrentMusic(),
+            playerRepository.getCurrentPlayedList(),
+            currentCover,
+            playerRepository.getSize(),
+            playerRepository.getCurrentPosition(),
+            currentMusicFavoriteStatusState,
+            playerRepository.getNextMusic(),
+            playerRepository.getPreviousMusic(),
+        ) { array ->
+            val currentMusic: Music? = (array[0] as PlayerMusic?)?.music
+            val next: Music? = (array[6] as PlayerMusic?)?.music
+            val previous: Music? = (array[7] as PlayerMusic?)?.music
+            val currentPlayedList: PlayerPlayedList? = array[1] as PlayerPlayedList?
+
+            if (currentMusic == null || currentPlayedList == null || currentPlayedList.state == PlayedListState.Cached) {
+                PlaybackManagerState.Stopped
+            } else {
+                PlaybackManagerState.Data(
+                    currentMusic = currentMusic,
+                    next = next,
+                    previous = previous,
+                    isCurrentMusicInFavorite = array[5] as Boolean,
+                    currentMusicIndex = ((array[4] as Int?) ?: 0) - 1,
+                    listSize = array[3] as Int,
+                    playerMode = currentPlayedList.mode,
+                    isPlaying = currentPlayedList.state == PlayedListState.Playing,
+                    currentState = currentPlayedList.state,
+                )
+            }
+        }.distinctUntilChanged()
+
+    private val notificationDataFlow: Flow<UpdateData?> =
+        combine(
+            playerRepository.getCurrentMusic(),
+            playerRepository.getCurrentPlayedList(),
+            currentCover,
+            playerRepository.getSize(),
+            playerRepository.getCurrentPosition(),
+            currentMusicFavoriteStatusState,
+        ) { array ->
+            val currentMusic: Music? = (array[0] as PlayerMusic?)?.music
+            val currentPlayedList: PlayerPlayedList? = array[1] as PlayerPlayedList?
+
+            if (currentMusic == null || currentPlayedList == null) {
+                null
+            } else {
+                UpdateData(
+                    music = currentMusic,
+                    isPlaying = currentPlayedList.state == PlayedListState.Playing,
+                    cover = array[2] as ImageBitmap?,
+                    isInFavorite = array[5] as Boolean,
+                    playedListSize = (array[3] as Int).toLong(),
+                    position = (array[4] as Int?)?.toLong() ?: 1L,
+                )
+            }
+        }.distinctUntilChanged()
+
+    private var isInit: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private var startSeek: Int? = null
+
+    init {
+        player.registerListener(this)
+        init()
+
+        listenPlayerVolume()
+        listenToState()
+        playerListener()
+        notificationListener()
+    }
+
+    private fun init() {
+        workScope.launch {
+            /*
+            At launch, we will set the current played list (if any) state to be Loading,
+            as we want to only load the played list, and not launch it immediately
+             */
+            playerRepository.setPlayedListState(PlayedListState.Loading)
+            startSeek = playerRepository.getCurrentProgress().firstOrNull()
+            isInit.value = true
+        }
+    }
+
+    private fun listenPlayerVolume() {
+        workScope.launch {
+            settings.getFlowOn(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME)
+                .collectLatest { volume ->
+                    player.setPlayerVolume(volume)
                 }
-                is PlaybackListState.Data -> {
-                    val state = PlaybackManagerState.Data(
-                        currentMusic = listState.currentMusic,
-                        currentMusicIndex = listState.currentMusicIndex,
-                        playedList = listState.playedList,
-                        isPlaying = playerState,
-                        playerMode = listState.playerMode,
-                        minimisePlayer = listState.minimisePlayer,
-                        isCurrentMusicInFavorite = isCurrentMusicInFavorite,
-                    )
-                    playbackProgressJob.launchDurationJobIfNecessary()
-                    notification.updateNotification(
-                        playbackManagerState = state,
-                        cover = cover,
-                    )
-                    state
+        }
+    }
+
+    private fun launchWithInit(
+        block: suspend () -> Unit,
+    ) {
+        workScope.launch {
+            isInit.collectLatest { isInit ->
+                if (isInit) {
+                    block()
                 }
             }
-        }.stateIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            initialValue = PlaybackManagerState.Stopped,
-        )
+        }
+    }
+
+    private fun playerListener() {
+        launchWithInit {
+            playerRepository.getCurrentMusic()
+                .map { it?.music?.path }
+                .distinctUntilChanged()
+                .collectLatest { currentMusicPath ->
+                    val currentMusic: Music? =
+                        playerRepository.getCurrentMusic().firstOrNull()?.music
+                    if (currentMusicPath == null || currentMusic == null) {
+                        player.dismiss()
+                    } else {
+                        val currentState: PlayedListState? =
+                            playerRepository.getCurrentState().firstOrNull()
+                        when (currentState) {
+                            PlayedListState.Playing -> {
+                                player.setMusic(currentMusic)
+                                player.launchMusic()
+                            }
+
+                            PlayedListState.Paused, PlayedListState.Loading -> {
+                                player.setMusic(currentMusic)
+                                player.onlyLoadMusic(
+                                    seekTo = startSeek ?: 0,
+                                )
+                                startSeek = 0
+                                playbackProgressJob.launchDurationJobIfNecessary()
+                            }
+
+                            PlayedListState.Cached -> {
+                                player.dismiss()
+                            }
+
+                            else -> {
+                                // no-op
+                            }
+                        }
+                    }
+                }
+        }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val currentSong: StateFlow<Music?> by lazy {
-        playbackListManager.state.mapLatest { state ->
-            when (state) {
-                is PlaybackListState.Data -> state.currentMusic
-                PlaybackListState.NoData -> null
+    private fun notificationListener() {
+        launchWithInit {
+            notificationDataFlow.collectLatest { data ->
+                if (data == null) {
+                    notification.dismiss()
+                } else {
+                    notification.update(updateData = data)
+                }
             }
-        }.stateIn(
-            scope = CoroutineScope(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            initialValue = null,
-        )
-    }
-
-    val currentSongProgressionState: StateFlow<Int> = playbackProgressJob.state
-
-    private val _currentCoverState: MutableStateFlow<ImageBitmap?> = MutableStateFlow(null)
-    val currentCoverState: StateFlow<ImageBitmap?> = _currentCoverState.asStateFlow()
-
-    fun initFromSavedData() {
-        CoroutineScope(Dispatchers.IO).launch {
-            playbackListManager.init()
         }
     }
 
-    /**
-     * Load the current music of the player view model.
-     * The music will not be played.
-     */
-    private suspend fun onlyLoadMusic(seekTo: Int = 0, music: Music) {
-        player.setMusic(music = music)
-        player.onlyLoadMusic(seekTo = seekTo)
+    private fun updateNotification() {
+        workScope.launch {
+            val data: UpdateData = notificationDataFlow.firstOrNull() ?: return@launch
+            notification.update(data)
+        }
+    }
+
+    private fun listenToState() {
+        launchWithInit {
+            playerRepository.getCurrentState().distinctUntilChanged().collectLatest { state ->
+                when (state) {
+                    PlayedListState.Playing -> {
+                        playbackProgressJob.launchDurationJobIfNecessary()
+                        if (player.isPlaying() == false) {
+                            player.play()
+                        }
+                    }
+
+                    PlayedListState.Paused -> {
+                        if (player.isPlaying() == true) {
+                            player.pause()
+                        }
+                    }
+
+                    PlayedListState.Cached, null -> {
+                        player.dismiss()
+                    }
+
+                    else -> {
+                        // no-op
+                    }
+                }
+            }
+        }
+    }
+
+    fun getCachedPlaylist(playlistId: String): Flow<PlayedListToContinue?> =
+        playerRepository.getCachedPlayedList(playlistId)
+
+    suspend fun continuePlayedList(playedListId: UUID) {
+        playerRepository.continuePlayedList(playedListId)
+    }
+
+    suspend fun deletePlayedList(playedListId: UUID) {
+        playerRepository.deletePlayedList(playedListId)
     }
 
     /**
      * Retrieves the current position in the current played song in milliseconds.
      */
     fun getMusicPosition(): Int =
-        player.getMusicPosition()
+        player.getProgress()
 
     /**
      * Stop the playback.
@@ -167,62 +319,60 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
      */
     suspend fun stopPlayback(resetPlayedList: Boolean = true) {
         playbackProgressJob.releaseDurationJob()
-        updateCover(cover = null)
-        playbackListManager.clear(resetPlayedList = resetPlayedList)
+        if (resetPlayedList) {
+            playerRepository.deleteCurrentPlayedList()
+        } else {
+            playerRepository.setPlayedListState(PlayedListState.Cached)
+        }
+
         player.dismiss()
     }
 
     /**
      * Play or pause the player, depending on its current state.
      */
-    fun togglePlayPause() {
-        player.togglePlayPause()
-        playbackProgressJob.launchDurationJobIfNecessary()
+    suspend fun togglePlayPause() {
+        playerRepository.togglePlayPause()
     }
 
-    /**
-     * Play the current song.
-     */
+
     fun play() {
-        player.play()
+        workScope.launch {
+            playerRepository.setPlayedListState(PlayedListState.Playing)
+        }
     }
 
-    /**
-     * Play the current song.
-     */
     fun pause() {
-        player.pause()
-    }
-
-    private suspend fun updateNotification() {
-        (mainState.value as? PlaybackManagerState.Data)?.let {
-            notification.updateNotification(
-                playbackManagerState = it,
-                cover = _currentCoverState.value,
-            )
+        workScope.launch {
+            playerRepository.setPlayedListState(PlayedListState.Paused)
         }
     }
 
     /**
      * Seek to a given position in the current played music.
      */
-    suspend fun seekToPosition(position: Int) {
+    fun seekToPosition(position: Int) {
         player.seekToPosition(position)
         updateNotification()
         playbackProgressJob.launchDurationJobIfNecessary()
     }
 
     fun handleKeyEvent(event: KeyEvent) {
-        CoroutineScope(Dispatchers.IO).launch {
+        workScope.launch {
+            val currentState: PlayedListState = playerRepository
+                .getCurrentState()
+                .firstOrNull() ?: return@launch
+
             if (event.isCtrlPressed && event.type == KeyEventType.KeyUp) {
                 // If no music is being played, we do nothing
-                if (mainState.value !is PlaybackManagerState.Data) return@launch
+                if (currentState == PlayedListState.Cached) return@launch
 
-                when(event.key) {
+                when (event.key) {
                     Key.P -> togglePlayPause()
                     Key.B, Key.DirectionLeft -> previous()
                     Key.N, Key.DirectionRight -> next()
-                    else -> { /*no-op*/ }
+                    else -> { /*no-op*/
+                    }
                 }
             }
         }
@@ -232,8 +382,18 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
      * Play the next song in queue.
      */
     suspend fun next() {
-        playbackListManager.getNextMusic()?.let {
-            setAndPlayMusic(it)
+        val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
+        val size: Int = playerRepository.getSize().firstOrNull() ?: return
+
+        if (playerMode == PlayerMode.Loop || size == 1) {
+            val currentMusicId: UUID =
+                playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
+
+            player.seekToPosition(0)
+            playerRepository.setPlayedListState(PlayedListState.Playing)
+            launchMusicCount(currentMusicId)
+        } else {
+            playerRepository.playNext()
         }
     }
 
@@ -241,131 +401,141 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
      * Play the previous song in queue.
      */
     suspend fun previous() {
-        (playbackListManager.state.first() as? PlaybackListState.Data)?.let { dataState ->
-            if (settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD) {
-                setAndPlayMusic(music = dataState.currentMusic)
-                updateNotification()
-            } else {
-                playbackListManager.getPreviousMusic()?.let {
-                    setAndPlayMusic(it)
-                }
-            }
+        val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
+        val size: Int = playerRepository.getSize().firstOrNull() ?: return
+        val shouldRewind =
+            settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD
+
+        if (shouldRewind || playerMode == PlayerMode.Loop || size == 1) {
+            val currentMusicId: UUID =
+                playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
+
+            player.seekToPosition(0)
+            updateNotification()
+            playerRepository.setPlayedListState(PlayedListState.Playing)
+            launchMusicCount(currentMusicId)
+        } else {
+            playerRepository.playPrevious()
         }
     }
-
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            settings.getFlowOn(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME).collectLatest { volume ->
-                player.setPlayerVolume(volume)
-            }
-        }
-    }
-
-    suspend fun getNextMusic(): Music? =
-        playbackListManager.getNextMusic()
-
-    suspend fun getPreviousMusic(): Music? =
-        playbackListManager.getPreviousMusic()
 
     private suspend fun skipAndRemoveCurrentSong() {
-        if (!playbackListManager.hasData()) return
-
-        playbackListManager.getNextMusic()?.let { nextMusic ->
-            playbackListManager.removeCurrentSongInAllLists()
-            if (!playbackListManager.hasData()) {
-                stopPlayback()
-            } else {
-                setAndPlayMusic(music = nextMusic)
-            }
-        }
+        playerRepository.removeCurrentAndPlayNext()
     }
 
     suspend fun setAndPlayMusic(music: Music) {
-        playbackProgressJob.setPosition(pos = 0)
-        playbackListManager.setAndPlayMusic(music)
+        playerRepository.setCurrent(music.musicId)
+        launchMusicCount(musicId = music.musicId)
     }
 
-    suspend fun updateMusic(music: Music) {
-        playbackListManager.updateMusic(music)
+    private fun launchMusicCount(musicId: UUID) {
+        updateMusicNbPlayedJob?.cancel()
+        updateMusicNbPlayedJob = workScope.launch {
+            delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
+            commonMusicUseCase.incrementNbPlayed(musicId = musicId)
+        }
     }
 
-    suspend fun changePlayerMode() {
-        playbackListManager.changePlayerMode()
+    suspend fun switchPlayerMode() {
+        playerRepository.switchPlayerMode()
     }
 
     suspend fun removeSongsFromPlayedPlaylist(musicIds: List<UUID>) {
-        playbackListManager.removeSongsFromPlayedPlaylist(musicIds = musicIds)
+        playerRepository.deleteAll(musicIds)
     }
 
     suspend fun addMusicToPlayNext(music: Music) {
-        playbackListManager.addMusicToList(
+        playerRepository.add(
             music = music,
-            mode = PlaybackListManager.AddMusicMode.Next,
+            mode = AddMusicMode.Next,
         )
     }
 
     suspend fun addMusicToQueue(music: Music) {
-        playbackListManager.addMusicToList(
+        playerRepository.add(
             music = music,
-            mode = PlaybackListManager.AddMusicMode.Queue,
+            mode = AddMusicMode.Queue,
         )
     }
 
     /**
      * Updates the played list after a reorder in it.
      */
-    suspend fun updatePlayedListAfterReorder(
-        newList: List<Music>
+    suspend fun moveMusic(
+        fromMusicId: UUID,
+        afterMusicId: UUID
     ) {
-        playbackListManager.updatePlayedListAfterReorder(newList = newList)
+        playerRepository.moveMusic(
+            fromMusicId = fromMusicId,
+            afterMusicId = afterMusicId,
+        )
     }
 
     suspend fun addMultipleMusicsToPlayNext(musics: List<Music>) {
-        playbackListManager.addMultipleMusicsToList(
+        playerRepository.addAll(
             musics = musics,
-            mode = PlaybackListManager.AddMusicMode.Next,
+            mode = AddMusicMode.Next,
         )
     }
 
     suspend fun addMultipleMusicsToQueue(musics: List<Music>) {
-        playbackListManager.addMultipleMusicsToList(
+        playerRepository.addAll(
             musics = musics,
-            mode = PlaybackListManager.AddMusicMode.Queue,
+            mode = AddMusicMode.Queue,
         )
     }
 
-    // TODO: Add flow to check for bottom sheet
-    fun isSameMusicAsCurrentPlayedOne(musicId: UUID): Boolean =
-        playbackListManager.isSameMusicAsCurrentPlayedOne(musicId = musicId)
+    suspend fun playShuffle(
+        musicList: List<Music>,
+        playlistId: String?,
+        isMain: Boolean,
+    ) {
+        if (musicList.isEmpty()) return
 
-    /**
-     * Update the cover of the current played music.
-     */
-    fun updateCover(cover: ImageBitmap?) {
-        _currentCoverState.value = cover
-    }
-
-    suspend fun playShuffle(musicList: List<Music>) {
-        playbackListManager.playShuffle(musicList = musicList)
+        playerRepository.setup(
+            playedListSetup = PlayedListSetup.fromSelection(
+                musics = musicList.shuffled(),
+                state = PlayedListState.Playing,
+                playlistId = playlistId,
+                isMain = isMain,
+            ),
+        )
     }
 
     suspend fun playSoulMix() {
-        playbackListManager.playSoulMix()
+        val totalByFolder: Int =
+            settings.get(SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST)
+
+        val musicList: List<Music> = commonMusicUseCase.getSoulMixMusics(totalByFolder)
+
+        if (musicList.isEmpty()) return
+
+        playerRepository.setup(
+            playedListSetup = PlayedListSetup.fromSelection(
+                musics = musicList,
+                state = PlayedListState.Playing,
+                isMain = false,
+                playlistId = null,
+            ),
+        )
     }
 
     suspend fun setCurrentPlaylistAndMusic(
         music: Music,
         musicList: List<Music>,
-        playlistId: UUID?,
+        playlistId: String?,
         isMainPlaylist: Boolean = false,
         isForcingNewPlaylist: Boolean = false
     ) {
-        playbackListManager.setCurrentPlaylistAndMusic(
-            music = music,
-            musicList = musicList,
-            playlistId = playlistId,
-            isMainPlaylist = isMainPlaylist,
-            isForcingNewPlaylist = isForcingNewPlaylist,
+        playerRepository.setup(
+            playedListSetup = PlayedListSetup(
+                musics = musicList,
+                selectedMusic = music,
+                listId = playlistId,
+                isMain = isMainPlaylist,
+                state = PlayedListState.Playing,
+                forceOverride = isForcingNewPlaylist
+            )
         )
     }
 
@@ -379,7 +549,16 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
         skipAndRemoveCurrentSong()
     }
 
+    override suspend fun onPause() {
+        pause()
+    }
+
+    override suspend fun onPlay() {
+        play()
+    }
+
     companion object {
         private const val REWIND_THRESHOLD: Long = 5_000
+        private const val WAIT_TIME_BEFORE_UPDATE_NB_PLAYED: Long = 3_000
     }
 }

@@ -69,8 +69,9 @@ class SelectedPlaylistViewModel(
     var state = combine(
         commonMusicUseCase.getPlaylistDuration(playlistId),
         commonPlaylistUseCase.getPlaylistPreview(playlistId),
-        searchResult
-    ) { duration, playlistPreview, searchMusics ->
+        searchResult,
+        playbackManager.getCachedPlaylist(playlistId.toString()),
+    ) { duration, playlistPreview, searchMusics, cachedPlaylist ->
         when {
             playlistPreview == null -> SelectedPlaylistState.Error
             else -> SelectedPlaylistState.Data(
@@ -78,6 +79,7 @@ class SelectedPlaylistViewModel(
                     musics = musics,
                     duration = duration,
                     searchMusics = searchMusics,
+                    cachedPlaylist = cachedPlaylist,
                 ),
             )
         }
@@ -144,7 +146,11 @@ class SelectedPlaylistViewModel(
 
             if (musics.isNotEmpty()) {
                 onUpdateNbPlayed()
-                playbackManager.playShuffle(musicList = musics)
+                playbackManager.playShuffle(
+                    musicList = musics,
+                    playlistId = playlistId.toString(),
+                    isMain = false,
+                )
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)
             }
         }
@@ -159,7 +165,7 @@ class SelectedPlaylistViewModel(
                 playbackManager.setCurrentPlaylistAndMusic(
                     music = music ?: musics.first(),
                     musicList = musics,
-                    playlistId = playlistId,
+                    playlistId = playlistId.toString(),
                     isMainPlaylist = false
                 )
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)
@@ -171,7 +177,21 @@ class SelectedPlaylistViewModel(
         _searchQuery.value = search
     }
 
+
     override fun showMusicBottomSheet(musicIds: List<UUID>) {
         _navigationState.value = SelectedPlaylistNavigationState.ToMusicBottomSheet(musicIds)
+    }
+
+    override fun continuePlayedList(playedListId: UUID) {
+        viewModelScope.launch {
+            playbackManager.continuePlayedList(playedListId)
+            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+        }
+    }
+
+    override fun deletePlayedList(playedListId: UUID) {
+        viewModelScope.launch {
+            playbackManager.deletePlayedList(playedListId)
+        }
     }
 }

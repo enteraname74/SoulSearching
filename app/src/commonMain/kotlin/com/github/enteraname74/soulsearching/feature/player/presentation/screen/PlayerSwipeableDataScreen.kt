@@ -2,14 +2,32 @@ package com.github.enteraname74.soulsearching.feature.player.presentation.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -19,19 +37,19 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
-import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.animated
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils.MaxPlayerSidePanelWidth
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils.MinPlayerSidePanelWidth
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
-import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMinimisedMainInfo
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMusicCover
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerTopInformation
@@ -60,7 +78,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
     previous: () -> Unit,
     togglePlayPause: () -> Unit,
     next: () -> Unit,
-    updateCover: (ImageBitmap?) -> Unit,
     onActivateRemoteLyrics: () -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
@@ -74,18 +91,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
         } else {
             SoulSearchingColorTheme.colorScheme.secondary
         }.animated(label = PlayerUiUtils.PLAYER_BACKGROUND_COLOR_LABEL)
-
-    var bitmap: ImageBitmap? by remember {
-        mutableStateOf(null)
-    }
-
-    val onCoverLoaded: (ImageBitmap?) -> Unit = {
-        bitmap = it
-    }
-
-    LaunchedEffect(bitmap) {
-        updateCover(bitmap)
-    }
 
     Box(
         modifier = Modifier
@@ -105,7 +110,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
     ) {
 
         val imageSize = PlayerUiUtils.getImageSize()
-        var playerTopInformationHeight by rememberSaveable { mutableStateOf(0) }
+        var playerTopInformationHeight by rememberSaveable { mutableIntStateOf(0) }
 
 
         AnimatedVisibility(
@@ -170,6 +175,10 @@ fun BoxScope.PlayerSwipeableDataScreen(
             val controlsBoxWidth = playerControlsWidth + (imageHorizontalPadding * 2)
 
             PlayerMusicCover(
+                modifier = Modifier
+                    .padding(
+                        start = UiConstants.Spacing.small * (1 - alphaTransition)
+                    ),
                 imageSize = imageSize,
                 horizontalPadding = imageHorizontalPadding,
                 topPadding = imageTopPadding,
@@ -178,7 +187,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 },
                 canSwipeCover = settingsState.canSwipeCover,
                 aroundSongs = state.aroundSongs,
-                onCoverLoaded = onCoverLoaded,
                 currentMusic = state.currentMusic,
             )
 

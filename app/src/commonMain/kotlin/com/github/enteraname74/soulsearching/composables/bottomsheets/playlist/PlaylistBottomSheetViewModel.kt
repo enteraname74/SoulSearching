@@ -19,7 +19,6 @@ import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -43,20 +42,19 @@ class PlaylistBottomSheetViewModel(
 
     val state: StateFlow<PlaylistBottomSheetState> = combine(
         commonPlaylistUseCase.getFromIds(playlistIds),
-        playbackManager.mainState,
+        playbackManager.playedList,
         dialogState,
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
         )
-    ) { playlists, playbackState, dialogState, isQuickAccessShown ->
+    ) { playlists, playedList, dialogState, isQuickAccessShown ->
         PlaylistBottomSheetState(
             playlists = playlists,
             bottomSheetTopInformation = buildTopInformation(playlists),
             rowSpecs = buildRowSpecs(
                 playlists = playlists,
                 isQuickAccessShown = isQuickAccessShown,
-                playedList = (playbackState as? PlaybackManagerState.Data)?.playedList
-                    ?: emptyList(),
+                playedList = playedList,
             ),
             dialogState = dialogState
         )

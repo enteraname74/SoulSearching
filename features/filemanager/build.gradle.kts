@@ -32,6 +32,7 @@ kotlin {
             implementation(libs.compose.resources)
             implementation(libs.koin.core)
             implementation(libs.jaudiotagger)
+
             implementation(libs.coroutines.core)
             implementation(libs.coroutines.core.jvm)
 

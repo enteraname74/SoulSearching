@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.feature.settings.aboutpage.developers
 
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalUriHandler
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_open_in_new
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -45,7 +45,7 @@ private fun SettingsDevelopersScreenView(
                         uri = developer.link,
                     )
                 },
-                trailIcon = Icons.AutoMirrored.Rounded.OpenInNew,
+                trailIcon = CoreRes.drawable.ic_open_in_new,
             )
         }
     }

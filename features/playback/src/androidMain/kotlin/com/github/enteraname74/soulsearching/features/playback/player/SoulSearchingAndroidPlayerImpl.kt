@@ -20,7 +20,7 @@ import java.io.File
  * Implementation of the SoulSearchingAndroidPlayer
  */
 class SoulSearchingAndroidPlayerImpl(
-    private val context: Context,
+    context: Context,
 ) :
     SoulSearchingPlayer,
     MediaPlayer.OnCompletionListener,
@@ -85,13 +85,10 @@ class SoulSearchingAndroidPlayerImpl(
         launchMusic()
     }
 
-    override fun isPlaying(): Boolean {
-        return try {
+    override fun isPlaying(): Boolean? =
+        runCatching {
             player.isPlaying
-        } catch (e: IllegalStateException) {
-            false
-        }
-    }
+        }.getOrNull()
 
     override fun launchMusic() {
         try {
@@ -108,6 +105,11 @@ class SoulSearchingAndroidPlayerImpl(
         when (audioManager.requestAudioFocus()) {
             AudioManager.AUDIOFOCUS_GAIN -> {
                 try {
+                    /*
+                    Sometimes the player has a correct currentPosition but the real position is not the same,
+                    we will align both with this.
+                     */
+                    player.seekTo(player.currentPosition)
                     player.start()
                     _state.value = true
                 } catch (_: IllegalStateException) {
@@ -132,11 +134,9 @@ class SoulSearchingAndroidPlayerImpl(
         }
     }
 
-    override fun seekToPosition(position: Int) {
-        try {
-            player.seekTo(position)
-        } catch (_: IllegalStateException) {
-
+    override fun seekToPosition(millis: Int) {
+        runCatching {
+            player.seekTo(millis)
         }
     }
 
@@ -144,10 +144,10 @@ class SoulSearchingAndroidPlayerImpl(
         pause()
     }
 
-    override fun getMusicPosition(): Int {
+    override fun getProgress(): Int {
         return try {
             player.currentPosition
-        } catch (e: IllegalStateException) {
+        } catch (_: IllegalStateException) {
             0
         }
     }
@@ -207,9 +207,11 @@ class SoulSearchingAndroidPlayerImpl(
 
     override fun onPlay() {
         play()
+        runBlocking { listener?.onPlay() }
     }
 
     override fun onPause() {
         pause()
+        runBlocking { listener?.onPause() }
     }
 }

@@ -54,19 +54,19 @@ class MusicBottomSheetViewModel(
 
     val state: StateFlow<MusicBottomSheetState> = combine(
         commonMusicUseCase.getFromIds(musicIds),
-        playbackManager.mainState,
+        playbackManager.playedList,
+        playbackManager.state,
         dialogState,
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
         )
-    ) { musics, playbackState, dialogState, isQuickAccessShown ->
+    ) { musics, playedList, playbackState, dialogState, isQuickAccessShown ->
         MusicBottomSheetState(
             musics = musics,
             bottomSheetTopInformation = buildTopInformation(musics),
             rowSpecs = buildRowSpecs(
                 musics = musics,
-                playedList = (playbackState as? PlaybackManagerState.Data)?.playedList
-                    ?: emptyList(),
+                playedList = playedList,
                 currentPlayedMusic = (playbackState as? PlaybackManagerState.Data)?.currentMusic,
                 isQuickAccessShown = isQuickAccessShown,
             ),

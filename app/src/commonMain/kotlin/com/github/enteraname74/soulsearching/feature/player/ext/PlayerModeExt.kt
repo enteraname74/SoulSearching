@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.player.ext
 
-import com.github.enteraname74.domain.model.PlayerMode
+import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_repeat
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_repeat_one

@@ -2,9 +2,13 @@ package com.github.enteraname74.localdb
 
 import androidx.room.*
 import com.github.enteraname74.domain.util.LocalDatabaseVersion
-import com.github.enteraname74.localdb.converters.Converters
+import com.github.enteraname74.localdb.converters.LocalDateTimeConverters
 import com.github.enteraname74.localdb.dao.*
 import com.github.enteraname74.localdb.model.*
+import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
+import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
+import com.github.enteraname74.localdb.model.player.RoomPlayerPlayedList
+import com.github.enteraname74.localdb.view.CurrentPlayerMusicsView
 
 
 @Database(
@@ -17,9 +21,12 @@ import com.github.enteraname74.localdb.model.*
         RoomMusicPlaylist::class,
         RoomMusicArtist::class,
         RoomPlayerMusic::class,
+        RoomPlayerMusicProgress::class,
+        RoomPlayerPlayedList::class,
         RoomFolder::class
     ],
     views = [
+        CurrentPlayerMusicsView::class,
         RoomMusicFolderPreview::class,
         RoomMonthMusicPreview::class,
         RoomAlbumPreview::class,
@@ -28,7 +35,7 @@ import com.github.enteraname74.localdb.model.*
     ]
 )
 @ConstructedBy(AppDatabaseConstructor::class)
-@TypeConverters(Converters::class)
+@TypeConverters(LocalDateTimeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract val musicDao: MusicDao
     abstract val playlistDao: PlaylistDao
@@ -37,8 +44,10 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val musicPlaylistDao: MusicPlaylistDao
     abstract val musicArtistDao: MusicArtistDao
     abstract val playerMusicDao: PlayerMusicDao
+    abstract val playerPlayedListDao: PlayerPlayedListDao
     abstract val folderDao: FolderDao
     abstract val coverDao: CoverDao
+    abstract val playerMusicProgressDao: PlayerMusicProgressDao
 }
 
 // The Room compiler generates the `actual` implementations.

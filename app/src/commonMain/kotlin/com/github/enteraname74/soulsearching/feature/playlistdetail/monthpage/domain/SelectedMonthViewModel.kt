@@ -68,8 +68,9 @@ class SelectedMonthViewModel(
         combine(
             commonMusicUseCase.getMonthMusicPreview(month = month),
             commonMusicUseCase.getMonthMusicsDuration(month),
-            searchResult
-        ) { monthMusicPreview, duration, searchMusics ->
+            searchResult,
+            playbackManager.getCachedPlaylist(month),
+        ) { monthMusicPreview, duration, searchMusics, cachedPlaylist ->
         when {
             monthMusicPreview == null -> SelectedMonthState.Error
             else -> SelectedMonthState.Data(
@@ -77,6 +78,7 @@ class SelectedMonthViewModel(
                     musics = musics,
                     duration = duration,
                     searchMusics = searchMusics,
+                    cachedPlaylist = cachedPlaylist,
                 ),
             )
         }
@@ -135,7 +137,11 @@ class SelectedMonthViewModel(
 
             if (musics.isNotEmpty()) {
                 onUpdateNbPlayed()
-                playbackManager.playShuffle(musicList = musics)
+                playbackManager.playShuffle(
+                    musicList = musics,
+                    playlistId = month,
+                    isMain = false,
+                )
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)
             }
         }
@@ -150,7 +156,7 @@ class SelectedMonthViewModel(
                 playbackManager.setCurrentPlaylistAndMusic(
                     music = music ?:  musics.first(),
                     musicList = musics,
-                    playlistId = null,
+                    playlistId = month,
                     isMainPlaylist = false
                 )
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)
@@ -164,5 +170,18 @@ class SelectedMonthViewModel(
 
     override fun showMusicBottomSheet(musicIds: List<UUID>) {
         _navigationState.value = SelectedMonthNavigationState.ToMusicBottomSheet(musicIds)
+    }
+
+    override fun continuePlayedList(playedListId: UUID) {
+        viewModelScope.launch {
+            playbackManager.continuePlayedList(playedListId)
+            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+        }
+    }
+
+    override fun deletePlayedList(playedListId: UUID) {
+        viewModelScope.launch {
+            playbackManager.deletePlayedList(playedListId)
+        }
     }
 }

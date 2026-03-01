@@ -1,14 +1,15 @@
-package com.github.enteraname74.soulsearching.features.playback.progressjob
+package com.github.enteraname74.soulsearching.features.playback.progressJob
 
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.repository.PlayerRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 internal class PlaybackProgressJob(
-    private val settings: SoulSearchingSettings,
+    private val playerRepository: PlayerRepository,
     private val callback: PlaybackProgressJobCallbacks,
 ) {
     /**
@@ -32,10 +33,7 @@ internal class PlaybackProgressJob(
                 delay(DELAY_BEFORE_SENDING_VALUE)
                 val position = callback.getMusicPosition()
                 _state.value = position
-                settings.set(
-                    key = SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_POSITION_KEY.key,
-                    value = position,
-                )
+                playerRepository.setProgress(position)
             }
         }
     }
@@ -55,4 +53,9 @@ internal class PlaybackProgressJob(
     companion object {
         private const val DELAY_BEFORE_SENDING_VALUE: Long = 200L
     }
+}
+
+interface PlaybackProgressJobCallbacks {
+    fun isPlaying(): Boolean
+    fun getMusicPosition(): Int
 }

@@ -8,7 +8,7 @@ import com.github.enteraname74.localdb.datasourceimpl.RoomFolderDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicArtistDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicPlaylistDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomPlayerMusicDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomPlayerDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomPlaylistDataSourceImpl
 import com.github.enteraname74.localdb.migration.EndMigrationCallback
 import com.github.enteraname74.localdb.migration.Migration16To17
@@ -21,7 +21,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.FolderDataSou
 import com.github.enteraname74.soulsearching.repository.datasource.MusicArtistDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.MusicPlaylistDataSource
-import com.github.enteraname74.soulsearching.repository.datasource.PlayerMusicDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.PlayerDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +73,7 @@ val localModule: Module = module {
     singleOf(::RoomMusicArtistDataSourceImpl) bind MusicArtistDataSource::class
     singleOf(::RoomMusicDataSourceImpl) bind MusicDataSource::class
     singleOf(::RoomMusicPlaylistDataSourceImpl) bind MusicPlaylistDataSource::class
-    singleOf(::RoomPlayerMusicDataSourceImpl) bind PlayerMusicDataSource::class
+    singleOf(::RoomPlayerDataSourceImpl) bind PlayerDataSource::class
     singleOf(::RoomPlaylistDataSourceImpl) bind PlaylistDataSource::class
     singleOf(::RoomCoverDataSourceImpl) bind CoverDataSource::class
 }

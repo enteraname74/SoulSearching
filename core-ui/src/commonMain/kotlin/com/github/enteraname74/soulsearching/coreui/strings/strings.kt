@@ -318,6 +318,9 @@ interface Strings {
     val elementDetailTitles: String
     val and: String
 
+    val continuePlayedListTitle: String
+    val continuePlayedListAction: String
+
     /**
      * Shows a text indicating the number of musics.
      */

@@ -15,4 +15,6 @@ interface PlaylistDetailListener {
     fun onPlayClicked(music: Music? = null)
     fun onSearch(search: String)
     fun showMusicBottomSheet(musicIds: List<UUID>)
+    fun continuePlayedList(playedListId: UUID)
+    fun deletePlayedList(playedListId: UUID)
 }

@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.application
 
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,14 +15,11 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.Art
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
-import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
-import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionScaffold
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionNavigationState
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.navigation.MainAppNavigationHandler
 import com.github.enteraname74.soulsearching.navigation.MainAppSerializerModule
 import com.github.enteraname74.soulsearching.navigation.Navigator
@@ -43,9 +39,7 @@ data object MainAppDestination : NavKey {
 }
 
 @Composable
-private fun MainAppRoute(
-    playbackManager: PlaybackManager = injectElement(),
-) {
+private fun MainAppRoute() {
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration { serializersModule = MainAppSerializerModule },
         MainPageDestination,
@@ -56,10 +50,6 @@ private fun MainAppRoute(
         parametersOf(navigator)
     }
     val state: MainAppState by viewModel.state.collectAsStateWithLifecycle()
-
-    LaunchInit {
-        playbackManager.initFromSavedData()
-    }
 
     Row {
         val windowSize = rememberWindowSize()

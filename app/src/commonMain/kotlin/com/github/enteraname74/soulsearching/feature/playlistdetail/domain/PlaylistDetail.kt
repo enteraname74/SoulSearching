@@ -5,13 +5,11 @@ import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.MonthMusicList
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicFolderList
 import com.github.enteraname74.domain.model.MusicFolderPreview
 import com.github.enteraname74.domain.model.PlaylistPreview
-import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +18,7 @@ import kotlin.time.Duration
 
 data class PlaylistDetail(
     val id: UUID?,
+    val cachedPlaylist: PlayedListToContinue?,
     val type: PlaylistDetailType,
     val title: String,
     val subTitle: String,
@@ -42,6 +41,7 @@ fun PlaylistPreview.toPlaylistDetail(
     musics: Flow<PagingData<Music>>,
     duration: Duration,
     searchMusics: List<Music>,
+    cachedPlaylist: PlayedListToContinue?,
 ): PlaylistDetail =
     PlaylistDetail(
         id = this.id,
@@ -53,6 +53,7 @@ fun PlaylistPreview.toPlaylistDetail(
         duration = duration,
         searchMusics = searchMusics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
+        cachedPlaylist = cachedPlaylist,
     )
 
 fun AlbumPreview.toPlaylistDetail(
@@ -60,6 +61,7 @@ fun AlbumPreview.toPlaylistDetail(
     musics: Flow<PagingData<Music>>,
     duration: Duration,
     searchMusics: List<Music>,
+    cachedPlaylist: PlayedListToContinue?,
 ): PlaylistDetail =
     PlaylistDetail(
         id = this.id,
@@ -70,6 +72,7 @@ fun AlbumPreview.toPlaylistDetail(
         musics = musics,
         duration = duration,
         searchMusics = searchMusics,
+        cachedPlaylist = cachedPlaylist,
         musicItemLeadingSpec = { musicPosition ->
             if (shouldShowTrackPosition) {
                 MusicItemLeadingSpec.Position(pos = musicPosition)
@@ -83,6 +86,7 @@ fun ArtistPreview.toPlaylistDetail(
     musics: Flow<PagingData<Music>>,
     duration: Duration,
     searchMusics: List<Music>,
+    cachedPlaylist: PlayedListToContinue?,
 ): PlaylistDetail =
     PlaylistDetail(
         id = this.id,
@@ -94,12 +98,14 @@ fun ArtistPreview.toPlaylistDetail(
         duration = duration,
         searchMusics = searchMusics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
+        cachedPlaylist = cachedPlaylist,
     )
 
 fun MonthMusicsPreview.toPlaylistDetail(
     musics: Flow<PagingData<Music>>,
     duration: Duration,
     searchMusics: List<Music>,
+    cachedPlaylist: PlayedListToContinue?,
 ): PlaylistDetail =
     PlaylistDetail(
         id = null,
@@ -111,12 +117,14 @@ fun MonthMusicsPreview.toPlaylistDetail(
         duration = duration,
         searchMusics = searchMusics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
+        cachedPlaylist = cachedPlaylist,
     )
 
 fun MusicFolderPreview.toPlaylistDetail(
     musics: Flow<PagingData<Music>>,
     duration: Duration,
     searchMusics: List<Music>,
+    cachedPlaylist: PlayedListToContinue?,
 ): PlaylistDetail =
     PlaylistDetail(
         id = null,
@@ -128,4 +136,5 @@ fun MusicFolderPreview.toPlaylistDetail(
         duration = duration,
         searchMusics = searchMusics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
+        cachedPlaylist = cachedPlaylist,
     )

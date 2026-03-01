@@ -192,16 +192,6 @@ fun PlayerDraggableView(
                             }
                         }
                     }
-
-                    LaunchedEffect(playerViewManager.currentValue) {
-                        if (playerViewManager.currentValue != BottomSheetStates.COLLAPSED) {
-                            coroutineScope.launch {
-                                playerViewManager.animateTo(
-                                    newState = BottomSheetStates.COLLAPSED
-                                )
-                            }
-                        }
-                    }
                 }
 
                 is PlayerViewState.Data -> {
@@ -229,7 +219,6 @@ fun PlayerDraggableView(
                         changePlayerMode = playerViewModel::changePlayerMode,
                         previous = playerViewModel::previous,
                         next = playerViewModel::next,
-                        updateCover = playerViewModel::setCurrentMusicCover,
                         togglePlayPause = playerViewModel::togglePlayPause,
                         currentMusicProgression = currentMusicProgressionState,
                         settingsState = settingsState,
@@ -239,33 +228,20 @@ fun PlayerDraggableView(
                                 mode = SelectionMode.Music,
                             )
                         },
-                        multiSelectionState = multiSelectionState,
                         closeSelection = {
                             playerViewModel.multiSelectionManager.clearMultiSelection()
                         },
+                        multiSelectionState = multiSelectionState,
                         onActivateRemoteLyrics = playerViewModel::navigateToRemoteLyricsSettings,
                     )
 
                     /*
-                    If the previous state was expanded/minimised and the current one is collapsed,
-                    then it indicates that the playback should stop (user action for example).
-                     */
+                        If the previous state was expanded/minimised and the current one is collapsed,
+                        then it indicates that the playback should stop (user action for example).
+                         */
                     if ((previousDraggableState != BottomSheetStates.COLLAPSED && previousDraggableState != null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
                         LaunchedEffect(Unit) {
                             playerViewModel.stopPlayback()
-                        }
-                    } else if ((previousDraggableState == BottomSheetStates.COLLAPSED || previousDraggableState == null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
-                        // In this case, the playback is on but the view has not been shown
-                        LaunchedEffect(Unit) {
-                            coroutineScope.launch {
-                                playerViewManager.animateTo(
-                                    if ((state as PlayerViewState.Data).initPlayerWithMinimiseView) {
-                                        BottomSheetStates.MINIMISED
-                                    } else {
-                                        BottomSheetStates.EXPANDED
-                                    }
-                                )
-                            }
                         }
                     }
                 }
@@ -273,3 +249,4 @@ fun PlayerDraggableView(
         }
     }
 }
+
