@@ -31,18 +31,20 @@ abstract class MusicFetcher : KoinComponent {
     suspend fun cacheSelectedMusics(
         musics: List<Music>,
         onSongSaved: (progress: Float) -> Unit,
-    ) {
+    ): List<Music> {
         optimizedCachedData = OptimizedCachedData.fromDb()
+        val musicsToSave: MutableSet<Music> = mutableSetOf()
         musics.forEachIndexed { index, music ->
             cacheMusic(
                 musicToAdd = music,
-                onSongSaved = {
-                    onSongSaved(
-                        (index.toFloat() / musics.size)
-                    )
+                onSongSaved = { music ->
+                    onSongSaved((index.toFloat() / musics.size))
+                    musicsToSave.add(music)
                 },
             )
         }
+
+        return musicsToSave.toList()
     }
 
     /**
@@ -50,7 +52,7 @@ abstract class MusicFetcher : KoinComponent {
      */
     protected fun cacheMusic(
         musicToAdd: Music,
-        onSongSaved: () -> Unit = {},
+        onSongSaved: (Music) -> Unit = {},
     ) {
         // If the song has already been saved once, we do nothing.
         if (optimizedCachedData.musicsByPath[musicToAdd.path] != null) return
@@ -60,9 +62,10 @@ abstract class MusicFetcher : KoinComponent {
         If that is the case, we replace the musicToAdd's artist with the existing one to avoid duplicates of a same artist.
          */
         val updatedListOfArtist: List<Artist> = musicToAdd.artists.map { artist ->
-            val existingArtist = optimizedCachedData.musicsByPath.values.firstNotNullOfOrNull { music ->
-                music.artists.find { it.artistName == artist.artistName }
-            }
+            val existingArtist =
+                optimizedCachedData.musicsByPath.values.firstNotNullOfOrNull { music ->
+                    music.artists.find { it.artistName == artist.artistName }
+                }
             existingArtist ?: artist
         }
         val updatedAlbum: Album = optimizedCachedData.musicsByPath.values.find { music ->
@@ -70,11 +73,17 @@ abstract class MusicFetcher : KoinComponent {
                     && music.album.artist.artistName == musicToAdd.album.artist.artistName
         }?.album ?: musicToAdd.album.copy(artist = updatedListOfArtist.first())
 
-        optimizedCachedData.musicsByPath[musicToAdd.path] = musicToAdd.copy(
+        /*
+        We add the new music to the optimized cached data,
+        as we may use information from this music for the following songs to save (artist, albums,...)
+        to ensure no duplicate are created (artists, albums,...)
+         */
+        val fixedMusic = musicToAdd.copy(
             album = updatedAlbum,
             artists = updatedListOfArtist,
         )
+        optimizedCachedData.musicsByPath[fixedMusic.path] = fixedMusic
 
-        onSongSaved()
+        onSongSaved(fixedMusic)
     }
 }

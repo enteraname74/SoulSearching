@@ -35,11 +35,6 @@ interface ArtistDataSource {
      */
     fun getFromId(artistId: UUID) : Flow<Artist?>
 
-    /**
-     * Retrieves a flow of all Artist, sorted by name asc.
-     */
-    fun getAll(): Flow<List<Artist>>
-
     fun getAllPaged(): Flow<PagingData<ArtistPreview>>
 
     /**
@@ -75,4 +70,6 @@ interface ArtistDataSource {
     fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?>
 
     fun searchAll(search: String): Flow<List<ArtistPreview>>
+
+    suspend fun getPotentialMultipleArtists(): List<Artist>
 }

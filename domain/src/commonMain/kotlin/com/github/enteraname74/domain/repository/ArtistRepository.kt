@@ -39,12 +39,6 @@ interface ArtistRepository {
 
     suspend fun toggleCoverFolderMode(isActivated: Boolean)
 
-    /**
-     * Retrieves a flow of all Artist.
-     */
-    @Deprecated("Avoid fetching all artist from DB because of performance issue")
-    fun getAll(): Flow<List<Artist>>
-
     fun getAllPaged(): Flow<PagingData<ArtistPreview>>
 
     /**
@@ -73,4 +67,6 @@ interface ArtistRepository {
     fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?>
 
     fun searchAll(search: String): Flow<List<ArtistPreview>>
+
+    suspend fun getPotentialMultipleArtists(): List<Artist>
 }

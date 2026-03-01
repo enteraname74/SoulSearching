@@ -6,7 +6,7 @@ import com.github.enteraname74.soulsearching.shareddi.mainModule
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.MultipleArtistListener
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddNewsSongsStepManager
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -25,7 +25,7 @@ val appModule: Module = module {
     singleOf(::PlayerViewManager)
     singleOf(::LoadingManager)
     singleOf(::PlayerMusicListViewManager)
-    singleOf(::MultipleArtistListener)
+    singleOf(::AddNewsSongsStepManager)
 
     factoryOf(::MultiSelectionManagerImpl) bind MultiSelectionManager::class
 

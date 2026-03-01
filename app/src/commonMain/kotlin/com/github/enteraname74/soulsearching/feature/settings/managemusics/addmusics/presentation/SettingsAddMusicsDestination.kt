@@ -12,40 +12,36 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parameterSetOf
 
 @Serializable
-data class SettingsAddMusicsDestination(
-    val shouldShowSaveScreen: Boolean,
-) : SettingPage {
-    companion object {
-        fun register(
-            entryProviderScope: EntryProviderScope<NavKey>,
-            navigator: Navigator,
-        ) {
-            entryProviderScope.entry<SettingsAddMusicsDestination> { key ->
-                SettingsAddMusicsRoute(
-                    viewModel = koinViewModel { parameterSetOf(key) },
-                    onNavigationState = { navigationState ->
-                        when (navigationState) {
-                            SettingsAddMusicsNavigationState.Idle -> {
-                                /*no-op*/
-                            }
+data object SettingsAddMusicsDestination : SettingPage {
+    fun register(
+        entryProviderScope: EntryProviderScope<NavKey>,
+        navigator: Navigator,
+    ) {
+        entryProviderScope.entry<SettingsAddMusicsDestination> { key ->
+            SettingsAddMusicsRoute(
+                viewModel = koinViewModel { parameterSetOf(key) },
+                onNavigationState = { navigationState ->
+                    when (navigationState) {
+                        SettingsAddMusicsNavigationState.Idle -> {
+                            /*no-op*/
+                        }
 
-                            is SettingsAddMusicsNavigationState.NavigateBack -> {
-                                navigator.goBack()
-                            }
+                        is SettingsAddMusicsNavigationState.NavigateBack -> {
+                            navigator.goBack()
+                        }
 
-                            is SettingsAddMusicsNavigationState.ToMultipleArtists -> {
-                                navigator.navigate(
-                                    MultipleArtistsChoiceDestination(
-                                        mode = MultipleArtistsChoiceMode.NewSongs(
-                                            multipleArtists = navigationState.multipleArtists
-                                        )
+                        is SettingsAddMusicsNavigationState.ToMultipleArtists -> {
+                            navigator.navigate(
+                                MultipleArtistsChoiceDestination(
+                                    mode = MultipleArtistsChoiceMode.NewSongs(
+                                        multipleArtists = navigationState.multipleArtists
                                     )
                                 )
-                            }
+                            )
                         }
                     }
-                )
-            }
+                }
+            )
         }
     }
 }
