@@ -31,8 +31,6 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.model.ElementsVisibility
-import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
@@ -58,6 +56,7 @@ import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMod
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
+import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -84,12 +83,12 @@ import java.util.UUID
 
 @Suppress("Deprecation")
 class MainPageViewModel(
-    viewSettingsManager: ViewSettingsManager,
+    getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
     private val multiSelectionManager: MultiSelectionManager,
-    getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
+    private val tabManager: TabManager,
 ) : ViewModel(), KoinComponent,
     SortingInformationDelegate by sortingInformationDelegateImpl {
 
@@ -122,19 +121,22 @@ class MainPageViewModel(
             initialValue = MultiSelectionState(emptyList())
         )
 
-    private var _currentPage: MutableStateFlow<ElementEnum?> = MutableStateFlow(null)
-    val currentPage: StateFlow<ElementEnum?> = _currentPage.asStateFlow()
+    val currentPage: StateFlow<ElementEnum?> = tabManager.currentPage
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val tabs: StateFlow<List<PagerScreen>> =
-        viewSettingsManager.visibleElements.mapLatest { elementsVisibility ->
-            val elementEnums = buildListOfElementEnums(elementsVisibility = elementsVisibility)
-            buildTabs(elements = elementEnums)
-        }.stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
-            started = SharingStarted.Lazily,
-            initialValue = emptyList()
-        )
+    val tabs: StateFlow<List<PagerScreen>> = tabManager.tabs.mapLatest {
+        buildTabs(elements = it)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = emptyList()
+    )
+    val initialPage: Int = tabManager.initialPage
 
     val isUsingVerticalAccessBar: StateFlow<Boolean> = settings.getFlowOn(
         SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR,
@@ -344,7 +346,7 @@ class MainPageViewModel(
     }
 
     fun setCurrentPage(page: ElementEnum) {
-        _currentPage.value = page
+        tabManager.setCurrentPage(page)
     }
 
     /**
@@ -437,17 +439,6 @@ class MainPageViewModel(
                 )
             }
         }
-    }
-
-    private fun buildListOfElementEnums(
-        elementsVisibility: ElementsVisibility,
-    ): List<ElementEnum> = buildList {
-        if (elementsVisibility.isQuickAccessShown) add(ElementEnum.QUICK_ACCESS)
-        add(ElementEnum.MUSICS)
-        if (elementsVisibility.arePlaylistsShown) add(ElementEnum.PLAYLISTS)
-        if (elementsVisibility.areAlbumsShown) add(ElementEnum.ALBUMS)
-        if (elementsVisibility.areArtistsShown) add(ElementEnum.ARTISTS)
-        if (elementsVisibility.areMusicFoldersShown) add(ElementEnum.FOLDERS)
     }
 
     private fun buildTabs(elements: List<ElementEnum>): List<PagerScreen> = buildList {

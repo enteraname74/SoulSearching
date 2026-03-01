@@ -25,7 +25,6 @@ class CoverRetriever(
                     else -> null
                 }
             }
-            else -> null
         }
 
     suspend fun getAllUniqueCover(covers: List<Cover>): List<ByteArray> =

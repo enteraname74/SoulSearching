@@ -14,7 +14,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import org.jetbrains.compose.resources.DrawableResource
 
-fun ElementEnum.navigationFilledIcon(): DrawableResource =
+fun ElementEnum.filledIcon(): DrawableResource =
     when (this) {
         ElementEnum.QUICK_ACCESS -> CoreRes.drawable.ic_quick_access_filled
         ElementEnum.PLAYLISTS -> CoreRes.drawable.ic_queue_music
@@ -25,7 +25,7 @@ fun ElementEnum.navigationFilledIcon(): DrawableResource =
     }
 
 // TODO ICONS: Find a way to have outlined icons of missing ones
-fun ElementEnum.navigationOutlinedIcon(): DrawableResource =
+fun ElementEnum.outlinedIcon(): DrawableResource =
     when (this) {
         ElementEnum.QUICK_ACCESS -> CoreRes.drawable.ic_quick_access_filled
         ElementEnum.PLAYLISTS -> CoreRes.drawable.ic_queue_music
@@ -35,7 +35,7 @@ fun ElementEnum.navigationOutlinedIcon(): DrawableResource =
         ElementEnum.FOLDERS -> CoreRes.drawable.ic_folder
     }
 
-fun ElementEnum.navigationTitle(): String =
+fun ElementEnum.text(): String =
     when (this) {
         ElementEnum.QUICK_ACCESS -> strings.quickAccess
         ElementEnum.PLAYLISTS -> strings.playlists

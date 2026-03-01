@@ -23,18 +23,18 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":domain"))
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.components.resources)
-            implementation(compose.ui)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.resources)
+            implementation(libs.compose.ui)
             implementation(libs.androidx.annotation)
 
             implementation(libs.kmpalette)
 
             implementation(libs.markdown.renderer.core)
             implementation(libs.markdown.renderer.m3)
+
+            implementation(project(":domain"))
         }
 
         androidMain.dependencies {

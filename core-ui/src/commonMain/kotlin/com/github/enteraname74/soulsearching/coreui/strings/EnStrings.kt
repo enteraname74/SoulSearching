@@ -236,6 +236,8 @@ object EnStrings : Strings {
     override val showMusicsByFolders = "Show songs by folders"
     override val showMusicsByMonths = "Show songs by months"
     override val showAlbumTrackNumber = "Show tracks number"
+    override val initialSectionTitle = "On launch section"
+    override val initialSectionText = "Select the initial section to show on app launch"
     override val useVerticalAccessBarTitle = "Use vertical access bar"
     override val useHorizontalAccessBarText = "Use horizontal access bar"
 
