@@ -31,7 +31,6 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
@@ -57,6 +56,7 @@ import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMod
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
+import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -80,16 +80,15 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
 import java.util.UUID
-import kotlin.math.max
 
 @Suppress("Deprecation")
 class MainPageViewModel(
-    viewSettingsManager: ViewSettingsManager,
+    getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
     private val multiSelectionManager: MultiSelectionManager,
-    getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
+    private val tabManager: TabManager,
 ) : ViewModel(), KoinComponent,
     SortingInformationDelegate by sortingInformationDelegateImpl {
 
@@ -122,20 +121,22 @@ class MainPageViewModel(
             initialValue = MultiSelectionState(emptyList())
         )
 
-    private var _currentPage: MutableStateFlow<ElementEnum?> = MutableStateFlow(null)
-    val currentPage: StateFlow<ElementEnum?> = _currentPage.asStateFlow()
+    val currentPage: StateFlow<ElementEnum?> = tabManager.currentPage
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val tabs: StateFlow<List<PagerScreen>> = viewSettingsManager.visibleElements.mapLatest { elementsVisibility ->
-        buildTabs(elements = elementsVisibility.toElementEnums())
+    val tabs: StateFlow<List<PagerScreen>> = tabManager.tabs.mapLatest {
+        buildTabs(elements = it)
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
         initialValue = emptyList()
     )
-
-    private var _initialPage: MutableStateFlow<Int?> = MutableStateFlow(null)
-    val initialPage: StateFlow<Int?> = _initialPage.asStateFlow()
+    val initialPage: Int = tabManager.initialPage
 
     val isUsingVerticalAccessBar: StateFlow<Boolean> = settings.getFlowOn(
         SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR,
@@ -292,16 +293,6 @@ class MainPageViewModel(
     private var cleanMusicsLaunched: Boolean = false
 
     init {
-        // TODO: move to manager
-        val savedInitial: ElementEnum? = ElementEnum.fromRaw(
-            settings.get(ElementEnum.INITIAL_TAB_SETTINGS_KEY)
-        )
-
-        val tabs = viewSettingsManager.getElementVisibility().toElementEnums()
-        _initialPage.value = savedInitial?.let {
-            max(tabs.indexOf(savedInitial), 0)
-        } ?: 0
-
         if (!cleanMusicsLaunched) {
             coroutineScope.launch {
                 cleanMusicsLaunched = true
@@ -357,7 +348,7 @@ class MainPageViewModel(
     }
 
     fun setCurrentPage(page: ElementEnum) {
-        _currentPage.value = page
+        tabManager.setCurrentPage(page)
     }
 
     /**

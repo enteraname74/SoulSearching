@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
@@ -59,7 +60,6 @@ fun MainPageRoute(
     val searchAllState: SearchAllState by mainPageViewModel.searchAllState.collectAsStateWithLifecycle()
 
     val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsStateWithLifecycle()
-    val initialPage: Int? by mainPageViewModel.initialPage.collectAsStateWithLifecycle()
     val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsStateWithLifecycle()
     val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsStateWithLifecycle()
     val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsStateWithLifecycle()
@@ -91,7 +91,6 @@ fun MainPageRoute(
         isUsingVerticalAccessBar = isUsingVerticalAccessBar,
         shouldShowNewVersionPin = shouldShowNewVersionPin,
         searchAllState = searchAllState,
-        initialPage = initialPage,
     )
 }
 
@@ -106,11 +105,10 @@ fun MainPageScreenView(
     shouldShowNewVersionPin: Boolean,
     currentEnumPage: ElementEnum?,
     isUsingVerticalAccessBar: Boolean,
-    initialPage: Int?
 ) {
     val pagerState = rememberPagerState(
         pageCount = { tabs.size },
-        initialPage = initialPage?.takeIf { it < tabs.size } ?: 0
+        initialPage = mainPageViewModel.initialPage,
     )
 
     LaunchedEffect(currentEnumPage) {

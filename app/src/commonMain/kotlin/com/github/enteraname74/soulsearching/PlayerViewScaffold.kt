@@ -26,12 +26,13 @@ import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsA
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PlayerViewScaffold(
-    playerViewModel: PlayerViewModel,
     navigator: Navigator,
+    playerViewModel: PlayerViewModel = koinViewModel(),
     playerViewManager: PlayerViewManager = injectElement(),
     content: @Composable () -> Unit,
 ) {

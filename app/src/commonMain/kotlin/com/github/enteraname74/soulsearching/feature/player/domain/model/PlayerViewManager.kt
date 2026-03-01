@@ -61,4 +61,10 @@ class PlayerViewManager {
     fun updateTargetState(newState: BottomSheetStates) {
         _targetState.value = newState
     }
+
+    fun minimiseIfPossible() {
+        if (currentValue == BottomSheetStates.EXPANDED) {
+            animateTo(newState = BottomSheetStates.MINIMISED)
+        }
+    }
 }
