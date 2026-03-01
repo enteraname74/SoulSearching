@@ -83,8 +83,12 @@ class SettingsAddMusicsViewModel(
             )
 
             // We save the folders to let the user easily removed unwanted one before adding new songs
-            val folders: List<Folder> =
-                newMusics.map { Folder(it.music.folder) }.distinctBy { it.folderPath }
+            val folders: List<Folder> = newMusics.map {
+                Folder(
+                    folderPath = it.music.folder,
+                    isSelected = true,
+                )
+            }.distinctBy { it.folderPath }
 
             commonFolderUseCase.upsertAll(
                 allFolders = folders,

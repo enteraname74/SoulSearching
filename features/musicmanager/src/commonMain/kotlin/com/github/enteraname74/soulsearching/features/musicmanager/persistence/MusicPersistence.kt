@@ -20,7 +20,12 @@ class MusicPersistence: KoinComponent {
     suspend fun saveAll(musics: List<Music>) {
         commonMusicsUseCase.upsertAll(musics)
         commonFolderUseCase.upsertAll(
-            musics.map { Folder(folderPath = it.folder) }.distinctBy { it.folderPath }
+        musics.map {
+                Folder(
+                    folderPath = it.folder,
+                    isSelected = true,
+                )
+            }.distinctBy { it.folderPath }
         )
 
         settings.set(

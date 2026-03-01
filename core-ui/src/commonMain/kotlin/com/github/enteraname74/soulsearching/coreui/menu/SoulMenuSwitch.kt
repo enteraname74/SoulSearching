@@ -19,9 +19,10 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun SoulMenuSwitch(
     title: String,
-    subTitle: String? = null,
     toggleAction: () -> Unit,
     isChecked: Boolean,
+    modifier: Modifier = Modifier,
+    subTitle: String? = null,
     trailingIcon: SoulMenuLeadingIconSpec? = null,
     maxLines: Int = 2,
     titleColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -32,7 +33,7 @@ fun SoulMenuSwitch(
     ),
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickableWithHandCursor {
                 toggleAction()
