@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.composables
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DragHandle
 import androidx.compose.material.icons.rounded.MoreVert
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
@@ -67,6 +69,10 @@ fun MusicItemComposable(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
+                modifier = Modifier
+                    .padding(
+                        end = UiConstants.Spacing.verySmall,
+                    ),
                 horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -130,7 +136,9 @@ fun MusicItemComposable(
                     )
                 } else {
                     SoulIcon(
-                        modifier = Modifier.clickableWithHandCursor { onMoreClicked() },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .clickableWithHandCursor { onMoreClicked() },
                         icon = Icons.Rounded.MoreVert,
                         contentDescription = strings.moreButton,
                         tint = textColor
