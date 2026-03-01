@@ -263,6 +263,9 @@ object EnStrings : Strings {
     override val leadDeveloper = "Lead developer"
     override val developersTitle = "Developers"
     override val developersText = "The developers behind the Soul Searching project"
+    override val changelogTitle = "Latest update"
+    override val changelogText = "New features, bugs fixes"
+    override val changelogUpdateRequired = "Update the app to enjoy the latest features!"
     override val versionNameTitle = "Application's version name"
 
     override val noNewMusics = "No new songs to add!"

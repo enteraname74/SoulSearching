@@ -3,30 +3,44 @@ package com.github.enteraname74.soulsearching.feature.settings.aboutpage
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.NewReleases
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.domain.model.Release
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuExpand
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.text.SoulMarkdownText
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.AppVersion
+import com.github.enteraname74.soulsearching.ext.isNewerThanCurrentVersion
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutState
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -43,7 +57,7 @@ fun SettingsAboutRoute(
 ) {
     val viewModel = koinViewModel<SettingsAboutViewModel>()
 
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     Screen(
         navigateToDevelopers = toDevelopers,
@@ -110,6 +124,27 @@ private fun LatestReleaseCard(
 }
 
 @Composable
+private fun ChangelogUpdateCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+            containerColor = SoulSearchingColorTheme.colorScheme.secondary
+        )
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(UiConstants.Spacing.large),
+            text = strings.changelogUpdateRequired,
+            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            textAlign = TextAlign.Center,
+            style = UiConstants.Typography.body,
+        )
+    }
+}
+
+@Composable
 private fun Screen(
     state: SettingsAboutState,
     navigateToDevelopers: () -> Unit,
@@ -121,6 +156,9 @@ private fun Screen(
     }
 
     val coroutineScope = rememberCoroutineScope()
+    var isChangelogExpanded: Boolean by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     SettingPage(
         navigateBack = navigateBack,
@@ -128,11 +166,11 @@ private fun Screen(
     ) {
         item {
             AnimatedVisibility(
-                visible = state.moreRecentRelease != null,
+                visible = state.mostRecentRelease?.isNewerThanCurrentVersion() == true,
                 enter = slideInVertically(),
                 exit = slideOutVertically(),
             ) {
-                state.moreRecentRelease?.let {
+                state.mostRecentRelease?.let {
                     LatestReleaseCard(it)
                 }
             }
@@ -143,6 +181,39 @@ private fun Screen(
                 subTitle = strings.developersText,
                 onClick = navigateToDevelopers
             )
+        }
+        state.mostRecentRelease?.changelog?.let { changelog ->
+            item {
+                SoulMenuExpand(
+                    title = strings.changelogTitle,
+                    subTitle = strings.changelogText,
+                    clickAction = { isChangelogExpanded = !isChangelogExpanded },
+                    isExpanded = isChangelogExpanded,
+                    textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    containerColor = SoulSearchingColorTheme.colorScheme.primary,
+                    subTextColor = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                    padding = UiConstants.Spacing.large,
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                end = UiConstants.Spacing.veryLarge,
+                                start = UiConstants.Spacing.veryLarge,
+                            ),
+                        verticalArrangement = Arrangement.spacedBy(
+                            UiConstants.Spacing.medium,
+                        )
+                    ) {
+                        state.mostRecentRelease.takeIf { it.isNewerThanCurrentVersion() }?.let {
+                            ChangelogUpdateCard()
+                        }
+                        SoulMarkdownText(
+                            text = changelog,
+                        )
+                    }
+                }
+            }
         }
         item {
             SoulMenuElement(

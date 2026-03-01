@@ -418,15 +418,13 @@ class MainPageViewModel(
             commonFolderUseCase.deleteAll(foldersToDelete)
         }
 
-        coroutineScope.launch {
-            settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED)
-                .collectLatest { isEnabled ->
-                    if (isEnabled) {
-                        commonReleaseUseCase.fetchLatest()
-                    } else {
-                        commonReleaseUseCase.deleteLatest()
-                    }
+
+        viewModelScope.launch {
+            settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED).collectLatest { isEnabled ->
+                if (isEnabled) {
+                    commonReleaseUseCase.fetchLatest()
                 }
+            }
         }
 
         coroutineScope.launch {

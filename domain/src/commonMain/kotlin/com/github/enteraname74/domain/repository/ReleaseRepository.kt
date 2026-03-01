@@ -18,11 +18,6 @@ interface ReleaseRepository {
     suspend fun fetchLatestRelease()
 
     /**
-     * Indicate that the user has seen the latest release.
-     */
-    suspend fun setLatestViewedReleaseTag(tag: String)
-
-    /**
      * Delete the saved latest release
      */
     suspend fun deleteLatestRelease()

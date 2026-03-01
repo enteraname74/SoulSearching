@@ -33,6 +33,9 @@ kotlin {
             implementation(libs.androidx.annotation)
 
             implementation(libs.kmpalette)
+
+            implementation(libs.markdown.renderer.core)
+            implementation(libs.markdown.renderer.m3)
         }
 
         androidMain.dependencies {

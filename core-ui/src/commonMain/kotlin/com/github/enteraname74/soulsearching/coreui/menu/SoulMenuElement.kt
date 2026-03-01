@@ -17,13 +17,14 @@ fun SoulMenuElement(
     icon: ImageVector? = null,
     isBadged: Boolean = false,
     onClick: (() -> Unit)?,
+    modifier: Modifier = Modifier,
     padding: PaddingValues = PaddingValues(
         horizontal = UiConstants.Spacing.large,
         vertical = UiConstants.Spacing.veryLarge,
     ),
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .optionalClickable(onClick = onClick)
             .padding(padding),

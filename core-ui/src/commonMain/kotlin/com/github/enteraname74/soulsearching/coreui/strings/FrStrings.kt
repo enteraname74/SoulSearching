@@ -265,6 +265,9 @@ object FrStrings : Strings {
     override val leadDeveloper = "Développeur principal"
     override val developersTitle = "Développeurs"
     override val developersText = "Les développeurs derrière le projet Soul Searching"
+    override val changelogTitle = "Derniers changements"
+    override val changelogText = "Nouvelles fonctionnalités, corrections de bogues"
+    override val changelogUpdateRequired = "Mettez à jour l'application pour profiter des dernières fonctionnalités !"
     override val versionNameTitle = "Nom de la version de l'application"
 
     override val noNewMusics = "Aucune nouvelle musique à ajouter !"
