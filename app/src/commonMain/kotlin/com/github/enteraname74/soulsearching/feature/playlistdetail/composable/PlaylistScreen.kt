@@ -180,8 +180,9 @@ fun PlaylistScreen(
                     maxHeight = maxHeight,
                     focusRequester = searchBarFocusRequester,
                     onSearch = playlistDetailListener::onSearch,
-                ) { focusManager ->
+                ) { focusManager, lazyListState ->
                     SearchMusics(
+                        lazyListState = lazyListState,
                         foundMusics = playlistDetail.searchMusics,
                         isMainPlaylist = false,
                         focusManager = focusManager,

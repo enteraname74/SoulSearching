@@ -235,8 +235,9 @@ fun MainPageScreenView(
                 maxHeight = maxHeight,
                 focusRequester = searchBarFocusRequester,
                 onSearch = mainPageViewModel::onSearch,
-            ) { focusManager ->
+            ) { focusManager, lazyListState ->
                 SearchAll(
+                    lazyListState = lazyListState,
                     searchAllState = searchAllState,
                     onSelectedMusicForBottomSheet = mainPageViewModel::showMusicBottomSheet,
                     onSelectedAlbumForBottomSheet = mainPageViewModel::showAlbumPreviewBottomSheet,

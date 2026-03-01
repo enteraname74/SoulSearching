@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchMusics(
+    lazyListState: LazyListState,
     foundMusics: List<Music>,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
@@ -37,8 +39,10 @@ fun SearchMusics(
     val coroutineScope = rememberCoroutineScope()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
-    LazyColumnCompat {
-        if (foundMusics.isNotEmpty()) {
+    if (foundMusics.isNotEmpty()) {
+        LazyColumnCompat(
+            state = lazyListState,
+        ) {
             stickyHeader(
                 key = SEARCH_MUSIC_STICKY_HEADER_KEY,
                 contentType = SEARCH_MUSIC_STICKY_HEADER_CONTENT_TYPE,
@@ -82,14 +86,15 @@ fun SearchMusics(
                     isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                 )
             }
-        }
-        item(
-            key = SEARCH_MUSIC_SPACER_KEY,
-            contentType = SEARCH_MUSIC_SPACER_CONTENT_TYPE,
-        ) {
-            SoulPlayerSpacer()
+            item(
+                key = SEARCH_MUSIC_SPACER_KEY,
+                contentType = SEARCH_MUSIC_SPACER_CONTENT_TYPE,
+            ) {
+                SoulPlayerSpacer()
+            }
         }
     }
+
 }
 
 private const val SEARCH_MUSIC_STICKY_HEADER_KEY: String = "SEARCH_MUSIC_STICKY_HEADER_KEY"

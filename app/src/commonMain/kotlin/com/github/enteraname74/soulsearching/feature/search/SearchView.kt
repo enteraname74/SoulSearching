@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.swipeable
@@ -48,10 +50,11 @@ fun SearchView(
     focusRequester: FocusRequester,
     onSearch: (String) -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
-    searchResult: @Composable (FocusManager) -> Unit,
+    searchResult: @Composable (FocusManager, LazyListState) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
+    val lazyListState = rememberLazyListState()
 
     SoulBackHandler(
         draggableState.currentValue == BottomSheetStates.EXPANDED
@@ -115,6 +118,7 @@ fun SearchView(
                 updateTextMethod = {
                     searchText = it
                     onSearch(it)
+                    coroutineScope.launch { lazyListState.scrollToItem(0) }
                 },
                 focusManager = focusManager,
                 focusRequester = focusRequester,
@@ -131,7 +135,7 @@ fun SearchView(
             )
 
             if (searchText.isNotBlank()) {
-                searchResult(focusManager)
+                searchResult(focusManager, lazyListState)
             }
         }
     }
