@@ -13,7 +13,6 @@ import androidx.navigation3.scene.Scene
 import androidx.navigation3.scene.SceneStrategy
 import androidx.navigation3.scene.SceneStrategyScope
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
-import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandlerDOS
 import com.github.enteraname74.soulsearching.navigation.BottomSheetSceneStrategy.Companion.bottomSheet
 
 /** An [OverlayScene] that renders an [entry] within a [ModalBottomSheet]. */
@@ -29,7 +28,7 @@ internal class BottomSheetScene<T : Any>(
     override val entries: List<NavEntry<T>> = listOf(entry)
 
     override val content: @Composable (() -> Unit) = {
-        SoulBottomSheetHandlerDOS(
+        SoulBottomSheetHandler(
             onClose = onBack,
         ) { closeWithAnim ->
             CompositionLocalProvider(
