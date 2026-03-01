@@ -198,7 +198,7 @@ class SoulTextFieldHolderImpl(
                     SoulIcon(
                         icon = it.icon,
                         contentDescription = null,
-                        tint = colors.contentColor,
+                        color = colors.contentColor,
                         modifier = Modifier.clickableWithHandCursor {
                             it.onClick()
                         }

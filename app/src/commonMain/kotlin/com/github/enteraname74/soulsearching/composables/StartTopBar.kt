@@ -18,8 +18,8 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
 fun StartTopBar(
     title: String,
     rightAction: TopBarActionSpec,
-    contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     modifier: Modifier = Modifier,
+    contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),

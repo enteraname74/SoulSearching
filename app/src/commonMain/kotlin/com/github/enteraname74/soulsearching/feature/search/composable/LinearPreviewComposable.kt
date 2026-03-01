@@ -1,8 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.search.composable
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +16,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_more_vertical
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -71,7 +77,7 @@ fun LinearPreviewComposable(
             onLongClick?.let {
                 SoulIcon(
                     modifier = Modifier.optionalClickable(onClick = it),
-                    icon = Icons.Rounded.MoreVert,
+                    icon = CoreRes.drawable.ic_more_vertical,
                     contentDescription = strings.moreButton,
                 )
             }

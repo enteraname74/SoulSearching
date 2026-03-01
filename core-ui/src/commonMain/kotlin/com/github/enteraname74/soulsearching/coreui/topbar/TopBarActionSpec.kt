@@ -1,14 +1,14 @@
 package com.github.enteraname74.soulsearching.coreui.topbar
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Done
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_arrow_back
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_check
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import org.jetbrains.compose.resources.DrawableResource
 
 interface TopBarActionSpec {
-    val icon: ImageVector
+    val icon: DrawableResource
     val onClick: () -> Unit
     val isEnabled: Boolean
         get() = true
@@ -21,7 +21,7 @@ interface TopBarActionSpec {
 data class TopBarNavigationAction(
     override val onClick: () -> Unit,
 ) : TopBarActionSpec {
-    override val icon: ImageVector = Icons.AutoMirrored.Rounded.ArrowBack
+    override val icon: DrawableResource = CoreRes.drawable.ic_arrow_back
     override val isEnabled: Boolean = true
     override val contentDescription: String
         @Composable
@@ -32,5 +32,5 @@ data class TopBarValidateAction(
     override val onClick: () -> Unit,
     override val isEnabled: Boolean = true,
 ) : TopBarActionSpec {
-    override val icon: ImageVector = Icons.Rounded.Done
+    override val icon: DrawableResource = CoreRes.drawable.ic_check
 }

@@ -1,7 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,6 +12,8 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedIconButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedTextButton
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_info_filled
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
@@ -80,7 +80,7 @@ private fun SoulMixButton(
                 }
             ),
             SoulSegmentedIconButton(
-                data = Icons.Rounded.Info,
+                data = CoreRes.drawable.ic_info_filled,
                 contentPadding = SoulButtonDefaults.contentPadding(
                     horizontal = 0.dp,
                 ),

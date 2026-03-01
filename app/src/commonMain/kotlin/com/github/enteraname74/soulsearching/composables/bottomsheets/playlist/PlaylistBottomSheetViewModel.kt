@@ -1,8 +1,5 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
@@ -14,6 +11,9 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomShee
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiPlaylistDialog
 import com.github.enteraname74.soulsearching.composables.dialog.DeletePlaylistDialog
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -96,7 +96,7 @@ class PlaylistBottomSheetViewModel(
         if (editEnabled) {
             add(
                 BottomSheetRowSpec(
-                    icon = Icons.Rounded.Edit,
+                    icon = CoreRes.drawable.ic_edit_filled,
                     title = strings.modifyPlaylist,
                     onClick = ::toModifyPlaylist,
                 )
@@ -119,7 +119,7 @@ class PlaylistBottomSheetViewModel(
         if (showDelete) {
             add(
                 BottomSheetRowSpec(
-                    icon = Icons.Rounded.Delete,
+                    icon = CoreRes.drawable.ic_delete_filled,
                     title = if (playlists.size == 1) {
                         strings.deletePlaylist
                     } else {

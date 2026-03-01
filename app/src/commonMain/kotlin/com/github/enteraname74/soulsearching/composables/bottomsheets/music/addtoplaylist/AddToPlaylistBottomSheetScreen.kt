@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,6 +20,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.soulsearching.composables.PlaylistSelectableComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
@@ -109,8 +109,8 @@ private fun LazyListScope.createPlaylistItem(
             horizontalArrangement = Arrangement.Center,
         ) {
             SoulIcon(
-                icon = Icons.Rounded.Add,
-                tint = SoulSearchingColorTheme.colorScheme.onSecondary,
+                icon = CoreRes.drawable.ic_add,
+                color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 size = UiConstants.ImageSize.medium,
             )
             Text(

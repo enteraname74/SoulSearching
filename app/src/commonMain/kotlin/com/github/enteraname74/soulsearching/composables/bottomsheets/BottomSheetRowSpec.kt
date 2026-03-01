@@ -1,30 +1,28 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.DoubleArrow
-import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_playlist_add
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_playlist_play
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_playlist_remove
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_queue_music
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_quick_access_filled
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import org.jetbrains.compose.resources.DrawableResource
 
 data class BottomSheetRowSpec(
-    val icon: ImageVector,
+    val icon: DrawableResource,
     val title: String,
     val onClick: () -> Unit,
 ) {
@@ -43,11 +41,11 @@ data class BottomSheetRowSpec(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                modifier = Modifier.size(UiConstants.ImageSize.medium),
-                imageVector = icon,
+            SoulIcon(
+                size = UiConstants.ImageSize.medium,
+                icon = icon,
                 contentDescription = title,
-                colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onSecondary)
+                color = SoulSearchingColorTheme.colorScheme.onSecondary,
             )
             Text(
                 text = title,
@@ -62,7 +60,7 @@ data class BottomSheetRowSpec(
             isInQuickAccess: Boolean,
         ): BottomSheetRowSpec =
             BottomSheetRowSpec(
-                icon = Icons.Rounded.DoubleArrow,
+                icon = CoreRes.drawable.ic_quick_access_filled,
                 title = if (isInQuickAccess) {
                     strings.removeFromQuickAccess
                 } else {
@@ -75,7 +73,7 @@ data class BottomSheetRowSpec(
             onClick: () -> Unit,
         ): BottomSheetRowSpec =
             BottomSheetRowSpec(
-                icon = Icons.AutoMirrored.Rounded.PlaylistAdd,
+                icon = CoreRes.drawable.ic_playlist_add,
                 title = strings.addToPlaylist,
                 onClick = onClick,
             )
@@ -84,7 +82,7 @@ data class BottomSheetRowSpec(
             onClick: () -> Unit,
         ): BottomSheetRowSpec =
             BottomSheetRowSpec(
-                icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
+                icon = CoreRes.drawable.ic_playlist_play,
                 title = strings.playNext,
                 onClick = onClick,
             )
@@ -93,7 +91,7 @@ data class BottomSheetRowSpec(
             onClick: () -> Unit,
         ): BottomSheetRowSpec =
             BottomSheetRowSpec(
-                icon = Icons.AutoMirrored.Rounded.QueueMusic,
+                icon = CoreRes.drawable.ic_queue_music,
                 title = strings.addToQueue,
                 onClick = onClick,
             )
@@ -102,7 +100,7 @@ data class BottomSheetRowSpec(
             onClick: () -> Unit,
         ): BottomSheetRowSpec =
             BottomSheetRowSpec(
-                icon = Icons.Rounded.PlaylistRemove,
+                icon = CoreRes.drawable.ic_playlist_remove,
                 title = strings.removeFromPlayedList,
                 onClick = onClick,
             )

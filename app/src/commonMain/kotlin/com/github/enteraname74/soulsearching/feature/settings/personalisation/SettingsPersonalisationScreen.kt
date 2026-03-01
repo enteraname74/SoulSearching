@@ -1,10 +1,11 @@
 package com.github.enteraname74.soulsearching.feature.settings.personalisation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.House
-import androidx.compose.material.icons.rounded.MusicNote
-import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.runtime.Composable
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_album_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_house_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -38,7 +39,7 @@ private fun SettingsPersonalisationScreenView(
             SoulMenuElement(
                 title = strings.mainPageTitle,
                 subTitle = strings.mainPageText,
-                leadIcon = Icons.Rounded.House,
+                leadIcon = CoreRes.drawable.ic_house_filled,
                 onClick = onMainPageClick
             )
         }
@@ -46,7 +47,7 @@ private fun SettingsPersonalisationScreenView(
             SoulMenuElement(
                 title = strings.musics,
                 subTitle = strings.manageMusicsViewText,
-                leadIcon = Icons.Rounded.MusicNote,
+                leadIcon = CoreRes.drawable.ic_music_note_filled,
                 onClick = onMusicPageClick
             )
         }
@@ -54,7 +55,7 @@ private fun SettingsPersonalisationScreenView(
             SoulMenuElement(
                 title = strings.manageAlbumViewTitle,
                 subTitle = strings.manageAlbumViewText,
-                leadIcon = Icons.Rounded.MusicNote,
+                leadIcon = CoreRes.drawable.ic_album_filled,
                 onClick = onAlbumViewPageClick,
             )
         }
@@ -62,7 +63,7 @@ private fun SettingsPersonalisationScreenView(
             SoulMenuElement(
                 title = strings.managePlayerTitle,
                 subTitle = strings.managePlayerText,
-                leadIcon = Icons.Rounded.PlayArrow,
+                leadIcon = CoreRes.drawable.ic_play_filled,
                 onClick = onPlayerPageClick
             )
         }

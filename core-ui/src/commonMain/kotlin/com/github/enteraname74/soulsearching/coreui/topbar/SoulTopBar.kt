@@ -1,8 +1,12 @@
 package com.github.enteraname74.soulsearching.coreui.topbar
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -112,9 +116,6 @@ object SoulTopBarDefaults {
             elevatedContentColor = elevatedContentColor,
         )
 }
-
-fun checkTopBarElevation(lazyListState: LazyListState): Boolean =
-    lazyListState.firstVisibleItemScrollOffset > 0
 
 data class TopBarColors(
     val containerColor: Color,

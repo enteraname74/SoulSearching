@@ -1,9 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,6 +18,9 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_search
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_settings_filled
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
@@ -44,7 +50,7 @@ fun MainMenuHeaderComposable(
 
         if (windowSize != WindowSize.Large) {
             SoulIconButton(
-                icon = Icons.Rounded.Settings,
+                icon = CoreRes.drawable.ic_settings_filled,
                 contentDescription = strings.settingsAccessButton,
                 badgeColor = if (shouldShowNewReleasePin) {
                     SoulSearchingColorTheme.colorScheme.onPrimary
@@ -72,7 +78,7 @@ fun MainMenuHeaderComposable(
             fontWeight = FontWeight.Bold
         )
         SoulIconButton(
-            icon = Icons.Rounded.Search,
+            icon = CoreRes.drawable.ic_search,
             contentDescription = strings.searchAll,
             colors = SoulButtonDefaults.colors(
                 contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,

@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.coreui.textfield
 
-import androidx.compose.ui.graphics.vector.ImageVector
+import org.jetbrains.compose.resources.DrawableResource
 
 data class SoulTextFieldLeadingIconSpec(
-    val icon: ImageVector,
+    val icon: DrawableResource,
     val onClick: () -> Unit,
 )

@@ -27,7 +27,6 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
-            implementation(compose.materialIconsExtended)
             implementation(compose.components.resources)
             implementation(compose.ui)
             implementation(libs.androidx.annotation)
@@ -44,6 +43,12 @@ kotlin {
             implementation(libs.compose.cloudy)
         }
     }
+}
+
+compose.resources {
+    publicResClass = true
+    nameOfResClass = "CoreRes"
+    generateResClass = always
 }
 
 android {

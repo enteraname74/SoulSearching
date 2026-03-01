@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
@@ -21,12 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_arrow_dropdown_filled
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
 fun <T> SoulChoiceButton(
@@ -76,8 +76,8 @@ fun <T> SoulChoiceButton(
                 SoulIcon(
                     modifier = Modifier
                         .rotate(iconRotation),
-                    icon = Icons.Rounded.ArrowDropDown,
-                    tint = colors.contentColor,
+                    icon = CoreRes.drawable.ic_arrow_dropdown_filled,
+                    color = colors.contentColor,
                 )
             }
         }
@@ -120,7 +120,7 @@ private fun <T> MenuItem(
             {
                 SoulIcon(
                     icon = icon,
-                    tint = contentColor,
+                    color = contentColor,
                 )
             }
         },
@@ -129,7 +129,7 @@ private fun <T> MenuItem(
 }
 
 data class SoulChoiceButtonData<T>(
-    val icon: ImageVector?,
+    val icon: DrawableResource?,
     val data: T,
     val title: String,
 )

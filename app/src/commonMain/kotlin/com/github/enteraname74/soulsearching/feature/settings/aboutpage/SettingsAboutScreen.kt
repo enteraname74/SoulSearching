@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.OpenInNew
-import androidx.compose.material.icons.rounded.NewReleases
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -31,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.domain.model.Release
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_open_in_new
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_release_alert_filled
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
@@ -101,9 +101,9 @@ private fun LatestReleaseCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 SoulIcon(
-                    icon = Icons.Rounded.NewReleases,
+                    icon = CoreRes.drawable.ic_release_alert_filled,
                     size = UiConstants.ImageSize.mediumPlus,
-                    tint = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 )
                 Text(
                     text = strings.newReleaseAvailableTitle,
@@ -224,7 +224,7 @@ private fun Screen(
                 onClick = {
                     uriHandler.openUri(PROJECT_SITE)
                 },
-                trailIcon = Icons.AutoMirrored.Rounded.OpenInNew,
+                trailIcon = CoreRes.drawable.ic_open_in_new,
             )
         }
         item {

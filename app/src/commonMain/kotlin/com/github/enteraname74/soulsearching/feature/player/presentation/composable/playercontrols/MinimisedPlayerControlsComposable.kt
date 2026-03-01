@@ -1,21 +1,22 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Pause
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.SkipNext
-import androidx.compose.material.icons.rounded.SkipPrevious
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_pause_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_skip_next_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_skip_previous_filled
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 
@@ -33,35 +34,42 @@ fun MinimisedPlayerControlsComposable(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
     ) {
-        Image(
-            imageVector = Icons.Rounded.SkipPrevious,
+        SoulIcon(
+            icon = CoreRes.drawable.ic_skip_previous_filled,
             contentDescription = "",
             modifier = Modifier
                 .size(40.dp)
+                .clip(CircleShape)
                 .clickableIf(enabled = playerViewState == BottomSheetStates.MINIMISED) {
                     previous()
                 },
-            colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)
+            color = SoulSearchingColorTheme.colorScheme.onSecondary
         )
-        Image(
-            imageVector = if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+        SoulIcon(
+            icon = if (isPlaying) {
+                CoreRes.drawable.ic_pause_filled
+            } else {
+                CoreRes.drawable.ic_play_filled
+            },
             contentDescription = "",
             modifier = Modifier
                 .size(40.dp)
+                .clip(CircleShape)
                 .clickableIf(enabled = playerViewState == BottomSheetStates.MINIMISED) {
                     togglePlayPause()
                 },
-            colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)
+            color = SoulSearchingColorTheme.colorScheme.onSecondary
         )
-        Image(
-            imageVector = Icons.Rounded.SkipNext,
+        SoulIcon(
+            icon = CoreRes.drawable.ic_skip_next_filled,
             contentDescription = "",
             modifier = Modifier
                 .size(40.dp)
+                .clip(CircleShape)
                 .clickableIf(enabled = playerViewState == BottomSheetStates.MINIMISED) {
                     next()
                 },
-            colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)
+            color = SoulSearchingColorTheme.colorScheme.onSecondary
         )
     }
 }

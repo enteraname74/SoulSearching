@@ -1,8 +1,5 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.album
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.AlbumWithMusics
@@ -15,6 +12,9 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomShee
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteAlbumDialog
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiAlbumDialog
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -93,9 +93,9 @@ class AlbumBottomSheetViewModel(
         if (editEnabled) {
             add(
                 BottomSheetRowSpec(
-                    icon = Icons.Rounded.Edit,
+                    icon = CoreRes.drawable.ic_edit_filled,
                     title = strings.modifyAlbum,
-                    onClick = ::toModifyalbum,
+                    onClick = ::toModifyAlbum,
                 )
             )
         }
@@ -115,7 +115,7 @@ class AlbumBottomSheetViewModel(
 
         add(
             BottomSheetRowSpec(
-                icon = Icons.Rounded.Delete,
+                icon = CoreRes.drawable.ic_delete_filled,
                 title = if (playlists.size == 1) {
                     strings.deleteAlbum
                 } else {
@@ -126,7 +126,7 @@ class AlbumBottomSheetViewModel(
         )
     }
 
-    private fun toModifyalbum() {
+    private fun toModifyAlbum() {
         albumIds.firstOrNull()?.let {
             viewModelScope.launch {
                 multiSelectionManager.clearMultiSelection()

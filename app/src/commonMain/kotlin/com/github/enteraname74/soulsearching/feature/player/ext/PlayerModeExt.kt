@@ -1,12 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.player.ext
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.enteraname74.domain.model.PlayerMode
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_repeat
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_repeat_one
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_shuffle
+import org.jetbrains.compose.resources.DrawableResource
 
-fun PlayerMode.imageVector(): ImageVector = when(this) {
-    PlayerMode.Normal -> Icons.Rounded.Repeat
-    PlayerMode.Shuffle -> Icons.Rounded.Shuffle
-    PlayerMode.Loop -> Icons.Rounded.RepeatOne
+fun PlayerMode.icon(): DrawableResource = when(this) {
+    PlayerMode.Normal -> CoreRes.drawable.ic_repeat
+    PlayerMode.Shuffle -> CoreRes.drawable.ic_shuffle
+    PlayerMode.Loop -> CoreRes.drawable.ic_repeat_one
 }

@@ -1,16 +1,16 @@
 package com.github.enteraname74.soulsearching.composables.navigation
 
-import androidx.compose.ui.graphics.vector.ImageVector
+import org.jetbrains.compose.resources.DrawableResource
 
 data class NavigationRowSpec(
     val title: String,
-    private val filledIcon: ImageVector,
-    private val outlinedIcon: ImageVector,
+    private val filledIcon: DrawableResource,
+    private val outlinedIcon: DrawableResource,
     val isBadged: Boolean = false,
     val onClick: () -> Unit,
     val isSelected: Boolean,
 ) {
-    val icon: ImageVector
+    val icon: DrawableResource
         get() = if (isSelected) {
             filledIcon
         } else {
