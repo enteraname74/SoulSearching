@@ -148,32 +148,40 @@ class MediaSessionManager(
             MediaMetadataCompat.Builder()
                 .putBitmap(
                     MediaMetadata.METADATA_KEY_ALBUM_ART,
-                    bitmap
+                    bitmap,
                 )
                 .putLong(
                     MediaMetadataCompat.METADATA_KEY_DURATION,
-                    playbackState.currentMusic.duration
+                    playbackState.currentMusic.duration,
                 )
                 .putString(
                     MediaMetadata.METADATA_KEY_DISPLAY_TITLE,
-                    playbackState.currentMusic.name
+                    playbackState.currentMusic.name,
                 )
                 .putLong(
                     MediaMetadata.METADATA_KEY_TRACK_NUMBER,
-                    playbackState.currentMusicIndex.toLong()
+                    playbackState.currentMusicIndex.toLong(),
                 )
                 .putLong(
                     MediaMetadata.METADATA_KEY_NUM_TRACKS,
-                    playbackState.playedList.size.toLong()
+                    playbackState.playedList.size.toLong(),
                 )
                 // For old versions of Android
                 .putString(
                     MediaMetadata.METADATA_KEY_TITLE,
-                    playbackState.currentMusic.name
+                    playbackState.currentMusic.name,
                 )
                 .putString(
                     MediaMetadata.METADATA_KEY_ARTIST,
-                    playbackState.currentMusic.artistsNames
+                    playbackState.currentMusic.artistsNames,
+                )
+                .putString(
+                    MediaMetadata.METADATA_KEY_ALBUM,
+                    playbackState.currentMusic.album.albumName,
+                )
+                .putString(
+                    MediaMetadata.METADATA_KEY_ALBUM_ARTIST,
+                    playbackState.currentMusic.album.artist.artistName,
                 )
                 // A small bitmap for the artwork is also recommended
                 .putBitmap(
