@@ -267,7 +267,8 @@ object EnStrings : Strings {
     override val changelogText = "New features, bugs fixes"
     override val changelogUpdateRequired = "Update the app to enjoy the latest features!"
     override val versionNameTitle = "Application's version name"
-
+    override val projectSiteTitle = "Project's website and source code"
+    override val projectSiteText = "Source code, submit a suggestion"
     override val noNewMusics = "No new songs to add!"
     override val savingNewMusics = "Saving new songs…"
 

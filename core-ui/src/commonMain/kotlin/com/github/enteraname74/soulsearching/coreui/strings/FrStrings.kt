@@ -269,7 +269,8 @@ object FrStrings : Strings {
     override val changelogText = "Nouvelles fonctionnalités, corrections de bogues"
     override val changelogUpdateRequired = "Mettez à jour l'application pour profiter des dernières fonctionnalités !"
     override val versionNameTitle = "Nom de la version de l'application"
-
+    override val projectSiteTitle = "Site du projet"
+    override val projectSiteText = "Code source, soumettre une suggestion"
     override val noNewMusics = "Aucune nouvelle musique à ajouter !"
     override val savingNewMusics = "Sauvegarde des nouvelles musiques…"
     override val songsSaved = "Musiques sauvegardées !"

@@ -13,8 +13,9 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun SoulMenuElement(
     title: String,
-    subTitle: String,
-    icon: ImageVector? = null,
+    subTitle: String?,
+    leadIcon: ImageVector? = null,
+    trailIcon: ImageVector? = null,
     isBadged: Boolean = false,
     onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
@@ -31,7 +32,7 @@ fun SoulMenuElement(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
     ) {
-        icon?.let {
+        leadIcon?.let {
             SoulIcon(
                 size = UiConstants.ImageSize.medium,
                 icon = it,
@@ -43,8 +44,20 @@ fun SoulMenuElement(
             )
         }
         SoulMenuBody(
+            modifier = Modifier.weight(1f),
             title = title,
             text = subTitle,
         )
+        trailIcon?.let {
+            SoulIcon(
+                size = UiConstants.ImageSize.smallPlus,
+                icon = it,
+                badgeColor = if (isBadged) {
+                    SoulSearchingColorTheme.colorScheme.onPrimary
+                } else {
+                    null
+                },
+            )
+        }
     }
 }

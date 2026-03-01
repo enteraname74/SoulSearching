@@ -38,7 +38,7 @@ private fun SettingsPersonalisationScreenView(
             SoulMenuElement(
                 title = strings.mainPageTitle,
                 subTitle = strings.mainPageText,
-                icon = Icons.Rounded.House,
+                leadIcon = Icons.Rounded.House,
                 onClick = onMainPageClick
             )
         }
@@ -46,7 +46,7 @@ private fun SettingsPersonalisationScreenView(
             SoulMenuElement(
                 title = strings.musics,
                 subTitle = strings.manageMusicsViewText,
-                icon = Icons.Rounded.MusicNote,
+                leadIcon = Icons.Rounded.MusicNote,
                 onClick = onMusicPageClick
             )
         }
@@ -54,7 +54,7 @@ private fun SettingsPersonalisationScreenView(
             SoulMenuElement(
                 title = strings.manageAlbumViewTitle,
                 subTitle = strings.manageAlbumViewText,
-                icon = Icons.Rounded.MusicNote,
+                leadIcon = Icons.Rounded.MusicNote,
                 onClick = onAlbumViewPageClick,
             )
         }
@@ -62,7 +62,7 @@ private fun SettingsPersonalisationScreenView(
             SoulMenuElement(
                 title = strings.managePlayerTitle,
                 subTitle = strings.managePlayerText,
-                icon = Icons.Rounded.PlayArrow,
+                leadIcon = Icons.Rounded.PlayArrow,
                 onClick = onPlayerPageClick
             )
         }

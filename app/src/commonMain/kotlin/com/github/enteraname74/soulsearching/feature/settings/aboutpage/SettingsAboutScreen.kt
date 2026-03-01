@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.NewReleases
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -159,6 +160,7 @@ private fun Screen(
     var isChangelogExpanded: Boolean by rememberSaveable {
         mutableStateOf(false)
     }
+    val uriHandler = LocalUriHandler.current
 
     SettingPage(
         navigateBack = navigateBack,
@@ -217,6 +219,16 @@ private fun Screen(
         }
         item {
             SoulMenuElement(
+                title = strings.projectSiteTitle,
+                subTitle = strings.projectSiteText,
+                onClick = {
+                    uriHandler.openUri(PROJECT_SITE)
+                },
+                trailIcon = Icons.AutoMirrored.Rounded.OpenInNew,
+            )
+        }
+        item {
+            SoulMenuElement(
                 title = strings.versionNameTitle,
                 subTitle = AppVersion.versionName,
                 onClick = {
@@ -235,3 +247,4 @@ private fun Screen(
     }
 }
 
+private const val PROJECT_SITE = "https://github.com/enteraname74/SoulSearching"

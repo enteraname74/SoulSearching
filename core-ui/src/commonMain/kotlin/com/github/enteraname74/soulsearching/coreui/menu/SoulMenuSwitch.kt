@@ -49,6 +49,7 @@ fun SoulMenuSwitch(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
         ) {
             SoulMenuBody(
+                modifier = Modifier.fillMaxWidth(),
                 title = title,
                 text = subTitle,
                 titleColor = titleColor,

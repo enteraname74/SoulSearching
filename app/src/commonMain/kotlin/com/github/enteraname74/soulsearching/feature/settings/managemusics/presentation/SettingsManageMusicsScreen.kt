@@ -26,7 +26,7 @@ fun SettingsManageMusicsRoute(
             SoulMenuElement(
                 title = strings.usedFoldersTitle,
                 subTitle = strings.usedFoldersText,
-                icon = Icons.Rounded.Folder,
+                leadIcon = Icons.Rounded.Folder,
                 onClick = navigateToFolders
             )
         }
@@ -34,7 +34,7 @@ fun SettingsManageMusicsRoute(
             SoulMenuElement(
                 title = strings.addMusicsTitle,
                 subTitle = strings.addMusicsText,
-                icon = Icons.Rounded.MusicNote,
+                leadIcon = Icons.Rounded.MusicNote,
                 onClick = navigateToAddMusics
             )
         }
