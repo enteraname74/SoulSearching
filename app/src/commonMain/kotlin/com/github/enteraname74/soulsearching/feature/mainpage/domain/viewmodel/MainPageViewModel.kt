@@ -31,7 +31,6 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.model.ElementsVisibility
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
@@ -81,6 +80,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
 import java.util.UUID
+import kotlin.math.max
 
 @Suppress("Deprecation")
 class MainPageViewModel(
@@ -126,15 +126,16 @@ class MainPageViewModel(
     val currentPage: StateFlow<ElementEnum?> = _currentPage.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val tabs: StateFlow<List<PagerScreen>> =
-        viewSettingsManager.visibleElements.mapLatest { elementsVisibility ->
-            val elementEnums = buildListOfElementEnums(elementsVisibility = elementsVisibility)
-            buildTabs(elements = elementEnums)
-        }.stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
-            started = SharingStarted.Lazily,
-            initialValue = emptyList()
-        )
+    val tabs: StateFlow<List<PagerScreen>> = viewSettingsManager.visibleElements.mapLatest { elementsVisibility ->
+        buildTabs(elements = elementsVisibility.toElementEnums())
+    }.stateIn(
+        scope = viewModelScope.plus(Dispatchers.IO),
+        started = SharingStarted.Eagerly,
+        initialValue = emptyList()
+    )
+
+    private var _initialPage: MutableStateFlow<Int?> = MutableStateFlow(null)
+    val initialPage: StateFlow<Int?> = _initialPage.asStateFlow()
 
     val isUsingVerticalAccessBar: StateFlow<Boolean> = settings.getFlowOn(
         SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR,
@@ -291,6 +292,16 @@ class MainPageViewModel(
     private var cleanMusicsLaunched: Boolean = false
 
     init {
+        // TODO: move to manager
+        val savedInitial: ElementEnum? = ElementEnum.fromRaw(
+            settings.get(ElementEnum.INITIAL_TAB_SETTINGS_KEY)
+        )
+
+        val tabs = viewSettingsManager.getElementVisibility().toElementEnums()
+        _initialPage.value = savedInitial?.let {
+            max(tabs.indexOf(savedInitial), 0)
+        } ?: 0
+
         if (!cleanMusicsLaunched) {
             coroutineScope.launch {
                 cleanMusicsLaunched = true
@@ -439,17 +450,6 @@ class MainPageViewModel(
                 )
             }
         }
-    }
-
-    private fun buildListOfElementEnums(
-        elementsVisibility: ElementsVisibility,
-    ): List<ElementEnum> = buildList {
-        if (elementsVisibility.isQuickAccessShown) add(ElementEnum.QUICK_ACCESS)
-        add(ElementEnum.MUSICS)
-        if (elementsVisibility.arePlaylistsShown) add(ElementEnum.PLAYLISTS)
-        if (elementsVisibility.areAlbumsShown) add(ElementEnum.ALBUMS)
-        if (elementsVisibility.areArtistsShown) add(ElementEnum.ARTISTS)
-        if (elementsVisibility.areMusicFoldersShown) add(ElementEnum.FOLDERS)
     }
 
     private fun buildTabs(elements: List<ElementEnum>): List<PagerScreen> = buildList {

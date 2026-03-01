@@ -59,6 +59,7 @@ fun MainPageRoute(
     val searchAllState: SearchAllState by mainPageViewModel.searchAllState.collectAsStateWithLifecycle()
 
     val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsStateWithLifecycle()
+    val initialPage: Int? by mainPageViewModel.initialPage.collectAsStateWithLifecycle()
     val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsStateWithLifecycle()
     val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsStateWithLifecycle()
     val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsStateWithLifecycle()
@@ -90,6 +91,7 @@ fun MainPageRoute(
         isUsingVerticalAccessBar = isUsingVerticalAccessBar,
         shouldShowNewVersionPin = shouldShowNewVersionPin,
         searchAllState = searchAllState,
+        initialPage = initialPage,
     )
 }
 
@@ -104,9 +106,11 @@ fun MainPageScreenView(
     shouldShowNewVersionPin: Boolean,
     currentEnumPage: ElementEnum?,
     isUsingVerticalAccessBar: Boolean,
+    initialPage: Int?
 ) {
     val pagerState = rememberPagerState(
-        pageCount = { tabs.size }
+        pageCount = { tabs.size },
+        initialPage = initialPage?.takeIf { it < tabs.size } ?: 0
     )
 
     LaunchedEffect(currentEnumPage) {
