@@ -35,7 +35,7 @@ import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.ext.blurCompat
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
@@ -61,11 +61,9 @@ fun PlaylistSmallView(
     playlistDetailListener: PlaylistDetailListener,
     navigateBack: () -> Unit,
     searchAction: () -> Unit,
-    onShowMusicBottomSheet: (Music) -> Unit,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
     multiSelectionState: MultiSelectionState,
-    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
@@ -129,7 +127,7 @@ fun PlaylistSmallView(
                 },
             title = topBarTitle,
             leftAction = TopBarNavigationAction(onClick = navigateBack),
-            rightAction = object: TopBarActionSpec {
+            rightAction = object : TopBarActionSpec {
                 override val icon: ImageVector = Icons.Rounded.Search
                 override val onClick: () -> Unit = searchAction
             },
@@ -188,8 +186,10 @@ fun PlaylistSmallView(
                             ),
                         music = music,
                         onClick = playlistDetailListener::onPlayClicked,
-                        onLongClick = { onLongSelectOnMusic(music) },
-                        onMoreClicked = { onShowMusicBottomSheet(music) },
+                        onLongClick = { playlistDetailListener.onLongClickOnMusic(music.musicId) },
+                        onMoreClicked = {
+                            playlistDetailListener.showMusicBottomSheet(listOf(music.musicId))
+                        },
                         textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                         isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                         isSelected = multiSelectionState.selectedIds.contains(music.musicId),

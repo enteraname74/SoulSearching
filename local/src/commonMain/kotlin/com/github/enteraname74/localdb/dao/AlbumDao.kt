@@ -108,8 +108,12 @@ interface AlbumDao {
     fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomAlbumPreview>
 
     @Transaction
-    @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")
+    @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId LIMIT 1")
     fun getFromId(albumId: UUID): Flow<RoomCompleteAlbum?>
+
+    @Transaction
+    @Query("SELECT * FROM RoomAlbum WHERE albumId in (:albumIds)")
+    fun getFromIds(albumIds: List<UUID>): Flow<List<RoomCompleteAlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")

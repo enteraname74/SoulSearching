@@ -1,5 +1,10 @@
 package com.github.enteraname74.soulsearching.di
 
+import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
@@ -79,4 +84,11 @@ internal val viewModelModule: Module = module {
     singleOf(::ViewSettingsManager)
 
     viewModelOf(::MigrationViewModel)
+
+    // Bottom sheets
+    viewModelOf(::MusicBottomSheetViewModel)
+    viewModelOf(::AddToPlaylistBottomSheetViewModel)
+    viewModelOf(::PlaylistBottomSheetViewModel)
+    viewModelOf(::ArtistBottomSheetViewModel)
+    viewModelOf(::AlbumBottomSheetViewModel)
 }

@@ -43,6 +43,11 @@ class DeleteAlbumUseCase(
         }
     }
 
+    // TODO OPTIMIZATION: Improve deletion of multiple albums?
+    suspend operator fun invoke(albumIds: List<UUID>) {
+        albumIds.forEach { this(it) }
+    }
+
     suspend fun onlyAlbum(albumId: UUID) {
         albumRepository.getAlbumWithMusics(albumId = albumId).firstOrNull()?.let {
             albumRepository.delete(it.album)

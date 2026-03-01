@@ -15,9 +15,9 @@ data object SettingsColorThemeDestination: SettingPage {
     ) {
         entryProviderScope.entry<SettingsColorThemeDestination> {
             SettingsColorThemeRoute(
-                navigateBack = { navigator.goBack() },
+                navigateBack = { navigator.pop() },
                 toThemeSelection = {
-                    navigator.navigate(SettingsThemeSelectionDestination)
+                    navigator.push(SettingsThemeSelectionDestination)
                 }
             )
         }

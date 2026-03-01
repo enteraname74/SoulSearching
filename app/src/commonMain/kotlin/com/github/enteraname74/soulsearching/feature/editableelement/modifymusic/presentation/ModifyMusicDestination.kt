@@ -28,7 +28,7 @@ data class ModifyMusicDestination(
                     onNavigationState = {
                         when (it) {
                             ModifyMusicNavigationState.Back -> {
-                                navigator.goBack()
+                                navigator.pop()
                             }
 
                             ModifyMusicNavigationState.Idle -> {

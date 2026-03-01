@@ -13,7 +13,7 @@ data object SettingsColorSeedDestination : NavKey {
     ) {
         entryProviderScope.entry<SettingsColorSeedDestination> {
             SettingsColorSeedScreen(
-                navigateBack = navigator::goBack,
+                navigateBack = navigator::pop,
             )
         }
     }

@@ -35,8 +35,8 @@ import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconColors
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -46,6 +46,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -57,7 +58,7 @@ fun PlayerListView(
     isExpanded: Boolean,
     playedList: List<Music>,
     onLongSelectOnMusic: (Music) -> Unit,
-    onMoreClickedOnMusic: (Music) -> Unit,
+    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
     containerColor: Color,
     contentColor: Color,
     buttonColors: SoulButtonColors,
@@ -170,7 +171,7 @@ fun PlayerListView(
                                     },
                                     onMoreClicked = {
                                         coroutineScope.launch {
-                                            onMoreClickedOnMusic(elt)
+                                            onMoreClickedOnMusic(elt.musicId)
                                         }
                                     },
                                     onLongClick = { onLongSelectOnMusic(elt) },

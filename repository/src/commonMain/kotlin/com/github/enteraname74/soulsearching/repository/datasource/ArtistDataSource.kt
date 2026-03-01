@@ -35,6 +35,8 @@ interface ArtistDataSource {
      */
     fun getFromId(artistId: UUID) : Flow<Artist?>
 
+    fun getFromIds(artistIds: List<UUID>) : Flow<List<ArtistWithMusics>>
+
     fun getAllPaged(): Flow<PagingData<ArtistPreview>>
 
     /**

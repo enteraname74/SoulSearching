@@ -5,60 +5,47 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.presentation.SelectedPlaylistDestination
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
 class SelectedPlaylistViewModel(
     private val commonMusicUseCase: CommonMusicUseCase,
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
-    private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-    private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
-    val multiSelectionManagerImpl: MultiSelectionManagerImpl,
+    private val multiSelectionManager: MultiSelectionManager,
     destination: SelectedPlaylistDestination,
-) : ViewModel(),
-    PlaylistDetailListener,
-    MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
-    MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
-    MultiSelectionManager by multiSelectionManagerImpl {
+) : ViewModel(), PlaylistDetailListener {
 
-    val multiSelectionState = multiSelectionManagerImpl.state
+    val multiSelectionState = multiSelectionManager.state
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = MultiSelectionState(emptyList()),
         )
-
-    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> =
-        commonPlaylistUseCase.getAllWithMusics()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.Eagerly,
-                initialValue = emptyList()
-            )
 
     private val playlistId: UUID = destination.selectedPlaylistId
 
@@ -106,41 +93,14 @@ class SelectedPlaylistViewModel(
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
-    private val _addToPlaylistBottomSheet: MutableStateFlow<AddToPlaylistBottomSheet?> =
-        MutableStateFlow(null)
-    val addToPlaylistBottomSheet: StateFlow<AddToPlaylistBottomSheet?> =
-        _addToPlaylistBottomSheet.asStateFlow()
-
     private val _navigationState: MutableStateFlow<SelectedPlaylistNavigationState> =
         MutableStateFlow(
             SelectedPlaylistNavigationState.Idle,
         )
     val navigationState: StateFlow<SelectedPlaylistNavigationState> = _navigationState.asStateFlow()
 
-    init {
-        musicBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyMusic = {
-                _navigationState.value = SelectedPlaylistNavigationState.ToModifyMusic(it.musicId)
-            },
-            getAllPlaylistsWithMusics = { allPlaylists.value },
-            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
-            musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-
-        multiMusicBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-            musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
-        )
-    }
-
     fun consumeNavigation() {
-        multiSelectionManagerImpl.clearMultiSelection()
+        multiSelectionManager.clearMultiSelection()
         _navigationState.value = SelectedPlaylistNavigationState.Idle
     }
 
@@ -163,46 +123,15 @@ class SelectedPlaylistViewModel(
     }
 
     override fun onCloseSelection() {
-        multiSelectionManagerImpl.clearMultiSelection()
+        multiSelectionManager.clearMultiSelection()
     }
 
-    override fun onMoreClickedOnSelection() {
-        handleMultiSelectionBottomSheet()
-    }
-
-    private fun handleMultiSelectionBottomSheet() {
-        viewModelScope.launch {
-            val selectedIds = multiSelectionState.value.selectedIds
-            val currentPlaylist = commonPlaylistUseCase
-                .getFromId(playlistId).firstOrNull() ?: return@launch
-
-            if (selectedIds.size == 1) {
-                val selectedMusic: Music =
-                    commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull()
-                        ?: return@launch
-                showMusicBottomSheet(
-                    selectedMusic = selectedMusic,
-                    currentPlaylist = currentPlaylist,
-                )
-            } else {
-                showMultiMusicBottomSheet(
-                    currentPlaylist = currentPlaylist,
-                )
-            }
-        }
-    }
-
-    fun showMusicBottomSheetWithPlaylist(
-        music: Music,
-    ) {
-        viewModelScope.launch {
-            showMusicBottomSheet(
-                selectedMusic = music,
-                currentPlaylist = commonPlaylistUseCase
-                    .getFromId(playlistId)
-                    .firstOrNull()
-            )
-        }
+    override fun onLongClickOnMusic(musicId: UUID) {
+        multiSelectionManager.toggleElementInSelection(
+            id = musicId,
+            mode = SelectionMode.Music,
+            playlistId = playlistId,
+        )
     }
 
     fun navigateBack() {
@@ -240,5 +169,9 @@ class SelectedPlaylistViewModel(
 
     override fun onSearch(search: String) {
         _searchQuery.value = search
+    }
+
+    override fun showMusicBottomSheet(musicIds: List<UUID>) {
+        _navigationState.value = SelectedPlaylistNavigationState.ToMusicBottomSheet(musicIds)
     }
 }

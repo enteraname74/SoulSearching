@@ -19,20 +19,20 @@ data object SettingsPersonalisationDestination: SettingPage {
         entryProviderScope.entry<SettingsPersonalisationDestination> {
             SettingsPersonalisationRoute(
                 navScope = object : SettingsPersonalisationNavigationScope {
-                    override val navigateBack: () -> Unit = navigator::goBack
+                    override val navigateBack: () -> Unit = navigator::pop
                     override val toMainPagePersonalisation: () -> Unit = {
-                        navigator.navigate(SettingsMainPagePersonalisationDestination)
+                        navigator.push(SettingsMainPagePersonalisationDestination)
                     }
                     override val toMusicViewPersonalisation: () -> Unit = {
-                        navigator.navigate(SettingsMusicViewPersonalisationDestination)
+                        navigator.push(SettingsMusicViewPersonalisationDestination)
                     }
 
                     override val toAlbumViewPersonalisation: () -> Unit = {
-                        navigator.navigate(SettingsAlbumViewPersonalisationDestination)
+                        navigator.push(SettingsAlbumViewPersonalisationDestination)
                     }
 
                     override val toPlayerPersonalisation: () -> Unit = {
-                        navigator.navigate(SettingsPlayerPersonalisationDestination)
+                        navigator.push(SettingsPlayerPersonalisationDestination)
                     }
                 }
             )

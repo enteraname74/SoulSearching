@@ -22,6 +22,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -30,7 +31,7 @@ fun SearchMusics(
     foundMusics: List<Music>,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
-    onSelectedMusicForBottomSheet: (Music) -> Unit,
+    onSelectedMusicForBottomSheet: (musicId: UUID) -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     playbackManager: PlaybackManager = injectElement(),
@@ -79,7 +80,7 @@ fun SearchMusics(
                     },
                     onMoreClicked = {
                         coroutineScope.launch {
-                            onSelectedMusicForBottomSheet(music)
+                            onSelectedMusicForBottomSheet(music.musicId)
                         }
                     },
                     textColor = textColor,

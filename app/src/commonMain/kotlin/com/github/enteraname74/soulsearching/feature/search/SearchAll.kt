@@ -33,7 +33,7 @@ import java.util.UUID
 fun SearchAll(
     lazyListState: LazyListState,
     searchAllState: SearchAllState,
-    onSelectedMusicForBottomSheet: (Music) -> Unit,
+    onSelectedMusicForBottomSheet: (musicId: UUID) -> Unit,
     onSelectedAlbumForBottomSheet: (AlbumPreview) -> Unit,
     onSelectedPlaylistForBottomSheet: (PlaylistPreview) -> Unit,
     onSelectedArtistForBottomSheet: (ArtistPreview) -> Unit,
@@ -187,7 +187,7 @@ fun SearchAll(
                     },
                     onMoreClicked = {
                         coroutineScope.launch {
-                            onSelectedMusicForBottomSheet(music)
+                            onSelectedMusicForBottomSheet(music.musicId)
                         }
                     },
                     isPlayedMusic = currentPlayedSong?.musicId == music.musicId,

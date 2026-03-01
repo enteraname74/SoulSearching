@@ -5,12 +5,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.github.enteraname74.soulsearching.PlayerViewScaffold
+import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationRowSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -27,6 +30,8 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Eleme
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionScaffold
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
@@ -86,14 +91,56 @@ private fun MainAppRoute(
             )
         }
 
-        PlayerViewScaffold(
-            navigator = navigator,
-            playerViewModel = playerViewModel,
+        MultiSelectionScaffold(
+            onNavigationState = { navigationState ->
+                when (navigationState) {
+                    MultiSelectionNavigationState.Idle -> {
+                        // no-op
+                    }
+                    is MultiSelectionNavigationState.ToMusicBottomSheet -> {
+                        navigator.push(
+                            MusicBottomSheetDestination(
+                                musicIds = navigationState.musicIds,
+                                playlistId = navigationState.playlistId,
+                            )
+                        )
+                    }
+
+                    is MultiSelectionNavigationState.ToPlaylistBottomSheet -> {
+                        navigator.push(
+                            PlaylistBottomSheetDestination(
+                                playlistIds = navigationState.playlistIds,
+                            )
+                        )
+                    }
+
+                    is MultiSelectionNavigationState.ToAlbumBottomSheet -> {
+                        navigator.push(
+                            AlbumBottomSheetDestination(
+                                albumIds = navigationState.albumIds,
+                            )
+                        )
+                    }
+                    is MultiSelectionNavigationState.ToArtistBottomSheet -> {
+                        navigator.push(
+                            ArtistBottomSheetDestination(
+                                artistIds = navigationState.artistIds,
+                            )
+                        )
+                    }
+                }
+
+            }
         ) {
-            MainAppNavigationHandler(
+            PlayerViewScaffold(
                 navigator = navigator,
-                backStack = backStack,
-            )
+                playerViewModel = playerViewModel,
+            ) {
+                MainAppNavigationHandler(
+                    navigator = navigator,
+                    backStack = backStack,
+                )
+            }
         }
     }
 }
@@ -127,7 +174,7 @@ private fun navigationRows(
                     if (navigator.isComingFromPlaylistDetails()) {
                         colorThemeManager.removePlaylistTheme()
                     }
-                    navigator.navigate(SettingsDestination)
+                    navigator.push(SettingsDestination)
                 },
                 filledIcon = Icons.Rounded.Settings,
                 outlinedIcon = Icons.Outlined.Settings,
@@ -150,7 +197,7 @@ private fun navigationRows(
                         if (navigator.isComingFromPlaylistDetails()) {
                             colorThemeManager.removePlaylistTheme()
                         }
-                        navigator.navigate(MainPageDestination)
+                        navigator.push(MainPageDestination)
                     },
                     isSelected = (navigator.currentRoute is MainPageDestination) && pageCheck
                 )

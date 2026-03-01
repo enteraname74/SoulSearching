@@ -15,9 +15,9 @@ data object SettingsAboutDestination: SettingPage {
     ) {
         entryProviderScope.entry<SettingsAboutDestination> {
             SettingsAboutRoute(
-                navigateBack = { navigator.goBack() },
+                navigateBack = { navigator.pop() },
                 toDevelopers = {
-                    navigator.navigate(SettingsDevelopersDestination)
+                    navigator.push(SettingsDevelopersDestination)
                 }
             )
         }

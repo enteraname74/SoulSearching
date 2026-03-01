@@ -27,11 +27,11 @@ data object SettingsAddMusicsDestination : SettingPage {
                         }
 
                         is SettingsAddMusicsNavigationState.NavigateBack -> {
-                            navigator.goBack()
+                            navigator.pop()
                         }
 
                         is SettingsAddMusicsNavigationState.ToMultipleArtists -> {
-                            navigator.navigate(
+                            navigator.push(
                                 MultipleArtistsChoiceDestination(
                                     mode = MultipleArtistsChoiceMode.NewSongs(
                                         multipleArtists = navigationState.multipleArtists

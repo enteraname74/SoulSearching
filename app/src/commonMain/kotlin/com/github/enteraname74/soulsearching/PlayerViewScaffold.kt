@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -74,28 +75,31 @@ fun PlayerViewScaffold(
         PlayerDraggableView(
             maxHeight = maxHeight,
             navigateToAlbum = { albumId ->
-                navigator.navigate(
+                navigator.push(
                     SelectedAlbumDestination(selectedAlbumId = albumId)
                 )
             },
             navigateToArtist = { artistId ->
-                navigator.navigate(
+                navigator.push(
                     SelectedArtistDestination(selectedArtistId = artistId)
                 )
             },
             navigateToModifyMusic = { musicId ->
-                navigator.navigate(
+                navigator.push(
                     ModifyMusicDestination(
                         selectedMusicId = musicId
                     )
                 )
             },
             navigateToRemoteLyricsSettings = {
-                navigator.navigate(
+                navigator.push(
                     SettingsAdvancedDestination(
                         focusedElement = SettingsAdvancedScreenFocusedElement.LyricsPermission,
                     )
                 )
+            },
+            showMusicBottomSheet = {
+                navigator.push(MusicBottomSheetDestination(it))
             },
             playerViewModel = playerViewModel,
         )

@@ -46,6 +46,9 @@ class AlbumRepositoryImpl(
         albumId = albumId
     )
 
+    override fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>> =
+        albumDataSource.getFromIds(albumIds)
+
     override fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?> =
         albumDataSource.getAlbumWithMusics(
             albumId = albumId

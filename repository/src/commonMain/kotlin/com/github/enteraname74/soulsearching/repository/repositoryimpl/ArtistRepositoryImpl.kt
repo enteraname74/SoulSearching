@@ -48,6 +48,9 @@ class ArtistRepositoryImpl(
         artistId = artistId
     )
 
+    override fun getFromIds(artistIds: List<UUID>): Flow<List<ArtistWithMusics>> =
+        artistDataSource.getFromIds(artistIds)
+
     override suspend fun getFromName(artistName: String): Artist? =
         artistDataSource.getFromName(artistName = artistName)
 

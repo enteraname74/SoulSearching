@@ -27,15 +27,19 @@ interface PlaylistDao {
     @Delete
     suspend fun delete(roomPlaylist : RoomPlaylist)
 
-    @Query("DELETE FROM RoomPlaylist WHERE playlistId IN (:ids) AND isFavorite=0")
+    @Query("DELETE FROM RoomPlaylist WHERE playlistId IN (:ids) AND isFavorite = 0")
     suspend fun deleteAll(ids: List<UUID>)
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
     fun getAllPlaylistWithMusics(): Flow<List<RoomPlaylistWithMusics>>
 
-    @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
+    @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId LIMIT 1")
     fun getFromId(playlistId: UUID) : Flow<RoomPlaylist?>
+
+    @Transaction
+    @Query("SELECT * FROM RoomPlaylist WHERE playlistId IN (:playlistIds)")
+    fun getFromIds(playlistIds: List<UUID>) : Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")

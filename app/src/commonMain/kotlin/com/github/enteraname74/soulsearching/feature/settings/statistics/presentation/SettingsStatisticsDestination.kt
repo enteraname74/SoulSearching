@@ -14,7 +14,7 @@ data object SettingsStatisticsDestination: SettingPage {
     ) {
         entryProviderScope.entry<SettingsStatisticsDestination> {
             SettingsStatisticsRoute(
-                navigateBack = { navigator.goBack() },
+                navigateBack = { navigator.pop() },
             )
         }
     }

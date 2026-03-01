@@ -19,11 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionScaffold
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
@@ -35,6 +31,8 @@ import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPaddin
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.view.PlaylistLargeView
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.view.PlaylistRowView
@@ -55,16 +53,20 @@ import kotlinx.coroutines.launch
 fun PlaylistScreen(
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
-    multiSelectionManagerImpl: MultiSelectionManagerImpl,
     navigateBack: () -> Unit,
-    onShowMusicBottomSheet: (Music) -> Unit,
     multiSelectionState: MultiSelectionState,
-    onLongSelectOnMusic: (Music) -> Unit,
+    multiSelectionManager: MultiSelectionManager = injectElement(),
     colorThemeManager: ColorThemeManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
     optionalContent: @Composable () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
+
+    SoulBackHandler(
+        enabled = multiSelectionManager.isActive(),
+    ) {
+        multiSelectionManager.clearMultiSelection()
+    }
 
     LaunchedEffect(playerViewManager.currentValue) {
         if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
@@ -88,107 +90,93 @@ fun PlaylistScreen(
         }
     }
 
-    SoulBackHandler(playerViewManager.currentValue != BottomSheetStates.EXPANDED) {
-        navigateBack()
-    }
-
     val playlistPalette: SoulSearchingPalette? by colorThemeManager.playlistsColorTheme.collectAsState()
 
     CompositionLocalProvider(
         LocalColors provides AnimatedColorPaletteBuilder.animate(playlistPalette.orDefault())
     ) {
-        MultiSelectionScaffold(
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-            onCancel = playlistDetailListener::onCloseSelection,
-            onMore = playlistDetailListener::onMoreClickedOnSelection,
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(SoulSearchingColorTheme.colorScheme.primary)
         ) {
-            BoxWithConstraints(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(SoulSearchingColorTheme.colorScheme.primary)
-            ) {
-                val searchDraggableState = rememberSwipeableState(
-                    initialValue = BottomSheetStates.COLLAPSED
-                )
+            val searchDraggableState = rememberSwipeableState(
+                initialValue = BottomSheetStates.COLLAPSED
+            )
 
-                val constraintsScope = this
-                val maxHeight = with(LocalDensity.current) {
-                    constraintsScope.maxHeight.toPx() + getNavigationBarPadding()
+            val constraintsScope = this
+            val maxHeight = with(LocalDensity.current) {
+                constraintsScope.maxHeight.toPx() + getNavigationBarPadding()
+            }
+
+            val searchBarFocusRequester = remember { FocusRequester() }
+
+            val searchAction: () -> Unit = {
+                coroutineScope.launch {
+                    playlistDetailListener.onCloseSelection()
+                    searchDraggableState.animateTo(
+                        BottomSheetStates.EXPANDED,
+                        tween(UiConstants.AnimationDuration.normal)
+                    )
+                    searchBarFocusRequester.requestFocus()
+                }
+            }
+
+            val windowSize = rememberWindowSize()
+            when (windowSize) {
+                WindowSize.Small -> {
+                    PlaylistSmallView(
+                        navigateBack = navigateBack,
+                        searchAction = searchAction,
+                        playlistDetail = playlistDetail,
+                        playlistDetailListener = playlistDetailListener,
+                        optionalContent = optionalContent,
+                        onCoverLoaded = onCoverLoaded,
+                        multiSelectionState = multiSelectionState,
+                    )
                 }
 
-                val searchBarFocusRequester = remember { FocusRequester() }
-
-                val searchAction: () -> Unit = {
-                    coroutineScope.launch {
-                        multiSelectionManagerImpl.clearMultiSelection()
-                        searchDraggableState.animateTo(
-                            BottomSheetStates.EXPANDED,
-                            tween(UiConstants.AnimationDuration.normal)
-                        )
-                        searchBarFocusRequester.requestFocus()
-                    }
-                }
-
-                val windowSize = rememberWindowSize()
-                when (windowSize) {
-                    WindowSize.Small -> {
-                        PlaylistSmallView(
+                else -> {
+                    if (PlaylistViewUiUtils.canShowColumnLayout()) {
+                        PlaylistLargeView(
                             navigateBack = navigateBack,
                             searchAction = searchAction,
-                            onShowMusicBottomSheet = onShowMusicBottomSheet,
                             playlistDetail = playlistDetail,
                             playlistDetailListener = playlistDetailListener,
                             optionalContent = optionalContent,
                             onCoverLoaded = onCoverLoaded,
-                            onLongSelectOnMusic = onLongSelectOnMusic,
+                            multiSelectionState = multiSelectionState,
+                        )
+                    } else {
+                        PlaylistRowView(
+                            navigateBack = navigateBack,
+                            searchAction = searchAction,
+                            playlistDetail = playlistDetail,
+                            playlistDetailListener = playlistDetailListener,
+                            optionalContent = optionalContent,
+                            onCoverLoaded = onCoverLoaded,
                             multiSelectionState = multiSelectionState,
                         )
                     }
-
-                    else -> {
-                        if (PlaylistViewUiUtils.canShowColumnLayout()) {
-                            PlaylistLargeView(
-                                navigateBack = navigateBack,
-                                searchAction = searchAction,
-                                onShowMusicBottomSheet = onShowMusicBottomSheet,
-                                playlistDetail = playlistDetail,
-                                playlistDetailListener = playlistDetailListener,
-                                optionalContent = optionalContent,
-                                onCoverLoaded = onCoverLoaded,
-                                onLongSelectOnMusic = onLongSelectOnMusic,
-                                multiSelectionState = multiSelectionState,
-                            )
-                        } else {
-                            PlaylistRowView(
-                                navigateBack = navigateBack,
-                                searchAction = searchAction,
-                                onShowMusicBottomSheet = onShowMusicBottomSheet,
-                                playlistDetail = playlistDetail,
-                                playlistDetailListener = playlistDetailListener,
-                                optionalContent = optionalContent,
-                                onCoverLoaded = onCoverLoaded,
-                                onLongSelectOnMusic = onLongSelectOnMusic,
-                                multiSelectionState = multiSelectionState,
-                            )
-                        }
-                    }
                 }
+            }
 
-                SearchView(
-                    draggableState = searchDraggableState,
-                    placeholder = strings.searchForMusics,
-                    maxHeight = maxHeight,
-                    focusRequester = searchBarFocusRequester,
-                    onSearch = playlistDetailListener::onSearch,
-                ) { focusManager, lazyListState ->
-                    SearchMusics(
-                        lazyListState = lazyListState,
-                        foundMusics = playlistDetail.searchMusics,
-                        isMainPlaylist = false,
-                        focusManager = focusManager,
-                        onSelectedMusicForBottomSheet = onShowMusicBottomSheet,
-                    )
-                }
+            SearchView(
+                draggableState = searchDraggableState,
+                placeholder = strings.searchForMusics,
+                maxHeight = maxHeight,
+                focusRequester = searchBarFocusRequester,
+                onSearch = playlistDetailListener::onSearch,
+            ) { focusManager, lazyListState ->
+                SearchMusics(
+                    lazyListState = lazyListState,
+                    foundMusics = playlistDetail.searchMusics,
+                    isMainPlaylist = false,
+                    focusManager = focusManager,
+                    onSelectedMusicForBottomSheet = {
+                        playlistDetailListener.showMusicBottomSheet(listOf(it))
+                    },
+                )
             }
         }
     }

@@ -71,6 +71,12 @@ internal class RoomArtistDataSourceImpl(
         ).map { it?.toArtist() }
     }
 
+
+    override fun getFromIds(artistIds: List<UUID>): Flow<List<ArtistWithMusics>> =
+        appDatabase.artistDao.getFromIds(artistIds).map { list ->
+            list.map { it.toArtistWithMusics() }
+        }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
         settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_DIRECTION_KEY).flatMapLatest { direction ->
