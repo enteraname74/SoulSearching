@@ -425,6 +425,7 @@ class PlaybackManager(
 
     suspend fun setAndPlayMusic(music: Music) {
         playerRepository.setCurrent(music.musicId)
+        playerRepository.setPlayedListState(PlayedListState.Playing)
         launchMusicCount(musicId = music.musicId)
     }
 
@@ -442,20 +443,6 @@ class PlaybackManager(
 
     suspend fun removeSongsFromPlayedPlaylist(musicIds: List<UUID>) {
         playerRepository.deleteAll(musicIds)
-    }
-
-    suspend fun addMusicToPlayNext(music: Music) {
-        playerRepository.add(
-            music = music,
-            mode = AddMusicMode.Next,
-        )
-    }
-
-    suspend fun addMusicToQueue(music: Music) {
-        playerRepository.add(
-            music = music,
-            mode = AddMusicMode.Queue,
-        )
     }
 
     /**

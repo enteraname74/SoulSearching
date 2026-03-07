@@ -39,11 +39,6 @@ interface PlayerRepository {
         afterMusicId: UUID
     )
 
-    suspend fun add(
-        music: Music,
-        mode: AddMusicMode
-    )
-
     suspend fun setCurrent(
         musicId: UUID,
     )
