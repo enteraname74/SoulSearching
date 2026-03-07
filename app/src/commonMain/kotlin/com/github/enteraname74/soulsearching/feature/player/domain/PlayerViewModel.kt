@@ -30,12 +30,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -74,30 +73,36 @@ class PlayerViewModel(
         SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED
     ).flatMapLatest { isRemoteFetchEnabled ->
         playbackManager.currentSong.flatMapLatest { music ->
-            if (music == null) {
-                flowOf(LyricsFetchState.FetchingLyrics)
-            } else {
-                var lyrics: MusicLyrics? = commonLyricsUseCase.getLocalLyricsForMusic(music = music)
-                if (lyrics == null && isRemoteFetchEnabled) {
-                    lyrics = commonLyricsUseCase.getRemoteLyricsForMusic(music = music)
-                }
-
-                if (lyrics == null) {
-                    if (isRemoteFetchEnabled) {
-                        flowOf(LyricsFetchState.NoLyricsFound)
-                    } else {
-                        flowOf(LyricsFetchState.NoPermission)
-                    }
+            channelFlow {
+                if (music == null) {
+                    send(LyricsFetchState.NoLyricsFound)
                 } else {
-                    currentSongProgressionState.mapLatest { progression ->
-                        LyricsFetchState.FoundLyrics(
-                            lyrics = lyrics,
-                            currentMusicId = music.musicId,
-                            highlightedLyricsLine = lyrics
-                                .syncedLyrics
-                                ?.indexOfLast { it.timestampMs < progression }
-                                ?.takeIf { it >= 0 }
-                        )
+                    send(LyricsFetchState.FetchingLyrics)
+
+                    var lyrics: MusicLyrics? = commonLyricsUseCase.getLocalLyricsForMusic(music = music)
+                    if (lyrics == null && isRemoteFetchEnabled) {
+                        lyrics = commonLyricsUseCase.getRemoteLyricsForMusic(music = music)
+                    }
+
+                    if (lyrics == null) {
+                        if (isRemoteFetchEnabled) {
+                            send(LyricsFetchState.NoLyricsFound)
+                        } else {
+                            send(LyricsFetchState.NoPermission)
+                        }
+                    } else {
+                        currentSongProgressionState.collectLatest { progression ->
+                            send(
+                                LyricsFetchState.FoundLyrics(
+                                    lyrics = lyrics,
+                                    currentMusicId = music.musicId,
+                                    highlightedLyricsLine = lyrics
+                                        .syncedLyrics
+                                        ?.indexOfLast { it.timestampMs < progression }
+                                        ?.takeIf { it >= 0 }
+                                )
+                            )
+                        }
                     }
                 }
             }

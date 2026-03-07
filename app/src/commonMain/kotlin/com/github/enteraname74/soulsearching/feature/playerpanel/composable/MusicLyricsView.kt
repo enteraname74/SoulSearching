@@ -78,43 +78,36 @@ fun MusicLyricsView(
     containerColor: Color,
     buttonColor: SoulButtonColors,
     lyricsState: LyricsFetchState,
-    isExpanded: Boolean,
     onActivateRemoteLyrics: () -> Unit,
 ) {
-    if (!isExpanded) {
-        FetchingLyricsView(
-            contentColor = contentColor
-        )
-    } else {
-        when (lyricsState) {
-            LyricsFetchState.FetchingLyrics -> {
-                FetchingLyricsView(
-                    contentColor = contentColor
-                )
-            }
+    when (lyricsState) {
+        LyricsFetchState.FetchingLyrics -> {
+            FetchingLyricsView(
+                contentColor = contentColor
+            )
+        }
 
-            is LyricsFetchState.FoundLyrics -> {
-                LyricsView(
-                    contentColor = contentColor,
-                    containerColor = containerColor,
-                    subTextColor = noLyricsColor,
-                    lyricsState = lyricsState,
-                    buttonColor = buttonColor,
-                )
-            }
+        is LyricsFetchState.FoundLyrics -> {
+            LyricsView(
+                contentColor = contentColor,
+                containerColor = containerColor,
+                subTextColor = noLyricsColor,
+                lyricsState = lyricsState,
+                buttonColor = buttonColor,
+            )
+        }
 
-            LyricsFetchState.NoLyricsFound -> {
-                NoLyricsFoundView(
-                    contentColor = noLyricsColor
-                )
-            }
+        LyricsFetchState.NoLyricsFound -> {
+            NoLyricsFoundView(
+                contentColor = noLyricsColor
+            )
+        }
 
-            LyricsFetchState.NoPermission -> {
-                NoPermissionView(
-                    onActivateRemoteLyrics = onActivateRemoteLyrics,
-                    buttonColor = buttonColor,
-                )
-            }
+        LyricsFetchState.NoPermission -> {
+            NoPermissionView(
+                onActivateRemoteLyrics = onActivateRemoteLyrics,
+                buttonColor = buttonColor,
+            )
         }
     }
 }

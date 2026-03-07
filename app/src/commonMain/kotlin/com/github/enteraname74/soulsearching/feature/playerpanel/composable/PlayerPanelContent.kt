@@ -77,7 +77,6 @@ fun PlayerPanelContent(
                     containerColor = containerColor,
                     noLyricsColor = subTextColor,
                     lyricsState = lyricsState,
-                    isExpanded = isExpanded,
                     buttonColor = buttonColors,
                     onActivateRemoteLyrics = onActivateRemoteLyrics,
                 )
