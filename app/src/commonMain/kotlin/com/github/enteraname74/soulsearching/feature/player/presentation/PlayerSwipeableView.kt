@@ -86,17 +86,14 @@ fun PlayerDraggableView(
             }
 
             is PlayerNavigationState.ToModifyMusic -> {
-                coroutineScope.launch {
-                    if (shouldCloseMusicListDraggableView()) {
-                        playerMusicListViewManager.animateTo(newState = BottomSheetStates.COLLAPSED)
-                    }
-                    playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
-                }.invokeOnCompletion {
-                    val selectedMusic =
-                        (navigationState as PlayerNavigationState.ToModifyMusic).music
-                    navigateToModifyMusic(selectedMusic.musicId)
-                    playerViewModel.consumeNavigation()
+                if (shouldCloseMusicListDraggableView()) {
+                    playerMusicListViewManager.animateTo(newState = BottomSheetStates.COLLAPSED)
                 }
+                playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+                val selectedMusic =
+                    (navigationState as PlayerNavigationState.ToModifyMusic).music
+                navigateToModifyMusic(selectedMusic.musicId)
+                playerViewModel.consumeNavigation()
             }
 
             is PlayerNavigationState.ToAlbum -> {
@@ -114,15 +111,12 @@ fun PlayerDraggableView(
             }
 
             PlayerNavigationState.ToRemoteLyricsSettings -> {
-                coroutineScope.launch {
-                    if (shouldCloseMusicListDraggableView()) {
-                        playerMusicListViewManager.animateTo(newState = BottomSheetStates.COLLAPSED)
-                    }
-                    playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
-                }.invokeOnCompletion {
-                    navigateToRemoteLyricsSettings()
-                    playerViewModel.consumeNavigation()
+                if (shouldCloseMusicListDraggableView()) {
+                    playerMusicListViewManager.animateTo(newState = BottomSheetStates.COLLAPSED)
                 }
+                playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+                navigateToRemoteLyricsSettings()
+                playerViewModel.consumeNavigation()
             }
 
             is PlayerNavigationState.ToMusicBottomSheet -> {
@@ -133,16 +127,14 @@ fun PlayerDraggableView(
     }
 
     SoulBackHandler(playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-        coroutineScope.launch {
-            if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
-                playerMusicListViewManager.animateTo(
-                    newState = BottomSheetStates.COLLAPSED,
-                )
-            }
-            playerViewManager.animateTo(
-                newState = BottomSheetStates.MINIMISED,
+        if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
+            playerMusicListViewManager.animateTo(
+                newState = BottomSheetStates.COLLAPSED,
             )
         }
+        playerViewManager.animateTo(
+            newState = BottomSheetStates.MINIMISED,
+        )
     }
 
     CompositionLocalProvider(
@@ -164,7 +156,7 @@ fun PlayerDraggableView(
                     )
                 }
                 .swipeable(
-                    state = playerViewManager.playerDraggableState,
+                    state = playerViewManager.draggableState,
                     orientation = Orientation.Vertical,
                     anchors = mapOf(
                         (maxHeight - PlayerMinimisedHeight) to BottomSheetStates.MINIMISED,
@@ -185,11 +177,9 @@ fun PlayerDraggableView(
 
                     LaunchedEffect(playerMusicListViewManager.currentValue) {
                         if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
-                            coroutineScope.launch {
-                                playerMusicListViewManager.animateTo(
-                                    newState = BottomSheetStates.COLLAPSED,
-                                )
-                            }
+                            playerMusicListViewManager.animateTo(
+                                newState = BottomSheetStates.COLLAPSED,
+                            )
                         }
                     }
                 }
@@ -200,15 +190,11 @@ fun PlayerDraggableView(
                         state = state as PlayerViewState.Data,
                         lyricsState = lyricsState,
                         onArtistClicked = {
-                            coroutineScope.launch {
-                                playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
-                            }
+                            playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
                             playerViewModel.navigateToArtist(it)
                         },
                         onAlbumClicked = {
-                            coroutineScope.launch {
-                                playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
-                            }
+                            playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
                             playerViewModel.navigateToAlbum()
                         },
                         showMusicBottomSheet = {

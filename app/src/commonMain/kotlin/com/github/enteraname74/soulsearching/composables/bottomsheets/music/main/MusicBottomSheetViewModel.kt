@@ -20,7 +20,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
@@ -185,13 +184,9 @@ class MusicBottomSheetViewModel(
             )
         }
 
-    private suspend fun minimisePlayerViewsIfNeeded() {
-        if (playerMusicListViewManager.currentValue == BottomSheetStates.EXPANDED) {
-            playerMusicListViewManager.animateTo(newState = BottomSheetStates.COLLAPSED)
-        }
-        if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-            playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
-        }
+    private fun minimisePlayerViewsIfNeeded() {
+        playerMusicListViewManager.closeIfPossible()
+        playerViewManager.minimiseIfPossible()
     }
 
     private fun deleteMusics() {

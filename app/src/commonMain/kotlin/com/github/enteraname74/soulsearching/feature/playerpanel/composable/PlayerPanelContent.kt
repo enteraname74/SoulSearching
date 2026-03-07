@@ -116,15 +116,10 @@ fun PlayerPanelContent(
                             val currentFocusedTab = pagerState.currentPage
                             val isSameTab = index == currentFocusedTab
                             if (isSameTab && isExpanded) {
-                                coroutineScope.launch {
-                                    playerMusicListViewManager.animateTo(BottomSheetStates.COLLAPSED)
-                                }
+                                playerMusicListViewManager.animateTo(BottomSheetStates.COLLAPSED)
                             } else {
                                 if (!isExpanded) {
-                                    coroutineScope.launch {
-                                        playerMusicListViewManager.animateTo(BottomSheetStates.EXPANDED)
-                                    }
-
+                                    playerMusicListViewManager.animateTo(BottomSheetStates.EXPANDED)
                                 }
                                 coroutineScope.launch {
                                     pagerState.animateScrollToPage(

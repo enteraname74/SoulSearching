@@ -67,16 +67,14 @@ fun PlayerTopInformation(
             modifier = Modifier
                 .padding(top = UiConstants.Spacing.medium)
                 .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                    coroutineScope.launch {
-                        if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
-                            playerMusicListViewManager.animateTo(
-                                newState = BottomSheetStates.COLLAPSED,
-                            )
-                        }
-                        playerViewManager.animateTo(
-                            newState = BottomSheetStates.MINIMISED,
+                    if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
+                        playerMusicListViewManager.animateTo(
+                            newState = BottomSheetStates.COLLAPSED,
                         )
                     }
+                    playerViewManager.animateTo(
+                        newState = BottomSheetStates.MINIMISED,
+                    )
                 },
             size = UiConstants.ImageSize.medium,
         )

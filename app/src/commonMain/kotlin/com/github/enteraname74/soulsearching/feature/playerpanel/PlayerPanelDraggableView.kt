@@ -25,6 +25,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
+import com.github.enteraname74.soulsearching.feature.player.domain.model.SwipeableViewManagerHandler
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -68,6 +69,10 @@ fun PlayerPanelDraggableView(
         }
     }
 
+    SwipeableViewManagerHandler(
+        swipeableViewManager = playerMusicListViewManager,
+    )
+
     val collapsedSize: Float = PlayerUiUtils.getDraggablePanelCollapsedOffset()
     val statusParPadding: Int = getStatusBarPadding()
 
@@ -81,7 +86,7 @@ fun PlayerPanelDraggableView(
                 )
             }
             .swipeable(
-                state = playerMusicListViewManager.musicListDraggableState,
+                state = playerMusicListViewManager.draggableState,
                 orientation = Orientation.Vertical,
                 anchors = mapOf(
                     statusParPadding.toFloat() to BottomSheetStates.EXPANDED,

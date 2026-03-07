@@ -148,11 +148,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 && PlayerUiUtils.getDraggablePanelCollapsedOffset() == 0f
             ) {
                 {
-                    coroutineScope.launch {
-                        playerMusicListViewManager.animateTo(
-                            newState = BottomSheetStates.EXPANDED,
-                        )
-                    }
+                    playerMusicListViewManager.animateTo(
+                        newState = BottomSheetStates.EXPANDED,
+                    )
                 }
             } else {
                 null
