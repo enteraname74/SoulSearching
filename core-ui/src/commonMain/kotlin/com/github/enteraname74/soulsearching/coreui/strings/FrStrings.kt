@@ -315,6 +315,8 @@ object FrStrings : Strings {
     override val continuePlayedListTitle = "Reprendre où vous vous êtes arrêté"
     override val continuePlayedListAction = "Reprendre"
 
+    override val savedChanges = "Modifications sauvegardées"
+
     override fun musics(total: Int): String {
         return when (total) {
             1 -> "1 musique"

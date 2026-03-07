@@ -321,6 +321,8 @@ interface Strings {
     val continuePlayedListTitle: String
     val continuePlayedListAction: String
 
+    val savedChanges: String
+
     /**
      * Shows a text indicating the number of musics.
      */

@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +24,7 @@ class SettingsAllFoldersViewModel(
     private val commonMusicUseCase: CommonMusicUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : ViewModel() {
 
     private val workScope = CoroutineScope(Dispatchers.IO)
@@ -62,6 +65,9 @@ class SettingsAllFoldersViewModel(
                 val musicIds: List<UUID> = commonMusicUseCase.getAllIdsFromUnselectedFolders()
                 commonMusicUseCase.deleteAllFromUnselectedFolders()
                 playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicIds)
+                feedbackPopUpManager.showFeedback(
+                    feedback = strings.savedChanges,
+                )
             }
         }
     }
