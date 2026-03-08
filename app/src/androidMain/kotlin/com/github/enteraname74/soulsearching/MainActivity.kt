@@ -24,6 +24,10 @@ import com.github.enteraname74.soulsearching.feature.application.ApplicationView
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.ui.theme.SoulSearchingTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.jaudiotagger.tag.TagOptionSingleton
 import org.koin.android.ext.android.inject
@@ -160,9 +164,9 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) {
-            // TODO maybe not useful anymore?
-            unloadKoinModules(appModule)
-            loadKoinModules(appModule)
+            CoroutineScope(Dispatchers.IO).launch {
+                playbackManager.stopPlayback()
+            }
         }
     }
 }
