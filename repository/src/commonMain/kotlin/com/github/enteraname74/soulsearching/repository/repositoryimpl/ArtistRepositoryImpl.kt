@@ -1,11 +1,13 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 /**
  * Repository of an Artist.
@@ -46,6 +48,9 @@ class ArtistRepositoryImpl(
         artistId = artistId
     )
 
+    override fun getFromIds(artistIds: List<UUID>): Flow<List<ArtistWithMusics>> =
+        artistDataSource.getFromIds(artistIds)
+
     override suspend fun getFromName(artistName: String): Artist? =
         artistDataSource.getFromName(artistName = artistName)
 
@@ -56,17 +61,8 @@ class ArtistRepositoryImpl(
         artistDataSource.toggleCoverFolderMode(isActivated)
     }
 
-    /**
-     * Retrieves a flow of all Artist, sorted by name asc.
-     */
-    override fun getAll(): Flow<List<Artist>> =
-        artistDataSource.getAll()
-
-    /**
-     * Retrieves a flow of all ArtistWithMusics, sorted by name asc.
-     */
-    override fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> =
-        artistDataSource.getAllArtistWithMusics()
+    override fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
+        artistDataSource.getAllPaged()
 
     /**
      * Retrieves a flow of an ArtistWithMusics.
@@ -78,4 +74,35 @@ class ArtistRepositoryImpl(
 
     override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
         artistDataSource.getArtistsOfMusic(musicId = musicId)
+
+    override fun getAllFromQuickAccess(): Flow<List<ArtistPreview>> =
+        artistDataSource.getAllFromQuickAccess()
+
+    override suspend fun getDuplicatedArtist(
+        artistId: UUID,
+        artistName: String
+    ): ArtistWithMusics? =
+        artistDataSource.getDuplicatedArtist(
+            artistId = artistId,
+            artistName = artistName,
+        )
+
+    override fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>> =
+        artistDataSource.getArtistsWistMostMusics()
+
+    override suspend fun cleanAllCovers() {
+        artistDataSource.cleanAllCovers()
+    }
+
+    override fun getMostListened(): Flow<List<ArtistPreview>> =
+        artistDataSource.getMostListened()
+
+    override fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?> =
+        artistDataSource.getArtistPreview(artistId)
+
+    override fun searchAll(search: String): Flow<List<ArtistPreview>> =
+        artistDataSource.searchAll(search)
+
+    override suspend fun getPotentialMultipleArtists(): List<Artist> =
+        artistDataSource.getPotentialMultipleArtists()
 }

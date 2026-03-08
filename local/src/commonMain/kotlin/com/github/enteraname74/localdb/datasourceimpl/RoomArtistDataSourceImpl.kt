@@ -1,22 +1,34 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.SortDirection
+import com.github.enteraname74.domain.model.SortType
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toArtist
 import com.github.enteraname74.localdb.model.toArtistWithMusics
 import com.github.enteraname74.localdb.model.toRoomArtist
+import com.github.enteraname74.localdb.utils.PagingUtils
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import java.util.*
+import java.util.UUID
 
 /**
  * Implementation of the ArtistDataSource with Room's DAO.
  */
 internal class RoomArtistDataSourceImpl(
-    private val appDatabase: AppDatabase
+    private val appDatabase: AppDatabase,
+    private val settings: SoulSearchingSettings,
 ) : ArtistDataSource {
     override suspend fun upsert(artist: Artist) {
         appDatabase.artistDao.upsert(
@@ -59,17 +71,49 @@ internal class RoomArtistDataSourceImpl(
         ).map { it?.toArtist() }
     }
 
-    override fun getAll(): Flow<List<Artist>> {
-        return appDatabase.artistDao.getAll().map { list ->
-            list.map { it.toArtist() }
-        }
-    }
 
-    override fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> {
-        return appDatabase.artistDao.getAllArtistWithMusics().map { list ->
-            list.filterNotNull().map { it.toArtistWithMusics() }
+    override fun getFromIds(artistIds: List<UUID>): Flow<List<ArtistWithMusics>> =
+        appDatabase.artistDao.getFromIds(artistIds).map { list ->
+            list
+                .sortedBy { artistIds.indexOf(it.roomArtist.artistId) }
+                .map { it.toArtistWithMusics() }
         }
-    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
+        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_DIRECTION_KEY).flatMapLatest { direction ->
+            settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_TYPE_KEY).flatMapLatest { type ->
+                val sortDirection = SortDirection.from(direction) ?: SortDirection.DEFAULT
+                val sortType = SortType.from(type) ?: SortType.DEFAULT
+
+                Pager(
+                    config = PagingConfig(
+                        pageSize = PagingUtils.PAGE_SIZE,
+                        enablePlaceholders = false,
+                    ),
+                    pagingSourceFactory = {
+                        when(sortDirection) {
+                            SortDirection.ASC -> {
+                                when (sortType) {
+                                    SortType.NAME -> appDatabase.artistDao.getAllPagedByNameAsc()
+                                    SortType.ADDED_DATE -> appDatabase.artistDao.getAllPagedByDateAsc()
+                                    SortType.NB_PLAYED -> appDatabase.artistDao.getAllPagedByNbPlayedAsc()
+                                }
+                            }
+                            SortDirection.DESC -> {
+                                when (sortType) {
+                                    SortType.NAME -> appDatabase.artistDao.getAllPagedByNameDesc()
+                                    SortType.ADDED_DATE -> appDatabase.artistDao.getAllPagedByDateDesc()
+                                    SortType.NB_PLAYED -> appDatabase.artistDao.getAllPagedByNbPlayedDesc()
+                                }
+                            }
+                        }
+                    }
+                ).flow.map { pagingData ->
+                    pagingData.map { it.toArtistPreview() }
+                }
+            }
+        }
 
     override suspend fun getFromName(artistName: String): Artist? {
         return appDatabase.artistDao.getFromName(
@@ -92,4 +136,43 @@ internal class RoomArtistDataSourceImpl(
         appDatabase.artistDao.getArtistsOfMusic(musicId = musicId).map { list ->
             list.map { it.toArtist() }
         }
+
+    override fun getAllFromQuickAccess(): Flow<List<ArtistPreview>> =
+        appDatabase.artistDao.getAllFromQuickAccess().map { list ->
+            list.map { it.toArtistPreview() }
+        }
+
+    override suspend fun getDuplicatedArtist(
+        artistId: UUID,
+        artistName: String
+    ): ArtistWithMusics? =
+        appDatabase.artistDao.getDuplicatedArtist(
+            artistId = artistId,
+            artistName = artistName,
+        )?.toArtistWithMusics()
+
+    override fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>> =
+        appDatabase.artistDao.getArtistsWistMostMusics().map { list ->
+            list.map { it.toArtistPreview() }
+        }
+
+    override suspend fun cleanAllCovers() {
+        appDatabase.artistDao.cleanAllCovers()
+    }
+
+    override fun getMostListened(): Flow<List<ArtistPreview>> =
+        appDatabase.artistDao.getMostListened().map { list ->
+            list.map { it.toArtistPreview() }
+        }
+
+    override fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?> =
+        appDatabase.artistDao.getArtistPreview(artistId).map { it?.toArtistPreview() }
+
+    override fun searchAll(search: String): Flow<List<ArtistPreview>> =
+        appDatabase.artistDao.searchAll(search).map { list ->
+            list.map { it.toArtistPreview() }
+        }
+
+    override suspend fun getPotentialMultipleArtists(): List<Artist> =
+        appDatabase.artistDao.getPotentialMultipleArtists().map { it.toArtist() }
 }

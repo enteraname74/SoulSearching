@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.features.playback.notification
 
-import androidx.compose.ui.graphics.ImageBitmap
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
+import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
+
 //import es.blackleg.jlibnotify.JLibnotify
 //import es.blackleg.jlibnotify.JLibnotifyNotification
 //import es.blackleg.jlibnotify.core.DefaultJLibnotifyLoader
@@ -15,7 +15,7 @@ class SoulSearchingDesktopNotification : SoulSearchingNotification {
 //        libNotify?.init("Soul Searching")
 //    }
 
-    override suspend fun updateNotification(playbackManagerState: PlaybackManagerState.Data, cover: ImageBitmap?) {
+    //    override suspend fun updateNotification(playbackManagerState: PlaybackManagerState.Data, cover: ImageBitmap?) {
 //        if (libNotify?.isInitted == false) {
 //            libNotify?.init("Soul Searching")
 //        }
@@ -36,10 +36,13 @@ class SoulSearchingDesktopNotification : SoulSearchingNotification {
 //            )
 //            notification?.show()
 //        }
+//  }
+
+    override suspend fun update(updateData: UpdateData) {
 
     }
 
-    override fun dismissNotification() {
+    override fun dismiss() {
 //        libNotify?.unInit()
 //        notification?.close()
     }

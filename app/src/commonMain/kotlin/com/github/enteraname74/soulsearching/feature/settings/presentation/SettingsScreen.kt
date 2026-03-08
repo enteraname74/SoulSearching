@@ -1,10 +1,15 @@
 package com.github.enteraname74.soulsearching.feature.settings.presentation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_bar_chart
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_handyman_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_info_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_palette_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -55,7 +60,7 @@ fun SettingsScreenView(
             SoulMenuElement(
                 title = strings.manageMusicsTitle,
                 subTitle = strings.manageMusicsText,
-                icon = Icons.Rounded.MusicNote,
+                leadIcon = CoreRes.drawable.ic_music_note_filled,
                 onClick = navigateToManageMusics
             )
         }
@@ -63,7 +68,7 @@ fun SettingsScreenView(
             SoulMenuElement(
                 title = strings.colorThemeTitle,
                 subTitle = strings.colorThemeText,
-                icon = Icons.Rounded.Palette,
+                leadIcon = CoreRes.drawable.ic_palette_filled,
                 onClick = navigateToColorTheme
             )
         }
@@ -71,7 +76,7 @@ fun SettingsScreenView(
             SoulMenuElement(
                 title = strings.personalizationTitle,
                 subTitle = strings.personalizationText,
-                icon = Icons.Rounded.Edit,
+                leadIcon = CoreRes.drawable.ic_edit_filled,
                 onClick = navigateToPersonalisation
             )
         }
@@ -79,7 +84,7 @@ fun SettingsScreenView(
             SoulMenuElement(
                 title = strings.statisticsTitle,
                 subTitle = strings.statisticsText,
-                icon = Icons.Rounded.BarChart,
+                leadIcon =  CoreRes.drawable.ic_bar_chart,
                 onClick = navigateToStatistics
             )
         }
@@ -87,7 +92,7 @@ fun SettingsScreenView(
             SoulMenuElement(
                 title = strings.advancedSettingsTitle,
                 subTitle = strings.advancedSettingsText,
-                icon = Icons.Rounded.Handyman,
+                leadIcon =  CoreRes.drawable.ic_handyman_filled,
                 onClick = navigateToAdvanced,
             )
         }
@@ -95,7 +100,7 @@ fun SettingsScreenView(
             SoulMenuElement(
                 title = strings.aboutTitle,
                 subTitle = strings.aboutText,
-                icon = Icons.Rounded.Info,
+                leadIcon =  CoreRes.drawable.ic_info_filled,
                 onClick = navigateToAbout,
                 isBadged = shouldShowNewVersionPin,
             )

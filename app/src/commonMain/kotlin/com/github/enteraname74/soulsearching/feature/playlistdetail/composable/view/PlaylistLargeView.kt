@@ -1,23 +1,31 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.composable.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
@@ -26,21 +34,27 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.composables.SoulImage
-import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
+import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_search
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_shuffle
 import com.github.enteraname74.soulsearching.coreui.ext.blurCompat
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
@@ -49,35 +63,32 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.DurationIndication
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistContinueCard
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPartTitle
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.ext.title
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.DrawableResource
+import java.util.UUID
+import kotlin.time.Duration
 
 @Composable
 fun PlaylistLargeView(
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
     navigateBack: () -> Unit,
-    playAction: () -> Unit,
-    shuffleAction: () -> Unit,
     searchAction: () -> Unit,
-    onShowMusicBottomSheet: (Music) -> Unit,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
-    playerViewManager: PlayerViewManager = injectElement(),
     multiSelectionState: MultiSelectionState,
-    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
+
+    val musics = playlistDetail.musics.collectAsLazyPagingItems()
 
     LazyColumnCompat(
         modifier = Modifier
@@ -102,11 +113,31 @@ fun PlaylistLargeView(
                         },
                     playlistDetail = playlistDetail,
                     onCoverLoaded = onCoverLoaded,
-                    shuffleAction = shuffleAction,
-                    playAction = playAction,
                     searchAction = searchAction,
                     playlistDetailListener = playlistDetailListener,
                     navigateBack = navigateBack,
+                )
+            }
+        }
+        playlistDetail.cachedPlaylist?.let {
+            item(
+                key = PLAYLIST_CONTINUE_KEY,
+                contentType = PLAYLIST_CONTINUE_CONTENT_TYPE,
+            ) {
+                PlaylistContinueCard(
+                    modifier = Modifier
+                        .padding(
+                            start = UiConstants.Spacing.medium,
+                            end = UiConstants.Spacing.medium,
+                            bottom = UiConstants.Spacing.mediumPlus,
+                        )
+                        .animateItem(
+                            // TODO IMPROVE: improve screen to find a way to use placement anim
+                            placementSpec = null,
+                        ),
+                    playedListToContinue = it,
+                    onContinue = { playlistDetailListener.continuePlayedList(it.playedListId) },
+                    onDelete = { playlistDetailListener.deletePlayedList(it.playedListId) },
                 )
             }
         }
@@ -117,42 +148,37 @@ fun PlaylistLargeView(
             PlaylistPartTitle(title = strings.elementDetailTitles)
         }
         items(
-            count = playlistDetail.musics.size,
-            key = { playlistDetail.musics[it].musicId },
+            count = musics.itemCount,
+            key = { musics[it]?.musicId ?: UUID.randomUUID() },
             contentType = { PLAYLIST_MUSIC_CONTENT_TYPE }
         ) { pos ->
 
-            val elt = playlistDetail.musics[pos]
-            MusicItemComposable(
-                modifier = Modifier
-                    .animateItem()
-                    .padding(horizontal = UiConstants.Spacing.huge),
-                music = elt,
-                onClick = { music ->
-                    playlistDetailListener.onUpdateNbPlayed()
-                    coroutineScope.launch {
-                        playbackManager.setCurrentPlaylistAndMusic(
-                            music = music,
-                            musicList = playlistDetail.musics,
-                            playlistId = playlistDetail.id,
-                            isMainPlaylist = false
-                        )
-                        playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-                    }
-                },
-                onLongClick = { onLongSelectOnMusic(elt) },
-                onMoreClicked = { onShowMusicBottomSheet(elt) },
-                textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
-                isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
-                isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
-                padding = PaddingValues(
-                    vertical = UiConstants.Spacing.medium,
-                ),
-                leadingSpec = playlistDetail.musicItemLeadingSpec(pos)
-            )
+            val music = musics[pos]
+            music?.let {
+                MusicItemComposable(
+                    modifier = Modifier
+                        .animateItem()
+                        .padding(horizontal = UiConstants.Spacing.huge),
+                    music = music,
+                    onClick = playlistDetailListener::onPlayClicked,
+                    onLongClick = { playlistDetailListener.onLongClickOnMusic(music.musicId) },
+                    onMoreClicked = {
+                        playlistDetailListener.showMusicBottomSheet(listOf(music.musicId))
+                    },
+                    textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
+                    isSelected = multiSelectionState.selectedIds.contains(music.musicId),
+                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                    padding = PaddingValues(
+                        vertical = UiConstants.Spacing.medium,
+                    ),
+                    leadingSpec = playlistDetail.musicItemLeadingSpec(pos)
+                )
+            }
         }
-        item { DurationIndication(musics = playlistDetail.musics) }
+        if (playlistDetail.duration != Duration.ZERO && musics.itemCount > 0) {
+            item { DurationIndication(duration = playlistDetail.duration) }
+        }
         item { SoulPlayerSpacer() }
     }
 }
@@ -162,9 +188,7 @@ private fun Header(
     navigateBack: () -> Unit,
     playlistDetail: PlaylistDetail,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
-    shuffleAction: () -> Unit,
     searchAction: () -> Unit,
-    playAction: () -> Unit,
     playlistDetailListener: PlaylistDetailListener,
     modifier: Modifier = Modifier,
 ) {
@@ -180,7 +204,7 @@ private fun Header(
                 onClick = navigateBack,
             ),
             rightAction = object: TopBarActionSpec {
-                override val icon: ImageVector = Icons.Rounded.Search
+                override val icon: DrawableResource = CoreRes.drawable.ic_search
                 override val onClick: () -> Unit = searchAction
             }
         )
@@ -234,27 +258,23 @@ private fun Header(
                         fontSize = PLAYLIST_TITLE_SIZE,
                         lineHeight = PLAYLIST_TITLE_LINE_HEIGHT,
                     )
-                    playlistDetail.subTitle?.let {
-                        Text(
-                            modifier = Modifier.clickableWithHandCursor {
-                                playlistDetailListener.onSubtitleClicked()
-                            },
-                            color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                            text = it,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 15.sp
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.clickableWithHandCursor {
+                            playlistDetailListener.onSubtitleClicked()
+                        },
+                        color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                        text = playlistDetail.subTitle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 15.sp
+                    )
                     Actions(
                         modifier = Modifier
                             .padding(
                                 top = UiConstants.Spacing.medium,
                             ),
                         playlistDetailListener = playlistDetailListener,
-                        shuffleAction = shuffleAction,
-                        playAction = playAction,
                     )
                 }
             }
@@ -267,8 +287,6 @@ private fun Header(
 private fun Actions(
     modifier: Modifier = Modifier,
     playlistDetailListener: PlaylistDetailListener,
-    shuffleAction: () -> Unit,
-    playAction: () -> Unit,
 ) {
     FlowRow(
         modifier = modifier,
@@ -277,8 +295,8 @@ private fun Actions(
     ) {
         Button(
             title = strings.elementDetailPlay,
-            icon = Icons.Rounded.PlayArrow,
-            action = playAction,
+            icon = CoreRes.drawable.ic_play_filled,
+            action = playlistDetailListener::onPlayClicked,
             colors = SoulButtonDefaults.colors(
                 contentColor = SoulSearchingColorTheme.colorScheme.secondary,
                 containerColor = SoulSearchingColorTheme.colorScheme.onSecondary,
@@ -286,13 +304,13 @@ private fun Actions(
         )
         Button(
             title = strings.elementDetailShuffle,
-            icon = Icons.Rounded.Shuffle,
-            action = shuffleAction,
+            icon = CoreRes.drawable.ic_shuffle,
+            action = playlistDetailListener::onShuffleClicked,
         )
         playlistDetailListener.onEdit?.let {
             Button(
                 title = strings.elementDetailEdit,
-                icon = Icons.Rounded.Edit,
+                icon = CoreRes.drawable.ic_edit_filled,
                 action = it,
             )
         }
@@ -302,7 +320,7 @@ private fun Actions(
 @Composable
 private fun Button(
     title: String,
-    icon: ImageVector,
+    icon: DrawableResource,
     action: () -> Unit,
     colors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
 ) {
@@ -320,7 +338,7 @@ private fun Button(
         ) {
             SoulIcon(
                 icon = icon,
-                tint = colors.contentColor
+                color = colors.contentColor
             )
             Text(
                 text = title,
@@ -368,6 +386,8 @@ private fun BlurredBackground(
     }
 }
 
+private const val PLAYLIST_CONTINUE_KEY = "PLAYLIST_CONTINUE_KEY"
+private const val PLAYLIST_CONTINUE_CONTENT_TYPE = "PLAYLIST_CONTINUE_CONTENT_TYPE"
 private const val PLAYLIST_MUSIC_CONTENT_TYPE: String = "PLAYLIST_MUSIC_CONTENT_TYPE"
 private val PLAYLIST_COVER_SIZE: Dp = 250.dp
 private val PLAYLIST_TITLE_SIZE: TextUnit = 54.sp

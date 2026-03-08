@@ -1,14 +1,17 @@
 package com.github.enteraname74.localdb.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.RoomCompleteMusic
+import com.github.enteraname74.localdb.view.RoomMonthMusicPreview
 import com.github.enteraname74.localdb.model.RoomMusic
+import com.github.enteraname74.localdb.view.RoomMusicFolderPreview
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 /**
  * DAO of a Music.
@@ -26,6 +29,12 @@ interface MusicDao {
     @Delete
     suspend fun delete(roomMusic : RoomMusic)
 
+    @Query("""
+        DELETE FROM RoomMusic WHERE 
+        folder IN (SELECT RoomFolder.folderPath FROM RoomFolder WHERE RoomFolder.isSelected = 0)
+    """)
+    suspend fun deleteFromUnselectedFolders()
+
     @Query("DELETE FROM RoomMusic WHERE musicId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
 
@@ -34,17 +43,521 @@ interface MusicDao {
     fun getFromId(musicId : UUID): Flow<RoomCompleteMusic?>
 
     @Transaction
+    @Query("SELECT DISTINCT * FROM RoomMusic WHERE musicId IN (:ids)")
+    fun getFromIds(ids: List<UUID>): Flow<List<RoomCompleteMusic>>
+
+    @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
     fun getAll(): Flow<List<RoomCompleteMusic>>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND isInQuickAccess = 1 ORDER BY name ASC")
+    fun getAllFromQuickAccess(): Flow<List<RoomCompleteMusic>>
+
+    @Query(
+        """
+            SELECT musicId FROM RoomMusic WHERE 
+            folder IN (SELECT RoomFolder.folderPath FROM RoomFolder WHERE RoomFolder.isSelected = 0)
+        """
+    )
+    suspend fun getAllIdsFromUnselectedFolders(): List<UUID>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
+    fun getAllPagedByNameAsc(): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
+    suspend fun getAllByNameAsc(): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name DESC")
+    fun getAllPagedByNameDesc(): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name DESC")
+    suspend fun getAllByNameDesc(): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate ASC")
+    fun getAllPagedByDateAsc(): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate ASC")
+    suspend fun getAllByDateAsc(): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate DESC")
+    fun getAllPagedByDateDesc(): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate DESC")
+    suspend fun getAllByDateDesc(): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY nbPlayed ASC")
+    fun getAllPagedByNbPlayedAsc(): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY nbPlayed ASC")
+    suspend fun getAllByNbPlayedAsc(): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY nbPlayed DESC")
+    fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY nbPlayed DESC")
+    suspend fun getAllByNbPlayedDesc(): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND albumId = :albumId
+            ORDER BY 
+            CASE WHEN albumPosition IS NULL THEN 1 ELSE 0 END, 
+            albumPosition,
+            name
+        """
+    )
+    fun getAllPagedOfAlbum(albumId: UUID): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND folder = :folder
+            ORDER BY name ASC
+        """
+    )
+    fun getAllPagedByNameAscOfFolder(folder: String): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND strftime('%m/%Y', addedDate) = :month
+            ORDER BY name ASC
+        """
+    )
+    fun getAllPagedByNameAscOfMonth(month: String): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            INNER JOIN RoomMusicPlaylist as musicPlaylist
+            ON music.musicId = musicPlaylist.musicId 
+            AND musicPlaylist.playlistId = :playlistId 
+            AND music.isHidden = 0 
+            ORDER BY name ASC
+        """
+    )
+    fun getAllPagedByNameAscOfPlaylist(playlistId: UUID): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            INNER JOIN RoomMusicArtist as musicArtist
+            ON music.musicId = musicArtist.musicId 
+            AND musicArtist.artistId = :artistId 
+            AND music.isHidden = 0 
+            ORDER BY name ASC
+        """
+    )
+    fun getAllPagedByNameAscOfArtist(artistId: UUID): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE musicId IN (:ids)")
     suspend fun getAllFromId(ids: List<UUID>): List<RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE albumId = :albumId AND RoomMusic.isHidden = 0")
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND albumId = :albumId
+            ORDER BY 
+            CASE WHEN albumPosition IS NULL THEN 1 ELSE 0 END, 
+            albumPosition,
+            name
+        """
+    )
     suspend fun getAllMusicFromAlbum(albumId : UUID) : List<RoomCompleteMusic>
+
+
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            WHERE music.isHidden = 0 
+            AND (
+                music.name LIKE '%' || :search || '%'
+                COLLATE NOCASE 
+                OR EXISTS(
+                    SELECT 1 FROM RoomAlbum AS album 
+                    WHERE album.albumId = music.albumId 
+                    AND album.albumName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE 
+                )
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    INNER JOIN RoomMusicArtist AS musicArtist 
+                    ON musicArtist.artistId = artist.artistId 
+                    AND musicArtist.musicId = music.musicId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            )
+            AND albumId = :albumId
+            ORDER BY 
+            CASE WHEN albumPosition IS NULL THEN 1 ELSE 0 END, 
+            albumPosition,
+            name
+        """
+    )
+    fun searchFromAlbum(
+        albumId: UUID,
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
+
+    @Query(
+        """
+            SELECT SUM(duration) FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND albumId = :albumId
+        """
+    )
+    fun getAlbumDuration(albumId : UUID) : Flow<Long>
+
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            INNER JOIN RoomMusicArtist as musicArtist
+            ON music.musicId = musicArtist.musicId 
+            AND musicArtist.artistId = :artistId 
+            AND music.isHidden = 0 
+            ORDER BY name ASC
+        """
+    )
+    suspend fun getAllMusicFromArtist(artistId : UUID) : List<RoomCompleteMusic>
+
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            INNER JOIN RoomMusicArtist as musicArtist
+            ON music.musicId = musicArtist.musicId 
+            AND musicArtist.artistId = :artistId 
+            AND music.isHidden = 0 
+            AND (
+                music.name LIKE '%' || :search || '%'
+                COLLATE NOCASE 
+                OR EXISTS(
+                    SELECT 1 FROM RoomAlbum AS album 
+                    WHERE album.albumId = music.albumId 
+                    AND album.albumName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE 
+                )
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    INNER JOIN RoomMusicArtist AS musicArtist 
+                    ON musicArtist.artistId = artist.artistId 
+                    AND musicArtist.musicId = music.musicId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            )
+            ORDER BY name ASC
+        """
+    )
+    fun searchFromArtist(
+        artistId: UUID,
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
+
+    @Query(
+        """
+            SELECT SUM(music.duration) FROM RoomMusic AS music
+            INNER JOIN RoomMusicArtist as musicArtist
+            ON music.musicId = musicArtist.musicId 
+            AND musicArtist.artistId = :artistId 
+            AND music.isHidden = 0
+        """
+    )
+    fun getArtistDuration(artistId : UUID) : Flow<Long>
+
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            INNER JOIN RoomMusicPlaylist as musicPlaylist
+            ON music.musicId = musicPlaylist.musicId 
+            AND musicPlaylist.playlistId = :playlistId 
+            AND music.isHidden = 0
+            ORDER BY name ASC
+        """
+    )
+    suspend fun getAllMusicFromPlaylist(playlistId : UUID) : List<RoomCompleteMusic>
+
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            INNER JOIN RoomMusicPlaylist as musicPlaylist
+            ON music.musicId = musicPlaylist.musicId 
+            AND musicPlaylist.playlistId = :playlistId 
+            AND music.isHidden = 0 
+            AND (
+                music.name LIKE '%' || :search || '%'
+                COLLATE NOCASE 
+                OR EXISTS(
+                    SELECT 1 FROM RoomAlbum AS album 
+                    WHERE album.albumId = music.albumId 
+                    AND album.albumName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE 
+                )
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    INNER JOIN RoomMusicArtist AS musicArtist 
+                    ON musicArtist.artistId = artist.artistId 
+                    AND musicArtist.musicId = music.musicId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            ) 
+            ORDER BY name ASC
+        """
+    )
+    fun searchFromPlaylist(
+        playlistId: UUID,
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
+
+    @Query(
+        """
+            SELECT SUM(music.duration) FROM RoomMusic AS music
+            INNER JOIN RoomMusicPlaylist as musicPlaylist
+            ON music.musicId = musicPlaylist.musicId 
+            AND musicPlaylist.playlistId = :playlistId 
+            AND music.isHidden = 0
+        """
+    )
+    fun getPlaylistDuration(playlistId : UUID) : Flow<Long>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND strftime('%m/%Y', addedDate) = :month
+            ORDER BY name ASC
+        """
+    )
+    suspend fun getAllMusicFromMonth(month: String) : List<RoomCompleteMusic>
+
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            WHERE music.isHidden = 0 
+            AND strftime('%m/%Y', music.addedDate) = :month
+            AND (
+                music.name LIKE '%' || :search || '%'
+                COLLATE NOCASE 
+                OR EXISTS(
+                    SELECT 1 FROM RoomAlbum AS album 
+                    WHERE album.albumId = music.albumId 
+                    AND album.albumName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE 
+                )
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    INNER JOIN RoomMusicArtist AS musicArtist 
+                    ON musicArtist.artistId = artist.artistId 
+                    AND musicArtist.musicId = music.musicId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            ) 
+            ORDER BY music.name ASC
+        """
+    )
+    fun searchFromMonth(
+        month: String,
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
+
+    @Query(
+        """
+            SELECT SUM(duration) FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND strftime('%m/%Y', addedDate) = :month
+        """
+    )
+    fun getMonthMusicsDuration(month: String) : Flow<Long>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND folder = :folder
+            ORDER BY name ASC
+        """
+    )
+    suspend fun getAllMusicFromFolder(folder : String) : List<RoomCompleteMusic>
+
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music 
+            WHERE music.isHidden = 0 
+            AND music.folder = :folder
+            AND (
+                music.name LIKE '%' || :search || '%'
+                COLLATE NOCASE 
+                OR EXISTS(
+                    SELECT 1 FROM RoomAlbum AS album 
+                    WHERE album.albumId = music.albumId 
+                    AND album.albumName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE 
+                )
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    INNER JOIN RoomMusicArtist AS musicArtist 
+                    ON musicArtist.artistId = artist.artistId 
+                    AND musicArtist.musicId = music.musicId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            ) 
+            ORDER BY music.name ASC
+        """
+    )
+    fun searchFromFolder(
+        folder: String,
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
+
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music 
+            WHERE music.isHidden = 0 
+            AND (
+                music.name LIKE '%' || :search || '%'
+                COLLATE NOCASE 
+                OR EXISTS(
+                    SELECT 1 FROM RoomAlbum AS album 
+                    WHERE album.albumId = music.albumId 
+                    AND album.albumName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE 
+                )
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    INNER JOIN RoomMusicArtist AS musicArtist 
+                    ON musicArtist.artistId = artist.artistId 
+                    AND musicArtist.musicId = music.musicId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            ) 
+            ORDER BY music.name ASC
+        """
+    )
+    fun searchAll(
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
+
+    @Query(
+        """
+            SELECT SUM(duration) FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND folder = :folder
+        """
+    )
+    fun getFolderMusicsDuration(folder: String) : Flow<Long>
 
     @Query("UPDATE RoomMusic SET albumId = :newAlbumId WHERE albumId = :legacyAlbumId")
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
+
+    @Query("UPDATE RoomMusic SET coverId = NULL")
+    suspend fun cleanAllMusicCovers()
+
+    @Query("SELECT path FROM RoomMusic")
+    suspend fun getAllMusicPath(): List<String>
+
+    @Query("SELECT DISTINCT folder FROM RoomMusic")
+    suspend fun getAllMusicFolders(): List<String>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE nbPlayed >= 1 AND isHidden = 0 
+            ORDER BY nbPlayed DESC 
+            LIMIT 11
+        """
+    )
+    fun getMostListened(): Flow<List<RoomCompleteMusic>>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMonthMusicPreview" )
+    fun getAllMonthMusics(): Flow<List<RoomMonthMusicPreview>>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMonthMusicPreview 
+            WHERE month = :month
+            LIMIT 1
+        """
+    )
+    fun getMonthMusicPreview(month: String): Flow<RoomMonthMusicPreview?>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusicFolderPreview 
+            ORDER BY totalMusics DESC
+        """
+    )
+    fun getAllMusicFoldersPreview(): Flow<List<RoomMusicFolderPreview>>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusicFolderPreview 
+            WHERE folder = :folder
+            LIMIT 1
+        """
+    )
+    fun getMusicFolderPreview(folder: String): Flow<RoomMusicFolderPreview?>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE folder = :folder 
+            AND isHidden = 0 
+            LIMIT :totalPerFolder
+        """
+    )
+    suspend fun getSoulMixMusics(
+        totalPerFolder: Int,
+        folder: String,
+    ): List<RoomCompleteMusic>
 }

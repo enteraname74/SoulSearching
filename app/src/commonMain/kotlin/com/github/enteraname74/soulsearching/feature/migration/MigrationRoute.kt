@@ -32,7 +32,7 @@ data object MigrationDestination : NavKey {
                     parametersOf(
                         object : MigrationNavScope {
                             override val toMainApp: () -> Unit = {
-                                navigator.navigate(MainAppDestination) {
+                                navigator.push(MainAppDestination) {
                                     clearBackStack = true
                                 }
                             }

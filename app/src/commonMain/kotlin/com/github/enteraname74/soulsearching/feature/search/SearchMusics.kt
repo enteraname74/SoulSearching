@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,15 +22,16 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchMusics(
-    searchText: String,
-    allMusics: List<Music>,
+    lazyListState: LazyListState,
+    foundMusics: List<Music>,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
-    onSelectedMusicForBottomSheet: (Music) -> Unit,
+    onSelectedMusicForBottomSheet: (musicId: UUID) -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     playbackManager: PlaybackManager = injectElement(),
@@ -38,16 +40,10 @@ fun SearchMusics(
     val coroutineScope = rememberCoroutineScope()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
-    LazyColumnCompat {
-        // TODO: Normalise with accents.
-        val foundedMusics = allMusics.filter {
-            it.name.lowercase().contains(searchText.lowercase())
-                    || it.artistsNames.lowercase().contains(searchText.lowercase())
-                    || it.album.albumName.lowercase().contains(searchText.lowercase())
-
-        }
-
-        if (foundedMusics.isNotEmpty()) {
+    if (foundMusics.isNotEmpty()) {
+        LazyColumnCompat(
+            state = lazyListState,
+        ) {
             stickyHeader(
                 key = SEARCH_MUSIC_STICKY_HEADER_KEY,
                 contentType = SEARCH_MUSIC_STICKY_HEADER_CONTENT_TYPE,
@@ -63,7 +59,7 @@ fun SearchMusics(
             items(
                 key = { it.musicId },
                 contentType = { SEARCH_MUSIC_CONTENT_TYPE },
-                items = foundedMusics,
+                items = foundMusics,
             ) { music ->
                 MusicItemComposable(
                     modifier = Modifier
@@ -73,7 +69,7 @@ fun SearchMusics(
                         coroutineScope.launch {
                             playbackManager.setCurrentPlaylistAndMusic(
                                 music = selectedMusic,
-                                musicList = foundedMusics as ArrayList<Music>,
+                                musicList = foundMusics,
                                 playlistId = null,
                                 isMainPlaylist = isMainPlaylist,
                                 isForcingNewPlaylist = true
@@ -84,21 +80,22 @@ fun SearchMusics(
                     },
                     onMoreClicked = {
                         coroutineScope.launch {
-                            onSelectedMusicForBottomSheet(music)
+                            onSelectedMusicForBottomSheet(music.musicId)
                         }
                     },
                     textColor = textColor,
                     isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                 )
             }
-        }
-        item(
-            key = SEARCH_MUSIC_SPACER_KEY,
-            contentType = SEARCH_MUSIC_SPACER_CONTENT_TYPE,
-        ) {
-            SoulPlayerSpacer()
+            item(
+                key = SEARCH_MUSIC_SPACER_KEY,
+                contentType = SEARCH_MUSIC_SPACER_CONTENT_TYPE,
+            ) {
+                SoulPlayerSpacer()
+            }
         }
     }
+
 }
 
 private const val SEARCH_MUSIC_STICKY_HEADER_KEY: String = "SEARCH_MUSIC_STICKY_HEADER_KEY"

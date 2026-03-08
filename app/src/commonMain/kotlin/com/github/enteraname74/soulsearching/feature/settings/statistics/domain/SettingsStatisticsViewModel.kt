@@ -2,14 +2,10 @@ package com.github.enteraname74.soulsearching.feature.settings.statistics.domain
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.ext.getFirstsOrMax
-import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.domain.model.SortType
-import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
-import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,51 +14,24 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 
 class SettingsStatisticsViewModel(
-    getAllMusicsSortedUseCase: GetAllMusicsSortedUseCase,
-    getAllAlbumWithMusicsSortedUseCase: GetAllAlbumWithMusicsSortedUseCase,
-    getAllPlaylistWithMusicsSortedUseCase: GetAllPlaylistWithMusicsSortedUseCase,
-    getAllArtistWithMusicsSortedUseCase: GetAllArtistWithMusicsSortedUseCase,
     commonArtistUseCase: CommonArtistUseCase,
+    commonMusicUseCase: CommonMusicUseCase,
+    commonAlbumUseCase: CommonAlbumUseCase,
+    commonPlaylistUseCase: CommonPlaylistUseCase,
 ) : ViewModel() {
     val state: StateFlow<SettingsStatisticsState> = combine(
-        getAllMusicsSortedUseCase(
-            sortDirection = SortDirection.DESC,
-            sortType = SortType.NB_PLAYED,
-        ),
-        getAllAlbumWithMusicsSortedUseCase(
-            sortDirection = SortDirection.DESC,
-            sortType = SortType.NB_PLAYED,
-        ),
-        getAllPlaylistWithMusicsSortedUseCase(
-            sortDirection = SortDirection.DESC,
-            sortType = SortType.NB_PLAYED,
-        ),
-        getAllArtistWithMusicsSortedUseCase(
-            sortDirection = SortDirection.DESC,
-            sortType = SortType.NB_PLAYED,
-        ),
-        commonArtistUseCase.getAllSortedByMostSongs(),
-    ) { allMusics, allAlbums, allPlaylists, allArtists, allArtistsWithMostSongs ->
+        commonMusicUseCase.getMostListened(),
+        commonAlbumUseCase.getMostListened(),
+        commonPlaylistUseCase.getMostListened(),
+        commonArtistUseCase.getMostListened(),
+        commonArtistUseCase.getArtistsWistMostMusics(),
+    ) { mostListenedMusics, mostListenedAlbums, mostListenedPlaylists, mostListenedArtists, artistsWithMostSongs ->
         SettingsStatisticsState(
-            mostListenedMusics = allMusics
-                .getFirstsOrMax(MAX_TO_SHOW)
-                .filter { it.nbPlayed >= 1 }
-                .map { it.toListenedElement() },
-            mostListenedArtists = allArtists
-                .getFirstsOrMax(MAX_TO_SHOW)
-                .filter { it.artist.nbPlayed >= 1 }
-                .map { it.toListenedElement() },
-            mostListenedPlaylists = allPlaylists
-                .getFirstsOrMax(MAX_TO_SHOW)
-                .filter { it.playlist.nbPlayed >= 1 }
-                .map { it.toListenedElement() },
-            mostListenedAlbums = allAlbums
-                .getFirstsOrMax(MAX_TO_SHOW)
-                .filter { it.album.nbPlayed >= 1 }
-                .map { it.toListenedElement() },
-            artistsWithMostSongs = allArtistsWithMostSongs
-                .getFirstsOrMax(MAX_TO_SHOW)
-                .map { it.toMostSongsListenedElement() },
+            mostListenedMusics = mostListenedMusics.map { it.toListenedElement() },
+            mostListenedArtists = mostListenedArtists.map { it.toListenedElement() },
+            mostListenedPlaylists = mostListenedPlaylists.map { it.toListenedElement() },
+            mostListenedAlbums = mostListenedAlbums.map { it.toListenedElement() },
+            artistsWithMostSongs = artistsWithMostSongs.map { it.toMostSongsListenedElement() },
         )
     }.stateIn(
         scope = viewModelScope.plus(Dispatchers.IO),

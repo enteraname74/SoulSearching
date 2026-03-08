@@ -14,7 +14,7 @@ data object SettingsMainPagePersonalisationDestination: SettingPage {
     ) {
         entryProviderScope.entry<SettingsMainPagePersonalisationDestination> {
             SettingsMainPagePersonalisationRoute(
-                navigateBack = navigator::goBack,
+                navigateBack = navigator::pop,
             )
         }
     }

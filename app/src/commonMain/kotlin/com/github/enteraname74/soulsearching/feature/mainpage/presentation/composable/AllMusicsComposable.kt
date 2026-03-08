@@ -2,29 +2,28 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_shuffle
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -35,14 +34,17 @@ fun AllMusicsComposable(
     setSortType: (SortType) -> Unit,
     toggleSortDirection: () -> Unit = {},
     isUsingSort: Boolean = true,
+    onClick: (Music) -> Unit,
+    onPlayAll: () -> Unit,
     onLongClick: (Music) -> Unit,
     onMoreClick: (Music) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
     viewSettingsManager: ViewSettingsManager = injectElement(),
-    playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
+
+    val musics = musicState.musics.collectAsLazyPagingItems()
 
     LazyColumnCompat(
         modifier = Modifier
@@ -54,7 +56,7 @@ fun AllMusicsComposable(
                 contentType = ALL_MUSICS_MONTH_STICKY_HEADER,
             ) {
                 MusicMonthsHorizontalList(
-                    months = musicState.monthMusics,
+                    months = musicState.monthMusicPreviews,
                     onMonthClicked = navigateToMonth,
                     onMonthLongClicked = {}
                 )
@@ -73,52 +75,41 @@ fun AllMusicsComposable(
                 isUsingSort = isUsingSort,
                 rightComposable = {
                     SoulIconButton(
-                        icon = Icons.Rounded.Shuffle,
+                        icon = CoreRes.drawable.ic_shuffle,
                         contentDescription = strings.shuffleButton,
-                        enabled = musicState.musics.isNotEmpty(),
+                        enabled = musics.itemCount != 0,
                         onClick = {
-                            if (musicState.musics.isNotEmpty()) {
-                                coroutineScope.launch {
-                                    playbackManager.playShuffle(musicList = musicState.musics)
-                                    playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-                                }
+                            if (musics.itemCount != 0) {
+                                onPlayAll()
                             }
                         }
                     )
                 }
             )
         }
-        if (musicState.musics.isNotEmpty()) {
+        if (musics.itemCount > 0) {
             items(
-                key = { it.musicId },
+                key = { musics[it]?.musicId ?: UUID.randomUUID() },
                 contentType = { ALL_MUSICS_CONTENT_TYPE },
-                items = musicState.musics
-            ) { elt ->
-                MusicItemComposable(
-                    modifier = Modifier
-                        .animateItem(),
-                    music = elt,
-                    onClick = {
-                        coroutineScope.launch {
-                            playbackManager.setCurrentPlaylistAndMusic(
-                                music = elt,
-                                musicList = musicState.musics,
-                                isMainPlaylist = true,
-                                playlistId = null,
-                            )
-                            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-                        }
-                    },
-                    onMoreClicked = {
-                        coroutineScope.launch {
-                            onMoreClick(elt)
-                        }
-                    },
-                    onLongClick = { onLongClick(elt) },
-                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
-                    isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
-                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
-                )
+                count = musics.itemCount,
+            ) { index ->
+                musics[index]?.let { elt ->
+                    MusicItemComposable(
+                        modifier = Modifier
+                            .animateItem(),
+                        music = elt,
+                        onClick = { onClick(elt) },
+                        onMoreClicked = {
+                            coroutineScope.launch {
+                                onMoreClick(elt)
+                            }
+                        },
+                        onLongClick = { onLongClick(elt) },
+                        isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
+                        isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
+                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                    )
+                }
             }
             item(
                 key = ALL_MUSICS_SPACER_KEY,

@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Folder
-import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.runtime.Composable
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_folder_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -26,7 +26,7 @@ fun SettingsManageMusicsRoute(
             SoulMenuElement(
                 title = strings.usedFoldersTitle,
                 subTitle = strings.usedFoldersText,
-                icon = Icons.Rounded.Folder,
+                leadIcon = CoreRes.drawable.ic_folder_filled,
                 onClick = navigateToFolders
             )
         }
@@ -34,7 +34,7 @@ fun SettingsManageMusicsRoute(
             SoulMenuElement(
                 title = strings.addMusicsTitle,
                 subTitle = strings.addMusicsText,
-                icon = Icons.Rounded.MusicNote,
+                leadIcon = CoreRes.drawable.ic_music_note_filled,
                 onClick = navigateToAddMusics
             )
         }

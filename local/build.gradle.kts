@@ -17,6 +17,7 @@ kotlin {
     compilerOptions {
         // Common compiler options applied to all Kotlin source sets for expect / actual implementations
         freeCompilerArgs.add("-Xexpect-actual-classes")
+        freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
     }
 
     sourceSets {
@@ -34,7 +35,10 @@ kotlin {
                 implementation(project(":filemanager"))
                 implementation(libs.koin.core)
 
+                implementation(libs.androidx.paging.common)
+
                 implementation(libs.androidx.room.runtime)
+                implementation(libs.androidx.room.paging)
                 implementation(libs.androidx.sqlite.bundled)
             }
         }

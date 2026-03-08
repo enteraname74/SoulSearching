@@ -1,17 +1,26 @@
 package com.github.enteraname74.soulsearching.feature.multipleartistschoice
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DownloadDone
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
+import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_download_done
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateScreen
@@ -20,7 +29,6 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
-import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.composable.MultipleArtistsChoiceItem
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.composable.MultipleArtistsWarningCard
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.ArtistChoice
@@ -35,13 +43,13 @@ fun MultipleArtistsChoiceRoute(
     val state: MultipleArtistChoiceState by viewModel.state.collectAsState()
     val navigationState: MultipleArtistsChoiceNavigationState by viewModel.navigationState.collectAsState()
 
-    LaunchInit {
-        viewModel.init()
-    }
-
     LaunchedEffect(navigationState) {
         onNavigationState(navigationState)
         viewModel.consumeNavigation()
+    }
+
+    SoulBackHandler {
+        viewModel.navigateBack()
     }
 
     MainComposable(
@@ -61,7 +69,7 @@ private fun MainComposable(
     onSaveSelection: () -> Unit,
     navigateBack: () -> Unit,
     onToggleArtistChoice: (ArtistChoice) -> Unit,
-    onToggleAll: () -> Unit,
+    onToggleAll: (Boolean) -> Unit,
 ) {
     when (state) {
         MultipleArtistChoiceState.Loading -> {
@@ -84,7 +92,7 @@ private fun MainComposable(
                 leftAction = TopBarNavigationAction(
                     onClick = navigateBack,
                 ),
-                icon = Icons.Rounded.DownloadDone,
+                icon = CoreRes.drawable.ic_download_done,
                 text = strings.noMultipleArtists,
                 buttonSpec = null,
             )
@@ -98,7 +106,7 @@ private fun UserActionScreen(
     mode: MultipleArtistsChoiceMode,
     onSaveSelection: () -> Unit,
     navigateBack: () -> Unit,
-    onToggleAll: () -> Unit,
+    onToggleAll: (Boolean) -> Unit,
     onToggleArtistChoice: (ArtistChoice) -> Unit,
 ) {
     SoulScreen {
@@ -143,9 +151,7 @@ private fun UserActionScreen(
                         )
                         SoulCheckBox(
                             checked = state.toggleAllState,
-                            onCheckedChange = {
-                                onToggleAll()
-                            },
+                            onCheckedChange = onToggleAll,
                         )
                     }
                 }
@@ -161,6 +167,12 @@ private fun UserActionScreen(
                         }
                     )
                 }
+                item(
+                    key = PlayerSpacerContentType,
+                    contentType = PlayerSpacerKey,
+                ) {
+                    SoulPlayerSpacer()
+                }
             }
         }
     }
@@ -171,3 +183,5 @@ private const val WarningCardContentKey: String = "WarningCardContentKey"
 private const val SelectionTextContentType: String = "SelectionTextContentType"
 private const val SelectionTextKey: String = "SelectionTextKey"
 private const val ArtistChoicesContentType: String = "ArtistChoicesContentType"
+private const val PlayerSpacerContentType: String = "PlayerSpacerContentType"
+private const val PlayerSpacerKey: String = "PlayerSpacerKey"

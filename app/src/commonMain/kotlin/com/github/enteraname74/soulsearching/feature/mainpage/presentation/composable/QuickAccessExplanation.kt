@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -30,6 +31,7 @@ fun QuickAccessExplanation() {
     ) {
         Column(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(UiConstants.Spacing.large),
             verticalArrangement = Arrangement.spacedBy(
                 UiConstants.Spacing.medium,

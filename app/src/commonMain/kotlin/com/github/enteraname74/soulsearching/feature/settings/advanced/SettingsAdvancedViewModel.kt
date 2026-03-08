@@ -3,10 +3,6 @@ package com.github.enteraname74.soulsearching.feature.settings.advanced
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
@@ -21,11 +17,14 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedNavigationState
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedPermissionState
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedState
-import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
@@ -36,8 +35,6 @@ class SettingsAdvancedViewModel(
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonReleaseUseCase: CommonReleaseUseCase,
     private val loadingManager: LoadingManager,
-    private val coverFileManager: CoverFileManager,
-    private val playbackManager: PlaybackManager,
     private val settings: SoulSearchingSettings,
     destination: SettingsAdvancedDestination
 ) : ViewModel() {
@@ -244,57 +241,25 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadSongs() {
         if (_state.value.shouldReloadSongsCovers) {
-            val allSongs: List<Music> = commonMusicUseCase.getAll().first()
-
-            commonMusicUseCase.upsertAll(
-                allMusics = allSongs.map { music ->
-                    playbackManager.updateMusic(music)
-                    music.copy(
-                        cover = coverFileManager.getCleanFileCoverForMusic(music)
-                    )
-                }
-            )
+            commonMusicUseCase.cleanAllMusicCovers()
         }
     }
 
     private suspend fun checkAndReloadPlaylists() {
         if (_state.value.shouldDeletePlaylistsCovers) {
-            val allPlaylists: List<Playlist> = commonPlaylistUseCase.getAll().first()
-            commonPlaylistUseCase.upsertAll(
-                playlists = allPlaylists.map { playlist ->
-                    playlist.copy(
-                        cover = null
-                    )
-                }
-            )
+            commonPlaylistUseCase.cleanAllCovers()
         }
     }
 
     private suspend fun checkAndReloadAlbums() {
         if (_state.value.shouldReloadAlbumsCovers) {
-            val allAlbums: List<Album> = commonAlbumUseCase.getAll().first()
-            commonAlbumUseCase.upsertAll(
-                albums = allAlbums.map { album ->
-                    album.copy(
-                        cover = null
-                    )
-                }
-            )
+            commonAlbumUseCase.cleanAllCovers()
         }
     }
 
     private suspend fun checkAndReloadArtists() {
         if (_state.value.shouldReloadArtistsCovers) {
-            val allArtists: List<Artist> = commonArtistUseCase.getAll().first()
-            commonArtistUseCase.upsertAll(
-                allArtists = allArtists.map { artist ->
-                    artist.cover?.ifCoverFile { coverFile ->
-                        artist.copy(
-                            cover = coverFile.copy(fileCoverId = null)
-                        )
-                    } ?: artist
-                }
-            )
+            commonArtistUseCase.cleanAllCovers()
         }
     }
 }

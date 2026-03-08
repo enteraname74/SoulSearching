@@ -1,8 +1,9 @@
 package com.github.enteraname74.domain.usecase.playlist
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -12,6 +13,12 @@ import java.util.*
 class CommonPlaylistUseCase(
     private val playlistRepository: PlaylistRepository,
 ) {
+    fun getFromId(playlistId: UUID): Flow<Playlist?> =
+        playlistRepository.getFromId(playlistId)
+
+    fun getFromIds(playlistIds: List<UUID>): Flow<List<PlaylistWithMusics>> =
+        playlistRepository.getFromIds(playlistIds)
+
     suspend fun deleteAll(playlistIds: List<UUID>) {
         playlistRepository.deleteAll(playlistIds)
     }
@@ -20,18 +27,11 @@ class CommonPlaylistUseCase(
         playlistRepository.delete(playlist = playlist)
     }
 
-    fun getAll(): Flow<List<Playlist>> =
-        playlistRepository.getAll()
-
     fun getAllWithMusics(): Flow<List<PlaylistWithMusics>> =
         playlistRepository.getAllPlaylistWithMusics()
 
-    fun getAllFromQuickAccess(): Flow<List<PlaylistWithMusicsNumber>> =
-        playlistRepository.getAllPlaylistWithMusics().map { list ->
-            list
-                .filter { it.playlist.isInQuickAccess }
-                .map { it.toPlaylistWithMusicsNumber() }
-        }
+    fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>> =
+        playlistRepository.getAllFromQuickAccess()
 
     fun getFavorite(): Flow<PlaylistWithMusics?> =
         playlistRepository.getAllPlaylistWithMusics().map { list ->
@@ -40,6 +40,9 @@ class CommonPlaylistUseCase(
 
     fun getWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?> =
         playlistRepository.getPlaylistWithMusics(playlistId)
+
+    fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
+        playlistRepository.getAllPaged()
 
     suspend fun incrementNbPlayed(playlistId: UUID) {
         val playlist: Playlist = playlistRepository.getFromId(playlistId).first() ?: return
@@ -59,4 +62,17 @@ class CommonPlaylistUseCase(
             playlist = playlist,
         )
     }
+
+    suspend fun cleanAllCovers() {
+        playlistRepository.cleanAllCovers()
+    }
+
+    fun getMostListened(): Flow<List<PlaylistPreview>> =
+        playlistRepository.getMostListened()
+
+    fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?> =
+        playlistRepository.getPlaylistPreview(playlistId)
+
+    fun searchAll(search: String): Flow<List<PlaylistPreview>> =
+        playlistRepository.searchAll(search)
 }

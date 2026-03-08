@@ -2,33 +2,44 @@ package com.github.enteraname74.soulsearching.composables
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DragHandle
-import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_drag_handle
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_more_vertical
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIcon
-import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconColors
-import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconDefaults
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIcon
+import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
+import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconDefaults
 
 @Composable
 fun MusicItemComposable(
@@ -67,6 +78,10 @@ fun MusicItemComposable(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
+                modifier = Modifier
+                    .padding(
+                        end = UiConstants.Spacing.verySmall,
+                    ),
                 horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -125,15 +140,17 @@ fun MusicItemComposable(
                 if (reorderableModifier != null) {
                     SoulIcon(
                         modifier = reorderableModifier,
-                        icon = Icons.Rounded.DragHandle,
-                        tint = textColor
+                        icon = CoreRes.drawable.ic_drag_handle,
+                        color = textColor
                     )
                 } else {
                     SoulIcon(
-                        modifier = Modifier.clickableWithHandCursor { onMoreClicked() },
-                        icon = Icons.Rounded.MoreVert,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .clickableWithHandCursor { onMoreClicked() },
+                        icon = CoreRes.drawable.ic_more_vertical,
                         contentDescription = strings.moreButton,
-                        tint = textColor
+                        color = textColor
                     )
                 }
             }

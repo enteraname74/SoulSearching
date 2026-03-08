@@ -236,6 +236,8 @@ object EnStrings : Strings {
     override val showMusicsByFolders = "Show songs by folders"
     override val showMusicsByMonths = "Show songs by months"
     override val showAlbumTrackNumber = "Show tracks number"
+    override val initialSectionTitle = "On launch section"
+    override val initialSectionText = "Select the initial section to show on app launch"
     override val useVerticalAccessBarTitle = "Use vertical access bar"
     override val useHorizontalAccessBarText = "Use horizontal access bar"
 
@@ -263,8 +265,12 @@ object EnStrings : Strings {
     override val leadDeveloper = "Lead developer"
     override val developersTitle = "Developers"
     override val developersText = "The developers behind the Soul Searching project"
+    override val changelogTitle = "Latest update"
+    override val changelogText = "New features, bugs fixes"
+    override val changelogUpdateRequired = "Update the app to enjoy the latest features!"
     override val versionNameTitle = "Application's version name"
-
+    override val projectSiteTitle = "Project's website and source code"
+    override val projectSiteText = "Source code, submit a suggestion"
     override val noNewMusics = "No new songs to add!"
     override val savingNewMusics = "Saving new songs…"
 
@@ -304,6 +310,11 @@ object EnStrings : Strings {
     override val elementDetailTitles = "Title"
 
     override val and: String = "and"
+
+    override val continuePlayedListTitle = "Resume where you left off"
+    override val continuePlayedListAction = "Resume"
+
+    override val savedChanges = "Saved changes"
 
     override fun musics(total: Int): String {
         return when (total) {

@@ -28,15 +28,16 @@ kotlin {
             }
         }
         commonMain.dependencies {
-            implementation(project(":domain"))
-            implementation(compose.runtime)
-            implementation(compose.ui)
-            implementation(libs.components.resources)
+            implementation(libs.compose.ui)
+            implementation(libs.compose.resources)
             implementation(libs.koin.core)
             implementation(libs.jaudiotagger)
+
             implementation(libs.coroutines.core)
             implementation(libs.coroutines.core.jvm)
+
             implementation(project(":core-ui"))
+            implementation(project(":domain"))
         }
 
         androidMain.dependencies {

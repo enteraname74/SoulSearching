@@ -1,32 +1,47 @@
 package com.github.enteraname74.domain.usecase.album
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.repository.AlbumRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import java.util.*
+import java.util.UUID
 
 class CommonAlbumUseCase(
     private val albumRepository: AlbumRepository
 ) {
+
+    fun getFromId(albumId: UUID): Flow<Album?> =
+        albumRepository.getFromId(albumId)
+
+    fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>> =
+        albumRepository.getFromIds(albumIds)
+
     fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?> =
         albumRepository.getAlbumWithMusics(
             albumId = albumId,
         )
 
-    fun getAll(): Flow<List<Album>> =
-        albumRepository.getAll()
+    fun getAllPaged(): Flow<PagingData<AlbumPreview>> =
+        albumRepository.getAllPaged()
 
-    fun getAllAlbumsWithMusics(): Flow<List<AlbumWithMusics>> =
-        albumRepository.getAllAlbumWithMusics()
+    fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
+        albumRepository.getAllFromQuickAccess()
 
-    fun getAllFromQuickAccess(): Flow<List<AlbumWithMusics>> =
-        albumRepository.getAllAlbumWithMusics().map { list ->
-            list.filter { it.album.isInQuickAccess }
-        }
+    fun getMostListened(): Flow<List<AlbumPreview>> =
+        albumRepository.getMostListened()
 
+    fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?> =
+        albumRepository.getAlbumPreview(albumId)
+
+    fun searchAll(search: String): Flow<List<AlbumPreview>> =
+        albumRepository.searchAll(search)
+
+    /**
+     * Call [DeleteAlbumUseCase] for a clean delete of related songs and artists if needed
+     */
     suspend fun deleteAll(albumsIds: List<UUID>) {
         albumRepository.deleteAll(
             ids = albumsIds,
@@ -50,20 +65,6 @@ class CommonAlbumUseCase(
             artistId = artistId,
         )
 
-    suspend fun getDuplicatedAlbum(
-        albumId: UUID,
-        albumName: String,
-        artistId: UUID
-    ): Album? {
-        val allAlbums: List<Album> = albumRepository.getAll().first()
-        return allAlbums
-            .firstOrNull {
-                it.albumName == albumName &&
-                        it.artist.artistId == artistId &&
-                        it.albumId != albumId
-            }
-    }
-
     suspend fun incrementAlbumNbPlayed(albumId: UUID) {
         val album: Album = albumRepository.getFromId(albumId = albumId).first() ?: return
         albumRepository.upsert(
@@ -82,4 +83,9 @@ class CommonAlbumUseCase(
     suspend fun upsertAll(albums: List<Album>) {
         albumRepository.upsertAll(albums)
     }
+
+    suspend fun cleanAllCovers() {
+        albumRepository.cleanAllCovers()
+    }
+
 }

@@ -1,6 +1,8 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
@@ -29,9 +31,6 @@ class PlaylistRepositoryImpl(
         playlistDataSource.deleteAll(playlistIds)
     }
 
-    override fun getAll(): Flow<List<Playlist>> =
-        playlistDataSource.getAll()
-
     override fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>> =
         playlistDataSource.getAllPlaylistWithMusics()
 
@@ -43,6 +42,9 @@ class PlaylistRepositoryImpl(
             playlistId = playlistId
         )
 
+    override fun getFromIds(playlistIds: List<UUID>): Flow<List<PlaylistWithMusics>> =
+        playlistDataSource.getFromIds(playlistIds)
+
     /**
      * Retrieves a flow of a PlaylistWithMusics.
      */
@@ -50,4 +52,23 @@ class PlaylistRepositoryImpl(
         playlistDataSource.getPlaylistWithMusics(
             playlistId = playlistId
         )
+
+    override fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
+        playlistDataSource.getAllPaged()
+
+    override suspend fun cleanAllCovers() {
+        playlistDataSource.cleanAllCovers()
+    }
+
+    override fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>> =
+        playlistDataSource.getAllFromQuickAccess()
+
+    override fun getMostListened(): Flow<List<PlaylistPreview>> =
+        playlistDataSource.getMostListened()
+
+    override fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?> =
+        playlistDataSource.getPlaylistPreview(playlistId)
+
+    override fun searchAll(search: String): Flow<List<PlaylistPreview>> =
+        playlistDataSource.searchAll(search)
 }

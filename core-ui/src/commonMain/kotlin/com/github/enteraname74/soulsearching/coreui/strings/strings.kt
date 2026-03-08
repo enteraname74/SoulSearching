@@ -251,6 +251,8 @@ interface Strings {
     val showMusicsByFolders: String
     val showMusicsByMonths: String
     val showAlbumTrackNumber: String
+    val initialSectionTitle: String
+    val initialSectionText: String
     val useVerticalAccessBarTitle: String
     val useHorizontalAccessBarText: String
 
@@ -269,7 +271,13 @@ interface Strings {
     val leadDeveloper: String
     val developersTitle: String
     val developersText: String
+
+    val changelogTitle: String
+    val changelogText: String
+    val changelogUpdateRequired: String
     val versionNameTitle: String
+    val projectSiteTitle: String
+    val projectSiteText: String
     val versionNameActionText: String get() = "Soul Searching - Average White Band - 1976"
 
     val noNewMusics: String
@@ -308,8 +316,12 @@ interface Strings {
     val elementDetailPlay: String
     val elementDetailShuffle: String
     val elementDetailTitles: String
-
     val and: String
+
+    val continuePlayedListTitle: String
+    val continuePlayedListAction: String
+
+    val savedChanges: String
 
     /**
      * Shows a text indicating the number of musics.
@@ -346,14 +358,13 @@ interface Strings {
      */
     fun artistCoverMethodExampleTitle(artist: String): String
     fun colorPaletteSeed(seed: ColorPaletteSeed): String
-    fun duration(musics: List<Music>): String {
-        val totalDuration: Duration = musics.duration()
 
-        val hours = totalDuration.inWholeHours
+    fun duration(duration: Duration): String {
+        val hours = duration.inWholeHours
         return if (hours > 0) {
-            "$hours ${hours(hours)} $and ${minutes(totalDuration.inWholeMinutes.mod(60).toLong())}"
+            "$hours ${hours(hours)} $and ${minutes(duration.inWholeMinutes.mod(60).toLong())}"
         } else {
-            minutes(totalDuration.inWholeMinutes)
+            minutes(duration.inWholeMinutes)
         }
     }
 

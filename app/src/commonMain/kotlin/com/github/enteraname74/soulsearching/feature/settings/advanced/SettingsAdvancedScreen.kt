@@ -5,14 +5,19 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.repeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Groups
-import androidx.compose.material.icons.rounded.Image
-import androidx.compose.material.icons.rounded.Info
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -21,6 +26,10 @@ import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_groups_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_image_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_info_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.ext.chainIf
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
@@ -119,7 +128,7 @@ private fun SettingsAdvancedComposable(
             SoulMenuElement(
                 title = strings.splitMultipleArtistsTitle,
                 subTitle = strings.splitMultipleArtistsText,
-                icon = Icons.Rounded.Groups,
+                leadIcon = CoreRes.drawable.ic_groups_filled,
                 onClick = { onAction(SettingsAdvancedAction.ToMultipleArtists) },
             )
         }
@@ -127,7 +136,7 @@ private fun SettingsAdvancedComposable(
             SoulMenuElement(
                 title = strings.artistCoverMethodTitle,
                 subTitle = strings.artistCoverMethodText,
-                icon = Icons.Rounded.Image,
+                leadIcon = CoreRes.drawable.ic_image_filled,
                 onClick = { onAction(SettingsAdvancedAction.ToArtistCoverMethod) },
             )
         }
@@ -147,7 +156,7 @@ private fun SettingsAdvancedComposable(
                     isChecked = permissionState.isLyricsPermissionEnabled,
                     maxLines = Int.MAX_VALUE,
                     trailingIcon = SoulMenuLeadingIconSpec(
-                        icon = Icons.Rounded.Info,
+                        icon =  CoreRes.drawable.ic_info_filled,
                         onClick = { onAction(SettingsAdvancedAction.ShowLyricsPermissionDialog) },
                     )
                 )
@@ -169,7 +178,7 @@ private fun SettingsAdvancedComposable(
                     isChecked = permissionState.isGitHubReleaseFetchPermissionEnabled,
                     maxLines = Int.MAX_VALUE,
                     trailingIcon = SoulMenuLeadingIconSpec(
-                        icon = Icons.Rounded.Info,
+                        icon =  CoreRes.drawable.ic_info_filled,
                         onClick = { onAction(SettingsAdvancedAction.ShowGitHubReleasePermissionDialog) },
                     )
                 )

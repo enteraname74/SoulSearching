@@ -1,9 +1,11 @@
 package com.github.enteraname74.domain.repository
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 interface PlaylistRepository {
     /**
@@ -24,11 +26,6 @@ interface PlaylistRepository {
     suspend fun deleteAll(playlistIds: List<UUID>)
 
     /**
-     * Retrieves a flow of all Playlist, sorted by name asc.
-     */
-    fun getAll(): Flow<List<Playlist>>
-
-    /**
      * Retrieves a flow of all PlaylistWithMusics, sorted by name asc.
      */
     fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>>
@@ -38,8 +35,22 @@ interface PlaylistRepository {
      */
     fun getFromId(playlistId: UUID): Flow<Playlist?>
 
+    fun getFromIds(playlistIds: List<UUID>): Flow<List<PlaylistWithMusics>>
+
     /**
      * Retrieves a flow of a PlaylistWithMusics.
      */
     fun getPlaylistWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?>
+
+    fun getAllPaged(): Flow<PagingData<PlaylistPreview>>
+
+    suspend fun cleanAllCovers()
+
+    fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>>
+
+    fun getMostListened(): Flow<List<PlaylistPreview>>
+
+    fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?>
+
+    fun searchAll(search: String): Flow<List<PlaylistPreview>>
 }

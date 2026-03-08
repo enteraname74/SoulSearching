@@ -6,17 +6,16 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.github.enteraname74.domain.model.MonthMusics
+import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.list.LazyRowCompat
-import com.github.enteraname74.soulsearching.coreui.list.SoulHorizontalScrollBar
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun MusicMonthsHorizontalList(
-    months: List<MonthMusics>,
+    months: List<MonthMusicsPreview>,
     onMonthClicked: (month: String) -> Unit = {},
     onMonthLongClicked: (month: String) -> Unit = {},
 ) {
@@ -55,7 +54,7 @@ fun MusicMonthsHorizontalList(
                         BigPreviewComposable(
                             cover = element.cover,
                             title = element.month,
-                            text = strings.musics(total = element.allMusicsSize),
+                            text = strings.musics(total = element.totalMusics),
                             onClick = {
                                 onMonthClicked(element.month)
                             },

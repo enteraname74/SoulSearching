@@ -14,15 +14,20 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionScaffold
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
@@ -32,7 +37,8 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageNavigationState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.SearchAllState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainMenuHeaderComposable
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageHorizontalShortcut
@@ -51,24 +57,19 @@ fun MainPageRoute(
 ) {
     val playerViewManager: PlayerViewManager = injectElement()
 
-    val musicState: AllMusicsState by mainPageViewModel.allMusicsState.collectAsState()
-    val playlistState: AllPlaylistsState by mainPageViewModel.allPlaylistsState.collectAsState()
-    val albumState: AllAlbumsState by mainPageViewModel.allAlbumsState.collectAsState()
-    val artistState: AllArtistsState by mainPageViewModel.allArtistsState.collectAsState()
+    val searchAllState: SearchAllState by mainPageViewModel.searchAllState.collectAsStateWithLifecycle()
 
-    val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
-    val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
-    val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsState()
-    val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsState()
+    val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsStateWithLifecycle()
+    val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsStateWithLifecycle()
+    val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsStateWithLifecycle()
+    val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsStateWithLifecycle()
 
     val searchDraggableState = mainPageViewModel.searchDraggableState
 
-    val bottomSheetState: SoulBottomSheet? by mainPageViewModel.bottomSheetState.collectAsState()
-    val addToPlaylistsBottomSheetState: AddToPlaylistBottomSheet? by mainPageViewModel.addToPlaylistsBottomSheetState.collectAsState()
-    val dialogState: SoulDialog? by mainPageViewModel.dialogState.collectAsState()
-    val navigationState: MainPageNavigationState by mainPageViewModel.navigationState.collectAsState()
+    val bottomSheetState: SoulBottomSheet? by mainPageViewModel.bottomSheetState.collectAsStateWithLifecycle()
+    val dialogState: SoulDialog? by mainPageViewModel.dialogState.collectAsStateWithLifecycle()
+    val navigationState: MainPageNavigationState by mainPageViewModel.navigationState.collectAsStateWithLifecycle()
     bottomSheetState?.BottomSheet()
-    addToPlaylistsBottomSheetState?.BottomSheet()
     dialogState?.Dialog()
 
     LaunchedEffect(playerViewManager.currentValue) {
@@ -85,14 +86,11 @@ fun MainPageRoute(
     MainPageScreenView(
         mainPageViewModel = mainPageViewModel,
         searchDraggableState = searchDraggableState,
-        musicState = musicState,
-        allPlaylistsState = playlistState,
-        allAlbumsState = albumState,
-        allArtistsState = artistState,
         tabs = tabs,
         currentEnumPage = currentPage,
         isUsingVerticalAccessBar = isUsingVerticalAccessBar,
         shouldShowNewVersionPin = shouldShowNewVersionPin,
+        searchAllState = searchAllState,
     )
 }
 
@@ -102,17 +100,15 @@ fun MainPageRoute(
 fun MainPageScreenView(
     mainPageViewModel: MainPageViewModel,
     searchDraggableState: SwipeableState<BottomSheetStates>,
-    musicState: AllMusicsState,
-    allPlaylistsState: AllPlaylistsState,
-    allAlbumsState: AllAlbumsState,
-    allArtistsState: AllArtistsState,
+    searchAllState: SearchAllState,
     tabs: List<PagerScreen>,
     shouldShowNewVersionPin: Boolean,
     currentEnumPage: ElementEnum?,
     isUsingVerticalAccessBar: Boolean,
 ) {
     val pagerState = rememberPagerState(
-        pageCount = { tabs.size }
+        pageCount = { tabs.size },
+        initialPage = mainPageViewModel.initialPage,
     )
 
     LaunchedEffect(currentEnumPage) {
@@ -125,62 +121,88 @@ fun MainPageScreenView(
     val searchBarFocusRequester = remember { FocusRequester() }
     val currentPage by remember { derivedStateOf { pagerState.currentPage } }
 
-    MultiSelectionScaffold(
-        multiSelectionManagerImpl = mainPageViewModel.multiSelectionManagerImpl,
-        onCancel = mainPageViewModel::clearMultiSelection,
-        onMore = mainPageViewModel::handleMultiSelectionBottomSheet,
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        BoxWithConstraints(
+        val constraintsScope = this
+        val maxHeight = with(LocalDensity.current) {
+            constraintsScope.maxHeight.toPx() + getNavigationBarPadding()
+        }
+
+        val coroutineScope = rememberCoroutineScope()
+
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = SoulSearchingColorTheme.colorScheme.primary)
         ) {
-            val constraintsScope = this
-            val maxHeight = with(LocalDensity.current) {
-                constraintsScope.maxHeight.toPx() + getNavigationBarPadding()
-            }
-
-            val coroutineScope = rememberCoroutineScope()
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
-            ) {
-                MainMenuHeaderComposable(
-                    shouldShowNewReleasePin = shouldShowNewVersionPin,
-                    settingsAction = mainPageViewModel::toSettings,
-                    searchAction = {
-                        coroutineScope.launch {
-                            searchDraggableState.animateTo(
-                                BottomSheetStates.EXPANDED,
-                                tween(UiConstants.AnimationDuration.normal)
-                            )
-                        }.invokeOnCompletion {
-                            searchBarFocusRequester.requestFocus()
-                        }
+            MainMenuHeaderComposable(
+                shouldShowNewReleasePin = shouldShowNewVersionPin,
+                settingsAction = mainPageViewModel::toSettings,
+                searchAction = {
+                    coroutineScope.launch {
+                        searchDraggableState.animateTo(
+                            BottomSheetStates.EXPANDED,
+                            tween(UiConstants.AnimationDuration.normal)
+                        )
+                    }.invokeOnCompletion {
+                        searchBarFocusRequester.requestFocus()
                     }
-                )
+                }
+            )
 
-                if (isUsingVerticalAccessBar) {
-                    Row(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        // We only show the vertical shortcut if there is more than one panel to access.
-                        if (shouldShowShortcutAccess(tabs = tabs)) {
-                            MainPageVerticalShortcut(
-                                currentPage = currentPage,
-                                visibleElements = tabs.map { it.type },
-                                switchPageAction = { newPage ->
-                                    if (newPage == -1) return@MainPageVerticalShortcut
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(newPage)
-                                    }.invokeOnCompletion {
-                                        mainPageViewModel.setCurrentPage(tabs[newPage].type)
-                                    }
+            if (isUsingVerticalAccessBar) {
+                Row(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    // We only show the vertical shortcut if there is more than one panel to access.
+                    if (shouldShowShortcutAccess(tabs = tabs)) {
+                        MainPageVerticalShortcut(
+                            currentPage = currentPage,
+                            visibleElements = tabs.map { it.type },
+                            switchPageAction = { newPage ->
+                                if (newPage == -1) return@MainPageVerticalShortcut
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(newPage)
+                                }.invokeOnCompletion {
+                                    mainPageViewModel.setCurrentPage(tabs[newPage].type)
                                 }
-                            )
-                        }
+                            }
+                        )
+                    }
+                    VerticalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize(),
+                        userScrollEnabled = false,
+                    ) {
+                        tabs[it].screen()
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    if (shouldShowShortcutAccess(tabs = tabs)) {
+                        MainPageHorizontalShortcut(
+                            currentPage = currentPage,
+                            visibleElements = tabs.map { it.type },
+                            switchPageAction = { newPage ->
+                                if (newPage == -1) return@MainPageHorizontalShortcut
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(newPage)
+                                }.invokeOnCompletion {
+                                    mainPageViewModel.setCurrentPage(tabs[newPage].type)
+                                }
+                            }
+                        )
+                    }
+
+                    val windowSize = rememberWindowSize()
+
+                    if (windowSize == WindowSize.Large) {
                         VerticalPager(
                             state = pagerState,
                             modifier = Modifier.fillMaxSize(),
@@ -188,72 +210,46 @@ fun MainPageScreenView(
                         ) {
                             tabs[it].screen()
                         }
-                    }
-                } else {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        if (shouldShowShortcutAccess(tabs = tabs)) {
-                            MainPageHorizontalShortcut(
-                                currentPage = currentPage,
-                                visibleElements = tabs.map { it.type },
-                                switchPageAction = { newPage ->
-                                    if (newPage == -1) return@MainPageHorizontalShortcut
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(newPage)
-                                    }.invokeOnCompletion {
-                                        mainPageViewModel.setCurrentPage(tabs[newPage].type)
-                                    }
-                                }
-                            )
-                        }
-
-                        val windowSize = rememberWindowSize()
-
-                        if (windowSize == WindowSize.Large) {
-                            VerticalPager(
-                                state = pagerState,
-                                modifier = Modifier.fillMaxSize(),
-                                userScrollEnabled = false,
-                            ) {
-                                tabs[it].screen()
-                            }
-                        } else {
-                            HorizontalPager(
-                                state = pagerState,
-                                modifier = Modifier.fillMaxSize(),
-                            ) {
-                                tabs[it].screen()
-                            }
+                    } else {
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            tabs[it].screen()
                         }
                     }
                 }
             }
+        }
 
-            SearchView(
-                draggableState = searchDraggableState,
-                placeholder = strings.searchAll,
-                maxHeight = maxHeight,
-                focusRequester = searchBarFocusRequester
-            ) { searchText, focusManager ->
-                SearchAll(
-                    searchText = searchText,
-                    musicState = musicState,
-                    allAlbumsState = allAlbumsState,
-                    allArtistsState = allArtistsState,
-                    allPlaylistsState = allPlaylistsState,
-                    onSelectedMusicForBottomSheet = mainPageViewModel::showMusicBottomSheet,
-                    onSelectedAlbumForBottomSheet = mainPageViewModel::showAlbumBottomSheet,
-                    onSelectedPlaylistForBottomSheet = mainPageViewModel::showPlaylistBottomSheet,
-                    onSelectedArtistForBottomSheet = mainPageViewModel::showArtistBottomSheet,
-                    navigateToPlaylist = mainPageViewModel::toPlaylist,
-                    navigateToArtist = mainPageViewModel::toArtist,
-                    navigateToAlbum = mainPageViewModel::toAlbum,
-                    isMainPlaylist = false,
-                    focusManager = focusManager,
-                )
-            }
+        SearchView(
+            draggableState = searchDraggableState,
+            placeholder = strings.searchAll,
+            maxHeight = maxHeight,
+            focusRequester = searchBarFocusRequester,
+            onSearch = mainPageViewModel::onSearch,
+        ) { focusManager, lazyListState ->
+            SearchAll(
+                lazyListState = lazyListState,
+                searchAllState = searchAllState,
+                onSelectedMusicForBottomSheet = {
+                    mainPageViewModel.showMusicBottomSheet(listOf(it))
+                },
+                onSelectedAlbumForBottomSheet = {
+                    mainPageViewModel.showAlbumBottomSheet(listOf(it.id))
+                },
+                onSelectedPlaylistForBottomSheet = {
+                    mainPageViewModel.showPlaylistBottomSheet(listOf(it.id))
+                },
+                onSelectedArtistForBottomSheet = {
+                    mainPageViewModel.showArtistBottomSheet(listOf(it.id))
+                },
+                navigateToPlaylist = mainPageViewModel::toPlaylist,
+                navigateToArtist = mainPageViewModel::toArtist,
+                navigateToAlbum = mainPageViewModel::toAlbum,
+                isMainPlaylist = false,
+                focusManager = focusManager,
+            )
         }
     }
 }

@@ -68,7 +68,7 @@ fun PlayerMinimisedMainInfo(
             )
         }
         MinimisedPlayerControlsComposable(
-            playerViewState = playerViewManager.playerDraggableState.currentValue,
+            playerViewState = playerViewManager.draggableState.currentValue,
             isPlaying = isPlaying,
             next = next,
             previous = previous,

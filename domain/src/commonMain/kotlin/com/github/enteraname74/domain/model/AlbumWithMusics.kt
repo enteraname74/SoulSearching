@@ -8,8 +8,7 @@ import com.github.enteraname74.domain.ext.coverFromSongs
 data class AlbumWithMusics(
     val album: Album,
     val musics : List<Music>,
-    override val isInQuickAccess: Boolean = album.isInQuickAccess,
-): QuickAccessible {
+) {
 
     val cover: Cover? = if (album.cover?.isEmpty() == false) {
         album.cover

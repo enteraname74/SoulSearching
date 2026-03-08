@@ -118,9 +118,9 @@ class SoulSearchingDesktopPlayerImpl :
         _state.value = false
     }
 
-    override fun seekToPosition(position: Int) {
+    override fun seekToPosition(millis: Int) {
         try {
-            player.controls().setTime(position.toLong())
+            player.controls().setTime(millis.toLong())
         } catch (e: Exception) {
             println("PLAYER -- Exception on seekToPosition: $e")
         }
@@ -139,7 +139,7 @@ class SoulSearchingDesktopPlayerImpl :
         }
     }
 
-    override fun getMusicPosition(): Int =
+    override fun getProgress(): Int =
         try {
             player.status().time().toInt().positive()
         } catch (e: Exception) {

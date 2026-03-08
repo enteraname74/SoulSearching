@@ -15,13 +15,14 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 fun SoulMenuBody(
     title: String,
     text: String?,
+    modifier: Modifier = Modifier,
     titleMaxLines: Int = 1,
     textMaxLines: Int = 2,
     titleColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Text(

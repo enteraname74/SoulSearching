@@ -40,7 +40,7 @@ class UpdateAlbumUseCase(
         }
 
         // We then check if there is an album with the same name and artist that already exist.
-        val duplicateAlbum: Album? = commonAlbumUseCase.getDuplicatedAlbum(
+        val duplicateAlbum: Album? = albumRepository.getDuplicatedAlbum(
             albumId = updateInformation.legacyAlbum.albumId,
             albumName = updateInformation.newName,
             artistId = albumArtistToSave.artistId
@@ -48,6 +48,7 @@ class UpdateAlbumUseCase(
 
         val updatedAlbum = updateInformation.legacyAlbum.copy(
             artist = albumArtistToSave,
+            albumName = updateInformation.newName,
             isInQuickAccess = updateInformation.legacyAlbum.isInQuickAccess
                     || duplicateAlbum?.isInQuickAccess == true,
             cover = updateInformation.newCover,

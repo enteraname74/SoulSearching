@@ -30,7 +30,7 @@ actual fun Modifier.blurCompat(
 ): Modifier =
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
         this.blur(radius ?: RECENT_DEFAULT_BLUR)
-    } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R ) {
+    } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
         this.cloudy(radius = radius?.value?.toInt() ?: LEGACY_DEFAULT_BLUR)
     } else {
         this.blur(radius = radius ?: RECENT_DEFAULT_BLUR)

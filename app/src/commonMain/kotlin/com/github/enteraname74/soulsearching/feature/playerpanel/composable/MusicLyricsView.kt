@@ -1,26 +1,44 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Lyrics
-import androidx.compose.material.icons.rounded.SyncAlt
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -39,6 +57,9 @@ import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_lyrics_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_sync_alt
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateComposable
@@ -57,43 +78,36 @@ fun MusicLyricsView(
     containerColor: Color,
     buttonColor: SoulButtonColors,
     lyricsState: LyricsFetchState,
-    isExpanded: Boolean,
     onActivateRemoteLyrics: () -> Unit,
 ) {
-    if (!isExpanded) {
-        FetchingLyricsView(
-            contentColor = contentColor
-        )
-    } else {
-        when (lyricsState) {
-            LyricsFetchState.FetchingLyrics -> {
-                FetchingLyricsView(
-                    contentColor = contentColor
-                )
-            }
+    when (lyricsState) {
+        LyricsFetchState.FetchingLyrics -> {
+            FetchingLyricsView(
+                contentColor = contentColor
+            )
+        }
 
-            is LyricsFetchState.FoundLyrics -> {
-                LyricsView(
-                    contentColor = contentColor,
-                    containerColor = containerColor,
-                    subTextColor = noLyricsColor,
-                    lyricsState = lyricsState,
-                    buttonColor = buttonColor,
-                )
-            }
+        is LyricsFetchState.FoundLyrics -> {
+            LyricsView(
+                contentColor = contentColor,
+                containerColor = containerColor,
+                subTextColor = noLyricsColor,
+                lyricsState = lyricsState,
+                buttonColor = buttonColor,
+            )
+        }
 
-            LyricsFetchState.NoLyricsFound -> {
-                NoLyricsFoundView(
-                    contentColor = noLyricsColor
-                )
-            }
+        LyricsFetchState.NoLyricsFound -> {
+            NoLyricsFoundView(
+                contentColor = noLyricsColor
+            )
+        }
 
-            LyricsFetchState.NoPermission -> {
-                NoPermissionView(
-                    onActivateRemoteLyrics = onActivateRemoteLyrics,
-                    buttonColor = buttonColor,
-                )
-            }
+        LyricsFetchState.NoPermission -> {
+            NoPermissionView(
+                onActivateRemoteLyrics = onActivateRemoteLyrics,
+                buttonColor = buttonColor,
+            )
         }
     }
 }
@@ -106,7 +120,7 @@ private fun NoPermissionView(
     SoulTemplateComposable(
         modifier = Modifier
             .fillMaxSize(),
-        icon = Icons.Rounded.Lyrics,
+        icon = CoreRes.drawable.ic_lyrics_filled,
         text = strings.activateRemoteLyricsFetchText,
         buttonSpec = TemplateScreenButtonSpec(
             text = strings.activateRemoteLyricsFetchTitle,
@@ -251,7 +265,7 @@ private fun SwitchLyricsModeButton(
     ) {
         SoulIconButton(
             modifier = Modifier.size(44.dp),
-            icon = Icons.Rounded.SyncAlt,
+            icon = CoreRes.drawable.ic_sync_alt,
             size = 28.dp,
             colors = buttonColor,
             onClick = onSwitch

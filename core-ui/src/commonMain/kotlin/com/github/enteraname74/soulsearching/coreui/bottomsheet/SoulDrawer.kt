@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 internal fun SoulDrawer(
     onClose: () -> Unit,
     colors: SoulBottomSheetColors = SoulBottomSheetDefaults.colors(),
-    content: @Composable (closeWithAnim: () -> Unit) -> Unit,
+    content: @Composable (closeWithAnim: (callback: () -> Unit) -> Unit) -> Unit,
 ) {
     var isShown: SoulDrawerState by rememberSaveable {
         mutableStateOf(SoulDrawerState.Init)
@@ -45,11 +45,12 @@ internal fun SoulDrawer(
         isShown = SoulDrawerState.Open
     }
 
-    val closeWithAnim: () -> Unit = {
+    val closeWithAnim: (callback: () -> Unit) -> Unit = { callback ->
         coroutineScope.launch {
             isShown = SoulDrawerState.Closed
             delay(UiConstants.AnimationDuration.normal.toLong())
             onClose()
+            callback()
         }
     }
 
@@ -104,26 +105,26 @@ private fun Drawer(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Scrim(
-    onClose: () -> Unit,
+    onClose: (callback: () -> Unit) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
         modifier
             .fillMaxSize()
             // handle pointer input
-            .pointerInput(onClose) { detectTapGestures { onClose() } }
+            .pointerInput(onClose) { detectTapGestures { onClose {} } }
             // handle accessibility services
             .semantics(mergeDescendants = true) {
                 contentDescription = ""
                 onClick {
-                    onClose()
+                    onClose {}
                     true
                 }
             }
             // handle physical keyboard input
             .onKeyEvent {
                 if (it.key == Key.Escape) {
-                    onClose()
+                    onClose {}
                     true
                 } else {
                     false

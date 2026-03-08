@@ -5,7 +5,6 @@ import com.github.enteraname74.domain.model.Folder
 /**
  * State for managing folders.
  */
-sealed interface FolderState {
-    data object Fetching: FolderState
-    data class Data(val folders: List<Folder>): FolderState
-}
+data class FolderState(
+    val folders: List<Folder> = emptyList(),
+)

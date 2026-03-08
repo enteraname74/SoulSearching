@@ -1,22 +1,40 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FixedThreshold
+import androidx.compose.material.SwipeableState
+import androidx.compose.material.rememberSwipeableState
+import androidx.compose.material.swipeable
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -31,21 +49,24 @@ import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconColors
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -54,10 +75,9 @@ import kotlin.math.roundToInt
 fun PlayerListView(
     playbackManager: PlaybackManager = injectElement(),
     currentMusicIndex: Int,
-    isExpanded: Boolean,
     playedList: List<Music>,
     onLongSelectOnMusic: (Music) -> Unit,
-    onMoreClickedOnMusic: (Music) -> Unit,
+    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
     containerColor: Color,
     contentColor: Color,
     buttonColors: SoulButtonColors,
@@ -73,129 +93,127 @@ fun PlayerListView(
             .fillMaxSize()
             .navigationBarsPadding()
     ) {
-        if (isExpanded) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(UiConstants.Spacing.small),
-                contentAlignment = Alignment.CenterEnd,
-            ) {
-                SoulButton(
-                    colors = buttonColors,
-                    onClick = {
-                        coroutineScope.launch {
-                            if (currentMusicIndex != -1) {
-                                playerListState.animateScrollToItem(
-                                    currentMusicIndex
-                                )
-                            }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(UiConstants.Spacing.small),
+            contentAlignment = Alignment.CenterEnd,
+        ) {
+            SoulButton(
+                colors = buttonColors,
+                onClick = {
+                    coroutineScope.launch {
+                        if (currentMusicIndex != -1) {
+                            playerListState.animateScrollToItem(
+                                currentMusicIndex
+                            )
                         }
                     }
-                ) {
-                    Text(
-                        text = strings.currentSong,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        color = buttonColors.contentColor,
-                        fontSize = 12.sp
-                    )
                 }
-            }
-
-            val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
-
-            var uiList by remember {
-                mutableStateOf(playedList)
-            }
-
-            val reorderableLazyListState = rememberReorderableLazyListState(playerListState) { from, to ->
-                uiList = uiList.toMutableList().apply {
-                    add(to.index, removeAt(from.index))
-                }
-            }
-
-            LaunchedEffect(playedList) {
-                // If the played list was updated, but we were in a dragged state, we don't update the ui list.
-                if (!reorderableLazyListState.isAnyItemDragging) {
-                    uiList = playedList
-                }
-            }
-
-
-
-            LazyColumnCompat(
-                state = playerListState,
-                contentPadding = PaddingValues(
-                    bottom = getNavigationBarPadding().toDp()
-                )
             ) {
-                items(
-                    items = uiList,
-                    key = { it.musicId },
-                    contentType = { PLAYER_LIST_CONTENT_TYPE }
-                ) { elt ->
+                Text(
+                    text = strings.currentSong,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    color = buttonColors.contentColor,
+                    fontSize = 12.sp
+                )
+            }
+        }
 
-                    ReorderableItem(
-                        state = reorderableLazyListState,
-                        key = elt.musicId
-                    ) { isDragging ->
-                        val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
+        val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
-                        Surface(shadowElevation = elevation) {
-                            Swipeable(
+        var fromMusicId: String? by rememberSaveable {
+            mutableStateOf(null)
+        }
+        var afterMusicId: String? by rememberSaveable {
+            mutableStateOf(null)
+        }
+
+        var uiList by remember {
+            mutableStateOf(playedList)
+        }
+
+        val reorderableLazyListState = rememberReorderableLazyListState(playerListState) { from, to ->
+
+            fromMusicId = from.key.toString()
+            afterMusicId = to.key.toString()
+
+            uiList = uiList.toMutableList().apply {
+                add(to.index, removeAt(from.index))
+            }
+        }
+
+        LaunchedEffect(playedList) {
+            // If the played list was updated, but we were in a dragged state, we don't update the ui list.
+            if (!reorderableLazyListState.isAnyItemDragging) {
+                uiList = playedList
+            }
+        }
+
+        LazyColumnCompat(
+            state = playerListState,
+            contentPadding = PaddingValues(
+                bottom = getNavigationBarPadding().toDp()
+            )
+        ) {
+            items(
+                items = uiList,
+                key = { it.musicId },
+                contentType = { PLAYER_LIST_CONTENT_TYPE }
+            ) { elt ->
+                ReorderableItem(
+                    state = reorderableLazyListState,
+                    key = elt.musicId
+                ) { isDragging ->
+                    val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
+
+                    Surface(shadowElevation = elevation) {
+                        Swipeable(
+                            modifier = Modifier
+                                .animateItem(),
+                            music = elt,
+                            contentColor = contentColor,
+                            containerColor = containerColor,
+                        ) {
+                            MusicItemComposable(
                                 modifier = Modifier
-                                    .animateItem(),
+                                    .background(containerColor),
                                 music = elt,
-                                contentColor = contentColor,
-                                containerColor = containerColor,
-                            ) {
-                                MusicItemComposable(
-                                    modifier = Modifier
-                                        .background(containerColor),
-                                    music = elt,
-                                    reorderableModifier = Modifier
-                                        .draggableHandle(
-                                            onDragStopped = {
-                                                CoroutineScope(Dispatchers.IO).launch {
-                                                    playbackManager.updatePlayedListAfterReorder(
-                                                        newList = uiList
-                                                    )
-                                                }
-                                            }
-                                        ),
-                                    onClick = { music ->
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            playbackManager.setAndPlayMusic(music)
-                                        }
-                                    },
-                                    onMoreClicked = {
-                                        coroutineScope.launch {
-                                            onMoreClickedOnMusic(elt)
-                                        }
-                                    },
-                                    onLongClick = { onLongSelectOnMusic(elt) },
-                                    textColor = contentColor,
-                                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
-                                    isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
-                                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
-                                    selectedIconColors = selectedIconColors,
-                                )
-                            }
-                        }
+                                reorderableModifier = Modifier
+                                    .draggableHandle(
+                                        onDragStopped = {
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                if (fromMusicId == null || afterMusicId == null) return@launch
 
+                                                playbackManager.moveMusic(
+                                                    fromMusicId = UUID.fromString(fromMusicId),
+                                                    afterMusicId = UUID.fromString(afterMusicId),
+                                                )
+                                            }
+                                        }
+                                    ),
+                                onClick = { music ->
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        playbackManager.setAndPlayMusic(music)
+                                    }
+                                },
+                                onMoreClicked = {
+                                    coroutineScope.launch {
+                                        onMoreClickedOnMusic(elt.musicId)
+                                    }
+                                },
+                                onLongClick = { onLongSelectOnMusic(elt) },
+                                textColor = contentColor,
+                                isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
+                                isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
+                                isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                                selectedIconColors = selectedIconColors,
+                            )
+                        }
                     }
+
                 }
-            }
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = getNavigationBarPadding().toDp())
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = contentColor
-                )
             }
         }
     }
@@ -306,8 +324,8 @@ private fun DeletionIndicator(
         contentAlignment = Alignment.Center,
     ) {
         SoulIcon(
-            icon = Icons.Rounded.Delete,
-            tint = contentColor,
+            icon = CoreRes.drawable.ic_delete_filled,
+            color = contentColor,
         )
     }
 }

@@ -1,7 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
@@ -10,15 +12,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
-import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.ext.navigationFilledIcon
-import com.github.enteraname74.soulsearching.ext.navigationTitle
+import com.github.enteraname74.soulsearching.ext.filledIcon
+import com.github.enteraname74.soulsearching.ext.text
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 
 @Composable
@@ -54,25 +56,24 @@ fun MainPageVerticalShortcut(
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
+                SoulIcon(
                     modifier = Modifier
-                        .size(UiConstants.ImageSize.medium)
                         .alpha(
-                            if (!isCurrentPosition) {
-                                0F
+                            if (isCurrentPosition) {
+                                1f
                             } else {
-                                1F
+                                0f
                             }
                         ),
-                    colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),
-                    imageVector = it.navigationFilledIcon(),
-                    contentDescription = ""
+                    size = UiConstants.ImageSize.medium,
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    icon = it.filledIcon(),
                 )
                 Text(
                     modifier = Modifier
                         .rotate(-90f)
                         .vertical(),
-                    text = it.navigationTitle(),
+                    text = it.text(),
                     color = if (isCurrentPosition) {
                         SoulSearchingColorTheme.colorScheme.onPrimary
                     } else {

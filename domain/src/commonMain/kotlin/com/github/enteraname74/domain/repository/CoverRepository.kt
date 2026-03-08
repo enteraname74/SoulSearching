@@ -8,4 +8,6 @@ interface CoverRepository {
     suspend fun getAllCoverIds(): List<UUID>
 
     suspend fun delete(coverId: UUID)
+
+    suspend fun isCoverUsed(coverId: UUID): Boolean
 }

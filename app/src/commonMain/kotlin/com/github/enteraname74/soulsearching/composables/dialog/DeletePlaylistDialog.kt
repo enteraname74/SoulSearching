@@ -1,18 +1,14 @@
 package com.github.enteraname74.soulsearching.composables.dialog
 
-import androidx.compose.foundation.Image
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.ColorFilter
-import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 class DeletePlaylistDialog(
-    private val playlistToDelete: Playlist,
     private val onDelete: () -> Unit,
     private val onClose: () -> Unit,
 ): SoulDialog {
@@ -28,12 +24,9 @@ class DeletePlaylistDialog(
             confirmText = strings.delete,
             dismissText = strings.cancel,
             icon = {
-                Image(
-                    imageVector = Icons.Rounded.Delete,
+                SoulIcon(
+                    icon = CoreRes.drawable.ic_delete_filled,
                     contentDescription = strings.delete,
-                    colorFilter = ColorFilter.tint(
-                        SoulSearchingColorTheme.colorScheme.onPrimary
-                    )
                 )
             }
         )

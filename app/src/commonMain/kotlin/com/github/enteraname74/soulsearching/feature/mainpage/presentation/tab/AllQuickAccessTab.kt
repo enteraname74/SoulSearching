@@ -6,7 +6,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.AlbumPreview
+import com.github.enteraname74.domain.model.ArtistPreview
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.PlaylistPreview
+import com.github.enteraname74.domain.model.QuickAccessible
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -39,7 +43,7 @@ fun allQuickAccessTab(
             contentType = { ALL_QUICK_ACCESS_CONTENT_TYPE },
             emptyView = { QuickAccessExplanation() }
         ) { element ->
-            element.toPreview(
+            element.ToPreview(
                 modifier = Modifier
                     .animateItem(),
                 onClick = onClick,
@@ -50,7 +54,7 @@ fun allQuickAccessTab(
 )
 
 @Composable
-private fun QuickAccessible.toPreview(
+private fun QuickAccessible.ToPreview(
     modifier: Modifier,
     onClick: (quickAccessible: QuickAccessible) -> Unit,
     onLongClick: (quickAccessible: QuickAccessible) -> Unit,
@@ -61,24 +65,24 @@ private fun QuickAccessible.toPreview(
     val coroutineScope = rememberCoroutineScope()
 
     when (this) {
-        is AlbumWithMusics -> {
+        is AlbumPreview -> {
             BigPreviewComposable(
                 modifier = modifier,
                 cover = this.cover,
-                title = this.album.albumName,
-                text = this.album.artist.artistName,
+                title = this.name,
+                text = this.artist,
                 imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }
             )
         }
 
-        is ArtistWithMusics -> {
+        is ArtistPreview -> {
             BigPreviewComposable(
                 modifier = modifier,
                 cover = this.cover,
-                title = this.artist.artistName,
-                text = strings.musics(total = this.musics.size),
+                title = this.name,
+                text = strings.musics(total = this.totalMusics),
                 imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }
@@ -93,10 +97,10 @@ private fun QuickAccessible.toPreview(
                 text = album.albumName,
                 imageSize = null,
                 onClick = {
-                    val musicListSingleton = arrayListOf(this@toPreview)
+                    val musicListSingleton = arrayListOf(this@ToPreview)
                     coroutineScope.launch {
                         playbackManager.setCurrentPlaylistAndMusic(
-                            music = this@toPreview,
+                            music = this@ToPreview,
                             musicList = musicListSingleton,
                             isMainPlaylist = false,
                             playlistId = null,
@@ -109,12 +113,12 @@ private fun QuickAccessible.toPreview(
             )
         }
 
-        is PlaylistWithMusicsNumber -> {
+        is PlaylistPreview -> {
             BigPreviewComposable(
                 modifier = modifier,
-                cover = this.playlist.cover,
-                title = this.playlist.name,
-                text = strings.musics(total = this.musicsNumber),
+                cover = this.cover,
+                title = this.name,
+                text = strings.musics(total = this.totalMusics),
                 imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }

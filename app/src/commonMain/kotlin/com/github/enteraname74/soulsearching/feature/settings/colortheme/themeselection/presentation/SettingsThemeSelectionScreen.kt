@@ -2,12 +2,12 @@ package com.github.enteraname74.soulsearching.feature.settings.colortheme.themes
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Colorize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_colorize_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -54,7 +54,7 @@ private fun DataScreen(
             SoulMenuElement(
                 title = strings.extractedColorTitle,
                 subTitle = strings.extractedColorText,
-                icon = Icons.Rounded.Colorize,
+                leadIcon = CoreRes.drawable.ic_colorize_filled,
                 onClick = navigateToSeed,
             )
         }
@@ -98,4 +98,4 @@ private fun DataScreen(
     }
 }
 
-private val THEME_CONTENT_TYPE = "THEME_CONTENT_TYPE"
+private const val THEME_CONTENT_TYPE = "THEME_CONTENT_TYPE"

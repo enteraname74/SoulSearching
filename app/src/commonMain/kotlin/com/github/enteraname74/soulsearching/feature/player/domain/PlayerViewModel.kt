@@ -1,30 +1,23 @@
 package com.github.enteraname74.soulsearching.feature.player.domain
 
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.lyrics.MusicLyrics
+import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
-import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
@@ -34,84 +27,83 @@ import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 /**
  * Handler for managing the PlayerViewModel.
  */
 class PlayerViewModel(
     private val playbackManager: PlaybackManager,
+    private val playerViewManager: PlayerViewManager,
     settings: SoulSearchingSettings,
     private val colorThemeManager: ColorThemeManager,
     private val commonLyricsUseCase: CommonLyricsUseCase,
-    private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
-    private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-    private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
-    val multiSelectionManagerImpl: MultiSelectionManagerImpl,
-    private val commonMusicUseCase: CommonMusicUseCase,
+    val multiSelectionManager: MultiSelectionManager,
     commonPlaylistUseCase: CommonPlaylistUseCase,
-) : ViewModel(),
-    MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
-    MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
-    MultiSelectionManager by multiSelectionManagerImpl {
+) : ViewModel() {
 
 
-    val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManagerImpl.state
+    val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = MultiSelectionState(emptyList()),
         )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val currentMusicFavoriteStatusState: Flow<Boolean> =
-        playbackManager.mainState.flatMapLatest { playbackState ->
-            when (playbackState) {
-                is PlaybackManagerState.Data -> {
-                    isMusicInFavoritePlaylistUseCase(
-                        musicId = playbackState.currentMusic.musicId,
-                    )
-                }
-
-                PlaybackManagerState.Stopped -> {
-                    flowOf(false)
-                }
-            }
-        }
-
-    val currentSongProgressionState = playbackManager.currentSongProgressionState
+    val currentSongProgressionState: StateFlow<Int> = playbackManager.currentSongProgressionState
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = 0,
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val lyricsState: StateFlow<LyricsFetchState> = settings.getFlowOn(
         SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED
     ).flatMapLatest { isRemoteFetchEnabled ->
         playbackManager.currentSong.flatMapLatest { music ->
-            if (music == null) {
-                flowOf(LyricsFetchState.FetchingLyrics)
-            } else {
-                var lyrics: MusicLyrics? = commonLyricsUseCase.getLocalLyricsForMusic(music = music)
-                if (lyrics == null && isRemoteFetchEnabled) {
-                    lyrics = commonLyricsUseCase.getRemoteLyricsForMusic(music = music)
-                }
-
-                if (lyrics == null) {
-                    if (isRemoteFetchEnabled) {
-                        flowOf(LyricsFetchState.NoLyricsFound)
-                    } else {
-                        flowOf(LyricsFetchState.NoPermission)
-                    }
+            channelFlow {
+                if (music == null) {
+                    send(LyricsFetchState.NoLyricsFound)
                 } else {
-                    currentSongProgressionState.mapLatest { progression ->
-                        LyricsFetchState.FoundLyrics(
-                            lyrics = lyrics,
-                            currentMusicId = music.musicId,
-                            highlightedLyricsLine = lyrics
-                                .syncedLyrics
-                                ?.indexOfLast { it.timestampMs < progression }
-                                ?.takeIf { it >= 0 }
-                        )
+                    send(LyricsFetchState.FetchingLyrics)
+
+                    var lyrics: MusicLyrics? = commonLyricsUseCase.getLocalLyricsForMusic(music = music)
+                    if (lyrics == null && isRemoteFetchEnabled) {
+                        lyrics = commonLyricsUseCase.getRemoteLyricsForMusic(music = music)
+                    }
+
+                    if (lyrics == null) {
+                        if (isRemoteFetchEnabled) {
+                            send(LyricsFetchState.NoLyricsFound)
+                        } else {
+                            send(LyricsFetchState.NoPermission)
+                        }
+                    } else {
+                        currentSongProgressionState.collectLatest { progression ->
+                            send(
+                                LyricsFetchState.FoundLyrics(
+                                    lyrics = lyrics,
+                                    currentMusicId = music.musicId,
+                                    highlightedLyricsLine = lyrics
+                                        .syncedLyrics
+                                        ?.indexOfLast { it.timestampMs < progression }
+                                        ?.takeIf { it >= 0 }
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -140,22 +132,38 @@ class PlayerViewModel(
     )
 
     val state: StateFlow<PlayerViewState> = combine(
-        playbackManager.mainState,
+        playbackManager.state,
         commonPlaylistUseCase.getAllWithMusics(),
-        currentMusicFavoriteStatusState,
-    ) { playbackMainState, playlists, isCurrentMusicInFavorite ->
+        playbackManager.playedList
+    ) { playbackMainState, playlists, playedList ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
                     currentMusic = playbackMainState.currentMusic,
                     currentMusicIndex = playbackMainState.currentMusicIndex,
-                    isCurrentMusicInFavorite = isCurrentMusicInFavorite,
-                    playedList = playbackMainState.playedList,
+                    isCurrentMusicInFavorite = playbackMainState.isCurrentMusicInFavorite,
                     playerMode = playbackMainState.playerMode,
                     isPlaying = playbackMainState.isPlaying,
                     playlistsWithMusics = playlists,
-                    aroundSongs = getAroundSongs(playbackMainState.currentMusic),
-                    initPlayerWithMinimiseView = playbackMainState.minimisePlayer,
+                    aroundSongs = if (playbackMainState.playerMode == PlayerMode.Loop) {
+                        listOfNotNull(
+                            playbackMainState.currentMusic,
+                        )
+                    } else {
+                        listOfNotNull(
+                            playbackMainState.previous,
+                            playbackMainState.currentMusic,
+                            playbackMainState.next,
+                        ).run {
+                            // UI fix to avoid clipping when swiping cover on player view.
+                            if (playbackMainState.currentMusic == playbackMainState.next) {
+                                drop(1)
+                            } else {
+                                this
+                            }
+                        }
+                    },
+                    playedList = playedList,
                 )
             }
 
@@ -176,74 +184,44 @@ class PlayerViewModel(
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
-    private val _addToPlaylistBottomSheet: MutableStateFlow<AddToPlaylistBottomSheet?> = MutableStateFlow(null)
-    val addToPlaylistBottomSheet: StateFlow<AddToPlaylistBottomSheet?> = _addToPlaylistBottomSheet.asStateFlow()
-
     private val _navigationState: MutableStateFlow<PlayerNavigationState> = MutableStateFlow(
         PlayerNavigationState.Idle,
     )
     val navigationState: StateFlow<PlayerNavigationState> = _navigationState.asStateFlow()
 
     fun consumeNavigation() {
-        multiSelectionManagerImpl.clearMultiSelection()
+        multiSelectionManager.clearMultiSelection()
         _navigationState.value = PlayerNavigationState.Idle
     }
 
     init {
-        musicBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyMusic = { _navigationState.value = PlayerNavigationState.ToModifyMusic(it) },
-            getAllPlaylistsWithMusics = ::getPlaylistsWithMusics,
-            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
+        viewModelScope.launch {
+            playbackManager.state.map {
+                when (it) {
+                    is PlaybackManagerState.Data -> it.currentState
+                    PlaybackManagerState.Stopped -> null
+                }
+            }.collectLatest { state ->
+                val isCollapsed = playerViewManager.currentValue == BottomSheetStates.COLLAPSED
+                val canMaximize =
+                    state == PlayedListState.Playing || state == PlayedListState.Paused
+                val shouldMaximize = canMaximize && isCollapsed
 
-        multiMusicBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-    }
+                val shouldMinimize = state == PlayedListState.Loading && isCollapsed
+                val shouldDismiss = state == PlayedListState.Cached || state == null
 
-    private fun getPlaylistsWithMusics(): List<PlaylistWithMusics> =
-        (state.value as? PlayerViewState.Data)?.playlistsWithMusics ?: emptyList()
-
-    /**
-     * Retrieve a list containing the current song and its around songs (previous and next).
-     * If no songs are played, return a list containing null. If the played list contains only
-     * the current song, it will return a list with only the current song.
-     */
-    private suspend fun getAroundSongs(
-        currentSong: Music,
-    ): List<Music?> {
-        val playerState = (state.value as? PlayerViewState.Data) ?: return emptyList()
-        if (!viewSettingsState.value.canSwipeCover) return emptyList()
-
-        val currentSongIndex = playerState.currentMusicIndex
-
-        if (currentSongIndex == -1) return emptyList()
-
-        if (playerState.playedList.size == 1) return listOf(
-            null,
-            currentSong,
-            null,
-        )
-
-        return listOf(
-            playbackManager.getPreviousMusic(),
-            currentSong,
-            playbackManager.getNextMusic()
-        )
-    }
-
-    /**
-     * Set the current music cover.
-     */
-    fun setCurrentMusicCover(cover: ImageBitmap?) {
-        playbackManager.updateCover(cover = cover)
-        colorThemeManager.setCurrentCover(cover = cover)
+                when {
+                    shouldDismiss -> playerViewManager.animateTo(BottomSheetStates.COLLAPSED)
+                    shouldMaximize -> playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+                    shouldMinimize -> playerViewManager.animateTo(BottomSheetStates.MINIMISED)
+                }
+            }
+        }
+        viewModelScope.launch {
+            playbackManager.currentCover.collectLatest { cover ->
+                colorThemeManager.setCurrentCover(cover = cover)
+            }
+        }
     }
 
     /**
@@ -259,7 +237,9 @@ class PlayerViewModel(
      * Set the playing state.
      */
     fun togglePlayPause() {
-        playbackManager.togglePlayPause()
+        viewModelScope.launch {
+            playbackManager.togglePlayPause()
+        }
     }
 
     /**
@@ -267,7 +247,7 @@ class PlayerViewModel(
      */
     fun changePlayerMode() {
         CoroutineScope(Dispatchers.IO).launch {
-            playbackManager.changePlayerMode()
+            playbackManager.switchPlayerMode()
         }
     }
 
@@ -320,15 +300,7 @@ class PlayerViewModel(
         _navigationState.value = PlayerNavigationState.ToRemoteLyricsSettings
     }
 
-    fun handleMultiSelectionBottomSheet() {
-        viewModelScope.launch {
-            val selectedIds = multiSelectionState.value.selectedIds
-            if (selectedIds.size == 1) {
-                val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return@launch
-                showMusicBottomSheet(selectedMusic = selectedMusic)
-            } else {
-                showMultiMusicBottomSheet()
-            }
-        }
+    fun showMusicBottomSheet(musicIds: List<UUID>) {
+        _navigationState.value = PlayerNavigationState.ToMusicBottomSheet(musicIds)
     }
 }

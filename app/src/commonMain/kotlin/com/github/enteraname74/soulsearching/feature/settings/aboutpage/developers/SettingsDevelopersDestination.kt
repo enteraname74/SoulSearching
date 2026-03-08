@@ -13,7 +13,7 @@ data object SettingsDevelopersDestination: NavKey {
     ) {
         entryProviderScope.entry<SettingsDevelopersDestination> {
             SettingsDevelopersRoute(
-                navigateBack = { navigator.goBack() },
+                navigateBack = { navigator.pop() },
             )
         }
     }

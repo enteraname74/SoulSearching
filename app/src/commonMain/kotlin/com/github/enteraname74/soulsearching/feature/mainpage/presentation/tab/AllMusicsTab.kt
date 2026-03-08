@@ -3,8 +3,8 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
@@ -33,7 +33,11 @@ fun allMusicsTab(
                     }
                mainPageViewModel.setMusicSortDirection(newDirection)
             },
-            onMoreClick = mainPageViewModel::showMusicBottomSheet,
+            onClick = mainPageViewModel::onMusicClicked,
+            onPlayAll = mainPageViewModel::onPlayAll,
+            onMoreClick = {
+                mainPageViewModel.showMusicBottomSheet(listOf(it.musicId))
+            },
             onLongClick = { selectedMusic ->
                 mainPageViewModel.toggleElementInSelection(
                     id = selectedMusic.musicId,

@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
@@ -36,7 +37,7 @@ data class SelectedFolderDestination(
                             }
 
                             is SelectedFolderNavigationState.ToModifyMusic -> {
-                                navigator.navigate(
+                                navigator.push(
                                     ModifyMusicDestination(
                                         selectedMusicId = it.musicId,
                                     )
@@ -47,7 +48,11 @@ data class SelectedFolderDestination(
                                 if (!navigator.isPreviousScreenAPlaylistDetails()) {
                                     colorThemeManager.removePlaylistTheme()
                                 }
-                                navigator.goBack()
+                                navigator.pop()
+                            }
+
+                            is SelectedFolderNavigationState.ToMusicBottomSheet -> {
+                                navigator.push(MusicBottomSheetDestination(it.musicIds))
                             }
                         }
                     }

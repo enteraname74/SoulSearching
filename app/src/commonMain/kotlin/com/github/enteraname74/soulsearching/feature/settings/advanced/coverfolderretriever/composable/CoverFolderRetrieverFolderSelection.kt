@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,10 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_folder_filled
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.util.FileOperation
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.absolutePath
 import io.github.vinceglb.filekit.bookmarkData
@@ -28,7 +26,6 @@ import kotlinx.coroutines.runBlocking
 fun CoverFolderRetrieverFolderSelection(
     onSelectedFolder: (newFolderPath: String) -> Unit,
     currentFolder: String?,
-    fileOperation: FileOperation = injectElement(),
 ) {
     val folderPicker = rememberDirectoryPickerLauncher(
         title = strings.coverFolderRetrieverPathSelectionTitle,
@@ -60,7 +57,7 @@ fun CoverFolderRetrieverFolderSelection(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             SoulIconButton(
-                icon = Icons.Rounded.Folder,
+                icon = CoreRes.drawable.ic_folder_filled,
                 onClick = {
                     folderPicker.launch()
                 }

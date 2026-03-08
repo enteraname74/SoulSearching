@@ -3,10 +3,12 @@ package com.github.enteraname74.soulsearching.coreui.menu
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -16,6 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_arrow_dropdown_filled
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -60,6 +64,7 @@ fun SoulMenuExpand(
                 horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
             ) {
                 SoulMenuBody(
+                    modifier = Modifier.fillMaxWidth(),
                     title = title,
                     text = subTitle,
                     titleColor = textColor,
@@ -67,8 +72,8 @@ fun SoulMenuExpand(
                 )
             }
             SoulIcon(
-                tint = textColor,
-                icon = Icons.Filled.ArrowDropDown,
+                color = textColor,
+                icon = CoreRes.drawable.ic_arrow_dropdown_filled,
                 contentDescription = null,
                 modifier = Modifier.rotate(rotation),
             )

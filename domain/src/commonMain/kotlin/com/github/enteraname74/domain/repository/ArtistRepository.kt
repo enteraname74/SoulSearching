@@ -1,8 +1,9 @@
 package com.github.enteraname74.domain.repository
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -29,6 +30,8 @@ interface ArtistRepository {
      */
     fun getFromId(artistId: UUID): Flow<Artist?>
 
+    fun getFromIds(artistIds: List<UUID>) : Flow<List<ArtistWithMusics>>
+
     /**
      * Retrieves an Artist from its name.
      */
@@ -38,15 +41,7 @@ interface ArtistRepository {
 
     suspend fun toggleCoverFolderMode(isActivated: Boolean)
 
-    /**
-     * Retrieves a flow of all Artist.
-     */
-    fun getAll(): Flow<List<Artist>>
-
-    /**
-     * Retrieves a flow of all ArtistWithMusics.
-     */
-    fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>>
+    fun getAllPaged(): Flow<PagingData<ArtistPreview>>
 
     /**
      * Retrieves a flow of an ArtistWithMusics.
@@ -57,4 +52,23 @@ interface ArtistRepository {
      * Retrieves all artists linked to a music.
      */
     fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>>
+
+    fun getAllFromQuickAccess(): Flow<List<ArtistPreview>>
+
+    suspend fun getDuplicatedArtist(
+        artistId: UUID,
+        artistName: String
+    ): ArtistWithMusics?
+
+    fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>>
+
+    suspend fun cleanAllCovers()
+
+    fun getMostListened(): Flow<List<ArtistPreview>>
+
+    fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?>
+
+    fun searchAll(search: String): Flow<List<ArtistPreview>>
+
+    suspend fun getPotentialMultipleArtists(): List<Artist>
 }

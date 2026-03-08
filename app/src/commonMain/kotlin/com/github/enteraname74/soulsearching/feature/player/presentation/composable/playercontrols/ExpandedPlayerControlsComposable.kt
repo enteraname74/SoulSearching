@@ -1,9 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,16 +18,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import com.github.enteraname74.domain.model.PlayerMode
+import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_favorite
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_favorite_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_pause_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_skip_next_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_skip_previous_filled
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.utils.Utils
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
-import com.github.enteraname74.soulsearching.feature.player.ext.imageVector
+import com.github.enteraname74.soulsearching.feature.player.ext.icon
+import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
@@ -119,69 +132,78 @@ private fun PlayerControls(
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Image(
-            imageVector = playerMode.imageVector(),
+        Icon(
+            painter = painterResource(playerMode.icon()),
             contentDescription = null,
             modifier = Modifier
                 .weight(ExternalIconsWeight)
+                .clip(CircleShape)
                 .height(UiConstants.ImageSize.medium)
                 .widthIn(max = UiConstants.ImageSize.medium)
                 .clickableWithHandCursor {
                     changePlayerMode()
                 },
-            colorFilter = ColorFilter.tint(color = contentColor)
+            tint = contentColor,
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
-        Image(
-            imageVector = Icons.Rounded.SkipPrevious,
+        Icon(
+            painter = painterResource(CoreRes.drawable.ic_skip_previous_filled),
             contentDescription = null,
             modifier = Modifier
                 .weight(InternalIconsWeight)
+                .clip(CircleShape)
                 .height(UiConstants.ImageSize.large)
                 .widthIn(max = UiConstants.ImageSize.large)
                 .clickableWithHandCursor { previous() },
-            colorFilter = ColorFilter.tint(color = contentColor)
+            tint = contentColor
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
-        Image(
-            imageVector = if (isPlaying) {
-                Icons.Rounded.Pause
-            } else {
-                Icons.Rounded.PlayArrow
-            },
+        Icon(
+            painter = painterResource(
+                if (isPlaying) {
+                    CoreRes.drawable.ic_pause_filled
+                } else {
+                    CoreRes.drawable.ic_play_filled
+                }
+            ),
             contentDescription = null,
             modifier = Modifier
                 .weight(MainIconWeight)
+                .clip(CircleShape)
                 .height(UiConstants.Player.playerPlayerButtonSize)
                 .widthIn(max = UiConstants.Player.playerPlayerButtonSize)
                 .clickableWithHandCursor { togglePlayPause() },
-            colorFilter = ColorFilter.tint(color = contentColor)
+            tint = contentColor
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
-        Image(
-            imageVector = Icons.Rounded.SkipNext,
+        Icon(
+            painter = painterResource(CoreRes.drawable.ic_skip_next_filled),
             contentDescription = null,
             modifier = Modifier
                 .weight(InternalIconsWeight)
+                .clip(CircleShape)
                 .height(UiConstants.ImageSize.large)
                 .widthIn(max = UiConstants.ImageSize.large)
                 .clickableWithHandCursor { next() },
-            colorFilter = ColorFilter.tint(color = contentColor)
+            tint = contentColor
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
-        Image(
-            imageVector = if (isMusicInFavorite) {
-                Icons.Rounded.Favorite
-            } else {
-                Icons.Rounded.FavoriteBorder
-            },
+        Icon(
+            painter = painterResource(
+                if (isMusicInFavorite) {
+                    CoreRes.drawable.ic_favorite_filled
+                } else {
+                    CoreRes.drawable.ic_favorite
+                }
+            ),
             contentDescription = null,
             modifier = Modifier
                 .weight(ExternalIconsWeight)
+                .clip(CircleShape)
                 .height(UiConstants.ImageSize.medium)
                 .widthIn(max = UiConstants.ImageSize.medium)
                 .clickableWithHandCursor { toggleFavoriteState() },
-            colorFilter = ColorFilter.tint(color = contentColor)
+            tint = contentColor
         )
     }
 }

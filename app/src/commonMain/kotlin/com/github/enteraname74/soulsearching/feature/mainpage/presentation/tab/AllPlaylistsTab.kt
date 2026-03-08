@@ -1,23 +1,25 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cancel_filled
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
-import java.util.*
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageListPaged
+import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
+import java.util.UUID
 
 fun allPlaylistsTab(
     mainPageViewModel: MainPageViewModel,
@@ -29,13 +31,14 @@ fun allPlaylistsTab(
             val playlistState: AllPlaylistsState by mainPageViewModel.allPlaylistsState.collectAsState()
             val multiSelectionState: MultiSelectionState by mainPageViewModel.multiSelectionState.collectAsState()
 
-            MainPageList(
-                list = playlistState.playlists,
+            val playlists = playlistState.playlists.collectAsLazyPagingItems()
+            MainPageListPaged(
+                list = playlists,
                 title = strings.playlists,
                 rightComposable = {
                     SoulIconButton(
                         onClick = mainPageViewModel::showCreatePlaylistDialog,
-                        icon = Icons.Rounded.Add,
+                        icon = CoreRes.drawable.ic_add,
                         contentDescription = strings.createPlaylistButton,
                         size = UiConstants.ImageSize.medium,
                     )
@@ -51,27 +54,27 @@ fun allPlaylistsTab(
                 },
                 sortType = playlistState.sortType,
                 sortDirection = playlistState.sortDirection,
-                key = { it.playlist.playlistId },
-                contentType = { ALL_PLAYLISTS_CONTENT_TYPE }
+                key = { it?.id },
+                contentType = ALL_PLAYLISTS_CONTENT_TYPE,
             ) { element ->
                 BigPreviewComposable(
                     modifier = Modifier
                         .animateItem(),
                     cover = element.cover,
-                    title = element.playlist.name,
-                    text = strings.musics(element.musicsNumber),
+                    title = element.name,
+                    text = strings.musics(element.totalMusics),
                     imageSize = null,
                     onClick = {
-                        navigateToPlaylist(element.playlist.playlistId)
+                        navigateToPlaylist(element.id)
                     },
                     onLongClick = {
                         mainPageViewModel.toggleElementInSelection(
-                            id = element.playlist.playlistId,
+                            id = element.id,
                             mode = SelectionMode.Playlist,
                         )
                     },
-                    isFavoritePlaylist = element.playlist.isFavorite,
-                    isSelected = multiSelectionState.selectedIds.contains(element.playlist.playlistId),
+                    isFavoritePlaylist = element.isFavorite,
+                    isSelected = multiSelectionState.selectedIds.contains(element.id),
                     isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                 )
             }

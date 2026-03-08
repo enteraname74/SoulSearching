@@ -20,8 +20,4 @@ class CommonReleaseUseCase(
 
     fun getLatestViewedReleaseTag(): Flow<String?> =
         releaseRepository.getLatestViewedReleaseTag()
-
-    suspend fun setLatestViewedReleaseTag(releaseTag: String) {
-        releaseRepository.setLatestViewedReleaseTag(releaseTag)
-    }
 }

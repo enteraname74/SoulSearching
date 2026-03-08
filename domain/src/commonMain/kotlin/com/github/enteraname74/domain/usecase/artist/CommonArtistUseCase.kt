@@ -1,30 +1,35 @@
 package com.github.enteraname74.domain.usecase.artist
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.repository.ArtistRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import java.util.*
+import java.util.UUID
 
 class CommonArtistUseCase(
     private val artistRepository: ArtistRepository,
 ) {
-    fun getAll(): Flow<List<Artist>> =
-        artistRepository.getAll()
+    fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
+        artistRepository.getAllPaged()
 
-    fun getAllFromQuickAccess(): Flow<List<ArtistWithMusics>> =
-        artistRepository.getAllArtistWithMusics().map { list ->
-            list.filter { it.artist.isInQuickAccess }
-        }
+    fun getAllFromQuickAccess(): Flow<List<ArtistPreview>> =
+        artistRepository.getAllFromQuickAccess()
 
+    /**
+     * Use [DeleteArtistUseCase] for a clean deletion of the songs and albums of an artist.
+     */
     suspend fun delete(artist: Artist) {
         artistRepository.delete(
             artist = artist,
         )
     }
 
+    /**
+     * Use [DeleteArtistUseCase] for a clean deletion of the songs and albums of artists.
+     */
     suspend fun deleteAll(artistsIds: List<UUID>) {
         artistRepository.deleteAll(
             artistsIds = artistsIds,
@@ -45,16 +50,6 @@ class CommonArtistUseCase(
     suspend fun getAllFromName(artistsNames: List<String>): List<Artist> =
         artistRepository.getAllFromName(artistsNames)
 
-    fun getAllSortedByMostSongs(): Flow<List<ArtistWithMusics>> =
-        artistRepository
-            .getAllArtistWithMusics()
-            .map { list ->
-                list.sortedByDescending { it.musics.size }
-            }
-
-    fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> =
-        artistRepository.getAllArtistWithMusics()
-
     suspend fun getArtistsNameFromSearch(searchString: String): List<String> =
         if (searchString.isBlank()) {
             emptyList()
@@ -70,14 +65,14 @@ class CommonArtistUseCase(
     suspend fun getDuplicatedArtist(
         artistId: UUID,
         artistName: String
-    ): ArtistWithMusics? {
-        val allArtists: List<ArtistWithMusics> = artistRepository.getAllArtistWithMusics().first()
+    ): ArtistWithMusics? =
+        artistRepository.getDuplicatedArtist(
+            artistId = artistId,
+            artistName = artistName,
+        )
 
-        return allArtists
-            .firstOrNull {
-                it.artist.artistName == artistName && it.artist.artistId != artistId
-            }
-    }
+    fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>> =
+        artistRepository.getArtistsWistMostMusics()
 
     suspend fun incrementArtistNbPlayed(artistId: UUID) {
         val artist: Artist = artistRepository.getFromId(artistId).first() ?: return
@@ -87,6 +82,9 @@ class CommonArtistUseCase(
             )
         )
     }
+
+    fun getFromIds(artistIds: List<UUID>) : Flow<List<ArtistWithMusics>> =
+        artistRepository.getFromIds(artistIds)
 
     suspend fun upsertAll(allArtists: List<Artist>) {
         artistRepository.upsertAll(allArtists)
@@ -99,4 +97,20 @@ class CommonArtistUseCase(
     suspend fun toggleCoverFolderMode(isActivated: Boolean) {
         artistRepository.toggleCoverFolderMode(isActivated)
     }
+
+    suspend fun cleanAllCovers() {
+        artistRepository.cleanAllCovers()
+    }
+
+    fun getMostListened(): Flow<List<ArtistPreview>> =
+        artistRepository.getMostListened()
+
+    fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?> =
+        artistRepository.getArtistPreview(artistId)
+
+    fun searchAll(search: String): Flow<List<ArtistPreview>> =
+        artistRepository.searchAll(search)
+
+    suspend fun getPotentialMultipleArtists(): List<Artist> =
+        artistRepository.getPotentialMultipleArtists()
 }

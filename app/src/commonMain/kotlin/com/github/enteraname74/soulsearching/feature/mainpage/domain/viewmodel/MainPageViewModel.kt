@@ -7,82 +7,92 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.github.enteraname74.domain.model.AlbumPreview
+import com.github.enteraname74.domain.model.ArtistPreview
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistPreview
+import com.github.enteraname74.domain.model.QuickAccessible
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
-import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
-import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
-import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
-import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
-import com.github.enteraname74.soulsearching.commondelegate.*
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.model.ElementsVisibility
-import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicFoldersState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllQuickAccessState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageNavigationState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.SearchAllState
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.GitHubReleaseBottomSheet
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SoulMixDialog
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.*
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allAlbumsTab
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allArtistsTab
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allMusicFoldersTab
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allMusicsTab
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allPlaylistsTab
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allQuickAccessTab
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
+import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
-import java.util.*
+import java.util.UUID
 
 @Suppress("Deprecation")
 class MainPageViewModel(
-    viewSettingsManager: ViewSettingsManager,
-    private val playbackManager: PlaybackManager,
-    private val isCoverUsedUseCase: IsCoverUsedUseCase,
-    private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-    private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
-    private val artistBottomSheetDelegateImpl: ArtistBottomSheetDelegateImpl,
-    private val getAllArtistWithMusicsSortedUseCase: GetAllArtistWithMusicsSortedUseCase,
-    private val getAllAlbumWithMusicsSortedUseCase: GetAllAlbumWithMusicsSortedUseCase,
-    private val getAllPlaylistWithMusicsSortedUseCase: GetAllPlaylistWithMusicsSortedUseCase,
-    private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
-    private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
-    val multiSelectionManagerImpl: MultiSelectionManagerImpl,
-    getAllMonthMusicUseCase: GetAllMonthMusicUseCase,
-    getAllMusicFolderListUseCase: GetAllMusicFolderListUseCase,
     getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
+    private val playbackManager: PlaybackManager,
+    private val playerViewManager: PlayerViewManager,
+    private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
+    private val multiSelectionManager: MultiSelectionManager,
+    private val tabManager: TabManager,
 ) : ViewModel(), KoinComponent,
-    MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
-    ArtistBottomSheetDelegate by artistBottomSheetDelegateImpl,
-    AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl,
-    PlaylistBottomSheetDelegate by playlistBottomSheetDelegateImpl,
-    SortingInformationDelegate by sortingInformationDelegateImpl,
-    MultiSelectionManager by multiSelectionManagerImpl {
+    SortingInformationDelegate by sortingInformationDelegateImpl {
 
     private val settings: SoulSearchingSettings by inject()
-    private val getAllMusicsSortedUseCase: GetAllMusicsSortedUseCase by inject()
     private val deleteMusicUseCase: DeleteMusicUseCase by inject()
     private val feedbackPopUpManager: FeedbackPopUpManager by inject()
 
@@ -95,43 +105,44 @@ class MainPageViewModel(
     private val commonReleaseUseCase: CommonReleaseUseCase by inject()
     private val shouldInformOfNewReleaseUseCase: ShouldInformOfNewReleaseUseCase by inject()
 
-    private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl by inject()
-    private val multiAlbumBottomSheetDelegateImpl: MultiAlbumBottomSheetDelegateImpl by inject()
-    private val multiArtistBottomSheetDelegateImpl: MultiArtistBottomSheetDelegateImpl by inject()
-    private val multiPlaylistBottomSheetDelegateImpl: MultiPlaylistBottomSheetDelegateImpl by inject()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     val shouldShowNewVersionPin: StateFlow<Boolean> = shouldInformOfNewReleaseUseCase()
         .stateIn(
             scope = viewModelScope.plus(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = false
         )
 
-    val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManagerImpl.state
+    val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = MultiSelectionState(emptyList())
         )
 
-    private var _currentPage: MutableStateFlow<ElementEnum?> = MutableStateFlow(null)
-    val currentPage: StateFlow<ElementEnum?> = _currentPage.asStateFlow()
+    val currentPage: StateFlow<ElementEnum?> = tabManager.currentPage
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val tabs: StateFlow<List<PagerScreen>> = viewSettingsManager.visibleElements.mapLatest { elementsVisibility ->
-        val elementEnums = buildListOfElementEnums(elementsVisibility = elementsVisibility)
-        buildTabs(elements = elementEnums)
+    val tabs: StateFlow<List<PagerScreen>> = tabManager.tabs.mapLatest {
+        buildTabs(elements = it)
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
         initialValue = emptyList()
     )
+    val initialPage: Int = tabManager.initialPage
 
     val isUsingVerticalAccessBar: StateFlow<Boolean> = settings.getFlowOn(
         SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR,
     ).stateIn(
         scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
+        started = SharingStarted.Lazily,
         initialValue = true,
     )
 
@@ -139,136 +150,133 @@ class MainPageViewModel(
     val searchDraggableState: SwipeableState<BottomSheetStates> =
         SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
-    private val allPlaylistsForBottomSheet: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
-        .stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList()
-        )
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _musics: Flow<PagingData<Music>> = commonMusicUseCase
+        .getAllPaged()
+        .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _musics = musicSortingInformation.flatMapLatest { sortingInformation ->
-        getAllMusicsSortedUseCase(
-            sortDirection = sortingInformation.direction,
-            sortType = sortingInformation.type,
-        )
-    }
+    private val _artists = commonArtistUseCase
+        .getAllPaged()
+        .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _artists = artistSortingInformation.flatMapLatest { sortingInformation ->
-        getAllArtistWithMusicsSortedUseCase(
-            sortDirection = sortingInformation.direction,
-            sortType = sortingInformation.type,
-        )
-    }
+    private val _albums = commonAlbumUseCase
+        .getAllPaged()
+        .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _albums = albumSortingInformation.flatMapLatest { sortingInformation ->
-        getAllAlbumWithMusicsSortedUseCase(
-            sortDirection = sortingInformation.direction,
-            sortType = sortingInformation.type,
-        )
-    }
+    private val _playlists = commonPlaylistUseCase
+        .getAllPaged()
+        .cachedIn(viewModelScope)
+
+    private val _search: MutableStateFlow<String> = MutableStateFlow("")
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _playlists = playlistSortingInformation.flatMapLatest { sortingInformation ->
-        getAllPlaylistWithMusicsSortedUseCase(
-            sortDirection = sortingInformation.direction,
-            sortType = sortingInformation.type,
-        )
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val allQuickAccessState: StateFlow<AllQuickAccessState> = getAllQuickAccessElementsUseCase().mapLatest { elements ->
-        AllQuickAccessState(
-            allQuickAccess = elements,
-        )
+    val searchAllState: StateFlow<SearchAllState> = _search.flatMapLatest { search ->
+        if (search.isNotBlank()) {
+            combine(
+                commonMusicUseCase.searchAll(search),
+                commonAlbumUseCase.searchAll(search),
+                commonArtistUseCase.searchAll(search),
+                commonPlaylistUseCase.searchAll(search),
+            ) { musics, albums, artists, playlists ->
+                SearchAllState(
+                    musics = musics,
+                    albums = albums,
+                    playlists = playlists,
+                    artists = artists,
+                )
+            }
+        } else {
+            flowOf(SearchAllState())
+        }
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        AllQuickAccessState()
+        SharingStarted.Lazily,
+        SearchAllState()
     )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val allQuickAccessState: StateFlow<AllQuickAccessState> =
+        getAllQuickAccessElementsUseCase().mapLatest { elements ->
+            AllQuickAccessState(
+                allQuickAccess = elements,
+            )
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            AllQuickAccessState()
+        )
+
     val allMusicsState: StateFlow<AllMusicsState> = combine(
-        _musics,
         musicSortingInformation,
-        getAllMonthMusicUseCase(),
-    ) { musics, sortingInformation, allMonthMusics ->
+        commonMusicUseCase.getAllMonthMusics(),
+    ) { sortingInformation, allMonthMusics ->
         AllMusicsState(
-            musics = musics,
+            musics = _musics,
             sortType = sortingInformation.type,
             sortDirection = sortingInformation.direction,
-            monthMusics = allMonthMusics,
+            monthMusicPreviews = allMonthMusics,
         )
     }.stateIn(
         scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
-        initialValue = AllMusicsState()
+        started = SharingStarted.Lazily,
+        initialValue = AllMusicsState(),
     )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val allMusicFoldersState: StateFlow<AllMusicFoldersState> =
-        getAllMusicFolderListUseCase().mapLatest { allMusicFolders ->
+        commonMusicUseCase.getAllMusicFolders().map { allMusicFolders ->
             AllMusicFoldersState(
-                allMusicFolders = allMusicFolders.sortedBy { it.name },
+                allMusicFolders = allMusicFolders,
             )
         }.stateIn(
             scope = viewModelScope.plus(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.Lazily,
             initialValue = AllMusicFoldersState()
         )
 
-    val allArtistsState: StateFlow<AllArtistsState> = combine(
-        _artists,
-        artistSortingInformation,
-    ) { artists, sortingInformation ->
-        AllArtistsState(
-            artists = artists,
-            sortType = sortingInformation.type,
-            sortDirection = sortingInformation.direction,
+    val allArtistsState: StateFlow<AllArtistsState> =
+        artistSortingInformation.map { sortingInformation ->
+            AllArtistsState(
+                artists = _artists,
+                sortType = sortingInformation.type,
+                sortDirection = sortingInformation.direction,
+            )
+        }.stateIn(
+            scope = viewModelScope.plus(Dispatchers.IO),
+            started = SharingStarted.Lazily,
+            initialValue = AllArtistsState()
         )
-    }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
-        initialValue = AllArtistsState()
-    )
 
-    val allAlbumsState: StateFlow<AllAlbumsState> = combine(
-        _albums,
-        albumSortingInformation,
-    ) { albums, sortingInformation ->
-        AllAlbumsState(
-            albums = albums,
-            sortType = sortingInformation.type,
-            sortDirection = sortingInformation.direction,
+    val allAlbumsState: StateFlow<AllAlbumsState> =
+        albumSortingInformation.map { sortingInformation ->
+            AllAlbumsState(
+                albums = _albums,
+                sortType = sortingInformation.type,
+                sortDirection = sortingInformation.direction,
+            )
+        }.stateIn(
+            scope = viewModelScope.plus(Dispatchers.IO),
+            started = SharingStarted.Lazily,
+            initialValue = AllAlbumsState()
         )
-    }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
-        initialValue = AllAlbumsState()
-    )
 
-    val allPlaylistsState: StateFlow<AllPlaylistsState> = combine(
-        _playlists,
-        playlistSortingInformation,
-    ) { playlists, sortingInformation ->
-        AllPlaylistsState(
-            playlists = playlists.map { it.toPlaylistWithMusicsNumber() },
-            sortType = sortingInformation.type,
-            sortDirection = sortingInformation.direction,
+    val allPlaylistsState: StateFlow<AllPlaylistsState> =
+        playlistSortingInformation.map { sortingInformation ->
+            AllPlaylistsState(
+                playlists = _playlists,
+                sortType = sortingInformation.type,
+                sortDirection = sortingInformation.direction,
+            )
+        }.stateIn(
+            scope = viewModelScope.plus(Dispatchers.IO),
+            started = SharingStarted.Lazily,
+            initialValue = AllPlaylistsState()
         )
-    }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
-        initialValue = AllPlaylistsState()
-    )
 
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
-
-    private val _addToPlaylistsBottomSheetState: MutableStateFlow<AddToPlaylistBottomSheet?> = MutableStateFlow(null)
-    val addToPlaylistsBottomSheetState: StateFlow<AddToPlaylistBottomSheet?> =
-        _addToPlaylistsBottomSheetState.asStateFlow()
 
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
     val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
@@ -280,136 +288,76 @@ class MainPageViewModel(
 
     fun consumeNavigation() {
         _navigationState.value = MainPageNavigationState.Idle
-        multiSelectionManagerImpl.clearMultiSelection()
     }
 
     private var cleanMusicsLaunched: Boolean = false
 
     init {
-        musicBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            setAddToPlaylistBottomSheetState = { _addToPlaylistsBottomSheetState.value = it },
-            getAllPlaylistsWithMusics = { allPlaylistsForBottomSheet.value },
-            onModifyMusic = { _navigationState.value = MainPageNavigationState.ToModifyMusic(it.musicId) },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-
-        artistBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyArtist = { _navigationState.value = MainPageNavigationState.ToModifyArtist(it.artistId) },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-
-        albumBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyAlbum = { _navigationState.value = MainPageNavigationState.ToModifyAlbum(it.albumId) },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-
-        playlistBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyPlaylist = { _navigationState.value = MainPageNavigationState.ToModifyPlaylist(it.playlistId) },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-
-        multiMusicBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            setAddToPlaylistBottomSheetState = { _addToPlaylistsBottomSheetState.value = it },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-
-        multiAlbumBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-
-        multiArtistBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-
-        multiPlaylistBottomSheetDelegateImpl.initDelegate(
-            setDialogState = { _dialogState.value = it },
-            setBottomSheetState = { _bottomSheetState.value = it },
-            multiSelectionManagerImpl = multiSelectionManagerImpl,
-        )
-
-        CoroutineScope(Dispatchers.IO).launch {
-            allMusicsState.collect { musicState ->
-                if (musicState.musics.isNotEmpty() && !cleanMusicsLaunched) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        cleanMusicsLaunched = true
-                        checkAndDeleteMusicIfNotExist()
-                    }
-                }
+        if (!cleanMusicsLaunched) {
+            coroutineScope.launch {
+                cleanMusicsLaunched = true
+                checkAndDeleteMusicIfNotExist()
             }
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val allCoverIds: List<UUID> = commonCoverUseCase.getAllCoverIds()
-            allCoverIds.forEach { coverId ->
-                if (!isCoverUsedUseCase(coverId = coverId)) {
-                    commonCoverUseCase.delete(coverId = coverId)
-                }
-            }
+        coroutineScope.launch {
+            commonCoverUseCase.deleteUnusedFileCovers()
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+        coroutineScope.launch {
             val allFolders = commonFolderUseCase.getAll().first()
             val foldersToDelete = allFolders.filter { !File(it.folderPath).exists() }
             commonFolderUseCase.deleteAll(foldersToDelete)
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+
+        viewModelScope.launch {
             settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED).collectLatest { isEnabled ->
                 if (isEnabled) {
                     commonReleaseUseCase.fetchLatest()
-                } else {
-                    commonReleaseUseCase.deleteLatest()
                 }
             }
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            settings.getFlowOn(SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT).collectLatest { shouldShow ->
-                if (shouldShow) {
-                    _bottomSheetState.value = GitHubReleaseBottomSheet(
-                        onClose = {
-                            _bottomSheetState.value = null
-                            settings.set(
-                                key = SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT.key,
-                                value = false,
-                            )
-                        },
-                        onNavigateToGithubReleasePermission = {
-                            _navigationState.value = MainPageNavigationState.ToAdvancedSettings(
-                                focusedElement = SettingsAdvancedScreenFocusedElement.ReleasePermission,
-                            )
-                        }
-                    )
+        coroutineScope.launch {
+            settings.getFlowOn(SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT)
+                .collectLatest { shouldShow ->
+                    if (shouldShow) {
+                        _bottomSheetState.value = GitHubReleaseBottomSheet(
+                            onClose = {
+                                _bottomSheetState.value = null
+                                settings.set(
+                                    key = SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT.key,
+                                    value = false,
+                                )
+                            },
+                            onNavigateToGithubReleasePermission = {
+                                navigateAndClearSelection(
+                                    MainPageNavigationState.ToAdvancedSettings(
+                                        focusedElement = SettingsAdvancedScreenFocusedElement
+                                            .ReleasePermission,
+                                    )
+                                )
+                            }
+                        )
+                    }
                 }
-            }
         }
     }
 
     fun setCurrentPage(page: ElementEnum) {
-        _currentPage.value = page
+        tabManager.setCurrentPage(page)
     }
 
     /**
      * Check all musics and delete the one that does not exist (if the path of the music is not valid).
      */
     fun checkAndDeleteMusicIfNotExist() {
-        CoroutineScope(Dispatchers.IO).launch {
+        coroutineScope.launch {
             var deleteCount = 0
-            for (music in allMusicsState.value.musics) {
+            // TODO OPTIMIZATION: Improve check?
+            val all = commonMusicUseCase.getAll().first()
+            for (music in all) {
                 if (!File(music.path).exists()) {
                     playbackManager.removeSongsFromPlayedPlaylist(
                         musicIds = listOf(music.musicId)
@@ -453,51 +401,44 @@ class MainPageViewModel(
     }
 
     private fun navigateToQuickAccessible(quickAccessible: QuickAccessible) {
-        _navigationState.value = when (quickAccessible) {
-            is AlbumWithMusics -> MainPageNavigationState.ToAlbum(
-                albumId = quickAccessible.album.albumId,
-            )
+        navigateAndClearSelection(
+            when (quickAccessible) {
+                is AlbumPreview -> MainPageNavigationState.ToAlbum(
+                    albumId = quickAccessible.id,
+                )
 
-            is ArtistWithMusics -> MainPageNavigationState.ToArtist(
-                artistId = quickAccessible.artist.artistId,
-            )
+                is ArtistPreview -> MainPageNavigationState.ToArtist(
+                    artistId = quickAccessible.id,
+                )
 
-            is Music -> MainPageNavigationState.Idle
-            is PlaylistWithMusicsNumber -> MainPageNavigationState.ToPlaylist(
-                playlistId = quickAccessible.playlist.playlistId,
-            )
-        }
+                is Music -> MainPageNavigationState.Idle
+                is PlaylistPreview -> MainPageNavigationState.ToPlaylist(
+                    playlistId = quickAccessible.id,
+                )
+            }
+        )
     }
 
     private fun showQuickAccessBottomSheet(quickAccessible: QuickAccessible) {
-        when (quickAccessible) {
-            is AlbumWithMusics -> showAlbumBottomSheet(
-                albumWithMusics = quickAccessible,
-            )
+        coroutineScope.launch {
+            when (quickAccessible) {
+                is AlbumPreview -> showAlbumBottomSheet(
+                    albumIds = listOf(quickAccessible.id),
+                )
 
-            is ArtistWithMusics -> showArtistBottomSheet(
-                selectedArtist = quickAccessible,
-            )
+                is ArtistPreview -> showArtistBottomSheet(
+                    artistIds = listOf(quickAccessible.id),
+                )
 
-            is Music -> showMusicBottomSheet(
-                selectedMusic = quickAccessible,
-            )
+                is Music -> showMusicBottomSheet(
+                    musicIds = listOf(quickAccessible.musicId),
+                )
 
-            is PlaylistWithMusicsNumber -> showPlaylistBottomSheet(
-                selectedPlaylist = quickAccessible,
-            )
+                is PlaylistPreview -> showPlaylistBottomSheet(
+                    playlistIds = listOf(quickAccessible.id),
+                )
+            }
         }
-    }
-
-    private fun buildListOfElementEnums(
-        elementsVisibility: ElementsVisibility,
-    ): List<ElementEnum> = buildList {
-        if (elementsVisibility.isQuickAccessShown) add(ElementEnum.QUICK_ACCESS)
-        add(ElementEnum.MUSICS)
-        if (elementsVisibility.arePlaylistsShown) add(ElementEnum.PLAYLISTS)
-        if (elementsVisibility.areAlbumsShown) add(ElementEnum.ALBUMS)
-        if (elementsVisibility.areArtistsShown) add(ElementEnum.ARTISTS)
-        if (elementsVisibility.areMusicFoldersShown) add(ElementEnum.FOLDERS)
     }
 
     private fun buildTabs(elements: List<ElementEnum>): List<PagerScreen> = buildList {
@@ -515,8 +456,10 @@ class MainPageViewModel(
                     allPlaylistsTab(
                         mainPageViewModel = this@MainPageViewModel,
                         navigateToPlaylist = { id ->
-                            _navigationState.value = MainPageNavigationState.ToPlaylist(
-                                playlistId = id,
+                            navigateAndClearSelection(
+                                MainPageNavigationState.ToPlaylist(
+                                    playlistId = id,
+                                )
                             )
                         }
                     )
@@ -526,8 +469,10 @@ class MainPageViewModel(
                     allAlbumsTab(
                         mainPageViewModel = this@MainPageViewModel,
                         navigateToAlbum = { id ->
-                            _navigationState.value = MainPageNavigationState.ToAlbum(
-                                albumId = id,
+                            navigateAndClearSelection(
+                                MainPageNavigationState.ToAlbum(
+                                    albumId = id,
+                                )
                             )
                         }
                     )
@@ -537,8 +482,10 @@ class MainPageViewModel(
                     allArtistsTab(
                         mainPageViewModel = this@MainPageViewModel,
                         navigateToArtist = { id ->
-                            _navigationState.value = MainPageNavigationState.ToArtist(
-                                artistId = id,
+                            navigateAndClearSelection(
+                                MainPageNavigationState.ToArtist(
+                                    artistId = id,
+                                )
                             )
                         }
                     )
@@ -548,8 +495,10 @@ class MainPageViewModel(
                     allMusicsTab(
                         mainPageViewModel = this@MainPageViewModel,
                         navigateToMonth = { month ->
-                            _navigationState.value = MainPageNavigationState.ToMonth(
-                                month = month,
+                            navigateAndClearSelection(
+                                MainPageNavigationState.ToMonth(
+                                    month = month,
+                                )
                             )
                         },
                     )
@@ -557,116 +506,126 @@ class MainPageViewModel(
 
                 ElementEnum.FOLDERS -> add(
                     allMusicFoldersTab(
-                        mainPageViewModel = this@MainPageViewModel,
+                        state = allMusicFoldersState,
                         navigateToFolder = { folderPath ->
-                            _navigationState.value = MainPageNavigationState.ToFolder(
-                                folderPath = folderPath,
+                            navigateAndClearSelection(
+                                MainPageNavigationState.ToFolder(
+                                    folderPath = folderPath,
+                                )
                             )
                         },
                         showSoulMixDialog = ::showSoulMixDialog,
+                        onSoulMixClicked = ::onSoulMixClicked
                     )
                 )
             }
         }
     }
 
-    private suspend fun handleMultiSelectionMusicBottomSheet() {
-        val selectedIds = multiSelectionState.value.selectedIds
-        if (selectedIds.size == 1) {
-            val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return
-            showMusicBottomSheet(selectedMusic = selectedMusic)
-        } else {
-            multiMusicBottomSheetDelegateImpl.showMultiMusicBottomSheet()
-        }
-    }
-
-    private suspend fun handleMultiSelectionAlbumBottomSheet() {
-        val selectedIds = multiSelectionState.value.selectedIds
-        if (selectedIds.size == 1) {
-            val selectedAlbum: AlbumWithMusics =
-                commonAlbumUseCase.getAlbumWithMusics(albumId = selectedIds[0]).firstOrNull() ?: return
-            showAlbumBottomSheet(albumWithMusics = selectedAlbum)
-        } else {
-            multiAlbumBottomSheetDelegateImpl.showMultiAlbumBottomSheet()
-        }
-    }
-
-    private suspend fun handleMultiSelectionArtistBottomSheet() {
-        val selectedIds = multiSelectionState.value.selectedIds
-        if (selectedIds.size == 1) {
-            val selectedArtist: ArtistWithMusics =
-                commonArtistUseCase.getArtistWithMusic(artistId = selectedIds[0]).firstOrNull() ?: return
-            showArtistBottomSheet(selectedArtist = selectedArtist)
-        } else {
-            multiArtistBottomSheetDelegateImpl.showMultiArtistBottomSheet()
-        }
-    }
-
-    private suspend fun handleMultiSelectionPlaylistBottomSheet() {
-        val selectedIds = multiSelectionState.value.selectedIds
-        if (selectedIds.size == 1) {
-            val selectedPlaylist: PlaylistWithMusics =
-                commonPlaylistUseCase.getWithMusics(playlistId = selectedIds[0]).firstOrNull() ?: return
-            showPlaylistBottomSheet(selectedPlaylist = selectedPlaylist.toPlaylistWithMusicsNumber())
-        } else {
-            multiPlaylistBottomSheetDelegateImpl.showMultiPlaylistBottomSheet()
-        }
+    private fun navigateAndClearSelection(state: MainPageNavigationState) {
+        _navigationState.value = state
+        multiSelectionManager.clearMultiSelection()
     }
 
     fun toPlaylist(playlistId: UUID) {
-        _navigationState.value = MainPageNavigationState.ToPlaylist(
-            playlistId = playlistId,
+        navigateAndClearSelection(
+            MainPageNavigationState.ToPlaylist(
+                playlistId = playlistId,
+            )
         )
     }
 
     fun toAlbum(albumId: UUID) {
-        _navigationState.value = MainPageNavigationState.ToAlbum(
-            albumId = albumId,
+        navigateAndClearSelection(
+            MainPageNavigationState.ToAlbum(
+                albumId = albumId,
+            )
         )
     }
 
     fun toArtist(artistId: UUID) {
-        _navigationState.value = MainPageNavigationState.ToArtist(
-            artistId = artistId,
+        navigateAndClearSelection(
+            MainPageNavigationState.ToArtist(
+                artistId = artistId,
+            )
         )
     }
 
     fun toSettings() {
-        _navigationState.value = MainPageNavigationState.ToSettings
-    }
-
-    fun toFolder(folderPath: String) {
-        _navigationState.value = MainPageNavigationState.ToFolder(
-            folderPath = folderPath,
+        navigateAndClearSelection(
+            MainPageNavigationState.ToSettings
         )
     }
 
-    fun toModifyAlbum(albumId: UUID) {
-        _navigationState.value = MainPageNavigationState.ToModifyAlbum(
-            albumId = albumId,
-        )
-    }
-
-    fun toModifyArtist(artistId: UUID) {
-        _navigationState.value = MainPageNavigationState.ToModifyArtist(
-            artistId = artistId,
-        )
-    }
-
-    fun toModifyPlaylist(playlistId: UUID) {
-        _navigationState.value = MainPageNavigationState.ToModifyPlaylist(
-            playlistId = playlistId,
-        )
-    }
-
-    fun handleMultiSelectionBottomSheet() {
-        viewModelScope.launch {
-            when (multiSelectionManagerImpl.selectionMode) {
-                SelectionMode.Music -> handleMultiSelectionMusicBottomSheet()
-                SelectionMode.Playlist -> handleMultiSelectionPlaylistBottomSheet()
-                SelectionMode.Album -> handleMultiSelectionAlbumBottomSheet()
-                SelectionMode.Artist -> handleMultiSelectionArtistBottomSheet()
-            }
+    fun onMusicClicked(music: Music) {
+        coroutineScope.launch {
+            // TODO OPTIMIZATION: find a way to not directly fetch all songs
+            playbackManager.setCurrentPlaylistAndMusic(
+                music = music,
+                musicList = commonMusicUseCase.getAllSorted(),
+                isMainPlaylist = true,
+                playlistId = null,
+            )
+            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
         }
+    }
+
+    fun onPlayAll() {
+        coroutineScope.launch {
+            // TODO OPTIMIZATION: find a way to not directly fetch all songs
+            playbackManager.playShuffle(
+                musicList = commonMusicUseCase.getAllSorted(),
+                playlistId = null,
+                isMain = true,
+            )
+            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+        }
+    }
+
+    fun onSoulMixClicked() {
+        viewModelScope.launch {
+            playbackManager.playSoulMix()
+            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+        }
+    }
+
+    fun onSearch(search: String) {
+        _search.value = search
+    }
+
+    fun showMusicBottomSheet(musicIds: List<UUID>) {
+        _navigationState.value = MainPageNavigationState.ToMusicBottomSheet(musicIds = musicIds)
+    }
+
+    fun showPlaylistBottomSheet(playlistIds: List<UUID>) {
+        _navigationState.value = MainPageNavigationState.ToPlaylistBottomSheet(
+            playlistIds = playlistIds,
+        )
+    }
+
+    fun showArtistBottomSheet(artistIds: List<UUID>) {
+        _navigationState.value = MainPageNavigationState.ToArtistBottomSheet(
+            artistIds = artistIds,
+        )
+    }
+
+    fun showAlbumBottomSheet(albumIds: List<UUID>) {
+        _navigationState.value = MainPageNavigationState.ToAlbumBottomSheet(
+            albumIds = albumIds,
+        )
+    }
+
+    fun clearMultiSelection() {
+        multiSelectionManager.clearMultiSelection()
+    }
+
+    fun toggleElementInSelection(
+        id: UUID,
+        mode: SelectionMode,
+    ) {
+        multiSelectionManager.toggleElementInSelection(
+            id = id,
+            mode = mode,
+        )
     }
 }

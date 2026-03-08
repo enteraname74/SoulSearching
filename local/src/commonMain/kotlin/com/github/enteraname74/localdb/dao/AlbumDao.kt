@@ -1,11 +1,17 @@
 package com.github.enteraname74.localdb.dao
 
-import androidx.room.*
+import androidx.paging.PagingSource
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.RoomAlbum
+import com.github.enteraname74.localdb.view.RoomAlbumPreview
 import com.github.enteraname74.localdb.model.RoomCompleteAlbum
 import com.github.enteraname74.localdb.model.RoomCompleteAlbumWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 /**
  * DAO of an Album.
@@ -28,30 +34,193 @@ interface AlbumDao {
     @Query("DELETE FROM RoomAlbum WHERE albumId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
 
+    @Query(
+        """
+            DELETE FROM RoomAlbum
+            WHERE (SELECT COUNT(*) FROM RoomMusic WHERE RoomMusic.albumId = RoomAlbum.albumId) = 0
+        """
+    )
+    suspend fun deleteAllEmpty()
+
     @Query("SELECT albumName FROM RoomAlbum WHERE LOWER(albumName) LIKE LOWER('%' || :search || '%')")
     suspend fun getAlbumNamesContainingSearch(search: String): List<String>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId")
-    fun getAllAlbumsFromArtist(artistId: UUID) : Flow<List<RoomCompleteAlbum>>
+    fun getAllAlbumsFromArtist(artistId: UUID): Flow<List<RoomCompleteAlbum>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId")
     fun getAllAlbumsWithMusicsFromArtist(artistId: UUID): Flow<List<RoomCompleteAlbumWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")
-    fun getAll(): Flow<List<RoomCompleteAlbum>>
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
+            ORDER BY name ASC
+        """
+    )
+    fun getAllPagedByNameAsc(): PagingSource<Int, RoomAlbumPreview>
 
     @Transaction
-    @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
+            ORDER BY name DESC
+        """
+    )
+    fun getAllPagedByNameDesc(): PagingSource<Int, RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
+            ORDER BY addedDate ASC
+        """
+    )
+    fun getAllPagedByDateAsc(): PagingSource<Int, RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
+            ORDER BY addedDate DESC
+        """
+    )
+    fun getAllPagedByDateDesc(): PagingSource<Int, RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
+            ORDER BY nbPlayed ASC
+        """
+    )
+    fun getAllPagedByNbPlayedAsc(): PagingSource<Int, RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
+            ORDER BY nbPlayed DESC
+        """
+    )
+    fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomAlbumPreview>
+
+    @Transaction
+    @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId LIMIT 1")
     fun getFromId(albumId: UUID): Flow<RoomCompleteAlbum?>
+
+    @Transaction
+    @Query("SELECT * FROM RoomAlbum WHERE albumId in (:albumIds)")
+    fun getFromIds(albumIds: List<UUID>): Flow<List<RoomCompleteAlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")
     fun getAlbumWithMusics(albumId: UUID): Flow<RoomCompleteAlbumWithMusics?>
 
     @Transaction
-    @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")
-    fun getAllAlbumWithMusics(): Flow<List<RoomCompleteAlbumWithMusics>>
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
+            WHERE isInQuickAccess = 1
+        """
+    )
+    fun getAllFromQuickAccess(): Flow<List<RoomAlbumPreview>>
+
+    @Query("UPDATE RoomAlbum SET coverId = NULL")
+    suspend fun cleanAllCovers()
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbum 
+            WHERE albumName = :albumName 
+            AND artistId = :artistId 
+            AND albumId != :albumId 
+            LIMIT 1
+        """
+    )
+    suspend fun getDuplicatedAlbum(
+        albumId: UUID,
+        albumName: String,
+        artistId: UUID
+    ): RoomCompleteAlbum?
+
+    @Transaction
+    @Query(
+        """
+            SELECT album.* FROM RoomAlbum AS album
+            WHERE album.albumName = :albumName 
+            AND (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) = :artistName 
+            LIMIT 1
+        """
+    )
+    suspend fun getFromInformation(
+        albumName: String,
+        artistName: String,
+    ): RoomCompleteAlbum?
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbum 
+            WHERE albumName = :albumName 
+            AND artistId = :artistId
+            LIMIT 1
+        """
+    )
+    suspend fun getFromArtistId(
+        albumName: String,
+        artistId: UUID,
+    ): RoomCompleteAlbum?
+
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
+            WHERE nbPlayed >= 1
+            ORDER BY nbPlayed DESC 
+            LIMIT 11
+        """
+    )
+    fun getMostListened(): Flow<List<RoomAlbumPreview>>
+
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
+            WHERE id = :albumId
+            LIMIT 1
+        """
+    )
+    fun getAlbumPreview(albumId: UUID): Flow<RoomAlbumPreview?>
+
+    // TODO: Normalise with accents.
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview AS preview
+            WHERE (
+                preview.name LIKE '%' || :search || '%'
+                COLLATE NOCASE
+                OR EXISTS(
+                    SELECT 1 FROM RoomArtist AS artist
+                    WHERE artist.artistId = preview.artistId 
+                    AND artist.artistName LIKE '%' || :search || '%' 
+                    COLLATE NOCASE
+                )
+            ) 
+            ORDER BY preview.name ASC
+        """
+    )
+    fun searchAll(search: String): Flow<List<RoomAlbumPreview>>
+
+    @Transaction
+    @Query(
+        """
+            SELECT album.* FROM RoomAlbum AS album 
+            INNER JOIN RoomArtist AS artist 
+            ON album.artistId = artist.artistId 
+            AND artist.artistName = :artistName
+        """
+    )
+    suspend fun getAlbumsOfArtistName(artistName: String): List<RoomCompleteAlbumWithMusics>
 }

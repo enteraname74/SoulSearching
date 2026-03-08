@@ -1,19 +1,31 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.domain
 
 
-import com.github.enteraname74.domain.ext.duration
-import com.github.enteraname74.domain.model.*
+import androidx.paging.PagingData
+import com.github.enteraname74.domain.model.AlbumPreview
+import com.github.enteraname74.domain.model.ArtistPreview
+import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.MonthMusicsPreview
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicFolderPreview
+import com.github.enteraname74.domain.model.PlaylistPreview
+import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import java.util.*
+import kotlinx.coroutines.flow.Flow
+import java.util.UUID
+import kotlin.time.Duration
 
 data class PlaylistDetail(
     val id: UUID?,
+    val cachedPlaylist: PlayedListToContinue?,
     val type: PlaylistDetailType,
     val title: String,
     val subTitle: String,
     val cover: Cover?,
-    val musics: List<Music>,
+    val musics: Flow<PagingData<Music>>,
+    val duration: Duration,
+    val searchMusics: List<Music>,
     val musicItemLeadingSpec: (musicPosition: Int) -> MusicItemLeadingSpec,
 )
 
@@ -25,27 +37,42 @@ enum class PlaylistDetailType {
     Folder;
 }
 
-fun PlaylistWithMusics.toPlaylistDetail(): PlaylistDetail =
-    PlaylistDetail(
-        id = this.playlist.playlistId,
-        type = PlaylistDetailType.Playlist,
-        title = this.playlist.name,
-        subTitle = strings.musics(this.musics.size),
-        cover = this.cover,
-        musics = this.musics,
-        musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
-    )
-
-fun AlbumWithMusics.toPlaylistDetail(
-    shouldShowTrackPosition: Boolean,
+fun PlaylistPreview.toPlaylistDetail(
+    musics: Flow<PagingData<Music>>,
+    duration: Duration,
+    searchMusics: List<Music>,
+    cachedPlaylist: PlayedListToContinue?,
 ): PlaylistDetail =
     PlaylistDetail(
-        id = this.album.albumId,
-        type = PlaylistDetailType.Album,
-        title = this.album.albumName,
-        subTitle = this.album.artist.artistName,
+        id = this.id,
+        type = PlaylistDetailType.Playlist,
+        title = this.name,
+        subTitle = strings.musics(this.totalMusics),
         cover = this.cover,
-        musics = this.musics,
+        musics = musics,
+        duration = duration,
+        searchMusics = searchMusics,
+        musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
+        cachedPlaylist = cachedPlaylist,
+    )
+
+fun AlbumPreview.toPlaylistDetail(
+    shouldShowTrackPosition: Boolean,
+    musics: Flow<PagingData<Music>>,
+    duration: Duration,
+    searchMusics: List<Music>,
+    cachedPlaylist: PlayedListToContinue?,
+): PlaylistDetail =
+    PlaylistDetail(
+        id = this.id,
+        type = PlaylistDetailType.Album,
+        title = this.name,
+        subTitle = this.artist,
+        cover = this.cover,
+        musics = musics,
+        duration = duration,
+        searchMusics = searchMusics,
+        cachedPlaylist = cachedPlaylist,
         musicItemLeadingSpec = { musicPosition ->
             if (shouldShowTrackPosition) {
                 MusicItemLeadingSpec.Position(pos = musicPosition + 1)
@@ -55,35 +82,59 @@ fun AlbumWithMusics.toPlaylistDetail(
         }
     )
 
-fun ArtistWithMusics.toPlaylistDetail(): PlaylistDetail =
+fun ArtistPreview.toPlaylistDetail(
+    musics: Flow<PagingData<Music>>,
+    duration: Duration,
+    searchMusics: List<Music>,
+    cachedPlaylist: PlayedListToContinue?,
+): PlaylistDetail =
     PlaylistDetail(
-        id = this.artist.artistId,
+        id = this.id,
         type = PlaylistDetailType.Artist,
-        title = this.artist.artistName,
-        subTitle = strings.musics(this.musics.size),
+        title = this.name,
+        subTitle = strings.musics(this.totalMusics),
         cover = this.cover,
-        musics = this.musics,
+        musics = musics,
+        duration = duration,
+        searchMusics = searchMusics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
+        cachedPlaylist = cachedPlaylist,
     )
 
-fun MonthMusicList.toPlaylistDetail(): PlaylistDetail =
+fun MonthMusicsPreview.toPlaylistDetail(
+    musics: Flow<PagingData<Music>>,
+    duration: Duration,
+    searchMusics: List<Music>,
+    cachedPlaylist: PlayedListToContinue?,
+): PlaylistDetail =
     PlaylistDetail(
         id = null,
         type = PlaylistDetailType.Month,
         title = this.month,
-        subTitle = strings.musics(this.musics.size),
+        subTitle = strings.musics(this.totalMusics),
         cover = this.cover,
-        musics = this.musics,
+        musics = musics,
+        duration = duration,
+        searchMusics = searchMusics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
+        cachedPlaylist = cachedPlaylist,
     )
 
-fun MusicFolderList.toPlaylistDetail(): PlaylistDetail =
+fun MusicFolderPreview.toPlaylistDetail(
+    musics: Flow<PagingData<Music>>,
+    duration: Duration,
+    searchMusics: List<Music>,
+    cachedPlaylist: PlayedListToContinue?,
+): PlaylistDetail =
     PlaylistDetail(
         id = null,
         type = PlaylistDetailType.Folder,
-        title = this.path,
-        subTitle = strings.musics(this.musics.size),
+        title = this.folder,
+        subTitle = strings.musics(this.totalMusics),
         cover = this.cover,
-        musics = this.musics,
+        musics = musics,
+        duration = duration,
+        searchMusics = searchMusics,
         musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
+        cachedPlaylist = cachedPlaylist,
     )

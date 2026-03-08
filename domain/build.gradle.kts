@@ -9,9 +9,14 @@ kotlin {
     jvm("desktop")
     jvmToolchain(17)
 
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
+    }
+
     sourceSets {
         commonMain {
             dependencies {
+                implementation(libs.androidx.paging.common)
                 implementation(libs.koin.core)
                 implementation(libs.coroutines.core)
                 implementation(libs.coroutines.core.jvm)

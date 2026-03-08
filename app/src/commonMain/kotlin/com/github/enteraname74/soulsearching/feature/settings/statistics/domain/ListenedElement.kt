@@ -1,10 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.settings.statistics.domain
 
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.domain.model.AlbumPreview
+import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import java.util.UUID
@@ -23,30 +25,30 @@ fun Music.toListenedElement(): ListenedElement = ListenedElement(
     id = musicId,
 )
 
-fun AlbumWithMusics.toListenedElement(): ListenedElement = ListenedElement(
-    title = album.albumName,
-    text = { strings.plays(album.nbPlayed) },
+fun AlbumPreview.toListenedElement(): ListenedElement = ListenedElement(
+    title = name,
+    text = { strings.plays(nbPlayed) },
     cover = cover,
-    id = album.albumId,
+    id = id,
 )
 
-fun ArtistWithMusics.toListenedElement(): ListenedElement = ListenedElement(
-    title = artist.artistName,
-    text = { strings.plays(artist.nbPlayed) },
+fun ArtistPreview.toListenedElement(): ListenedElement = ListenedElement(
+    title = name,
+    text = { strings.plays(totalMusics) },
     cover = cover,
-    id = artist.artistId,
+    id = id,
 )
 
-fun ArtistWithMusics.toMostSongsListenedElement(): ListenedElement = ListenedElement(
-    title = artist.artistName,
-    text = { strings.musics(musics.size) },
+fun ArtistPreview.toMostSongsListenedElement(): ListenedElement = ListenedElement(
+    title = name,
+    text = { strings.musics(totalMusics) },
     cover = cover,
-    id = artist.artistId,
+    id = id,
 )
 
-fun PlaylistWithMusics.toListenedElement(): ListenedElement = ListenedElement(
-    title = playlist.name,
-    text = { strings.plays(playlist.nbPlayed) },
+fun PlaylistPreview.toListenedElement(): ListenedElement = ListenedElement(
+    title = name,
+    text = { strings.plays(nbPlayed) },
     cover = cover,
-    id = playlist.playlistId,
+    id = id,
 )

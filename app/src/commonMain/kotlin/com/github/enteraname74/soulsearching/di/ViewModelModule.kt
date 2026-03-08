@@ -1,36 +1,41 @@
 package com.github.enteraname74.soulsearching.di
 
-import com.github.enteraname74.soulsearching.theme.ColorThemeManager
+import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
+import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingViewModel
 import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
+import com.github.enteraname74.soulsearching.feature.application.MainAppViewModel
+import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.ModifyAlbumViewModel
+import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.ModifyArtistViewModel
+import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.ModifyMusicViewModel
+import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.ModifyPlaylistViewModel
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
+import com.github.enteraname74.soulsearching.feature.migration.MigrationViewModel
+import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceViewModel
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.domain.SelectedAlbumViewModel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.domain.SelectedArtistViewModel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.domain.SelectedFolderViewModel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.domain.SelectedMonthViewModel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.domain.SelectedPlaylistViewModel
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.*
-import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.ModifyAlbumViewModel
-import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.ModifyArtistViewModel
-import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.ModifyMusicViewModel
-import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.ModifyPlaylistViewModel
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
+import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutViewModel
+import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
+import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeViewModel
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedViewModel
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain.SettingsThemeSelectionViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.SettingsAddMusicsViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFoldersViewModel
-import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeViewModel
-import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain.SettingsThemeSelectionViewModel
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
-import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsViewModel
-import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
-import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutViewModel
-import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceViewModel
-import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingViewModel
-import com.github.enteraname74.soulsearching.feature.migration.MigrationViewModel
-import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
-import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreenViewModel
+import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsViewModel
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -53,6 +58,7 @@ internal val viewModelModule: Module = module {
     // Main page
     viewModelOf(::MainPageViewModel)
     viewModelOf(::ApplicationViewModel)
+    viewModelOf(::MainAppViewModel)
 
     // Song fetching and management
     viewModelOf(::AppInitSongFetchingViewModel)
@@ -79,4 +85,11 @@ internal val viewModelModule: Module = module {
     singleOf(::ViewSettingsManager)
 
     viewModelOf(::MigrationViewModel)
+
+    // Bottom sheets
+    viewModelOf(::MusicBottomSheetViewModel)
+    viewModelOf(::AddToPlaylistBottomSheetViewModel)
+    viewModelOf(::PlaylistBottomSheetViewModel)
+    viewModelOf(::ArtistBottomSheetViewModel)
+    viewModelOf(::AlbumBottomSheetViewModel)
 }

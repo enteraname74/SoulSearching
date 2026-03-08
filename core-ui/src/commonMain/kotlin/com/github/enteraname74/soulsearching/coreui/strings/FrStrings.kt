@@ -237,6 +237,8 @@ object FrStrings : Strings {
     override val showMusicsByFolders = "Afficher les musiques par dossiers"
     override val showMusicsByMonths = "Afficher les musiques par mois"
     override val showAlbumTrackNumber = "Afficher la position des musiques"
+    override val initialSectionTitle = "Section à l'ouverture"
+    override val initialSectionText = "Sélectionner la section à afficher au lancement de l'application"
     override val useVerticalAccessBarTitle = "Utiliser la barre d'accès verticale"
     override val useHorizontalAccessBarText = "Utiliser la barre d'accès horizontale"
 
@@ -265,8 +267,12 @@ object FrStrings : Strings {
     override val leadDeveloper = "Développeur principal"
     override val developersTitle = "Développeurs"
     override val developersText = "Les développeurs derrière le projet Soul Searching"
+    override val changelogTitle = "Derniers changements"
+    override val changelogText = "Nouvelles fonctionnalités, corrections de bogues"
+    override val changelogUpdateRequired = "Mettez à jour l'application pour profiter des dernières fonctionnalités !"
     override val versionNameTitle = "Nom de la version de l'application"
-
+    override val projectSiteTitle = "Site du projet"
+    override val projectSiteText = "Code source, soumettre une suggestion"
     override val noNewMusics = "Aucune nouvelle musique à ajouter !"
     override val savingNewMusics = "Sauvegarde des nouvelles musiques…"
     override val songsSaved = "Musiques sauvegardées !"
@@ -305,6 +311,12 @@ object FrStrings : Strings {
     override val elementDetailTitles = "Titres"
 
     override val and = "et"
+
+    override val continuePlayedListTitle = "Reprendre où vous vous êtes arrêté"
+    override val continuePlayedListAction = "Reprendre"
+
+    override val savedChanges = "Modifications sauvegardées"
+
     override fun musics(total: Int): String {
         return when (total) {
             1 -> "1 musique"

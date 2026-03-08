@@ -47,16 +47,13 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
 
                 implementation(libs.kmpalette)
-                implementation(libs.components.resources)
                 implementation(libs.multiplatform.settings)
 
-                implementation(compose.ui)
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.materialIconsExtended)
-                implementation(compose.material3)
-                implementation(compose.components.resources)
+                implementation(libs.compose.foundation)
+                implementation(libs.compose.material)
+                implementation(libs.compose.material3)
+                implementation(libs.compose.resources)
+                implementation(libs.compose.ui)
 
                 implementation(libs.jaudiotagger)
                 implementation(libs.androidx.annotation)
@@ -70,9 +67,11 @@ kotlin {
 
                 implementation(libs.reorderable)
 
-                implementation(libs.androidx.navigation3.runtime)
-                implementation(libs.androidx.navigation3.ui)
-                implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+                implementation(libs.androidx.paging.compose)
+                implementation(libs.androidx.paging.common)
+
+                implementation(libs.navigation3.ui)
+                implementation(libs.navigation3.viewmodel)
             }
         }
         androidMain {
@@ -96,8 +95,8 @@ android {
         applicationId = "com.github.enteraname74.soulsearching"
         minSdk = libs.versions.android.min.sdk.get().toInt()
         targetSdk = libs.versions.android.target.sdk.get().toInt()
-        versionCode = 34
-        versionName = "0.14.0"
+        versionCode = 35
+        versionName = "0.15.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
