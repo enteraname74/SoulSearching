@@ -346,11 +346,10 @@ class PlaybackManager(
         playbackProgressJob.releaseDurationJob()
         if (resetPlayedList) {
             playerRepository.deleteCurrentPlayedList()
-        } else {
-            playerRepository.setPlayedListState(PlayedListState.Cached)
         }
 
         player.dismiss()
+        notification.dismiss()
     }
 
     /**
