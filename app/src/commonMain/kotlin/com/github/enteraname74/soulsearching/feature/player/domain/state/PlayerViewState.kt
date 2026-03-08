@@ -16,6 +16,6 @@ sealed interface PlayerViewState {
         val playerMode: PlayerMode,
         val isPlaying: Boolean,
         val playlistsWithMusics: List<PlaylistWithMusics>,
-        val aroundSongs: List<Music?>,
+        val aroundSongs: List<Music>,
     ): PlayerViewState
 }

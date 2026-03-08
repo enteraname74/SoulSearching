@@ -8,6 +8,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import com.github.enteraname74.soulsearching.util.CoverUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -36,7 +38,7 @@ fun PlayerMusicCover(
     topPadding: Dp,
     onLongClick: () -> Unit,
     canSwipeCover: Boolean,
-    aroundSongs: List<Music?>,
+    aroundSongs: List<Music>,
     currentMusic: Music,
     modifier: Modifier = Modifier,
     playbackManager: PlaybackManager = injectElement(),
@@ -51,7 +53,10 @@ fun PlayerMusicCover(
         Modifier
     }
 
-    val canUsePager = aroundSongs.filterNotNull().size > 1 && canSwipeCover
+    val currentMusicPos = remember(aroundSongs) {
+        aroundSongs.indexOf(currentMusic)
+    }
+    val canUsePager = aroundSongs.size > 2 && canSwipeCover && currentMusicPos != -1
 
     Box(
         modifier = modifier
@@ -68,18 +73,17 @@ fun PlayerMusicCover(
         ) {
             if (canUsePager) {
                 val pagerState = remember(aroundSongs) {
-                    object : PagerState(currentPage = 1) {
+                    object : PagerState(currentPage = currentMusicPos) {
                         override val pageCount: Int = aroundSongs.size
                     }
                 }
 
-                LaunchedEffect(pagerState) {
-                    snapshotFlow { pagerState.currentPage }.collect { page ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            when (page) {
-                                0 -> playbackManager.previous()
-                                2 -> playbackManager.next()
-                            }
+                LaunchedEffect(pagerState.settledPage, pagerState.isScrollInProgress) {
+                    if (pagerState.settledPage == currentMusicPos || pagerState.isScrollInProgress) return@LaunchedEffect
+                    CoroutineScope(Dispatchers.IO).launch {
+                        when (pagerState.settledPage) {
+                            0 -> playbackManager.previous(skipRewind = true)
+                            2 -> playbackManager.next()
                         }
                     }
                 }

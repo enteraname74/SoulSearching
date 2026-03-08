@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
@@ -144,11 +145,24 @@ class PlayerViewModel(
                     playerMode = playbackMainState.playerMode,
                     isPlaying = playbackMainState.isPlaying,
                     playlistsWithMusics = playlists,
-                    aroundSongs = listOfNotNull(
-                        playbackMainState.previous,
-                        playbackMainState.currentMusic,
-                        playbackMainState.next,
-                    ).distinctBy { it.musicId },
+                    aroundSongs = if (playbackMainState.playerMode == PlayerMode.Loop) {
+                        listOfNotNull(
+                            playbackMainState.currentMusic,
+                        )
+                    } else {
+                        listOfNotNull(
+                            playbackMainState.previous,
+                            playbackMainState.currentMusic,
+                            playbackMainState.next,
+                        ).run {
+                            // UI fix to avoid clipping when swiping cover on player view.
+                            if (playbackMainState.currentMusic == playbackMainState.next) {
+                                drop(1)
+                            } else {
+                                this
+                            }
+                        }
+                    },
                     playedList = playedList,
                 )
             }

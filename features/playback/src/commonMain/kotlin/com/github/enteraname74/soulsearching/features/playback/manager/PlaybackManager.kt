@@ -400,11 +400,11 @@ class PlaybackManager(
     /**
      * Play the previous song in queue.
      */
-    suspend fun previous() {
+    suspend fun previous(skipRewind: Boolean = false) {
         val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
         val size: Int = playerRepository.getSize().firstOrNull() ?: return
         val shouldRewind =
-            settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD
+            settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD && !skipRewind
 
         if (shouldRewind || playerMode == PlayerMode.Loop || size == 1) {
             val currentMusicId: UUID =
