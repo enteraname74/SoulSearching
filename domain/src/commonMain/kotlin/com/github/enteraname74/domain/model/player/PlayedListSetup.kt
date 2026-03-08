@@ -44,19 +44,6 @@ data class PlayedListSetup(
     }
 
     companion object {
-        fun fromMusic(
-            music: Music
-        ): PlayedListSetup =
-            PlayedListSetup(
-                musics = listOf(music),
-                selectedMusic = music,
-                seekTo = null,
-                listId = null,
-                isMain = false,
-                state = PlayedListState.Loading,
-                mode = PlayerMode.Normal,
-            )
-
         fun fromSelection(
             musics: List<Music>,
             playlistId: String?,

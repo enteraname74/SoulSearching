@@ -103,7 +103,7 @@ class PlayerRepositoryImpl(
         withContext(workScope) {
             playerDataSource.moveMusic(
                 fromMusicId = fromMusicId,
-                afterMusicId = afterMusicId,
+                toMusicId = afterMusicId,
             )
         }
     }

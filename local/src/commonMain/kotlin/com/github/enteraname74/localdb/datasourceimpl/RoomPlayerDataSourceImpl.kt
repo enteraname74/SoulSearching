@@ -120,28 +120,35 @@ internal class RoomPlayerDataSourceImpl(
         )
     }
 
-    override suspend fun moveMusic(fromMusicId: UUID, afterMusicId: UUID) {
+    override suspend fun moveMusic(fromMusicId: UUID, toMusicId: UUID) {
         val musicToMove: RoomPlayerMusic = playerMusicDao.getOfCurrentList(fromMusicId) ?: return
         val mode: PlayerMode = listDao.getCurrentMode().firstOrNull() ?: return
 
-        val beforeMusic: RoomPlayerMusic = playerMusicDao.getOfCurrentList(afterMusicId) ?: return
-        val aboveOrder: Double? = playerMusicDao.getPreviousMusic(beforeMusic.usedOrder(mode))
-            .firstOrNull()
-            ?.playerMusic
-            ?.usedOrder(mode)
+        val musicToMoveOrder: Double = musicToMove.usedOrder(mode)
+        val toMusicOrder: Double = playerMusicDao.getOfCurrentList(toMusicId)?.usedOrder(mode) ?: return
 
+        val isMovingUp = musicToMoveOrder > toMusicOrder
 
-        val afterMusic: RoomPlayerMusic = playerMusicDao.getOfCurrentList(afterMusicId) ?: return
+        val newAfterMusic: RoomPlayerMusic? = playerMusicDao.getNextMusic(
+            order = toMusicOrder,
+            musicIdsToSkip = emptyList()
+        ).firstOrNull()?.playerMusic
+
+        val newBeforeMusic: RoomPlayerMusic? = playerMusicDao.getPreviousMusic(
+            order = toMusicOrder,
+        ).firstOrNull()?.playerMusic
+
+        val first: RoomPlayerMusic = playerMusicDao.getFirst(emptyList()).firstOrNull()?.playerMusic ?: return
         val last: RoomPlayerMusic = playerMusicDao.getLast().firstOrNull()?.playerMusic ?: return
-        val afterMusicOrder: Double = afterMusic.usedOrder(mode)
 
-        val isAtTopOfList = aboveOrder == null
-        val isAtBottomOfList = afterMusic.id == last.id
+        val isAtTopOfList = toMusicId == first.musicId || newBeforeMusic == null
+        val isAtBottomOfList = newAfterMusic == null
 
         val newOrder = when {
-            isAtTopOfList -> afterMusicOrder - 1
+            isAtTopOfList -> toMusicOrder - 1
             isAtBottomOfList -> last.usedOrder(mode) + 1
-            else -> (aboveOrder + afterMusicOrder) / 2
+            isMovingUp -> (newBeforeMusic.usedOrder(mode) + toMusicOrder) / 2
+            else -> (toMusicOrder + newAfterMusic.usedOrder(mode)) / 2
         }
 
         playerMusicDao.updateAll(

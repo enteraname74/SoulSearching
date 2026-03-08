@@ -32,7 +32,7 @@ interface PlayerDataSource {
     suspend fun upsertAllMusics(playerMusics: List<PlayerMusic>)
     suspend fun moveMusic(
         fromMusicId: UUID,
-        afterMusicId: UUID,
+        toMusicId: UUID,
     )
     suspend fun upsertPlayedList(
         playedList: PlayerPlayedList,
