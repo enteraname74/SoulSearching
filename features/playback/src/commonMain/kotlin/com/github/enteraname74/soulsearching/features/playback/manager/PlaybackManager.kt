@@ -38,10 +38,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -168,6 +171,7 @@ class PlaybackManager(
         init()
 
         listenPlayerVolume()
+        listenToMusicCount()
         listenToState()
         playerListener()
         notificationListener()
@@ -190,6 +194,29 @@ class PlaybackManager(
             settings.getFlowOn(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME)
                 .collectLatest { volume ->
                     player.setPlayerVolume(volume)
+                }
+        }
+    }
+
+    private fun listenToMusicCount() {
+        launchWithInit {
+            currentSong
+                .map { it?.musicId }
+                .distinctUntilChanged()
+                /*
+                We drop the first value of the flow to avoid incrementing the music total playing number
+                when we relaunch the app.
+                There could we a case where we quit the app before the increment was done.
+                Thus, relaunching the app would never increment the current music.
+                But this will do for now.
+                 */
+                .drop(1)
+                .collectLatest { currentMusicId ->
+                    if (currentMusicId != null) {
+                        launchMusicCount(currentMusicId)
+                    } else {
+                        updateMusicNbPlayedJob?.cancel()
+                    }
                 }
         }
     }
@@ -426,12 +453,11 @@ class PlaybackManager(
     suspend fun setAndPlayMusic(music: Music) {
         playerRepository.setCurrent(music.musicId)
         playerRepository.setPlayedListState(PlayedListState.Playing)
-        launchMusicCount(musicId = music.musicId)
     }
 
     private fun launchMusicCount(musicId: UUID) {
         updateMusicNbPlayedJob?.cancel()
-        updateMusicNbPlayedJob = workScope.launch {
+        updateMusicNbPlayedJob = CoroutineScope(Dispatchers.IO).launch {
             delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
             commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }
