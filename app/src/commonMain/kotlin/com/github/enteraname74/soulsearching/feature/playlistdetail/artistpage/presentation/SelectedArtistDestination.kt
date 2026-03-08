@@ -81,8 +81,10 @@ data class SelectedArtistDestination(
                             }
 
                             is SelectedArtistNavigationState.ToMusicBottomSheet -> {
-                                MusicBottomSheetDestination(
-                                    musicIds = it.musicIds,
+                                navigator.push(
+                                    MusicBottomSheetDestination(
+                                        musicIds = it.musicIds,
+                                    )
                                 )
                             }
                         }

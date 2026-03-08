@@ -9,6 +9,7 @@ import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cancel_filled
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
@@ -37,7 +38,7 @@ fun allPlaylistsTab(
                 rightComposable = {
                     SoulIconButton(
                         onClick = mainPageViewModel::showCreatePlaylistDialog,
-                        icon = CoreRes.drawable.ic_cancel_filled,
+                        icon = CoreRes.drawable.ic_add,
                         contentDescription = strings.createPlaylistButton,
                         size = UiConstants.ImageSize.medium,
                     )
