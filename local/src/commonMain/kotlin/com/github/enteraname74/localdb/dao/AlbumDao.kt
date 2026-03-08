@@ -7,7 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.RoomAlbum
-import com.github.enteraname74.localdb.model.RoomAlbumPreview
+import com.github.enteraname74.localdb.view.RoomAlbumPreview
 import com.github.enteraname74.localdb.model.RoomCompleteAlbum
 import com.github.enteraname74.localdb.model.RoomCompleteAlbumWithMusics
 import kotlinx.coroutines.flow.Flow

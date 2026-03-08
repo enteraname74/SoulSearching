@@ -1,4 +1,4 @@
-package com.github.enteraname74.localdb.model
+package com.github.enteraname74.localdb.view
 
 import androidx.room.DatabaseView
 import com.github.enteraname74.domain.model.Cover

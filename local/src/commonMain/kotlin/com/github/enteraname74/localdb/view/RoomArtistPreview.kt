@@ -1,9 +1,8 @@
-package com.github.enteraname74.localdb.model
+package com.github.enteraname74.localdb.view
 
 import androidx.room.DatabaseView
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Cover.CoverFile.DevicePathSpec
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -63,7 +62,7 @@ data class RoomArtistPreview(
                 initialCoverPath = musicCoverPath,
                 fileCoverId = coverId,
                 devicePathSpec = coverFolderKey?.let { key ->
-                    DevicePathSpec(
+                    Cover.CoverFile.DevicePathSpec(
                         settingsKey = key,
                         dynamicElementName = name,
                         fallback = Cover.CoverFile(fileCoverId = coverId),

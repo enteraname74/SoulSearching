@@ -14,6 +14,7 @@ import com.github.enteraname74.localdb.migration.EndMigrationCallback
 import com.github.enteraname74.localdb.migration.Migration16To17
 import com.github.enteraname74.localdb.migration.Migration17To18
 import com.github.enteraname74.localdb.migration.Migration18To19
+import com.github.enteraname74.localdb.migration.Migration19To20
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.CoverDataSource
@@ -47,6 +48,7 @@ private fun Scope.getAppDatabase(
             Migration18To19(
                 musicMetadataHelper = get(),
             ),
+            Migration19To20,
         )
         .addCallback(
             EndMigrationCallback(

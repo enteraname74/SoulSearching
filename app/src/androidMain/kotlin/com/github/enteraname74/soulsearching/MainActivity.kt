@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         if (isFinishing) {
             CoroutineScope(Dispatchers.IO).launch {
-                playbackManager.stopPlayback()
+                playbackManager.stopPlayback(resetPlayedList = false)
             }
         }
     }

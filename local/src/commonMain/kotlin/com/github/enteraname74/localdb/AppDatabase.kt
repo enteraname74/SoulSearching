@@ -9,6 +9,11 @@ import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
 import com.github.enteraname74.localdb.model.player.RoomPlayerPlayedList
 import com.github.enteraname74.localdb.view.CurrentPlayerMusicsView
+import com.github.enteraname74.localdb.view.RoomAlbumPreview
+import com.github.enteraname74.localdb.view.RoomArtistPreview
+import com.github.enteraname74.localdb.view.RoomMonthMusicPreview
+import com.github.enteraname74.localdb.view.RoomMusicFolderPreview
+import com.github.enteraname74.localdb.view.RoomPlaylistPreview
 
 
 @Database(
