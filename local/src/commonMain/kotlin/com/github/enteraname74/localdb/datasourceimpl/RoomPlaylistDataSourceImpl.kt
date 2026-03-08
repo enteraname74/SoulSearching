@@ -65,7 +65,9 @@ internal class RoomPlaylistDataSourceImpl(
 
     override fun getFromIds(playlistIds: List<UUID>): Flow<List<PlaylistWithMusics>> =
         appDatabase.playlistDao.getFromIds(playlistIds).map { list ->
-            list.map { it.toPlaylistWIthMusics() }
+            list
+                .sortedBy { playlistIds.indexOf(it.roomPlaylist.playlistId) }
+                .map { it.toPlaylistWIthMusics() }
         }
 
     override fun getPlaylistWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?> {

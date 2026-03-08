@@ -74,7 +74,9 @@ internal class RoomArtistDataSourceImpl(
 
     override fun getFromIds(artistIds: List<UUID>): Flow<List<ArtistWithMusics>> =
         appDatabase.artistDao.getFromIds(artistIds).map { list ->
-            list.map { it.toArtistWithMusics() }
+            list
+                .sortedBy { artistIds.indexOf(it.roomArtist.artistId) }
+                .map { it.toArtistWithMusics() }
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)

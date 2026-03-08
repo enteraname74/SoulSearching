@@ -103,7 +103,9 @@ internal class RoomMusicDataSourceImpl(
 
     override fun getFromIds(ids: List<UUID>): Flow<List<Music>> =
         appDatabase.musicDao.getFromIds(ids).map { list ->
-            list.map { it.toMusic() }
+            list
+                .sortedBy { ids.indexOf(it.music.musicId) }
+                .map { it.toMusic() }
         }
 
     override fun getAll(): Flow<List<Music>> {
