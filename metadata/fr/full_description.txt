@@ -1,13 +1,27 @@
-Soul Searching est une application pour écouter vos musiques locales.
+Soul Searching est une application de musique complète, performante et personnalisable pour écouter vos musiques locales.
 
-Avec cette dernière, vous pouvez :
+Une application complète :
+- Création de playlists
+- Support de plusieurs listes de lectures
+- Gestion de la liste de lecture (mode de jeu, ajout, suppression,...)
+- Système d'accès rapide
+- Statistiques d'écoutes (toujours stockées uniquement en local)
+- Paroles synchronisées (provenant du fichier audio ou d'une source externe)
+- Modification d'albums, artistes et musiques (écriture sur les métadonnées des fichiers audio)
+- Support dde multiples artistes pour une même musique
+- Recherche et tris
+- Gestion des dossiers
+- Modification du volume du lecteur
 
-- gérer vos musiques, dossiers, albums et artistes
-- créer des playlists
-- voir les paroles (normales et synchronisées) de la musique jouée
-- gérer plusieurs artistes liés à une musique
-- gérer votre liste de lecture
-- voir des statistiques sur vos écoutes
-- utiliser un système d'accès rapide
+Une application performante :
+- Supporte un grand nombre de musique tout en restant fluide
+- Logique optimisée pour réaliser des tâches complexes rapidement
 
-L'application propose aussi plusieurs éléments de personnalisation (thème de couleur, vue du lecteur...).
+Une application qui vous ressemble :
+- Plusieurs thèmes de couleurs par défaut
+- Possibilité de forcer le thème sombre ou clair
+- Thème dynamique, basé sur la couleur de la pochette d'album de la musique jouée
+- Possibilité de personnaliser l'application du thème dynamique sur tous les écrans
+- Choix de la graine utilisée pour générer le thème dynamique
+- Personnalisation du lecteur (balayage pour changer de musique, progression affichée sur le mode minimisée,...)
+- Personnalisation de la page d'accueil (onglet à ouvrir au démarrage, onglets visibles, style d'affichage,...)

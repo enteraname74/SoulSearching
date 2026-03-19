@@ -95,8 +95,8 @@ android {
         applicationId = "com.github.enteraname74.soulsearching"
         minSdk = libs.versions.android.min.sdk.get().toInt()
         targetSdk = libs.versions.android.target.sdk.get().toInt()
-        versionCode = 35
-        versionName = "0.15.0"
+        versionCode = 36
+        versionName = "0.15.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

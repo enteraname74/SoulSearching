@@ -1,1 +1,1 @@
-Lecteur de musique pour Android.
+Lecteur de musique complet et performant pour Android.
