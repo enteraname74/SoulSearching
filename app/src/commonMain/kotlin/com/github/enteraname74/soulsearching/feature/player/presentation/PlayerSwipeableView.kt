@@ -12,7 +12,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
@@ -36,7 +35,6 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.screen.
 import com.github.enteraname74.soulsearching.feature.player.presentation.screen.PlayerSwipeableLoadingScreen
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.orDefault
-import kotlinx.coroutines.launch
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -56,8 +54,6 @@ fun PlayerDraggableView(
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     val state by playerViewModel.state.collectAsState()
     val lyricsState by playerViewModel.lyricsState.collectAsState()
     val settingsState by playerViewModel.viewSettingsState.collectAsState()
@@ -222,9 +218,9 @@ fun PlayerDraggableView(
                     )
 
                     /*
-                        If the previous state was expanded/minimised and the current one is collapsed,
-                        then it indicates that the playback should stop (user action for example).
-                         */
+                    If the previous state was expanded/minimised and the current one is collapsed,
+                    then it indicates that the playback should stop (user action for example).
+                     */
                     if ((previousDraggableState != BottomSheetStates.COLLAPSED && previousDraggableState != null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
                         LaunchedEffect(Unit) {
                             playerViewModel.stopPlayback()

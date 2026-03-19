@@ -1,10 +1,12 @@
 package com.github.enteraname74.soulsearching
 
 import android.annotation.SuppressLint
+import android.app.ComponentCaller
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -166,6 +168,24 @@ class MainActivity : AppCompatActivity() {
         if (isFinishing) {
             CoroutineScope(Dispatchers.IO).launch {
                 playbackManager.stopPlayback(resetPlayedList = false)
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent, caller: ComponentCaller) {
+        super.onNewIntent(intent, caller)
+//        setIntent(intent)
+        handleIncomingIntent(intent)
+    }
+
+    private fun handleIncomingIntent(intent: Intent) {
+        println("CLUELESS -- got new intent: $intent with data: ${intent.data}")
+        if (intent.action == Intent.ACTION_VIEW) {
+            val uri: Uri? = intent.data
+            if (uri != null) {
+                println("CLUELESS -- got correct uri: $uri")
+                // Pass this to your player / ViewModel
+                applicationViewModel.handleMusicLink(uri.toString())
             }
         }
     }

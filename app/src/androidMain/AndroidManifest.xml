@@ -55,11 +55,23 @@
             android:name="com.github.enteraname74.soulsearching.MainActivity"
             android:exported="true"
             android:enableOnBackInvokedCallback="false"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.SoulSearching">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Open audio files from file manager apps -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="audio/*" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
             </intent-filter>
         </activity>
     </application>
