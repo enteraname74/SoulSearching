@@ -231,7 +231,7 @@ object SoulSearchingSettingsKeys {
     object Album {
         val SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW = settingElementOf(
             key = "SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW",
-            defaultValue = false,
+            defaultValue = true,
         )
     }
 }
