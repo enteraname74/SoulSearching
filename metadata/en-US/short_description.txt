@@ -1,1 +1,1 @@
-Music player for Android.
+A complete and powerful music player for Android.
