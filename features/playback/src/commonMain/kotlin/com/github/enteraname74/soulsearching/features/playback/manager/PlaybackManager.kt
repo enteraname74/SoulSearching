@@ -410,12 +410,13 @@ class PlaybackManager(
         val size: Int = playerRepository.getSize().firstOrNull() ?: return
 
         if (playerMode == PlayerMode.Loop || size == 1) {
-            val currentMusicId: UUID =
-                playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
+            val currentMusic: Music =
+                playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
 
-            player.seekToPosition(0)
+            player.setMusic(currentMusic)
+            player.launchMusic()
             playerRepository.setPlayedListState(PlayedListState.Playing)
-            launchMusicCount(currentMusicId)
+            launchMusicCount(currentMusic.musicId)
         } else {
             playerRepository.playNext()
         }
