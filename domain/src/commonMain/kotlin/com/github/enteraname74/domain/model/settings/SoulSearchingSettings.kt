@@ -110,7 +110,7 @@ object SoulSearchingSettingsKeys {
         )
         val IS_MINIMISED_SONG_PROGRESSION_SHOWN = settingElementOf(
             key = "IS_MINIMISED_SONG_PROGRESSION_SHOWN",
-            defaultValue = false,
+            defaultValue = true,
         )
         val PLAYER_VOLUME = settingElementOf(
             key = "PLAYER_VOLUME",
