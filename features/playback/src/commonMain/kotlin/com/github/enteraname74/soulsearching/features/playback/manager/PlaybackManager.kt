@@ -65,10 +65,10 @@ class PlaybackManager(
     private val playbackProgressJob: PlaybackProgressJob = PlaybackProgressJob(
         playerRepository = playerRepository,
         callback = object : PlaybackProgressJobCallbacks {
-            override fun isPlaying(): Boolean =
+            override suspend fun isPlaying(): Boolean =
                 player.isPlaying() == true
 
-            override fun getMusicPosition(): Int =
+            override suspend fun getMusicPosition(): Int =
                 this@PlaybackManager.getMusicPosition()
         },
     )
@@ -165,7 +165,9 @@ class PlaybackManager(
     private var startSeek: Int? = null
 
     init {
-        player.registerListener(this)
+        workScope.launch {
+            player.registerListener(this@PlaybackManager)
+        }
         init()
 
         listenPlayerVolume()
@@ -244,6 +246,7 @@ class PlaybackManager(
                     } else {
                         val currentState: PlayedListState? =
                             playerRepository.getCurrentState().firstOrNull()
+
                         when (currentState) {
                             PlayedListState.Playing -> {
                                 player.setMusic(currentMusic)
@@ -335,7 +338,7 @@ class PlaybackManager(
     /**
      * Retrieves the current position in the current played song in milliseconds.
      */
-    fun getMusicPosition(): Int =
+    suspend fun getMusicPosition(): Int =
         player.getProgress()
 
     /**
@@ -375,7 +378,7 @@ class PlaybackManager(
     /**
      * Seek to a given position in the current played music.
      */
-    fun seekToPosition(position: Int) {
+    suspend fun seekToPosition(position: Int) {
         player.seekToPosition(position)
         updateNotification()
         playbackProgressJob.launchDurationJobIfNecessary()

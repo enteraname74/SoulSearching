@@ -1,10 +1,11 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
@@ -19,15 +20,13 @@ class SoulSearchingDesktopPlayerImpl :
     private var isOnlyLoadingMusic: Boolean = false
     private var positionToReachWhenLoadingMusic: Int = 0
 
-    private val _state: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    override val state: Flow<Boolean> = _state.asStateFlow()
     override var listener: SoulSearchingPlayer.Listener? = null
 
     init {
         init()
     }
 
-    override fun registerListener(listener: SoulSearchingPlayer.Listener) {
+    override suspend fun registerListener(listener: SoulSearchingPlayer.Listener) {
         this.listener = listener
     }
 
@@ -40,12 +39,10 @@ class SoulSearchingDesktopPlayerImpl :
 
     override fun playing(mediaPlayer: MediaPlayer?) {
         super.playing(mediaPlayer)
-        _state.value = player.status().isPlaying
     }
 
     override fun paused(mediaPlayer: MediaPlayer?) {
         super.paused(mediaPlayer)
-        _state.value = player.status().isPlaying
     }
 
     override fun stopped(mediaPlayer: MediaPlayer?) {
@@ -67,7 +64,7 @@ class SoulSearchingDesktopPlayerImpl :
         super.opening(mediaPlayer)
     }
 
-    override fun init() {
+    private fun init() {
         NativeDiscovery().discover()
         player = AudioPlayerComponent().mediaPlayer()
         player.events().addMediaPlayerEventListener(this)
@@ -86,13 +83,13 @@ class SoulSearchingDesktopPlayerImpl :
         }
     }
 
-    override fun onlyLoadMusic(seekTo: Int) {
+    override suspend fun onlyLoadMusic(seekTo: Int) {
         isOnlyLoadingMusic = true
         positionToReachWhenLoadingMusic = seekTo
         launchMusic()
     }
 
-    override fun launchMusic() {
+    override suspend fun launchMusic() {
         if (isOnlyLoadingMusic) {
             /*
              * When only loading the music, we try to seek to the last music position
@@ -101,24 +98,20 @@ class SoulSearchingDesktopPlayerImpl :
             seekToPosition(positionToReachWhenLoadingMusic)
             isOnlyLoadingMusic = false
             positionToReachWhenLoadingMusic = 0
-            _state.value = false
         } else {
             player.controls().play()
-            _state.value = true
         }
     }
 
-    override fun play() {
+    override suspend fun play() {
         player.controls().play()
-        _state.value = true
     }
 
-    override fun pause() {
+    override suspend fun pause() {
         player.controls().pause()
-        _state.value = false
     }
 
-    override fun seekToPosition(millis: Int) {
+    override suspend fun seekToPosition(millis: Int) {
         try {
             player.controls().setTime(millis.toLong())
         } catch (e: Exception) {
@@ -126,11 +119,11 @@ class SoulSearchingDesktopPlayerImpl :
         }
     }
 
-    override fun isPlaying(): Boolean {
+    override suspend fun isPlaying(): Boolean {
         return player.status().isPlaying
     }
 
-    override fun dismiss() {
+    override suspend fun dismiss() {
         try {
             player.controls().stop()
 //            player.release()
@@ -139,14 +132,14 @@ class SoulSearchingDesktopPlayerImpl :
         }
     }
 
-    override fun getProgress(): Int =
+    override suspend fun getProgress(): Int =
         try {
             player.status().time().toInt().positive()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             0
         }
 
-    override fun getMusicDuration(): Int =
+    override suspend fun getMusicDuration(): Int =
         try {
             player.status().length().toInt().positive()
         } catch (e: Exception) {
@@ -154,9 +147,9 @@ class SoulSearchingDesktopPlayerImpl :
             0
         }
 
-    override fun setPlayerVolume(volume: Float) {
+    override suspend fun setPlayerVolume(volume: Float) {
 
-        // On desktop impl, the volume is set from 0 to 200 ,but we will keep the max at 100.
+        // On desktop impl, the volume is set from 0 to 200, but we will keep the max at 100.
         val fixedVolume: Int = (volume * 100).toInt().coerceIn(1, 100)
         player.audio().setVolume(fixedVolume)
     }
