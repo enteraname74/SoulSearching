@@ -323,6 +323,12 @@ interface Strings {
 
     val savedChanges: String
 
+    val cloudTitle: String get() = "Cloudy"
+    val cloudText: String
+    val cloudSettingsTitle: String
+    val cloudSettingsText: String
+    val cloudUrlFieldLabel: String
+
     /**
      * Shows a text indicating the number of musics.
      */

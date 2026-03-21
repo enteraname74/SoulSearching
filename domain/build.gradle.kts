@@ -10,7 +10,10 @@ kotlin {
     jvmToolchain(17)
 
     compilerOptions {
-        freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
+        optIn.addAll(
+            "kotlin.time.ExperimentalTime",
+            "kotlin.uuid.ExperimentalUuidApi"
+        )
     }
 
     sourceSets {

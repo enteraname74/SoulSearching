@@ -316,6 +316,10 @@ object EnStrings : Strings {
 
     override val savedChanges = "Saved changes"
 
+    override val cloudText: String = "Synchronize your songs with Cloudy"
+    override val cloudSettingsTitle: String = "Settings"
+    override val cloudSettingsText: String = "Host URL"
+    override val cloudUrlFieldLabel: String = "Host URL"
     override fun musics(total: Int): String {
         return when (total) {
             0 -> "No songs"

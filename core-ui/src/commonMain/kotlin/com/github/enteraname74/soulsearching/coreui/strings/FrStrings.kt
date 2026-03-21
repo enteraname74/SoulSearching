@@ -316,6 +316,10 @@ object FrStrings : Strings {
     override val continuePlayedListAction = "Reprendre"
 
     override val savedChanges = "Modifications sauvegardées"
+    override val cloudText: String = "Synchroniser vos musiques avec Cloudy"
+    override val cloudSettingsTitle: String = "Paramètres"
+    override val cloudSettingsText: String = "URL du service"
+    override val cloudUrlFieldLabel: String = "URL du service"
 
     override fun musics(total: Int): String {
         return when (total) {

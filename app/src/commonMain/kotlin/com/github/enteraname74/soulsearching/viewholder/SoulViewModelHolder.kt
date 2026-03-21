@@ -1,27 +1,36 @@
 package com.github.enteraname74.soulsearching.viewholder
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-abstract class SoulViewModelHolder<Actions, Navigation, State>(): ViewModel() {
-    private var navigation: Navigation? = null
-    private val _state = MutableStateFlow(initialState())
-    val state: StateFlow<State> = _state.stateIn(
+abstract class SoulViewModelHolder<Actions, Navigation, State>(
+    initialState: State,
+) : ViewModel() {
+    private val _state = MutableStateFlow(initialState)
+    private val state: StateFlow<State> = _state.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
-        initialValue = initialState(),
+        initialValue = initialState,
     )
+    protected val currentState: State
+        get() = _state.value
 
-    protected abstract fun initialState(): State
+    private var _navigationState: MutableStateFlow<(Navigation.() -> Unit)?> =
+        MutableStateFlow(null)
+    private val navigationState: StateFlow<(Navigation.() -> Unit)?> = _navigationState.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = null,
+    )
 
     protected abstract val actions: Actions
 
@@ -32,18 +41,25 @@ abstract class SoulViewModelHolder<Actions, Navigation, State>(): ViewModel() {
     }
 
     protected fun navigate(navigateBlock: Navigation.() -> Unit) {
-        navigation?.let { navigateBlock(it) }
+        _navigationState.value = navigateBlock
+    }
+
+    private fun consumeNavigation() {
+        _navigationState.value = null
     }
 
     @Composable
     fun Screen(
         navigation: Navigation
     ) {
-        LaunchInit {
-            this@SoulViewModelHolder.navigation = navigation
+        val uiState by state.collectAsStateWithLifecycle()
+        val uiNavigationState by navigationState.collectAsStateWithLifecycle()
+
+        LaunchedEffect(uiNavigationState) {
+            uiNavigationState?.let { navigation.it() }
+            consumeNavigation()
         }
 
-        val uiState by state.collectAsStateWithLifecycle()
         content(actions, uiState)
     }
 }

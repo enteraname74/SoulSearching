@@ -10,6 +10,7 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_info_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_palette_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cloud_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -24,36 +25,14 @@ fun SettingsRoute(
     toPersonalisation: () -> Unit,
     toStatistics: () -> Unit,
     toAdvancedSettings: () -> Unit,
+    toCloudSettings: () -> Unit,
 ) {
     val viewModel: SettingsScreenViewModel = koinViewModel()
 
     val shouldShowNewVersionPin: Boolean by viewModel.shouldShowNewVersionPin.collectAsState()
 
-    SettingsScreenView(
-        shouldShowNewVersionPin = shouldShowNewVersionPin,
-        finishAction = navigateBack,
-        navigateToAbout = toAbout,
-        navigateToColorTheme = toColorTheme,
-        navigateToManageMusics = toManageMusics,
-        navigateToPersonalisation = toPersonalisation,
-        navigateToStatistics = toStatistics,
-        navigateToAdvanced = toAdvancedSettings,
-    )
-}
-
-@Composable
-fun SettingsScreenView(
-    shouldShowNewVersionPin: Boolean,
-    finishAction: () -> Unit,
-    navigateToManageMusics: () -> Unit,
-    navigateToColorTheme: () -> Unit,
-    navigateToPersonalisation: () -> Unit,
-    navigateToStatistics: () -> Unit,
-    navigateToAbout: () -> Unit,
-    navigateToAdvanced: () -> Unit,
-) {
     SettingPage(
-        navigateBack = finishAction,
+        navigateBack = navigateBack,
         title = strings.settings,
     ) {
         item {
@@ -61,7 +40,7 @@ fun SettingsScreenView(
                 title = strings.manageMusicsTitle,
                 subTitle = strings.manageMusicsText,
                 leadIcon = CoreRes.drawable.ic_music_note_filled,
-                onClick = navigateToManageMusics
+                onClick = toManageMusics
             )
         }
         item {
@@ -69,7 +48,7 @@ fun SettingsScreenView(
                 title = strings.colorThemeTitle,
                 subTitle = strings.colorThemeText,
                 leadIcon = CoreRes.drawable.ic_palette_filled,
-                onClick = navigateToColorTheme
+                onClick = toColorTheme
             )
         }
         item {
@@ -77,7 +56,7 @@ fun SettingsScreenView(
                 title = strings.personalizationTitle,
                 subTitle = strings.personalizationText,
                 leadIcon = CoreRes.drawable.ic_edit_filled,
-                onClick = navigateToPersonalisation
+                onClick = toPersonalisation
             )
         }
         item {
@@ -85,7 +64,7 @@ fun SettingsScreenView(
                 title = strings.statisticsTitle,
                 subTitle = strings.statisticsText,
                 leadIcon =  CoreRes.drawable.ic_bar_chart,
-                onClick = navigateToStatistics
+                onClick = toStatistics
             )
         }
         item {
@@ -93,7 +72,15 @@ fun SettingsScreenView(
                 title = strings.advancedSettingsTitle,
                 subTitle = strings.advancedSettingsText,
                 leadIcon =  CoreRes.drawable.ic_handyman_filled,
-                onClick = navigateToAdvanced,
+                onClick = toAdvancedSettings,
+            )
+        }
+        item {
+            SoulMenuElement(
+                title = strings.cloudTitle,
+                subTitle = strings.cloudText,
+                leadIcon =  CoreRes.drawable.ic_cloud_filled,
+                onClick = toCloudSettings,
             )
         }
         item {
@@ -101,7 +88,7 @@ fun SettingsScreenView(
                 title = strings.aboutTitle,
                 subTitle = strings.aboutText,
                 leadIcon =  CoreRes.drawable.ic_info_filled,
-                onClick = navigateToAbout,
+                onClick = toAbout,
                 isBadged = shouldShowNewVersionPin,
             )
         }

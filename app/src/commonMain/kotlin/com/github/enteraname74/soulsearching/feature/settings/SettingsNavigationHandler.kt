@@ -6,6 +6,8 @@ import com.github.enteraname74.soulsearching.feature.settings.aboutpage.Settings
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.developers.SettingsDevelopersDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.SettingsThemeSelectionDestination
@@ -111,6 +113,15 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+
+        SettingsCloudDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudSettingsDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
     }
 
     fun serializerModule(
@@ -133,6 +144,8 @@ object SettingsNavigationHandler {
             subclass(SettingsPlayerPersonalisationDestination::class, SettingsPlayerPersonalisationDestination.serializer())
             subclass(SettingsMusicViewPersonalisationDestination::class, SettingsMusicViewPersonalisationDestination.serializer())
             subclass(SettingsAlbumViewPersonalisationDestination::class, SettingsAlbumViewPersonalisationDestination.serializer())
+            subclass(SettingsCloudDestination::class, SettingsCloudDestination.serializer())
+            subclass(SettingsCloudSettingsDestination::class, SettingsCloudSettingsDestination.serializer())
         }
     }
 }
