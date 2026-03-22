@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
+import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 
 /**
@@ -320,6 +321,19 @@ object FrStrings : Strings {
     override val cloudSettingsTitle: String = "Paramètres"
     override val cloudSettingsText: String = "URL du service"
     override val cloudUrlFieldLabel: String = "URL du service"
+
+    override val cloudNameFieldLabel: String = "Pseudo"
+    override val cloudPasswordFieldLabel: String = "Mot de passe"
+    override val cloudSignUp: String = "Se connecter"
+    override val cloudNoAccount: String = "Je n'ai pas de compte"
+    override val cloudConnection: String = "Connexion"
+
+    override fun userType(type: User.Type): String =
+        when (type) {
+            User.Type.User -> "Utilisateur"
+            User.Type.Admin -> "Administrateur"
+            User.Type.Unknown -> "Aucun statut"
+        }
 
     override fun musics(total: Int): String {
         return when (total) {

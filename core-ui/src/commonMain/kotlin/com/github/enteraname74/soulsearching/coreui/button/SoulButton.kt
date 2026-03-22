@@ -40,5 +40,4 @@ fun SoulButton(
             content()
         }
     }
-
 }

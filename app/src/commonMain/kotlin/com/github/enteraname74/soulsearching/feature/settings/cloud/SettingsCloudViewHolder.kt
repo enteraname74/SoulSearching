@@ -3,12 +3,14 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
+import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolder
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class SettingsCloudViewHolder(
     private val commonCloudPreferencesUseCase: CommonCloudPreferencesUseCase,
+    private val commonUserUseCase: CommonUserUseCase,
 ) :
     SoulViewModelHolder<SettingsCloudActions, SettingsCloudNavScope, SettingsCloudState>(
         initialState = SettingsCloudState(
@@ -26,12 +28,22 @@ class SettingsCloudViewHolder(
                     updateState { copy(hasUrl = it != null) }
                 }
         }
+
+        viewModelScope.launch {
+            commonUserUseCase
+                .observeUser()
+                .collectLatest {
+                    updateState { copy(user = it) }
+                }
+        }
     }
 
     override val actions: SettingsCloudActions = this
 
-    override fun toConnection() {
-        navigate { toConnection() }
+    override fun onUserClick() {
+        if (currentState.user == null) {
+            navigate { toConnection() }
+        }
     }
 
     override fun toSettings() {

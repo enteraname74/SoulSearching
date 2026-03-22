@@ -4,6 +4,8 @@ import androidx.compose.ui.text.intl.Locale
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 import com.github.enteraname74.domain.ext.duration
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.User
+import javax.management.StringValueExp
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
@@ -328,6 +330,13 @@ interface Strings {
     val cloudSettingsTitle: String
     val cloudSettingsText: String
     val cloudUrlFieldLabel: String
+    val cloudNameFieldLabel: String
+    val cloudPasswordFieldLabel: String
+    val cloudSignUp: String
+    val cloudNoAccount: String
+    val cloudConnection: String
+
+    fun userType(type: User.Type): String
 
     /**
      * Shows a text indicating the number of musics.
