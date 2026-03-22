@@ -7,6 +7,7 @@ import com.github.enteraname74.soulsearching.feature.settings.aboutpage.develope
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodeDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpDestination
@@ -137,6 +138,10 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+        SettingsCloudCodeDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
     }
 
     fun serializerModule(
@@ -164,6 +169,7 @@ object SettingsNavigationHandler {
             subclass(SettingsCloudSignInDestination::class, SettingsCloudSignInDestination.serializer())
             subclass(SettingsCloudSignUpDestination::class, SettingsCloudSignUpDestination.serializer())
             subclass(SettingsCloudUserDestination::class, SettingsCloudUserDestination.serializer())
+            subclass(SettingsCloudCodeDestination::class, SettingsCloudCodeDestination.serializer())
         }
     }
 }

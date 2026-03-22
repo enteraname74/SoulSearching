@@ -34,4 +34,7 @@ class CommonUserUseCase(
     suspend fun logout() {
         userRepository.logout()
     }
+
+    suspend fun generateCode(): SoulResult<String> =
+        userRepository.generateCode()
 }

@@ -331,6 +331,9 @@ object FrStrings : Strings {
     override val cloudRegistrationCode: String = "Code d'inscription"
     override val cloudUserSettings: String = "Paramètres utilisateur"
     override val disconnect: String = "Déconnexion"
+    override val generateCodeTitle: String = "Générer un code"
+    override val generateCodeText: String = "Générer un code à usage unique pour un nouvel utilisateur"
+    override val generatedCode: String = "Code généré"
 
     override fun userType(type: User.Type): String =
         when (type) {

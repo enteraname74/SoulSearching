@@ -1,29 +1,24 @@
-package com.github.enteraname74.soulsearching.feature.settings.cloud.user
+package com.github.enteraname74.soulsearching.feature.settings.cloud.code
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
-import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodeDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
-data object SettingsCloudUserDestination: SettingPage {
+data object SettingsCloudCodeDestination : SettingPage {
     fun register(
         entryProviderScope: EntryProviderScope<NavKey>,
         navigator: Navigator,
     ) {
-        entryProviderScope.entry<SettingsCloudUserDestination> {
-            val holder: SettingsCloudUserViewHolder = koinViewModel()
+        entryProviderScope.entry<SettingsCloudCodeDestination> {
+            val holder: SettingsCloudCodeViewHolder = koinViewModel()
             holder.Screen(
-                navigation = object: SettingsCloudUserNavScope {
+                navigation = object : SettingsCloudCodeNavScope {
                     override fun navigateBack() {
                         navigator.pop()
-                    }
-
-                    override fun toCode() {
-                        navigator.push(SettingsCloudCodeDestination)
                     }
                 }
             )

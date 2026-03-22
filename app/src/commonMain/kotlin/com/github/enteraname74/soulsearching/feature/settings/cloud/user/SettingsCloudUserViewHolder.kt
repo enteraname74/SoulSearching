@@ -18,7 +18,7 @@ class SettingsCloudUserViewHolder(
             SettingsCloudUserState,
             >(
         initialState = SettingsCloudUserState(
-            canDisconnect = false,
+            user = null,
         )
     ), SettingsCloudUserActions {
     override val actions: SettingsCloudUserActions = this
@@ -28,7 +28,7 @@ class SettingsCloudUserViewHolder(
             commonUserUseCase
                 .observeUser()
                 .collectLatest { user ->
-                    updateState { copy(canDisconnect = user != null) }
+                    updateState { copy(user = user) }
                 }
         }
     }
@@ -44,6 +44,10 @@ class SettingsCloudUserViewHolder(
 
     override fun navigateBack() {
         navigate { navigateBack() }
+    }
+
+    override fun toCode() {
+        navigate { toCode() }
     }
 
     @Composable

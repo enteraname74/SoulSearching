@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.user
 
+import com.github.enteraname74.domain.model.User
+
 data class SettingsCloudUserState(
-    val canDisconnect: Boolean,
+    val user: User?,
 )

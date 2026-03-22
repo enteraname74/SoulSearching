@@ -330,6 +330,9 @@ object EnStrings : Strings {
     override val cloudRegistrationCode: String = "Registration code"
     override val cloudUserSettings: String = "User settings"
     override val disconnect: String = "Disconnect"
+    override val generateCodeTitle: String = "Generate code"
+    override val generateCodeText: String = "Generate a one time usage code for a new user"
+    override val generatedCode: String = "Generated code"
 
     override fun userType(type: User.Type): String =
         when (type) {

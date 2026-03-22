@@ -339,6 +339,9 @@ interface Strings {
     val cloudRegistrationCode: String
     val cloudUserSettings: String
     val disconnect: String
+    val generateCodeTitle: String
+    val generateCodeText: String
+    val generatedCode: String
 
     fun userType(type: User.Type): String
 

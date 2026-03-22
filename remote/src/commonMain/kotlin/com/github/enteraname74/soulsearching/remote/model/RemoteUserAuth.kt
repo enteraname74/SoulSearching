@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.remote.model
 
 import com.github.enteraname74.domain.model.User
+import com.github.enteraname74.domain.model.UserTokens
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
@@ -25,10 +26,4 @@ data class ConnectedUser(
     val username: String,
     // TODO CLOUD: Update backend to support user type enum.
     val isAdmin: Boolean,
-)
-
-@Serializable
-data class UserTokens(
-    val accessToken: String,
-    val refreshToken: String,
 )

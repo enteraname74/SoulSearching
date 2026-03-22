@@ -89,6 +89,7 @@ kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotl
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
+ktor-client-auth = {  module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-content-negoctiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -130,4 +131,4 @@ androidx-room = { id = "androidx.room", version.ref = "room" }
 koin = ["koin-compose", "koin-core", "koin-compose-viewmodel", "koin-compose-viewmodel-navigation"]
 accompanist = ["accompanist-pager","accompanist-system-ui-controller", "accompanist-pager-indicators"]
 androidx = ["androidx-activity-compose", "androidx-lifecycle", "androidx-core", "androidx-annotation", "androidx-appcompat", "androidx-appcompat-resources", "androidx-media"]
-ktor = ["ktor-client-cio", "ktor-client-content-negoctiation", "ktor-client-core", "ktor-client-resources", "ktor-serialization-kotlinx-json"]
+ktor = ["ktor-client-cio", "ktor-client-content-negoctiation", "ktor-client-core", "ktor-client-resources", "ktor-serialization-kotlinx-json", "ktor-client-auth"]
