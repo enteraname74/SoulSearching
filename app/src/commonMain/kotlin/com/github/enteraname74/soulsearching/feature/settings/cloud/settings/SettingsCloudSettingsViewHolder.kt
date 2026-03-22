@@ -58,10 +58,11 @@ class SettingsCloudSettingsViewHolder(
         }
     }
 
-    override val content: @Composable (
-        SettingsCloudSettingsActions,
-        SettingsCloudSettingsState
-    ) -> Unit = { actions, state ->
+    @Composable
+    override fun Content(
+        actions: SettingsCloudSettingsActions,
+        state: SettingsCloudSettingsState
+    ) {
         SettingsCloudSettingsScreen(
             actions = actions,
             state = state,

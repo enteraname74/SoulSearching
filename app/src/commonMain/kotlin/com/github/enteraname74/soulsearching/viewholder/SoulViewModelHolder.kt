@@ -34,7 +34,11 @@ abstract class SoulViewModelHolder<Actions, Navigation, State>(
 
     protected abstract val actions: Actions
 
-    protected abstract val content: @Composable (Actions, State) -> Unit
+    @Composable
+    protected abstract fun Content(
+        actions: Actions,
+        state: State,
+    )
 
     protected fun updateState(updateBlock: State.() -> State) {
         _state.update(updateBlock)
@@ -60,6 +64,6 @@ abstract class SoulViewModelHolder<Actions, Navigation, State>(
             consumeNavigation()
         }
 
-        content(actions, uiState)
+        Content(actions, uiState)
     }
 }

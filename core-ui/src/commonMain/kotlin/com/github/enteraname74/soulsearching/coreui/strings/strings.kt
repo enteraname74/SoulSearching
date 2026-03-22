@@ -335,6 +335,10 @@ interface Strings {
     val cloudSignUp: String
     val cloudNoAccount: String
     val cloudConnection: String
+    val cloudSignIn: String
+    val cloudRegistrationCode: String
+    val cloudUserSettings: String
+    val disconnect: String
 
     fun userType(type: User.Type): String
 

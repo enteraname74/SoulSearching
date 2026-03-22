@@ -43,6 +43,8 @@ class SettingsCloudViewHolder(
     override fun onUserClick() {
         if (currentState.user == null) {
             navigate { toConnection() }
+        } else {
+            navigate { toUser() }
         }
     }
 
@@ -54,11 +56,14 @@ class SettingsCloudViewHolder(
         navigate { navigateBack() }
     }
 
-    override val content: @Composable ((SettingsCloudActions, SettingsCloudState) -> Unit) =
-        { actions, state ->
-            SettingsCloudScreen(
-                actions = actions,
-                state = state,
-            )
-        }
+    @Composable
+    override fun Content(
+        actions: SettingsCloudActions,
+        state: SettingsCloudState
+    ) {
+        SettingsCloudScreen(
+            actions = actions,
+            state = state,
+        )
+    }
 }

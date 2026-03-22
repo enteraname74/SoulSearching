@@ -5,7 +5,8 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolde
 data class SettingsCloudSignUpState(
     val nameField: SoulTextFieldHolder,
     val passwordField: SoulTextFieldHolder,
+    val codeField: SoulTextFieldHolder,
 ) {
     fun isValid(): Boolean =
-        nameField.isValid() && passwordField.isValid()
+        nameField.isValid() && passwordField.isValid() && codeField.isValid()
 }

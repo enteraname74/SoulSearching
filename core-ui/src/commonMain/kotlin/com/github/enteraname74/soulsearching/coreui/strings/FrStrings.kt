@@ -324,9 +324,13 @@ object FrStrings : Strings {
 
     override val cloudNameFieldLabel: String = "Pseudo"
     override val cloudPasswordFieldLabel: String = "Mot de passe"
-    override val cloudSignUp: String = "Se connecter"
+    override val cloudSignUp: String = "S'inscrire"
     override val cloudNoAccount: String = "Je n'ai pas de compte"
     override val cloudConnection: String = "Connexion"
+    override val cloudSignIn: String = "Se connecter"
+    override val cloudRegistrationCode: String = "Code d'inscription"
+    override val cloudUserSettings: String = "Paramètres utilisateur"
+    override val disconnect: String = "Déconnexion"
 
     override fun userType(type: User.Type): String =
         when (type) {

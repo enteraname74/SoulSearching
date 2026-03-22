@@ -8,21 +8,21 @@ import kotlinx.coroutines.flow.Flow
 class CommonUserUseCase(
     private val userRepository: UserRepository,
 ) {
-    suspend fun signUp(
+    suspend fun signIn(
         username: String,
         password: String,
     ): SoulResult<Unit> =
-        userRepository.signUp(
+        userRepository.signIn(
             username = username,
             password = password,
         )
 
-    suspend fun signIn(
+    suspend fun signUp(
         username: String,
         password: String,
         code: String,
     ): SoulResult<Unit> =
-        userRepository.signIn(
+        userRepository.signUp(
             username = username,
             password = password,
             code = code,

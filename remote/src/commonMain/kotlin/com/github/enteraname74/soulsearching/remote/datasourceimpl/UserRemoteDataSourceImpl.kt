@@ -25,7 +25,7 @@ class UserRemoteDataSourceImpl(
     private val client: HttpClient,
 ) : UserRemoteDataSource {
 
-    override suspend fun signUp(
+    override suspend fun signIn(
         username: String,
         password: String
     ): User {
@@ -43,7 +43,7 @@ class UserRemoteDataSourceImpl(
             }.bodyOrError<RemoteUserAuth>().toUser()
     }
 
-    override suspend fun signIn(
+    override suspend fun signUp(
         username: String,
         password: String,
         code: String

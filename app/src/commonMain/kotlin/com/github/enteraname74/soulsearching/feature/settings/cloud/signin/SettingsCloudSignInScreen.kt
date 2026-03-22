@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.cloud.signup
+package com.github.enteraname74.soulsearching.feature.settings.cloud.signin
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
@@ -14,15 +14,16 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
+import com.github.enteraname74.soulsearching.coreui.button.SoulTextButton
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 
 @Composable
-fun SettingsCloudSignUpScreen(
-    actions: SettingsCloudSignUpActions,
-    state: SettingsCloudSignUpState,
+fun SettingsCloudSignInScreen(
+    actions: SettingsCloudSignInActions,
+    state: SettingsCloudSignInState
 ) {
     SoulScreen {
 
@@ -30,7 +31,7 @@ fun SettingsCloudSignUpScreen(
 
         Column {
             SoulTopBar(
-                title = strings.cloudSignUp,
+                title = strings.cloudConnection,
                 leftAction = TopBarNavigationAction(
                     onClick = actions::navigateBack,
                 ),
@@ -59,19 +60,22 @@ fun SettingsCloudSignUpScreen(
                     modifier = Modifier.fillMaxWidth(),
                     focusManager = focusManager,
                 )
-                state.codeField.TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    focusManager = focusManager,
-                )
                 SoulFilledButton(
                     modifier = Modifier
                         .padding(
                             top = UiConstants.Spacing.mediumPlus,
                         ),
-                    text = strings.cloudSignUp,
+                    text = strings.cloudSignIn,
                     onClick = {
                         focusManager.clearFocus()
-                        actions.signUp()
+                        actions.signIn()
+                    },
+                )
+                SoulTextButton(
+                    text = strings.cloudNoAccount,
+                    onClick = {
+                        focusManager.clearFocus()
+                        actions.toSignUp()
                     },
                 )
             }

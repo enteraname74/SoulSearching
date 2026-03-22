@@ -326,6 +326,10 @@ object EnStrings : Strings {
     override val cloudSignUp: String = "Sign up"
     override val cloudNoAccount: String = "I don't have an account"
     override val cloudConnection: String = "Connection"
+    override val cloudSignIn: String = "Sign in"
+    override val cloudRegistrationCode: String = "Registration code"
+    override val cloudUserSettings: String = "User settings"
+    override val disconnect: String = "Disconnect"
 
     override fun userType(type: User.Type): String =
         when (type) {

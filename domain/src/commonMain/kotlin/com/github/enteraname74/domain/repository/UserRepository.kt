@@ -5,12 +5,12 @@ import com.github.enteraname74.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    suspend fun signUp(
+    suspend fun signIn(
         username: String,
         password: String,
     ): SoulResult<Unit>
 
-    suspend fun signIn(
+    suspend fun signUp(
         username: String,
         password: String,
         code: String,
