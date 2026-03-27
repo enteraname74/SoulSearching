@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Data source of an Artist.
@@ -26,6 +27,8 @@ interface ArtistDataSource {
 
     suspend fun deleteAll(artistsIds: List<UUID>)
 
+    suspend fun deleteAllEmpty()
+
     suspend fun getArtistNamesContainingSearch(search: String): List<String>
 
     suspend fun toggleCoverFolderMode(isActivated: Boolean)
@@ -34,6 +37,8 @@ interface ArtistDataSource {
      * Retrieves an Artist from its id.
      */
     fun getFromId(artistId: UUID) : Flow<Artist?>
+
+    suspend fun getFromRemoteId(remoteId: Uuid): Artist?
 
     fun getFromIds(artistIds: List<UUID>) : Flow<List<ArtistWithMusics>>
 

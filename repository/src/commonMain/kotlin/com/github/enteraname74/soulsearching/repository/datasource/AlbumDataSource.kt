@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Data source of an Album.
@@ -26,6 +27,8 @@ interface AlbumDataSource {
 
     suspend fun deleteAll(ids: List<UUID>)
 
+    suspend fun deleteAllEmpty()
+
     suspend fun getAlbumNamesContainingSearch(search: String): List<String>
 
     /**
@@ -39,6 +42,8 @@ interface AlbumDataSource {
      * Retrieves an Album from its id.
      */
     fun getFromId(albumId: UUID): Flow<Album?>
+
+    suspend fun getFromRemoteId(remoteId: Uuid): Album?
 
     fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>>
     

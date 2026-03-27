@@ -9,7 +9,7 @@ import java.io.File
 class LyricsLocalDataSource {
     fun getLyricsOfSong(music: Music): MusicLyrics? =
         runCatching {
-            val audioFile = AudioFileIO.read(File(music.path))
+            val audioFile = AudioFileIO.read(File(music.localPath.orEmpty()))
             val tag = audioFile.tag
 
             val lyrics: String = tag.getFirst(FieldKey.LYRICS).takeIf { it.isNotBlank() } ?: return@runCatching null

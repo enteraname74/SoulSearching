@@ -12,6 +12,7 @@ import com.github.enteraname74.localdb.model.RoomCompleteAlbum
 import com.github.enteraname74.localdb.model.RoomCompleteAlbumWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * DAO of an Album.
@@ -110,6 +111,10 @@ interface AlbumDao {
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId LIMIT 1")
     fun getFromId(albumId: UUID): Flow<RoomCompleteAlbum?>
+
+    @Transaction
+    @Query("SELECT * FROM RoomAlbum WHERE remoteId = :remoteId")
+    suspend fun getFromRemoteId(remoteId: Uuid): RoomCompleteAlbum?
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId in (:albumIds)")

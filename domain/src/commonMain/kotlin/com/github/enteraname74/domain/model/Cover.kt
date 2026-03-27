@@ -23,4 +23,10 @@ sealed interface Cover {
             val fallback: Cover?,
         )
     }
+
+    data class Url(
+        val url: String,
+    ) : Cover {
+        override fun isEmpty(): Boolean = url.isBlank()
+    }
 }

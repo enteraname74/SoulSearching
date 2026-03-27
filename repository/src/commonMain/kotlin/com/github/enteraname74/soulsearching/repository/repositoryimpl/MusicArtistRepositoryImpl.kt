@@ -31,4 +31,8 @@ class MusicArtistRepositoryImpl(
     override suspend fun deleteOfArtist(artistId: UUID) {
         musicArtistDataSource.deleteOfArtist(artistId)
     }
+
+    override suspend fun deleteOfMusic(musicId: UUID) {
+        musicArtistDataSource.deleteOfMusic(musicId)
+    }
 }

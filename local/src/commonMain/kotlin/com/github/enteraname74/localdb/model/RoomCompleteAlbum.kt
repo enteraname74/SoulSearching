@@ -13,14 +13,26 @@ data class RoomCompleteAlbum(
     )
     val roomArtist: RoomArtist
 ) {
-    fun toAlbum(): Album =
-        Album(
+    fun toAlbum(): Album {
+        val localCover = Cover.CoverFile(fileCoverId = roomAlbum.coverId)
+        val remoteCover = roomAlbum.coverUrl?.let { Cover.Url(it) }
+
+        val usedCover = if (remoteCover == null) {
+            localCover
+        } else {
+            localCover.takeIf { !it.isEmpty() } ?: remoteCover
+        }
+
+        return Album(
             albumId = roomAlbum.albumId,
             albumName = roomAlbum.albumName,
             artist = roomArtist.toArtist(),
-            cover = Cover.CoverFile(fileCoverId = roomAlbum.coverId),
+            cover = usedCover,
             addedDate = roomAlbum.addedDate,
             nbPlayed = roomAlbum.nbPlayed,
             isInQuickAccess = roomAlbum.isInQuickAccess,
+            remoteId = roomAlbum.remoteId,
+            lastUpdateMillis = roomAlbum.lastUpdatedMillis,
         )
+    }
 }

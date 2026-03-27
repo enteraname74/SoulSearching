@@ -8,6 +8,7 @@ import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Repository of an Artist.
@@ -38,6 +39,10 @@ class ArtistRepositoryImpl(
         artistDataSource.deleteAll(artistsIds)
     }
 
+    override suspend fun deleteAllEmpty() {
+        artistDataSource.deleteAllEmpty()
+    }
+
     override suspend fun getArtistNamesContainingSearch(search: String): List<String> =
         artistDataSource.getArtistNamesContainingSearch(search)
 
@@ -47,6 +52,9 @@ class ArtistRepositoryImpl(
     override fun getFromId(artistId: UUID): Flow<Artist?> = artistDataSource.getFromId(
         artistId = artistId
     )
+
+    override suspend fun getFromRemoteId(remoteId: Uuid): Artist? =
+        artistDataSource.getFromRemoteId(remoteId)
 
     override fun getFromIds(artistIds: List<UUID>): Flow<List<ArtistWithMusics>> =
         artistDataSource.getFromIds(artistIds)

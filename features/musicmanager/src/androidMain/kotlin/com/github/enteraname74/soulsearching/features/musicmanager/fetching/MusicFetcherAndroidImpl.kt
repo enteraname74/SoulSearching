@@ -74,10 +74,13 @@ internal class MusicFetcherAndroidImpl(
                 ),
                 artists = artists,
                 duration = this.getLong(3),
-                path = this.getFilteredSafeString(4),
                 folder = File(this.getFilteredSafeString(4)).parent ?: "",
                 cover = Cover.CoverFile(initialCoverPath = this.getFilteredSafeString(4)),
                 albumPosition = this.getFilteredSafeString(5).toIntOrNull(),
+                remoteId = null,
+                localPath = this.getFilteredSafeString(4),
+                remotePath = null,
+                lastUpdatedMillis = null,
             )
         } catch (e: Exception) {
             println("MusicFetcher -- Exception while fetching song on the device: $e")

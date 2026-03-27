@@ -2,12 +2,8 @@ package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
-import com.github.enteraname74.domain.ext.duration
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.User
-import javax.management.StringValueExp
 import kotlin.time.Duration
-import kotlin.time.DurationUnit
 
 val strings = when(Locale.current.language) {
     "fr" -> FrStrings
@@ -343,6 +339,16 @@ interface Strings {
     val generateCodeText: String
     val generatedCode: String
 
+    val cloudSyncTitle: String
+    val cloudSyncText: String
+    val cloudSyncButton: String
+    val cloudSyncNotificationTitle: String
+    val cloudSyncNotificationText: String
+
+    val musicChannelNotificationName: String
+    val musicChannelNotificationDescription: String
+    val cloudSyncChannelNotificationName: String
+    val cloudSyncChannelNotificationDescription: String
     fun userType(type: User.Type): String
 
     /**

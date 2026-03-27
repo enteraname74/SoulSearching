@@ -1,13 +1,12 @@
 package com.github.enteraname74.domain.usecase.music
 
-import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.*
+import java.util.UUID
 
 class DeleteMusicUseCase(
     private val musicRepository: MusicRepository,

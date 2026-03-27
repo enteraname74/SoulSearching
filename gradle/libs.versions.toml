@@ -57,6 +57,7 @@ androidx-paging-common = { module = "androidx.paging:paging-common", version.ref
 
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
 compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "compose" }
@@ -79,6 +80,7 @@ jlibnotify = { module = "es.blackleg:jlibnotify", version.ref = "jlibnotify" }
 kmpalette = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }
 
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
@@ -128,6 +130,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
 
 [bundles]
+coil = ["coil", "coil-compose", "coil-network"]
 koin = ["koin-compose", "koin-core", "koin-compose-viewmodel", "koin-compose-viewmodel-navigation"]
 accompanist = ["accompanist-pager","accompanist-system-ui-controller", "accompanist-pager-indicators"]
 androidx = ["androidx-activity-compose", "androidx-lifecycle", "androidx-core", "androidx-annotation", "androidx-appcompat", "androidx-appcompat-resources", "androidx-media"]

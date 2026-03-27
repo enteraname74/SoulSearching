@@ -11,9 +11,16 @@ kotlin {
     jvm("desktop")
     jvmToolchain(17)
 
+    compilerOptions {
+        optIn.add(
+            "kotlin.uuid.ExperimentalUuidApi"
+        )
+    }
+
     sourceSets {
         commonMain {
             dependencies {
+                implementation(libs.compose.ui)
                 implementation(libs.androidx.paging.common)
                 implementation(libs.koin.core)
 

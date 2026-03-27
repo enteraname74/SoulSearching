@@ -8,6 +8,7 @@ import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
 import kotlinx.coroutines.flow.Flow
 import java.util.*
+import kotlin.uuid.Uuid
 
 /**
  * Repository of an Album.
@@ -22,6 +23,10 @@ class AlbumRepositoryImpl(
 
     override suspend fun deleteAll(ids: List<UUID>) {
         albumDataSource.deleteAll(ids = ids)
+    }
+
+    override suspend fun deleteAllEmpty() {
+        albumDataSource.deleteAllEmpty()
     }
 
     override suspend fun upsertAll(albums: List<Album>) {
@@ -45,6 +50,9 @@ class AlbumRepositoryImpl(
     override fun getFromId(albumId: UUID): Flow<Album?> = albumDataSource.getFromId(
         albumId = albumId
     )
+
+    override suspend fun getFromRemoteId(remoteId: Uuid): Album? =
+        albumDataSource.getFromRemoteId(remoteId)
 
     override fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>> =
         albumDataSource.getFromIds(albumIds)

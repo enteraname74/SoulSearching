@@ -84,8 +84,9 @@ class SoulSearchingExoPlayerImpl(
 
     override suspend fun setMusic(music: Music) {
         onPlayerThread {
-            if (File(music.path).exists()) {
-                val mediaItem = MediaItem.fromUri(music.path)
+            // TODO CLOUD: Add remote player capability
+            if (File(music.path.orEmpty()).exists()) {
+                val mediaItem = MediaItem.fromUri(music.path.orEmpty())
                 player.setMediaItem(mediaItem)
                 player.prepare()
             } else {

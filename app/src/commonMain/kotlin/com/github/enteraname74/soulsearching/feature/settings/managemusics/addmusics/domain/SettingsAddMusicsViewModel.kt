@@ -75,7 +75,7 @@ class SettingsAddMusicsViewModel(
             addNewsSongsStepManager.toStep(AddNewsSongsStepState.Fetching)
 
             val hiddenFoldersPaths: List<String> = commonFolderUseCase.getHiddenFoldersPath()
-            val allMusicsPaths: List<String> = commonMusicUseCase.getAllMusicPath()
+            val allMusicsPaths: List<String> = commonMusicUseCase.getAllMusicLocalPath()
 
             val newMusics: List<SelectableMusicItem> = musicFetcher.fetchMusicsFromSelectedFolders(
                 alreadyPresentMusicsPaths = allMusicsPaths,

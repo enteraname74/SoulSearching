@@ -12,6 +12,7 @@ import java.util.UUID
         playlist.name, 
         playlist.isFavorite, 
         playlist.addedDate, 
+        playlist.coverUrl, 
         (
             SELECT COUNT(*) 
             FROM RoomMusicPlaylist AS musicPlaylist 
@@ -31,13 +32,21 @@ import java.util.UUID
             ELSE playlist.coverId END
         ) AS coverId,
         (
-            SELECT music.path FROM RoomMusic AS music 
+            SELECT music.localPath FROM RoomMusic AS music 
             INNER JOIN RoomMusicPlaylist AS musicPlaylist 
             ON music.musicId = musicPlaylist.musicId 
             AND playlist.playlistId = musicPlaylist.playlistId 
             AND music.isHidden = 0 
             LIMIT 1
         ) AS musicCoverPath,
+        (
+            SELECT music.coverUrl FROM RoomMusic AS music 
+            INNER JOIN RoomMusicPlaylist AS musicPlaylist 
+            ON music.musicId = musicPlaylist.musicId 
+            AND playlist.playlistId = musicPlaylist.playlistId 
+            AND music.isHidden = 0 
+            LIMIT 1
+        ) AS musicCoverUrl,
         playlist.isInQuickAccess, 
         playlist.nbPlayed 
         FROM RoomPlaylist AS playlist 
@@ -51,20 +60,33 @@ data class RoomPlaylistPreview(
     val totalMusics : Int,
     val nbPlayed: Int,
     val coverId: UUID?,
+    val coverUrl: String?,
+    val musicCoverUrl: String?,
     val musicCoverPath: String?,
     val isInQuickAccess: Boolean,
 ) {
-    fun toPlaylistPreview(): PlaylistPreview =
-        PlaylistPreview(
+    fun toPlaylistPreview(): PlaylistPreview {
+        val localCover = Cover.CoverFile(
+            initialCoverPath = musicCoverPath,
+            fileCoverId = coverId,
+        )
+        val remoteCover = coverUrl?.let { Cover.Url(it) } ?: musicCoverUrl?.let { Cover.Url(it) }
+
+        val usedCover = if (remoteCover == null) {
+            localCover
+        } else {
+            localCover.takeIf { !it.isEmpty() } ?: remoteCover
+        }
+
+        return PlaylistPreview(
             id = id,
             isFavorite = isFavorite,
             name = name,
             totalMusics = totalMusics,
-            cover = Cover.CoverFile(
-                initialCoverPath = musicCoverPath,
-                fileCoverId = coverId,
-            ),
+            cover = usedCover,
             isInQuickAccess = isInQuickAccess,
             nbPlayed = nbPlayed,
         )
+    }
+
 }

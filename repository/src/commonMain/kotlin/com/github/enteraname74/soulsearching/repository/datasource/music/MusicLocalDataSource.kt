@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.repository.datasource
+package com.github.enteraname74.soulsearching.repository.datasource.music
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.MonthMusicsPreview
@@ -11,7 +11,7 @@ import kotlin.time.Duration
 /**
  * Data source of a Music.
  */
-interface MusicDataSource {
+interface MusicLocalDataSource {
     /**
      * Inserts or updates a Music.
      */
@@ -33,6 +33,8 @@ interface MusicDataSource {
      */
     fun getFromId(musicId: UUID): Flow<Music?>
 
+    suspend fun getFromRemoteId(remoteId: String): Music?
+
     fun getFromIds(ids: List<UUID>): Flow<List<Music>>
 
     suspend fun getAllIdsFromUnselectedFolders(): List<UUID>
@@ -42,11 +44,16 @@ interface MusicDataSource {
      */
     fun getAll(): Flow<List<Music>>
 
+    suspend fun getAllLocalMusic(): List<Music>
+
     suspend fun getAllSorted(): List<Music>
 
     fun getAllFromQuickAccess(): Flow<List<Music>>
 
     fun getAllPaged(): Flow<PagingData<Music>>
+
+    suspend fun getAllRemoteIds(): List<String>
+    suspend fun getAllToSendToCloud(): List<Music>
 
     fun getAllPagedOfAlbum(albumId: UUID): Flow<PagingData<Music>>
 
@@ -110,7 +117,7 @@ interface MusicDataSource {
 
     suspend fun cleanAllMusicCovers()
 
-    suspend fun getAllMusicPath(): List<String>
+    suspend fun getAllMusicLocalPath(): List<String>
 
     fun getMostListened(): Flow<List<Music>>
 
@@ -123,4 +130,12 @@ interface MusicDataSource {
     fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?>
 
     suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music>
+
+    suspend fun getFromInformation(
+        musicName: String,
+        albumId: UUID,
+    ): Music?
+
+    suspend fun clearRemoteIds(remoteIds: List<String>)
+    suspend fun deleteNotExisting()
 }

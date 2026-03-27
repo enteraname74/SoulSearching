@@ -5,6 +5,7 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_chevron_right
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_person_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_settings_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_sync_alt
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_warning_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -22,7 +23,7 @@ fun SettingsCloudScreen(
         item {
             SoulMenuElement(
                 title = if (state.user == null) {
-                    strings.cloudSignUp
+                    strings.cloudSignIn
                 } else {
                     state.user.username
                 },
@@ -40,6 +41,15 @@ fun SettingsCloudScreen(
                 onClick = actions::toSettings,
                 leadIcon = CoreRes.drawable.ic_settings_filled,
                 trailIcon = CoreRes.drawable.ic_warning_filled.takeIf { !state.hasUrl },
+            )
+        }
+
+        item {
+            SoulMenuElement(
+                title = strings.cloudSyncTitle,
+                subTitle = strings.cloudSyncText,
+                onClick = actions::toSync,
+                leadIcon = CoreRes.drawable.ic_sync_alt,
             )
         }
     }

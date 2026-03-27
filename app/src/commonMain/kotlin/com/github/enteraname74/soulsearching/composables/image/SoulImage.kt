@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.composables
+package com.github.enteraname74.soulsearching.composables.image
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -7,23 +7,23 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
-import coil3.BitmapImage
-import coil3.Image
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
-import coil3.request.crossfade
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.CoverFolderRetriever
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
@@ -42,7 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
-import java.util.*
+import java.util.UUID
 
 @Composable
 fun SoulImage(
@@ -122,6 +122,17 @@ fun InnerSoulImage(
                 modifier = modifier,
                 contentScale = contentScale,
                 tint = tint,
+                onSuccess = onSuccess,
+                builderOptions = builderOptions,
+            )
+        }
+        is Cover.Url -> {
+            UrlImage(
+                url = cover.url,
+                modifier = modifier,
+                tint = tint,
+                contentScale = contentScale,
+                contentDescription = null,
                 onSuccess = onSuccess,
                 builderOptions = builderOptions,
             )
@@ -239,7 +250,7 @@ private fun CoverFolderImage(
         }
 
         else -> {
-            DataImage(
+            SoulDataImage(
                 data = inputStream,
                 modifier = modifier,
                 contentScale = contentScale,
@@ -251,6 +262,7 @@ private fun CoverFolderImage(
                     onSuccess?.invoke(bitmap)
                 },
                 tint = tint,
+                contentDescription = null,
             )
         }
     }
@@ -332,53 +344,6 @@ fun TemplateImage(
 }
 
 @Composable
-fun DataImage(
-    data: Any?,
-    modifier: Modifier,
-    tint: Color,
-    contentScale: ContentScale,
-    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
-    onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
-) {
-    var previousSavedImage: Image? by remember {
-        mutableStateOf(null)
-    }
-
-    AsyncImage(
-        onSuccess = { result ->
-            if (result.result.image != previousSavedImage) {
-                previousSavedImage = result.result.image
-                onSuccess?.let {
-                    it((result.result.image as? BitmapImage)?.bitmap?.asImageBitmap())
-                }
-            }
-        },
-        onError = {
-            onSuccess?.let {
-                previousSavedImage = null
-                it(null)
-            }
-        },
-        placeholder = forwardingPainter(
-            painter = painterResource(Res.drawable.app_logo_uni_xml),
-            colorFilter = ColorFilter.tint(tint),
-        ),
-        error = forwardingPainter(
-            painter = painterResource(Res.drawable.app_logo_uni_xml),
-            colorFilter = ColorFilter.tint(tint),
-        ),
-        model = ImageRequest.Builder(LocalPlatformContext.current)
-            .builderOptions()
-            .data(data)
-            .crossfade(true)
-            .build(),
-        contentDescription = "",
-        modifier = modifier,
-        contentScale = contentScale,
-    )
-}
-
-@Composable
 private fun CoverIdImage(
     coverId: UUID?,
     modifier: Modifier = Modifier,
@@ -403,13 +368,14 @@ private fun CoverIdImage(
     }
 
     if (coverPath != null) {
-        DataImage(
+        SoulDataImage(
             data = coverPath,
             modifier = modifier,
             contentScale = contentScale,
             builderOptions = builderOptions,
             onSuccess = onSuccess,
             tint = tint,
+            contentDescription = null,
         )
     } else {
         TemplateImage(
@@ -417,56 +383,5 @@ private fun CoverIdImage(
             contentScale = contentScale,
             tint = tint,
         )
-    }
-}
-
-private fun forwardingPainter(
-    painter: Painter,
-    alpha: Float = DefaultAlpha,
-    colorFilter: ColorFilter? = null,
-    onDraw: DrawScope.(ForwardingDrawInfo) -> Unit = DefaultOnDraw,
-): Painter = ForwardingPainter(painter, alpha, colorFilter, onDraw)
-
-private data class ForwardingDrawInfo(
-    val painter: Painter,
-    val alpha: Float,
-    val colorFilter: ColorFilter?,
-)
-
-private class ForwardingPainter(
-    private val painter: Painter,
-    private var alpha: Float,
-    private var colorFilter: ColorFilter?,
-    private val onDraw: DrawScope.(ForwardingDrawInfo) -> Unit,
-) : Painter() {
-
-    private var info = newInfo()
-
-    override val intrinsicSize get() = painter.intrinsicSize
-
-    override fun applyAlpha(alpha: Float): Boolean {
-        if (alpha != DefaultAlpha) {
-            this.alpha = alpha
-            this.info = newInfo()
-        }
-        return true
-    }
-
-    override fun applyColorFilter(colorFilter: ColorFilter?): Boolean {
-        if (colorFilter != null) {
-            this.colorFilter = colorFilter
-            this.info = newInfo()
-        }
-        return true
-    }
-
-    override fun DrawScope.onDraw() = onDraw(info)
-
-    private fun newInfo() = ForwardingDrawInfo(painter, alpha, colorFilter)
-}
-
-private val DefaultOnDraw: DrawScope.(ForwardingDrawInfo) -> Unit = { info ->
-    with(info.painter) {
-        draw(size, info.alpha, info.colorFilter)
     }
 }

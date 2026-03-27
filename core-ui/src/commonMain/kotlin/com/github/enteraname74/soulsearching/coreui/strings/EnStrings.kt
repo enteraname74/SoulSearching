@@ -333,6 +333,15 @@ object EnStrings : Strings {
     override val generateCodeTitle: String = "Generate code"
     override val generateCodeText: String = "Generate a one time usage code for a new user"
     override val generatedCode: String = "Generated code"
+    override val cloudSyncTitle: String = "Synchronization"
+    override val cloudSyncText: String = "Manage synchronization between the app and Cloudy"
+    override val cloudSyncButton: String = "Synchronize songs"
+    override val cloudSyncNotificationTitle: String = "Synchronization"
+    override val cloudSyncNotificationText: String = "Data synchronization with Cloudy in progress"
+    override val musicChannelNotificationDescription: String = "Used for controlling the song that is currently playing"
+    override val cloudSyncChannelNotificationDescription: String = "used for syncing data between the app and Cloudy"
+    override val musicChannelNotificationName: String = "Currently played music notification"
+    override val cloudSyncChannelNotificationName: String = "Cloudy syncing notification"
 
     override fun userType(type: User.Type): String =
         when (type) {

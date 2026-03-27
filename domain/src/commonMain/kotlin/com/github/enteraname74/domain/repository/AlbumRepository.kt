@@ -6,17 +6,17 @@ import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Repository of an Album.
  */
 interface AlbumRepository {
-    /**
-     * Delete an album.
-     */
     suspend fun delete(album: Album)
 
     suspend fun deleteAll(ids: List<UUID>)
+
+    suspend fun deleteAllEmpty()
 
     /**
      * Inserts a new Album.
@@ -38,6 +38,8 @@ interface AlbumRepository {
      * Retrieves an Album from its id.
      */
     fun getFromId(albumId: UUID): Flow<Album?>
+
+    suspend fun getFromRemoteId(remoteId: Uuid): Album?
 
     fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>>
 

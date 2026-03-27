@@ -8,7 +8,7 @@ sealed interface SoulResult<T> {
         override fun toSimpleResult(): SoulResult<Unit> = Success(Unit)
     }
 
-    data class Error<T>(val error: String?) : SoulResult<T> {
+    data class Error<T>(val error: String? = null) : SoulResult<T> {
         override fun <R> map(mapData: (T) -> R): SoulResult<R> = Error(error)
         override fun toSimpleResult(): SoulResult<Unit> = Error(error)
     }

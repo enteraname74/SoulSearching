@@ -36,4 +36,8 @@ internal class RoomMusicArtistDataSourceImpl(
     override suspend fun deleteOfArtist(artistId: UUID) {
         appDatabase.musicArtistDao.deleteOfArtist(artistId)
     }
+
+    override suspend fun deleteOfMusic(musicId: UUID) {
+        appDatabase.musicArtistDao.deleteOfMusic(musicId)
+    }
 }

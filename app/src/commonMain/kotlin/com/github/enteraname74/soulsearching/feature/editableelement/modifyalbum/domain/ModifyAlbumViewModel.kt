@@ -17,7 +17,6 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
-import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateAlbumUseCase
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
@@ -42,7 +41,6 @@ class ModifyAlbumViewModel(
     private val commonCoverUseCase: CommonCoverUseCase,
     private val updateAlbumUseCase: UpdateAlbumUseCase,
     private val loadingManager: LoadingManager,
-    private val coverRetriever: CoverRetriever,
     destination: ModifyAlbumDestination,
 ) : ViewModel() {
     private val albumId = destination.selectedAlbumId
@@ -99,7 +97,7 @@ class ModifyAlbumViewModel(
     private val artistsCover: StateFlow<CoverListState> = state.mapLatest { state ->
         when (state) {
             is ModifyAlbumState.Data -> CoverListState.Data(
-                covers = coverRetriever.getAllUniqueCover(
+                covers = commonCoverUseCase.getAllUniqueCover(
                     covers = state.initialAlbum.musics.map { it.cover }
                 )
             )
