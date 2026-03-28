@@ -236,7 +236,6 @@ class PlaybackManager(
     private fun playerListener() {
         launchWithInit {
             playerRepository.getCurrentMusic()
-                // TODO CLOUD: Take remote and local path into account
                 .map { it?.music?.path }
                 .distinctUntilChanged()
                 .collectLatest { currentMusicPath ->
