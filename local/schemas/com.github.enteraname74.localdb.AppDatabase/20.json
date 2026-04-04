@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 20,
-    "identityHash": "f1bde06d96996c8f6dc53c85d93ed53f",
+    "identityHash": "d2ae4e17e2d56c44ef4d901fc20c0e99",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -638,7 +638,7 @@
       },
       {
         "tableName": "RoomPlayerPlayedList",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `playlistId` TEXT, `isMainPlaylist` INTEGER NOT NULL, `mode` TEXT NOT NULL, `state` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `playlistId` TEXT, `isMainPlaylist` INTEGER NOT NULL, `mode` TEXT NOT NULL, `state` TEXT NOT NULL, `invitationCode` TEXT, `scope` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -666,6 +666,17 @@
           {
             "fieldPath": "state",
             "columnName": "state",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "invitationCode",
+            "columnName": "invitationCode",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "scope",
+            "columnName": "scope",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -801,7 +812,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f1bde06d96996c8f6dc53c85d93ed53f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd2ae4e17e2d56c44ef4d901fc20c0e99')"
     ]
   }
 }

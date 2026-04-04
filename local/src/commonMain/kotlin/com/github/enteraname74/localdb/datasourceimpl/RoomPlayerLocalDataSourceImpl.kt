@@ -18,7 +18,7 @@ import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
 import com.github.enteraname74.localdb.model.player.toRoomPlayerMusic
 import com.github.enteraname74.localdb.model.player.toRoomPlayerPlayedList
 import com.github.enteraname74.localdb.utils.PagingUtils
-import com.github.enteraname74.soulsearching.repository.datasource.PlayerDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -31,9 +31,9 @@ import java.util.UUID
 import kotlin.time.Clock
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class RoomPlayerDataSourceImpl(
+internal class RoomPlayerLocalDataSourceImpl(
     private val appDatabase: AppDatabase
-) : PlayerDataSource {
+) : PlayerLocalDataSource {
     private val playerMusicDao = appDatabase.playerMusicDao
     private val listDao = appDatabase.playerPlayedListDao
     private val progressDao = appDatabase.playerMusicProgressDao

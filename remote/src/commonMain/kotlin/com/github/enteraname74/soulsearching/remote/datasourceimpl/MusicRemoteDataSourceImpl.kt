@@ -23,10 +23,8 @@ import io.ktor.client.plugins.resources.put
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import kotlinx.coroutines.flow.firstOrNull
 import java.io.File
 
 class MusicRemoteDataSourceImpl(
@@ -35,7 +33,7 @@ class MusicRemoteDataSourceImpl(
 ) : MusicRemoteDataSource {
     override suspend fun getDeletedRemoteMusicIds(idsToCheck: List<String>): List<String> =
         client
-            .withUrl(cloudPreferencesDataSource.observeUrl().firstOrNull().orEmpty())
+            .withUrl(cloudPreferencesDataSource.getUrl())
             .post(MusicResource.Check()) {
                 contentType(ContentType.Application.Json)
                 setBody(MusicIdsCheckBody(idsToCheck))
@@ -45,7 +43,7 @@ class MusicRemoteDataSourceImpl(
         val musicUpdate: MusicUpdate = music.toMusicUpdate() ?: return SoulResult.Error()
 
         return client
-            .withUrl(cloudPreferencesDataSource.observeUrl().firstOrNull().orEmpty())
+            .withUrl(cloudPreferencesDataSource.getUrl())
             .safeRequest {
                 put(MusicResource) {
                     contentType(ContentType.Application.Json)
@@ -65,7 +63,7 @@ class MusicRemoteDataSourceImpl(
             .safeRequest {
                 submitFormWithBinaryData(
                     url = "${
-                        cloudPreferencesDataSource.observeUrl().firstOrNull().orEmpty()
+                        cloudPreferencesDataSource.getUrl()
                     }/music/upload",
                     formData = formData {
                         appendFile(
@@ -88,7 +86,7 @@ class MusicRemoteDataSourceImpl(
         page: Int?
     ): List<CloudMusic> =
         client
-            .withUrl(cloudPreferencesDataSource.observeUrl().firstOrNull().orEmpty())
+            .withUrl(cloudPreferencesDataSource.getUrl())
             .get(
                 resource = MusicResource.OfUser(
                     lastUpdateAt = lastUpdateAt,

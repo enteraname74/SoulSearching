@@ -24,7 +24,6 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
-import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
@@ -41,7 +40,7 @@ class UserRemoteDataSourceImpl(
         password: String
     ): User {
         return client
-            .withUrl(url = cloudPreferencesDataSource.observeUrl().firstOrNull().orEmpty())
+            .withUrl(url = cloudPreferencesDataSource.getUrl())
             .post(AuthResource.LogIn()) {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.AcceptLanguage, Locale.getDefault().language)
@@ -60,7 +59,7 @@ class UserRemoteDataSourceImpl(
         code: String
     ): User =
         client
-            .withUrl(url = cloudPreferencesDataSource.observeUrl().firstOrNull().orEmpty())
+            .withUrl(url = cloudPreferencesDataSource.getUrl())
             .post(AuthResource.SignIn()) {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.AcceptLanguage, Locale.getDefault().language)
@@ -75,14 +74,14 @@ class UserRemoteDataSourceImpl(
 
     override suspend fun refreshTokens(): SoulResult<UserTokens> =
         cloudClient
-            .withUrl(url = cloudPreferencesDataSource.observeUrl().firstOrNull().orEmpty())
+            .withUrl(url = cloudPreferencesDataSource.getUrl())
             .safeRequest {
                 get(AuthResource.RefreshTokens())
             }
 
     override suspend fun generateCode(): SoulResult<String> =
         cloudClient
-            .withUrl(url = cloudPreferencesDataSource.observeUrl().firstOrNull().orEmpty())
+            .withUrl(url = cloudPreferencesDataSource.getUrl())
             .safeRequest<GeneratedCode> {
                 get(UserResource.GenerateCode())
             }.map { it.code }

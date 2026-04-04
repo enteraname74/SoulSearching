@@ -13,6 +13,7 @@ import com.github.enteraname74.localdb.dao.AlbumDao
 import com.github.enteraname74.localdb.dao.ArtistDao
 import com.github.enteraname74.localdb.dao.CloudPreferencesDao
 import com.github.enteraname74.localdb.dao.CoverDao
+import com.github.enteraname74.localdb.dao.DeviceIdDao
 import com.github.enteraname74.localdb.dao.FolderDao
 import com.github.enteraname74.localdb.dao.MusicArtistDao
 import com.github.enteraname74.localdb.dao.MusicDao
@@ -25,6 +26,7 @@ import com.github.enteraname74.localdb.dao.UserDao
 import com.github.enteraname74.localdb.model.RoomAlbum
 import com.github.enteraname74.localdb.model.RoomArtist
 import com.github.enteraname74.localdb.model.RoomCloudPreferences
+import com.github.enteraname74.localdb.model.RoomDeviceId
 import com.github.enteraname74.localdb.model.RoomFolder
 import com.github.enteraname74.localdb.model.RoomMusic
 import com.github.enteraname74.localdb.model.RoomMusicArtist
@@ -57,6 +59,7 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
         RoomFolder::class,
         RoomUser::class,
         RoomCloudPreferences::class,
+        RoomDeviceId::class,
     ],
     views = [
         CurrentPlayerMusicsView::class,
@@ -87,6 +90,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val playerMusicProgressDao: PlayerMusicProgressDao
     abstract val userDao: UserDao
     abstract val cloudPreferencesDao: CloudPreferencesDao
+    abstract val deviceIdDao: DeviceIdDao
 }
 
 // The Room compiler generates the `actual` implementations.

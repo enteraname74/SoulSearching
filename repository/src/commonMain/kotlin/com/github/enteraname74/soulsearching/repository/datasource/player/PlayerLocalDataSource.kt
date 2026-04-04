@@ -1,4 +1,5 @@
-package com.github.enteraname74.soulsearching.repository.datasource
+package com.github.enteraname74.soulsearching.repository.datasource.player
+
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.player.PlayedListState
@@ -12,7 +13,7 @@ import java.util.UUID
 /**
  * Data source of a PlayerMusic.
  */
-interface PlayerDataSource {
+interface PlayerLocalDataSource {
     fun getAllPaginated(): Flow<PagingData<Music>>
     fun getAll(): Flow<List<Music>>
     fun getSize(): Flow<Int>

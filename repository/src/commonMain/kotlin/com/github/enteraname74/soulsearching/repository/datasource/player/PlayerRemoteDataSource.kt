@@ -1,0 +1,31 @@
+package com.github.enteraname74.soulsearching.repository.datasource.player
+
+import com.github.enteraname74.domain.model.player.SharedPlayedList
+import com.github.enteraname74.domain.model.player.SharedPlayerMusic
+import kotlin.uuid.Uuid
+
+interface PlayerRemoteDataSource {
+    suspend fun create(
+        deviceId: String,
+        musicIds: List<String>,
+    ): SharedPlayedList
+
+    suspend fun getDeletedMusicIds(
+        deviceId: String,
+        listId: Uuid,
+        musicIdsToCheck: List<String>
+    ): List<String>
+
+    suspend fun getPlayedList(
+        deviceId: String,
+        listId: Uuid,
+    ): SharedPlayedList
+
+    suspend fun getPlayedListMusics(
+        deviceId: String,
+        listId: Uuid,
+        lastUpdateAt: Long?,
+        maxPerPage: Int?,
+        page: Int?,
+    ): List<SharedPlayerMusic>
+}

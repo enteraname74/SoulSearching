@@ -2,15 +2,23 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.domain.model.player.AddMusicMode
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListSetup
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayedListToContinue
+import com.github.enteraname74.domain.model.player.PlayedListType
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
+import com.github.enteraname74.domain.model.player.SharedPlayedList
+import com.github.enteraname74.domain.model.player.SharedPlayerMusic
 import com.github.enteraname74.domain.repository.PlayerRepository
-import com.github.enteraname74.soulsearching.repository.datasource.PlayerDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.DeviceLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
@@ -21,70 +29,73 @@ import kotlin.coroutines.CoroutineContext
  * Repository of a PlayerMusic.
  */
 class PlayerRepositoryImpl(
-    private val playerDataSource: PlayerDataSource,
+    private val playerLocalDataSource: PlayerLocalDataSource,
+    private val playerRemoteDataSource: PlayerRemoteDataSource,
+    private val deviceLocalDataSource: DeviceLocalDataSource,
+    private val userLocalDataSource: UserLocalDataSource,
     private val workScope: CoroutineContext,
 ) : PlayerRepository {
     override fun getAllPaginated(): Flow<PagingData<Music>> =
-        playerDataSource.getAllPaginated()
+        playerLocalDataSource.getAllPaginated()
 
     override fun getAll(): Flow<List<Music>> =
-        playerDataSource.getAll()
+        playerLocalDataSource.getAll()
 
     override fun getSize(): Flow<Int> =
-        playerDataSource.getSize()
+        playerLocalDataSource.getSize()
 
     override fun getCurrentMusic(): Flow<PlayerMusic?> =
-        playerDataSource.getCurrentMusic()
+        playerLocalDataSource.getCurrentMusic()
 
     override fun getCurrentState(): Flow<PlayedListState?> =
-        playerDataSource.getCurrentState()
+        playerLocalDataSource.getCurrentState()
 
     override fun getNextMusic(): Flow<PlayerMusic?> =
-        playerDataSource.getNextMusic()
+        playerLocalDataSource.getNextMusic()
 
     override fun getPreviousMusic(): Flow<PlayerMusic?> =
-        playerDataSource.getPreviousMusic()
+        playerLocalDataSource.getPreviousMusic()
 
     override fun getCurrentMode(): Flow<PlayerMode?> =
-        playerDataSource.getCurrentMode()
+        playerLocalDataSource.getCurrentMode()
 
     override fun getCurrentPlayedList(): Flow<PlayerPlayedList?> =
-        playerDataSource.getCurrentPlayedList()
+        playerLocalDataSource.getCurrentPlayedList()
 
     override fun getCachedPlayedList(playlistId: String): Flow<PlayedListToContinue?> =
-        playerDataSource.getCachedPlayedList(playlistId)
+        playerLocalDataSource.getCachedPlayedList(playlistId)
 
     override fun getCurrentPosition(): Flow<Int?> =
-        playerDataSource.getCurrentPosition()
+        playerLocalDataSource.getCurrentPosition()
 
     override fun getCurrentProgress(): Flow<Int> =
-        playerDataSource.getCurrentProgress()
+        playerLocalDataSource.getCurrentProgress()
 
     override suspend fun setProgress(progress: Int) {
-        playerDataSource.setProgress(progress)
+        playerLocalDataSource.setProgress(progress)
     }
 
     override suspend fun deleteAll(musicIds: List<UUID>) {
         withContext(workScope) {
-            playerDataSource.deleteAll(musicIds)
+            playerLocalDataSource.deleteAll(musicIds)
         }
     }
 
     override suspend fun deleteCurrentPlayedList() {
         withContext(workScope) {
-            playerDataSource.deleteCurrentPlayedList()
+            playerLocalDataSource.deleteCurrentPlayedList()
         }
     }
 
     override suspend fun deletePlayedList(playedListId: UUID) {
         withContext(workScope) {
-            playerDataSource.deletePlayedList(playedListId)
+            playerLocalDataSource.deletePlayedList(playedListId)
         }
     }
 
     override suspend fun continuePlayedList(playedListId: UUID) {
         withContext(workScope) {
-            playerDataSource.continuePlayedList(playedListId)
+            playerLocalDataSource.continuePlayedList(playedListId)
         }
     }
 
@@ -92,7 +103,7 @@ class PlayerRepositoryImpl(
         withContext(workScope) {
             if (shouldSkipSetup(playedListSetup)) return@withContext
 
-            playerDataSource.upsertPlayedList(
+            playerLocalDataSource.upsertPlayedList(
                 playedList = playedListSetup.toPlayedList(),
                 playerMusics = playedListSetup.toPlayerMusics(),
             )
@@ -101,7 +112,7 @@ class PlayerRepositoryImpl(
 
     override suspend fun moveMusic(fromMusicId: UUID, afterMusicId: UUID) {
         withContext(workScope) {
-            playerDataSource.moveMusic(
+            playerLocalDataSource.moveMusic(
                 fromMusicId = fromMusicId,
                 toMusicId = afterMusicId,
             )
@@ -114,11 +125,11 @@ class PlayerRepositoryImpl(
         withContext(workScope) {
             if (playedListSetup.forceOverride) return@withContext false
 
-            val currentPlayedList: PlayerPlayedList = playerDataSource
+            val currentPlayedList: PlayerPlayedList = playerLocalDataSource
                 .getCurrentPlayedList()
                 .firstOrNull() ?: return@withContext false
 
-            val currentMusic: PlayerMusic = playerDataSource
+            val currentMusic: PlayerMusic = playerLocalDataSource
                 .getCurrentMusic()
                 .firstOrNull() ?: return@withContext false
 
@@ -141,7 +152,7 @@ class PlayerRepositoryImpl(
         if (musics.isEmpty()) return
 
         withContext(workScope) {
-            val currentPlayedList: PlayerPlayedList? = playerDataSource
+            val currentPlayedList: PlayerPlayedList? = playerLocalDataSource
                 .getCurrentPlayedList()
                 .firstOrNull()
 
@@ -152,12 +163,14 @@ class PlayerRepositoryImpl(
                         musics = musics,
                         playlistId = null,
                         isMain = false,
+                        scope = PlayedListScope.LocalUser,
+                        type = PlayedListType.Local,
                     )
                 )
                 return@withContext
             }
 
-            val currentMusic: PlayerMusic = playerDataSource
+            val currentMusic: PlayerMusic = playerLocalDataSource
                 .getCurrentMusic()
                 .firstOrNull() ?: return@withContext
 
@@ -167,11 +180,11 @@ class PlayerRepositoryImpl(
 
             val newOrders: List<Double> = when (mode) {
                 AddMusicMode.Next -> {
-                    val currentOrder: Double = playerDataSource
+                    val currentOrder: Double = playerLocalDataSource
                         .getCurrentMusic()
                         .firstOrNull()
                         ?.let(currentPlayedList::getOrder) ?: return@withContext
-                    val nextOrder: Double = playerDataSource
+                    val nextOrder: Double = playerLocalDataSource
                         .getNextMusic()
                         .firstOrNull()
                         ?.let(currentPlayedList::getOrder) ?: return@withContext
@@ -194,7 +207,7 @@ class PlayerRepositoryImpl(
                 }
 
                 AddMusicMode.Queue -> {
-                    val lastOrder: Double = playerDataSource
+                    val lastOrder: Double = playerLocalDataSource
                         .getLastMusic()
                         .firstOrNull()
                         ?.let(currentPlayedList::getOrder) ?: return@withContext
@@ -207,7 +220,7 @@ class PlayerRepositoryImpl(
                 }
             }
 
-            playerDataSource.upsertAllMusics(
+            playerLocalDataSource.upsertAllMusics(
                 filteredList.mapIndexed { index, music ->
                     PlayerMusic(
                         music = music,
@@ -218,7 +231,7 @@ class PlayerRepositoryImpl(
                     )
                 }
             )
-            playerDataSource.handleListChange(musicIdsToKeep = filteredList.map { it.musicId })
+            playerLocalDataSource.handleListChange(musicIdsToKeep = filteredList.map { it.musicId })
         }
     }
 
@@ -238,61 +251,69 @@ class PlayerRepositoryImpl(
 
     override suspend fun switchPlayerMode() {
         withContext(workScope) {
-            playerDataSource.switchPlayerMode()
+            playerLocalDataSource.switchPlayerMode()
         }
     }
 
     override suspend fun removeCurrentAndPlayNext() {
         withContext(workScope) {
-            playerDataSource.removeCurrentAndPlayNext()
+            playerLocalDataSource.removeCurrentAndPlayNext()
         }
     }
 
     override suspend fun setPlayedListState(playedListState: PlayedListState) {
         withContext(workScope) {
-            playerDataSource.setState(playedListState)
+            playerLocalDataSource.setState(playedListState)
         }
     }
 
     override suspend fun setCurrent(musicId: UUID) {
         withContext(workScope) {
-            playerDataSource.setCurrent(musicId = musicId)
+            playerLocalDataSource.setCurrent(musicId = musicId)
         }
     }
 
     override suspend fun playNext() {
         withContext(workScope) {
-            val nextId: UUID = playerDataSource
+            val nextId: UUID = playerLocalDataSource
                 .getNextMusic().firstOrNull()?.music?.musicId ?: return@withContext
 
-            playerDataSource.setCurrent(musicId = nextId)
-            playerDataSource.setState(PlayedListState.Playing)
+            playerLocalDataSource.setCurrent(musicId = nextId)
+            playerLocalDataSource.setState(PlayedListState.Playing)
         }
     }
 
     override suspend fun playPrevious() {
         withContext(workScope) {
-            val previousId: UUID = playerDataSource
+            val previousId: UUID = playerLocalDataSource
                 .getPreviousMusic().firstOrNull()?.music?.musicId ?: return@withContext
-            playerDataSource.setCurrent(musicId = previousId)
-            playerDataSource.setState(PlayedListState.Playing)
+            playerLocalDataSource.setCurrent(musicId = previousId)
+            playerLocalDataSource.setState(PlayedListState.Playing)
         }
     }
 
     override suspend fun togglePlayPause() {
         withContext(workScope) {
-            val state: PlayedListState = playerDataSource
+            val state: PlayedListState = playerLocalDataSource
                 .getCurrentPlayedList()
                 .firstOrNull()
                 ?.state ?: return@withContext
 
             when (state) {
-                PlayedListState.Playing -> playerDataSource.setState(PlayedListState.Paused)
-                PlayedListState.Paused, PlayedListState.Loading -> playerDataSource.setState(PlayedListState.Playing)
+                PlayedListState.Playing -> playerLocalDataSource.setState(PlayedListState.Paused)
+                PlayedListState.Paused, PlayedListState.Loading -> playerLocalDataSource.setState(PlayedListState.Playing)
                 else -> {
                     // no-op
                 }
             }
         }
     }
+
+    override suspend fun createSharedPlayedList(musicIds: List<String>): SharedPlayedList =
+        withContext(workScope) {
+            playerRemoteDataSource.create(
+                deviceId = deviceLocalDataSource.getDeviceId(),
+                musicIds = musicIds,
+            )
+        }
 }

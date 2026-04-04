@@ -9,9 +9,11 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.player.AddMusicMode
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListSetup
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayedListToContinue
+import com.github.enteraname74.domain.model.player.PlayedListType
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
@@ -512,6 +514,8 @@ class PlaybackManager(
                 state = PlayedListState.Playing,
                 playlistId = playlistId,
                 isMain = isMain,
+                type = PlayedListType.Local,
+                scope = PlayedListScope.LocalUser,
             ),
         )
     }
@@ -530,6 +534,8 @@ class PlaybackManager(
                 state = PlayedListState.Playing,
                 isMain = false,
                 playlistId = null,
+                type = PlayedListType.Local,
+                scope = PlayedListScope.LocalUser,
             ),
         )
     }
@@ -548,7 +554,9 @@ class PlaybackManager(
                 listId = playlistId,
                 isMain = isMainPlaylist,
                 state = PlayedListState.Playing,
-                forceOverride = isForcingNewPlaylist
+                type = PlayedListType.Local,
+                forceOverride = isForcingNewPlaylist,
+                scope = PlayedListScope.LocalUser,
             )
         )
     }

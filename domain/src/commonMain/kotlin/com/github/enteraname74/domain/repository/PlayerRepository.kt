@@ -9,6 +9,7 @@ import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
+import com.github.enteraname74.domain.model.player.SharedPlayedList
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -63,4 +64,8 @@ interface PlayerRepository {
     suspend fun setPlayedListState(playedListState: PlayedListState)
 
     suspend fun togglePlayPause()
+
+    suspend fun createSharedPlayedList(
+        musicIds: List<String>
+    ) : SharedPlayedList
 }

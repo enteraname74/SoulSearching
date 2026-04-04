@@ -19,7 +19,7 @@ val repositoryModule = module {
     singleOf(::MusicRepositoryImpl) bind MusicRepository::class
     single<PlayerRepository> {
         PlayerRepositoryImpl(
-            playerDataSource = get(),
+            playerLocalDataSource = get(),
             workScope = Dispatchers.IO,
         )
     }
