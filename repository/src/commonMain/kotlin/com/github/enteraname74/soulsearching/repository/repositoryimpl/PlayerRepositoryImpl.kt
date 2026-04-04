@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.domain.model.player.AddMusicMode
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListSetup
@@ -24,6 +23,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import java.util.UUID
 import kotlin.coroutines.CoroutineContext
+import kotlin.uuid.Uuid
 
 /**
  * Repository of a PlayerMusic.
@@ -106,6 +106,20 @@ class PlayerRepositoryImpl(
             playerLocalDataSource.upsertPlayedList(
                 playedList = playedListSetup.toPlayedList(),
                 playerMusics = playedListSetup.toPlayerMusics(),
+            )
+        }
+    }
+
+    override suspend fun setupFromShared(
+        sharedPlayedList: SharedPlayedList,
+        playerMusics: List<PlayerMusic>
+    ) {
+        withContext(workScope) {
+            val userId: Uuid = userLocalDataSource.observeUser().firstOrNull()?.id ?: return@withContext
+
+            playerLocalDataSource.upsertPlayedList(
+                playedList = sharedPlayedList.toPlayedList(userId),
+                playerMusics = playerMusics,
             )
         }
     }
@@ -309,11 +323,39 @@ class PlayerRepositoryImpl(
         }
     }
 
-    override suspend fun createSharedPlayedList(musicIds: List<String>): SharedPlayedList =
+    override suspend fun createSharedPlayedList(musicRemoteIds: List<String>): SharedPlayedList =
         withContext(workScope) {
             playerRemoteDataSource.create(
                 deviceId = deviceLocalDataSource.getDeviceId(),
-                musicIds = musicIds,
+                musicIds = musicRemoteIds,
             )
         }
+
+    override suspend fun fetchPlayedListMusics(playedListId: Uuid): List<SharedPlayerMusic> =
+        withContext(workScope) {
+            var page = 0
+            val deviceId = deviceLocalDataSource.getDeviceId()
+
+            val fetchedMusics: MutableList<SharedPlayerMusic> = mutableListOf()
+            while (true) {
+                val fetchedData = playerRemoteDataSource.getPlayedListMusics(
+                    lastUpdateAt = null,
+                    maxPerPage = MAX_MUSICS_PER_PAGE,
+                    page = page,
+                    deviceId = deviceId,
+                    listId = playedListId,
+                )
+
+                fetchedMusics += fetchedData
+                if (fetchedData.size < MAX_MUSICS_PER_PAGE) break
+
+                page += 1
+            }
+
+            fetchedMusics
+        }
+
+    private companion object {
+        const val MAX_MUSICS_PER_PAGE = 300
+    }
 }

@@ -3,6 +3,7 @@ package com.github.enteraname74.domain.usecase.music
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.CloudMusic
+import com.github.enteraname74.domain.model.MergeMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.UpsertCloudAlbumUseCase
@@ -16,11 +17,20 @@ class UpsertCloudMusicUseCase(
     private val musicRepository: MusicRepository,
     private val commonMusicArtistUseCase: CommonMusicArtistUseCase,
 ) {
-    suspend operator fun invoke(cloudMusic: CloudMusic): Music {
+    suspend operator fun invoke(
+        cloudMusic: CloudMusic,
+        mergeMode: MergeMode,
+    ): Music {
         val artistsOfMusic: List<Artist> = cloudMusic.artists.map {
-            upsertCloudArtistUseCase(it)
+            upsertCloudArtistUseCase(
+                cloudArtist = it,
+                mergeMode = mergeMode,
+            )
         }
-        val albumOfMusic: Album = upsertCloudAlbumUseCase(cloudMusic.album)
+        val albumOfMusic: Album = upsertCloudAlbumUseCase(
+            cloudAlbum = cloudMusic.album,
+            mergeMode = mergeMode,
+        )
 
         val existingMusic: Music? = getExistingMusic(
             cloudMusic = cloudMusic,
@@ -31,6 +41,7 @@ class UpsertCloudMusicUseCase(
             cloudMusic = cloudMusic,
             album = albumOfMusic,
             artists = artistsOfMusic,
+            mergeMode = mergeMode,
         ) ?: cloudMusic.toNewMusic(
             album = albumOfMusic,
             artists = artistsOfMusic,

@@ -342,6 +342,7 @@ object EnStrings : Strings {
     override val cloudSyncChannelNotificationDescription: String = "used for syncing data between the app and Cloudy"
     override val musicChannelNotificationName: String = "Currently played music notification"
     override val cloudSyncChannelNotificationName: String = "Cloudy syncing notification"
+    override val startSharedPlayedList: String = "Start shared played list"
 
     override fun userType(type: User.Type): String =
         when (type) {

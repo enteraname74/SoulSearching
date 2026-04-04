@@ -2,6 +2,7 @@ package com.github.enteraname74.domain.usecase.music
 
 import com.github.enteraname74.domain.model.CloudMusic
 import com.github.enteraname74.domain.model.CloudPreferences
+import com.github.enteraname74.domain.model.MergeMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.CloudPreferencesRepository
@@ -29,6 +30,11 @@ class SyncMusicWithCloudUseCase(
         musicRepository.clearRemoteIds(idsNoLongerOnCloud)
         val musicsToSend: List<Music> = musicRepository.getAllToSendToCloud()
 
+        if (musicsToSend.isEmpty()) return@runCatching
+
+        // TODO SYNC: Let user choose its merge mode.
+        val mergeMode = MergeMode.LocalFirst
+
         /*
         We need to differentiate the songs to update (already on the cloud) from the one to sent to
         upload (not on the cloud).
@@ -37,11 +43,17 @@ class SyncMusicWithCloudUseCase(
             music.remoteId != null
         }
 
-        // We keep track of the updated/uploaded songs to avoid re-saved them after the next sync.
+        // We keep track of the updated/uploaded songs to avoid re-saving them after the next sync.
         val savedRemoteIds: List<String> = musicsToUpdate.mapNotNull { music ->
-            updateMusicToCloudUseCase(music)?.remoteId
+            updateMusicToCloudUseCase(
+                music = music,
+                mergeMode = mergeMode,
+            )?.remoteId
         } + musicsToUpload.mapNotNull { music ->
-            uploadMusicToCloudUseCase(music)?.remoteId
+            uploadMusicToCloudUseCase(
+                music = music,
+                mergeMode = mergeMode,
+            )?.remoteId
         }
 
         val cloudPreferences: CloudPreferences? =
@@ -60,7 +72,10 @@ class SyncMusicWithCloudUseCase(
         }
         // Saving each song, with their album and artist
         filteredSongsToSave.forEach {
-            upsertCloudMusicUseCase(cloudMusic = it)
+            upsertCloudMusicUseCase(
+                cloudMusic = it,
+                mergeMode = mergeMode,
+            )
         }
         // Deleting potential empty albums, artists and music (localPath and remoteId null).
         musicRepository.deleteNotExisting()

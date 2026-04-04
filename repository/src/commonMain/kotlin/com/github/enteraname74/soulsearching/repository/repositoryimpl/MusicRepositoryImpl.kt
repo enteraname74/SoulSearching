@@ -217,9 +217,9 @@ class MusicRepositoryImpl(
                 page = page
             )
 
-            if (fetchedData.isEmpty()) break
-
             fetchedMusics += fetchedData
+            if (fetchedData.size < MAX_MUSICS_PER_PAGE) break
+
             page += 1
         }
 

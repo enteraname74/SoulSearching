@@ -18,6 +18,7 @@ data class CloudMusic(
     val lastUpdateAtMillis: Long,
     val nbPlayed: Int,
     val isInQuickAccess: Boolean,
+    val scope: MusicScope,
 ) {
     fun toNewMusic(
         album: Album,
@@ -41,5 +42,6 @@ data class CloudMusic(
             isInQuickAccess = isInQuickAccess,
             isHidden = false,
             lastUpdatedMillis = lastUpdateAtMillis,
+            scope = scope,
         )
 }

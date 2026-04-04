@@ -10,6 +10,7 @@ import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertCloudArtistUseCase
 import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
+import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
@@ -24,6 +25,8 @@ import com.github.enteraname74.domain.usecase.music.UploadMusicToCloudUseCase
 import com.github.enteraname74.domain.usecase.music.UpsertCloudMusicUseCase
 import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
+import com.github.enteraname74.domain.usecase.player.CreateSharedPlayedListUseCase
+import com.github.enteraname74.domain.usecase.player.FetchPlayedListMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
@@ -87,4 +90,11 @@ val domainModule = module {
 
     // CloudPreferences
     factoryOf(::CommonCloudPreferencesUseCase)
+
+    // Cloud
+    factoryOf(::HasValidCloudInformationUseCase)
+
+    // Player
+    factoryOf(::CreateSharedPlayedListUseCase)
+    factoryOf(::FetchPlayedListMusicsUseCase)
 }

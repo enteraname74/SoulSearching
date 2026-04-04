@@ -8,6 +8,7 @@ import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.AddMusicMode
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListSetup
@@ -23,6 +24,7 @@ import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
+import com.github.enteraname74.domain.usecase.player.CreateSharedPlayedListUseCase
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
@@ -57,6 +59,7 @@ class PlaybackManager(
     private val commonMusicUseCase: CommonMusicUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val commonCoverUseCase: CommonCoverUseCase,
+    private val createSharedPlayedListUseCase: CreateSharedPlayedListUseCase,
 ) : KoinComponent, SoulSearchingPlayer.Listener {
     private val notification: SoulSearchingNotification by inject()
     private val player: SoulSearchingPlayer by inject()
@@ -560,6 +563,13 @@ class PlaybackManager(
             )
         )
     }
+
+    suspend fun startSharedList(
+        musicIds: List<UUID>
+    ): SoulResult<Unit> =
+        createSharedPlayedListUseCase(
+            musicIds = musicIds,
+        )
 
     /**************** PLAYER LISTENER ******************/
 

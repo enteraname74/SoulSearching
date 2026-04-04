@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.model
 
+import com.github.enteraname74.domain.util.DateUtils
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.math.max
@@ -25,6 +26,7 @@ data class Music(
     override val isInQuickAccess: Boolean = false,
     val isHidden: Boolean = false,
     val lastUpdatedMillis: Long?,
+    val scope: MusicScope,
 ) : QuickAccessible {
     val path: String? = localPath ?: remotePath
 
@@ -46,18 +48,23 @@ data class Music(
     fun merge(
         cloudMusic: CloudMusic,
         album: Album,
-        artists: List<Artist>
+        artists: List<Artist>,
+        mergeMode: MergeMode,
     ): Music =
-        copy(
-            remoteId = cloudMusic.fingerprint,
-            name = cloudMusic.name,
-            album = album,
-            artists = artists,
-            remotePath = cloudMusic.path,
-            albumPosition = cloudMusic.albumPosition,
-            cover = cover.takeIf { !it.isEmpty() } ?: Cover.Url(cloudMusic.coverPath),
-            lastUpdatedMillis = cloudMusic.lastUpdateAtMillis,
-            nbPlayed = max(nbPlayed, cloudMusic.nbPlayed),
-            isInQuickAccess = cloudMusic.isInQuickAccess,
-        )
+        when (mergeMode) {
+            MergeMode.LocalFirst -> this
+            MergeMode.RemoteFirst -> copy(
+                remoteId = cloudMusic.fingerprint,
+                name = cloudMusic.name,
+                album = album,
+                artists = artists,
+                remotePath = cloudMusic.path,
+                albumPosition = cloudMusic.albumPosition,
+                cover = cover.takeIf { !it.isEmpty() } ?: Cover.Url(cloudMusic.coverPath),
+                lastUpdatedMillis = cloudMusic.lastUpdateAtMillis,
+                nbPlayed = max(nbPlayed, cloudMusic.nbPlayed),
+                isInQuickAccess = cloudMusic.isInQuickAccess,
+                scope = cloudMusic.scope,
+            )
+        }
 }

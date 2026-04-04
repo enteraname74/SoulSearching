@@ -344,6 +344,8 @@ object FrStrings : Strings {
     override val musicChannelNotificationName: String = "Notification de la musique en cours de lecture"
     override val cloudSyncChannelNotificationName: String = "Notification de la synchronisation avec Cloudy"
 
+    override val startSharedPlayedList: String = "Démarrer une liste de lecture partagée"
+
     override fun userType(type: User.Type): String =
         when (type) {
             User.Type.User -> "Utilisateur"

@@ -3,8 +3,11 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.music.mai
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.model.player.PlayerPlayedList
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
@@ -18,6 +21,7 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
@@ -43,6 +47,8 @@ class MusicBottomSheetViewModel(
     private val playbackManager: PlaybackManager,
     private val navScope: MusicBottomSheetNavScope,
     private val loadingManager: LoadingManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
+    hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
     settings: SoulSearchingSettings,
     params: MusicBottomSheetDestination,
 ) : ViewModel() {
@@ -51,6 +57,7 @@ class MusicBottomSheetViewModel(
 
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
+    @Suppress("UNCHECKED_CAST")
     val state: StateFlow<MusicBottomSheetState> = combine(
         commonMusicUseCase.getFromIds(musicIds),
         playbackManager.playedList,
@@ -58,8 +65,16 @@ class MusicBottomSheetViewModel(
         dialogState,
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
-        )
-    ) { musics, playedList, playbackState, dialogState, isQuickAccessShown ->
+        ),
+        hasValidCloudInformationUseCase()
+    ) { data ->
+        val musics = data[0] as List<Music>
+        val playedList = data[1] as List<Music>
+        val playbackState = data[2] as PlaybackManagerState
+        val dialogState = data[3] as SoulDialog?
+        val isQuickAccessShown = data[4] as Boolean
+        val hasValidCloudInformation = data[5] as Boolean
+
         MusicBottomSheetState(
             musics = musics,
             bottomSheetTopInformation = buildTopInformation(musics),
@@ -68,6 +83,7 @@ class MusicBottomSheetViewModel(
                 playedList = playedList,
                 currentPlayedMusic = (playbackState as? PlaybackManagerState.Data)?.currentMusic,
                 isQuickAccessShown = isQuickAccessShown,
+                hasValidCloudInformation = hasValidCloudInformation,
             ),
             dialogState = dialogState,
         )
@@ -77,11 +93,13 @@ class MusicBottomSheetViewModel(
         initialValue = MusicBottomSheetState(),
     )
 
+    // TODO CLOUD: Add scope checks
     private fun buildRowSpecs(
         musics: List<Music>,
         playedList: List<Music>,
         currentPlayedMusic: Music?,
         isQuickAccessShown: Boolean,
+        hasValidCloudInformation: Boolean,
     ): List<BottomSheetRowSpec> = buildList {
         val editEnabled: Boolean = musics.size == 1
         val queueAction: Boolean = if (musics.size == 1) {
@@ -135,6 +153,10 @@ class MusicBottomSheetViewModel(
                     BottomSheetRowSpec.addToQueue(::addToQueue),
                 )
             )
+        }
+
+        if (hasValidCloudInformation) {
+            BottomSheetRowSpec.startSharedPlayedList(::startSharedPlayedList)
         }
 
         if (removeFromPlayedList) {
@@ -299,6 +321,19 @@ class MusicBottomSheetViewModel(
             playbackManager.addMultipleMusicsToQueue(state.value.musics)
             multiSelectionManager.clearMultiSelection()
             navScope.navigateBack()
+        }
+    }
+
+    private fun startSharedPlayedList() {
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val result = playbackManager.startSharedList(state.value.musics.map { it.musicId })
+            when (result) {
+                is SoulResult.Error -> feedbackPopUpManager.showErrorIfAny(result)
+                is SoulResult.Success -> {
+                    multiSelectionManager.clearMultiSelection()
+                    navScope.navigateBack()
+                }
+            }
         }
     }
 }

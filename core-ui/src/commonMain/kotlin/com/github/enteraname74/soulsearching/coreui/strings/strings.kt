@@ -349,6 +349,8 @@ interface Strings {
     val musicChannelNotificationDescription: String
     val cloudSyncChannelNotificationName: String
     val cloudSyncChannelNotificationDescription: String
+    val startSharedPlayedList: String
+
     fun userType(type: User.Type): String
 
     /**

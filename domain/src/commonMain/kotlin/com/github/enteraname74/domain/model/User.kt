@@ -9,6 +9,9 @@ data class User(
     val refreshToken: String,
     val type: Type,
 ) {
+    fun hasCredentials(): Boolean =
+        accessToken.isNotBlank() && refreshToken.isNotBlank()
+
     enum class Type(val value: String) {
         User("user"),
         Admin("admin"),

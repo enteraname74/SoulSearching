@@ -27,15 +27,19 @@ data class Album(
     fun merge(
         cloudAlbum: CloudAlbum,
         artist: Artist,
+        mergeMode: MergeMode,
     ): Album =
-        copy(
-            remoteId = cloudAlbum.id,
-            albumName = cloudAlbum.name,
-            artist = artist,
-            // Prioritize local cover if possible.
-            cover = cover?.takeIf { !it.isEmpty() } ?: cloudAlbum.coverPath?.let { Cover.Url(it) },
-            nbPlayed = max(nbPlayed, cloudAlbum.nbPlayed),
-            isInQuickAccess = cloudAlbum.isInQuickAccess,
-            lastUpdateMillis = cloudAlbum.lastUpdateAtMillis,
-        )
+        when (mergeMode) {
+            MergeMode.LocalFirst -> this
+            MergeMode.RemoteFirst -> copy(
+                remoteId = cloudAlbum.id,
+                albumName = cloudAlbum.name,
+                artist = artist,
+                // Prioritize local cover if possible.
+                cover = cover?.takeIf { !it.isEmpty() } ?: cloudAlbum.coverPath?.let { Cover.Url(it) },
+                nbPlayed = max(nbPlayed, cloudAlbum.nbPlayed),
+                isInQuickAccess = cloudAlbum.isInQuickAccess,
+                lastUpdateMillis = cloudAlbum.lastUpdateAtMillis,
+            )
+        }
 }
