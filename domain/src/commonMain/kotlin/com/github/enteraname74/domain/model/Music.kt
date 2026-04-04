@@ -52,7 +52,9 @@ data class Music(
         mergeMode: MergeMode,
     ): Music =
         when (mergeMode) {
-            MergeMode.LocalFirst -> this
+            MergeMode.LocalFirst -> copy(
+                remoteId = cloudMusic.fingerprint,
+            )
             MergeMode.RemoteFirst -> copy(
                 remoteId = cloudMusic.fingerprint,
                 name = cloudMusic.name,

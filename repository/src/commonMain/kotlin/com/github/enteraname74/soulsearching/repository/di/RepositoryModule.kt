@@ -21,6 +21,9 @@ val repositoryModule = module {
         PlayerRepositoryImpl(
             playerLocalDataSource = get(),
             workScope = Dispatchers.IO,
+            playerRemoteDataSource = get(),
+            deviceLocalDataSource = get(),
+            userLocalDataSource = get(),
         )
     }
     singleOf(::PlaylistRepositoryImpl) bind PlaylistRepository::class

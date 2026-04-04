@@ -24,9 +24,15 @@ class PlayerRemoteDataSourceImpl(
     override suspend fun create(
         deviceId: String,
         musicIds: List<String>
-    ): SharedPlayedList =
-        client.withUrl(cloudPreferencesDataSource.getUrl())
-            .post(PlayerResource) {
+    ): SharedPlayedList {
+        val body = NewPlayedListBody(
+            deviceId = deviceId,
+            musicIds = musicIds,
+        )
+        println("CLUELESS -- body: $body")
+
+        return client.withUrl(cloudPreferencesDataSource.getUrl())
+            .post(PlayerResource()) {
                 contentType(ContentType.Application.Json)
                 setBody(
                     NewPlayedListBody(
@@ -35,6 +41,7 @@ class PlayerRemoteDataSourceImpl(
                     )
                 )
             }.bodyOrError()
+    }
 
     override suspend fun getDeletedMusicIds(
         deviceId: String,

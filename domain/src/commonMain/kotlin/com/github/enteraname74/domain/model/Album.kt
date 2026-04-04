@@ -30,7 +30,10 @@ data class Album(
         mergeMode: MergeMode,
     ): Album =
         when (mergeMode) {
-            MergeMode.LocalFirst -> this
+            MergeMode.LocalFirst ->
+                copy(
+                    remoteId = cloudAlbum.id,
+                )
             MergeMode.RemoteFirst -> copy(
                 remoteId = cloudAlbum.id,
                 albumName = cloudAlbum.name,

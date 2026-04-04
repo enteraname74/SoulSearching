@@ -16,7 +16,7 @@ abstract class DeviceIdDao {
     abstract suspend fun getNullableDeviceId(): String?
 
     @Transaction
-    suspend fun getDeviceId(): String {
+    open suspend fun getDeviceId(): String {
         val deviceId: String? = getNullableDeviceId()
 
         return if (deviceId == null) {

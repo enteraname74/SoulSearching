@@ -4,20 +4,19 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.github.enteraname74.soulsearching.coreui.composable.SoulCircularProgressIndicator
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.composable.SoulCircularProgressIndicator
 import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
-import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 
 @Composable
 fun LoadingScaffold(
@@ -44,9 +43,6 @@ fun LoadingScaffold(
                 )
             ),
         ) {
-            SoulBackHandler(state) {
-                // no-op when loading
-            }
             LoadingView()
         }
     }
@@ -55,13 +51,21 @@ fun LoadingScaffold(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LoadingView() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BottomSheetDefaults.ScrimColor)
-            .disableFocus(),
-        contentAlignment = Alignment.Center,
+    Dialog(
+        onDismissRequest = {},
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+            usePlatformDefaultWidth = false,
+        )
     ) {
-        SoulCircularProgressIndicator()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .disableFocus(),
+            contentAlignment = Alignment.Center,
+        ) {
+            SoulCircularProgressIndicator()
+        }
     }
 }

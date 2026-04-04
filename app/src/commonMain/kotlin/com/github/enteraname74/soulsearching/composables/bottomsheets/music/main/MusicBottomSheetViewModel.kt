@@ -156,7 +156,7 @@ class MusicBottomSheetViewModel(
         }
 
         if (hasValidCloudInformation) {
-            BottomSheetRowSpec.startSharedPlayedList(::startSharedPlayedList)
+            add(BottomSheetRowSpec.startSharedPlayedList(::startSharedPlayedList))
         }
 
         if (removeFromPlayedList) {
@@ -326,7 +326,9 @@ class MusicBottomSheetViewModel(
 
     private fun startSharedPlayedList() {
         loadingManager.withLoadingOnScope(viewModelScope) {
+            println("CLUELESS -- DOES")
             val result = playbackManager.startSharedList(state.value.musics.map { it.musicId })
+            println("CLUELESS -- HERE WITH RESULT: $result")
             when (result) {
                 is SoulResult.Error -> feedbackPopUpManager.showErrorIfAny(result)
                 is SoulResult.Success -> {

@@ -40,7 +40,9 @@ data class Artist(
         mergeMode: MergeMode,
     ): Artist =
         when (mergeMode) {
-            MergeMode.LocalFirst -> this
+            MergeMode.LocalFirst -> copy(
+                remoteId = cloudArtist.id,
+            )
             MergeMode.RemoteFirst -> copy(
                 remoteId = cloudArtist.id,
                 artistName = cloudArtist.name,
