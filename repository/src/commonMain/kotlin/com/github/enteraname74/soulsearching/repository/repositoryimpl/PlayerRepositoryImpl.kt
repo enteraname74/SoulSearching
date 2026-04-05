@@ -397,27 +397,40 @@ class PlayerRepositoryImpl(
 
     override suspend fun getDeletedRemoteMusicIds(
         playedListId: Uuid,
-    ): List<UUID> {
-        val musicRemoteIds = playerLocalDataSource
-            .getAll()
-            .firstOrNull()
-            ?.mapNotNull { it.remoteId } ?: return emptyList()
+    ): List<UUID> =
+        withContext(workScope) {
+            val musicRemoteIds = playerLocalDataSource
+                .getAll()
+                .firstOrNull()
+                ?.mapNotNull { it.remoteId } ?: return@withContext emptyList()
 
-        val deletedRemoteIds: List<String> = playerRemoteDataSource.getDeletedMusicIds(
-            deviceId = deviceLocalDataSource.getDeviceId(),
-            listId = playedListId,
-            musicIdsToCheck = musicRemoteIds,
-        )
+            val deletedRemoteIds: List<String> = playerRemoteDataSource.getDeletedMusicIds(
+                deviceId = deviceLocalDataSource.getDeviceId(),
+                listId = playedListId,
+                musicIdsToCheck = musicRemoteIds,
+            )
 
-        return musicLocalDataSource.getIdsFromRemoteIds(deletedRemoteIds)
+            musicLocalDataSource.getIdsFromRemoteIds(deletedRemoteIds)
+        }
+
+    override suspend fun addToSharedPlayedList(musicRemoteIds: List<String>) {
+        withContext(workScope) {
+            playerRemoteDataSource.addMusics(
+                deviceId = deviceLocalDataSource.getDeviceId(),
+                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()!!.id.toKotlinUuid(),
+                musicIds = musicRemoteIds,
+            )
+        }
     }
 
-    override suspend fun addToSharedPlaylist(musicRemoteIds: List<String>) {
-        playerRemoteDataSource.addMusics(
-            deviceId = deviceLocalDataSource.getDeviceId(),
-            listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()!!.id.toKotlinUuid(),
-            musicIds = musicRemoteIds,
-        )
+    override suspend fun removeFromSharedPlayedList(musicRemoteIds: List<String>) {
+        withContext(workScope) {
+            playerRemoteDataSource.removeMusics(
+                deviceId = deviceLocalDataSource.getDeviceId(),
+                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()!!.id.toKotlinUuid(),
+                musicIds = musicRemoteIds,
+            )
+        }
     }
 
     private companion object {

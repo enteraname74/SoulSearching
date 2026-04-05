@@ -91,7 +91,11 @@ interface PlayerRepository {
         playedListId: Uuid,
     ): List<UUID>
 
-    suspend fun addToSharedPlaylist(
+    suspend fun addToSharedPlayedList(
+        musicRemoteIds: List<String>
+    )
+
+    suspend fun removeFromSharedPlayedList(
         musicRemoteIds: List<String>
     )
 }

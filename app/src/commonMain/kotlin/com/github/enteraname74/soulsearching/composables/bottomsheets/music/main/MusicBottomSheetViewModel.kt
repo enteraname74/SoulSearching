@@ -253,13 +253,16 @@ class MusicBottomSheetViewModel(
     }
 
     private fun deleteMusics() {
-        viewModelScope.launch {
+        loadingManager.withLoadingOnScope(viewModelScope) {
             dialogState.value = null
-            loadingManager.withLoading { deleteMusicUseCase(musicIds = musicIds) }
-            multiSelectionManager.clearMultiSelection()
-            // TODO PLAYER: This call should be unnecessary
-            playbackManager.removeSongsFromPlayedPlaylist(musicIds)
-            navScope.navigateBack()
+            when (val result = playbackManager.removeSongsFromPlayedPlaylist(musicIds)) {
+                is SoulResult.Error<*> -> feedbackPopUpManager.showErrorIfAny(result)
+                is SoulResult.Success -> {
+                    deleteMusicUseCase(musicIds = musicIds)
+                    multiSelectionManager.clearMultiSelection()
+                    navScope.navigateBack()
+                }
+            }
         }
     }
 
@@ -341,29 +344,38 @@ class MusicBottomSheetViewModel(
     }
 
     private fun removeFromPlayedList() {
-        viewModelScope.launch {
-            // TODO PLAYER: Should no longer be useful
-            playbackManager.removeSongsFromPlayedPlaylist(musicIds)
-            multiSelectionManager.clearMultiSelection()
-            navScope.navigateBack()
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val result = playbackManager.removeSongsFromPlayedPlaylist(musicIds)
+            if (result.isError()) {
+                feedbackPopUpManager.showErrorIfAny(result)
+            } else {
+                multiSelectionManager.clearMultiSelection()
+                navScope.navigateBack()
+            }
         }
     }
 
     private fun playNext() {
         loadingManager.withLoadingOnScope(viewModelScope) {
             val result = playbackManager.addMultipleMusicsToPlayNext(state.value.musics)
-            feedbackPopUpManager.showErrorIfAny(result)
-            multiSelectionManager.clearMultiSelection()
-            navScope.navigateBack()
+            if (result.isError()) {
+                feedbackPopUpManager.showErrorIfAny(result)
+            } else {
+                multiSelectionManager.clearMultiSelection()
+                navScope.navigateBack()
+            }
         }
     }
 
     private fun addToQueue() {
         loadingManager.withLoadingOnScope(viewModelScope) {
             val result = playbackManager.addMultipleMusicsToQueue(state.value.musics)
-            feedbackPopUpManager.showErrorIfAny(result)
-            multiSelectionManager.clearMultiSelection()
-            navScope.navigateBack()
+            if (result.isError()) {
+                feedbackPopUpManager.showErrorIfAny(result)
+            } else {
+                multiSelectionManager.clearMultiSelection()
+                navScope.navigateBack()
+            }
         }
     }
 

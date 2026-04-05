@@ -78,8 +78,7 @@ fun ExpandedPlayerControlsComposable(
             )
 
             PlayerControls(
-                playerMode = state.playerMode
-                    .takeIf { state.currentMusic.scope == MusicScope.User },
+                playerMode = state.playerMode,
                 isPlaying = state.isPlaying,
                 isMusicInFavorite = state.isCurrentMusicInFavorite,
                 toggleFavoriteState = toggleFavoriteState

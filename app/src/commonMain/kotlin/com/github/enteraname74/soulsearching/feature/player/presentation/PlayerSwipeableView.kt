@@ -216,6 +216,7 @@ fun PlayerDraggableView(
                         },
                         multiSelectionState = multiSelectionState,
                         onActivateRemoteLyrics = playerViewModel::navigateToRemoteLyricsSettings,
+                        onSwiped = playerViewModel::onSwipeMusic,
                     )
 
                     /*

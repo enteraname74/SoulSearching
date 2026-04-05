@@ -79,6 +79,7 @@ fun PlayerListView(
     playedList: List<Music>,
     onLongSelectOnMusic: (Music) -> Unit,
     onMoreClickedOnMusic: (musicId: UUID) -> Unit,
+    onSwiped: (Music) -> Unit,
     containerColor: Color,
     contentColor: Color,
     buttonColors: SoulButtonColors,
@@ -174,9 +175,11 @@ fun PlayerListView(
                         Swipeable(
                             modifier = Modifier
                                 .animateItem(),
-                            music = elt,
                             contentColor = contentColor,
                             containerColor = containerColor,
+                            onSwiped = {
+                                onSwiped(elt)
+                            },
                         ) {
                             MusicItemComposable(
                                 modifier = Modifier
@@ -225,11 +228,10 @@ fun PlayerListView(
 @Composable
 @Suppress("Deprecation")
 private fun Swipeable(
-    music: Music,
     containerColor: Color,
     contentColor: Color,
     modifier: Modifier = Modifier,
-    playbackManager: PlaybackManager = injectElement(),
+    onSwiped: () -> Unit,
     content: @Composable () -> Unit,
 ) {
     BoxWithConstraints(
@@ -241,11 +243,7 @@ private fun Swipeable(
 
         LaunchedEffect(swipeableState.currentValue) {
             if (swipeableState.currentValue == MusicItemSwipeableState.SWIPED) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    playbackManager.removeSongsFromPlayedPlaylist(
-                        musicIds = listOf(music.musicId)
-                    )
-                }
+                onSwiped()
             }
         }
 

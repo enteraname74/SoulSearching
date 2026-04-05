@@ -26,7 +26,7 @@ import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
 import com.github.enteraname74.domain.usecase.player.CreateSharedPlayedListUseCase
-import com.github.enteraname74.domain.usecase.player.SyncPlayedListMusicsUseCase
+import com.github.enteraname74.domain.usecase.player.RemoveMusicsFromSharedPlayedListUseCase
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
@@ -63,6 +63,7 @@ class PlaybackManager(
     private val commonCoverUseCase: CommonCoverUseCase,
     private val createSharedPlayedListUseCase: CreateSharedPlayedListUseCase,
     private val addMusicsToSharedPlayedListUseCase: AddMusicsToSharedPlayedListUseCase,
+    private val removeMusicsFromSharedPlayedListUseCase: RemoveMusicsFromSharedPlayedListUseCase,
 ) : KoinComponent, SoulSearchingPlayer.Listener {
     private val notification: SoulSearchingNotification by inject()
     private val player: SoulSearchingPlayer by inject()
@@ -94,10 +95,10 @@ class PlaybackManager(
         playerRepository.getCurrentMusic().map {
             it?.music
         }.stateIn(
-                scope = workScope,
-                started = SharingStarted.Eagerly,
-                initialValue = null,
-            )
+            scope = workScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
 
     val currentScope: Flow<PlayedListScope?> = playerRepository
         .getCurrentScope()
@@ -460,10 +461,12 @@ class PlaybackManager(
     }
 
     private suspend fun skipAndRemoveCurrentSong() {
+        // TODO SHARED PLAYED LIST: Handle remote deletion
         playerRepository.removeCurrentAndPlayNext()
     }
 
     suspend fun setAndPlayMusic(music: Music) {
+        // TODO SHARED PLAYED LIST: Handle played list disconnection
         playerRepository.setCurrent(music.musicId)
         playerRepository.setPlayedListState(PlayedListState.Playing)
     }
@@ -480,8 +483,16 @@ class PlaybackManager(
         playerRepository.switchPlayerMode()
     }
 
-    suspend fun removeSongsFromPlayedPlaylist(musicIds: List<UUID>) {
-        playerRepository.deleteAll(musicIds)
+    suspend fun removeSongsFromPlayedPlaylist(musicIds: List<UUID>): SoulResult<Unit> {
+        val scope =
+            playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.ofSuccess()
+
+        return if (scope.isRemote) {
+            removeMusicsFromSharedPlayedListUseCase(musicIds)
+        } else {
+            playerRepository.deleteAll(musicIds)
+            SoulResult.ofSuccess()
+        }
     }
 
     /**
@@ -498,7 +509,8 @@ class PlaybackManager(
     }
 
     suspend fun addMultipleMusicsToPlayNext(musics: List<Music>): SoulResult<Unit> {
-        val scope = playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.Success(Unit)
+        val scope =
+            playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.Success(Unit)
         return if (scope.isRemote) {
             addMusicsToSharedPlayedListUseCase(musicIds = musics.map { it.musicId })
         } else {
@@ -506,12 +518,13 @@ class PlaybackManager(
                 musics = musics,
                 mode = AddMusicMode.Next,
             )
-            SoulResult.Success(Unit)
+            SoulResult.ofSuccess()
         }
     }
 
     suspend fun addMultipleMusicsToQueue(musics: List<Music>): SoulResult<Unit> {
-        val scope = playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.Success(Unit)
+        val scope =
+            playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.Success(Unit)
         return if (scope.isRemote) {
             addMusicsToSharedPlayedListUseCase(musicIds = musics.map { it.musicId })
         } else {
@@ -519,7 +532,7 @@ class PlaybackManager(
                 musics = musics,
                 mode = AddMusicMode.Queue,
             )
-            SoulResult.Success(Unit)
+            SoulResult.ofSuccess()
         }
     }
 

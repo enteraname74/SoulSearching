@@ -71,6 +71,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
     closeSelection: () -> Unit,
     showMusicBottomSheet: (musicId: UUID) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
+    onSwiped: (Music) -> Unit,
     multiSelectionState: MultiSelectionState,
     toggleFavoriteState: () -> Unit,
     seekTo: (newPosition: Int) -> Unit,
@@ -268,6 +269,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                         multiSelectionState = multiSelectionState,
                         onLongSelectOnMusic = onLongSelectOnMusic,
                         onActivateRemoteLyrics = onActivateRemoteLyrics,
+                        onSwiped = onSwiped,
                     )
                 }
             }
@@ -288,6 +290,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 onLongSelectOnMusic = onLongSelectOnMusic,
                 closeSelection = closeSelection,
                 onActivateRemoteLyrics = onActivateRemoteLyrics,
+                onSwiped = onSwiped,
             )
         } else if (!PlayerUiUtils.canShowRowControlPanel()) {
             BoxWithConstraints(
@@ -316,6 +319,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                     onLongSelectOnMusic = onLongSelectOnMusic,
                     multiSelectionState = multiSelectionState,
                     onActivateRemoteLyrics = onActivateRemoteLyrics,
+                    onSwiped = onSwiped,
                 )
             }
         }

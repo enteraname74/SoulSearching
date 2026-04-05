@@ -58,17 +58,16 @@ class SettingsAllFoldersViewModel(
     }
 
     fun saveSelection() {
-        workScope.launch {
-            loadingManager.withLoading {
-                commonFolderUseCase.upsertAll(allFolders = state.value.folders)
+        loadingManager.withLoadingOnScope(workScope) {
+            commonFolderUseCase.upsertAll(allFolders = state.value.folders)
 
-                val musicIds: List<UUID> = commonMusicUseCase.getAllIdsFromUnselectedFolders()
-                commonMusicUseCase.deleteAllFromUnselectedFolders()
-                playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicIds)
-                feedbackPopUpManager.showFeedback(
-                    feedback = strings.savedChanges,
-                )
-            }
+            val musicIds: List<UUID> = commonMusicUseCase.getAllIdsFromUnselectedFolders()
+            commonMusicUseCase.deleteAllFromUnselectedFolders()
+            // TODO SHARED PLAYED LIST: Should we show the error if the call doesn't work?
+            playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicIds)
+            feedbackPopUpManager.showFeedback(
+                feedback = strings.savedChanges,
+            )
         }
     }
 }

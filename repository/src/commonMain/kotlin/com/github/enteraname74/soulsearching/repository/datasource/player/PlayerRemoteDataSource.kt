@@ -39,4 +39,10 @@ interface PlayerRemoteDataSource {
         listId: Uuid,
         musicIds: List<String>,
     )
+
+    suspend fun removeMusics(
+        deviceId: String,
+        listId: Uuid,
+        musicIds: List<String>,
+    )
 }

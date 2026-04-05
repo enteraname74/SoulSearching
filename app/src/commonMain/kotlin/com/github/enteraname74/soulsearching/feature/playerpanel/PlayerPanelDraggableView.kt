@@ -44,6 +44,7 @@ fun PlayerPanelDraggableView(
     multiSelectionState: MultiSelectionState,
     closeSelection: () -> Unit,
     onActivateRemoteLyrics: () -> Unit,
+    onSwiped: (Music) -> Unit,
     containerColor: Color,
     textColor: Color,
     subTextColor: Color,
@@ -120,6 +121,7 @@ fun PlayerPanelDraggableView(
                 multiSelectionState = multiSelectionState,
                 selectedIconColors = SoulSelectedIconDefaults.primary(),
                 onActivateRemoteLyrics = onActivateRemoteLyrics,
+                onSwiped = onSwiped,
             )
         }
     }

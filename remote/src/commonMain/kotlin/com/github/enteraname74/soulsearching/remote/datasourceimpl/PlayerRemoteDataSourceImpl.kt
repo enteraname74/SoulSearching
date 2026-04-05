@@ -114,6 +114,24 @@ class PlayerRemoteDataSourceImpl(
                         musicIds = musicIds,
                     )
                 )
-            }
+            }.successOrThrow()
+    }
+
+    override suspend fun removeMusics(
+        deviceId: String,
+        listId: Uuid,
+        musicIds: List<String>
+    ) {
+        client.withUrl(cloudPreferencesDataSource.getUrl())
+            .delete(PlayerResource.Musics()) {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    MusicsOperationOnPlayedListBody(
+                        deviceId = deviceId,
+                        listId = listId,
+                        musicIds = musicIds,
+                    )
+                )
+            }.successOrThrow()
     }
 }

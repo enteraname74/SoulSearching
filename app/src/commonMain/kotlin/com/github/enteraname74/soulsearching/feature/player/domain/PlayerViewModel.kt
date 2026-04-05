@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.player.domain
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayerMode
@@ -13,6 +14,8 @@ import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUse
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
@@ -51,6 +54,8 @@ class PlayerViewModel(
     private val commonLyricsUseCase: CommonLyricsUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     val multiSelectionManager: MultiSelectionManager,
+    private val loadingManager: LoadingManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
     commonPlaylistUseCase: CommonPlaylistUseCase,
 ) : ViewModel() {
 
@@ -142,7 +147,8 @@ class PlayerViewModel(
                     currentMusic = playbackMainState.currentMusic,
                     currentMusicIndex = playbackMainState.currentMusicIndex,
                     isCurrentMusicInFavorite = playbackMainState.isCurrentMusicInFavorite,
-                    playerMode = playbackMainState.playerMode,
+                    playerMode = playbackMainState.playerMode
+                        .takeIf { !playbackMainState.currentScope.isRemote },
                     isPlaying = playbackMainState.isPlaying,
                     playlistsWithMusics = playlists,
                     aroundSongs = if (playbackMainState.playerMode == PlayerMode.Loop) {
@@ -294,6 +300,15 @@ class PlayerViewModel(
                     albumId = currentMusic.album.albumId,
                 )
             }
+        }
+    }
+
+    fun onSwipeMusic(music: Music) {
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val result = playbackManager.removeSongsFromPlayedPlaylist(
+                musicIds = listOf(music.musicId),
+            )
+            feedbackPopUpManager.showErrorIfAny(result)
         }
     }
 

@@ -202,9 +202,12 @@ class AlbumBottomSheetViewModel(
             val result = playbackManager.addMultipleMusicsToPlayNext(
                 musics = musics,
             )
-            feedbackPopUpManager.showErrorIfAny(result)
-            multiSelectionManager.clearMultiSelection()
-            navScope.navigateBack()
+            if (result.isError()) {
+                feedbackPopUpManager.showErrorIfAny(result)
+            } else {
+                multiSelectionManager.clearMultiSelection()
+                navScope.navigateBack()
+            }
         }
     }
 
@@ -218,27 +221,32 @@ class AlbumBottomSheetViewModel(
             val result = playbackManager.addMultipleMusicsToQueue(
                 musics = musics,
             )
-            feedbackPopUpManager.showErrorIfAny(result)
-            multiSelectionManager.clearMultiSelection()
-            navScope.navigateBack()
+            if (result.isError()) {
+                feedbackPopUpManager.showErrorIfAny(result)
+            } else {
+                multiSelectionManager.clearMultiSelection()
+                navScope.navigateBack()
+            }
         }
     }
 
     private fun removeFromPlayedList() {
-        viewModelScope.launch {
-            loadingManager.withLoading {
-                val musicIds: List<UUID> =
-                    state.value.albums
-                        .flatMap { it.musics }
-                        .distinctBy { it.musicId }
-                        .map { it.musicId }
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val musicIds: List<UUID> =
+                state.value.albums
+                    .flatMap { it.musics }
+                    .distinctBy { it.musicId }
+                    .map { it.musicId }
 
-                playbackManager.removeSongsFromPlayedPlaylist(
-                    musicIds = musicIds,
-                )
+            val result = playbackManager.removeSongsFromPlayedPlaylist(
+                musicIds = musicIds,
+            )
+            if (result.isError()) {
+                feedbackPopUpManager.showErrorIfAny(result)
+            } else {
+                multiSelectionManager.clearMultiSelection()
+                navScope.navigateBack()
             }
-            multiSelectionManager.clearMultiSelection()
-            navScope.navigateBack()
         }
     }
 }
