@@ -19,19 +19,17 @@ class CreateSharedPlayedListUseCase(
     private val playerRepository: PlayerRepository,
 ) {
     suspend operator fun invoke(musicIds: List<UUID>): SoulResult<Unit> = SoulResult.runCatching {
-        println("CLUELESS -- HERE TRES")
         val musicRemoteIds: List<String> = syncMusicForPlayerIfNeededUseCase(musicIds)
             .mapNotNull { it.remoteId }
 
-        println("CLUELESS -- HERE QUATRO")
         val sharedPlayedList: SharedPlayedList = playerRepository.createSharedPlayedList(
             musicRemoteIds = musicRemoteIds,
         )
-        println("CLUELESS -- HERE DOS")
+
         val playerMusics: List<PlayerMusic> = fetchPlayedListMusicsUseCase(
             playedListId = sharedPlayedList.id,
         )
-        println("CLUELESS -- HERE CINQUO")
+
         playerRepository.setupFromShared(
             sharedPlayedList = sharedPlayedList,
             playerMusics = playerMusics,

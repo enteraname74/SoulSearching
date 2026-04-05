@@ -3,6 +3,7 @@ package com.github.enteraname74.domain.repository
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.player.AddMusicMode
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListSetup
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayedListToContinue
@@ -28,6 +29,7 @@ interface PlayerRepository {
     fun getCachedPlayedList(playlistId: String): Flow<PlayedListToContinue?>
     fun getCurrentPosition(): Flow<Int?>
     fun getCurrentProgress(): Flow<Int>
+    fun getCurrentScope(): Flow<PlayedListScope?>
 
     suspend fun deleteAll(musicIds: List<UUID>)
 
@@ -60,6 +62,11 @@ interface PlayerRepository {
         mode: AddMusicMode,
     )
 
+    suspend fun updatesMusics(
+        musicIdsToRemove: List<UUID>,
+        playerMusicsToAdd: List<PlayerMusic>,
+    )
+
     suspend fun continuePlayedList(
         playedListId: UUID,
     )
@@ -79,4 +86,12 @@ interface PlayerRepository {
     suspend fun fetchPlayedListMusics(
         playedListId: Uuid
     ): List<SharedPlayerMusic>
+
+    suspend fun getDeletedRemoteMusicIds(
+        playedListId: Uuid,
+    ): List<UUID>
+
+    suspend fun addToSharedPlaylist(
+        musicRemoteIds: List<String>
+    )
 }

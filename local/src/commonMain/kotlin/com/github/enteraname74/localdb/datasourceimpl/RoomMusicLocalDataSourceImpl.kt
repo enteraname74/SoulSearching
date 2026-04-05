@@ -104,6 +104,9 @@ internal class RoomMusicLocalDataSourceImpl(
     override suspend fun getFromRemoteId(remoteId: String): Music? =
         appDatabase.musicDao.getFromRemoteId(remoteId)?.toMusic()
 
+    override suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<UUID> =
+        appDatabase.musicDao.getIdsFromRemoteIds(remoteIds)
+
     override fun getFromIds(ids: List<UUID>): Flow<List<Music>> =
         appDatabase.musicDao.getFromIds(ids).map { list ->
             list

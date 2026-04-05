@@ -3,13 +3,16 @@ package com.github.enteraname74.soulsearching.remote.datasourceimpl
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrError
+import com.github.enteraname74.soulsearching.remote.ext.successOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
 import com.github.enteraname74.soulsearching.remote.model.player.CheckPlayerMusicIdsBody
+import com.github.enteraname74.soulsearching.remote.model.player.MusicsOperationOnPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.NewPlayedListBody
 import com.github.enteraname74.soulsearching.remote.resource.PlayerResource
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerRemoteDataSource
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.resources.delete
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
 import io.ktor.client.request.setBody
@@ -24,14 +27,8 @@ class PlayerRemoteDataSourceImpl(
     override suspend fun create(
         deviceId: String,
         musicIds: List<String>
-    ): SharedPlayedList {
-        val body = NewPlayedListBody(
-            deviceId = deviceId,
-            musicIds = musicIds,
-        )
-        println("CLUELESS -- body: $body")
-
-        return client.withUrl(cloudPreferencesDataSource.getUrl())
+    ): SharedPlayedList =
+        client.withUrl(cloudPreferencesDataSource.getUrl())
             .post(PlayerResource()) {
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -41,7 +38,6 @@ class PlayerRemoteDataSourceImpl(
                     )
                 )
             }.bodyOrError()
-    }
 
     override suspend fun getDeletedMusicIds(
         deviceId: String,
@@ -89,4 +85,35 @@ class PlayerRemoteDataSourceImpl(
                     page = page,
                 )
             ).bodyOrError()
+
+    override suspend fun deletePlayedList(deviceId: String, listId: Uuid) {
+        // Not and issue if the call fails
+        runCatching {
+            client.withUrl(cloudPreferencesDataSource.getUrl())
+                .delete(
+                    resource = PlayerResource.List(
+                        listId = listId,
+                        deviceId = deviceId,
+                    ),
+                ).successOrThrow()
+        }
+    }
+
+    override suspend fun addMusics(
+        deviceId: String,
+        listId: Uuid,
+        musicIds: List<String>
+    ) {
+        client.withUrl(cloudPreferencesDataSource.getUrl())
+            .post(PlayerResource.Musics()) {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    MusicsOperationOnPlayedListBody(
+                        deviceId = deviceId,
+                        listId = listId,
+                        musicIds = musicIds,
+                    )
+                )
+            }
+    }
 }

@@ -188,7 +188,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 currentMusic = state.currentMusic,
             )
 
-            if (!PlayerUiUtils.canShowRowControlPanel()) {
+            if (!PlayerUiUtils.canShowRowControlPanel() && state.playedListScope.isAdmin) {
                 Box(
                     modifier = Modifier
                         .padding(
@@ -214,7 +214,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
             }
         }
 
-        if (PlayerUiUtils.canShowRowControlPanel()) {
+        if (PlayerUiUtils.canShowRowControlPanel() && state.playedListScope.isAdmin) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()

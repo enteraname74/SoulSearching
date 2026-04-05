@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.features.playback.manager
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayerMode
 import kotlinx.coroutines.flow.Flow
@@ -18,6 +19,7 @@ sealed interface PlaybackManagerState {
         val playerMode: PlayerMode,
         val isPlaying: Boolean,
         val currentState: PlayedListState,
+        val currentScope: PlayedListScope,
     ): PlaybackManagerState
 
     fun isEmpty(): Boolean =

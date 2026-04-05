@@ -25,9 +25,11 @@ import com.github.enteraname74.domain.usecase.music.UploadMusicToCloudUseCase
 import com.github.enteraname74.domain.usecase.music.UpsertCloudMusicUseCase
 import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
+import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
 import com.github.enteraname74.domain.usecase.player.CreateSharedPlayedListUseCase
 import com.github.enteraname74.domain.usecase.player.FetchPlayedListMusicsUseCase
 import com.github.enteraname74.domain.usecase.player.SyncMusicForPlayerIfNeededUseCase
+import com.github.enteraname74.domain.usecase.player.SyncPlayedListMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
@@ -99,4 +101,6 @@ val domainModule = module {
     factoryOf(::CreateSharedPlayedListUseCase)
     factoryOf(::FetchPlayedListMusicsUseCase)
     factoryOf(::SyncMusicForPlayerIfNeededUseCase)
+    factoryOf(::SyncPlayedListMusicsUseCase)
+    factoryOf(::AddMusicsToSharedPlayedListUseCase)
 }

@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.datasource.player
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.domain.model.player.PlayerMode
@@ -30,6 +31,7 @@ interface PlayerLocalDataSource {
     fun getCachedPlayedList(playlistId: String): Flow<PlayedListToContinue?>
     fun getCurrentPosition(): Flow<Int?>
     fun getCurrentProgress(): Flow<Int>
+    fun getCurrentScope(): Flow<PlayedListScope?>
     suspend fun upsertAllMusics(playerMusics: List<PlayerMusic>)
     suspend fun moveMusic(
         fromMusicId: UUID,
@@ -66,4 +68,8 @@ interface PlayerLocalDataSource {
     suspend fun switchPlayerMode()
 
     suspend fun removeCurrentAndPlayNext()
+    suspend fun updatesMusics(
+        musicIdsToRemove: List<UUID>,
+        playerMusicsToAdd: List<PlayerMusic>,
+    )
 }

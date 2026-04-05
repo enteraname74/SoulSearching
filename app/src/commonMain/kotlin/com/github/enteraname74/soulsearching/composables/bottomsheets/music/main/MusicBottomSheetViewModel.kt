@@ -3,8 +3,9 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.music.mai
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicScope
 import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.model.player.PlayerPlayedList
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
@@ -66,7 +67,8 @@ class MusicBottomSheetViewModel(
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
         ),
-        hasValidCloudInformationUseCase()
+        hasValidCloudInformationUseCase(),
+        playbackManager.currentScope,
     ) { data ->
         val musics = data[0] as List<Music>
         val playedList = data[1] as List<Music>
@@ -74,6 +76,7 @@ class MusicBottomSheetViewModel(
         val dialogState = data[3] as SoulDialog?
         val isQuickAccessShown = data[4] as Boolean
         val hasValidCloudInformation = data[5] as Boolean
+        val playedListScope = data[6] as PlayedListScope?
 
         MusicBottomSheetState(
             musics = musics,
@@ -84,6 +87,7 @@ class MusicBottomSheetViewModel(
                 currentPlayedMusic = (playbackState as? PlaybackManagerState.Data)?.currentMusic,
                 isQuickAccessShown = isQuickAccessShown,
                 hasValidCloudInformation = hasValidCloudInformation,
+                playedListScope = playedListScope,
             ),
             dialogState = dialogState,
         )
@@ -100,22 +104,54 @@ class MusicBottomSheetViewModel(
         currentPlayedMusic: Music?,
         isQuickAccessShown: Boolean,
         hasValidCloudInformation: Boolean,
+        playedListScope: PlayedListScope?,
     ): List<BottomSheetRowSpec> = buildList {
-        val editEnabled: Boolean = musics.size == 1
-        val queueAction: Boolean = if (musics.size == 1) {
-            val isSameMusic =
-                currentPlayedMusic != null && musics.first().musicId == currentPlayedMusic.musicId
-            !isSameMusic || playedList.isEmpty()
-        } else {
-            true
-        }
-        val removeFromPlayedList: Boolean = if (musics.size == 1) {
-            playedList.any { it.musicId == musics.first().musicId }
-        } else {
-            playedList.isNotEmpty()
+        val editEnabled: Boolean = musics.size == 1 && musics.first().scope == MusicScope.User
+        val canAddNext: Boolean = when {
+            playedListScope?.isRemote == true -> false
+            musics.size == 1 -> {
+                val isSameMusic =
+                    currentPlayedMusic != null && musics.first().musicId == currentPlayedMusic.musicId
+                !isSameMusic || playedList.isEmpty()
+            }
+
+            else -> true
         }
 
-        if (isQuickAccessShown) {
+        val canAddToQueue: Boolean = when {
+            musics.size == 1 -> {
+                val isSameMusic =
+                    currentPlayedMusic != null && musics.first().musicId == currentPlayedMusic.musicId
+                !isSameMusic || playedList.isEmpty()
+            }
+
+            else -> true
+        }
+
+        val removeFromPlayedList: Boolean = when {
+            musics.size == 1 && (musics.first().scope == MusicScope.User || playedListScope?.isAdmin == true) ->
+                playedList.any { it.musicId == musics.first().musicId }
+
+            else -> playedList.isNotEmpty()
+        }
+
+        val canAddToPlaylist = when {
+            musics.size == 1 && musics.first().scope != MusicScope.User -> false
+            else -> true
+        }
+
+        val canAddToQuickAccess = when {
+            !isQuickAccessShown -> false
+            musics.size == 1 && musics.first().scope != MusicScope.User -> false
+            else -> true
+        }
+
+        val canDelete = when {
+            musics.size == 1 && musics.first().scope != MusicScope.User -> false
+            else -> true
+        }
+
+        if (canAddToQuickAccess) {
             val isInQuickAccess: Boolean = if (musics.size == 1) {
                 musics.first().isInQuickAccess
             } else {
@@ -132,11 +168,15 @@ class MusicBottomSheetViewModel(
                 )
             )
         }
-        add(
-            BottomSheetRowSpec.addToPlaylist(
-                onClick = ::addToPlaylists
+
+        if (canAddToPlaylist) {
+            add(
+                BottomSheetRowSpec.addToPlaylist(
+                    onClick = ::addToPlaylists
+                )
             )
-        )
+        }
+
         if (editEnabled) {
             add(
                 BottomSheetRowSpec(
@@ -146,13 +186,12 @@ class MusicBottomSheetViewModel(
                 )
             )
         }
-        if (queueAction) {
-            addAll(
-                listOf(
-                    BottomSheetRowSpec.playNext(::playNext),
-                    BottomSheetRowSpec.addToQueue(::addToQueue),
-                )
-            )
+        if (canAddNext) {
+            add(BottomSheetRowSpec.playNext(::playNext))
+        }
+
+        if (canAddToQueue) {
+            add(BottomSheetRowSpec.addToQueue(::addToQueue))
         }
 
         if (hasValidCloudInformation) {
@@ -177,17 +216,19 @@ class MusicBottomSheetViewModel(
             )
         }
 
-        add(
-            BottomSheetRowSpec(
-                icon = CoreRes.drawable.ic_delete_filled,
-                title = if (musics.size == 1) {
-                    strings.deleteMusic
-                } else {
-                    strings.deleteSelectedMusics
-                },
-                onClick = ::showDeleteDialog,
+        if (canDelete) {
+            add(
+                BottomSheetRowSpec(
+                    icon = CoreRes.drawable.ic_delete_filled,
+                    title = if (musics.size == 1) {
+                        strings.deleteMusic
+                    } else {
+                        strings.deleteSelectedMusics
+                    },
+                    onClick = ::showDeleteDialog,
+                )
             )
-        )
+        }
     }
 
     private fun buildTopInformation(musics: List<Music>): BottomSheetTopInformation =
@@ -309,16 +350,18 @@ class MusicBottomSheetViewModel(
     }
 
     private fun playNext() {
-        viewModelScope.launch {
-            playbackManager.addMultipleMusicsToPlayNext(state.value.musics)
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val result = playbackManager.addMultipleMusicsToPlayNext(state.value.musics)
+            feedbackPopUpManager.showErrorIfAny(result)
             multiSelectionManager.clearMultiSelection()
             navScope.navigateBack()
         }
     }
 
     private fun addToQueue() {
-        viewModelScope.launch {
-            playbackManager.addMultipleMusicsToQueue(state.value.musics)
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val result = playbackManager.addMultipleMusicsToQueue(state.value.musics)
+            feedbackPopUpManager.showErrorIfAny(result)
             multiSelectionManager.clearMultiSelection()
             navScope.navigateBack()
         }
@@ -326,9 +369,7 @@ class MusicBottomSheetViewModel(
 
     private fun startSharedPlayedList() {
         loadingManager.withLoadingOnScope(viewModelScope) {
-            println("CLUELESS -- DOES")
             val result = playbackManager.startSharedList(state.value.musics.map { it.musicId })
-            println("CLUELESS -- HERE WITH RESULT: $result")
             when (result) {
                 is SoulResult.Error -> feedbackPopUpManager.showErrorIfAny(result)
                 is SoulResult.Success -> {

@@ -24,6 +24,7 @@ val repositoryModule = module {
             playerRemoteDataSource = get(),
             deviceLocalDataSource = get(),
             userLocalDataSource = get(),
+            musicLocalDataSource = get(),
         )
     }
     singleOf(::PlaylistRepositoryImpl) bind PlaylistRepository::class

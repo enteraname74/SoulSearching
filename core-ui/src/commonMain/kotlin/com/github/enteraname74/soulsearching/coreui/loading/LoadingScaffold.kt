@@ -59,6 +59,7 @@ private fun LoadingView() {
             usePlatformDefaultWidth = false,
         )
     ) {
+        FullScreenLoadingModifier()
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -69,3 +70,6 @@ private fun LoadingView() {
         }
     }
 }
+
+@Composable
+internal expect fun FullScreenLoadingModifier()

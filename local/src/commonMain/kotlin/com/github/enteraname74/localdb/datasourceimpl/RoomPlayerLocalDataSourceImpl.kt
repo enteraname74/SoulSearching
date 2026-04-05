@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import androidx.room.useWriterConnection
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.domain.model.player.PlayerMode
@@ -182,6 +183,9 @@ internal class RoomPlayerLocalDataSourceImpl(
 
     override fun getCurrentState(): Flow<PlayedListState?> =
         listDao.getCurrentState()
+
+    override fun getCurrentScope(): Flow<PlayedListScope?> =
+        listDao.getCurrentScope()
 
     override fun getCurrentPlayedList(): Flow<PlayerPlayedList?> =
         listDao.getCurrentPlayedList().map {
@@ -411,6 +415,18 @@ internal class RoomPlayerLocalDataSourceImpl(
             playerMusicDao.setCurrent(
                 musicId = nextId,
                 lastPlayedMillis = Clock.System.now().toEpochMilliseconds()
+            )
+        }
+    }
+
+    override suspend fun updatesMusics(
+        musicIdsToRemove: List<UUID>,
+        playerMusicsToAdd: List<PlayerMusic>
+    ) {
+        appDatabase.useWriterConnection {
+            playerMusicDao.deleteAll(musicIdsToRemove)
+            playerMusicDao.upsertAll(
+                playerMusicsToAdd.map { it.toRoomPlayerMusic() }
             )
         }
     }

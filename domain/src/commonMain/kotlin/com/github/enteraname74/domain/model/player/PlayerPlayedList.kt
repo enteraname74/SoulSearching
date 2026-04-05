@@ -22,13 +22,25 @@ enum class PlayedListState {
     Cached
 }
 
-enum class PlayedListScope {
-    LocalUser,
-    SharedHost,
-    SharedGuest
+enum class PlayedListScope(
+    val isRemote: Boolean,
+    val isAdmin: Boolean,
+) {
+    LocalUser(
+        isRemote = false,
+        isAdmin = true,
+    ),
+    SharedHost(
+        isRemote = true,
+        isAdmin = true
+    ),
+    SharedGuest(
+        isRemote = true,
+        isAdmin = false,
+    )
 }
 
 sealed interface PlayedListType {
-    data class Shared(val invitationCode: String): PlayedListType
+    data class Shared(val invitationCode: String) : PlayedListType
     data object Local : PlayedListType
 }

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -21,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.MusicScope
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_keyboard_arrow_down
@@ -35,7 +35,6 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -51,8 +50,6 @@ fun PlayerTopInformation(
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     Row(
         modifier = modifier
             .statusBarsPadding()
@@ -99,6 +96,9 @@ fun PlayerTopInformation(
                     .basicMarquee()
             )
 
+            val canClickOnArtistsAndAlbum = playerViewManager.currentValue == BottomSheetStates.EXPANDED
+                    && state.currentMusic.scope == MusicScope.User
+
             FlowRow(
                 horizontalArrangement = Arrangement.Center,
                 verticalArrangement = Arrangement.Center,
@@ -118,7 +118,7 @@ fun PlayerTopInformation(
                         maxLines = 1,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
-                            .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+                            .clickableIf(enabled = canClickOnArtistsAndAlbum) {
                                 onArtistClicked(artist)
                             },
                         overflow = TextOverflow.Ellipsis
@@ -131,7 +131,7 @@ fun PlayerTopInformation(
                 fontSize = 15.sp,
                 maxLines = 1,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+                modifier = Modifier.clickableIf(enabled = canClickOnArtistsAndAlbum) {
                     onAlbumClicked()
                 },
                 overflow = TextOverflow.Ellipsis

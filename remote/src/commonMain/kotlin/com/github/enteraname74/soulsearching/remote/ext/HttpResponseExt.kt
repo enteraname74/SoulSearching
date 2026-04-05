@@ -11,3 +11,6 @@ suspend inline fun <reified T> HttpResponse.bodyOrError(): T =
     } else {
         throw Exception(bodyAsText())
     }
+
+suspend fun HttpResponse.successOrThrow(): Unit =
+    if (!status.isSuccess()) throw Exception(bodyAsText()) else Unit

@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import com.github.enteraname74.domain.model.MusicScope
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
@@ -77,10 +78,12 @@ fun ExpandedPlayerControlsComposable(
             )
 
             PlayerControls(
-                playerMode = state.playerMode,
+                playerMode = state.playerMode
+                    .takeIf { state.currentMusic.scope == MusicScope.User },
                 isPlaying = state.isPlaying,
                 isMusicInFavorite = state.isCurrentMusicInFavorite,
-                toggleFavoriteState = toggleFavoriteState,
+                toggleFavoriteState = toggleFavoriteState
+                    .takeIf { state.currentMusic.scope == MusicScope.User },
                 contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                 previous = previous,
                 next = next,
@@ -117,13 +120,13 @@ private fun SliderMusicPositionAndDuration(
 
 @Composable
 private fun PlayerControls(
-    playerMode: PlayerMode,
+    playerMode: PlayerMode?,
     isMusicInFavorite: Boolean,
     isPlaying: Boolean,
     changePlayerMode: () -> Unit,
     previous: () -> Unit,
     togglePlayPause: () -> Unit,
-    toggleFavoriteState: () -> Unit,
+    toggleFavoriteState: (() -> Unit)?,
     next: () -> Unit,
     contentColor: Color,
 ) {
@@ -132,19 +135,24 @@ private fun PlayerControls(
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(
-            painter = painterResource(playerMode.icon()),
-            contentDescription = null,
-            modifier = Modifier
-                .weight(ExternalIconsWeight)
-                .clip(CircleShape)
-                .height(UiConstants.ImageSize.medium)
-                .widthIn(max = UiConstants.ImageSize.medium)
-                .clickableWithHandCursor {
-                    changePlayerMode()
-                },
-            tint = contentColor,
-        )
+        val playerModeBaseModifier = Modifier
+            .weight(ExternalIconsWeight)
+            .clip(CircleShape)
+            .height(UiConstants.ImageSize.medium)
+            .widthIn(max = UiConstants.ImageSize.medium)
+        if (playerMode != null) {
+            Icon(
+                painter = painterResource(playerMode.icon()),
+                contentDescription = null,
+                modifier = playerModeBaseModifier
+                    .clickableWithHandCursor {
+                        changePlayerMode()
+                    },
+                tint = contentColor,
+            )
+        } else {
+            Spacer(modifier = playerModeBaseModifier)
+        }
         Spacer(modifier = Modifier.weight(SpacerWeight))
         Icon(
             painter = painterResource(CoreRes.drawable.ic_skip_previous_filled),
@@ -188,23 +196,29 @@ private fun PlayerControls(
             tint = contentColor
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
-        Icon(
-            painter = painterResource(
-                if (isMusicInFavorite) {
-                    CoreRes.drawable.ic_favorite_filled
-                } else {
-                    CoreRes.drawable.ic_favorite
-                }
-            ),
-            contentDescription = null,
-            modifier = Modifier
-                .weight(ExternalIconsWeight)
-                .clip(CircleShape)
-                .height(UiConstants.ImageSize.medium)
-                .widthIn(max = UiConstants.ImageSize.medium)
-                .clickableWithHandCursor { toggleFavoriteState() },
-            tint = contentColor
-        )
+
+        val favoriteBaseModifier = Modifier
+            .weight(ExternalIconsWeight)
+            .clip(CircleShape)
+            .height(UiConstants.ImageSize.medium)
+            .widthIn(max = UiConstants.ImageSize.medium)
+        if (toggleFavoriteState != null) {
+            Icon(
+                painter = painterResource(
+                    if (isMusicInFavorite) {
+                        CoreRes.drawable.ic_favorite_filled
+                    } else {
+                        CoreRes.drawable.ic_favorite
+                    }
+                ),
+                contentDescription = null,
+                modifier = favoriteBaseModifier
+                    .clickableWithHandCursor { toggleFavoriteState() },
+                tint = contentColor
+            )
+        } else {
+            Spacer(modifier = favoriteBaseModifier)
+        }
     }
 }
 

@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import kotlinx.coroutines.flow.Flow
 
 sealed interface PlayerViewState {
@@ -17,5 +18,6 @@ sealed interface PlayerViewState {
         val isPlaying: Boolean,
         val playlistsWithMusics: List<PlaylistWithMusics>,
         val aroundSongs: List<Music>,
+        val playedListScope: PlayedListScope,
     ): PlayerViewState
 }

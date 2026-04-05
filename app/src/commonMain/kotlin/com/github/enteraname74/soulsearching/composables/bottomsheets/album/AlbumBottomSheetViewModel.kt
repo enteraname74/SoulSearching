@@ -16,6 +16,7 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
@@ -35,6 +36,7 @@ class AlbumBottomSheetViewModel(
     private val multiSelectionManager: MultiSelectionManager,
     private val loadingManager: LoadingManager,
     private val navScope: AlbumBottomSheetNavScope,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
     settings: SoulSearchingSettings,
     params:  AlbumBottomSheetDestination,
 ): ViewModel() {
@@ -191,34 +193,32 @@ class AlbumBottomSheetViewModel(
     }
 
     private fun playNext() {
-        viewModelScope.launch {
-            loadingManager.withLoading {
-                val musics: List<Music> =
-                    state.value.albums
-                        .flatMap { it.musics }
-                        .distinctBy { it.musicId }
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val musics: List<Music> =
+                state.value.albums
+                    .flatMap { it.musics }
+                    .distinctBy { it.musicId }
 
-                playbackManager.addMultipleMusicsToPlayNext(
-                    musics = musics,
-                )
-            }
+            val result = playbackManager.addMultipleMusicsToPlayNext(
+                musics = musics,
+            )
+            feedbackPopUpManager.showErrorIfAny(result)
             multiSelectionManager.clearMultiSelection()
             navScope.navigateBack()
         }
     }
 
     private fun addToQueue() {
-        viewModelScope.launch {
-            loadingManager.withLoading {
-                val musics: List<Music> =
-                    state.value.albums
-                        .flatMap { it.musics }
-                        .distinctBy { it.musicId }
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val musics: List<Music> =
+                state.value.albums
+                    .flatMap { it.musics }
+                    .distinctBy { it.musicId }
 
-                playbackManager.addMultipleMusicsToQueue(
-                    musics = musics,
-                )
-            }
+            val result = playbackManager.addMultipleMusicsToQueue(
+                musics = musics,
+            )
+            feedbackPopUpManager.showErrorIfAny(result)
             multiSelectionManager.clearMultiSelection()
             navScope.navigateBack()
         }

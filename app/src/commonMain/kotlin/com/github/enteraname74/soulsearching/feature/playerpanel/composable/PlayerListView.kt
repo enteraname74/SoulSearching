@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
@@ -83,6 +84,7 @@ fun PlayerListView(
     buttonColors: SoulButtonColors,
     multiSelectionState: MultiSelectionState,
     selectedIconColors: SoulSelectedIconColors,
+    playedListScope: PlayedListScope,
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -192,7 +194,7 @@ fun PlayerListView(
                                                 )
                                             }
                                         }
-                                    ),
+                                    ).takeIf { !playedListScope.isRemote },
                                 onClick = { music ->
                                     CoroutineScope(Dispatchers.IO).launch {
                                         playbackManager.setAndPlayMusic(music)

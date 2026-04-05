@@ -15,15 +15,18 @@ import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
 import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.soulsearching.repository.datasource.DeviceLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 import kotlin.coroutines.CoroutineContext
 import kotlin.uuid.Uuid
+import kotlin.uuid.toKotlinUuid
 
 /**
  * Repository of a PlayerMusic.
@@ -33,6 +36,7 @@ class PlayerRepositoryImpl(
     private val playerRemoteDataSource: PlayerRemoteDataSource,
     private val deviceLocalDataSource: DeviceLocalDataSource,
     private val userLocalDataSource: UserLocalDataSource,
+    private val musicLocalDataSource: MusicLocalDataSource,
     private val workScope: CoroutineContext,
 ) : PlayerRepository {
     override fun getAllPaginated(): Flow<PagingData<Music>> =
@@ -71,6 +75,9 @@ class PlayerRepositoryImpl(
     override fun getCurrentProgress(): Flow<Int> =
         playerLocalDataSource.getCurrentProgress()
 
+    override fun getCurrentScope(): Flow<PlayedListScope?> =
+        playerLocalDataSource.getCurrentScope()
+
     override suspend fun setProgress(progress: Int) {
         playerLocalDataSource.setProgress(progress)
     }
@@ -83,7 +90,22 @@ class PlayerRepositoryImpl(
 
     override suspend fun deleteCurrentPlayedList() {
         withContext(workScope) {
+            val playedList = playerLocalDataSource
+                .getCurrentPlayedList()
+                .firstOrNull() ?: return@withContext
+
             playerLocalDataSource.deleteCurrentPlayedList()
+
+            launch {
+                val shouldDeleteRemote = playedList.scope == PlayedListScope.SharedHost
+
+                if (shouldDeleteRemote) {
+                    playerRemoteDataSource.deletePlayedList(
+                        deviceId = deviceLocalDataSource.getDeviceId(),
+                        listId = playedList.id.toKotlinUuid(),
+                    )
+                }
+            }
         }
     }
 
@@ -115,7 +137,8 @@ class PlayerRepositoryImpl(
         playerMusics: List<PlayerMusic>
     ) {
         withContext(workScope) {
-            val userId: Uuid = userLocalDataSource.observeUser().firstOrNull()?.id ?: return@withContext
+            val userId: Uuid =
+                userLocalDataSource.observeUser().firstOrNull()?.id ?: return@withContext
 
             playerLocalDataSource.upsertPlayedList(
                 playedList = sharedPlayedList.toPlayedList(userId),
@@ -148,16 +171,29 @@ class PlayerRepositoryImpl(
                 .firstOrNull() ?: return@withContext false
 
             val isSameMusic = currentMusic.music.musicId == playedListSetup.selectedMusic?.musicId
-            val isSamePlaylist = if (currentPlayedList.playlistId == null && playedListSetup.listId == null) {
-                currentPlayedList.isMainPlaylist == playedListSetup.isMain
-            } else if (currentPlayedList.playlistId != null && playedListSetup.listId != null) {
-                currentPlayedList.playlistId == playedListSetup.listId
-            } else {
-                false
-            }
+            val isSamePlaylist =
+                if (currentPlayedList.playlistId == null && playedListSetup.listId == null) {
+                    currentPlayedList.isMainPlaylist == playedListSetup.isMain
+                } else if (currentPlayedList.playlistId != null && playedListSetup.listId != null) {
+                    currentPlayedList.playlistId == playedListSetup.listId
+                } else {
+                    false
+                }
 
             isSameMusic && isSamePlaylist
         }
+
+    override suspend fun updatesMusics(
+        musicIdsToRemove: List<UUID>,
+        playerMusicsToAdd: List<PlayerMusic>
+    ) {
+        withContext(workScope) {
+            playerLocalDataSource.updatesMusics(
+                musicIdsToRemove = musicIdsToRemove,
+                playerMusicsToAdd = playerMusicsToAdd,
+            )
+        }
+    }
 
     override suspend fun addAll(
         musics: List<Music>,
@@ -315,7 +351,10 @@ class PlayerRepositoryImpl(
 
             when (state) {
                 PlayedListState.Playing -> playerLocalDataSource.setState(PlayedListState.Paused)
-                PlayedListState.Paused, PlayedListState.Loading -> playerLocalDataSource.setState(PlayedListState.Playing)
+                PlayedListState.Paused, PlayedListState.Loading -> playerLocalDataSource.setState(
+                    PlayedListState.Playing
+                )
+
                 else -> {
                     // no-op
                 }
@@ -339,6 +378,7 @@ class PlayerRepositoryImpl(
             val fetchedMusics: MutableList<SharedPlayerMusic> = mutableListOf()
             while (true) {
                 val fetchedData = playerRemoteDataSource.getPlayedListMusics(
+                    // TODO SHARED PLAYEDLIST: add lastupdate at field
                     lastUpdateAt = null,
                     maxPerPage = MAX_MUSICS_PER_PAGE,
                     page = page,
@@ -354,6 +394,31 @@ class PlayerRepositoryImpl(
 
             fetchedMusics
         }
+
+    override suspend fun getDeletedRemoteMusicIds(
+        playedListId: Uuid,
+    ): List<UUID> {
+        val musicRemoteIds = playerLocalDataSource
+            .getAll()
+            .firstOrNull()
+            ?.mapNotNull { it.remoteId } ?: return emptyList()
+
+        val deletedRemoteIds: List<String> = playerRemoteDataSource.getDeletedMusicIds(
+            deviceId = deviceLocalDataSource.getDeviceId(),
+            listId = playedListId,
+            musicIdsToCheck = musicRemoteIds,
+        )
+
+        return musicLocalDataSource.getIdsFromRemoteIds(deletedRemoteIds)
+    }
+
+    override suspend fun addToSharedPlaylist(musicRemoteIds: List<String>) {
+        playerRemoteDataSource.addMusics(
+            deviceId = deviceLocalDataSource.getDeviceId(),
+            listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()!!.id.toKotlinUuid(),
+            musicIds = musicRemoteIds,
+        )
+    }
 
     private companion object {
         const val MAX_MUSICS_PER_PAGE = 300

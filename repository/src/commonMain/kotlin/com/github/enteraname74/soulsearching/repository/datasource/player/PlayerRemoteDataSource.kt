@@ -28,4 +28,15 @@ interface PlayerRemoteDataSource {
         maxPerPage: Int?,
         page: Int?,
     ): List<SharedPlayerMusic>
+
+    suspend fun deletePlayedList(
+        deviceId: String,
+        listId: Uuid,
+    )
+
+    suspend fun addMusics(
+        deviceId: String,
+        listId: Uuid,
+        musicIds: List<String>,
+    )
 }

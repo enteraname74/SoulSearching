@@ -134,7 +134,7 @@ class PlayerViewModel(
     val state: StateFlow<PlayerViewState> = combine(
         playbackManager.state,
         commonPlaylistUseCase.getAllWithMusics(),
-        playbackManager.playedList
+        playbackManager.playedList,
     ) { playbackMainState, playlists, playedList ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
@@ -164,6 +164,7 @@ class PlayerViewModel(
                         }
                     },
                     playedList = playedList,
+                    playedListScope = playbackMainState.currentScope,
                 )
             }
 

@@ -24,7 +24,9 @@ import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
+import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
 import com.github.enteraname74.domain.usecase.player.CreateSharedPlayedListUseCase
+import com.github.enteraname74.domain.usecase.player.SyncPlayedListMusicsUseCase
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
@@ -60,6 +62,7 @@ class PlaybackManager(
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val commonCoverUseCase: CommonCoverUseCase,
     private val createSharedPlayedListUseCase: CreateSharedPlayedListUseCase,
+    private val addMusicsToSharedPlayedListUseCase: AddMusicsToSharedPlayedListUseCase,
 ) : KoinComponent, SoulSearchingPlayer.Listener {
     private val notification: SoulSearchingNotification by inject()
     private val player: SoulSearchingPlayer by inject()
@@ -95,6 +98,9 @@ class PlaybackManager(
                 started = SharingStarted.Eagerly,
                 initialValue = null,
             )
+
+    val currentScope: Flow<PlayedListScope?> = playerRepository
+        .getCurrentScope()
 
     val currentSongProgressionState: Flow<Int> = playbackProgressJob.state
 
@@ -136,6 +142,7 @@ class PlaybackManager(
                     playerMode = currentPlayedList.mode,
                     isPlaying = currentPlayedList.state == PlayedListState.Playing,
                     currentState = currentPlayedList.state,
+                    currentScope = currentPlayedList.scope,
                 )
             }
         }.distinctUntilChanged()
@@ -490,18 +497,30 @@ class PlaybackManager(
         )
     }
 
-    suspend fun addMultipleMusicsToPlayNext(musics: List<Music>) {
-        playerRepository.addAll(
-            musics = musics,
-            mode = AddMusicMode.Next,
-        )
+    suspend fun addMultipleMusicsToPlayNext(musics: List<Music>): SoulResult<Unit> {
+        val scope = playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.Success(Unit)
+        return if (scope.isRemote) {
+            addMusicsToSharedPlayedListUseCase(musicIds = musics.map { it.musicId })
+        } else {
+            playerRepository.addAll(
+                musics = musics,
+                mode = AddMusicMode.Next,
+            )
+            SoulResult.Success(Unit)
+        }
     }
 
-    suspend fun addMultipleMusicsToQueue(musics: List<Music>) {
-        playerRepository.addAll(
-            musics = musics,
-            mode = AddMusicMode.Queue,
-        )
+    suspend fun addMultipleMusicsToQueue(musics: List<Music>): SoulResult<Unit> {
+        val scope = playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.Success(Unit)
+        return if (scope.isRemote) {
+            addMusicsToSharedPlayedListUseCase(musicIds = musics.map { it.musicId })
+        } else {
+            playerRepository.addAll(
+                musics = musics,
+                mode = AddMusicMode.Queue,
+            )
+            SoulResult.Success(Unit)
+        }
     }
 
     suspend fun playShuffle(
