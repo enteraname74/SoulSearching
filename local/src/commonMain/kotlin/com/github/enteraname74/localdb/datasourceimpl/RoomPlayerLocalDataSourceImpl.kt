@@ -12,12 +12,14 @@ import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
+import com.github.enteraname74.domain.model.player.SharedPlayedListUser
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.player.RoomCompletePlayerMusic
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
 import com.github.enteraname74.localdb.model.player.toRoomPlayerMusic
 import com.github.enteraname74.localdb.model.player.toRoomPlayerPlayedList
+import com.github.enteraname74.localdb.model.player.toRoomSharedPlayedListUser
 import com.github.enteraname74.localdb.utils.PagingUtils
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,6 +40,7 @@ internal class RoomPlayerLocalDataSourceImpl(
     private val playerMusicDao = appDatabase.playerMusicDao
     private val listDao = appDatabase.playerPlayedListDao
     private val progressDao = appDatabase.playerMusicProgressDao
+    private val usersDao = appDatabase.sharedPlayedListUserDao
 
     override fun getAllPaginated(): Flow<PagingData<Music>> =
         listDao.getCurrentMode().flatMapLatest { mode ->
@@ -429,6 +432,12 @@ internal class RoomPlayerLocalDataSourceImpl(
                 playerMusicsToAdd.map { it.toRoomPlayerMusic() }
             )
         }
+    }
+
+    override suspend fun setSharedUsers(users: List<SharedPlayedListUser>) {
+        usersDao.setUsers(
+            users = users.map { it.toRoomSharedPlayedListUser() },
+        )
     }
 
     private fun <T> withGlobalState(transform: suspend (GlobalState) -> Flow<T>): Flow<T> =

@@ -9,8 +9,8 @@ data class SharedPlayedList(
     val id: Uuid,
     val inviteCode: String,
     val state: State,
-    val owner: SharedPlayedListUser?,
-    val users: List<SharedPlayedListUser>,
+    val owner: RemoteSharedPlayedListUser?,
+    val users: List<RemoteSharedPlayedListUser>,
 ) {
     enum class State(val value: String) {
         Playing("playing"),
@@ -52,4 +52,16 @@ data class SharedPlayedList(
                 PlayedListScope.SharedGuest
             }
         )
+
+    fun buildUsers(): List<SharedPlayedListUser> =
+        users.map { user ->
+            SharedPlayedListUser(
+                listId = id,
+                isOwner = user.id == owner?.id,
+                id = user.id,
+                deviceId = user.deviceId,
+                username = user.username,
+                joinedAt = user.joinedAt,
+            )
+        }
 }
