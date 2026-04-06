@@ -167,6 +167,7 @@ class PlayerRepositoryImpl(
                 playedList = sharedPlayedList.toPlayedList(userId),
                 playerMusics = playerMusics,
             )
+            playerLocalDataSource.setSharedUsers(sharedPlayedList.buildUsers())
         }
     }
 
@@ -487,6 +488,30 @@ class PlayerRepositoryImpl(
             )
         }
     }
+
+    override suspend fun syncSharedPlayedList() {
+        runCatching {
+            withContext(workScope) {
+                val playedList = playerLocalDataSource.getCurrentPlayedList().firstOrNull() ?: return@withContext
+                val sharedList = playerRemoteDataSource.getPlayedList(
+                    deviceId = deviceLocalDataSource.getDeviceId(),
+                    listId = playedList.id.toKotlinUuid(),
+                )
+                playerLocalDataSource.setState(sharedList.state.toPlayedListState())
+                playerLocalDataSource.setSharedUsers(sharedList.buildUsers())
+            }
+        }
+    }
+
+    override suspend fun joinSharedList(
+        code: String,
+    ): SharedPlayedList =
+        withContext(workScope) {
+            playerRemoteDataSource.joinSharedList(
+                deviceId = deviceLocalDataSource.getDeviceId(),
+                code = code,
+            )
+        }
 
     private companion object {
         const val MAX_MUSICS_PER_PAGE = 300

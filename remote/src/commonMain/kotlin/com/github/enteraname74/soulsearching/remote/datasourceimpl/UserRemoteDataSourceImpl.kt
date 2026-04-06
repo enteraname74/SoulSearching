@@ -4,7 +4,7 @@ import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.domain.model.UserTokens
 import com.github.enteraname74.soulsearching.remote.di.HttpClientNames
-import com.github.enteraname74.soulsearching.remote.ext.bodyOrError
+import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.clearToken
 import com.github.enteraname74.soulsearching.remote.ext.safeRequest
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
@@ -50,7 +50,7 @@ class UserRemoteDataSourceImpl(
                         password = password,
                     )
                 )
-            }.bodyOrError<RemoteUserAuth>().toUser()
+            }.bodyOrThrow<RemoteUserAuth>().toUser()
     }
 
     override suspend fun signUp(
@@ -70,7 +70,7 @@ class UserRemoteDataSourceImpl(
                         inscriptionCode = code,
                     )
                 )
-            }.bodyOrError<RemoteUserAuth>().toUser()
+            }.bodyOrThrow<RemoteUserAuth>().toUser()
 
     override suspend fun refreshTokens(): SoulResult<UserTokens> =
         cloudClient

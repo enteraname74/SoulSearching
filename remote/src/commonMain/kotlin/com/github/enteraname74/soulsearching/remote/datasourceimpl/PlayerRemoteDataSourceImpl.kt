@@ -3,10 +3,11 @@ package com.github.enteraname74.soulsearching.remote.datasourceimpl
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
-import com.github.enteraname74.soulsearching.remote.ext.bodyOrError
+import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.successOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
 import com.github.enteraname74.soulsearching.remote.model.player.CheckPlayerMusicIdsBody
+import com.github.enteraname74.soulsearching.remote.model.player.JoinPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.MusicsOperationOnPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.NewPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.RemoveUserFromPlayedListBody
@@ -42,7 +43,7 @@ class PlayerRemoteDataSourceImpl(
                         musicIds = musicIds,
                     )
                 )
-            }.bodyOrError()
+            }.bodyOrThrow()
 
     override suspend fun getDeletedMusicIds(
         deviceId: String,
@@ -59,7 +60,7 @@ class PlayerRemoteDataSourceImpl(
                         listId = listId,
                     )
                 )
-            }.bodyOrError()
+            }.bodyOrThrow()
 
     override suspend fun getPlayedList(
         deviceId: String,
@@ -71,7 +72,7 @@ class PlayerRemoteDataSourceImpl(
                     listId = listId,
                     deviceId = deviceId,
                 )
-            ).bodyOrError()
+            ).bodyOrThrow()
 
     override suspend fun getPlayedListMusics(
         deviceId: String,
@@ -89,7 +90,7 @@ class PlayerRemoteDataSourceImpl(
                     maxPerPage = maxPerPage,
                     page = page,
                 )
-            ).bodyOrError()
+            ).bodyOrThrow()
 
     override suspend fun deletePlayedList(deviceId: String, listId: Uuid) {
         // Not and issue if the call fails
@@ -176,12 +177,12 @@ class PlayerRemoteDataSourceImpl(
                         state = SharedPlayedList.State.fromPlayedListState(state),
                     )
                 )
-            }.bodyOrError()
+            }.bodyOrThrow()
 
     override suspend fun updateCurrentMusic(
         deviceId: String,
         listId: Uuid,
-        musicId: String
+        musicRemoteId: String
     ) {
         client.withUrl(cloudPreferencesDataSource.getUrl())
             .put(PlayerResource.Musics()) {
@@ -190,9 +191,22 @@ class PlayerRemoteDataSourceImpl(
                     UpdateCurrentMusicBody(
                         listId = listId,
                         deviceId = deviceId,
-                        musicId = musicId,
+                        musicId = musicRemoteId,
                     )
                 )
             }.successOrThrow()
     }
+
+    override suspend fun joinSharedList(deviceId: String, code: String): SharedPlayedList =
+        client
+            .withUrl(cloudPreferencesDataSource.getUrl())
+            .post(PlayerResource.Join()) {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    JoinPlayedListBody(
+                        code = code,
+                        deviceId = deviceId,
+                    )
+                )
+            }.bodyOrThrow()
 }

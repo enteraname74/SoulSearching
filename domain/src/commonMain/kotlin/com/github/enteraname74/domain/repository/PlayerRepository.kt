@@ -100,4 +100,10 @@ interface PlayerRepository {
     )
 
     suspend fun updateCurrentRemoteMusic(musicRemoteId: String)
+
+    suspend fun syncSharedPlayedList()
+
+    suspend fun joinSharedList(
+        code: String,
+    ): SharedPlayedList
 }
