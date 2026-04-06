@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.datasource.player
 
+import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
 import kotlin.uuid.Uuid
@@ -45,4 +46,10 @@ interface PlayerRemoteDataSource {
         listId: Uuid,
         musicIds: List<String>,
     )
+
+    suspend fun updateState(
+        deviceId: String,
+        listId: Uuid,
+        state: PlayedListState,
+    ) : SharedPlayedList
 }

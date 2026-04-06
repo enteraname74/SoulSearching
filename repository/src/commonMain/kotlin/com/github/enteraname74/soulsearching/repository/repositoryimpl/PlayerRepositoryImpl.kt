@@ -31,6 +31,7 @@ import kotlin.uuid.toKotlinUuid
 /**
  * Repository of a PlayerMusic.
  */
+// TODO SHARED PLAYED LIST: Use LoadingManager on all calls that uses setPlayedListState
 class PlayerRepositoryImpl(
     private val playerLocalDataSource: PlayerLocalDataSource,
     private val playerRemoteDataSource: PlayerRemoteDataSource,
@@ -314,6 +315,22 @@ class PlayerRepositoryImpl(
     override suspend fun setPlayedListState(playedListState: PlayedListState) {
         withContext(workScope) {
             playerLocalDataSource.setState(playedListState)
+            setRemoteStateIfNeeded(playedListState)
+        }
+    }
+
+    private suspend fun setRemoteStateIfNeeded(playedListState: PlayedListState) {
+        withContext(workScope) {
+            val playedList = playerLocalDataSource.getCurrentPlayedList().firstOrNull() ?: return@withContext
+
+            if (playedList.scope == PlayedListScope.SharedHost) {
+                val updatedList = playerRemoteDataSource.updateState(
+                    deviceId = deviceLocalDataSource.getDeviceId(),
+                    listId = playedList.id.toKotlinUuid(),
+                    state = playedListState,
+                )
+                playerLocalDataSource.setState(updatedList.state.toPlayedListState())
+            }
         }
     }
 
@@ -329,7 +346,7 @@ class PlayerRepositoryImpl(
                 .getNextMusic().firstOrNull()?.music?.musicId ?: return@withContext
 
             playerLocalDataSource.setCurrent(musicId = nextId)
-            playerLocalDataSource.setState(PlayedListState.Playing)
+            setPlayedListState(PlayedListState.Playing)
         }
     }
 
@@ -338,7 +355,7 @@ class PlayerRepositoryImpl(
             val previousId: UUID = playerLocalDataSource
                 .getPreviousMusic().firstOrNull()?.music?.musicId ?: return@withContext
             playerLocalDataSource.setCurrent(musicId = previousId)
-            playerLocalDataSource.setState(PlayedListState.Playing)
+            setPlayedListState(PlayedListState.Playing)
         }
     }
 
@@ -350,8 +367,8 @@ class PlayerRepositoryImpl(
                 ?.state ?: return@withContext
 
             when (state) {
-                PlayedListState.Playing -> playerLocalDataSource.setState(PlayedListState.Paused)
-                PlayedListState.Paused, PlayedListState.Loading -> playerLocalDataSource.setState(
+                PlayedListState.Playing -> setPlayedListState(PlayedListState.Paused)
+                PlayedListState.Paused, PlayedListState.Loading -> setPlayedListState(
                     PlayedListState.Playing
                 )
 

@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
+import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrError
@@ -8,6 +9,7 @@ import com.github.enteraname74.soulsearching.remote.ext.withUrl
 import com.github.enteraname74.soulsearching.remote.model.player.CheckPlayerMusicIdsBody
 import com.github.enteraname74.soulsearching.remote.model.player.MusicsOperationOnPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.NewPlayedListBody
+import com.github.enteraname74.soulsearching.remote.model.player.UpdatePlayedListBody
 import com.github.enteraname74.soulsearching.remote.resource.PlayerResource
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerRemoteDataSource
@@ -15,6 +17,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.plugins.resources.delete
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
+import io.ktor.client.plugins.resources.put
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -134,4 +138,21 @@ class PlayerRemoteDataSourceImpl(
                 )
             }.successOrThrow()
     }
+
+    override suspend fun updateState(
+        deviceId: String,
+        listId: Uuid,
+        state: PlayedListState
+    ): SharedPlayedList =
+        client.withUrl(cloudPreferencesDataSource.getUrl())
+            .put(PlayerResource()) {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    UpdatePlayedListBody(
+                        listId = listId,
+                        deviceId = deviceId,
+                        state = SharedPlayedList.State.fromPlayedListState(state),
+                    )
+                )
+            }.bodyOrError()
 }

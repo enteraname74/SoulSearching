@@ -25,6 +25,14 @@ data class SharedPlayedList(
         companion object {
             fun fromValueOrPaused(value: String): State =
                 entries.find { it.value == value } ?: Paused
+
+            fun fromPlayedListState(state: PlayedListState): State =
+                when (state) {
+                    PlayedListState.Playing -> Playing
+                    PlayedListState.Paused,
+                    PlayedListState.Loading,
+                    PlayedListState.Cached -> Paused
+                }
         }
     }
 
