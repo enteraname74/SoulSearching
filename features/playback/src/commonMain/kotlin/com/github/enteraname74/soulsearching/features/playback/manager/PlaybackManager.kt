@@ -49,6 +49,8 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -188,6 +190,7 @@ class PlaybackManager(
         listenToState()
         playerListener()
         notificationListener()
+        sharedListCurrentMusicUpdateListener()
     }
 
     private fun init() {
@@ -298,6 +301,28 @@ class PlaybackManager(
                     notification.update(updateData = data)
                 }
             }
+        }
+    }
+
+    private fun sharedListCurrentMusicUpdateListener() {
+        launchWithInit {
+            playerRepository
+                .getCurrentPlayedList()
+                .map { it?.scope == PlayedListScope.SharedHost }
+                .distinctUntilChanged()
+                .collectLatest { isOwner ->
+                    if (isOwner) {
+                        playerRepository
+                            .getCurrentMusic()
+                            .mapNotNull { it?.music?.remoteId }
+                            .distinctUntilChanged()
+                            .collectLatest { currentMusicRemoteId ->
+                                runCatching {
+                                    playerRepository.updateCurrentRemoteMusic(currentMusicRemoteId)
+                                }
+                            }
+                    }
+                }
         }
     }
 

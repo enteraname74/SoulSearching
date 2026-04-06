@@ -10,6 +10,7 @@ import com.github.enteraname74.soulsearching.remote.model.player.CheckPlayerMusi
 import com.github.enteraname74.soulsearching.remote.model.player.MusicsOperationOnPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.NewPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.RemoveUserFromPlayedListBody
+import com.github.enteraname74.soulsearching.remote.model.player.UpdateCurrentMusicBody
 import com.github.enteraname74.soulsearching.remote.model.player.UpdatePlayedListBody
 import com.github.enteraname74.soulsearching.remote.resource.PlayerResource
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
@@ -19,7 +20,6 @@ import io.ktor.client.plugins.resources.delete
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
 import io.ktor.client.plugins.resources.put
-import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -177,4 +177,22 @@ class PlayerRemoteDataSourceImpl(
                     )
                 )
             }.bodyOrError()
+
+    override suspend fun updateCurrentMusic(
+        deviceId: String,
+        listId: Uuid,
+        musicId: String
+    ) {
+        client.withUrl(cloudPreferencesDataSource.getUrl())
+            .put(PlayerResource.Musics()) {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    UpdateCurrentMusicBody(
+                        listId = listId,
+                        deviceId = deviceId,
+                        musicId = musicId,
+                    )
+                )
+            }.successOrThrow()
+    }
 }

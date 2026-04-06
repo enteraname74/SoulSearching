@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.AddMusicMode
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListSetup
@@ -119,18 +118,19 @@ class PlayerRepositoryImpl(
 
     override suspend fun continuePlayedList(playedListId: UUID) {
         withContext(workScope) {
-            playerLocalDataSource.continuePlayedList(playedListId)
             quitSharedPlayedListIfNeeded()
+            playerLocalDataSource.continuePlayedList(playedListId)
         }
     }
 
     private suspend fun quitSharedPlayedListIfNeeded() {
         withContext(workScope) {
             val currentPlayedList = playerLocalDataSource.getCurrentPlayedList().firstOrNull() ?: return@withContext
-            val user = userLocalDataSource.observeUser().firstOrNull() ?: return@withContext
-            val deviceId = deviceLocalDataSource.getDeviceId()
 
             if (currentPlayedList.scope.isRemote) {
+                val user = userLocalDataSource.observeUser().firstOrNull() ?: return@withContext
+                val deviceId = deviceLocalDataSource.getDeviceId()
+
                 playerRemoteDataSource.removeUserFromPlayedList(
                     deviceId = deviceId,
                     listId = currentPlayedList.id.toKotlinUuid(),
@@ -145,12 +145,13 @@ class PlayerRepositoryImpl(
     override suspend fun setup(playedListSetup: PlayedListSetup) {
         withContext(workScope) {
             if (shouldSkipSetup(playedListSetup)) return@withContext
+            quitSharedPlayedListIfNeeded()
 
             playerLocalDataSource.upsertPlayedList(
                 playedList = playedListSetup.toPlayedList(),
                 playerMusics = playedListSetup.toPlayerMusics(),
             )
-            quitSharedPlayedListIfNeeded()
+
         }
     }
 
@@ -472,6 +473,17 @@ class PlayerRepositoryImpl(
                 deviceId = deviceLocalDataSource.getDeviceId(),
                 listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()!!.id.toKotlinUuid(),
                 musicIds = musicRemoteIds,
+            )
+        }
+    }
+
+    override suspend fun updateCurrentRemoteMusic(musicRemoteId: String) {
+        withContext(workScope) {
+            val playedList = playerLocalDataSource.getCurrentPlayedList().firstOrNull() ?: return@withContext
+            playerRemoteDataSource.updateCurrentMusic(
+                deviceId = deviceLocalDataSource.getDeviceId(),
+                listId = playedList.id.toKotlinUuid(),
+                musicRemoteId = musicRemoteId
             )
         }
     }

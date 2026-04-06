@@ -98,4 +98,6 @@ interface PlayerRepository {
     suspend fun removeFromSharedPlayedList(
         musicRemoteIds: List<String>
     )
+
+    suspend fun updateCurrentRemoteMusic(musicRemoteId: String)
 }
