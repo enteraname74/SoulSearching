@@ -305,7 +305,7 @@ class PlayerViewModel(
 
     fun onSwipeMusic(music: Music) {
         loadingManager.withLoadingOnScope(viewModelScope) {
-            val result = playbackManager.removeSongsFromPlayedPlaylist(
+            val result = playbackManager.removeSongsFromPlayedList(
                 musicIds = listOf(music.musicId),
             )
             feedbackPopUpManager.showErrorIfAny(result)

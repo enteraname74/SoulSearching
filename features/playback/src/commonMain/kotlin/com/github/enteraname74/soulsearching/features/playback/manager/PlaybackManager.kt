@@ -340,7 +340,7 @@ class PlaybackManager(
     fun getCachedPlaylist(playlistId: String): Flow<PlayedListToContinue?> =
         playerRepository.getCachedPlayedList(playlistId)
 
-    suspend fun continuePlayedList(playedListId: UUID) {
+    suspend fun continuePlayedList(playedListId: UUID): SoulResult<Unit> = SoulResult.runCatching {
         playerRepository.continuePlayedList(playedListId)
     }
 
@@ -421,6 +421,7 @@ class PlaybackManager(
     /**
      * Play the next song in queue.
      */
+    // TODO SHARED PLAYED LIST: Update current played list in remote if needed
     suspend fun next() {
         val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
         val size: Int = playerRepository.getSize().firstOrNull() ?: return
@@ -441,6 +442,7 @@ class PlaybackManager(
     /**
      * Play the previous song in queue.
      */
+    // TODO SHARED PLAYED LIST: Update current played list in remote if needed
     suspend fun previous(skipRewind: Boolean = false) {
         val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
         val size: Int = playerRepository.getSize().firstOrNull() ?: return
@@ -465,8 +467,8 @@ class PlaybackManager(
         playerRepository.removeCurrentAndPlayNext()
     }
 
-    suspend fun setAndPlayMusic(music: Music) {
-        // TODO SHARED PLAYED LIST: Handle played list disconnection
+    suspend fun setAndPlayMusicFromCurrentPlayedList(music: Music) {
+        // TODO SHARED PLAYED LIST: Update current played list in remote if needed
         playerRepository.setCurrent(music.musicId)
         playerRepository.setPlayedListState(PlayedListState.Playing)
     }
@@ -483,7 +485,7 @@ class PlaybackManager(
         playerRepository.switchPlayerMode()
     }
 
-    suspend fun removeSongsFromPlayedPlaylist(musicIds: List<UUID>): SoulResult<Unit> {
+    suspend fun removeSongsFromPlayedList(musicIds: List<UUID>): SoulResult<Unit> {
         val scope =
             playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.ofSuccess()
 
@@ -540,8 +542,8 @@ class PlaybackManager(
         musicList: List<Music>,
         playlistId: String?,
         isMain: Boolean,
-    ) {
-        if (musicList.isEmpty()) return
+    ): SoulResult<Unit> = SoulResult.runCatching {
+        if (musicList.isEmpty()) return@runCatching
 
         playerRepository.setup(
             playedListSetup = PlayedListSetup.fromSelection(
@@ -555,13 +557,13 @@ class PlaybackManager(
         )
     }
 
-    suspend fun playSoulMix() {
+    suspend fun playSoulMix(): SoulResult<Unit> = SoulResult.runCatching {
         val totalByFolder: Int =
             settings.get(SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST)
 
         val musicList: List<Music> = commonMusicUseCase.getSoulMixMusics(totalByFolder)
 
-        if (musicList.isEmpty()) return
+        if (musicList.isEmpty()) return@runCatching
 
         playerRepository.setup(
             playedListSetup = PlayedListSetup.fromSelection(
@@ -581,7 +583,7 @@ class PlaybackManager(
         playlistId: String?,
         isMainPlaylist: Boolean = false,
         isForcingNewPlaylist: Boolean = false
-    ) {
+    ): SoulResult<Unit> = SoulResult.runCatching {
         playerRepository.setup(
             playedListSetup = PlayedListSetup(
                 musics = musicList,

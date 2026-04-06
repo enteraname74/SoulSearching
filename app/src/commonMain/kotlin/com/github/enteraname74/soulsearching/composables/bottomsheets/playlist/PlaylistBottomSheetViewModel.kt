@@ -241,7 +241,7 @@ class PlaylistBottomSheetViewModel(
                     .distinctBy { it.musicId }
                     .map { it.musicId }
 
-            val result = playbackManager.removeSongsFromPlayedPlaylist(
+            val result = playbackManager.removeSongsFromPlayedList(
                 musicIds = musicIds,
             )
             if (result.isError()) {

@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.AddMusicMode
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListSetup
@@ -119,6 +120,25 @@ class PlayerRepositoryImpl(
     override suspend fun continuePlayedList(playedListId: UUID) {
         withContext(workScope) {
             playerLocalDataSource.continuePlayedList(playedListId)
+            quitSharedPlayedListIfNeeded()
+        }
+    }
+
+    private suspend fun quitSharedPlayedListIfNeeded() {
+        withContext(workScope) {
+            val currentPlayedList = playerLocalDataSource.getCurrentPlayedList().firstOrNull() ?: return@withContext
+            val user = userLocalDataSource.observeUser().firstOrNull() ?: return@withContext
+            val deviceId = deviceLocalDataSource.getDeviceId()
+
+            if (currentPlayedList.scope.isRemote) {
+                playerRemoteDataSource.removeUserFromPlayedList(
+                    deviceId = deviceId,
+                    listId = currentPlayedList.id.toKotlinUuid(),
+                    userId = user.id,
+                    deviceIdToRemove = deviceId,
+                    userIdToRemove = user.id
+                )
+            }
         }
     }
 
@@ -130,6 +150,7 @@ class PlayerRepositoryImpl(
                 playedList = playedListSetup.toPlayedList(),
                 playerMusics = playedListSetup.toPlayerMusics(),
             )
+            quitSharedPlayedListIfNeeded()
         }
     }
 
@@ -324,12 +345,17 @@ class PlayerRepositoryImpl(
             val playedList = playerLocalDataSource.getCurrentPlayedList().firstOrNull() ?: return@withContext
 
             if (playedList.scope == PlayedListScope.SharedHost) {
-                val updatedList = playerRemoteDataSource.updateState(
-                    deviceId = deviceLocalDataSource.getDeviceId(),
-                    listId = playedList.id.toKotlinUuid(),
-                    state = playedListState,
-                )
-                playerLocalDataSource.setState(updatedList.state.toPlayedListState())
+                runCatching {
+                    val updatedList = playerRemoteDataSource.updateState(
+                        deviceId = deviceLocalDataSource.getDeviceId(),
+                        listId = playedList.id.toKotlinUuid(),
+                        state = playedListState,
+                    )
+                    // We will not override the local value if it was loading
+                    if (playedListState != PlayedListState.Loading) {
+                        playerLocalDataSource.setState(updatedList.state.toPlayedListState())
+                    }
+                }
             }
         }
     }

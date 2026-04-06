@@ -9,6 +9,7 @@ import com.github.enteraname74.soulsearching.remote.ext.withUrl
 import com.github.enteraname74.soulsearching.remote.model.player.CheckPlayerMusicIdsBody
 import com.github.enteraname74.soulsearching.remote.model.player.MusicsOperationOnPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.NewPlayedListBody
+import com.github.enteraname74.soulsearching.remote.model.player.RemoveUserFromPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.UpdatePlayedListBody
 import com.github.enteraname74.soulsearching.remote.resource.PlayerResource
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
@@ -101,6 +102,27 @@ class PlayerRemoteDataSourceImpl(
                     ),
                 ).successOrThrow()
         }
+    }
+
+    override suspend fun removeUserFromPlayedList(
+        deviceId: String,
+        listId: Uuid,
+        userId: Uuid,
+        deviceIdToRemove: String,
+        userIdToRemove: Uuid,
+    ) {
+        client.withUrl(cloudPreferencesDataSource.getUrl())
+            .delete(PlayerResource.RemoveUser()) {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    RemoveUserFromPlayedListBody(
+                        listId = listId,
+                        deviceId = deviceId,
+                        userIdToRemove = userIdToRemove,
+                        deviceIdToRemove = deviceIdToRemove,
+                    )
+                )
+            }
     }
 
     override suspend fun addMusics(

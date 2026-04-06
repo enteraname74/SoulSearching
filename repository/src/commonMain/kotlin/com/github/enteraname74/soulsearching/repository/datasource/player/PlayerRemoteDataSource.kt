@@ -35,6 +35,14 @@ interface PlayerRemoteDataSource {
         listId: Uuid,
     )
 
+    suspend fun removeUserFromPlayedList(
+        deviceId: String,
+        listId: Uuid,
+        userId: Uuid,
+        deviceIdToRemove: String,
+        userIdToRemove: Uuid,
+    )
+
     suspend fun addMusics(
         deviceId: String,
         listId: Uuid,

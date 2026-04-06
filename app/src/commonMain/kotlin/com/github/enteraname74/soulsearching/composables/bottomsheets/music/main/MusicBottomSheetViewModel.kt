@@ -255,7 +255,7 @@ class MusicBottomSheetViewModel(
     private fun deleteMusics() {
         loadingManager.withLoadingOnScope(viewModelScope) {
             dialogState.value = null
-            when (val result = playbackManager.removeSongsFromPlayedPlaylist(musicIds)) {
+            when (val result = playbackManager.removeSongsFromPlayedList(musicIds)) {
                 is SoulResult.Error<*> -> feedbackPopUpManager.showErrorIfAny(result)
                 is SoulResult.Success -> {
                     deleteMusicUseCase(musicIds = musicIds)
@@ -345,7 +345,7 @@ class MusicBottomSheetViewModel(
 
     private fun removeFromPlayedList() {
         loadingManager.withLoadingOnScope(viewModelScope) {
-            val result = playbackManager.removeSongsFromPlayedPlaylist(musicIds)
+            val result = playbackManager.removeSongsFromPlayedList(musicIds)
             if (result.isError()) {
                 feedbackPopUpManager.showErrorIfAny(result)
             } else {

@@ -360,7 +360,7 @@ class MainPageViewModel(
             for (music in all) {
                 music.localPath?.let {
                     if (!File(it).exists()) {
-                        playbackManager.removeSongsFromPlayedPlaylist(
+                        playbackManager.removeSongsFromPlayedList(
                             musicIds = listOf(music.musicId)
                         )
                         val hasBeenDeleted = removeLocallyOrDeleteMusicUseCase(music = music)

@@ -200,7 +200,7 @@ fun PlayerListView(
                                     ).takeIf { !playedListScope.isRemote },
                                 onClick = { music ->
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        playbackManager.setAndPlayMusic(music)
+                                        playbackManager.setAndPlayMusicFromCurrentPlayedList(music)
                                     }
                                 },
                                 onMoreClicked = {
