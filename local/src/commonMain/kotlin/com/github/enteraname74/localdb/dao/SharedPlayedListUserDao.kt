@@ -28,7 +28,7 @@ abstract class SharedPlayedListUserDao {
     @Query(
         """
             SELECT * FROM RoomSharedPlayedListUser
-            ORDER BY joinedAt
+            ORDER BY joinedAt DESC
         """
     )
     abstract fun getAll(): Flow<List<RoomSharedPlayedListUser>>

@@ -77,4 +77,5 @@ interface PlayerLocalDataSource {
     suspend fun setSharedUsers(
         users: List<SharedPlayedListUser>,
     )
+    fun observeCurrentSharedUsers(): Flow<List<SharedPlayedListUser>>
 }

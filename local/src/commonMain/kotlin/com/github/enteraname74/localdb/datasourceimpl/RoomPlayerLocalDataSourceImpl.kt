@@ -83,7 +83,6 @@ internal class RoomPlayerLocalDataSourceImpl(
         }
     }
 
-
     override fun getNextMusic(
         musicIdsToSkip: List<UUID>,
     ): Flow<PlayerMusic?> =
@@ -439,6 +438,11 @@ internal class RoomPlayerLocalDataSourceImpl(
             users = users.map { it.toRoomSharedPlayedListUser() },
         )
     }
+
+    override fun observeCurrentSharedUsers(): Flow<List<SharedPlayedListUser>> =
+        usersDao.getAll().map { list ->
+            list.map { it.toSharedPlayedListUser() }
+        }
 
     private fun <T> withGlobalState(transform: suspend (GlobalState) -> Flow<T>): Flow<T> =
         combine(

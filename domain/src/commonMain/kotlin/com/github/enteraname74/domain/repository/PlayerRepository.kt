@@ -11,6 +11,7 @@ import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayedList
+import com.github.enteraname74.domain.model.player.SharedPlayedListUser
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -106,4 +107,6 @@ interface PlayerRepository {
     suspend fun joinSharedList(
         code: String,
     ): SharedPlayedList
+
+    fun observeCurrentSharedUsers(): Flow<List<SharedPlayedListUser>>
 }

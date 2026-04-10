@@ -351,6 +351,12 @@ interface Strings {
     val cloudSyncChannelNotificationDescription: String
     val startSharedPlayedList: String
 
+    val sharedListTitle: String
+    val sharedListHost: String
+    val sharedListGuests: String
+    val sharedListCodeTitle: String
+    val sharedListCodeDescription: String
+
     fun userType(type: User.Type): String
 
     /**

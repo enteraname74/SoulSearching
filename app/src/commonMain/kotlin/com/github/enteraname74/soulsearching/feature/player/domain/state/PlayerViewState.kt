@@ -1,11 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.player.domain.state
 
-import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.player.PlayedListScope
-import kotlinx.coroutines.flow.Flow
+import com.github.enteraname74.domain.model.player.PlayerMode
 
 sealed interface PlayerViewState {
     data object Closed : PlayerViewState
@@ -19,5 +17,17 @@ sealed interface PlayerViewState {
         val playlistsWithMusics: List<PlaylistWithMusics>,
         val aroundSongs: List<Music>,
         val playedListScope: PlayedListScope,
-    ): PlayerViewState
+        val sharedListState: SharedListState?,
+    ) : PlayerViewState
+}
+
+data class SharedListState(
+    val code: String,
+    val host: User?,
+    val guests: List<User>,
+) {
+    data class User(
+        val username: String,
+        val appearance: Int?,
+    )
 }

@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayedListType
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
@@ -24,6 +25,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.SharedListState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
@@ -58,7 +60,6 @@ class PlayerViewModel(
     private val feedbackPopUpManager: FeedbackPopUpManager,
     commonPlaylistUseCase: CommonPlaylistUseCase,
 ) : ViewModel() {
-
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
         .stateIn(
@@ -171,6 +172,7 @@ class PlayerViewModel(
                     },
                     playedList = playedList,
                     playedListScope = playbackMainState.currentScope,
+                    sharedListState = buildSharedListState(playbackMainState)
                 )
             }
 
@@ -228,6 +230,45 @@ class PlayerViewModel(
             playbackManager.currentCover.collectLatest { cover ->
                 colorThemeManager.setCurrentCover(cover = cover)
             }
+        }
+    }
+
+    private fun buildSharedListState(playbackManagerState: PlaybackManagerState.Data): SharedListState? {
+        val notRemote = !playbackManagerState.currentScope.isRemote
+        val code: String? = (playbackManagerState.currentType as? PlayedListType.Shared)?.invitationCode
+
+        return if (notRemote || code == null) {
+            null
+        } else {
+            val host = playbackManagerState.users.find { it.isOwner }?.let { owner ->
+                val userDuplicates = playbackManagerState.users.filter { it.username == owner.username }
+                val index = userDuplicates
+                    .indexOfFirst { it.listUserId == owner.listUserId }
+                    .takeIf { it >= 0 && userDuplicates.size > 1 }
+
+                SharedListState.User(
+                    username = owner.username,
+                    appearance = index,
+                )
+            }
+
+            val guests = playbackManagerState
+                .users
+                .groupBy { it.username }
+                .flatMap { (_, duplicates) ->
+                    duplicates.mapIndexedNotNull { index, user ->
+                        SharedListState.User(
+                            username = user.username,
+                            appearance = index.takeIf { duplicates.size > 1 },
+                        ).takeIf { !user.isOwner }
+                    }
+                }
+
+            SharedListState(
+                code = code,
+                host = host,
+                guests = guests,
+            )
         }
     }
 

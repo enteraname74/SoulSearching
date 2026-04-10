@@ -25,6 +25,7 @@ val repositoryModule = module {
             deviceLocalDataSource = get(),
             userLocalDataSource = get(),
             musicLocalDataSource = get(),
+            settings = get()
         )
     }
     singleOf(::PlaylistRepositoryImpl) bind PlaylistRepository::class

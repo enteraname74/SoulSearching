@@ -344,6 +344,12 @@ object EnStrings : Strings {
     override val cloudSyncChannelNotificationName: String = "Cloudy syncing notification"
     override val startSharedPlayedList: String = "Start shared played list"
 
+    override val sharedListTitle: String = "Shared list"
+    override val sharedListHost: String = "Host"
+    override val sharedListGuests: String = "Guests"
+    override val sharedListCodeTitle: String = "Invitation code"
+    override val sharedListCodeDescription: String = "Share this code to your friends to let them join you in this shared played list!"
+
     override fun userType(type: User.Type): String =
         when (type) {
             User.Type.User -> "User"

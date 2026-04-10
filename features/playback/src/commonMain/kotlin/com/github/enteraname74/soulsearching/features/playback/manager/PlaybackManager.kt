@@ -18,6 +18,7 @@ import com.github.enteraname74.domain.model.player.PlayedListType
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
+import com.github.enteraname74.domain.model.player.SharedPlayedListUser
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerRepository
@@ -49,7 +50,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -116,6 +116,7 @@ class PlaybackManager(
     // TODO PLAYER: Find a way to make drag and drop and paging list work together
     val playedList: Flow<List<Music>> = playerRepository.getAll()
 
+    @Suppress("UNCHECKED_CAST")
     val state: Flow<PlaybackManagerState> =
         combine(
             playerRepository.getCurrentMusic(),
@@ -126,6 +127,7 @@ class PlaybackManager(
             currentMusicFavoriteStatusState,
             playerRepository.getNextMusic(),
             playerRepository.getPreviousMusic(),
+            playerRepository.observeCurrentSharedUsers(),
         ) { array ->
             val currentMusic: Music? = (array[0] as PlayerMusic?)?.music
             val next: Music? = (array[6] as PlayerMusic?)?.music
@@ -146,6 +148,8 @@ class PlaybackManager(
                     isPlaying = currentPlayedList.state == PlayedListState.Playing,
                     currentState = currentPlayedList.state,
                     currentScope = currentPlayedList.scope,
+                    currentType = currentPlayedList.type,
+                    users = array[8] as List<SharedPlayedListUser>,
                 )
             }
         }.distinctUntilChanged()
@@ -399,7 +403,6 @@ class PlaybackManager(
     suspend fun togglePlayPause() {
         playerRepository.togglePlayPause()
     }
-
 
     fun play() {
         workScope.launch {

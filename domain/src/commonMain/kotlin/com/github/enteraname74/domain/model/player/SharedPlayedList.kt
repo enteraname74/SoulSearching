@@ -56,7 +56,7 @@ data class SharedPlayedList(
     fun buildUsers(): List<SharedPlayedListUser> =
         users.map { user ->
             SharedPlayedListUser(
-                listId = id,
+                listId = id.toJavaUuid(),
                 isOwner = user.id == owner?.id,
                 id = user.id,
                 deviceId = user.deviceId,

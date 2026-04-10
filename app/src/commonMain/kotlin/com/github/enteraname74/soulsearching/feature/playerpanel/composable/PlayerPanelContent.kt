@@ -52,7 +52,7 @@ fun PlayerPanelContent(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val pages = listOf(
+    val pages = listOfNotNull(
         TabData(
             title = strings.playedList,
             screen = {
@@ -84,7 +84,15 @@ fun PlayerPanelContent(
                     onActivateRemoteLyrics = onActivateRemoteLyrics,
                 )
             }
-        )
+        ),
+        playerState.sharedListState?.let {
+            TabData(
+                title = strings.sharedListTitle,
+                screen = {
+                    SharedPlayedListView(state = it)
+                }
+            )
+        }
     )
 
     val pagerState = rememberPagerState(
@@ -99,7 +107,7 @@ fun PlayerPanelContent(
                 .fillMaxWidth()
                 .padding(
                     bottom = UiConstants.Spacing.small +
-                            getNavigationBarPadding().toDp()
+                        getNavigationBarPadding().toDp()
                 ),
         ) {
             pages.forEachIndexed { index, page ->

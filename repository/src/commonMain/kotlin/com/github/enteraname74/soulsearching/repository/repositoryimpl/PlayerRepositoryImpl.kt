@@ -12,7 +12,10 @@ import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayedList
+import com.github.enteraname74.domain.model.player.SharedPlayedListUser
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.soulsearching.repository.datasource.DeviceLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
@@ -38,6 +41,7 @@ class PlayerRepositoryImpl(
     private val deviceLocalDataSource: DeviceLocalDataSource,
     private val userLocalDataSource: UserLocalDataSource,
     private val musicLocalDataSource: MusicLocalDataSource,
+    private val settings: SoulSearchingSettings,
     private val workScope: CoroutineContext,
 ) : PlayerRepository {
     override fun getAllPaginated(): Flow<PagingData<Music>> =
@@ -423,8 +427,9 @@ class PlayerRepositoryImpl(
             val fetchedMusics: MutableList<SharedPlayerMusic> = mutableListOf()
             while (true) {
                 val fetchedData = playerRemoteDataSource.getPlayedListMusics(
-                    // TODO SHARED PLAYEDLIST: add lastupdate at field
-                    lastUpdateAt = null,
+                    lastUpdateAt = settings
+                        .get(SoulSearchingSettingsKeys.Player.SHARED_PLAYED_LIST_MUSIC_UPDATE_MILLIS)
+                        .takeIf { it > 0L },
                     maxPerPage = MAX_MUSICS_PER_PAGE,
                     page = page,
                     deviceId = deviceId,
@@ -502,6 +507,9 @@ class PlayerRepositoryImpl(
             }
         }
     }
+
+    override fun observeCurrentSharedUsers(): Flow<List<SharedPlayedListUser>> =
+        playerLocalDataSource.observeCurrentSharedUsers()
 
     override suspend fun joinSharedList(
         code: String,

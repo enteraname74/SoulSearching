@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.github.enteraname74.domain.model.player.SharedPlayedListUser
+import java.util.UUID
 import kotlin.uuid.Uuid
 
 @Entity(
@@ -20,7 +21,7 @@ import kotlin.uuid.Uuid
 )
 data class RoomSharedPlayedListUser(
     @PrimaryKey val id: String,
-    val playedListId: Uuid,
+    val playedListId: UUID,
     val userId: Uuid,
     val deviceId: String,
     val username: String,
@@ -40,7 +41,7 @@ data class RoomSharedPlayedListUser(
 
 internal fun SharedPlayedListUser.toRoomSharedPlayedListUser(): RoomSharedPlayedListUser =
     RoomSharedPlayedListUser(
-        id = "$listId-$id-$deviceId",
+        id = listUserId,
         playedListId = listId,
         userId = id,
         deviceId = deviceId,
