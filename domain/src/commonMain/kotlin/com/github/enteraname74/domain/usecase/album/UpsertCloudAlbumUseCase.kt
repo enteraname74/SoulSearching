@@ -30,7 +30,10 @@ class UpsertCloudAlbumUseCase(
             mergeMode = mergeMode,
             scope = scope,
         )
-            ?: cloudAlbum.toNewAlbum(albumArtist)
+            ?: cloudAlbum.toNewAlbum(
+                artist = albumArtist,
+                scope = scope,
+            )
 
         albumRepository.upsert(savedAlbum)
 

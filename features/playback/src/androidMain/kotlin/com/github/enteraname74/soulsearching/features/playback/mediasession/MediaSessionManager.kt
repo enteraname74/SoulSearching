@@ -13,6 +13,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.core.graphics.scale
+import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -42,17 +43,19 @@ class MediaSessionManager(
     suspend fun getUpdatedMediaSessionToken(
         updateData: UpdateData,
     ): MediaSessionCompat.Token {
+        val isFavorite = updateData.isInFavorite.takeIf { updateData.music.scope != Scope.SharedPlayedList }
+
         if (mediaSession == null) {
             init(
                 isPlaying = updateData.isPlaying,
-                isFavorite = updateData.isInFavorite,
+                isFavorite = isFavorite,
             )
             updateMetadata(updateData)
         } else {
             updateMetadata(updateData)
             updateState(
                 isPlaying = updateData.isPlaying,
-                isFavorite = updateData.isInFavorite,
+                isFavorite = isFavorite,
             )
         }
         return mediaSession!!.sessionToken
@@ -64,7 +67,7 @@ class MediaSessionManager(
     @Suppress("DEPRECATION")
     private suspend fun init(
         isPlaying: Boolean,
-        isFavorite: Boolean,
+        isFavorite: Boolean?,
     ) {
         mediaSession =
             MediaSessionCompat(context, context.packageName + "soulSearchingMediaSession")
@@ -200,7 +203,7 @@ class MediaSessionManager(
      */
     private suspend fun updateState(
         isPlaying: Boolean,
-        isFavorite: Boolean,
+        isFavorite: Boolean?,
     ) {
         val musicState = if (isPlaying) {
             PlaybackState.STATE_PLAYING
@@ -208,11 +211,13 @@ class MediaSessionManager(
             PlaybackState.STATE_PAUSED
         }
 
-        val favoriteCustomAction = PlaybackStateCompat.CustomAction.Builder(
-            FAVORITE_ACTION,
-            FAVORITE_ACTION,
-            if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite
-        ).build()
+        val favoriteCustomAction = isFavorite?.let {
+            PlaybackStateCompat.CustomAction.Builder(
+                FAVORITE_ACTION,
+                FAVORITE_ACTION,
+                if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite
+            ).build()
+        }
 
         mediaSession?.setPlaybackState(
             PlaybackStateCompat.Builder()
@@ -224,7 +229,9 @@ class MediaSessionManager(
                             or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
                             or PlaybackStateCompat.ACTION_PLAY_PAUSE
                 )
-                .addCustomAction(favoriteCustomAction)
+                .apply {
+                    favoriteCustomAction?.let { addCustomAction(it) }
+                }
                 .setState(
                     musicState,
                     playbackManager.getMusicPosition().toLong(),

@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.core.content.ContextCompat
+import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -103,7 +104,7 @@ class SoulSearchingNotificationBelowAndroid13(
             R.drawable.ic_favorite_filled
         } else {
             R.drawable.ic_favorite
-        }
+        }.takeIf { updateData.music.scope != Scope.SharedPlayedList }
 
         return notificationBuilder
             .clearActions()
@@ -114,7 +115,11 @@ class SoulSearchingNotificationBelowAndroid13(
             .addAction(R.drawable.ic_skip_previous, "previous", previousMusicIntent)
             .addAction(pausePlayIcon, "pausePlay", pausePlayIntent)
             .addAction(R.drawable.ic_skip_next, "next", nextMusicIntent)
-            .addAction(favoriteIcon, "favorite", toggleFavoriteIntent)
+            .apply {
+                if (favoriteIcon != null) {
+                    addAction(favoriteIcon, "favorite", toggleFavoriteIntent)
+                }
+            }
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setShowActionsInCompactView(0, 1, 2, 3)

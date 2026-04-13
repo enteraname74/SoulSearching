@@ -54,6 +54,7 @@ import java.util.UUID
         ) AS musicCoverUrl,
         artist.isInQuickAccess 
         FROM RoomArtist AS artist 
+        WHERE artist.scope != 'SharedPlayedList'
     """
 )
 data class RoomArtistPreview(

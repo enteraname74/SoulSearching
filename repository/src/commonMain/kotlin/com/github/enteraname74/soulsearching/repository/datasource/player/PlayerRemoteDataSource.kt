@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.repository.datasource.player
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
+import com.github.enteraname74.domain.repository.SharedPlayedListListener
 import kotlin.uuid.Uuid
 
 interface PlayerRemoteDataSource {
@@ -71,4 +72,14 @@ interface PlayerRemoteDataSource {
         deviceId: String,
         code: String,
     ): SharedPlayedList
+
+    suspend fun registerSharedPlayedListEventsListener(
+        listId: Uuid,
+        userId: Uuid,
+        deviceId: String,
+        listener: SharedPlayedListListener
+    )
+
+    suspend fun removeSharedPlayedListEventsListener()
 }
+

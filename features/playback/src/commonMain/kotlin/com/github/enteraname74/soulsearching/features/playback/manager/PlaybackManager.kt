@@ -24,9 +24,11 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
 import com.github.enteraname74.domain.usecase.player.CreateSharedPlayedListUseCase
+import com.github.enteraname74.domain.usecase.player.RegisterSharedPlayedListEventsListenerUseCase
 import com.github.enteraname74.domain.usecase.player.RemoveMusicsFromSharedPlayedListUseCase
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
@@ -56,16 +58,21 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.UUID
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.toKotlinUuid
 
+@OptIn(ExperimentalUuidApi::class)
 class PlaybackManager(
     private val playerRepository: PlayerRepository,
     private val settings: SoulSearchingSettings,
     private val commonMusicUseCase: CommonMusicUseCase,
+    private val deleteMusicUseCase: DeleteMusicUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val commonCoverUseCase: CommonCoverUseCase,
     private val createSharedPlayedListUseCase: CreateSharedPlayedListUseCase,
     private val addMusicsToSharedPlayedListUseCase: AddMusicsToSharedPlayedListUseCase,
     private val removeMusicsFromSharedPlayedListUseCase: RemoveMusicsFromSharedPlayedListUseCase,
+    private val registerSharedPlayedListEventsListenerUseCase: RegisterSharedPlayedListEventsListenerUseCase,
 ) : KoinComponent, SoulSearchingPlayer.Listener {
     private val notification: SoulSearchingNotification by inject()
     private val player: SoulSearchingPlayer by inject()
@@ -189,13 +196,19 @@ class PlaybackManager(
         }
         init()
 
+        workScope.launch {
+            playerRepository.getCurrentPlayedList().firstOrNull()?.takeIf { it.type is PlayedListType.Shared }?.let {
+                registerSharedPlayedListEventsListenerUseCase(listId = it.id.toKotlinUuid())
+            }
+        }
+
         listenPlayerVolume()
         listenToMusicCount()
         listenToState()
         playerListener()
         notificationListener()
         sharedListCurrentMusicUpdateListener()
-        noPlayedListListener()
+        noSharedPlayedListListener()
     }
 
     private fun init() {
@@ -309,15 +322,16 @@ class PlaybackManager(
         }
     }
 
-    private fun noPlayedListListener() {
+    private fun noSharedPlayedListListener() {
         launchWithInit {
             playerRepository
                 .getCurrentPlayedList()
-                .map { it == null }
+                .map { it?.type is PlayedListType.Shared }
                 .distinctUntilChanged()
-                .collect { noPlayedList ->
-                    if (noPlayedList) {
-                        commonMusicUseCase.deleteSharedPlayedListMusics()
+                .collect { isShared ->
+                    if (!isShared) {
+                        playerRepository.removeSharedPlayedListEventsListener()
+                        deleteMusicUseCase.deleteSharedMusics()
                     }
                 }
         }
@@ -464,7 +478,6 @@ class PlaybackManager(
     /**
      * Play the next song in queue.
      */
-    // TODO SHARED PLAYED LIST: Update current played list in remote if needed
     suspend fun next() {
         val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
         val size: Int = playerRepository.getSize().firstOrNull() ?: return
@@ -485,7 +498,6 @@ class PlaybackManager(
     /**
      * Play the previous song in queue.
      */
-    // TODO SHARED PLAYED LIST: Update current played list in remote if needed
     suspend fun previous(skipRewind: Boolean = false) {
         val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
         val size: Int = playerRepository.getSize().firstOrNull() ?: return
@@ -511,7 +523,6 @@ class PlaybackManager(
     }
 
     suspend fun setAndPlayMusicFromCurrentPlayedList(music: Music) {
-        // TODO SHARED PLAYED LIST: Update current played list in remote if needed
         playerRepository.setCurrent(music.musicId)
         playerRepository.setPlayedListState(PlayedListState.Playing)
     }

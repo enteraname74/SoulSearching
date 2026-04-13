@@ -14,7 +14,9 @@ data class CloudArtist(
     val isInQuickAccess: Boolean,
     val lastUpdateAtMillis: Long,
 ) {
-    fun toNewArtist(): Artist =
+    fun toNewArtist(
+        scope: Scope,
+    ): Artist =
         Artist(
             artistId = UUID.randomUUID(),
             artistName = name,
@@ -24,5 +26,6 @@ data class CloudArtist(
             nbPlayed = nbPlayed,
             isInQuickAccess = isInQuickAccess,
             lastUpdatedMillis = lastUpdateAtMillis,
+            scope = scope,
         )
 }

@@ -11,6 +11,7 @@ class JoinSharedPlayedListUseCase(
     private val fetchPlayedListMusicsUseCase: FetchPlayedListMusicsUseCase,
     private val playerRepository: PlayerRepository,
     private val settings: SoulSearchingSettings,
+    private val registerSharedPlayedListEventsListenerUseCase: RegisterSharedPlayedListEventsListenerUseCase,
 ) {
     suspend operator fun invoke(code: String): SoulResult<Unit> = SoulResult.runCatching {
         val sharedPlayedList: SharedPlayedList = playerRepository.joinSharedList(
@@ -30,6 +31,9 @@ class JoinSharedPlayedListUseCase(
         playerRepository.setupFromShared(
             sharedPlayedList = sharedPlayedList,
             playerMusics = playerMusics,
+        )
+        registerSharedPlayedListEventsListenerUseCase(
+            listId = sharedPlayedList.id,
         )
     }
 }

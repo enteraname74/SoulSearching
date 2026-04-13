@@ -43,15 +43,15 @@ interface AlbumDao {
     )
     suspend fun deleteAllEmpty()
 
-    @Query("SELECT albumName FROM RoomAlbum WHERE LOWER(albumName) LIKE LOWER('%' || :search || '%')")
+    @Query("SELECT albumName FROM RoomAlbum WHERE LOWER(albumName) LIKE LOWER('%' || :search || '%') AND scope != 'SharedPlayedList'")
     suspend fun getAlbumNamesContainingSearch(search: String): List<String>
 
     @Transaction
-    @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId")
+    @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId AND scope != 'SharedPlayedList'")
     fun getAllAlbumsFromArtist(artistId: UUID): Flow<List<RoomCompleteAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId")
+    @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId AND scope != 'SharedPlayedList'")
     fun getAllAlbumsWithMusicsFromArtist(artistId: UUID): Flow<List<RoomCompleteAlbumWithMusics>>
 
     @Transaction
@@ -158,6 +158,7 @@ interface AlbumDao {
             SELECT album.* FROM RoomAlbum AS album
             WHERE album.albumName = :albumName 
             AND (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) = :artistName 
+            AND scope != 'SharedPlayedList'
             LIMIT 1
         """
     )
@@ -224,7 +225,8 @@ interface AlbumDao {
             SELECT album.* FROM RoomAlbum AS album 
             INNER JOIN RoomArtist AS artist 
             ON album.artistId = artist.artistId 
-            AND artist.artistName = :artistName
+            AND artist.artistName = :artistName 
+            AND album.scope != 'SharedPlayedList'
         """
     )
     suspend fun getAlbumsOfArtistName(artistName: String): List<RoomCompleteAlbumWithMusics>

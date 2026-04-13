@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.remote.datasourceimpl
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
+import com.github.enteraname74.domain.repository.SharedPlayedListListener
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.successOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
@@ -14,6 +15,7 @@ import com.github.enteraname74.soulsearching.remote.model.player.RemoveUserFromP
 import com.github.enteraname74.soulsearching.remote.model.player.UpdateCurrentMusicBody
 import com.github.enteraname74.soulsearching.remote.model.player.UpdatePlayedListBody
 import com.github.enteraname74.soulsearching.remote.resource.PlayerResource
+import com.github.enteraname74.soulsearching.remote.utils.PlayerUserCommunication
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerRemoteDataSource
 import io.ktor.client.HttpClient
@@ -29,6 +31,7 @@ import kotlin.uuid.Uuid
 class PlayerRemoteDataSourceImpl(
     private val client: HttpClient,
     private val cloudPreferencesDataSource: CloudPreferencesDataSource,
+    private val playerUserCommunication: PlayerUserCommunication,
 ) : PlayerRemoteDataSource {
     override suspend fun create(
         deviceId: String,
@@ -209,4 +212,22 @@ class PlayerRemoteDataSourceImpl(
                     )
                 )
             }.bodyOrThrow()
+
+    override suspend fun registerSharedPlayedListEventsListener(
+        listId: Uuid,
+        userId: Uuid,
+        deviceId: String,
+        listener: SharedPlayedListListener
+    ) {
+        playerUserCommunication.register(
+            listId = listId,
+            userId = userId,
+            deviceId = deviceId,
+            listener = listener,
+        )
+    }
+
+    override suspend fun removeSharedPlayedListEventsListener() {
+        playerUserCommunication.unregister()
+    }
 }

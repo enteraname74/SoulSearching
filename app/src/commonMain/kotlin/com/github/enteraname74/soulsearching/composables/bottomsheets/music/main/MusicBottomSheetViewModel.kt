@@ -97,7 +97,6 @@ class MusicBottomSheetViewModel(
         initialValue = MusicBottomSheetState(),
     )
 
-    // TODO CLOUD: Add scope checks
     private fun buildRowSpecs(
         musics: List<Music>,
         playedList: List<Music>,
@@ -106,6 +105,7 @@ class MusicBottomSheetViewModel(
         hasValidCloudInformation: Boolean,
         playedListScope: PlayedListScope?,
     ): List<BottomSheetRowSpec> = buildList {
+        val possessMusics = musics.any { it.scope == Scope.User }
         val editEnabled: Boolean = musics.size == 1 && musics.first().scope == Scope.User
         val canAddNext: Boolean = when {
             playedListScope?.isRemote == true -> false
@@ -194,7 +194,7 @@ class MusicBottomSheetViewModel(
             add(BottomSheetRowSpec.addToQueue(::addToQueue))
         }
 
-        if (hasValidCloudInformation) {
+        if (hasValidCloudInformation && possessMusics) {
             add(BottomSheetRowSpec.startSharedPlayedList(::startSharedPlayedList))
         }
 
@@ -381,7 +381,11 @@ class MusicBottomSheetViewModel(
 
     private fun startSharedPlayedList() {
         loadingManager.withLoadingOnScope(viewModelScope) {
-            val result = playbackManager.startSharedList(state.value.musics.map { it.musicId })
+            val result = playbackManager.startSharedList(
+                musicIds = state.value.musics
+                    .filter { it.scope != Scope.SharedPlayedList }
+                    .map { it.musicId }
+            )
             when (result) {
                 is SoulResult.Error -> feedbackPopUpManager.showErrorIfAny(result)
                 is SoulResult.Success -> {

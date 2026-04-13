@@ -96,6 +96,7 @@ ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-content-negoctiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-resources = { module = "io.ktor:ktor-client-resources", version.ref = "ktor" }
+ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 markdown-renderer-core = { module ="com.mikepenz:multiplatform-markdown-renderer", version.ref = "markdown-renderer" }
@@ -135,4 +136,4 @@ coil = ["coil", "coil-compose", "coil-network"]
 koin = ["koin-compose", "koin-core", "koin-compose-viewmodel", "koin-compose-viewmodel-navigation"]
 accompanist = ["accompanist-pager","accompanist-system-ui-controller", "accompanist-pager-indicators"]
 androidx = ["androidx-activity-compose", "androidx-lifecycle", "androidx-core", "androidx-annotation", "androidx-appcompat", "androidx-appcompat-resources", "androidx-media"]
-ktor = ["ktor-client-cio", "ktor-client-content-negoctiation", "ktor-client-core", "ktor-client-resources", "ktor-serialization-kotlinx-json", "ktor-client-auth"]
+ktor = ["ktor-client-cio", "ktor-client-content-negoctiation", "ktor-client-core", "ktor-client-resources", "ktor-serialization-kotlinx-json", "ktor-client-auth", "ktor-client-websockets"]

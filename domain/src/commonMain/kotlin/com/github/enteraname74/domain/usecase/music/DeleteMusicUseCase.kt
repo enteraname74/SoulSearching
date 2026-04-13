@@ -2,6 +2,7 @@ package com.github.enteraname74.domain.usecase.music
 
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.usecase.DeleteEmptyAlbumsAndArtistsUseCase
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import kotlinx.coroutines.flow.first
@@ -12,6 +13,7 @@ class DeleteMusicUseCase(
     private val musicRepository: MusicRepository,
     private val deleteAlbumIfEmptyUseCase: DeleteAlbumIfEmptyUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
+    private val deleteEmptyAlbumsAndArtistsUseCase: DeleteEmptyAlbumsAndArtistsUseCase,
 ) {
     suspend operator fun invoke(musicId: UUID) {
         val musicToRemove: Music = musicRepository.getFromId(musicId = musicId).first() ?: return
@@ -46,5 +48,10 @@ class DeleteMusicUseCase(
 
     suspend operator fun invoke(music: Music) {
         deleteMusic(music = music)
+    }
+
+    suspend fun deleteSharedMusics() {
+        musicRepository.deleteSharedPlayedListMusics()
+        deleteEmptyAlbumsAndArtistsUseCase()
     }
 }

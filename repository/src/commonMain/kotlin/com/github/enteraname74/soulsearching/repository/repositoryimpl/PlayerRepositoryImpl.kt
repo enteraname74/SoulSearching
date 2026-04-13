@@ -17,12 +17,14 @@ import com.github.enteraname74.domain.model.player.SharedPlayerMusic
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerRepository
+import com.github.enteraname74.domain.repository.SharedPlayedListListener
 import com.github.enteraname74.soulsearching.repository.datasource.DeviceLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -102,13 +104,28 @@ class PlayerRepositoryImpl(
             playerLocalDataSource.deleteCurrentPlayedList()
 
             launch {
-                val shouldDeleteRemote = playedList.scope == PlayedListScope.SharedHost
+                when (playedList.scope) {
+                    PlayedListScope.LocalUser -> {
+                        // no-op
+                    }
+                    PlayedListScope.SharedHost -> {
+                        playerRemoteDataSource.deletePlayedList(
+                            deviceId = deviceLocalDataSource.getDeviceId(),
+                            listId = playedList.id.toKotlinUuid(),
+                        )
+                    }
+                    PlayedListScope.SharedGuest -> {
+                        val userId = userLocalDataSource.observeUser().first()!!.id
+                        val deviceId = deviceLocalDataSource.getDeviceId()
 
-                if (shouldDeleteRemote) {
-                    playerRemoteDataSource.deletePlayedList(
-                        deviceId = deviceLocalDataSource.getDeviceId(),
-                        listId = playedList.id.toKotlinUuid(),
-                    )
+                        playerRemoteDataSource.removeUserFromPlayedList(
+                            deviceId = deviceId,
+                            listId = playedList.id.toKotlinUuid(),
+                            userId = userId,
+                            deviceIdToRemove = deviceId,
+                            userIdToRemove = userId,
+                        )
+                    }
                 }
             }
         }
@@ -520,6 +537,25 @@ class PlayerRepositoryImpl(
                 code = code,
             )
         }
+
+    override suspend fun registerSharedPlayedListEventsListener(
+        listener: SharedPlayedListListener
+    ) {
+        withContext(workScope) {
+            playerRemoteDataSource.registerSharedPlayedListEventsListener(
+                listId = playerLocalDataSource.getCurrentPlayedList().first()!!.id.toKotlinUuid(),
+                userId = userLocalDataSource.observeUser().first()!!.id,
+                deviceId = deviceLocalDataSource.getDeviceId(),
+                listener = listener,
+            )
+        }
+    }
+
+    override suspend fun removeSharedPlayedListEventsListener() {
+        withContext(workScope) {
+            playerRemoteDataSource.removeSharedPlayedListEventsListener()
+        }
+    }
 
     private companion object {
         const val MAX_MUSICS_PER_PAGE = 300

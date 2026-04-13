@@ -29,8 +29,10 @@ import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedList
 import com.github.enteraname74.domain.usecase.player.CreateSharedPlayedListUseCase
 import com.github.enteraname74.domain.usecase.player.FetchPlayedListMusicsUseCase
 import com.github.enteraname74.domain.usecase.player.JoinSharedPlayedListUseCase
+import com.github.enteraname74.domain.usecase.player.RegisterSharedPlayedListEventsListenerUseCase
 import com.github.enteraname74.domain.usecase.player.RemoveMusicsFromSharedPlayedListUseCase
 import com.github.enteraname74.domain.usecase.player.SyncMusicForPlayerIfNeededUseCase
+import com.github.enteraname74.domain.usecase.player.SyncPlayedListInformationUseCase
 import com.github.enteraname74.domain.usecase.player.SyncPlayedListMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
@@ -104,6 +106,8 @@ val domainModule = module {
     factoryOf(::FetchPlayedListMusicsUseCase)
     factoryOf(::SyncMusicForPlayerIfNeededUseCase)
     factoryOf(::SyncPlayedListMusicsUseCase)
+    factoryOf(::SyncPlayedListInformationUseCase)
+    factoryOf(::RegisterSharedPlayedListEventsListenerUseCase)
     factoryOf(::AddMusicsToSharedPlayedListUseCase)
     factoryOf(::RemoveMusicsFromSharedPlayedListUseCase)
     factoryOf(::JoinSharedPlayedListUseCase)

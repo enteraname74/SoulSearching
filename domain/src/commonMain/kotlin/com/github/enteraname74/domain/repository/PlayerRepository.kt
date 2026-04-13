@@ -109,4 +109,16 @@ interface PlayerRepository {
     ): SharedPlayedList
 
     fun observeCurrentSharedUsers(): Flow<List<SharedPlayedListUser>>
+
+    suspend fun registerSharedPlayedListEventsListener(
+        listener: SharedPlayedListListener
+    )
+
+    suspend fun removeSharedPlayedListEventsListener()
+}
+
+interface SharedPlayedListListener {
+    suspend fun onClose()
+    suspend fun onSyncPlayedList()
+    suspend fun onSyncMusics()
 }

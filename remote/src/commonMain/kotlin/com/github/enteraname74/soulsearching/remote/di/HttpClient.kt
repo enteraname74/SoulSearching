@@ -13,9 +13,13 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.resources.Resources
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.pingInterval
+import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
+import kotlin.time.Duration.Companion.seconds
 
 fun provideHttpClient(): HttpClient =
     HttpClient(CIO) {
@@ -71,6 +75,16 @@ fun provideCloudHttpClient(
                     )
                 }
             }
+        }
+
+        install(WebSockets) {
+            pingInterval = 15.seconds
+            maxFrameSize = Long.MAX_VALUE
+            contentConverter = KotlinxWebsocketSerializationConverter(
+                Json {
+                    ignoreUnknownKeys = true
+                }
+            )
         }
     }
 

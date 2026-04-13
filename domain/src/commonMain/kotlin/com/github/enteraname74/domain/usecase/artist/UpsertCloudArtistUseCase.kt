@@ -20,7 +20,7 @@ class UpsertCloudArtistUseCase(
             cloudArtist = cloudArtist,
             mergeMode = mergeMode,
             scope = scope,
-        ) ?: cloudArtist.toNewArtist()
+        ) ?: cloudArtist.toNewArtist(scope = scope)
 
         artistRepository.upsert(savedArtist)
 

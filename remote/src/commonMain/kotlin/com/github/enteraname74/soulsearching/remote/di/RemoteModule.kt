@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.remote.datasourceimpl.MusicRemoteDa
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.PlayerRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.ReleaseDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.UserRemoteDataSourceImpl
+import com.github.enteraname74.soulsearching.remote.utils.PlayerUserCommunication
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.cover.CoverRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.lyrics.LyricsRemoteDataSource
@@ -32,7 +33,8 @@ val remoteModule = module {
     factory<PlayerRemoteDataSource> {
         PlayerRemoteDataSourceImpl(
             client = get(named(HttpClientNames.CLOUD)),
-            cloudPreferencesDataSource = get()
+            cloudPreferencesDataSource = get(),
+            playerUserCommunication = get(),
         )
     }
 
@@ -47,6 +49,13 @@ val remoteModule = module {
         CoverRemoteDataSourceImpl(
             client = get(named(HttpClientNames.CLOUD)),
             cloudPreferencesDataSource = get()
+        )
+    }
+
+    single {
+        PlayerUserCommunication(
+            client = get(named(HttpClientNames.CLOUD)),
+            cloudPreferencesDataSource = get(),
         )
     }
 }
