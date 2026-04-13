@@ -142,4 +142,6 @@ interface MusicRepository {
         musicName: String,
         albumId: UUID,
     ): Music?
+
+    suspend fun deleteSharedPlayedListMusics()
 }

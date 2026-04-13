@@ -140,4 +140,5 @@ interface MusicLocalDataSource {
 
     suspend fun clearRemoteIds(remoteIds: List<String>)
     suspend fun deleteNotExisting()
+    suspend fun deleteSharedPlayedListMusics()
 }

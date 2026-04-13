@@ -3,7 +3,7 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.music.mai
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicScope
+import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
@@ -106,7 +106,7 @@ class MusicBottomSheetViewModel(
         hasValidCloudInformation: Boolean,
         playedListScope: PlayedListScope?,
     ): List<BottomSheetRowSpec> = buildList {
-        val editEnabled: Boolean = musics.size == 1 && musics.first().scope == MusicScope.User
+        val editEnabled: Boolean = musics.size == 1 && musics.first().scope == Scope.User
         val canAddNext: Boolean = when {
             playedListScope?.isRemote == true -> false
             musics.size == 1 -> {
@@ -129,25 +129,25 @@ class MusicBottomSheetViewModel(
         }
 
         val removeFromPlayedList: Boolean = when {
-            musics.size == 1 && (musics.first().scope == MusicScope.User || playedListScope?.isAdmin == true) ->
+            musics.size == 1 && (musics.first().scope == Scope.User || playedListScope?.isAdmin == true) ->
                 playedList.any { it.musicId == musics.first().musicId }
 
             else -> playedList.isNotEmpty()
         }
 
         val canAddToPlaylist = when {
-            musics.size == 1 && musics.first().scope != MusicScope.User -> false
+            musics.size == 1 && musics.first().scope != Scope.User -> false
             else -> true
         }
 
         val canAddToQuickAccess = when {
             !isQuickAccessShown -> false
-            musics.size == 1 && musics.first().scope != MusicScope.User -> false
+            musics.size == 1 && musics.first().scope != Scope.User -> false
             else -> true
         }
 
         val canDelete = when {
-            musics.size == 1 && musics.first().scope != MusicScope.User -> false
+            musics.size == 1 && musics.first().scope != Scope.User -> false
             else -> true
         }
 

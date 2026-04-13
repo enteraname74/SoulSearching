@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicScope
+import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
@@ -82,7 +82,7 @@ internal class MusicFetcherAndroidImpl(
                 localPath = this.getFilteredSafeString(4),
                 remotePath = null,
                 lastUpdatedMillis = null,
-                scope = MusicScope.User,
+                scope = Scope.User,
             )
         } catch (e: Exception) {
             println("MusicFetcher -- Exception while fetching song on the device: $e")

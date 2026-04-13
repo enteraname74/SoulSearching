@@ -25,11 +25,13 @@ class UpsertCloudMusicUseCase(
             upsertCloudArtistUseCase(
                 cloudArtist = it,
                 mergeMode = mergeMode,
+                scope = cloudMusic.scope,
             )
         }
         val albumOfMusic: Album = upsertCloudAlbumUseCase(
             cloudAlbum = cloudMusic.album,
             mergeMode = mergeMode,
+            scope = cloudMusic.scope,
         )
 
         val existingMusic: Music? = getExistingMusic(

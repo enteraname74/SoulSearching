@@ -20,6 +20,7 @@ data class Album(
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,
     val lastUpdateMillis: Long? = DateUtils.now(),
+    val scope: Scope = Scope.User,
 ) {
     override fun toString(): String =
         "Album(name: $albumName, id: $albumId, artist: $artist)"
@@ -28,6 +29,7 @@ data class Album(
         cloudAlbum: CloudAlbum,
         artist: Artist,
         mergeMode: MergeMode,
+        scope: Scope,
     ): Album =
         when (mergeMode) {
             MergeMode.LocalFirst ->
@@ -43,6 +45,7 @@ data class Album(
                 nbPlayed = max(nbPlayed, cloudAlbum.nbPlayed),
                 isInQuickAccess = cloudAlbum.isInQuickAccess,
                 lastUpdateMillis = cloudAlbum.lastUpdateAtMillis,
+                scope = scope,
             )
         }
 }

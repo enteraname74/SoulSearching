@@ -1,6 +1,5 @@
 package com.github.enteraname74.domain.model
 
-import com.github.enteraname74.domain.util.DateUtils
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.math.max
@@ -26,7 +25,7 @@ data class Music(
     override val isInQuickAccess: Boolean = false,
     val isHidden: Boolean = false,
     val lastUpdatedMillis: Long?,
-    val scope: MusicScope,
+    val scope: Scope,
 ) : QuickAccessible {
     val path: String? = localPath ?: remotePath
 

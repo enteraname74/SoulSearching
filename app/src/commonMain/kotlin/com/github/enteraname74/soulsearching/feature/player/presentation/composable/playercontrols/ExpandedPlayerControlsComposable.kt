@@ -20,7 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import com.github.enteraname74.domain.model.MusicScope
+import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
@@ -82,7 +82,7 @@ fun ExpandedPlayerControlsComposable(
                 isPlaying = state.isPlaying,
                 isMusicInFavorite = state.isCurrentMusicInFavorite,
                 toggleFavoriteState = toggleFavoriteState
-                    .takeIf { state.currentMusic.scope == MusicScope.User },
+                    .takeIf { state.currentMusic.scope == Scope.User },
                 contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                 previous = previous,
                 next = next,

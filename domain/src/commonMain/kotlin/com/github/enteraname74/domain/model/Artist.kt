@@ -25,6 +25,7 @@ data class Artist(
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,
     val lastUpdatedMillis: Long? = DateUtils.now(),
+    val scope: Scope = Scope.User,
 ) {
     fun isComposedOfMultipleArtists(): Boolean =
         artistName.split(",", "&").size > 1
@@ -38,6 +39,7 @@ data class Artist(
     fun merge(
         cloudArtist: CloudArtist,
         mergeMode: MergeMode,
+        scope: Scope,
     ): Artist =
         when (mergeMode) {
             MergeMode.LocalFirst -> copy(
@@ -51,6 +53,7 @@ data class Artist(
                 nbPlayed = max(nbPlayed, cloudArtist.nbPlayed),
                 isInQuickAccess = cloudArtist.isInQuickAccess,
                 lastUpdatedMillis = cloudArtist.lastUpdateAtMillis,
+                scope = scope,
             )
         }
 }

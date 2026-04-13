@@ -2,9 +2,11 @@ package com.github.enteraname74.localdb.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TransactionScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Cover.CoverFile.DevicePathSpec
+import com.github.enteraname74.domain.model.Scope
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.uuid.Uuid
@@ -25,6 +27,7 @@ data class RoomArtist(
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,
     val lastUpdatedMillis: Long?,
+    val scope: Scope,
 )
 
 /**
@@ -58,6 +61,7 @@ internal fun RoomArtist.toArtist(): Artist {
         isInQuickAccess = isInQuickAccess,
         remoteId = remoteId,
         lastUpdatedMillis = lastUpdatedMillis,
+        scope = scope,
     )
 }
 
@@ -75,4 +79,5 @@ internal fun Artist.toRoomArtist(): RoomArtist = RoomArtist(
     remoteId = remoteId,
     lastUpdatedMillis = lastUpdatedMillis,
     coverUrl = (cover as? Cover.Url)?.url,
+    scope = scope,
 )

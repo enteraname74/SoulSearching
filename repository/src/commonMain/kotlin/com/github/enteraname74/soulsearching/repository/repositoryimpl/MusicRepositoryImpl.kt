@@ -243,6 +243,10 @@ class MusicRepositoryImpl(
         musicLocalDataSource.deleteNotExisting()
     }
 
+    override suspend fun deleteSharedPlayedListMusics() {
+        musicLocalDataSource.deleteSharedPlayedListMusics()
+    }
+
     private companion object {
         const val MAX_MUSICS_PER_PAGE = 300
     }

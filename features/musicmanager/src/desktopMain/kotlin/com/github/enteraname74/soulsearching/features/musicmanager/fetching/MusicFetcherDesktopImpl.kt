@@ -4,10 +4,9 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicScope
+import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
-import com.github.enteraname74.domain.util.DateUtils
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.flow.firstOrNull
 import org.jaudiotagger.audio.AudioFile
@@ -107,7 +106,7 @@ internal class MusicFetcherDesktopImpl(
                             initialCoverPath = file.path,
                         ),
                         albumPosition = tag.getFirst(FieldKey.TRACK)?.toIntOrNull(),
-                        scope = MusicScope.User,
+                        scope = Scope.User,
                         remoteId = null,
                         remotePath = null,
                         lastUpdatedMillis = null,

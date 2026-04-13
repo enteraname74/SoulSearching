@@ -195,6 +195,7 @@ class PlaybackManager(
         playerListener()
         notificationListener()
         sharedListCurrentMusicUpdateListener()
+        noPlayedListListener()
     }
 
     private fun init() {
@@ -305,6 +306,20 @@ class PlaybackManager(
                     notification.update(updateData = data)
                 }
             }
+        }
+    }
+
+    private fun noPlayedListListener() {
+        launchWithInit {
+            playerRepository
+                .getCurrentPlayedList()
+                .map { it == null }
+                .distinctUntilChanged()
+                .collect { noPlayedList ->
+                    if (noPlayedList) {
+                        commonMusicUseCase.deleteSharedPlayedListMusics()
+                    }
+                }
         }
     }
 

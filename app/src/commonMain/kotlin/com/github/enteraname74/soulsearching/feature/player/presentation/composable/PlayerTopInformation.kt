@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.MusicScope
+import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_keyboard_arrow_down
@@ -97,7 +97,7 @@ fun PlayerTopInformation(
             )
 
             val canClickOnArtistsAndAlbum = playerViewManager.currentValue == BottomSheetStates.EXPANDED
-                    && state.currentMusic.scope == MusicScope.User
+                    && state.currentMusic.scope == Scope.User
 
             FlowRow(
                 horizontalArrangement = Arrangement.Center,

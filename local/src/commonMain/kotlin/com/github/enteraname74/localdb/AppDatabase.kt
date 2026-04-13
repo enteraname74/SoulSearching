@@ -45,7 +45,7 @@ import com.github.enteraname74.localdb.view.RoomMonthMusicPreview
 import com.github.enteraname74.localdb.view.RoomMusicFolderPreview
 import com.github.enteraname74.localdb.view.RoomPlaylistPreview
 
-
+// TODO SHARED PLAYED LIST: Add migration for updated views
 @Database(
     version = LocalDatabaseVersion.VERSION,
     entities = [

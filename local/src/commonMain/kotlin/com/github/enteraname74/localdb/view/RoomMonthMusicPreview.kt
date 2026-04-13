@@ -13,6 +13,7 @@ import java.util.UUID
                 (
                     SELECT music.coverId FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
+                    AND scope != 'SharedPlayedList' 
                     AND music.coverId IS NOT NULL 
                     AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate)
                     ORDER BY
@@ -23,6 +24,7 @@ import java.util.UUID
                 (
                     SELECT music.localPath FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
+                    AND scope != 'SharedPlayedList' 
                     AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) 
                     ORDER BY name 
                     LIMIT 1 
@@ -30,12 +32,14 @@ import java.util.UUID
                 (
                     SELECT music.coverUrl FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
+                    AND scope != 'SharedPlayedList' 
                     AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) 
                     ORDER BY name 
                     LIMIT 1 
                 ) AS musicCoverUrl 
             FROM RoomMusic AS monthMusic
             WHERE isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             GROUP BY strftime('%Y-%m', addedDate) 
             ORDER BY strftime('%Y-%m', addedDate) DESC
     """
