@@ -182,9 +182,11 @@ fun PlayerDraggableView(
                 }
 
                 is PlayerViewState.Data -> {
+                    val dataState = state as PlayerViewState.Data
+
                     PlayerSwipeableDataScreen(
                         maxHeight = maxHeight,
-                        state = state as PlayerViewState.Data,
+                        state = dataState,
                         lyricsState = lyricsState,
                         onArtistClicked = {
                             playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
@@ -198,7 +200,9 @@ fun PlayerDraggableView(
                             playerViewModel.showMusicBottomSheet(listOf(it))
                         },
                         toggleFavoriteState = playerViewModel::toggleFavoriteState,
-                        seekTo = playerViewModel::seekTo,
+                        seekTo = dataState.takeIf { it.playedListScope.isAdmin }?.let {
+                            { playerViewModel.seekTo(it) }
+                        },
                         changePlayerMode = playerViewModel::changePlayerMode,
                         previous = playerViewModel::previous,
                         next = playerViewModel::next,

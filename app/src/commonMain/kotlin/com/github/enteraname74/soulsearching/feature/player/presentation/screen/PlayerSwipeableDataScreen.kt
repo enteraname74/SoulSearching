@@ -74,7 +74,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
     onSwiped: (Music) -> Unit,
     multiSelectionState: MultiSelectionState,
     toggleFavoriteState: () -> Unit,
-    seekTo: (newPosition: Int) -> Unit,
+    seekTo: ((newPosition: Int) -> Unit)?,
     changePlayerMode: () -> Unit,
     previous: () -> Unit,
     togglePlayPause: () -> Unit,
@@ -115,7 +115,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
 
 
         AnimatedVisibility(
-            visible = settingsState.isMinimisedSongProgressionShown
+            visible = settingsState.isMinimisedSongProgressionShown && seekTo != null
         ) {
             LinearProgressIndicator(
                 modifier = Modifier

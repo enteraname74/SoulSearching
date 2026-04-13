@@ -197,7 +197,8 @@ class PlaybackManager(
         init()
 
         workScope.launch {
-            playerRepository.getCurrentPlayedList().firstOrNull()?.takeIf { it.type is PlayedListType.Shared }?.let {
+            playerRepository.getCurrentPlayedList().firstOrNull()
+                ?.takeIf { it.type is PlayedListType.Shared }?.let {
                 registerSharedPlayedListEventsListenerUseCase(listId = it.id.toKotlinUuid())
             }
         }
@@ -269,25 +270,31 @@ class PlaybackManager(
 
     private fun playerListener() {
         launchWithInit {
-            playerRepository.getCurrentMusic()
-                .map { it?.music?.path }
-                .distinctUntilChanged()
-                .collectLatest { currentMusicPath ->
-                    val currentMusic: Music? =
-                        playerRepository.getCurrentMusic().firstOrNull()?.music
-                    if (currentMusicPath == null || currentMusic == null) {
-                        player.dismiss()
-                    } else {
-                        val currentState: PlayedListState? =
-                            playerRepository.getCurrentState().firstOrNull()
+            combine(
+                playerRepository.getCurrentMusic().map { it?.music?.path }.distinctUntilChanged(),
+                playerRepository.getCurrentScope().distinctUntilChanged(),
+            ) { musicPath, playerScope ->
+                Pair(musicPath, playerScope)
+            }.collectLatest { data ->
+                val currentMusicPath = data.first
+                val playerScope = data.second
 
-                        when (currentState) {
-                            PlayedListState.Playing -> {
-                                player.setMusic(currentMusic)
-                                player.launchMusic()
-                            }
+                val currentMusic: Music? =
+                    playerRepository.getCurrentMusic().firstOrNull()?.music
+                if (currentMusicPath == null || currentMusic == null) {
+                    player.dismiss()
+                } else {
+                    val currentState: PlayedListState? =
+                        playerRepository.getCurrentState().firstOrNull()
 
-                            PlayedListState.Paused, PlayedListState.Loading -> {
+                    when (currentState) {
+                        PlayedListState.Playing if playerScope?.isAdmin == true -> {
+                            player.setMusic(currentMusic)
+                            player.launchMusic()
+                        }
+
+                        PlayedListState.Paused, PlayedListState.Loading -> {
+                            if (playerScope?.isAdmin == true) {
                                 player.setMusic(currentMusic)
                                 player.onlyLoadMusic(
                                     seekTo = startSeek ?: 0,
@@ -295,17 +302,18 @@ class PlaybackManager(
                                 startSeek = 0
                                 playbackProgressJob.launchDurationJobIfNecessary()
                             }
+                        }
 
-                            PlayedListState.Cached -> {
-                                player.dismiss()
-                            }
+                        PlayedListState.Cached -> {
+                            player.dismiss()
+                        }
 
-                            else -> {
-                                // no-op
-                            }
+                        else -> {
+                            // no-op
                         }
                     }
                 }
+            }
         }
     }
 
@@ -368,16 +376,24 @@ class PlaybackManager(
 
     private fun listenToState() {
         launchWithInit {
-            playerRepository.getCurrentState().distinctUntilChanged().collectLatest { state ->
+            combine(
+                playerRepository.getCurrentState().distinctUntilChanged(),
+                playerRepository.getCurrentScope().distinctUntilChanged()
+            ) { state, scope ->
+                Pair(state, scope)
+            }.collectLatest { data ->
+                val state = data.first
+                val scope = data.second
+
                 when (state) {
-                    PlayedListState.Playing -> {
+                    PlayedListState.Playing if scope?.isAdmin == true -> {
                         playbackProgressJob.launchDurationJobIfNecessary()
                         if (player.isPlaying() == false) {
                             player.play()
                         }
                     }
 
-                    PlayedListState.Paused -> {
+                    PlayedListState.Paused if scope?.isAdmin == true -> {
                         if (player.isPlaying() == true) {
                             player.pause()
                         }

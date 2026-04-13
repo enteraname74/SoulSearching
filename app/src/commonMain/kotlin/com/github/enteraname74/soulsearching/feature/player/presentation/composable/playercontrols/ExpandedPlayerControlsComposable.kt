@@ -45,7 +45,7 @@ fun ExpandedPlayerControlsComposable(
     currentMusicProgression: Int,
     toggleFavoriteState: () -> Unit,
     state: PlayerViewState.Data,
-    seekTo: (newPosition: Int) -> Unit,
+    seekTo: ((newPosition: Int) -> Unit)?,
     changePlayerMode: () -> Unit,
     previous: () -> Unit,
     togglePlayPause: () -> Unit,
@@ -58,12 +58,14 @@ fun ExpandedPlayerControlsComposable(
 
         var draggedThumbValue: Float? by rememberSaveable { mutableStateOf(null) }
 
-        SoulSlider(
-            maxValue = state.currentMusic.duration.toFloat(),
-            value = currentMusicProgression.toFloat(),
-            onValueChanged = { seekTo(it.toInt()) },
-            onThumbDragged = { draggedThumbValue = it }
-        )
+        seekTo?.let {
+            SoulSlider(
+                maxValue = state.currentMusic.duration.toFloat(),
+                value = currentMusicProgression.toFloat(),
+                onValueChanged = { seekTo(it.toInt()) },
+                onThumbDragged = { draggedThumbValue = it }
+            )
+        }
 
         Column(
             modifier = Modifier
