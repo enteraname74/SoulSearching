@@ -5,5 +5,6 @@ interface SettingsCloudNavScope {
     fun toSettings()
     fun toUser()
     fun toSync()
+    fun toSharedList()
     fun navigateBack()
 }

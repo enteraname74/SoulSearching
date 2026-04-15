@@ -4,5 +4,6 @@ interface SettingsCloudActions {
     fun onUserClick()
     fun toSettings()
     fun toSync()
+    fun toSharedList()
     fun navigateBack()
 }

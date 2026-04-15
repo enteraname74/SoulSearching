@@ -617,7 +617,7 @@ interface MusicDao {
     suspend fun getAllToSendToCloud(): List<RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE name = :musicName AND albumId = :albumId AND scope != 'SharedPlayedList'")
+    @Query("SELECT * FROM RoomMusic WHERE name = :musicName AND albumId = :albumId")
     suspend fun getFromInformation(
         musicName: String,
         albumId: UUID,

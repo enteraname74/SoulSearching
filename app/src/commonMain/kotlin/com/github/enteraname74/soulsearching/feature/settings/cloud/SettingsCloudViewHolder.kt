@@ -60,6 +60,10 @@ class SettingsCloudViewHolder(
         navigate { toSync() }
     }
 
+    override fun toSharedList() {
+        navigate { toSharedList() }
+    }
+
     @Composable
     override fun Content(
         actions: SettingsCloudActions,

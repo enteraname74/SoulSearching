@@ -33,7 +33,7 @@ fun PlayerMusicCover(
     imageSize: Dp,
     horizontalPadding: Dp,
     topPadding: Dp,
-    onLongClick: () -> Unit,
+    onLongClick: (() -> Unit)?,
     canSwipeCover: Boolean,
     aroundSongs: List<Music>,
     currentMusic: Music,
@@ -41,7 +41,7 @@ fun PlayerMusicCover(
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
-    val imageModifier = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+    val imageModifier = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED && onLongClick != null) {
         Modifier.combinedClickableWithRightClick(
             onLongClick = onLongClick,
             onClick = { }

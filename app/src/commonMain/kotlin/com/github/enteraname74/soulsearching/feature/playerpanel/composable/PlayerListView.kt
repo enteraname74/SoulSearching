@@ -78,8 +78,9 @@ fun PlayerListView(
     currentMusicIndex: Int,
     playedList: List<Music>,
     onLongSelectOnMusic: (Music) -> Unit,
-    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
-    onSwiped: (Music) -> Unit,
+    onMoreClickedOnMusic: ((musicId: UUID) -> Unit)?,
+    onClickOnMusic: ((Music) -> Unit)?,
+    onSwiped: ((Music) -> Unit)?,
     containerColor: Color,
     contentColor: Color,
     buttonColors: SoulButtonColors,
@@ -177,9 +178,7 @@ fun PlayerListView(
                                 .animateItem(),
                             contentColor = contentColor,
                             containerColor = containerColor,
-                            onSwiped = {
-                                onSwiped(elt)
-                            },
+                            onSwiped = onSwiped?.let { { it(elt) } },
                         ) {
                             MusicItemComposable(
                                 modifier = Modifier
@@ -198,15 +197,9 @@ fun PlayerListView(
                                             }
                                         }
                                     ).takeIf { !playedListScope.isRemote },
-                                onClick = { music ->
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        playbackManager.setAndPlayMusicFromCurrentPlayedList(music)
-                                    }
-                                },
-                                onMoreClicked = {
-                                    coroutineScope.launch {
-                                        onMoreClickedOnMusic(elt.musicId)
-                                    }
+                                onClick = onClickOnMusic,
+                                onMoreClicked = onMoreClickedOnMusic?.let {
+                                    { it(elt.musicId) }
                                 },
                                 onLongClick = { onLongSelectOnMusic(elt) },
                                 textColor = contentColor,
@@ -231,7 +224,7 @@ private fun Swipeable(
     containerColor: Color,
     contentColor: Color,
     modifier: Modifier = Modifier,
-    onSwiped: () -> Unit,
+    onSwiped: (() -> Unit)?,
     content: @Composable () -> Unit,
 ) {
     BoxWithConstraints(
@@ -243,7 +236,7 @@ private fun Swipeable(
 
         LaunchedEffect(swipeableState.currentValue) {
             if (swipeableState.currentValue == MusicItemSwipeableState.SWIPED) {
-                onSwiped()
+                onSwiped?.invoke()
             }
         }
 
@@ -270,6 +263,7 @@ private fun Swipeable(
                     )
                 }.swipeable(
                     state = swipeableState,
+                    enabled = onSwiped != null,
                     orientation = Orientation.Horizontal,
                     anchors = mapOf(
                         0f to MusicItemSwipeableState.NORMAL,

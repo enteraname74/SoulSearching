@@ -91,6 +91,15 @@ interface PlayerPlayedListDao {
     @Query(
         """
             UPDATE RoomPlayerPlayedList 
+            SET scope = :scope 
+            WHERE state != "Cached"
+        """
+    )
+    suspend fun setScope(scope: PlayedListScope)
+
+    @Query(
+        """
+            UPDATE RoomPlayerPlayedList 
             SET state = :state 
             WHERE id = :playedListId
         """

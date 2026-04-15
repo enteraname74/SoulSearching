@@ -9,6 +9,7 @@ import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfold
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodeDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncDestination
@@ -147,6 +148,10 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+        SettingsCloudSharedListDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
     }
 
     fun serializerModule(
@@ -176,6 +181,7 @@ object SettingsNavigationHandler {
             subclass(SettingsCloudUserDestination::class, SettingsCloudUserDestination.serializer())
             subclass(SettingsCloudCodeDestination::class, SettingsCloudCodeDestination.serializer())
             subclass(SettingsCloudSyncDestination::class, SettingsCloudSyncDestination.serializer())
+            subclass(SettingsCloudSharedListDestination::class, SettingsCloudSharedListDestination.serializer())
         }
     }
 }

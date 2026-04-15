@@ -31,10 +31,12 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_skip_next_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_skip_previous_filled
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.utils.Utils
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
+import com.github.enteraname74.soulsearching.feature.player.ext.disabledIfNoAction
 import com.github.enteraname74.soulsearching.feature.player.ext.icon
 import org.jetbrains.compose.resources.painterResource
 
@@ -43,13 +45,13 @@ import org.jetbrains.compose.resources.painterResource
 fun ExpandedPlayerControlsComposable(
     modifier: Modifier = Modifier,
     currentMusicProgression: Int,
-    toggleFavoriteState: () -> Unit,
+    toggleFavoriteState: (() -> Unit)?,
     state: PlayerViewState.Data,
     seekTo: ((newPosition: Int) -> Unit)?,
-    changePlayerMode: () -> Unit,
-    previous: () -> Unit,
-    togglePlayPause: () -> Unit,
-    next: () -> Unit,
+    changePlayerMode: (() -> Unit)?,
+    previous: (() -> Unit)?,
+    togglePlayPause: (() -> Unit)?,
+    next: (() -> Unit)?,
 ) {
     Column(
         modifier = modifier,
@@ -73,19 +75,19 @@ fun ExpandedPlayerControlsComposable(
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
 
-            SliderMusicPositionAndDuration(
-                contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                currentMusicPosition = draggedThumbValue?.toInt() ?: currentMusicProgression,
-                currentMusicDuration = state.currentMusic.duration.toInt(),
-            )
+            seekTo?.let {
+                SliderMusicPositionAndDuration(
+                    contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    currentMusicPosition = draggedThumbValue?.toInt() ?: currentMusicProgression,
+                    currentMusicDuration = state.currentMusic.duration.toInt(),
+                )
+            }
 
             PlayerControls(
                 playerMode = state.playerMode,
                 isPlaying = state.isPlaying,
                 isMusicInFavorite = state.isCurrentMusicInFavorite,
-                toggleFavoriteState = toggleFavoriteState
-                    .takeIf { state.currentMusic.scope == Scope.User },
-                contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                toggleFavoriteState = toggleFavoriteState,
                 previous = previous,
                 next = next,
                 togglePlayPause = togglePlayPause,
@@ -121,15 +123,14 @@ private fun SliderMusicPositionAndDuration(
 
 @Composable
 private fun PlayerControls(
-    playerMode: PlayerMode?,
+    playerMode: PlayerMode,
     isMusicInFavorite: Boolean,
     isPlaying: Boolean,
-    changePlayerMode: () -> Unit,
-    previous: () -> Unit,
-    togglePlayPause: () -> Unit,
+    changePlayerMode: (() -> Unit)?,
+    previous: (() -> Unit)?,
+    togglePlayPause: (() -> Unit)?,
     toggleFavoriteState: (() -> Unit)?,
-    next: () -> Unit,
-    contentColor: Color,
+    next: (() -> Unit)?,
 ) {
     Row(
         modifier = Modifier
@@ -141,19 +142,13 @@ private fun PlayerControls(
             .clip(CircleShape)
             .height(UiConstants.ImageSize.medium)
             .widthIn(max = UiConstants.ImageSize.medium)
-        if (playerMode != null) {
-            Icon(
-                painter = painterResource(playerMode.icon()),
-                contentDescription = null,
-                modifier = playerModeBaseModifier
-                    .clickableWithHandCursor {
-                        changePlayerMode()
-                    },
-                tint = contentColor,
-            )
-        } else {
-            Spacer(modifier = playerModeBaseModifier)
-        }
+        Icon(
+            painter = painterResource(playerMode.icon()),
+            contentDescription = null,
+            modifier = playerModeBaseModifier
+                .optionalClickable(changePlayerMode),
+            tint = SoulSearchingColorTheme.colorScheme.onPrimary.disabledIfNoAction(changePlayerMode),
+        )
         Spacer(modifier = Modifier.weight(SpacerWeight))
         Icon(
             painter = painterResource(CoreRes.drawable.ic_skip_previous_filled),
@@ -163,8 +158,8 @@ private fun PlayerControls(
                 .clip(CircleShape)
                 .height(UiConstants.ImageSize.large)
                 .widthIn(max = UiConstants.ImageSize.large)
-                .clickableWithHandCursor { previous() },
-            tint = contentColor
+                .optionalClickable(previous),
+            tint = SoulSearchingColorTheme.colorScheme.onPrimary.disabledIfNoAction(previous)
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
         Icon(
@@ -181,8 +176,8 @@ private fun PlayerControls(
                 .clip(CircleShape)
                 .height(UiConstants.Player.playerPlayerButtonSize)
                 .widthIn(max = UiConstants.Player.playerPlayerButtonSize)
-                .clickableWithHandCursor { togglePlayPause() },
-            tint = contentColor
+                .optionalClickable(togglePlayPause),
+            tint = SoulSearchingColorTheme.colorScheme.onPrimary.disabledIfNoAction(togglePlayPause)
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
         Icon(
@@ -193,33 +188,28 @@ private fun PlayerControls(
                 .clip(CircleShape)
                 .height(UiConstants.ImageSize.large)
                 .widthIn(max = UiConstants.ImageSize.large)
-                .clickableWithHandCursor { next() },
-            tint = contentColor
+                .optionalClickable(next),
+            tint = SoulSearchingColorTheme.colorScheme.onPrimary.disabledIfNoAction(next)
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
 
-        val favoriteBaseModifier = Modifier
-            .weight(ExternalIconsWeight)
-            .clip(CircleShape)
-            .height(UiConstants.ImageSize.medium)
-            .widthIn(max = UiConstants.ImageSize.medium)
-        if (toggleFavoriteState != null) {
-            Icon(
-                painter = painterResource(
-                    if (isMusicInFavorite) {
-                        CoreRes.drawable.ic_favorite_filled
-                    } else {
-                        CoreRes.drawable.ic_favorite
-                    }
-                ),
-                contentDescription = null,
-                modifier = favoriteBaseModifier
-                    .clickableWithHandCursor { toggleFavoriteState() },
-                tint = contentColor
-            )
-        } else {
-            Spacer(modifier = favoriteBaseModifier)
-        }
+        Icon(
+            painter = painterResource(
+                if (isMusicInFavorite) {
+                    CoreRes.drawable.ic_favorite_filled
+                } else {
+                    CoreRes.drawable.ic_favorite
+                }
+            ),
+            contentDescription = null,
+            modifier = Modifier
+                .weight(ExternalIconsWeight)
+                .clip(CircleShape)
+                .height(UiConstants.ImageSize.medium)
+                .widthIn(max = UiConstants.ImageSize.medium)
+                .optionalClickable(toggleFavoriteState),
+            tint = SoulSearchingColorTheme.colorScheme.onPrimary.disabledIfNoAction(toggleFavoriteState)
+        )
     }
 }
 

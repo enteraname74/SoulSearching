@@ -59,6 +59,8 @@ interface PlayerLocalDataSource {
 
     suspend fun setState(state: PlayedListState)
 
+    suspend fun setScope(scope: PlayedListScope)
+
     suspend fun continuePlayedList(
         playedListId: UUID,
     )

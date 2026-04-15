@@ -17,6 +17,7 @@ class JoinSharedPlayedListUseCase(
         val sharedPlayedList: SharedPlayedList = playerRepository.joinSharedList(
             code = code,
         )
+        println("CLUELESS -- users: ${sharedPlayedList.users}")
 
         // We will reset the update timestamp to ensure that we fetch all elements:
         settings.set(

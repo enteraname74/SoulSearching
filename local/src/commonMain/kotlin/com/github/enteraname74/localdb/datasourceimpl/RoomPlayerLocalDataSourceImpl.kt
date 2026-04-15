@@ -299,6 +299,10 @@ internal class RoomPlayerLocalDataSourceImpl(
         listDao.setState(state)
     }
 
+    override suspend fun setScope(scope: PlayedListScope) {
+        listDao.setScope(scope)
+    }
+
     override suspend fun continuePlayedList(playedListId: UUID) {
         appDatabase.useWriterConnection {
             listDao.deleteMainAndSearch()

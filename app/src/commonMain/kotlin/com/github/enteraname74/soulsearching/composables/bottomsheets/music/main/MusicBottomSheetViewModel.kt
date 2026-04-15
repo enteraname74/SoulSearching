@@ -129,9 +129,8 @@ class MusicBottomSheetViewModel(
         }
 
         val removeFromPlayedList: Boolean = when {
-            musics.size == 1 && (musics.first().scope == Scope.User || playedListScope?.isAdmin == true) ->
-                playedList.any { it.musicId == musics.first().musicId }
-
+            musics.first().scope == Scope.SharedPlayedList && playedListScope?.isAdmin == false -> false
+            musics.size == 1 -> playedList.any { it.musicId == musics.first().musicId }
             else -> playedList.isNotEmpty()
         }
 

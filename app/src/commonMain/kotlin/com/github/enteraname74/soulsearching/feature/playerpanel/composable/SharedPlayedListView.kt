@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,7 +34,7 @@ fun SharedPlayedListView(
 ) {
     LazyColumnCompat(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxSize(),
         contentPadding = PaddingValues(
             start = UiConstants.Spacing.mediumPlus,
             end = UiConstants.Spacing.mediumPlus,
@@ -74,6 +75,7 @@ fun SharedPlayedListView(
                     else -> UserRowStyle.Body
                 }
                 UserRow(
+                    modifier = Modifier.padding(1.dp),
                     user = state.guests[index],
                     style = style,
                 )
@@ -140,9 +142,10 @@ private fun SectionTitle(
 private fun UserRow(
     user: SharedListState.User,
     style: UserRowStyle,
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(style.shape())
             .background(SoulSearchingColorTheme.colorScheme.primary)
@@ -185,5 +188,5 @@ private enum class UserRowStyle {
         }
 }
 
-private val CORNER_BIG: Dp = 10.dp
-private val CORNER_SMALL: Dp = 4.dp
+private val CORNER_BIG: Dp = 16.dp
+private val CORNER_SMALL: Dp = 6.dp

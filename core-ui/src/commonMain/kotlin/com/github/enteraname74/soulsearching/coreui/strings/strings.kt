@@ -357,6 +357,11 @@ interface Strings {
     val sharedListCodeTitle: String
     val sharedListCodeDescription: String
 
+    val sharedListCodeLabel: String
+    val cloudSharedListTitle: String
+    val cloudSharedListText: String
+    val joinSharedListButton: String
+
     fun userType(type: User.Type): String
 
     /**

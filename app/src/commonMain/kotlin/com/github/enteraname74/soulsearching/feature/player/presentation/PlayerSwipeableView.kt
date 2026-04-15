@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
+import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.ext.isDark
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
@@ -188,25 +189,40 @@ fun PlayerDraggableView(
                         maxHeight = maxHeight,
                         state = dataState,
                         lyricsState = lyricsState,
-                        onArtistClicked = {
-                            playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
-                            playerViewModel.navigateToArtist(it)
+                        onArtistClicked = ifOwnedByUser(dataState) {
+                            {
+                                playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+                                playerViewModel.navigateToArtist(it)
+                            }
                         },
-                        onAlbumClicked = {
-                            playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
-                            playerViewModel.navigateToAlbum()
+                        onAlbumClicked = ifOwnedByUser(dataState) {
+                            {
+                                playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+                                playerViewModel.navigateToAlbum()
+                            }
                         },
-                        showMusicBottomSheet = {
-                            playerViewModel.showMusicBottomSheet(listOf(it))
+                        // TODO: Move the check to be music by music for list support
+                        showMusicBottomSheet = ifOwnedByUserOrAdmin(dataState) {
+                            { playerViewModel.showMusicBottomSheet(listOf(it)) }
                         },
-                        toggleFavoriteState = playerViewModel::toggleFavoriteState,
-                        seekTo = dataState.takeIf { it.playedListScope.isAdmin }?.let {
+                        toggleFavoriteState = ifOwnedByUser(dataState) {
+                            { playerViewModel.toggleFavoriteState() }
+                        },
+                        seekTo = ifAdmin(dataState) {
                             { playerViewModel.seekTo(it) }
                         },
-                        changePlayerMode = playerViewModel::changePlayerMode,
-                        previous = playerViewModel::previous,
-                        next = playerViewModel::next,
-                        togglePlayPause = playerViewModel::togglePlayPause,
+                        changePlayerMode = ifLocal(dataState) {
+                            { playerViewModel.changePlayerMode() }
+                        },
+                        previous = ifAdmin(dataState) {
+                            { playerViewModel.previous() }
+                        },
+                        next = ifAdmin(dataState) {
+                            { playerViewModel.next() }
+                        },
+                        togglePlayPause = ifAdmin(dataState) {
+                            { playerViewModel.togglePlayPause() }
+                        },
                         currentMusicProgression = currentMusicProgressionState,
                         settingsState = settingsState,
                         onLongSelectOnMusic = {
@@ -220,11 +236,16 @@ fun PlayerDraggableView(
                         },
                         multiSelectionState = multiSelectionState,
                         onActivateRemoteLyrics = playerViewModel::navigateToRemoteLyricsSettings,
-                        onSwiped = playerViewModel::onSwipeMusic,
+                        onSwiped = ifAdmin(dataState) {
+                            { playerViewModel.onSwipeMusic(it) }
+                        },
+                        onClickOnMusic = ifAdmin(dataState) {
+                            { playerViewModel.onClickOnMusic(it) }
+                        }
                     )
 
                     /*
-                        If the previous state was expanded/minimised and the current one is collapsed,
+                        If the previous state was expanded/minimized and the current one is collapsed,
                         then it indicates that the playback should stop (user action for example).
                          */
                     if ((previousDraggableState != BottomSheetStates.COLLAPSED && previousDraggableState != null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
@@ -237,4 +258,32 @@ fun PlayerDraggableView(
         }
     }
 }
+
+private fun <T>ifAdmin(state: PlayerViewState.Data, scope: () -> T): T? =
+    if (state.playedListScope.isAdmin) {
+        scope()
+    } else {
+        null
+    }
+
+private fun <T>ifLocal(state: PlayerViewState.Data, scope: () -> T): T? =
+    if (!state.playedListScope.isRemote) {
+        scope()
+    } else {
+        null
+    }
+
+private fun <T>ifOwnedByUser(state: PlayerViewState.Data, scope: () -> T): T? =
+    if (state.currentMusic.scope != Scope.SharedPlayedList) {
+        scope()
+    } else {
+        null
+    }
+
+private fun <T>ifOwnedByUserOrAdmin(state: PlayerViewState.Data, scope: () -> T): T? =
+    if (state.currentMusic.scope != Scope.SharedPlayedList || state.playedListScope.isAdmin) {
+        scope()
+    } else {
+        null
+    }
 

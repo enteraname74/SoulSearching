@@ -32,8 +32,9 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_drag_handle
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_more_vertical
-import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.ext.chainIf
 import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
+import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -41,13 +42,14 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIcon
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconDefaults
+import com.github.enteraname74.soulsearching.feature.player.ext.disabledIfNoAction
 
 @Composable
 fun MusicItemComposable(
     modifier: Modifier = Modifier,
     music: Music,
-    onClick: (Music) -> Unit,
-    onMoreClicked: () -> Unit,
+    onClick: ((Music) -> Unit)?,
+    onMoreClicked: (() -> Unit)?,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
     isPlayedMusic: Boolean,
@@ -64,16 +66,18 @@ fun MusicItemComposable(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .combinedClickableWithRightClick(
-                    onClick = {
-                        if (isSelectionModeOn) {
-                            onLongClick()
-                        } else {
-                            onClick(music)
-                        }
-                    },
-                    onLongClick = onLongClick,
-                )
+                .chainIf(onClick != null) {
+                    Modifier.combinedClickableWithRightClick(
+                        onClick = {
+                            if (isSelectionModeOn) {
+                                onLongClick()
+                            } else {
+                                onClick?.invoke(music)
+                            }
+                        },
+                        onLongClick = onLongClick,
+                    )
+                }
                 .padding(padding),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -148,10 +152,10 @@ fun MusicItemComposable(
                     SoulIcon(
                         modifier = Modifier
                             .clip(CircleShape)
-                            .clickableWithHandCursor { onMoreClicked() },
+                            .optionalClickable(onMoreClicked),
                         icon = CoreRes.drawable.ic_more_vertical,
                         contentDescription = strings.moreButton,
-                        color = textColor
+                        color = textColor.disabledIfNoAction(onMoreClicked),
                     )
                 }
             }

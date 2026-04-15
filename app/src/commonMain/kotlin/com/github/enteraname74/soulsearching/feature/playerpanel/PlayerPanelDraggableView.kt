@@ -39,12 +39,13 @@ fun PlayerPanelDraggableView(
     maxHeight: Float,
     playerState: PlayerViewState.Data,
     lyricsState: LyricsFetchState,
-    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
+    onMoreClickedOnMusic: ((musicId: UUID) -> Unit)?,
     onLongSelectOnMusic: (Music) -> Unit,
     multiSelectionState: MultiSelectionState,
     closeSelection: () -> Unit,
     onActivateRemoteLyrics: () -> Unit,
-    onSwiped: (Music) -> Unit,
+    onSwiped: ((Music) -> Unit)?,
+    onClickOnMusic: ((Music) -> Unit)?,
     containerColor: Color,
     textColor: Color,
     subTextColor: Color,
@@ -122,6 +123,7 @@ fun PlayerPanelDraggableView(
                 selectedIconColors = SoulSelectedIconDefaults.primary(),
                 onActivateRemoteLyrics = onActivateRemoteLyrics,
                 onSwiped = onSwiped,
+                onClickOnMusic = onClickOnMusic,
             )
         }
     }

@@ -15,10 +15,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulTextButton
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
+import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 
 @Composable
 fun SettingsCloudSignInScreen(
@@ -49,6 +51,9 @@ fun SettingsCloudSignInScreen(
                     }
                     .padding(
                         all = UiConstants.Spacing.large,
+                    )
+                    .padding(
+                        bottom = PlayerMinimisedHeight.toDp()
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {

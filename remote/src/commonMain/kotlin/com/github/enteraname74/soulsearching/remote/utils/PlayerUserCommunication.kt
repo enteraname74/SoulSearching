@@ -32,7 +32,7 @@ class PlayerUserCommunication(
         currentUser?.session?.close()
         webSocketJob?.cancel()
         webSocketJob = CoroutineScope(Dispatchers.IO).launch {
-            try {
+            runCatching {
                 client.webSocket(
                     urlString = buildUrl(
                         listId = listId,
@@ -41,23 +41,19 @@ class PlayerUserCommunication(
                     )
                 ) {
                     while (true) {
-                        val frame = incoming.receive() as? Frame.Text
+                        val frame = incoming.receiveCatching().getOrNull() as? Frame.Text
                         val event = runCatching { Json.decodeFromString<Event>(frame?.readText().orEmpty()) }.getOrNull()
                         println("CLUELESS -- PlayerUserCommunication -- got event: $event")
                         when (event) {
                             Event.SyncMusics -> listener.onSyncMusics()
                             Event.SyncPlayedList -> listener.onSyncPlayedList()
-                            Event.PlayedListDeleted -> break
-                            null -> {
-                                // no-op
-                            }
+                            Event.PlayedListDeleted, null -> break
                         }
                     }
                 }
-            } finally {
-                listener.onClose()
-                currentUser = null
             }
+            listener.onClose()
+            currentUser = null
         }
     }
 

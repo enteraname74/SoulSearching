@@ -1,14 +1,18 @@
-package com.github.enteraname74.soulsearching.feature.settings.cloud.settings
+package com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -18,24 +22,27 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 
 @Composable
-fun SettingsCloudSettingsScreen(
-    actions: SettingsCloudSettingsActions,
-    state: SettingsCloudSettingsState,
+fun SettingsCloudSharedListScreen(
+    actions: SettingsCloudSharedListActions,
+    state: SettingsCloudSharedListState,
 ) {
     SoulScreen {
+        val focusManager = LocalFocusManager.current
+
         Column {
             SoulTopBar(
-                title = strings.cloudSettingsTitle,
+                title = strings.cloudSharedListTitle,
                 leftAction = TopBarNavigationAction(
                     onClick = actions::navigateBack,
                 ),
                 rightAction = TopBarValidateAction(
-                    onClick = actions::saveChanges,
+                    onClick = actions::join,
                 )
             )
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(
                         all = UiConstants.Spacing.large,
                     )
@@ -43,10 +50,19 @@ fun SettingsCloudSettingsScreen(
                         bottom = PlayerMinimisedHeight.toDp()
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.mediumPlus)
             ) {
-                state.urlField.TextField(
+                state.codeField.TextField(
                     modifier = Modifier.fillMaxWidth(),
-                    focusManager = LocalFocusManager.current,
+                    focusManager = focusManager,
+                )
+                SoulFilledButton(
+                    text = strings.joinSharedListButton,
+                    enabled = state.codeField.value.isNotBlank(),
+                    onClick = {
+                        focusManager.clearFocus()
+                        actions.join()
+                    },
                 )
             }
         }

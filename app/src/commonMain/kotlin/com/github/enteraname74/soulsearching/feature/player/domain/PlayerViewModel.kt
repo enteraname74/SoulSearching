@@ -148,8 +148,7 @@ class PlayerViewModel(
                     currentMusic = playbackMainState.currentMusic,
                     currentMusicIndex = playbackMainState.currentMusicIndex,
                     isCurrentMusicInFavorite = playbackMainState.isCurrentMusicInFavorite,
-                    playerMode = playbackMainState.playerMode
-                        .takeIf { !playbackMainState.currentScope.isRemote },
+                    playerMode = playbackMainState.playerMode,
                     isPlaying = playbackMainState.isPlaying,
                     playlistsWithMusics = playlists,
                     aroundSongs = if (playbackMainState.playerMode == PlayerMode.Loop) {
@@ -350,6 +349,12 @@ class PlayerViewModel(
                 musicIds = listOf(music.musicId),
             )
             feedbackPopUpManager.showErrorIfAny(result)
+        }
+    }
+
+    fun onClickOnMusic(music: Music) {
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            playbackManager.setAndPlayMusicFromCurrentPlayedList(music)
         }
     }
 

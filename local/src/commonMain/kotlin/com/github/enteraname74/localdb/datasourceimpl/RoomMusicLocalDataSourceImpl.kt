@@ -42,6 +42,9 @@ internal class RoomMusicLocalDataSourceImpl(
             appDatabase.artistDao.upsertAll(music.artists.map { it.toRoomArtist() })
             appDatabase.albumDao.upsert(music.album.toRoomAlbum())
             appDatabase.musicDao.upsert(music.toRoomMusic())
+
+            // Update links
+            appDatabase.musicArtistDao.deleteOfMusic(music.musicId)
             appDatabase.musicArtistDao.upsertAll(
                 roomMusicArtists = music.toRoomMusicArtists()
             )

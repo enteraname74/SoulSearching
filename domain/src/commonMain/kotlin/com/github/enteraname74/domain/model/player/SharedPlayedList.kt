@@ -36,6 +36,13 @@ data class SharedPlayedList(
         }
     }
 
+    fun scope(userId: Uuid): PlayedListScope =
+        if (owner?.id == userId) {
+            PlayedListScope.SharedHost
+        } else {
+            PlayedListScope.SharedGuest
+        }
+
     fun toPlayedList(
         userId: Uuid,
     ): PlayerPlayedList =
@@ -46,11 +53,7 @@ data class SharedPlayedList(
             mode = PlayerMode.Normal,
             state = state.toPlayedListState(),
             type = PlayedListType.Shared(inviteCode),
-            scope = if (owner?.id == userId) {
-                PlayedListScope.SharedHost
-            } else {
-                PlayedListScope.SharedGuest
-            }
+            scope = scope(userId)
         )
 
     fun buildUsers(): List<SharedPlayedListUser> =

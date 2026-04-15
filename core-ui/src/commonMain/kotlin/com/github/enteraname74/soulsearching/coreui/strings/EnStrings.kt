@@ -350,6 +350,11 @@ object EnStrings : Strings {
     override val sharedListCodeTitle: String = "Invitation code"
     override val sharedListCodeDescription: String = "Share this code to your friends to let them join you in this shared played list!"
 
+    override val sharedListCodeLabel: String = "Invitation code"
+    override val cloudSharedListTitle: String = "Shared played list"
+    override val cloudSharedListText: String = "Join a shared played list with a code"
+    override val joinSharedListButton: String = "Join"
+
     override fun userType(type: User.Type): String =
         when (type) {
             User.Type.User -> "User"

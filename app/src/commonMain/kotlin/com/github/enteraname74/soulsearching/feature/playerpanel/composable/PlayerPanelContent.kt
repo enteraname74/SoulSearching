@@ -9,6 +9,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -35,10 +36,11 @@ import java.util.UUID
 fun PlayerPanelContent(
     playerState: PlayerViewState.Data,
     lyricsState: LyricsFetchState,
-    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
+    onMoreClickedOnMusic: ((musicId: UUID) -> Unit)?,
     onLongSelectOnMusic: (Music) -> Unit,
     onActivateRemoteLyrics: () -> Unit,
-    onSwiped: (Music) -> Unit,
+    onSwiped: ((Music) -> Unit)?,
+    onClickOnMusic: ((Music) -> Unit)?,
     multiSelectionState: MultiSelectionState,
     contentColor: Color,
     subTextColor: Color,
@@ -69,6 +71,7 @@ fun PlayerPanelContent(
                     selectedIconColors = selectedIconColors,
                     playedListScope = playerState.playedListScope,
                     onSwiped = onSwiped,
+                    onClickOnMusic = onClickOnMusic,
                 )
             }
         ),
@@ -144,7 +147,8 @@ fun PlayerPanelContent(
         }
         HorizontalPager(
             state = pagerState,
-            userScrollEnabled = false
+            userScrollEnabled = false,
+            verticalAlignment = Alignment.Top,
         ) { pagePosition ->
             pages[pagePosition].screen()
         }

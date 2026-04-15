@@ -66,19 +66,20 @@ fun BoxScope.PlayerSwipeableDataScreen(
     lyricsState: LyricsFetchState,
     settingsState: PlayerViewSettingsState,
     currentMusicProgression: Int,
-    onArtistClicked: (selectedArtist: Artist) -> Unit,
-    onAlbumClicked: () -> Unit,
+    onArtistClicked: ((selectedArtist: Artist) -> Unit)?,
+    onAlbumClicked: (() -> Unit)?,
     closeSelection: () -> Unit,
-    showMusicBottomSheet: (musicId: UUID) -> Unit,
+    showMusicBottomSheet: ((musicId: UUID) -> Unit)?,
     onLongSelectOnMusic: (Music) -> Unit,
-    onSwiped: (Music) -> Unit,
+    onSwiped: ((Music) -> Unit)?,
+    onClickOnMusic: ((Music) -> Unit)?,
     multiSelectionState: MultiSelectionState,
-    toggleFavoriteState: () -> Unit,
+    toggleFavoriteState: (() -> Unit)?,
     seekTo: ((newPosition: Int) -> Unit)?,
-    changePlayerMode: () -> Unit,
-    previous: () -> Unit,
-    togglePlayPause: () -> Unit,
-    next: () -> Unit,
+    changePlayerMode: (() -> Unit)?,
+    previous: (() -> Unit)?,
+    togglePlayPause: (() -> Unit)?,
+    next: (() -> Unit)?,
     onActivateRemoteLyrics: () -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
@@ -156,8 +157,8 @@ fun BoxScope.PlayerSwipeableDataScreen(
             } else {
                 null
             },
-            onSongInfoClicked = {
-                showMusicBottomSheet(state.currentMusic.musicId)
+            onSongInfoClicked = showMusicBottomSheet?.let {
+                { it(state.currentMusic.musicId) }
             }
         )
 
@@ -181,15 +182,13 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 imageSize = imageSize,
                 horizontalPadding = imageHorizontalPadding,
                 topPadding = imageTopPadding,
-                onLongClick = {
-                    showMusicBottomSheet(state.currentMusic.musicId)
-                },
+                onLongClick = showMusicBottomSheet?.let { { it((state.currentMusic.musicId)) } },
                 canSwipeCover = settingsState.canSwipeCover,
                 aroundSongs = state.aroundSongs,
                 currentMusic = state.currentMusic,
             )
 
-            if (!PlayerUiUtils.canShowRowControlPanel() && state.playedListScope.isAdmin) {
+            if (!PlayerUiUtils.canShowRowControlPanel()) {
                 Box(
                     modifier = Modifier
                         .padding(
@@ -215,7 +214,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
             }
         }
 
-        if (PlayerUiUtils.canShowRowControlPanel() && state.playedListScope.isAdmin) {
+        if (PlayerUiUtils.canShowRowControlPanel()) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
@@ -270,6 +269,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                         onLongSelectOnMusic = onLongSelectOnMusic,
                         onActivateRemoteLyrics = onActivateRemoteLyrics,
                         onSwiped = onSwiped,
+                        onClickOnMusic = onClickOnMusic,
                     )
                 }
             }
@@ -291,6 +291,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 closeSelection = closeSelection,
                 onActivateRemoteLyrics = onActivateRemoteLyrics,
                 onSwiped = onSwiped,
+                onClickOnMusic = onClickOnMusic,
             )
         } else if (!PlayerUiUtils.canShowRowControlPanel()) {
             BoxWithConstraints(
@@ -320,6 +321,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                     multiSelectionState = multiSelectionState,
                     onActivateRemoteLyrics = onActivateRemoteLyrics,
                     onSwiped = onSwiped,
+                    onClickOnMusic = onClickOnMusic,
                 )
             }
         }

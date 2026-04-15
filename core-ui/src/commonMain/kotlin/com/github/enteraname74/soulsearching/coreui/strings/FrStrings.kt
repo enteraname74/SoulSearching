@@ -352,6 +352,12 @@ object FrStrings : Strings {
     override val sharedListCodeTitle: String = "Code d'invitation"
     override val sharedListCodeDescription: String = "Partage ce code à tes amis pour qu'ils puissent te rejoindre dans cette liste de lecture partagée !"
 
+    override val sharedListCodeLabel: String = "Code d'invitation"
+    override val cloudSharedListTitle: String = "Liste de lecture partagée"
+    override val cloudSharedListText: String = "Rejoindre une liste de lecture partagée avec un code"
+
+    override val joinSharedListButton: String = "Rejoindre"
+
     override fun userType(type: User.Type): String =
         when (type) {
             User.Type.User -> "Utilisateur"

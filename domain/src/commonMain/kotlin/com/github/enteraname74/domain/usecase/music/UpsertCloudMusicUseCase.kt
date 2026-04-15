@@ -50,11 +50,6 @@ class UpsertCloudMusicUseCase(
         )
 
         musicRepository.upsert(savedMusic)
-        commonMusicArtistUseCase.setArtistsOfMusic(
-            musicId = savedMusic.musicId,
-            artistIds = artistsOfMusic.map { it.artistId },
-        )
-
         return savedMusic
     }
 

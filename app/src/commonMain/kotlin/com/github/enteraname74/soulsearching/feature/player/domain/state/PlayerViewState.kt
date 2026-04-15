@@ -12,7 +12,7 @@ sealed interface PlayerViewState {
         val currentMusicIndex: Int,
         val isCurrentMusicInFavorite: Boolean,
         val playedList: List<Music>,
-        val playerMode: PlayerMode?,
+        val playerMode: PlayerMode,
         val isPlaying: Boolean,
         val playlistsWithMusics: List<PlaylistWithMusics>,
         val aroundSongs: List<Music>,

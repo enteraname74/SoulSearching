@@ -515,11 +515,14 @@ class PlayerRepositoryImpl(
         runCatching {
             withContext(workScope) {
                 val playedList = playerLocalDataSource.getCurrentPlayedList().firstOrNull() ?: return@withContext
+                val userId = userLocalDataSource.observeUser().firstOrNull()?.id ?: return@withContext
+
                 val sharedList = playerRemoteDataSource.getPlayedList(
                     deviceId = deviceLocalDataSource.getDeviceId(),
                     listId = playedList.id.toKotlinUuid(),
                 )
                 playerLocalDataSource.setState(sharedList.state.toPlayedListState())
+                playerLocalDataSource.setScope(sharedList.scope(userId))
                 playerLocalDataSource.setSharedUsers(sharedList.buildUsers())
             }
         }
