@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
@@ -50,8 +51,9 @@ class ArtistBottomSheetViewModel(
         dialogState,
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
-        )
-    ) { artists, playedList, dialogState, isQuickAccessShown ->
+        ),
+        playbackManager.currentScope,
+    ) { artists, playedList, dialogState, isQuickAccessShown, playedListScope ->
         ArtistBottomSheetState(
             artists = artists,
             bottomSheetTopInformation = buildTopInformation(artists),
@@ -59,6 +61,7 @@ class ArtistBottomSheetViewModel(
                 playlists = artists,
                 isQuickAccessShown = isQuickAccessShown,
                 playedList = playedList,
+                playedListScope = playedListScope,
             ),
             dialogState = dialogState
         )
@@ -72,6 +75,7 @@ class ArtistBottomSheetViewModel(
         playlists: List<ArtistWithMusics>,
         playedList: List<Music>,
         isQuickAccessShown: Boolean,
+        playedListScope: PlayedListScope?,
     ) : List<BottomSheetRowSpec> = buildList {
         val editEnabled: Boolean = playlists.size == 1
 
@@ -100,12 +104,11 @@ class ArtistBottomSheetViewModel(
             )
         }
 
-        addAll(
-            listOf(
-                BottomSheetRowSpec.playNext(::playNext),
-                BottomSheetRowSpec.addToQueue(::addToQueue),
-            )
-        )
+        if (playedListScope?.isRemote != true) {
+            add(BottomSheetRowSpec.playNext(::playNext))
+        }
+
+        add(BottomSheetRowSpec.addToQueue(::addToQueue))
 
         if (playedList.isNotEmpty()) {
             add(

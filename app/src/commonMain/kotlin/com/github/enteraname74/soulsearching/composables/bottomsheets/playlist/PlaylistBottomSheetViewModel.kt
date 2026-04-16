@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
@@ -36,7 +37,7 @@ class PlaylistBottomSheetViewModel(
     private val navScope: PlaylistBottomSheetNavScope,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     settings: SoulSearchingSettings,
-    params:  PlaylistBottomSheetDestination,
+    params: PlaylistBottomSheetDestination,
 ) : ViewModel() {
     private val playlistIds: List<UUID> = params.playlistIds
 
@@ -48,8 +49,9 @@ class PlaylistBottomSheetViewModel(
         dialogState,
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
-        )
-    ) { playlists, playedList, dialogState, isQuickAccessShown ->
+        ),
+        playbackManager.currentScope,
+    ) { playlists, playedList, dialogState, isQuickAccessShown, playedListScope ->
         PlaylistBottomSheetState(
             playlists = playlists,
             bottomSheetTopInformation = buildTopInformation(playlists),
@@ -57,6 +59,7 @@ class PlaylistBottomSheetViewModel(
                 playlists = playlists,
                 isQuickAccessShown = isQuickAccessShown,
                 playedList = playedList,
+                playedListScope = playedListScope,
             ),
             dialogState = dialogState
         )
@@ -70,7 +73,8 @@ class PlaylistBottomSheetViewModel(
         playlists: List<PlaylistWithMusics>,
         playedList: List<Music>,
         isQuickAccessShown: Boolean,
-    ) : List<BottomSheetRowSpec> = buildList {
+        playedListScope: PlayedListScope?,
+    ): List<BottomSheetRowSpec> = buildList {
         val editEnabled: Boolean = playlists.size == 1
         val showDelete: Boolean = if (playlists.size == 1) {
             !playlists.first().playlist.isFavorite
@@ -103,12 +107,11 @@ class PlaylistBottomSheetViewModel(
             )
         }
 
-        addAll(
-            listOf(
-                BottomSheetRowSpec.playNext(::playNext),
-                BottomSheetRowSpec.addToQueue(::addToQueue),
-            )
-        )
+        if (playedListScope?.isRemote != true) {
+            add(BottomSheetRowSpec.playNext(::playNext))
+        }
+
+        add(BottomSheetRowSpec.addToQueue(::addToQueue))
 
         if (playedList.isNotEmpty()) {
             add(

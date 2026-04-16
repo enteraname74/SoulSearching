@@ -61,6 +61,7 @@ import java.util.UUID
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.toKotlinUuid
 
+// TODO SHARED PLAYED LIST: How to properly indicate the current music progression if we are a guest?
 @OptIn(ExperimentalUuidApi::class)
 class PlaybackManager(
     private val playerRepository: PlayerRepository,
