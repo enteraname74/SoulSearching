@@ -14,6 +14,7 @@ import android.view.KeyEvent
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.core.graphics.scale
 import com.github.enteraname74.domain.model.Scope
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -43,12 +44,14 @@ class MediaSessionManager(
     suspend fun getUpdatedMediaSessionToken(
         updateData: UpdateData,
     ): MediaSessionCompat.Token {
-        val isFavorite = updateData.isInFavorite.takeIf { updateData.music.scope != Scope.SharedPlayedList }
+        val isFavorite =
+            updateData.isInFavorite.takeIf { updateData.music.scope != Scope.SharedPlayedList }
 
         if (mediaSession == null) {
             init(
                 isPlaying = updateData.isPlaying,
                 isFavorite = isFavorite,
+                playedListScope = updateData.playedListScope,
             )
             updateMetadata(updateData)
         } else {
@@ -56,6 +59,7 @@ class MediaSessionManager(
             updateState(
                 isPlaying = updateData.isPlaying,
                 isFavorite = isFavorite,
+                playedListScope = updateData.playedListScope,
             )
         }
         return mediaSession!!.sessionToken
@@ -68,6 +72,7 @@ class MediaSessionManager(
     private suspend fun init(
         isPlaying: Boolean,
         isFavorite: Boolean?,
+        playedListScope: PlayedListScope,
     ) {
         mediaSession =
             MediaSessionCompat(context, context.packageName + "soulSearchingMediaSession")
@@ -120,11 +125,13 @@ class MediaSessionManager(
                 super.onCustomAction(action, extras)
                 when (action) {
                     FAVORITE_ACTION -> {
-                        playbackManager.currentSong.value?.musicId?.let {
-                            coroutineScope.launch {
-                                toggleMusicFavoriteStatusUseCase(musicId = it)
+                        playbackManager.currentSong.value
+                            ?.takeIf { it.scope != Scope.SharedPlayedList }
+                            ?.musicId?.let {
+                                coroutineScope.launch {
+                                    toggleMusicFavoriteStatusUseCase(musicId = it)
+                                }
                             }
-                        }
                     }
                 }
             }
@@ -132,6 +139,7 @@ class MediaSessionManager(
         updateState(
             isPlaying = isPlaying,
             isFavorite = isFavorite,
+            playedListScope = playedListScope
         )
         mediaSession?.isActive = true
     }
@@ -204,6 +212,7 @@ class MediaSessionManager(
     private suspend fun updateState(
         isPlaying: Boolean,
         isFavorite: Boolean?,
+        playedListScope: PlayedListScope,
     ) {
         val musicState = if (isPlaying) {
             PlaybackState.STATE_PLAYING
@@ -221,16 +230,18 @@ class MediaSessionManager(
 
         mediaSession?.setPlaybackState(
             PlaybackStateCompat.Builder()
-                .setActions(
-                    PlaybackStateCompat.ACTION_PLAY
-                            or PlaybackStateCompat.ACTION_SEEK_TO
-                            or PlaybackStateCompat.ACTION_PAUSE
-                            or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                            or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                            or PlaybackStateCompat.ACTION_PLAY_PAUSE
-                )
                 .apply {
-                    favoriteCustomAction?.let { addCustomAction(it) }
+                    if (playedListScope.isAdmin) {
+                        setActions(
+                            PlaybackStateCompat.ACTION_PLAY
+                                    or PlaybackStateCompat.ACTION_SEEK_TO
+                                    or PlaybackStateCompat.ACTION_PAUSE
+                                    or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                                    or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                                    or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        )
+                        favoriteCustomAction?.let { addCustomAction(it) }
+                    }
                 }
                 .setState(
                     musicState,

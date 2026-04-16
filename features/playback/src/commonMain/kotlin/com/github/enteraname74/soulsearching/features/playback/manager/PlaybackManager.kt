@@ -169,11 +169,13 @@ class PlaybackManager(
             playerRepository.getSize(),
             playerRepository.getCurrentPosition(),
             currentMusicFavoriteStatusState,
+            playerRepository.getCurrentScope(),
         ) { array ->
             val currentMusic: Music? = (array[0] as PlayerMusic?)?.music
             val currentPlayedList: PlayerPlayedList? = array[1] as PlayerPlayedList?
+            val playedListScope: PlayedListScope? = array[6] as PlayedListScope?
 
-            if (currentMusic == null || currentPlayedList == null) {
+            if (currentMusic == null || currentPlayedList == null || playedListScope == null) {
                 null
             } else {
                 UpdateData(
@@ -183,6 +185,7 @@ class PlaybackManager(
                     isInFavorite = array[5] as Boolean,
                     playedListSize = (array[3] as Int).toLong(),
                     position = (array[4] as Int?)?.toLong() ?: 1L,
+                    playedListScope = playedListScope,
                 )
             }
         }.distinctUntilChanged()
@@ -446,17 +449,26 @@ class PlaybackManager(
      * Play or pause the player, depending on its current state.
      */
     suspend fun togglePlayPause() {
+        val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return
+        if (!playerScope.isAdmin) return
+
         playerRepository.togglePlayPause()
     }
 
     fun play() {
         workScope.launch {
+            val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return@launch
+            if (!playerScope.isAdmin) return@launch
+
             playerRepository.setPlayedListState(PlayedListState.Playing)
         }
     }
 
     fun pause() {
         workScope.launch {
+            val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return@launch
+            if (!playerScope.isAdmin) return@launch
+
             playerRepository.setPlayedListState(PlayedListState.Paused)
         }
     }
@@ -465,6 +477,9 @@ class PlaybackManager(
      * Seek to a given position in the current played music.
      */
     suspend fun seekToPosition(position: Int) {
+        val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return
+        if (!playerScope.isAdmin) return
+
         player.seekToPosition(position)
         updateNotification()
         playbackProgressJob.launchDurationJobIfNecessary()
@@ -496,6 +511,9 @@ class PlaybackManager(
      */
     suspend fun next() {
         val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
+        val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return
+        if (!playerScope.isAdmin) return
+
         val size: Int = playerRepository.getSize().firstOrNull() ?: return
 
         if (playerMode == PlayerMode.Loop || size == 1) {
@@ -516,6 +534,9 @@ class PlaybackManager(
      */
     suspend fun previous(skipRewind: Boolean = false) {
         val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
+        val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return
+        if (!playerScope.isAdmin) return
+
         val size: Int = playerRepository.getSize().firstOrNull() ?: return
         val shouldRewind =
             settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD && !skipRewind
