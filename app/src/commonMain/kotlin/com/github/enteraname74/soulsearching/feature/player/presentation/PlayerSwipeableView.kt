@@ -201,10 +201,7 @@ fun PlayerDraggableView(
                                 playerViewModel.navigateToAlbum()
                             }
                         },
-                        // TODO: Move the check to be music by music for list support
-                        showMusicBottomSheet = ifOwnedByUserOrAdmin(dataState) {
-                            { playerViewModel.showMusicBottomSheet(listOf(it)) }
-                        },
+                        showMusicBottomSheet = { playerViewModel.showMusicBottomSheet(listOf(it)) },
                         toggleFavoriteState = ifOwnedByUser(dataState) {
                             { playerViewModel.toggleFavoriteState() }
                         },
@@ -275,13 +272,6 @@ private fun <T>ifLocal(state: PlayerViewState.Data, scope: () -> T): T? =
 
 private fun <T>ifOwnedByUser(state: PlayerViewState.Data, scope: () -> T): T? =
     if (state.currentMusic.scope != Scope.SharedPlayedList) {
-        scope()
-    } else {
-        null
-    }
-
-private fun <T>ifOwnedByUserOrAdmin(state: PlayerViewState.Data, scope: () -> T): T? =
-    if (state.currentMusic.scope != Scope.SharedPlayedList || state.playedListScope.isAdmin) {
         scope()
     } else {
         null

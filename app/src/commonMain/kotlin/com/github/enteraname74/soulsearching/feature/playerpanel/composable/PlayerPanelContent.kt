@@ -36,7 +36,7 @@ import java.util.UUID
 fun PlayerPanelContent(
     playerState: PlayerViewState.Data,
     lyricsState: LyricsFetchState,
-    onMoreClickedOnMusic: ((musicId: UUID) -> Unit)?,
+    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
     onActivateRemoteLyrics: () -> Unit,
     onSwiped: ((Music) -> Unit)?,

@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -78,7 +79,7 @@ fun PlayerListView(
     currentMusicIndex: Int,
     playedList: List<Music>,
     onLongSelectOnMusic: (Music) -> Unit,
-    onMoreClickedOnMusic: ((musicId: UUID) -> Unit)?,
+    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
     onClickOnMusic: ((Music) -> Unit)?,
     onSwiped: ((Music) -> Unit)?,
     containerColor: Color,
@@ -198,7 +199,9 @@ fun PlayerListView(
                                         }
                                     ).takeIf { !playedListScope.isRemote },
                                 onClick = onClickOnMusic,
-                                onMoreClicked = onMoreClickedOnMusic?.let {
+                                onMoreClicked = onMoreClickedOnMusic.takeIf {
+                                    elt.scope != Scope.SharedPlayedList || playedListScope == PlayedListScope.SharedHost
+                                }?.let {
                                     { it(elt.musicId) }
                                 },
                                 onLongClick = { onLongSelectOnMusic(elt) },

@@ -39,7 +39,7 @@ fun PlayerPanelDraggableView(
     maxHeight: Float,
     playerState: PlayerViewState.Data,
     lyricsState: LyricsFetchState,
-    onMoreClickedOnMusic: ((musicId: UUID) -> Unit)?,
+    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
     multiSelectionState: MultiSelectionState,
     closeSelection: () -> Unit,
