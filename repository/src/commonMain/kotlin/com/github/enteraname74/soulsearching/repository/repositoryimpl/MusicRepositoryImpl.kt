@@ -258,6 +258,9 @@ class MusicRepositoryImpl(
         musicLocalDataSource.deleteSharedPlayedListMusics()
     }
 
+    override suspend fun fetch(url: String): CloudMusic =
+        musicRemoteDataSource.fetch(url = url)
+
     private companion object {
         const val MAX_MUSICS_PER_PAGE = 300
     }

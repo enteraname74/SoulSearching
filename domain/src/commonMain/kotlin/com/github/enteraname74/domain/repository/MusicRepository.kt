@@ -150,4 +150,6 @@ interface MusicRepository {
     ): Music?
 
     suspend fun deleteSharedPlayedListMusics()
+
+    suspend fun fetch(url: String): CloudMusic
 }

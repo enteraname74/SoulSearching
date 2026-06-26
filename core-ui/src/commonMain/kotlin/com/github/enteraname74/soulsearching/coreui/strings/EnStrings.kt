@@ -356,6 +356,11 @@ object EnStrings : Strings {
     override val cloudSharedListText: String = "Join a shared played list with a code"
     override val joinSharedListButton: String = "Join"
 
+    override val cloudFetchMusicTitle: String = "Upload song from URL"
+    override val cloudFetchMusicText: String = "Upload a song on Cloudy from a YouTube URL"
+    override val cloudFetchMusicFieldLabel: String = "Song's URL"
+    override val cloudFetchMusicButton: String = "Upload"
+
     override fun userType(type: User.Type): String =
         when (type) {
             User.Type.User -> "User"

@@ -363,6 +363,11 @@ interface Strings {
     val cloudSharedListText: String
     val joinSharedListButton: String
 
+    val cloudFetchMusicTitle: String
+    val cloudFetchMusicText: String
+    val cloudFetchMusicFieldLabel: String
+    val cloudFetchMusicButton: String
+
     fun userType(type: User.Type): String
 
     /**

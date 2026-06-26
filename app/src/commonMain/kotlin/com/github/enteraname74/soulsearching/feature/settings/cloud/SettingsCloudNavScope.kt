@@ -6,5 +6,6 @@ interface SettingsCloudNavScope {
     fun toUser()
     fun toSync()
     fun toSharedList()
+    fun toFetchMusic()
     fun navigateBack()
 }

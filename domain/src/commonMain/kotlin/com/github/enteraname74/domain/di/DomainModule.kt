@@ -16,6 +16,7 @@ import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
+import com.github.enteraname74.domain.usecase.music.FetchMusicFromUrlUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.RemoveLocallyOrDeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
@@ -68,6 +69,7 @@ val domainModule = module {
     // Music
     factoryOf(::CommonMusicUseCase)
     factoryOf(::DeleteMusicUseCase)
+    factoryOf(::FetchMusicFromUrlUseCase)
     factoryOf(::RemoveLocallyOrDeleteMusicUseCase)
     factoryOf(::IsMusicInFavoritePlaylistUseCase)
     factoryOf(::ToggleMusicFavoriteStatusUseCase)

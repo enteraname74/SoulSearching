@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_chevron_right
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_person_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_settings_filled
@@ -51,6 +52,15 @@ fun SettingsCloudScreen(
                 subTitle = strings.cloudSyncText,
                 onClick = actions::toSync,
                 leadIcon = CoreRes.drawable.ic_sync_alt,
+            )
+        }
+
+        item {
+            SoulMenuElement(
+                title = strings.cloudFetchMusicTitle,
+                subTitle = strings.cloudFetchMusicText,
+                onClick = actions::toFetchMusic,
+                leadIcon = CoreRes.drawable.ic_music_note_filled,
             )
         }
 

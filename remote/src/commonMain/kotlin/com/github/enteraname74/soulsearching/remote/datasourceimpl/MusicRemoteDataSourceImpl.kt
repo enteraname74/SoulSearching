@@ -5,10 +5,12 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.ext.appendFile
 import com.github.enteraname74.soulsearching.remote.ext.appendJson
+import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.contentType
 import com.github.enteraname74.soulsearching.remote.ext.safeRequest
 import com.github.enteraname74.soulsearching.remote.ext.safeUnitRequest
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
+import com.github.enteraname74.soulsearching.remote.model.FetchFromUrlBody
 import com.github.enteraname74.soulsearching.remote.model.MusicIdsBody
 import com.github.enteraname74.soulsearching.remote.model.update.MusicUpdate
 import com.github.enteraname74.soulsearching.remote.model.update.toMusicUpdate
@@ -106,4 +108,12 @@ class MusicRemoteDataSourceImpl(
                     page = page,
                 )
             ).body()
+
+    override suspend fun fetch(url: String): CloudMusic =
+        client
+            .withUrl(cloudPreferencesDataSource.getUrl())
+            .post(MusicResource.FetchFromUrl()) {
+                contentType(ContentType.Application.Json)
+                setBody(FetchFromUrlBody(url))
+            }.bodyOrThrow()
 }

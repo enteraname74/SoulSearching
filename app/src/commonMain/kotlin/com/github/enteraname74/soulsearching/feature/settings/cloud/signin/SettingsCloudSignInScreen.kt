@@ -1,7 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.signin
 
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,61 +23,69 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
+import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 
 @Composable
 fun SettingsCloudSignInScreen(
     actions: SettingsCloudSignInActions,
     state: SettingsCloudSignInState
 ) {
-    SoulScreen {
+    val focusManager = LocalFocusManager.current
 
-        val focusManager = LocalFocusManager.current
-
-        Column {
-            SoulTopBar(
-                title = strings.cloudConnection,
-                leftAction = TopBarNavigationAction(
-                    onClick = actions::navigateBack,
-                ),
-            )
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = {
-                                focusManager.clearFocus()
-                            }
-                        )
+    SettingPage(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        focusManager.clearFocus()
                     }
+                )
+            },
+        navigateBack = actions::navigateBack,
+        contentPadding = PaddingValues(all = UiConstants.Spacing.large),
+        title = strings.cloudConnection,
+    ) {
+        item {
+            state.nameField.TextField(
+                modifier = Modifier.fillMaxWidth(),
+                focusManager = focusManager,
+            )
+        }
+        item {
+            state.passwordField.TextField(
+                modifier = Modifier.fillMaxWidth(),
+                focusManager = focusManager,
+            )
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(
-                        all = UiConstants.Spacing.large,
-                    )
-                    .padding(
-                        bottom = PlayerMinimisedHeight.toDp()
+                        top = UiConstants.Spacing.mediumPlus,
                     ),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                contentAlignment = Alignment.Center,
             ) {
-                state.nameField.TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    focusManager = focusManager,
-                )
-                state.passwordField.TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    focusManager = focusManager,
-                )
                 SoulFilledButton(
-                    modifier = Modifier
-                        .padding(
-                            top = UiConstants.Spacing.mediumPlus,
-                        ),
                     text = strings.cloudSignIn,
                     onClick = {
                         focusManager.clearFocus()
                         actions.signIn()
                     },
                 )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = UiConstants.Spacing.mediumPlus,
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
                 SoulTextButton(
                     text = strings.cloudNoAccount,
                     onClick = {
@@ -85,5 +95,6 @@ fun SettingsCloudSignInScreen(
                 )
             }
         }
+
     }
 }

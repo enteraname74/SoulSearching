@@ -8,6 +8,7 @@ import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsA
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodesDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.fetchmusic.SettingsCloudFetchMusicDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInDestination
@@ -128,6 +129,10 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+        SettingsCloudFetchMusicDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
         SettingsCloudSignInDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
@@ -182,6 +187,7 @@ object SettingsNavigationHandler {
             subclass(SettingsCloudCodesDestination::class, SettingsCloudCodesDestination.serializer())
             subclass(SettingsCloudSyncDestination::class, SettingsCloudSyncDestination.serializer())
             subclass(SettingsCloudSharedListDestination::class, SettingsCloudSharedListDestination.serializer())
+            subclass(SettingsCloudFetchMusicDestination::class, SettingsCloudFetchMusicDestination.serializer())
         }
     }
 }
