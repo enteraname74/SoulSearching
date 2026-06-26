@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -21,6 +22,7 @@ import java.util.UUID
 class SettingsAllFoldersViewModel(
     private val commonFolderUseCase: CommonFolderUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
+    private val deleteMusicUseCase: DeleteMusicUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
@@ -61,7 +63,7 @@ class SettingsAllFoldersViewModel(
             commonFolderUseCase.upsertAll(allFolders = state.value.folders)
 
             val musicIds: List<UUID> = commonMusicUseCase.getAllIdsFromUnselectedFolders()
-            commonMusicUseCase.deleteAllFromUnselectedFolders()
+            deleteMusicUseCase.fromUnselectedFolders(ids = musicIds)
             // TODO SHARED PLAYED LIST: Should we show the error if the call doesn't work?
             playbackManager.removeSongsFromPlayedList(musicIds = musicIds)
             feedbackPopUpManager.showFeedback(

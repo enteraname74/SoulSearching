@@ -88,7 +88,7 @@ class MusicRemoteDataSourceImpl(
             .safeUnitRequest {
                 delete(MusicResource()) {
                     contentType(ContentType.Application.Json)
-                    setBody(MusicIdsBody(remoteIds))
+                    setBody(remoteIds)
                 }
             }
 

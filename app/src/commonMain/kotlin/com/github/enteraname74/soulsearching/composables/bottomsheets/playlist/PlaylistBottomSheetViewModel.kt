@@ -75,6 +75,8 @@ class PlaylistBottomSheetViewModel(
         isQuickAccessShown: Boolean,
         playedListScope: PlayedListScope?,
     ): List<BottomSheetRowSpec> = buildList {
+        if (playlists.isEmpty()) return@buildList
+
         val editEnabled: Boolean = playlists.size == 1
         val showDelete: Boolean = if (playlists.size == 1) {
             !playlists.first().playlist.isFavorite

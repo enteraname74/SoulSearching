@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.MusicFolderPreview
 import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import java.util.UUID
+import java.util.*
 import kotlin.time.Duration
 
 class CommonMusicUseCase(
@@ -17,10 +17,6 @@ class CommonMusicUseCase(
         musicRepository.deleteAll(
             ids = ids,
         )
-    }
-
-    suspend fun deleteAllFromUnselectedFolders() {
-        musicRepository.deleteAllFromUnselectedFolders()
     }
 
     suspend fun getAllIdsFromUnselectedFolders(): List<UUID> =

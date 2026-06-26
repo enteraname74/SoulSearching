@@ -50,6 +50,9 @@ interface MusicDao {
     @Query("SELECT musicId FROM RoomMusic WHERE remoteId IN (:remoteIds)")
     suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<UUID>
 
+    @Query("SELECT remoteId FROM RoomMusic WHERE musicId IN (:ids) AND remoteId IS NOT NULL")
+    suspend fun getRemoteIdsFromIds(ids: List<UUID>): List<String>
+
     @Transaction
     @Query("SELECT DISTINCT * FROM RoomMusic WHERE musicId IN (:ids)")
     fun getFromIds(ids: List<UUID>): Flow<List<RoomCompleteMusic>>

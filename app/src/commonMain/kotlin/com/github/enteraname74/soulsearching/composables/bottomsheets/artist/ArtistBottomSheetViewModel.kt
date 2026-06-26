@@ -58,7 +58,7 @@ class ArtistBottomSheetViewModel(
             artists = artists,
             bottomSheetTopInformation = buildTopInformation(artists),
             rowSpecs = buildRowSpecs(
-                playlists = artists,
+                artists = artists,
                 isQuickAccessShown = isQuickAccessShown,
                 playedList = playedList,
                 playedListScope = playedListScope,
@@ -72,18 +72,20 @@ class ArtistBottomSheetViewModel(
     )
 
     private fun buildRowSpecs(
-        playlists: List<ArtistWithMusics>,
+        artists: List<ArtistWithMusics>,
         playedList: List<Music>,
         isQuickAccessShown: Boolean,
         playedListScope: PlayedListScope?,
     ) : List<BottomSheetRowSpec> = buildList {
-        val editEnabled: Boolean = playlists.size == 1
+        if (artists.isEmpty()) return@buildList
+
+        val editEnabled: Boolean = artists.size == 1
 
         if (isQuickAccessShown) {
-            val isInQuickAccess: Boolean = if (playlists.size == 1) {
-                playlists.first().artist.isInQuickAccess
+            val isInQuickAccess: Boolean = if (artists.size == 1) {
+                artists.first().artist.isInQuickAccess
             } else {
-                playlists.all { it.artist.isInQuickAccess }
+                artists.all { it.artist.isInQuickAccess }
             }
 
             add(
@@ -119,7 +121,7 @@ class ArtistBottomSheetViewModel(
         add(
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_delete_filled,
-                title = if (playlists.size == 1) {
+                title = if (artists.size == 1) {
                     strings.deleteArtist
                 } else {
                     strings.deleteSelectedArtists

@@ -15,7 +15,7 @@ class SettingsCloudViewHolder(
     SoulViewModelHolder<SettingsCloudActions, SettingsCloudNavScope, SettingsCloudState>(
         initialState = SettingsCloudState(
             user = null,
-            hasUrl = false,
+            hasUrl = null,
         )
     ),
     SettingsCloudActions {

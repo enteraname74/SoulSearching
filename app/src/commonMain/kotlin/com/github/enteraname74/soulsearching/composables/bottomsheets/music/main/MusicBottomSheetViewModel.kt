@@ -105,6 +105,8 @@ class MusicBottomSheetViewModel(
         hasValidCloudInformation: Boolean,
         playedListScope: PlayedListScope?,
     ): List<BottomSheetRowSpec> = buildList {
+        if (musics.isEmpty()) return@buildList
+
         val possessMusics = musics.any { it.scope == Scope.User }
         val editEnabled: Boolean = musics.size == 1 && musics.first().scope == Scope.User
         val canAddNext: Boolean = when {

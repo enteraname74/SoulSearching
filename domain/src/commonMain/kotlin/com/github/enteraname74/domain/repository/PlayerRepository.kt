@@ -2,19 +2,9 @@ package com.github.enteraname74.domain.repository
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.player.AddMusicMode
-import com.github.enteraname74.domain.model.player.PlayedListScope
-import com.github.enteraname74.domain.model.player.PlayedListSetup
-import com.github.enteraname74.domain.model.player.PlayedListState
-import com.github.enteraname74.domain.model.player.PlayedListToContinue
-import com.github.enteraname74.domain.model.player.PlayerMode
-import com.github.enteraname74.domain.model.player.PlayerMusic
-import com.github.enteraname74.domain.model.player.PlayerPlayedList
-import com.github.enteraname74.domain.model.player.SharedPlayedList
-import com.github.enteraname74.domain.model.player.SharedPlayedListUser
-import com.github.enteraname74.domain.model.player.SharedPlayerMusic
+import com.github.enteraname74.domain.model.player.*
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import java.util.*
 import kotlin.uuid.Uuid
 
 interface PlayerRepository {

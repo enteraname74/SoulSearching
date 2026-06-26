@@ -5,6 +5,7 @@ import com.github.enteraname74.domain.model.CloudMusic
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicFolderPreview
+import com.github.enteraname74.domain.model.SoulResult
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 import kotlin.time.Duration
@@ -26,6 +27,10 @@ interface MusicRepository {
     suspend fun deleteAll(ids: List<UUID>)
 
     suspend fun deleteAllFromUnselectedFolders()
+
+    suspend fun getRemoteIdsFromIds(ids: List<UUID>): List<String>
+
+    suspend fun deleteRemotely(remoteIds: List<String>): SoulResult<Unit>
 
     /**
      * Retrieve a music from its id.

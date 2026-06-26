@@ -5,6 +5,7 @@ import com.github.enteraname74.domain.model.CloudMusic
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicFolderPreview
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
@@ -38,6 +39,12 @@ class MusicRepositoryImpl(
     override suspend fun deleteAllFromUnselectedFolders() {
         musicLocalDataSource.deleteAllFromUnselectedFolders()
     }
+
+    override suspend fun getRemoteIdsFromIds(ids: List<UUID>): List<String> =
+        musicLocalDataSource.getRemoteIdsFromIds(ids)
+
+    override suspend fun deleteRemotely(remoteIds: List<String>): SoulResult<Unit> =
+        musicRemoteDataSource.delete(remoteIds)
 
     override fun getFromId(musicId: UUID): Flow<Music?> = musicLocalDataSource.getFromId(
         musicId = musicId

@@ -41,7 +41,7 @@ fun SettingsCloudScreen(
                 subTitle = strings.cloudSettingsText,
                 onClick = actions::toSettings,
                 leadIcon = CoreRes.drawable.ic_settings_filled,
-                trailIcon = CoreRes.drawable.ic_warning_filled.takeIf { !state.hasUrl },
+                trailIcon = CoreRes.drawable.ic_warning_filled.takeIf { state.hasUrl == false },
             )
         }
 

@@ -36,6 +36,7 @@ interface MusicLocalDataSource {
     suspend fun getFromRemoteId(remoteId: String): Music?
 
     suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<UUID>
+    suspend fun getRemoteIdsFromIds(ids: List<UUID>): List<String>
 
     fun getFromIds(ids: List<UUID>): Flow<List<Music>>
 
