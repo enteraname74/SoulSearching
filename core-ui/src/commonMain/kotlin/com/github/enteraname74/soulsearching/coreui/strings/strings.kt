@@ -335,8 +335,9 @@ interface Strings {
     val cloudRegistrationCode: String
     val cloudUserSettings: String
     val disconnect: String
-    val generateCodeTitle: String
-    val generateCodeText: String
+    val inscriptionCodeSettingsTitle: String
+    val generateCodeButton: String
+    val inscriptionCodeSettingsText: String
     val generatedCode: String
 
     val cloudSyncTitle: String

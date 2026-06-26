@@ -8,10 +8,12 @@ import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
+import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
 import com.github.enteraname74.soulsearching.ext.toWorkerResult
 import com.github.enteraname74.soulsearching.model.utils.StringsUtils
 import com.github.soulsearching.R
+import kotlinx.coroutines.flow.firstOrNull
 
 class CloudSyncWorker(
     context: Context,
@@ -21,6 +23,7 @@ class CloudSyncWorker(
     override suspend fun doWork(): Result {
         setForeground(setForegroundInfo(0f))
         val result = syncMusicWithCloudUseCase()
+        println("CLUELESS -- RESULT: $result")
         return result.toWorkerResult()
     }
 

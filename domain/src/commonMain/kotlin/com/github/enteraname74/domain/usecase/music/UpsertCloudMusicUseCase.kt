@@ -8,14 +8,12 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.UpsertCloudAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertCloudArtistUseCase
-import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
 import java.util.UUID
 
 class UpsertCloudMusicUseCase(
     private val upsertCloudAlbumUseCase: UpsertCloudAlbumUseCase,
     private val upsertCloudArtistUseCase: UpsertCloudArtistUseCase,
     private val musicRepository: MusicRepository,
-    private val commonMusicArtistUseCase: CommonMusicArtistUseCase,
 ) {
     suspend operator fun invoke(
         cloudMusic: CloudMusic,
@@ -49,6 +47,7 @@ class UpsertCloudMusicUseCase(
             artists = artistsOfMusic,
         )
 
+        println("CLUELESS -- upsert cloud music: $savedMusic")
         musicRepository.upsert(savedMusic)
         return savedMusic
     }

@@ -129,6 +129,7 @@ interface MusicRepository {
 
     suspend fun getDeletedRemoteMusicIds(): List<String>
     suspend fun clearRemoteIds(remoteIds: List<String>)
+    suspend fun deleteAllRemoteIds()
     suspend fun deleteNotExisting()
     suspend fun getAllToSendToCloud(): List<Music>
     suspend fun updateMusicToCloud(music: Music): CloudMusic?

@@ -13,6 +13,7 @@ import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.util.DateUtils
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.dao.MusicDao
 import com.github.enteraname74.localdb.ext.toRoomMusicArtists
@@ -41,7 +42,11 @@ internal class RoomMusicLocalDataSourceImpl(
         appDatabase.useWriterConnection {
             appDatabase.artistDao.upsertAll(music.artists.map { it.toRoomArtist() })
             appDatabase.albumDao.upsert(music.album.toRoomAlbum())
-            appDatabase.musicDao.upsert(music.toRoomMusic())
+            appDatabase.musicDao.upsert(
+                music.copy(
+                    lastUpdatedMillis = DateUtils.now(),
+                ).toRoomMusic()
+            )
 
             // Update links
             appDatabase.musicArtistDao.deleteOfMusic(music.musicId)
@@ -56,7 +61,9 @@ internal class RoomMusicLocalDataSourceImpl(
             appDatabase.artistDao.upsertAll(
                 roomArtists = musics.flatMap { music ->
                     music.artists.map {
-                        it.toRoomArtist()
+                        it.copy(
+                            lastUpdatedMillis = DateUtils.now(),
+                        ).toRoomArtist()
                     }
                 }
             )
@@ -371,6 +378,10 @@ internal class RoomMusicLocalDataSourceImpl(
 
     override suspend fun clearRemoteIds(remoteIds: List<String>) {
         appDatabase.musicDao.clearRemoteIds(remoteIds)
+    }
+
+    override suspend fun deleteAllRemoteIds() {
+        appDatabase.musicDao.deleteAllRemoteIds()
     }
 
     override suspend fun deleteNotExisting() {

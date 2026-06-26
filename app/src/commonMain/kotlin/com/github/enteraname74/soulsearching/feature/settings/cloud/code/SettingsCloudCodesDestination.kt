@@ -8,15 +8,15 @@ import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
-data object SettingsCloudCodeDestination : SettingPage {
+data object SettingsCloudCodesDestination : SettingPage {
     fun register(
         entryProviderScope: EntryProviderScope<NavKey>,
         navigator: Navigator,
     ) {
-        entryProviderScope.entry<SettingsCloudCodeDestination> {
-            val holder: SettingsCloudCodeViewHolder = koinViewModel()
+        entryProviderScope.entry<SettingsCloudCodesDestination> {
+            val holder: SettingsCloudCodesViewHolder = koinViewModel()
             holder.Screen(
-                navigation = object : SettingsCloudCodeNavScope {
+                navigation = object : SettingsCloudCodesNavScope {
                     override fun navigateBack() {
                         navigator.pop()
                     }

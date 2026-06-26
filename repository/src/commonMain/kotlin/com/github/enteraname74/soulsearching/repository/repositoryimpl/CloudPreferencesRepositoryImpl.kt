@@ -21,4 +21,8 @@ class CloudPreferencesRepositoryImpl(
 
     override fun observePreferences(): Flow<CloudPreferences?> =
         dataSource.observePreferences()
+
+    override suspend fun clearLastSyncMillis() {
+        dataSource.clearLastSyncMillis()
+    }
 }

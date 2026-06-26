@@ -30,11 +30,4 @@ class CommonUserUseCase(
 
     fun observeUser(): Flow<User?> =
         userRepository.observeUser()
-
-    suspend fun logout() {
-        userRepository.logout()
-    }
-
-    suspend fun generateCode(): SoulResult<String> =
-        userRepository.generateCode()
 }

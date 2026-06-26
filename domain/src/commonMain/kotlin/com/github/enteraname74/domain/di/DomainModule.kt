@@ -38,6 +38,7 @@ import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.domain.usecase.user.LogoutFromCloudUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -94,6 +95,7 @@ val domainModule = module {
 
     // User
     factoryOf(::CommonUserUseCase)
+    factoryOf(::LogoutFromCloudUseCase)
 
     // CloudPreferences
     factoryOf(::CommonCloudPreferencesUseCase)

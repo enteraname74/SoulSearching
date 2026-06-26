@@ -9,6 +9,7 @@ import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 
 class UpdateArtistUseCase(
     private val artistRepository: ArtistRepository,
@@ -16,6 +17,7 @@ class UpdateArtistUseCase(
     private val musicRepository: MusicRepository,
     private val musicArtistRepository: MusicArtistRepository,
     private val commonArtistUseCase: CommonArtistUseCase,
+    private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
 ) {
     suspend operator fun invoke(newArtistWithMusicsInformation: ArtistWithMusics) {
         artistRepository.upsert(
@@ -47,6 +49,7 @@ class UpdateArtistUseCase(
                 possibleDuplicatedArtist?.artist?.isInQuickAccess == true
             )
         )
+        cloudBackgroundSyncJob.launchIfPossible()
     }
 
     /**

@@ -10,4 +10,6 @@ interface CloudPreferencesRepository {
     suspend fun setLastSyncMillis(millis: Long)
 
     fun observePreferences(): Flow<CloudPreferences?>
+
+    suspend fun clearLastSyncMillis()
 }

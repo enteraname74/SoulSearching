@@ -26,7 +26,7 @@ import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.S
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudViewHolder
-import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodeViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodesViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInViewHolder
@@ -67,7 +67,7 @@ internal val viewModelModule: Module = module {
     viewModelOf(::SettingsCloudSignInViewHolder)
     viewModelOf(::SettingsCloudSignUpViewHolder)
     viewModelOf(::SettingsCloudUserViewHolder)
-    viewModelOf(::SettingsCloudCodeViewHolder)
+    viewModelOf(::SettingsCloudCodesViewHolder)
     viewModelOf(::SettingsCloudSyncViewHolder)
     viewModelOf(::SettingsCloudSharedListViewHolder)
 

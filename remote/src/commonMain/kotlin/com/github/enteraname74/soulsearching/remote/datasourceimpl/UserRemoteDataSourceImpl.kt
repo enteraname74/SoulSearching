@@ -8,7 +8,7 @@ import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.clearToken
 import com.github.enteraname74.soulsearching.remote.ext.safeRequest
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
-import com.github.enteraname74.soulsearching.remote.model.GeneratedCode
+import com.github.enteraname74.domain.model.UserInscriptionCode
 import com.github.enteraname74.soulsearching.remote.model.RemoteUserAuth
 import com.github.enteraname74.soulsearching.remote.model.UserLogin
 import com.github.enteraname74.soulsearching.remote.model.UserSignIn
@@ -78,13 +78,6 @@ class UserRemoteDataSourceImpl(
             .safeRequest {
                 get(AuthResource.RefreshTokens())
             }
-
-    override suspend fun generateCode(): SoulResult<String> =
-        cloudClient
-            .withUrl(url = cloudPreferencesDataSource.getUrl())
-            .safeRequest<GeneratedCode> {
-                get(UserResource.GenerateCode())
-            }.map { it.code }
 
     override suspend fun logout() {
         cloudClient.clearToken()

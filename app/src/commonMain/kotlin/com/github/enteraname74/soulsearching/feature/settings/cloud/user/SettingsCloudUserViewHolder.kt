@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.user
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.domain.usecase.user.LogoutFromCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolder
 import kotlinx.coroutines.flow.collectLatest
@@ -10,6 +11,7 @@ import kotlinx.coroutines.launch
 
 class SettingsCloudUserViewHolder(
     private val commonUserUseCase: CommonUserUseCase,
+    private val logoutFromCloudUseCase: LogoutFromCloudUseCase,
     private val loadingManager: LoadingManager,
 ) :
     SoulViewModelHolder<
@@ -34,11 +36,8 @@ class SettingsCloudUserViewHolder(
     }
 
     override fun disconnect() {
-        viewModelScope.launch {
-            loadingManager.withLoading {
-                commonUserUseCase.logout()
-                navigateBack()
-            }
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            logoutFromCloudUseCase()
         }
     }
 

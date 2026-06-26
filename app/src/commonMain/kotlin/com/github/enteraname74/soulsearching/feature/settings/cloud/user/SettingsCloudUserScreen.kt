@@ -51,8 +51,8 @@ fun SettingsCloudUserScreen(
             ) {
                 if (state.user?.type == User.Type.Admin) {
                     SoulMenuElement(
-                        title = strings.generateCodeTitle,
-                        subTitle = strings.generateCodeText,
+                        title = strings.inscriptionCodeSettingsTitle,
+                        subTitle = strings.inscriptionCodeSettingsText,
                         leadIcon = CoreRes.drawable.ic_key,
                         onClick = actions::toCode,
                     )

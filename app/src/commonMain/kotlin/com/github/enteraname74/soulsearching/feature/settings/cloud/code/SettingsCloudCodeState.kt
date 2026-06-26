@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.code
 
+import com.github.enteraname74.domain.model.UserInscriptionCode
+
 data class SettingsCloudCodeState(
-    val code: String?,
+    val codes: List<UserInscriptionCode>
 )

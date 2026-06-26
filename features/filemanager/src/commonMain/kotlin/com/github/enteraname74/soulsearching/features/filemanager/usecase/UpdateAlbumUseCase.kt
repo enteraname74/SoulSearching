@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import java.util.*
 
 class UpdateAlbumUseCase(
@@ -14,6 +15,7 @@ class UpdateAlbumUseCase(
     private val musicRepository: MusicRepository,
     private val commonArtistUseCase: CommonArtistUseCase,
     private val musicArtistRepository: MusicArtistRepository,
+    private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
 ) {
     suspend operator fun invoke(
         updateInformation: UpdateInformation
@@ -68,6 +70,7 @@ class UpdateAlbumUseCase(
         // We check and delete the initial artist if it no longer possess songs.
         commonArtistUseCase.deleteIfEmpty(artistId = updateInformation.legacyAlbum.artist.artistId)
 
+        cloudBackgroundSyncJob.launchIfPossible()
         return updatedAlbum
     }
 

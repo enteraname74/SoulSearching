@@ -1,26 +1,19 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
+import com.github.enteraname74.soulsearching.coreui.list.ShapeListStyle
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
@@ -55,7 +48,7 @@ fun SharedPlayedListView(
             item {
                 UserRow(
                     user = it,
-                    style = UserRowStyle.Unique
+                    style = ShapeListStyle.Unique
                 )
             }
         }
@@ -68,16 +61,13 @@ fun SharedPlayedListView(
             items(
                 count = state.guests.size
             ) { index ->
-                val style = when {
-                    state.guests.size == 1 -> UserRowStyle.Unique
-                    index == 0 -> UserRowStyle.Top
-                    index == state.guests.lastIndex -> UserRowStyle.Bottom
-                    else -> UserRowStyle.Body
-                }
                 UserRow(
                     modifier = Modifier.padding(1.dp),
                     user = state.guests[index],
-                    style = style,
+                    style = ShapeListStyle.fromList(
+                        listSize = state.guests.size,
+                        index = index,
+                    ),
                 )
             }
         }
@@ -141,7 +131,7 @@ private fun SectionTitle(
 @Composable
 private fun UserRow(
     user: SharedListState.User,
-    style: UserRowStyle,
+    style: ShapeListStyle,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -158,35 +148,3 @@ private fun UserRow(
         )
     }
 }
-
-private enum class UserRowStyle {
-    Top,
-    Body,
-    Unique,
-    Bottom;
-
-    fun shape(): Shape =
-        when (this) {
-            Top -> RoundedCornerShape(
-                topStart = CORNER_BIG,
-                topEnd = CORNER_BIG,
-                bottomStart = CORNER_SMALL,
-                bottomEnd = CORNER_SMALL,
-            )
-            Unique -> RoundedCornerShape(
-                size = CORNER_BIG,
-            )
-            Body -> RoundedCornerShape(
-                size = CORNER_SMALL,
-            )
-            Bottom -> RoundedCornerShape(
-                topStart = CORNER_SMALL,
-                topEnd = CORNER_SMALL,
-                bottomStart = CORNER_BIG,
-                bottomEnd = CORNER_BIG,
-            )
-        }
-}
-
-private val CORNER_BIG: Dp = 16.dp
-private val CORNER_SMALL: Dp = 6.dp

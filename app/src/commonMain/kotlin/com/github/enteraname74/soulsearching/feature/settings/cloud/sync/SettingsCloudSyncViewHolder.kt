@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.sync
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.CloudBackgroundSyncJob
+import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolder
 import kotlinx.coroutines.launch
 
@@ -21,7 +21,7 @@ class SettingsCloudSyncViewHolder(
     override fun launchSync() {
         viewModelScope.launch {
             updateState { copy(isSyncing = true) }
-            cloudBackgroundSyncJob.launch()
+            cloudBackgroundSyncJob.launchIfPossible()
             updateState { copy(isSyncing = false) }
         }
     }

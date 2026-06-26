@@ -10,6 +10,7 @@ data class RemoteSharedPlayedListUser(
     val deviceId: String,
     val username: String,
     val joinedAt: Long,
+    val status: PlayerUserStatus,
 )
 
 data class SharedPlayedListUser(
@@ -19,6 +20,12 @@ data class SharedPlayedListUser(
     val deviceId: String,
     val username: String,
     val joinedAt: Long,
+    val status: PlayerUserStatus,
 ) {
     val listUserId = "$listId-$id-$deviceId"
+}
+
+enum class PlayerUserStatus {
+    Connected,
+    Disconnected,
 }

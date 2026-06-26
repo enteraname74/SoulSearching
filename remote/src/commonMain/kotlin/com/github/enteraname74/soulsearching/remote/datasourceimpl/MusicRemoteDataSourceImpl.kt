@@ -7,8 +7,9 @@ import com.github.enteraname74.soulsearching.remote.ext.appendFile
 import com.github.enteraname74.soulsearching.remote.ext.appendJson
 import com.github.enteraname74.soulsearching.remote.ext.contentType
 import com.github.enteraname74.soulsearching.remote.ext.safeRequest
+import com.github.enteraname74.soulsearching.remote.ext.safeUnitRequest
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
-import com.github.enteraname74.soulsearching.remote.model.MusicIdsCheckBody
+import com.github.enteraname74.soulsearching.remote.model.MusicIdsBody
 import com.github.enteraname74.soulsearching.remote.model.update.MusicUpdate
 import com.github.enteraname74.soulsearching.remote.model.update.toMusicUpdate
 import com.github.enteraname74.soulsearching.remote.model.upload.toMusicUpload
@@ -17,6 +18,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferen
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.resources.delete
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
 import io.ktor.client.plugins.resources.put
@@ -36,7 +38,7 @@ class MusicRemoteDataSourceImpl(
             .withUrl(cloudPreferencesDataSource.getUrl())
             .post(MusicResource.Check()) {
                 contentType(ContentType.Application.Json)
-                setBody(MusicIdsCheckBody(idsToCheck))
+                setBody(MusicIdsBody(idsToCheck))
             }.body()
 
     override suspend fun updateMusicToCloud(music: Music): SoulResult<CloudMusic> {
@@ -45,7 +47,7 @@ class MusicRemoteDataSourceImpl(
         return client
             .withUrl(cloudPreferencesDataSource.getUrl())
             .safeRequest {
-                put(MusicResource) {
+                put(MusicResource()) {
                     contentType(ContentType.Application.Json)
                     setBody(musicUpdate)
                 }.body()
@@ -79,6 +81,16 @@ class MusicRemoteDataSourceImpl(
                 )
             }
     }
+
+    override suspend fun delete(remoteIds: List<String>): SoulResult<Unit> =
+        client
+            .withUrl(cloudPreferencesDataSource.getUrl())
+            .safeUnitRequest {
+                delete(MusicResource()) {
+                    contentType(ContentType.Application.Json)
+                    setBody(MusicIdsBody(remoteIds))
+                }
+            }
 
     override suspend fun getOfUser(
         lastUpdateAt: Long?,

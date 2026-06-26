@@ -5,20 +5,17 @@ package com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.github.enteraname74.domain.model.AlbumPreview
-import com.github.enteraname74.domain.model.ArtistPreview
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.model.PlaylistPreview
-import com.github.enteraname74.domain.model.QuickAccessible
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
@@ -35,22 +32,10 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicFoldersState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllQuickAccessState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageNavigationState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.SearchAllState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.GitHubReleaseBottomSheet
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SoulMixDialog
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allAlbumsTab
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allArtistsTab
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allMusicFoldersTab
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allMusicsTab
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allPlaylistsTab
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allQuickAccessTab
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.*
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
@@ -58,28 +43,12 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
 import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
-import java.util.UUID
+import java.util.*
 
 @Suppress("Deprecation")
 class MainPageViewModel(
@@ -89,6 +58,8 @@ class MainPageViewModel(
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
     private val multiSelectionManager: MultiSelectionManager,
     private val tabManager: TabManager,
+    private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(), KoinComponent,
     SortingInformationDelegate by sortingInformationDelegateImpl {
 
@@ -303,6 +274,15 @@ class MainPageViewModel(
         coroutineScope.launch {
             commonCoverUseCase.deleteUnusedFileCovers()
         }
+
+        val hasDoneSynchro: Boolean? = savedStateHandle[AppLaunchCloudSync]
+        if (hasDoneSynchro != true) {
+            coroutineScope.launch {
+                cloudBackgroundSyncJob.launchIfPossible()
+                savedStateHandle[AppLaunchCloudSync] = true
+            }
+        }
+
 
         coroutineScope.launch {
             val allFolders = commonFolderUseCase.getAll().first()
@@ -631,5 +611,9 @@ class MainPageViewModel(
             id = id,
             mode = mode,
         )
+    }
+
+    private companion object {
+        const val AppLaunchCloudSync: String = "AppLaunchCloudSync"
     }
 }

@@ -50,6 +50,11 @@ actual fun WriteFilesCheck(
                 )
             }
 
+            if (uris.isEmpty()) {
+                onSave()
+                return
+            }
+
             val intent = MediaStore.createWriteRequest(
                 context.contentResolver,
                 uris

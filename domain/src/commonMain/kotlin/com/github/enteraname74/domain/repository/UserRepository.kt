@@ -19,6 +19,4 @@ interface UserRepository {
     fun observeUser(): Flow<User?>
 
     suspend fun logout()
-
-    suspend fun generateCode(): SoulResult<String>
 }

@@ -626,6 +626,9 @@ interface MusicDao {
     @Query("UPDATE RoomMusic SET remoteId = NULL WHERE remoteId IN (:remoteIds)")
     suspend fun clearRemoteIds(remoteIds: List<String>)
 
+    @Query("UPDATE RoomMusic SET remoteId = NULL")
+    suspend fun deleteAllRemoteIds()
+
     @Query("DELETE FROM RoomMusic WHERE localPath IS NULL AND remoteId IS NULL")
     suspend fun deleteNotExisting()
 

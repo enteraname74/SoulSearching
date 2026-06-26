@@ -65,6 +65,7 @@ data class SharedPlayedList(
                 deviceId = user.deviceId,
                 username = user.username,
                 joinedAt = user.joinedAt,
+                status = user.status,
             )
         }
 }

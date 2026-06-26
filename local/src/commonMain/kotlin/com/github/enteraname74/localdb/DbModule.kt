@@ -12,6 +12,7 @@ import com.github.enteraname74.localdb.datasourceimpl.RoomMusicLocalDataSourceIm
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicPlaylistDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomPlayerLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomPlaylistDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomUserInscriptionCodeLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomUserLocalDataSourceImpl
 import com.github.enteraname74.localdb.migration.EndMigrationCallback
 import com.github.enteraname74.localdb.migration.Migration16To17
@@ -29,6 +30,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLo
 import com.github.enteraname74.soulsearching.repository.datasource.MusicPlaylistDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.code.UserInscriptionCodeLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -87,4 +89,5 @@ val localModule: Module = module {
     singleOf(::RoomUserLocalDataSourceImpl) bind UserLocalDataSource::class
     singleOf(::RoomCloudPreferencesDataSourceImpl) bind CloudPreferencesDataSource::class
     singleOf(::RoomDeviceLocalDataSourceImpl) bind DeviceLocalDataSource::class
+    singleOf(::RoomUserInscriptionCodeLocalDataSourceImpl) bind UserInscriptionCodeLocalDataSource::class
 }

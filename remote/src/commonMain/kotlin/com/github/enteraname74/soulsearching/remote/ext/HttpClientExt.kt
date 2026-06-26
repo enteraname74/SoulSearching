@@ -30,6 +30,19 @@ suspend inline fun <reified T> HttpClient.safeRequest(
     SoulResult.Error(e.message ?: e.toString())
 }
 
+suspend inline fun HttpClient.safeUnitRequest(
+    block: HttpClient.() -> HttpResponse
+): SoulResult<Unit> = try {
+    val response = block(this)
+    if (response.status.isSuccess()) {
+        SoulResult.Success(Unit)
+    } else {
+        SoulResult.Error(response.bodyAsText())
+    }
+} catch (e: Exception) {
+    SoulResult.Error(e.message ?: e.toString())
+}
+
 fun HttpClient.clearToken() {
     authProvider<BearerAuthProvider>()?.clearToken()
 }

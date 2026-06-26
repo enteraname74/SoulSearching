@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.github.enteraname74.domain.model.player.PlayerUserStatus
 import com.github.enteraname74.domain.model.player.SharedPlayedListUser
 import java.util.UUID
 import kotlin.uuid.Uuid
@@ -27,6 +28,7 @@ data class RoomSharedPlayedListUser(
     val username: String,
     val joinedAt: Long,
     val isOwner: Boolean,
+    val status: PlayerUserStatus,
 ) {
     fun toSharedPlayedListUser(): SharedPlayedListUser =
         SharedPlayedListUser(
@@ -36,6 +38,7 @@ data class RoomSharedPlayedListUser(
             joinedAt = joinedAt,
             listId = playedListId,
             isOwner = isOwner,
+            status = status,
         )
 }
 
@@ -48,4 +51,5 @@ internal fun SharedPlayedListUser.toRoomSharedPlayedListUser(): RoomSharedPlayed
         username = username,
         joinedAt = joinedAt,
         isOwner = isOwner,
+        status = status,
     )

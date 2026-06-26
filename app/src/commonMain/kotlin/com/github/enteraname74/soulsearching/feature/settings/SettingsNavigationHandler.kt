@@ -7,7 +7,7 @@ import com.github.enteraname74.soulsearching.feature.settings.aboutpage.develope
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudDestination
-import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodeDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodesDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInDestination
@@ -140,7 +140,7 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
-        SettingsCloudCodeDestination.register(
+        SettingsCloudCodesDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
@@ -179,7 +179,7 @@ object SettingsNavigationHandler {
             subclass(SettingsCloudSignInDestination::class, SettingsCloudSignInDestination.serializer())
             subclass(SettingsCloudSignUpDestination::class, SettingsCloudSignUpDestination.serializer())
             subclass(SettingsCloudUserDestination::class, SettingsCloudUserDestination.serializer())
-            subclass(SettingsCloudCodeDestination::class, SettingsCloudCodeDestination.serializer())
+            subclass(SettingsCloudCodesDestination::class, SettingsCloudCodesDestination.serializer())
             subclass(SettingsCloudSyncDestination::class, SettingsCloudSyncDestination.serializer())
             subclass(SettingsCloudSharedListDestination::class, SettingsCloudSharedListDestination.serializer())
         }

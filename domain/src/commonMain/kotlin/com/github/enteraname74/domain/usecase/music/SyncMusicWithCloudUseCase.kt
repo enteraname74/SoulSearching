@@ -9,7 +9,9 @@ import com.github.enteraname74.domain.repository.CloudPreferencesRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.DeleteEmptyAlbumsAndArtistsUseCase
 import com.github.enteraname74.domain.util.DateUtils
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Sync local songs with remote one.
@@ -29,7 +31,6 @@ class SyncMusicWithCloudUseCase(
         val idsNoLongerOnCloud: List<String> = musicRepository.getDeletedRemoteMusicIds()
         musicRepository.clearRemoteIds(idsNoLongerOnCloud)
         val musicsToSend: List<Music> = musicRepository.getAllToSendToCloud()
-
         if (musicsToSend.isEmpty()) return@runCatching
 
         // TODO SYNC: Let user choose its merge mode.

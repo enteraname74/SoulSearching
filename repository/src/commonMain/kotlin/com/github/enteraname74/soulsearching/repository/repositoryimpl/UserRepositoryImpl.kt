@@ -42,7 +42,4 @@ class UserRepositoryImpl(
         remoteDataSource.logout()
         localDataSource.clear()
     }
-
-    override suspend fun generateCode(): SoulResult<String> =
-        remoteDataSource.generateCode()
 }

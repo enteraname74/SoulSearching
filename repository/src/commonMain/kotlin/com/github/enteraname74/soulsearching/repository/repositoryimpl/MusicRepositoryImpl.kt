@@ -201,7 +201,7 @@ class MusicRepositoryImpl(
         musicLocalDataSource.getAllToSendToCloud()
 
     override suspend fun updateMusicToCloud(music: Music): CloudMusic? =
-        musicRemoteDataSource.updateMusicToCloud(music).getOrNull()
+        musicRemoteDataSource.updateMusicToCloud(music).apply { println("CLUELESS -- RESULT: $this") }.getOrNull()
 
     override suspend fun uploadMusicToCloud(music: Music): CloudMusic? =
         musicRemoteDataSource.uploadMusicToCloud(music).getOrNull()
@@ -237,6 +237,10 @@ class MusicRepositoryImpl(
 
     override suspend fun clearRemoteIds(remoteIds: List<String>) {
         musicLocalDataSource.clearRemoteIds(remoteIds)
+    }
+
+    override suspend fun deleteAllRemoteIds() {
+        musicLocalDataSource.deleteAllRemoteIds()
     }
 
     override suspend fun deleteNotExisting() {

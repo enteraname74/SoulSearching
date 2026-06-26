@@ -1,5 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.code
 
-interface SettingsCloudCodeNavScope {
+interface SettingsCloudCodesNavScope {
     fun navigateBack()
 }
