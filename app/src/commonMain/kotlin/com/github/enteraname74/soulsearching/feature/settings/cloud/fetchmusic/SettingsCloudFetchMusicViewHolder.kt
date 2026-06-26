@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.fetchmusic
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.music.FetchMusicFromUrlUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -42,7 +43,11 @@ class SettingsCloudFetchMusicViewHolder(
     override fun fetch() {
         loadingManager.withLoadingOnScope(viewModelScope) {
             if (currentState.urlField.isValid()) {
-                feedbackPopUpManager.showErrorIfAny(fetchMusicFromUrlUseCase(url = currentState.urlField.value))
+                when (val result = fetchMusicFromUrlUseCase(url = currentState.urlField.value)) {
+                    is SoulResult.Error -> feedbackPopUpManager.showErrorIfAny(result)
+                    is SoulResult.Success -> currentState.urlField.onValueChanged("")
+                }
+
             }
         }
     }

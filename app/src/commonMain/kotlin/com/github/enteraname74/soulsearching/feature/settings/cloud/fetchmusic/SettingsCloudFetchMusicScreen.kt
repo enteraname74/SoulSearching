@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.fetchmusic
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +23,7 @@ fun SettingsCloudFetchMusicScreen(
         title = strings.cloudFetchMusicTitle,
         navigateBack = actions::navigateBack,
         contentPadding = PaddingValues(all = UiConstants.Spacing.large),
-        verticalPadding = UiConstants.Spacing.medium,
+        verticalPadding = UiConstants.Spacing.mediumPlus,
     ) {
         item {
             state.urlField.TextField(
@@ -35,10 +34,7 @@ fun SettingsCloudFetchMusicScreen(
         item {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = UiConstants.Spacing.mediumPlus,
-                    ),
+                    .fillMaxWidth(),
                 contentAlignment = Alignment.Center,
             ) {
                 SoulFilledButton(
