@@ -15,6 +15,7 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.Setti
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.users.SettingsCloudUsersDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.SettingsThemeSelectionDestination
@@ -149,6 +150,10 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+        SettingsCloudUsersDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
         SettingsCloudSyncDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
@@ -188,6 +193,7 @@ object SettingsNavigationHandler {
             subclass(SettingsCloudSyncDestination::class, SettingsCloudSyncDestination.serializer())
             subclass(SettingsCloudSharedListDestination::class, SettingsCloudSharedListDestination.serializer())
             subclass(SettingsCloudFetchMusicDestination::class, SettingsCloudFetchMusicDestination.serializer())
+            subclass(SettingsCloudUsersDestination::class, SettingsCloudUsersDestination.serializer())
         }
     }
 }

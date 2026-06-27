@@ -11,7 +11,7 @@ import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
 import coil3.request.ImageRequest
 import com.github.enteraname74.domain.model.CloudPreferences
-import com.github.enteraname74.domain.model.User
+import com.github.enteraname74.domain.model.user.User
 import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme

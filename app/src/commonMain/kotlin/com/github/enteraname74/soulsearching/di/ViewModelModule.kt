@@ -34,6 +34,7 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.Setti
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.users.SettingsCloudUsersViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeViewModel
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain.SettingsThemeSelectionViewModel
@@ -69,6 +70,7 @@ internal val viewModelModule: Module = module {
     viewModelOf(::SettingsCloudSignUpViewHolder)
     viewModelOf(::SettingsCloudUserViewHolder)
     viewModelOf(::SettingsCloudCodesViewHolder)
+    viewModelOf(::SettingsCloudUsersViewHolder)
     viewModelOf(::SettingsCloudSyncViewHolder)
     viewModelOf(::SettingsCloudSharedListViewHolder)
     viewModelOf(::SettingsCloudFetchMusicViewHolder)

@@ -2,7 +2,9 @@ package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
-import com.github.enteraname74.domain.model.User
+import com.github.enteraname74.domain.model.user.User
+import com.github.enteraname74.domain.model.user.UserType
+import javax.management.StringValueExp
 import kotlin.time.Duration
 
 val strings = when(Locale.current.language) {
@@ -368,7 +370,12 @@ interface Strings {
     val cloudFetchMusicFieldLabel: String
     val cloudFetchMusicButton: String
 
-    fun userType(type: User.Type): String
+    val cloudUsersTitle: String
+    val cloudUsersText: String
+    val cloudUsersDeleteDialogTitle: String
+    val cloudUsersDeleteDialogText: String
+
+    fun userType(type: UserType): String
 
     /**
      * Shows a text indicating the number of musics.

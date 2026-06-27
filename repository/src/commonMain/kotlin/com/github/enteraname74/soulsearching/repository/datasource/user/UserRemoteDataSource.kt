@@ -1,8 +1,10 @@
 package com.github.enteraname74.soulsearching.repository.datasource.user
 
 import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.model.User
-import com.github.enteraname74.domain.model.UserTokens
+import com.github.enteraname74.domain.model.user.SimpleUser
+import com.github.enteraname74.domain.model.user.User
+import com.github.enteraname74.domain.model.user.UserTokens
+import kotlin.uuid.Uuid
 
 interface UserRemoteDataSource {
     suspend fun signIn(
@@ -19,4 +21,8 @@ interface UserRemoteDataSource {
     suspend fun refreshTokens(): SoulResult<UserTokens>
 
     suspend fun logout()
+
+    suspend fun fetchAll(): List<SimpleUser>
+
+    suspend fun delete(userId: Uuid)
 }

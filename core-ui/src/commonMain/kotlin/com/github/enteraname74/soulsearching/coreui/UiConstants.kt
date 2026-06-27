@@ -127,4 +127,7 @@ object UiConstants {
             @Composable
             get() = MaterialTheme.typography.bodySmall
     }
+
+    // Based on material values
+    const val ALPHA_DISABLED: Float = 0.38f
 }

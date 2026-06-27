@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_chevron_right
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_groups_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_person_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
@@ -48,6 +49,17 @@ fun SettingsCloudScreen(
 
         item {
             SoulMenuElement(
+                enabled = state.connectedFeaturesEnabled,
+                title = strings.cloudUsersTitle,
+                subTitle = strings.cloudUsersText,
+                onClick = actions::toUsers,
+                leadIcon = CoreRes.drawable.ic_groups_filled,
+            )
+        }
+
+        item {
+            SoulMenuElement(
+                enabled = state.connectedFeaturesEnabled,
                 title = strings.cloudSyncTitle,
                 subTitle = strings.cloudSyncText,
                 onClick = actions::toSync,
@@ -57,6 +69,7 @@ fun SettingsCloudScreen(
 
         item {
             SoulMenuElement(
+                enabled = state.connectedFeaturesEnabled,
                 title = strings.cloudFetchMusicTitle,
                 subTitle = strings.cloudFetchMusicText,
                 onClick = actions::toFetchMusic,
@@ -66,6 +79,7 @@ fun SettingsCloudScreen(
 
         item {
             SoulMenuElement(
+                enabled = state.connectedFeaturesEnabled,
                 title = strings.cloudSharedListTitle,
                 subTitle = strings.cloudSharedListText,
                 onClick = actions::toSharedList,

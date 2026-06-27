@@ -1,6 +1,6 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
-import com.github.enteraname74.domain.model.UserInscriptionCode
+import com.github.enteraname74.domain.model.user.UserInscriptionCode
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toRoomUserInscriptionCode
 import com.github.enteraname74.soulsearching.repository.datasource.code.UserInscriptionCodeLocalDataSource

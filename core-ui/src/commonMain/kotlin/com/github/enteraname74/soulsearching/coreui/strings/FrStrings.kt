@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
-import com.github.enteraname74.domain.model.User
+import com.github.enteraname74.domain.model.user.User
+import com.github.enteraname74.domain.model.user.UserType
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 
 /**
@@ -364,11 +365,16 @@ object FrStrings : Strings {
     override val cloudFetchMusicFieldLabel: String = "URL de la musique"
     override val cloudFetchMusicButton: String = "Téléverser"
 
-    override fun userType(type: User.Type): String =
+    override val cloudUsersTitle: String = "Utilisateurs de Cloudy"
+    override val cloudUsersText: String = "Voir tous les utilisateurs de l'instance de Cloudy"
+    override val cloudUsersDeleteDialogTitle: String =" Supprimer cet utilisateur"
+    override val cloudUsersDeleteDialogText: String = "Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+
+    override fun userType(type: UserType): String =
         when (type) {
-            User.Type.User -> "Utilisateur"
-            User.Type.Admin -> "Administrateur"
-            User.Type.Unknown -> "Aucun statut"
+            UserType.User -> "Utilisateur"
+            UserType.Admin -> "Administrateur"
+            UserType.Unknown -> "Aucun statut"
         }
 
     override fun musics(total: Int): String {

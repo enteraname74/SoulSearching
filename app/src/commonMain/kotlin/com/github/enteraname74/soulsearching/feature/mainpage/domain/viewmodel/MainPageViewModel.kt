@@ -16,6 +16,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
+import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
@@ -23,6 +24,7 @@ import com.github.enteraname74.domain.usecase.music.RemoveLocallyOrDeleteMusicUs
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
+import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
@@ -60,6 +62,8 @@ class MainPageViewModel(
     private val tabManager: TabManager,
     private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
     private val savedStateHandle: SavedStateHandle,
+    private val commonUserUseCase: CommonUserUseCase,
+    private val hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
 ) : ViewModel(), KoinComponent,
     SortingInformationDelegate by sortingInformationDelegateImpl {
 
@@ -283,6 +287,12 @@ class MainPageViewModel(
             }
         }
 
+        coroutineScope.launch {
+            val canAccessCloud = hasValidCloudInformationUseCase().firstOrNull() == true
+            if (canAccessCloud) {
+                commonUserUseCase.fetchAll()
+            }
+        }
 
         coroutineScope.launch {
             val allFolders = commonFolderUseCase.getAll().first()

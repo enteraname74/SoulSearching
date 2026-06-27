@@ -23,6 +23,7 @@ import com.github.enteraname74.localdb.dao.PlayerMusicProgressDao
 import com.github.enteraname74.localdb.dao.PlayerPlayedListDao
 import com.github.enteraname74.localdb.dao.PlaylistDao
 import com.github.enteraname74.localdb.dao.SharedPlayedListUserDao
+import com.github.enteraname74.localdb.dao.SimpleUserDao
 import com.github.enteraname74.localdb.dao.UserDao
 import com.github.enteraname74.localdb.dao.UserInscriptionCodeDao
 import com.github.enteraname74.localdb.model.RoomAlbum
@@ -34,6 +35,7 @@ import com.github.enteraname74.localdb.model.RoomMusic
 import com.github.enteraname74.localdb.model.RoomMusicArtist
 import com.github.enteraname74.localdb.model.RoomMusicPlaylist
 import com.github.enteraname74.localdb.model.RoomPlaylist
+import com.github.enteraname74.localdb.model.RoomSimpleUser
 import com.github.enteraname74.localdb.model.RoomUser
 import com.github.enteraname74.localdb.model.RoomUserInscriptionCode
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
@@ -66,6 +68,7 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
         RoomDeviceId::class,
         RoomSharedPlayedListUser::class,
         RoomUserInscriptionCode::class,
+        RoomSimpleUser::class,
     ],
     views = [
         CurrentPlayerMusicsView::class,
@@ -99,6 +102,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val deviceIdDao: DeviceIdDao
     abstract val sharedPlayedListUserDao: SharedPlayedListUserDao
     abstract val userInscriptionCodeDao: UserInscriptionCodeDao
+    abstract val simpleUserDao: SimpleUserDao
 }
 
 // The Room compiler generates the `actual` implementations.

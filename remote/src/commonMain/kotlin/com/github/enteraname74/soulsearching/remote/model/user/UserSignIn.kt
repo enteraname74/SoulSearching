@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.remote.model
+package com.github.enteraname74.soulsearching.remote.model.user
 
 import kotlinx.serialization.Serializable
 

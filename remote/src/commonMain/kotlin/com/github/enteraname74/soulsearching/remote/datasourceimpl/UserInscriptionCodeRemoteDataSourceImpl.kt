@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
-import com.github.enteraname74.domain.model.UserInscriptionCode
+import com.github.enteraname74.domain.model.user.UserInscriptionCode
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.successOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.withUrl

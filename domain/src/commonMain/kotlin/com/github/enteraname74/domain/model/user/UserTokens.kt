@@ -1,4 +1,4 @@
-package com.github.enteraname74.domain.model
+package com.github.enteraname74.domain.model.user
 
 import kotlinx.serialization.Serializable
 

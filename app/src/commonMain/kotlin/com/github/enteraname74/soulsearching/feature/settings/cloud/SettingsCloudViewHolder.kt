@@ -68,6 +68,10 @@ class SettingsCloudViewHolder(
         navigate { toFetchMusic() }
     }
 
+    override fun toUsers() {
+        navigate { toUsers() }
+    }
+
     @Composable
     override fun Content(
         actions: SettingsCloudActions,

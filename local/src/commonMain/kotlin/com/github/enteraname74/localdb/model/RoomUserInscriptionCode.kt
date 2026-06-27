@@ -2,7 +2,7 @@ package com.github.enteraname74.localdb.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.enteraname74.domain.model.UserInscriptionCode
+import com.github.enteraname74.domain.model.user.UserInscriptionCode
 import kotlin.uuid.Uuid
 
 @Entity

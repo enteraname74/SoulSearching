@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.datasource.code
 
-import com.github.enteraname74.domain.model.UserInscriptionCode
+import com.github.enteraname74.domain.model.user.UserInscriptionCode
 import kotlinx.coroutines.flow.Flow
 
 interface UserInscriptionCodeLocalDataSource {

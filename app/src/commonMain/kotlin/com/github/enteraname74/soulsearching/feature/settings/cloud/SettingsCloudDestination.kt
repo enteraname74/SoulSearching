@@ -9,6 +9,7 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.S
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.users.SettingsCloudUsersDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
@@ -49,6 +50,10 @@ data object SettingsCloudDestination : SettingPage {
 
                     override fun toSharedList() {
                         navigator.push(SettingsCloudSharedListDestination)
+                    }
+
+                    override fun toUsers() {
+                        navigator.push(SettingsCloudUsersDestination)
                     }
                 }
             )

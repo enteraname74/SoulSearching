@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
+// TODO VIEW HOLDER 2.0: Remove actions
 abstract class SoulViewModelHolder<Actions, Navigation, State>(
     initialState: State,
 ) : ViewModel() {
@@ -40,6 +41,7 @@ abstract class SoulViewModelHolder<Actions, Navigation, State>(
         state: State,
     )
 
+    // TODO VIEW HOLDER 2.0: Could take the copy function directly
     protected fun updateState(updateBlock: State.() -> State) {
         _state.update(updateBlock)
     }

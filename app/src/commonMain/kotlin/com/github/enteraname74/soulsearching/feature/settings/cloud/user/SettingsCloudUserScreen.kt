@@ -11,7 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.github.enteraname74.domain.model.User
+import com.github.enteraname74.domain.model.user.UserType
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
@@ -49,7 +49,7 @@ fun SettingsCloudUserScreen(
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                if (state.user?.type == User.Type.Admin) {
+                if (state.user?.type == UserType.Admin) {
                     SoulMenuElement(
                         title = strings.inscriptionCodeSettingsTitle,
                         subTitle = strings.inscriptionCodeSettingsText,
