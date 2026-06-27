@@ -555,9 +555,21 @@ class PlaybackManager(
         }
     }
 
-    private suspend fun skipAndRemoveCurrentSong() {
+    /**
+     * When we cannot play the current music,
+     * we will manage the error differently depending on the music source.
+     *
+     * If the music is local, we will skip the music and play the next one.
+     * If the music is remote, we will pause the music.
+     */
+    private suspend fun onCurrentMusicError() {
         // TODO SHARED PLAYED LIST: Handle remote deletion
-        playerRepository.removeCurrentAndPlayNext()
+        val currentMusic: Music = playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
+        if (currentMusic.isRemoteOnly) {
+            playerRepository.setPlayedListState(PlayedListState.Paused)
+        } else {
+            playerRepository.removeCurrentAndPlayNext()
+        }
     }
 
     suspend fun setAndPlayMusicFromCurrentPlayedList(music: Music) {
@@ -704,7 +716,7 @@ class PlaybackManager(
     }
 
     override suspend fun onError() {
-        skipAndRemoveCurrentSong()
+        onCurrentMusicError()
     }
 
     override suspend fun onPause() {

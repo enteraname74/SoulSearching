@@ -77,7 +77,6 @@ class SoulSearchingExoPlayerImpl(
 
     private val playerListener = object : Player.Listener {
         override fun onPlayerError(error: PlaybackException) {
-            super.onPlayerError(error)
             playerCoroutineScope.launch {
                 listener?.onError()
             }
@@ -94,7 +93,7 @@ class SoulSearchingExoPlayerImpl(
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
-            runBlocking {
+            playerCoroutineScope.launch {
                 if (isPlaying) {
                     listener?.onPlay()
                 } else {

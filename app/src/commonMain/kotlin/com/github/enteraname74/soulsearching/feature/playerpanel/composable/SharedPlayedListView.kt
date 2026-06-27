@@ -11,6 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.list.ShapeListStyle
@@ -18,8 +19,8 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.feature.player.domain.state.SharedListState
+import com.github.enteraname74.soulsearching.util.rememberClipboardController
 
-// TODO SHARED PLAYED LIST: copy code to clipboard
 // TODO SHARED PLAYED LIST: actions on users
 @Composable
 fun SharedPlayedListView(
@@ -78,6 +79,8 @@ fun SharedPlayedListView(
 private fun InvitationCode(
     code: String,
 ) {
+    val clipboard = rememberClipboardController()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -85,6 +88,7 @@ private fun InvitationCode(
                 color = SoulSearchingColorTheme.colorScheme.primary,
                 shape = RoundedCornerShape(20.dp),
             )
+            .clickableWithHandCursor { clipboard.copy(code) }
             .padding(
                 all = UiConstants.Spacing.large,
             ),

@@ -22,6 +22,7 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.list.ShapeListStyle
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -87,7 +88,7 @@ private fun CodeView(
             .fillMaxWidth()
             .clip(style.shape())
             .background(SoulSearchingColorTheme.colorScheme.secondary)
-            .clickable { clipboard.copy(code.code.toString()) }
+            .clickableWithHandCursor { clipboard.copy(code.code.toString()) }
             .padding(all = UiConstants.Spacing.large),
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         verticalAlignment = Alignment.CenterVertically,
