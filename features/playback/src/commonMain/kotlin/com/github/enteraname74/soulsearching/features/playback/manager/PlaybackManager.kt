@@ -273,6 +273,11 @@ class PlaybackManager(
                             player.launchMusic()
                         }
 
+                        // We lost the admin status, and we were playing a song, we must stop the playback
+                        PlayedListState.Playing if playerScope?.isAdmin == false -> {
+                            player.pause()
+                        }
+
                         PlayedListState.Paused, PlayedListState.Loading -> {
                             if (playerScope?.isAdmin == true) {
                                 player.setMusic(currentMusic)
@@ -684,13 +689,6 @@ class PlaybackManager(
         createSharedPlayedListUseCase(
             musicIds = musicIds,
         )
-
-    suspend fun setPlayerMusicUsers(playerMusicUsers: List<PlayerMusicUser>) {
-        playerRepository.setPlayerMusicUsers(playerMusicUsers)
-    }
-
-    fun observeFullPlayerMusicUsers(): Flow<List<FullPlayerMusicUser>> =
-        playerRepository.observeFullPlayerMusicUsers()
 
     /**************** PLAYER LISTENER ******************/
 
