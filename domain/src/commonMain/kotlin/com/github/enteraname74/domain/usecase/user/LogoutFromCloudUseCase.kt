@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.usecase.user
 
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.CloudPreferencesRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.UserRepository
@@ -17,7 +18,7 @@ class LogoutFromCloudUseCase(
      * - no last sync date left
      * - no musics from the cloud
      */
-    suspend operator fun invoke() {
+    suspend operator fun invoke(): SoulResult<Unit> = SoulResult.runCatching {
         userRepository.logout()
         cloudPreferencesRepository.clearLastSyncMillis()
 

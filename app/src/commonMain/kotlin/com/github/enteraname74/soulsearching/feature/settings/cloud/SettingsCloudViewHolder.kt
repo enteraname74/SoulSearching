@@ -72,6 +72,10 @@ class SettingsCloudViewHolder(
         navigate { toUsers() }
     }
 
+    override fun toExplanations() {
+        navigate { toExplanations() }
+    }
+
     @Composable
     override fun Content(
         actions: SettingsCloudActions,

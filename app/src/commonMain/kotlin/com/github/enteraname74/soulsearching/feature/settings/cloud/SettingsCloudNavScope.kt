@@ -8,5 +8,6 @@ interface SettingsCloudNavScope {
     fun toSharedList()
     fun toFetchMusic()
     fun toUsers()
+    fun toExplanations()
     fun navigateBack()
 }

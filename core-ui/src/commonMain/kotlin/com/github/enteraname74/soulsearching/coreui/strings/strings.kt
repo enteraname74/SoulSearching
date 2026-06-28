@@ -375,6 +375,14 @@ interface Strings {
     val cloudUsersDeleteDialogTitle: String
     val cloudUsersDeleteDialogText: String
 
+    val cloudAlphaWarningText: String
+
+    val cloudExplanationsTitle: String
+    val cloudExplanationsText: String
+    val cloudExplanationsRedirect: String
+    val cloudDocumentationURL: String
+        get() = "https://github.com/enteraname74/Cloudy/blob/main/README.md"
+
     fun userType(type: UserType): String
 
     /**

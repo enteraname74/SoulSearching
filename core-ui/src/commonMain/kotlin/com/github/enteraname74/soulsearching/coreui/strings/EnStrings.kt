@@ -358,7 +358,7 @@ object EnStrings : Strings {
     override val joinSharedListButton: String = "Join"
 
     override val cloudFetchMusicTitle: String = "Upload song from URL"
-    override val cloudFetchMusicText: String = "Upload a song on Cloudy from a YouTube URL"
+    override val cloudFetchMusicText: String = "Upload a song on Cloudy from a URL"
     override val cloudFetchMusicFieldLabel: String = "Song's URL"
     override val cloudFetchMusicButton: String = "Upload"
 
@@ -366,6 +366,19 @@ object EnStrings : Strings {
     override val cloudUsersText: String = "See all users on the Cloudy instance"
     override val cloudUsersDeleteDialogTitle: String = "Delete the user"
     override val cloudUsersDeleteDialogText: String = "Are you sure to delete this user?"
+
+    override val cloudExplanationsTitle: String = "A cloud for Soul Searching"
+    override val cloudAlphaWarningText: String = "Cloudy is in alpha state and all features in the app may not work correctly with Cloudy"
+    override val cloudExplanationsText: String = """
+        Cloudy is a self-hosted cloud system for Soul Searching, designed for the following use cases:
+        - accessing your songs from multiple devices
+        - fetching songs from external sources
+        - launching a shared played list between multiple users
+        - managing users (family, friends,...)
+        
+        For self-hosting Cloudy, please refer its documentation.
+    """.trimIndent()
+    override val cloudExplanationsRedirect: String = "Cloudy documentation"
 
     override fun userType(type: UserType): String =
         when (type) {

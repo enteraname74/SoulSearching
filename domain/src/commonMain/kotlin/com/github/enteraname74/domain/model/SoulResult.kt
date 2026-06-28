@@ -20,7 +20,7 @@ sealed interface SoulResult<T> {
         this is Error
 
     fun throwIfError() {
-        (this as? SoulResult.Error)?.let {
+        (this as? Error)?.let {
             throw Exception(this.error.orEmpty())
         }
     }

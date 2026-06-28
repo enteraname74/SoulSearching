@@ -2,8 +2,10 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.user
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.domain.usecase.user.LogoutFromCloudUseCase
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolder
 import kotlinx.coroutines.flow.collectLatest
@@ -13,6 +15,7 @@ class SettingsCloudUserViewHolder(
     private val commonUserUseCase: CommonUserUseCase,
     private val logoutFromCloudUseCase: LogoutFromCloudUseCase,
     private val loadingManager: LoadingManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ) :
     SoulViewModelHolder<
             SettingsCloudUserActions,
@@ -37,7 +40,10 @@ class SettingsCloudUserViewHolder(
 
     override fun disconnect() {
         loadingManager.withLoadingOnScope(viewModelScope) {
-            logoutFromCloudUseCase()
+            when (val result = logoutFromCloudUseCase()) {
+                is SoulResult.Error -> feedbackPopUpManager.showErrorIfAny(result)
+                is SoulResult.Success -> navigateBack()
+            }
         }
     }
 

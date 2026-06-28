@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
+import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations.SettingsCloudExplanationsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.fetchmusic.SettingsCloudFetchMusicDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListDestination
@@ -54,6 +55,10 @@ data object SettingsCloudDestination : SettingPage {
 
                     override fun toUsers() {
                         navigator.push(SettingsCloudUsersDestination)
+                    }
+
+                    override fun toExplanations() {
+                        navigator.push(SettingsCloudExplanationsDestination)
                     }
                 }
             )

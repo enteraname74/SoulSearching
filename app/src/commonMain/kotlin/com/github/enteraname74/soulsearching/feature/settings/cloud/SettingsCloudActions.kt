@@ -7,5 +7,6 @@ interface SettingsCloudActions {
     fun toSharedList()
     fun navigateBack()
     fun toFetchMusic()
+    fun toExplanations()
     fun toUsers()
 }

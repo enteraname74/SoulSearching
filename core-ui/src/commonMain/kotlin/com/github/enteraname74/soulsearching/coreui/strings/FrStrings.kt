@@ -361,7 +361,7 @@ object FrStrings : Strings {
     override val joinSharedListButton: String = "Rejoindre"
 
     override val cloudFetchMusicTitle: String = "Téléverser une musique depuis une URL"
-    override val cloudFetchMusicText: String = "Téléverser une musique sur Cloudy depuis une URL YouTube"
+    override val cloudFetchMusicText: String = "Téléverser une musique sur Cloudy depuis une URL"
     override val cloudFetchMusicFieldLabel: String = "URL de la musique"
     override val cloudFetchMusicButton: String = "Téléverser"
 
@@ -369,6 +369,19 @@ object FrStrings : Strings {
     override val cloudUsersText: String = "Voir tous les utilisateurs de l'instance de Cloudy"
     override val cloudUsersDeleteDialogTitle: String =" Supprimer cet utilisateur"
     override val cloudUsersDeleteDialogText: String = "Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+
+    override val cloudExplanationsTitle: String = "Un cloud pour Soul Searching"
+    override val cloudAlphaWarningText: String = "Cloudy est en alpha, toutes les fonctionnalités de l'application pourraient ne pas fonctionner correctement avec Cloudy"
+    override val cloudExplanationsText: String = """
+        Cloudy est un système de cloud auto-hébergé pour Soul Searching, conçu pour les cas d'utilisation suivants :
+        - accéder à vos morceaux depuis plusieurs appareils
+        - récupérer des morceaux depuis des sources externes
+        - lancer une liste de lecture partagée entre plusieurs utilisateurs
+        - gérer les utilisateurs (famille, amis, etc.)
+        
+        Pour auto-héberger Cloudy, veuillez consulter la documentation du système.
+    """.trimIndent()
+    override val cloudExplanationsRedirect: String = "Documentation de Cloudy"
 
     override fun userType(type: UserType): String =
         when (type) {
