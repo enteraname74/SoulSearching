@@ -27,6 +27,8 @@ class ColorThemeManager(
         set(value) {
             isInDarkTheme.value = value
         }
+
+    // TODO THEME: On app launch, if user is in light mode, a blink will occurs because we default the theme to dark
     private val isInDarkTheme: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
     val currentDefaultThemeSettings: StateFlow<DefaultThemeSettings> = combine(

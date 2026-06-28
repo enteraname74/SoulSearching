@@ -105,9 +105,17 @@ interface PlayerRepository {
     )
 
     suspend fun removeSharedPlayedListEventsListener()
+
+    suspend fun setPlayerMusicUsers(playerMusicUsers: List<PlayerMusicUser>)
+
+    /**
+     * Observe the current list FullPlayerMusicUser if the list is a shared one (remote)
+     */
+    fun observeFullPlayerMusicUsers(): Flow<List<FullPlayerMusicUser>>
 }
 
 interface SharedPlayedListListener {
+    suspend fun onConnected()
     suspend fun onClose()
     suspend fun onSyncPlayedList()
     suspend fun onSyncMusics()

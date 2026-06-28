@@ -601,10 +601,10 @@ interface MusicDao {
     @Query(
         """
             SELECT remoteId FROM RoomMusic 
-            WHERE remoteId IS NOT NULL
+            WHERE remoteId IS NOT NULL AND scope != 'SharedPlayedList'
         """
     )
-    suspend fun getAllRemoteIds(): List<String>
+    suspend fun getAllRemoteIdsPossessedByUser(): List<String>
 
     @Transaction
     @Query(

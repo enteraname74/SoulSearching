@@ -55,7 +55,10 @@ interface MusicLocalDataSource {
 
     fun getAllPaged(): Flow<PagingData<Music>>
 
-    suspend fun getAllRemoteIds(): List<String>
+    /**
+     * Retrieves all remote ids musics possessed by the User.
+     */
+    suspend fun getAllRemoteIdsPossessedByUser(): List<String>
     suspend fun getAllToSendToCloud(): List<Music>
 
     fun getAllPagedOfAlbum(albumId: UUID): Flow<PagingData<Music>>

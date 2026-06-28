@@ -210,8 +210,8 @@ internal class RoomMusicLocalDataSourceImpl(
                     }
             }
 
-    override suspend fun getAllRemoteIds(): List<String> =
-        appDatabase.musicDao.getAllRemoteIds()
+    override suspend fun getAllRemoteIdsPossessedByUser(): List<String> =
+        appDatabase.musicDao.getAllRemoteIdsPossessedByUser()
 
     override suspend fun getAllToSendToCloud(): List<Music> =
         appDatabase.musicDao.getAllToSendToCloud().map { it.toMusic() }

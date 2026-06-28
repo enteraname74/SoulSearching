@@ -200,7 +200,7 @@ class MusicRepositoryImpl(
         musicLocalDataSource.getSoulMixMusics(totalPerFolder)
 
     override suspend fun getDeletedRemoteMusicIds(): List<String> {
-        val allRemoteIds: List<String> = musicLocalDataSource.getAllRemoteIds()
+        val allRemoteIds: List<String> = musicLocalDataSource.getAllRemoteIdsPossessedByUser()
         return musicRemoteDataSource.getDeletedRemoteMusicIds(idsToCheck = allRemoteIds)
     }
 
@@ -208,7 +208,7 @@ class MusicRepositoryImpl(
         musicLocalDataSource.getAllToSendToCloud()
 
     override suspend fun updateMusicToCloud(music: Music): CloudMusic? =
-        musicRemoteDataSource.updateMusicToCloud(music).apply { println("CLUELESS -- RESULT: $this") }.getOrNull()
+        musicRemoteDataSource.updateMusicToCloud(music).getOrNull()
 
     override suspend fun uploadMusicToCloud(music: Music): CloudMusic? =
         musicRemoteDataSource.uploadMusicToCloud(music).getOrNull()

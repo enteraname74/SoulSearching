@@ -1,13 +1,9 @@
 package com.github.enteraname74.domain.repository
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.CloudMusic
-import com.github.enteraname74.domain.model.MonthMusicsPreview
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicFolderPreview
-import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.model.*
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import java.util.*
 import kotlin.time.Duration
 
 interface MusicRepository {

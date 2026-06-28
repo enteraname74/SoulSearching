@@ -72,6 +72,7 @@ fun PlayerPanelContent(
                     playedListScope = playerState.playedListScope,
                     onSwiped = onSwiped,
                     onClickOnMusic = onClickOnMusic,
+                    getUserTag = playerState::getUserTag,
                 )
             }
         ),

@@ -40,7 +40,7 @@ class SettingsCloudSharedListViewHolder(
 
     override fun join() {
         loadingManager.withLoadingOnScope(viewModelScope) {
-            val result = joinSharedPlayedListUseCase(code = currentState.codeField.value)
+            val result = joinSharedPlayedListUseCase(code = currentState.codeField.value.trim())
             feedbackPopUpManager.showErrorIfAny(result)
         }
     }

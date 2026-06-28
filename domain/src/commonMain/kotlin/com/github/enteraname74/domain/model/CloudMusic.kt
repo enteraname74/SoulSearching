@@ -3,10 +3,12 @@ package com.github.enteraname74.domain.model
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Serializable
 data class CloudMusic(
     val fingerprint: String,
+    val userId: Uuid,
     val name: String,
     val album: CloudAlbum,
     val artists: List<CloudArtist>,

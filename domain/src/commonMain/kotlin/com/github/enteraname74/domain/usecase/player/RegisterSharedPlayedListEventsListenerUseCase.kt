@@ -12,9 +12,16 @@ class RegisterSharedPlayedListEventsListenerUseCase(
     private val syncPlayedListMusicsUseCase: SyncPlayedListMusicsUseCase,
     private val deleteMusicUseCase: DeleteMusicUseCase,
 ) {
-    suspend operator fun invoke(listId: Uuid) {
+    suspend operator fun invoke(
+        listId: Uuid,
+        onConnected: (suspend () -> Unit)? = null,
+    ) {
         playerRepository.registerSharedPlayedListEventsListener(
             listener = object : SharedPlayedListListener {
+                override suspend fun onConnected() {
+                    onConnected?.invoke()
+                }
+
                 override suspend fun onClose() {
                     playerRepository.deletePlayedList(listId.toJavaUuid())
                     deleteMusicUseCase.deleteSharedMusics()

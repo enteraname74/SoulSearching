@@ -1,10 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -18,7 +14,6 @@ import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 
 @Composable
@@ -35,9 +30,6 @@ fun SettingsCloudSharedListScreen(
                 leftAction = TopBarNavigationAction(
                     onClick = actions::navigateBack,
                 ),
-                rightAction = TopBarValidateAction(
-                    onClick = actions::join,
-                )
             )
             Column(
                 modifier = Modifier

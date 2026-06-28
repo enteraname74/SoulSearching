@@ -60,7 +60,7 @@ data class SharedPlayedList(
         users.map { user ->
             SharedPlayedListUser(
                 listId = id.toJavaUuid(),
-                isOwner = user.id == owner?.id,
+                isOwner = user.id == owner?.id && user.deviceId == owner.deviceId,
                 id = user.id,
                 deviceId = user.deviceId,
                 username = user.username,

@@ -62,6 +62,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPaddin
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.UserTag
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -88,6 +89,7 @@ fun PlayerListView(
     multiSelectionState: MultiSelectionState,
     selectedIconColors: SoulSelectedIconColors,
     playedListScope: PlayedListScope,
+    getUserTag: (musicId: UUID) -> UserTag?,
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -210,6 +212,7 @@ fun PlayerListView(
                                 isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
                                 isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                                 selectedIconColors = selectedIconColors,
+                                userTag = getUserTag(elt.musicId)
                             )
                         }
                     }

@@ -1,12 +1,11 @@
 package com.github.enteraname74.domain.usecase.player
 
 import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerRepository
-import java.util.UUID
+import java.util.*
 
 class CreateSharedPlayedListUseCase(
     private val syncMusicForPlayerIfNeededUseCase: SyncMusicForPlayerIfNeededUseCase,
@@ -29,14 +28,15 @@ class CreateSharedPlayedListUseCase(
             value = 0L,
         )
 
-        val playerMusics: List<PlayerMusic> = fetchPlayedListMusicsUseCase(
+        val data = fetchPlayedListMusicsUseCase(
             playedListId = sharedPlayedList.id,
         )
 
         playerRepository.setupFromShared(
             sharedPlayedList = sharedPlayedList,
-            playerMusics = playerMusics,
+            playerMusics = data.first,
         )
+        playerRepository.setPlayerMusicUsers(data.second)
         registerSharedPlayedListEventsListenerUseCase(
             listId = sharedPlayedList.id,
         )

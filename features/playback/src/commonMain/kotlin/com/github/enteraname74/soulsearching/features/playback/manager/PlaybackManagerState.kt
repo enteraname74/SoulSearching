@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.features.playback.manager
 
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayedListType
@@ -22,6 +23,7 @@ sealed interface PlaybackManagerState {
         val currentScope: PlayedListScope,
         val currentType: PlayedListType,
         val users: List<SharedPlayedListUser>,
+        val playerMusicUsers: List<FullPlayerMusicUser>,
     ): PlaybackManagerState
 
     fun isEmpty(): Boolean =

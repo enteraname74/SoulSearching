@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 20,
-    "identityHash": "6d9803ea07eb13c9bd60852c557cb429",
+    "identityHash": "fbcbed3b073010aaddfa9d572bff9c42",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -956,6 +956,62 @@
             "id"
           ]
         }
+      },
+      {
+        "tableName": "RoomPlayerMusicUser",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playedListId` BLOB NOT NULL, `userId` TEXT NOT NULL, `musicId` BLOB NOT NULL, PRIMARY KEY(`playedListId`, `userId`, `musicId`), FOREIGN KEY(`playedListId`) REFERENCES `RoomPlayerPlayedList`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`musicId`) REFERENCES `RoomMusic`(`musicId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "playedListId",
+            "columnName": "playedListId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "musicId",
+            "columnName": "musicId",
+            "affinity": "BLOB",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "playedListId",
+            "userId",
+            "musicId"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "RoomPlayerPlayedList",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "playedListId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "RoomMusic",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "musicId"
+            ],
+            "referencedColumns": [
+              "musicId"
+            ]
+          }
+        ]
       }
     ],
     "views": [
@@ -986,7 +1042,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6d9803ea07eb13c9bd60852c557cb429')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fbcbed3b073010aaddfa9d572bff9c42')"
     ]
   }
 }

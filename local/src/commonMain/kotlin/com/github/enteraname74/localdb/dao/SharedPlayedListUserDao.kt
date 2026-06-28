@@ -24,7 +24,6 @@ abstract class SharedPlayedListUserDao {
         upsertAll(users)
     }
 
-
     @Query(
         """
             SELECT * FROM RoomSharedPlayedListUser

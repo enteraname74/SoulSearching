@@ -47,7 +47,6 @@ class UpsertCloudMusicUseCase(
             artists = artistsOfMusic,
         )
 
-        println("CLUELESS -- upsert cloud music: $savedMusic")
         musicRepository.upsert(savedMusic)
         return savedMusic
     }

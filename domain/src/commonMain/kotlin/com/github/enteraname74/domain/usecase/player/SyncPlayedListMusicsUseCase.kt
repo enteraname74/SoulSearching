@@ -21,12 +21,13 @@ class SyncPlayedListMusicsUseCase(
         val toDelete: List<UUID> = playerRepository.getDeletedRemoteMusicIds(
             playedListId = playedListId,
         )
-        val toUpsert: List<PlayerMusic> = fetchPlayedListMusicsUseCase(
+        val data = fetchPlayedListMusicsUseCase(
             playedListId = playedListId,
         )
         playerRepository.updatesMusics(
             musicIdsToRemove = toDelete,
-            playerMusicsToAdd = toUpsert,
+            playerMusicsToAdd = data.first,
         )
+        playerRepository.setPlayerMusicUsers(data.second)
     }
 }

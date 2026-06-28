@@ -23,7 +23,6 @@ class CloudSyncWorker(
     override suspend fun doWork(): Result {
         setForeground(setForegroundInfo(0f))
         val result = syncMusicWithCloudUseCase()
-        println("CLUELESS -- RESULT: $result")
         return result.toWorkerResult()
     }
 

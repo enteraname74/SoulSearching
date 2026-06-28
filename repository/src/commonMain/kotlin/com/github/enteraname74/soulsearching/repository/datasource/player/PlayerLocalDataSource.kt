@@ -2,11 +2,13 @@ package com.github.enteraname74.soulsearching.repository.datasource.player
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
+import com.github.enteraname74.domain.model.player.PlayerMusicUser
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayedListUser
 import kotlinx.coroutines.flow.Flow
@@ -80,4 +82,7 @@ interface PlayerLocalDataSource {
         users: List<SharedPlayedListUser>,
     )
     fun observeCurrentSharedUsers(): Flow<List<SharedPlayedListUser>>
+
+    suspend fun setPlayerMusicUsers(playerMusicUsers: List<PlayerMusicUser>)
+    fun observeFullPlayerMusicUsers(): Flow<List<FullPlayerMusicUser>>
 }

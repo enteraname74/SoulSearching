@@ -43,10 +43,10 @@ class PlayerUserCommunication(
                         deviceId = deviceId,
                     )
                 ) {
+                    listener.onConnected()
                     while (true) {
                         val frame = incoming.receiveCatching().getOrNull() as? Frame.Text
                         val event = runCatching { Json.decodeFromString<Event>(frame?.readText().orEmpty()) }.getOrNull()
-                        println("CLUELESS -- PlayerUserCommunication -- got event: $event")
                         when (event) {
                             Event.SyncMusics -> listener.onSyncMusics()
                             Event.SyncPlayedList -> listener.onSyncPlayedList()

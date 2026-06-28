@@ -139,9 +139,8 @@ class PlayerViewModel(
 
     val state: StateFlow<PlayerViewState> = combine(
         playbackManager.state,
-        commonPlaylistUseCase.getAllWithMusics(),
         playbackManager.playedList,
-    ) { playbackMainState, playlists, playedList ->
+    ) { playbackMainState, playedList ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
@@ -150,7 +149,6 @@ class PlayerViewModel(
                     isCurrentMusicInFavorite = playbackMainState.isCurrentMusicInFavorite,
                     playerMode = playbackMainState.playerMode,
                     isPlaying = playbackMainState.isPlaying,
-                    playlistsWithMusics = playlists,
                     aroundSongs = if (playbackMainState.playerMode == PlayerMode.Loop) {
                         listOfNotNull(
                             playbackMainState.currentMusic,
@@ -171,7 +169,8 @@ class PlayerViewModel(
                     },
                     playedList = playedList,
                     playedListScope = playbackMainState.currentScope,
-                    sharedListState = buildSharedListState(playbackMainState)
+                    sharedListState = buildSharedListState(playbackMainState),
+                    playerMusicUsers = playbackMainState.playerMusicUsers,
                 )
             }
 
@@ -246,8 +245,11 @@ class PlayerViewModel(
                     .takeIf { it >= 0 && userDuplicates.size > 1 }
 
                 SharedListState.User(
+                    id = owner.id,
+                    deviceId = owner.deviceId,
                     username = owner.username,
                     appearance = index,
+                    status = owner.status,
                 )
             }
 
@@ -257,8 +259,11 @@ class PlayerViewModel(
                 .flatMap { (_, duplicates) ->
                     duplicates.mapIndexedNotNull { index, user ->
                         SharedListState.User(
+                            id = user.id,
                             username = user.username,
+                            deviceId = user.deviceId,
                             appearance = index.takeIf { duplicates.size > 1 },
+                            status = user.status,
                         ).takeIf { !user.isOwner }
                     }
                 }

@@ -17,7 +17,6 @@ class JoinSharedPlayedListUseCase(
         val sharedPlayedList: SharedPlayedList = playerRepository.joinSharedList(
             code = code,
         )
-        println("CLUELESS -- users: ${sharedPlayedList.users}")
 
         // We will reset the update timestamp to ensure that we fetch all elements:
         settings.set(
@@ -25,14 +24,15 @@ class JoinSharedPlayedListUseCase(
             value = 0L,
         )
 
-        val playerMusics: List<PlayerMusic> = fetchPlayedListMusicsUseCase(
+        val data = fetchPlayedListMusicsUseCase(
             playedListId = sharedPlayedList.id,
         )
 
         playerRepository.setupFromShared(
             sharedPlayedList = sharedPlayedList,
-            playerMusics = playerMusics,
+            playerMusics = data.first,
         )
+        playerRepository.setPlayerMusicUsers(data.second)
         registerSharedPlayedListEventsListenerUseCase(
             listId = sharedPlayedList.id,
         )

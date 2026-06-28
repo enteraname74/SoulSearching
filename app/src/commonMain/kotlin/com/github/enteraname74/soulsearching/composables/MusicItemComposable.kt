@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.composables
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -42,6 +44,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIcon
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconDefaults
+import com.github.enteraname74.soulsearching.feature.player.domain.state.UserTag
 import com.github.enteraname74.soulsearching.feature.player.ext.disabledIfNoAction
 
 @Composable
@@ -59,6 +62,7 @@ fun MusicItemComposable(
     isSelectionModeOn: Boolean = false,
     padding: PaddingValues = PaddingValues(UiConstants.Spacing.medium),
     leadingSpec: MusicItemLeadingSpec = MusicItemLeadingSpec.Cover,
+    userTag: UserTag? = null,
 ) {
     BoxWithConstraints(
         modifier = modifier,
@@ -142,6 +146,8 @@ fun MusicItemComposable(
                     }
                 }
 
+                userTag?.let { UserTagView(it) }
+
                 if (reorderableModifier != null) {
                     SoulIcon(
                         modifier = reorderableModifier,
@@ -160,6 +166,27 @@ fun MusicItemComposable(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun UserTagView(
+    userTag: UserTag
+) {
+    Box(
+        modifier = Modifier
+            .size(UiConstants.ImageSize.smallPlus)
+            .background(
+                color = userTag.containerColor,
+                shape = CircleShape,
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = userTag.username.firstOrNull()?.toString().orEmpty(),
+            style = UiConstants.Typography.bodySmall,
+            color = userTag.contentColor
+        )
     }
 }
 

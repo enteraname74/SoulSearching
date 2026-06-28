@@ -1,9 +1,15 @@
 package com.github.enteraname74.soulsearching.feature.player.domain.state
 
+import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayerMode
+import com.github.enteraname74.domain.model.player.PlayerUserStatus
+import com.github.enteraname74.soulsearching.coreui.ext.blend
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingDarkLightThemes
+import java.util.*
+import kotlin.uuid.Uuid
 
 sealed interface PlayerViewState {
     data object Closed : PlayerViewState
@@ -14,11 +20,35 @@ sealed interface PlayerViewState {
         val playedList: List<Music>,
         val playerMode: PlayerMode,
         val isPlaying: Boolean,
-        val playlistsWithMusics: List<PlaylistWithMusics>,
         val aroundSongs: List<Music>,
+        val playerMusicUsers: List<FullPlayerMusicUser>,
         val playedListScope: PlayedListScope,
         val sharedListState: SharedListState?,
-    ) : PlayerViewState
+    ) : PlayerViewState {
+
+        fun getUserTag(
+            musicId: UUID,
+        ): UserTag? {
+            val correspondingUser = playerMusicUsers.find { it.musicId == musicId }?.user ?: return null
+            val index: Int = sharedListState?.let { state ->
+                (listOf(state.host) + state.guests)
+                    .filterNotNull()
+                    .indexOfFirst { it.id == correspondingUser.id && it.deviceId == correspondingUser.deviceId }
+            } ?: 0
+
+            // TODO SHARED PLAYED LIST: Better theme for UserTag?
+            val theme = SoulSearchingDarkLightThemes
+                .themes
+                .getOrNull(index.mod(SoulSearchingDarkLightThemes.themes.lastIndex))
+                ?.lightTheme ?: SoulSearchingDarkLightThemes.themes.first().lightTheme
+
+            return UserTag(
+                username = correspondingUser.username,
+                contentColor = theme.onSecondary,
+                containerColor = theme.secondary.blend(Color.Black, 0.2f)
+            )
+        }
+    }
 }
 
 data class SharedListState(
@@ -27,7 +57,10 @@ data class SharedListState(
     val guests: List<User>,
 ) {
     data class User(
+        val id: Uuid,
+        val deviceId: String,
         val username: String,
         val appearance: Int?,
+        val status: PlayerUserStatus,
     )
 }
