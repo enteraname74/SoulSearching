@@ -39,7 +39,7 @@ class MediaSessionManager(
         BitmapFactory.decodeResource(context.resources, R.drawable.new_notification_default)
             .scale(DEFAULT_NOTIFICATION_SIZE, DEFAULT_NOTIFICATION_SIZE, false)
 
-    fun getUpdatedMediaSessionToken(
+    suspend fun getUpdatedMediaSessionToken(
         updateData: UpdateData,
     ): MediaSessionCompat.Token {
         if (mediaSession == null) {
@@ -62,7 +62,7 @@ class MediaSessionManager(
      * Initialize the media session used by the player.
      */
     @Suppress("DEPRECATION")
-    private fun init(
+    private suspend fun init(
         isPlaying: Boolean,
         isFavorite: Boolean,
     ) {
@@ -198,7 +198,7 @@ class MediaSessionManager(
     /**
      * Update the state of the player's media session.
      */
-    private fun updateState(
+    private suspend fun updateState(
         isPlaying: Boolean,
         isFavorite: Boolean,
     ) {
