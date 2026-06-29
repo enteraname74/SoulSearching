@@ -21,7 +21,7 @@ import com.github.enteraname74.localdb.model.toRoomAlbum
 import com.github.enteraname74.localdb.model.toRoomArtist
 import com.github.enteraname74.localdb.model.toRoomMusic
 import com.github.enteraname74.localdb.utils.PagingUtils
-import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -33,10 +33,10 @@ import kotlin.time.Duration.Companion.milliseconds
 /**
  * Implementation of the MusicDataSource with Room's DAO.
  */
-internal class RoomMusicDataSourceImpl(
+internal class RoomMusicLocalDataSourceImpl(
     private val appDatabase: AppDatabase,
     private val settings: SoulSearchingSettings,
-) : MusicDataSource {
+) : MusicLocalDataSource {
     override suspend fun upsert(music: Music) {
         appDatabase.useWriterConnection {
             appDatabase.artistDao.upsertAll(music.artists.map { it.toRoomArtist() })
@@ -101,6 +101,9 @@ internal class RoomMusicDataSourceImpl(
         ).map { it?.toMusic() }
     }
 
+    override suspend fun getFromRemoteId(remoteId: String): Music? =
+        appDatabase.musicDao.getFromRemoteId(remoteId)?.toMusic()
+
     override fun getFromIds(ids: List<UUID>): Flow<List<Music>> =
         appDatabase.musicDao.getFromIds(ids).map { list ->
             list
@@ -113,6 +116,9 @@ internal class RoomMusicDataSourceImpl(
             list.map { it.toMusic() }
         }
     }
+
+    override suspend fun getAllLocalMusic(): List<Music> =
+        appDatabase.musicDao.getAllLocalMusic().map { it.toMusic() }
 
     override suspend fun getAllSorted(): List<Music> {
         val direction: SortDirection = SortDirection
@@ -187,6 +193,12 @@ internal class RoomMusicDataSourceImpl(
                         }
                     }
             }
+
+    override suspend fun getAllRemoteIds(): List<String> =
+        appDatabase.musicDao.getAllRemoteIds()
+
+    override suspend fun getAllToSendToCloud(): List<Music> =
+        appDatabase.musicDao.getAllToSendToCloud().map { it.toMusic() }
 
     override fun getAllPagedOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
         withPaging { getAllPagedOfAlbum(albumId) }
@@ -303,8 +315,8 @@ internal class RoomMusicDataSourceImpl(
         appDatabase.musicDao.cleanAllMusicCovers()
     }
 
-    override suspend fun getAllMusicPath(): List<String> =
-        appDatabase.musicDao.getAllMusicPath()
+    override suspend fun getAllMusicLocalPath(): List<String> =
+        appDatabase.musicDao.getAllMusicLocalPath()
 
     override fun getMostListened(): Flow<List<Music>> =
         appDatabase.musicDao.getMostListened().map { list ->
@@ -340,6 +352,23 @@ internal class RoomMusicDataSourceImpl(
                 )
             }
         }.shuffled()
+    }
+
+    override suspend fun getFromInformation(
+        musicName: String,
+        albumId: UUID
+    ): Music? =
+        appDatabase.musicDao.getFromInformation(
+            musicName = musicName,
+            albumId = albumId,
+        )?.toMusic()
+
+    override suspend fun clearRemoteIds(remoteIds: List<String>) {
+        appDatabase.musicDao.clearRemoteIds(remoteIds)
+    }
+
+    override suspend fun deleteNotExisting() {
+        appDatabase.musicDao.deleteNotExisting()
     }
 
     private fun withPaging(

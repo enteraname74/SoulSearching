@@ -108,7 +108,7 @@ private fun ModifyMusicScreenView(
                     },
                     extraFormTopContent = {
                         MusicPathFooter(
-                            musicPath = state.initialMusic.path,
+                            musicPath = state.initialMusic.path.orEmpty(),
                         )
                     }
                 )

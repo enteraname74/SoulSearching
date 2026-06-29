@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.repository
 
 import androidx.paging.PagingData
+import com.github.enteraname74.domain.model.CloudMusic
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicFolderPreview
@@ -31,6 +32,8 @@ interface MusicRepository {
      */
     fun getFromId(musicId: UUID): Flow<Music?>
 
+    suspend fun getFromRemoteId(remoteId: String): Music?
+
     fun getFromIds(ids: List<UUID>): Flow<List<Music>>
 
     suspend fun getAllIdsFromUnselectedFolders(): List<UUID>
@@ -40,6 +43,8 @@ interface MusicRepository {
      */
     @Deprecated("Avoid fetching all music from DB because of performance issue")
     fun getAll(): Flow<List<Music>>
+
+    suspend fun getAllLocalMusic(): List<Music>
 
     suspend fun getAllSorted(): List<Music>
 
@@ -108,7 +113,7 @@ interface MusicRepository {
 
     suspend fun cleanAllMusicCovers()
 
-    suspend fun getAllMusicPath(): List<String>
+    suspend fun getAllMusicLocalPath(): List<String>
 
     fun getMostListened(): Flow<List<Music>>
 
@@ -121,4 +126,20 @@ interface MusicRepository {
     fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?>
 
     suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music>
+
+    suspend fun getDeletedRemoteMusicIds(): List<String>
+    suspend fun clearRemoteIds(remoteIds: List<String>)
+    suspend fun deleteNotExisting()
+    suspend fun getAllToSendToCloud(): List<Music>
+    suspend fun updateMusicToCloud(music: Music): CloudMusic?
+    suspend fun uploadMusicToCloud(music: Music): CloudMusic?
+
+    suspend fun fetchUpdatedSongsFromCloud(
+        lastSyncMillis: Long?,
+    ): List<CloudMusic>
+
+    suspend fun getFromInformation(
+        musicName: String,
+        albumId: UUID,
+    ): Music?
 }

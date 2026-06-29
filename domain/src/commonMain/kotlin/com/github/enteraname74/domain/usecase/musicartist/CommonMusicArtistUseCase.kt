@@ -14,4 +14,19 @@ class CommonMusicArtistUseCase(
     suspend fun deleteOfArtist(artistId: UUID) {
         musicArtistRepository.deleteOfArtist(artistId)
     }
+
+    suspend fun setArtistsOfMusic(
+        musicId: UUID,
+        artistIds: List<UUID>
+    ) {
+        musicArtistRepository.deleteOfMusic(musicId)
+        musicArtistRepository.upsertAll(
+            musicArtists = artistIds.map {
+                MusicArtist(
+                    musicId = musicId,
+                    artistId = it,
+                )
+            }
+        )
+    }
 }

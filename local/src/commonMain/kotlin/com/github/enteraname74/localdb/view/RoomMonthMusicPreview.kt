@@ -21,12 +21,19 @@ import java.util.UUID
                     LIMIT 1
                 ) AS coverId,
                 (
-                    SELECT music.path FROM RoomMusic AS music 
+                    SELECT music.localPath FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
                     AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) 
                     ORDER BY name 
                     LIMIT 1 
-                ) AS musicCoverPath 
+                ) AS musicCoverPath, 
+                (
+                    SELECT music.coverUrl FROM RoomMusic AS music 
+                    WHERE music.isHidden = 0 
+                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) 
+                    ORDER BY name 
+                    LIMIT 1 
+                ) AS musicCoverUrl 
             FROM RoomMusic AS monthMusic
             WHERE isHidden = 0 
             GROUP BY strftime('%Y-%m', addedDate) 
@@ -37,15 +44,27 @@ data class RoomMonthMusicPreview(
     val month: String,
     val coverId: UUID?,
     val musicCoverPath: String?,
+    val musicCoverUrl: String?,
     val totalMusics: Int,
 ) {
-    fun toMonthMusicsPreview(): MonthMusicsPreview =
-        MonthMusicsPreview(
+    fun toMonthMusicsPreview(): MonthMusicsPreview {
+        val localCover = Cover.CoverFile(
+            initialCoverPath = musicCoverPath,
+            fileCoverId = coverId,
+        )
+        val remoteCover = musicCoverUrl?.let { Cover.Url(it) }
+
+        val usedCover = if (remoteCover == null) {
+            localCover
+        } else {
+            localCover.takeIf { !it.isEmpty() } ?: remoteCover
+        }
+
+        return MonthMusicsPreview(
             month = month,
-            cover = Cover.CoverFile(
-                fileCoverId = coverId,
-                initialCoverPath = musicCoverPath,
-            ),
+            cover = usedCover,
             totalMusics = totalMusics
         )
+    }
+
 }

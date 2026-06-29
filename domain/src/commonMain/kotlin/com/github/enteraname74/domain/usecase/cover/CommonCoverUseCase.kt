@@ -1,5 +1,7 @@
 package com.github.enteraname74.domain.usecase.cover
 
+import androidx.compose.ui.graphics.ImageBitmap
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.repository.CoverRepository
 import java.util.UUID
 
@@ -30,4 +32,10 @@ class CommonCoverUseCase(
             }
         }
     }
+
+    suspend fun getCoverImageBitmap(cover: Cover): ImageBitmap? =
+        coverRepository.getCoverImageBitmap(cover)
+
+    suspend fun getAllUniqueCover(covers: List<Cover>): List<ByteArray> =
+        coverRepository.getAllUniqueCover(covers)
 }

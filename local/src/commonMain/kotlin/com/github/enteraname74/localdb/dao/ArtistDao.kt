@@ -11,6 +11,7 @@ import com.github.enteraname74.localdb.view.RoomArtistPreview
 import com.github.enteraname74.localdb.model.RoomArtistWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * DAO of an Artist.
@@ -49,6 +50,9 @@ interface ArtistDao {
 
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId LIMIT 1")
     fun getFromId(artistId: UUID): Flow<RoomArtist?>
+
+    @Query("SELECT * FROM RoomArtist WHERE remoteId = :remoteId LIMIT 1")
+    suspend fun getFromRemoteId(remoteId: Uuid): RoomArtist?
 
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE artistId IN (:artistIds)")

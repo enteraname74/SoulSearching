@@ -21,6 +21,7 @@ kotlin {
     compilerOptions {
         // Common compiler options applied to all Kotlin source sets for expect / actual implementations
         freeCompilerArgs.add("-Xexpect-actual-classes")
+        optIn.add("kotlin.uuid.ExperimentalUuidApi")
     }
 
     sourceSets {
@@ -62,8 +63,7 @@ kotlin {
 
                 implementation(libs.file.kit)
 
-                implementation(libs.coil)
-                implementation(libs.coil.compose)
+                implementation(libs.bundles.coil)
 
                 implementation(libs.reorderable)
 
@@ -77,6 +77,7 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.koin.androidx.compose)
+                implementation(libs.koin.androidx.workmanager)
                 implementation(libs.bundles.androidx)
 
                 implementation(libs.bundles.accompanist)
@@ -160,9 +161,6 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
     }
     packaging {
         resources {

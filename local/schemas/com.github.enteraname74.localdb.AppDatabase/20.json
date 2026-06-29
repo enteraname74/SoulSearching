@@ -2,17 +2,27 @@
   "formatVersion": 1,
   "database": {
     "version": 20,
-    "identityHash": "b362c8f91d173920c5152db1116c453f",
+    "identityHash": "f1bde06d96996c8f6dc53c85d93ed53f",
     "entities": [
       {
         "tableName": "RoomMusic",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`musicId` BLOB NOT NULL, `name` TEXT NOT NULL, `coverId` BLOB, `duration` INTEGER NOT NULL, `path` TEXT NOT NULL, `folder` TEXT NOT NULL, `addedDate` TEXT NOT NULL, `nbPlayed` INTEGER NOT NULL, `isInQuickAccess` INTEGER NOT NULL, `isHidden` INTEGER NOT NULL, `albumPosition` INTEGER, `albumId` BLOB NOT NULL, PRIMARY KEY(`musicId`), FOREIGN KEY(`albumId`) REFERENCES `RoomAlbum`(`albumId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`musicId` BLOB NOT NULL, `remoteId` TEXT, `lastUpdateMillis` INTEGER, `name` TEXT NOT NULL, `coverId` BLOB, `coverUrl` TEXT, `duration` INTEGER NOT NULL, `path` TEXT, `localPath` TEXT, `remotePath` TEXT, `folder` TEXT NOT NULL, `addedDate` TEXT NOT NULL, `nbPlayed` INTEGER NOT NULL, `isInQuickAccess` INTEGER NOT NULL, `isHidden` INTEGER NOT NULL, `albumPosition` INTEGER, `albumId` BLOB NOT NULL, PRIMARY KEY(`musicId`), FOREIGN KEY(`albumId`) REFERENCES `RoomAlbum`(`albumId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "musicId",
             "columnName": "musicId",
             "affinity": "BLOB",
             "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remoteId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastUpdateMillis",
+            "columnName": "lastUpdateMillis",
+            "affinity": "INTEGER"
           },
           {
             "fieldPath": "name",
@@ -26,6 +36,11 @@
             "affinity": "BLOB"
           },
           {
+            "fieldPath": "coverUrl",
+            "columnName": "coverUrl",
+            "affinity": "TEXT"
+          },
+          {
             "fieldPath": "duration",
             "columnName": "duration",
             "affinity": "INTEGER",
@@ -34,8 +49,17 @@
           {
             "fieldPath": "path",
             "columnName": "path",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "localPath",
+            "columnName": "localPath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "remotePath",
+            "columnName": "remotePath",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "folder",
@@ -112,13 +136,18 @@
       },
       {
         "tableName": "RoomAlbum",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`albumId` BLOB NOT NULL, `albumName` TEXT NOT NULL, `coverId` BLOB, `addedDate` TEXT NOT NULL, `nbPlayed` INTEGER NOT NULL, `isInQuickAccess` INTEGER NOT NULL, `artistId` BLOB NOT NULL, PRIMARY KEY(`albumId`), FOREIGN KEY(`artistId`) REFERENCES `RoomArtist`(`artistId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`albumId` BLOB NOT NULL, `remoteId` TEXT, `albumName` TEXT NOT NULL, `coverId` BLOB, `coverUrl` TEXT, `addedDate` TEXT NOT NULL, `nbPlayed` INTEGER NOT NULL, `isInQuickAccess` INTEGER NOT NULL, `artistId` BLOB NOT NULL, `lastUpdatedMillis` INTEGER, PRIMARY KEY(`albumId`), FOREIGN KEY(`artistId`) REFERENCES `RoomArtist`(`artistId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "albumId",
             "columnName": "albumId",
             "affinity": "BLOB",
             "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remoteId",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "albumName",
@@ -130,6 +159,11 @@
             "fieldPath": "coverId",
             "columnName": "coverId",
             "affinity": "BLOB"
+          },
+          {
+            "fieldPath": "coverUrl",
+            "columnName": "coverUrl",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "addedDate",
@@ -154,6 +188,11 @@
             "columnName": "artistId",
             "affinity": "BLOB",
             "notNull": true
+          },
+          {
+            "fieldPath": "lastUpdatedMillis",
+            "columnName": "lastUpdatedMillis",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -189,13 +228,18 @@
       },
       {
         "tableName": "RoomArtist",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artistId` BLOB NOT NULL, `artistName` TEXT NOT NULL, `coverId` BLOB, `coverFolderKey` TEXT, `addedDate` TEXT NOT NULL, `nbPlayed` INTEGER NOT NULL, `isInQuickAccess` INTEGER NOT NULL, PRIMARY KEY(`artistId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artistId` BLOB NOT NULL, `remoteId` TEXT, `artistName` TEXT NOT NULL, `coverId` BLOB, `coverFolderKey` TEXT, `coverUrl` TEXT, `addedDate` TEXT NOT NULL, `nbPlayed` INTEGER NOT NULL, `isInQuickAccess` INTEGER NOT NULL, `lastUpdatedMillis` INTEGER, PRIMARY KEY(`artistId`))",
         "fields": [
           {
             "fieldPath": "artistId",
             "columnName": "artistId",
             "affinity": "BLOB",
             "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remoteId",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "artistName",
@@ -211,6 +255,11 @@
           {
             "fieldPath": "coverFolderKey",
             "columnName": "coverFolderKey",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "coverUrl",
+            "columnName": "coverUrl",
             "affinity": "TEXT"
           },
           {
@@ -230,6 +279,11 @@
             "columnName": "isInQuickAccess",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "lastUpdatedMillis",
+            "columnName": "lastUpdatedMillis",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -241,13 +295,18 @@
       },
       {
         "tableName": "RoomPlaylist",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playlistId` BLOB NOT NULL, `name` TEXT NOT NULL, `coverId` BLOB, `isFavorite` INTEGER NOT NULL, `addedDate` TEXT NOT NULL, `nbPlayed` INTEGER NOT NULL, `isInQuickAccess` INTEGER NOT NULL, PRIMARY KEY(`playlistId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playlistId` BLOB NOT NULL, `remoteId` TEXT, `name` TEXT NOT NULL, `coverId` BLOB, `coverUrl` TEXT, `isFavorite` INTEGER NOT NULL, `addedDate` TEXT NOT NULL, `nbPlayed` INTEGER NOT NULL, `isInQuickAccess` INTEGER NOT NULL, `lastUpdatedMillis` INTEGER, PRIMARY KEY(`playlistId`))",
         "fields": [
           {
             "fieldPath": "playlistId",
             "columnName": "playlistId",
             "affinity": "BLOB",
             "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remoteId",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "name",
@@ -259,6 +318,11 @@
             "fieldPath": "coverId",
             "columnName": "coverId",
             "affinity": "BLOB"
+          },
+          {
+            "fieldPath": "coverUrl",
+            "columnName": "coverUrl",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "isFavorite",
@@ -283,6 +347,11 @@
             "columnName": "isInQuickAccess",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "lastUpdatedMillis",
+            "columnName": "lastUpdatedMillis",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -676,7 +745,7 @@
       },
       {
         "tableName": "RoomCloudPreferences",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `url` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `url` TEXT NOT NULL, `lastSyncMillis` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -689,6 +758,11 @@
             "columnName": "url",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "lastSyncMillis",
+            "columnName": "lastSyncMillis",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -706,28 +780,28 @@
       },
       {
         "viewName": "RoomMusicFolderPreview",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n                folderMusic.folder,\n                COUNT(*) AS totalMusics, \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND music.coverId IS NOT NULL \n                    AND music.folder = folderMusic.folder \n                    ORDER BY\n                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, \n                    name \n                    LIMIT 1\n                ) AS coverId,\n                (\n                    SELECT music.path FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND music.folder = folderMusic.folder \n                    ORDER BY name \n                    LIMIT 1 \n                ) AS musicCoverPath \n            FROM RoomMusic As folderMusic\n            WHERE isHidden = 0 \n            GROUP BY folderMusic.folder"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n                folderMusic.folder,\n                COUNT(*) AS totalMusics, \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND music.coverId IS NOT NULL \n                    AND music.folder = folderMusic.folder \n                    ORDER BY\n                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, \n                    name \n                    LIMIT 1\n                ) AS coverId,\n                (\n                    SELECT music.localPath FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND music.folder = folderMusic.folder \n                    ORDER BY name \n                    LIMIT 1 \n                ) AS musicCoverPath, \n                (\n                    SELECT music.coverUrl FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND music.folder = folderMusic.folder \n                    ORDER BY name \n                    LIMIT 1 \n                ) AS musicCoverUrl \n            FROM RoomMusic As folderMusic\n            WHERE isHidden = 0 \n            GROUP BY folderMusic.folder"
       },
       {
         "viewName": "RoomMonthMusicPreview",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n                strftime('%m/%Y', monthMusic.addedDate) AS month,\n                COUNT(*) AS totalMusics, \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND music.coverId IS NOT NULL \n                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate)\n                    ORDER BY\n                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, \n                    name \n                    LIMIT 1\n                ) AS coverId,\n                (\n                    SELECT music.path FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) \n                    ORDER BY name \n                    LIMIT 1 \n                ) AS musicCoverPath \n            FROM RoomMusic AS monthMusic\n            WHERE isHidden = 0 \n            GROUP BY strftime('%Y-%m', addedDate) \n            ORDER BY strftime('%Y-%m', addedDate) DESC"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n                strftime('%m/%Y', monthMusic.addedDate) AS month,\n                COUNT(*) AS totalMusics, \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND music.coverId IS NOT NULL \n                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate)\n                    ORDER BY\n                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, \n                    name \n                    LIMIT 1\n                ) AS coverId,\n                (\n                    SELECT music.localPath FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) \n                    ORDER BY name \n                    LIMIT 1 \n                ) AS musicCoverPath, \n                (\n                    SELECT music.coverUrl FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) \n                    ORDER BY name \n                    LIMIT 1 \n                ) AS musicCoverUrl \n            FROM RoomMusic AS monthMusic\n            WHERE isHidden = 0 \n            GROUP BY strftime('%Y-%m', addedDate) \n            ORDER BY strftime('%Y-%m', addedDate) DESC"
       },
       {
         "viewName": "RoomAlbumPreview",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        album.albumId AS id, \n        album.albumName AS name, \n        album.nbPlayed, \n        album.addedDate, \n        album.artistId, \n        (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, \n        (\n            CASE WHEN album.coverId IS NULL THEN \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY \n                    CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, \n                    music.albumPosition, \n                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, \n                    music.name \n                )\n            ELSE album.coverId END\n        ) AS coverId,\n        (\n            SELECT music.path FROM RoomMusic AS music \n            WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY \n            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, \n            music.albumPosition, \n            music.name \n            LIMIT 1 \n        ) AS musicCoverPath,\n        album.isInQuickAccess \n        FROM RoomAlbum AS album"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        album.albumId AS id, \n        album.albumName AS name, \n        album.nbPlayed, \n        album.addedDate, \n        album.artistId,\n        album.coverUrl, \n        (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, \n        (\n            CASE WHEN album.coverId IS NULL THEN \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY \n                    CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, \n                    music.albumPosition, \n                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, \n                    music.name \n                )\n            ELSE album.coverId END\n        ) AS coverId,\n        (\n            SELECT music.localPath FROM RoomMusic AS music \n            WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY \n            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, \n            music.albumPosition, \n            music.name \n            LIMIT 1 \n        ) AS musicCoverPath,\n        (\n            SELECT music.coverUrl FROM RoomMusic AS music \n            WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY \n            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, \n            music.albumPosition, \n            music.name \n            LIMIT 1 \n        ) AS musicCoverUrl,\n        album.isInQuickAccess \n        FROM RoomAlbum AS album"
       },
       {
         "viewName": "RoomArtistPreview",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        artist.artistId AS id, \n        artist.artistName AS name, \n        artist.coverFolderKey,\n        artist.addedDate, \n        artist.nbPlayed,\n        (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, \n        (\n            CASE WHEN artist.coverId IS NULL THEN \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    INNER JOIN RoomMusicArtist AS musicArtist \n                    ON music.musicId = musicArtist.musicId \n                    AND artist.artistId = musicArtist.artistId \n                    AND music.isHidden = 0 \n                    AND music.coverId IS NOT NULL \n                    ORDER BY name ASC \n                    LIMIT 1\n                )\n            ELSE artist.coverId END\n        ) AS coverId,\n        (\n            SELECT music.path FROM RoomMusic AS music \n            INNER JOIN RoomMusicArtist AS musicArtist \n            ON music.musicId = musicArtist.musicId \n            AND artist.artistId = musicArtist.artistId \n            AND music.isHidden = 0 \n            ORDER BY name ASC \n            LIMIT 1\n        ) AS musicCoverPath,\n        artist.isInQuickAccess \n        FROM RoomArtist AS artist"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        artist.artistId AS id, \n        artist.artistName AS name, \n        artist.coverFolderKey,\n        artist.addedDate, \n        artist.nbPlayed, \n        artist.coverUrl, \n        (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, \n        (\n            CASE WHEN artist.coverId IS NULL THEN \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    INNER JOIN RoomMusicArtist AS musicArtist \n                    ON music.musicId = musicArtist.musicId \n                    AND artist.artistId = musicArtist.artistId \n                    AND music.isHidden = 0 \n                    AND music.coverId IS NOT NULL \n                    ORDER BY name ASC \n                    LIMIT 1\n                )\n            ELSE artist.coverId END\n        ) AS coverId,\n        (\n            SELECT music.localPath FROM RoomMusic AS music \n            INNER JOIN RoomMusicArtist AS musicArtist \n            ON music.musicId = musicArtist.musicId \n            AND artist.artistId = musicArtist.artistId \n            AND music.isHidden = 0 \n            ORDER BY name ASC \n            LIMIT 1\n        ) AS musicCoverPath,\n        (\n            SELECT music.coverUrl FROM RoomMusic AS music \n            INNER JOIN RoomMusicArtist AS musicArtist \n            ON music.musicId = musicArtist.musicId \n            AND artist.artistId = musicArtist.artistId \n            AND music.isHidden = 0 \n            ORDER BY name ASC \n            LIMIT 1\n        ) AS musicCoverUrl,\n        artist.isInQuickAccess \n        FROM RoomArtist AS artist"
       },
       {
         "viewName": "RoomPlaylistPreview",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT playlist.playlistId AS id, \n        playlist.name, \n        playlist.isFavorite, \n        playlist.addedDate, \n        (\n            SELECT COUNT(*) \n            FROM RoomMusicPlaylist AS musicPlaylist \n            WHERE musicPlaylist.playlistId = playlist.playlistId\n        ) AS totalMusics, \n        (\n            CASE WHEN playlist.coverId IS NULL THEN \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    INNER JOIN RoomMusicPlaylist AS musicPlaylist \n                    ON music.musicId = musicPlaylist.musicId \n                    AND playlist.playlistId = musicPlaylist.playlistId \n                    AND music.isHidden = 0 \n                    AND music.coverId IS NOT NULL \n                    LIMIT 1\n                )\n            ELSE playlist.coverId END\n        ) AS coverId,\n        (\n            SELECT music.path FROM RoomMusic AS music \n            INNER JOIN RoomMusicPlaylist AS musicPlaylist \n            ON music.musicId = musicPlaylist.musicId \n            AND playlist.playlistId = musicPlaylist.playlistId \n            AND music.isHidden = 0 \n            LIMIT 1\n        ) AS musicCoverPath,\n        playlist.isInQuickAccess, \n        playlist.nbPlayed \n        FROM RoomPlaylist AS playlist"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT playlist.playlistId AS id, \n        playlist.name, \n        playlist.isFavorite, \n        playlist.addedDate, \n        playlist.coverUrl, \n        (\n            SELECT COUNT(*) \n            FROM RoomMusicPlaylist AS musicPlaylist \n            WHERE musicPlaylist.playlistId = playlist.playlistId\n        ) AS totalMusics, \n        (\n            CASE WHEN playlist.coverId IS NULL THEN \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    INNER JOIN RoomMusicPlaylist AS musicPlaylist \n                    ON music.musicId = musicPlaylist.musicId \n                    AND playlist.playlistId = musicPlaylist.playlistId \n                    AND music.isHidden = 0 \n                    AND music.coverId IS NOT NULL \n                    LIMIT 1\n                )\n            ELSE playlist.coverId END\n        ) AS coverId,\n        (\n            SELECT music.localPath FROM RoomMusic AS music \n            INNER JOIN RoomMusicPlaylist AS musicPlaylist \n            ON music.musicId = musicPlaylist.musicId \n            AND playlist.playlistId = musicPlaylist.playlistId \n            AND music.isHidden = 0 \n            LIMIT 1\n        ) AS musicCoverPath,\n        (\n            SELECT music.coverUrl FROM RoomMusic AS music \n            INNER JOIN RoomMusicPlaylist AS musicPlaylist \n            ON music.musicId = musicPlaylist.musicId \n            AND playlist.playlistId = musicPlaylist.playlistId \n            AND music.isHidden = 0 \n            LIMIT 1\n        ) AS musicCoverUrl,\n        playlist.isInQuickAccess, \n        playlist.nbPlayed \n        FROM RoomPlaylist AS playlist"
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b362c8f91d173920c5152db1116c453f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f1bde06d96996c8f6dc53c85d93ed53f')"
     ]
   }
 }

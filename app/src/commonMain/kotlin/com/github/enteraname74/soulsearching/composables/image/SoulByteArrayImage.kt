@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.composables
+package com.github.enteraname74.soulsearching.composables.image
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,16 +25,15 @@ fun SoulByteArrayImage(
         Modifier
     }
         .clip(RoundedCornerShape(percent = roundedPercent))
-        .composed {
-            modifier
-        }
+        .then(modifier)
 
-    DataImage(
+    SoulDataImage(
         data = data,
         modifier = modifierBase,
         contentScale = ContentScale.Crop,
         tint = tint,
         builderOptions = { this },
         onSuccess = {},
+        contentDescription = null,
     )
 }

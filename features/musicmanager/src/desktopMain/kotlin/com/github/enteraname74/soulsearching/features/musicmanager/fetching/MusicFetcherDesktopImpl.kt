@@ -154,7 +154,7 @@ internal class MusicFetcherDesktopImpl(
             directory = root,
             updateProgress = { _, _ -> },
             onMusicFetched = { music ->
-                if (!alreadyPresentMusicsPaths.any { it == music.path } && !hiddenFoldersPaths.any { it == music.folder }) {
+                if (!alreadyPresentMusicsPaths.any { it == music.localPath } && !hiddenFoldersPaths.any { it == music.folder }) {
                     newMusics.add(
                         SelectableMusicItem(
                             music = music,

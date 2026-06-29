@@ -22,7 +22,7 @@ import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
+import com.github.enteraname74.domain.usecase.music.RemoveLocallyOrDeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
@@ -93,7 +93,7 @@ class MainPageViewModel(
     SortingInformationDelegate by sortingInformationDelegateImpl {
 
     private val settings: SoulSearchingSettings by inject()
-    private val deleteMusicUseCase: DeleteMusicUseCase by inject()
+    private val removeLocallyOrDeleteMusicUseCase: RemoveLocallyOrDeleteMusicUseCase by inject()
     private val feedbackPopUpManager: FeedbackPopUpManager by inject()
 
     private val commonMusicUseCase: CommonMusicUseCase by inject()
@@ -356,14 +356,18 @@ class MainPageViewModel(
         coroutineScope.launch {
             var deleteCount = 0
             // TODO OPTIMIZATION: Improve check?
-            val all = commonMusicUseCase.getAll().first()
+            val all = commonMusicUseCase.getAllLocalMusic()
             for (music in all) {
-                if (!File(music.path).exists()) {
-                    playbackManager.removeSongsFromPlayedPlaylist(
-                        musicIds = listOf(music.musicId)
-                    )
-                    deleteMusicUseCase(music = music)
-                    deleteCount += 1
+                music.localPath?.let {
+                    if (!File(it).exists()) {
+                        playbackManager.removeSongsFromPlayedPlaylist(
+                            musicIds = listOf(music.musicId)
+                        )
+                        val hasBeenDeleted = removeLocallyOrDeleteMusicUseCase(music = music)
+                        if (hasBeenDeleted) {
+                            deleteCount += 1
+                        }
+                    }
                 }
             }
 

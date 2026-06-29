@@ -1,11 +1,14 @@
 package com.github.enteraname74.domain.di
 
+import com.github.enteraname74.domain.usecase.DeleteEmptyAlbumsAndArtistsUseCase
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
+import com.github.enteraname74.domain.usecase.album.UpsertCloudAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
+import com.github.enteraname74.domain.usecase.artist.UpsertCloudArtistUseCase
 import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
@@ -13,7 +16,12 @@ import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
+import com.github.enteraname74.domain.usecase.music.RemoveLocallyOrDeleteMusicUseCase
+import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
+import com.github.enteraname74.domain.usecase.music.UpdateMusicToCloudUseCase
+import com.github.enteraname74.domain.usecase.music.UploadMusicToCloudUseCase
+import com.github.enteraname74.domain.usecase.music.UpsertCloudMusicUseCase
 import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
@@ -30,10 +38,12 @@ val domainModule = module {
     factoryOf(::DeleteAlbumIfEmptyUseCase)
     factoryOf(::DeleteAlbumUseCase)
     factoryOf(::GetCorrespondingAlbumUseCase)
+    factoryOf(::UpsertCloudAlbumUseCase)
 
     // Artist
     factoryOf(::CommonArtistUseCase)
     factoryOf(::DeleteArtistUseCase)
+    factoryOf(::UpsertCloudArtistUseCase)
 
     // Folder
     factoryOf(::CommonFolderUseCase)
@@ -47,8 +57,15 @@ val domainModule = module {
     // Music
     factoryOf(::CommonMusicUseCase)
     factoryOf(::DeleteMusicUseCase)
+    factoryOf(::RemoveLocallyOrDeleteMusicUseCase)
     factoryOf(::IsMusicInFavoritePlaylistUseCase)
     factoryOf(::ToggleMusicFavoriteStatusUseCase)
+    factoryOf(::UpsertCloudMusicUseCase)
+    factoryOf(::UploadMusicToCloudUseCase)
+    factoryOf(::UpdateMusicToCloudUseCase)
+    factoryOf(::SyncMusicWithCloudUseCase)
+
+    factoryOf(::DeleteEmptyAlbumsAndArtistsUseCase)
 
     // MusicArtist
     factoryOf(::CommonMusicArtistUseCase)

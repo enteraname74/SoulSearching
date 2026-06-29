@@ -23,7 +23,6 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.MusicCoversBottomSheet
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
-import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateMusicUseCase
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
@@ -55,7 +54,6 @@ class ModifyMusicViewModel(
     private val loadingManager: LoadingManager,
     private val cachedCoverManager: CachedCoverManager,
     private val coverFileManager: CoverFileManager,
-    private val coverRetriever: CoverRetriever,
     destination: ModifyMusicDestination,
 ) : ViewModel() {
     private val musicId: UUID = destination.selectedMusicId
@@ -130,9 +128,9 @@ class ModifyMusicViewModel(
     private val coversOfAlbum: StateFlow<CoverListState> =
         getCorrespondingAlbumUseCase.withMusics(musicId = musicId).mapLatest { album ->
             CoverListState.Data(
-                covers = album?.let {
-                    coverRetriever.getAllUniqueCover(
-                        covers = it.musics.map { it.cover }
+                covers = album?.let { albumWithMusics ->
+                    commonCoverUseCase.getAllUniqueCover(
+                        covers = albumWithMusics.musics.map { it.cover }
                     )
                 } ?: emptyList()
             )

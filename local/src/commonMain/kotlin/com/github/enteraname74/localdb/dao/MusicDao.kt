@@ -7,8 +7,8 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.RoomCompleteMusic
-import com.github.enteraname74.localdb.view.RoomMonthMusicPreview
 import com.github.enteraname74.localdb.model.RoomMusic
+import com.github.enteraname74.localdb.view.RoomMonthMusicPreview
 import com.github.enteraname74.localdb.view.RoomMusicFolderPreview
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -43,12 +43,20 @@ interface MusicDao {
     fun getFromId(musicId : UUID): Flow<RoomCompleteMusic?>
 
     @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE remoteId = :remoteId LIMIT 1")
+    suspend fun getFromRemoteId(remoteId: String): RoomCompleteMusic?
+
+    @Transaction
     @Query("SELECT DISTINCT * FROM RoomMusic WHERE musicId IN (:ids)")
     fun getFromIds(ids: List<UUID>): Flow<List<RoomCompleteMusic>>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
     fun getAll(): Flow<List<RoomCompleteMusic>>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE localPath IS NOT NULL AND isHidden = 0")
+    suspend fun getAllLocalMusic(): List<RoomCompleteMusic>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND isInQuickAccess = 1 ORDER BY name ASC")
@@ -497,8 +505,8 @@ interface MusicDao {
     @Query("UPDATE RoomMusic SET coverId = NULL")
     suspend fun cleanAllMusicCovers()
 
-    @Query("SELECT path FROM RoomMusic")
-    suspend fun getAllMusicPath(): List<String>
+    @Query("SELECT localPath FROM RoomMusic WHERE localPath IS NOT NULL")
+    suspend fun getAllMusicLocalPath(): List<String>
 
     @Query("SELECT DISTINCT folder FROM RoomMusic")
     suspend fun getAllMusicFolders(): List<String>
@@ -560,4 +568,38 @@ interface MusicDao {
         totalPerFolder: Int,
         folder: String,
     ): List<RoomCompleteMusic>
+
+    @Query(
+        """
+            SELECT remoteId FROM RoomMusic 
+            WHERE remoteId IS NOT NULL
+        """
+    )
+    suspend fun getAllRemoteIds(): List<String>
+
+    @Transaction
+    @Query(
+        """
+            SELECT m.* FROM RoomMusic m
+            CROSS JOIN RoomCloudPreferences cp
+            WHERE m.lastUpdateMillis IS NULL
+               OR cp.lastSyncMillis IS NULL
+               OR m.lastUpdateMillis > cp.lastSyncMillis 
+               OR m.remoteId IS NULL
+        """
+    )
+    suspend fun getAllToSendToCloud(): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE name = :musicName AND albumId = :albumId")
+    suspend fun getFromInformation(
+        musicName: String,
+        albumId: UUID,
+    ): RoomCompleteMusic?
+
+    @Query("UPDATE RoomMusic SET remoteId = NULL WHERE remoteId IN (:remoteIds)")
+    suspend fun clearRemoteIds(remoteIds: List<String>)
+
+    @Query("DELETE FROM RoomMusic WHERE localPath IS NULL AND remoteId IS NULL")
+    suspend fun deleteNotExisting()
 }

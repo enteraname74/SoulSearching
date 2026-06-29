@@ -4,10 +4,10 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.github.enteraname74.localdb.datasourceimpl.RoomAlbumDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomArtistDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomCloudPreferencesDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomCoverDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomCoverLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomFolderDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicArtistDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomMusicDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomMusicLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicPlaylistDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomPlayerDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomPlaylistDataSourceImpl
@@ -20,10 +20,10 @@ import com.github.enteraname74.localdb.migration.Migration19To20
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
-import com.github.enteraname74.soulsearching.repository.datasource.CoverDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.cover.CoverLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.FolderDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.MusicArtistDataSource
-import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.MusicPlaylistDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.PlayerDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
@@ -77,11 +77,11 @@ val localModule: Module = module {
     singleOf(::RoomArtistDataSourceImpl) bind ArtistDataSource::class
     singleOf(::RoomFolderDataSourceImpl) bind FolderDataSource::class
     singleOf(::RoomMusicArtistDataSourceImpl) bind MusicArtistDataSource::class
-    singleOf(::RoomMusicDataSourceImpl) bind MusicDataSource::class
+    singleOf(::RoomMusicLocalDataSourceImpl) bind MusicLocalDataSource::class
     singleOf(::RoomMusicPlaylistDataSourceImpl) bind MusicPlaylistDataSource::class
     singleOf(::RoomPlayerDataSourceImpl) bind PlayerDataSource::class
     singleOf(::RoomPlaylistDataSourceImpl) bind PlaylistDataSource::class
-    singleOf(::RoomCoverDataSourceImpl) bind CoverDataSource::class
+    singleOf(::RoomCoverLocalDataSourceImpl) bind CoverLocalDataSource::class
     singleOf(::RoomUserLocalDataSourceImpl) bind UserLocalDataSource::class
     singleOf(::RoomCloudPreferencesDataSourceImpl) bind CloudPreferencesDataSource::class
 }

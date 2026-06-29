@@ -9,7 +9,7 @@ import com.github.enteraname74.domain.model.PlaylistWithMusics
  * Room representation of a PlaylistWithMusics.
  */
 data class RoomPlaylistWithMusics(
-    @Embedded val roomPlaylist: RoomPlaylist = RoomPlaylist(),
+    @Embedded val roomPlaylist: RoomPlaylist,
     @Relation(
         parentColumn = "playlistId",
         entityColumn = "musicId",

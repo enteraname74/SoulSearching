@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,58 +49,70 @@ class MusicCoversBottomSheet(
 ): SoulBottomSheet {
 
     @Composable
-    private fun CoverFileList(
-        coverFile: Cover.CoverFile,
-        closeWithAnim: (callback: () -> Unit) -> Unit,
+    private fun ImageList(
+        block: LazyGridScope.() -> Unit,
     ) {
-        val coverState: CoverListState by albumCoversStateFlow.collectAsState()
-
         LazyVerticalGridCompat(
             modifier = Modifier.fillMaxWidth(),
             columns = GridCells.Adaptive(UiConstants.ImageSize.largePlus),
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
-            coverFile.initialCoverPath?.let { initialCoverPath ->
-                item {
-                    EditableElementCoverSelectionItem(
-                        cover = Cover.CoverFile(
-                            initialCoverPath = initialCoverPath,
-                        ),
-                        title = strings.musicFileCover,
-                        onClick = {
-                            closeWithAnim {
-                                onMusicFileCoverSelected(initialCoverPath)
-                            }
-                        }
-                    )
-                }
-            }
+            block()
+        }
+    }
 
-            coverFile.fileCoverId?.let { fileCoverId ->
-                item {
-                    EditableElementCoverSelectionItem(
-                        cover = Cover.CoverFile(
-                            fileCoverId = fileCoverId,
-                        ),
-                        title = strings.musicAppCover,
-                        onClick = {
-                            closeWithAnim {
-                                onFileCoverSelected(fileCoverId)
-                            }
-                        }
-                    )
-                }
-            }
+    private fun LazyGridScope.coverFileList(
+        coverFile: Cover.CoverFile,
+        closeWithAnim: (callback: () -> Unit) -> Unit,
+    ) {
 
-            editableElementCoversChoice(
-                coverState = coverState,
-                onCoverSelected = {
-                    closeWithAnim {
-                        onAlbumCoverSelected(it)
+        coverFile.initialCoverPath?.let { initialCoverPath ->
+            item {
+                EditableElementCoverSelectionItem(
+                    cover = Cover.CoverFile(
+                        initialCoverPath = initialCoverPath,
+                    ),
+                    title = strings.musicFileCover,
+                    onClick = {
+                        closeWithAnim {
+                            onMusicFileCoverSelected(initialCoverPath)
+                        }
                     }
-                },
-                sectionTitle = strings.coversOfSongAlbum,
+                )
+            }
+        }
+
+        coverFile.fileCoverId?.let { fileCoverId ->
+            item {
+                EditableElementCoverSelectionItem(
+                    cover = Cover.CoverFile(
+                        fileCoverId = fileCoverId,
+                    ),
+                    title = strings.musicAppCover,
+                    onClick = {
+                        closeWithAnim {
+                            onFileCoverSelected(fileCoverId)
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    private fun LazyGridScope.coverUrlList(
+        cover: Cover.Url,
+        closeWithAnim: (callback: () -> Unit) -> Unit,
+    ) {
+        item {
+            EditableElementCoverSelectionItem(
+                cover = cover,
+                title = strings.musicAppCover,
+                onClick = {
+                    closeWithAnim {
+                        // TODO CLOUD: Select URL image on song update
+                    }
+                }
             )
         }
     }
@@ -118,6 +131,8 @@ class MusicCoversBottomSheet(
                     onCoverFromStorageSelected(file)
                 }
             }
+
+            val coverState: CoverListState by albumCoversStateFlow.collectAsState()
 
             val windowHeightBeforeBarPadding: Float = rememberWindowHeight() - getStatusBarPadding()
             var bottomSheetHeight: Int by rememberSaveable {
@@ -150,13 +165,31 @@ class MusicCoversBottomSheet(
                         }
                     }
                 )
-                when (musicCover) {
-                    is Cover.CoverFile -> {
-                        CoverFileList(
-                            coverFile = musicCover,
-                            closeWithAnim = closeWithAnim,
-                        )
+                ImageList {
+                    when (musicCover) {
+                        is Cover.CoverFile -> {
+                            coverFileList(
+                                coverFile = musicCover,
+                                closeWithAnim = closeWithAnim,
+                            )
+                        }
+                        is Cover.Url -> {
+                            coverUrlList(
+                                cover = musicCover,
+                                closeWithAnim = closeWithAnim,
+                            )
+                        }
                     }
+
+                    editableElementCoversChoice(
+                        coverState = coverState,
+                        onCoverSelected = {
+                            closeWithAnim {
+                                onAlbumCoverSelected(it)
+                            }
+                        },
+                        sectionTitle = strings.coversOfSongAlbum,
+                    )
                 }
             }
         }

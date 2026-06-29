@@ -56,6 +56,10 @@ class SettingsCloudViewHolder(
         navigate { navigateBack() }
     }
 
+    override fun toSync() {
+        navigate { toSync() }
+    }
+
     @Composable
     override fun Content(
         actions: SettingsCloudActions,

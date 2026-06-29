@@ -21,23 +21,36 @@ data class RoomCompleteMusic(
     )
     val artists: List<RoomArtist>
 ) {
-    fun toMusic(): Music =
-        Music(
+    fun toMusic(): Music {
+        val localCover = Cover.CoverFile(
+            initialCoverPath = music.localPath,
+            fileCoverId = music.coverId,
+        )
+        val remoteCover = music.coverUrl?.let { Cover.Url(it) }
+
+        val usedCover = if (remoteCover == null) {
+            localCover
+        } else {
+            localCover.takeIf { !it.isEmpty() } ?: remoteCover
+        }
+
+        return Music(
             musicId = music.musicId,
             name = music.name,
             album = completeAlbum.toAlbum(),
             artists = artists.map { it.toArtist() },
-            cover = Cover.CoverFile(
-                initialCoverPath = music.path,
-                fileCoverId = music.coverId,
-            ),
+            cover = usedCover,
             albumPosition = music.albumPosition,
-            path = music.path,
+            localPath = music.localPath,
             folder = music.folder,
             duration = music.duration,
             addedDate = music.addedDate,
             nbPlayed = music.nbPlayed,
             isInQuickAccess = music.isInQuickAccess,
             isHidden = music.isHidden,
+            remoteId = music.remoteId,
+            remotePath = music.remotePath,
+            lastUpdatedMillis = music.lastUpdateMillis,
         )
+    }
 }

@@ -16,18 +16,27 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyplayl
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistDestination
-import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import java.util.UUID
 
 class ModifyPlaylistViewModel(
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonCoverUseCase: CommonCoverUseCase,
     private val loadingManager: LoadingManager,
-    private val coverRetriever: CoverRetriever,
     destination: ModifyPlaylistDestination,
 ) : ViewModel() {
     private val playlistId: UUID = destination.selectedPlaylistId
@@ -82,7 +91,7 @@ class ModifyPlaylistViewModel(
     private val artistsCover: StateFlow<CoverListState> = state.mapLatest { state ->
         when (state) {
             is ModifyPlaylistState.Data -> CoverListState.Data(
-                covers = coverRetriever.getAllUniqueCover(
+                covers = commonCoverUseCase.getAllUniqueCover(
                     covers = state.initialPlaylist.musics.map { it.cover }
                 )
             )

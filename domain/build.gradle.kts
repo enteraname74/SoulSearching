@@ -2,6 +2,8 @@ plugins {
     id("com.android.library")
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -19,6 +21,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(libs.compose.ui)
                 implementation(libs.androidx.paging.common)
                 implementation(libs.koin.core)
                 implementation(libs.coroutines.core)

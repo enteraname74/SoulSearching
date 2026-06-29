@@ -1,10 +1,14 @@
 package com.github.enteraname74.soulsearching.remote.di
 
+import com.github.enteraname74.soulsearching.remote.datasourceimpl.CoverRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.LyricsRemoteDataSourceImpl
+import com.github.enteraname74.soulsearching.remote.datasourceimpl.MusicRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.ReleaseDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.UserRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.cover.CoverRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.lyrics.LyricsRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserRemoteDataSource
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.qualifier.named
@@ -22,4 +26,18 @@ val remoteModule = module {
     factoryOf(::LyricsRemoteDataSourceImpl) bind LyricsRemoteDataSource::class
     factoryOf(::ReleaseDataSourceImpl) bind ReleaseDataSource::class
     factoryOf(::UserRemoteDataSourceImpl) bind UserRemoteDataSource::class
+
+    single<MusicRemoteDataSource> {
+        MusicRemoteDataSourceImpl(
+            client = get(named(HttpClientNames.CLOUD)),
+            cloudPreferencesDataSource = get()
+        )
+    }
+
+    single<CoverRemoteDataSource> {
+        CoverRemoteDataSourceImpl(
+            client = get(named(HttpClientNames.CLOUD)),
+            cloudPreferencesDataSource = get()
+        )
+    }
 }

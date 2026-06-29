@@ -21,12 +21,19 @@ import java.util.UUID
                     LIMIT 1
                 ) AS coverId,
                 (
-                    SELECT music.path FROM RoomMusic AS music 
+                    SELECT music.localPath FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
                     AND music.folder = folderMusic.folder 
                     ORDER BY name 
                     LIMIT 1 
-                ) AS musicCoverPath 
+                ) AS musicCoverPath, 
+                (
+                    SELECT music.coverUrl FROM RoomMusic AS music 
+                    WHERE music.isHidden = 0 
+                    AND music.folder = folderMusic.folder 
+                    ORDER BY name 
+                    LIMIT 1 
+                ) AS musicCoverUrl 
             FROM RoomMusic As folderMusic
             WHERE isHidden = 0 
             GROUP BY folderMusic.folder 
@@ -36,15 +43,27 @@ data class RoomMusicFolderPreview(
     val folder: String,
     val coverId: UUID?,
     val musicCoverPath: String?,
+    val musicCoverUrl: String?,
     val totalMusics: Int,
 ) {
-    fun toMusicFolderPreview(): MusicFolderPreview =
-        MusicFolderPreview(
+    fun toMusicFolderPreview(): MusicFolderPreview {
+        val localCover = Cover.CoverFile(
+            initialCoverPath = musicCoverPath,
+            fileCoverId = coverId,
+        )
+        val remoteCover = musicCoverUrl?.let { Cover.Url(it) }
+
+        val usedCover = if (remoteCover == null) {
+            localCover
+        } else {
+            localCover.takeIf { !it.isEmpty() } ?: remoteCover
+        }
+
+        return MusicFolderPreview(
             folder = folder,
-            cover = Cover.CoverFile(
-                initialCoverPath = musicCoverPath,
-                fileCoverId = coverId,
-            ),
+            cover = usedCover,
             totalMusics = totalMusics,
         )
+    }
+
 }

@@ -37,10 +37,10 @@ actual fun WriteFilesCheck(
 
             val uris = mutableListOf<Uri>()
 
-            musicsToSave.forEach { music ->
+            musicsToSave.filter { it.localPath != null }.forEach { music ->
                 val mediaId = AndroidUtils.musicPathToMediaId(
                     context = context,
-                    musicPath = music.path
+                    musicPath = music.localPath!!
                 )
                 uris.add(
                     ContentUris.withAppendedId(

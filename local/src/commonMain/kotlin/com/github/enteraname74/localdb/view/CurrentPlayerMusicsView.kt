@@ -4,7 +4,6 @@ import androidx.room.DatabaseView
 import androidx.room.Embedded
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
-import java.util.UUID
 
 @DatabaseView(
     """

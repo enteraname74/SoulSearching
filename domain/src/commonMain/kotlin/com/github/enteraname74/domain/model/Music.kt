@@ -2,6 +2,7 @@ package com.github.enteraname74.domain.model
 
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.math.max
 
 /**
  * Represent a song with information related to it.
@@ -9,19 +10,24 @@ import java.util.*
  */
 data class Music(
     val musicId: UUID = UUID.randomUUID(),
+    val remoteId: String?,
     val name: String,
     val album: Album,
     val artists: List<Artist>,
     val cover: Cover,
     val albumPosition: Int?,
-    val path: String,
+    val localPath: String?,
+    val remotePath: String?,
     val folder: String,
     val duration: Long = 0L,
     val addedDate: LocalDateTime = LocalDateTime.now(),
     val nbPlayed: Int = 0,
     override val isInQuickAccess: Boolean = false,
     val isHidden: Boolean = false,
+    val lastUpdatedMillis: Long?,
 ) : QuickAccessible {
+    val path: String? = localPath ?: remotePath
+
     val informationText: String = "${artists.joinToString { it.artistName }} | ${album.albumName}"
 
     val artistsNames: String = buildList {
@@ -37,6 +43,21 @@ data class Music(
                 .size > 1
         }
 
-    override fun toString(): String =
-        "Music(name: $name, album: $album, artists: $artists)"
+    fun merge(
+        cloudMusic: CloudMusic,
+        album: Album,
+        artists: List<Artist>
+    ): Music =
+        copy(
+            remoteId = cloudMusic.fingerprint,
+            name = cloudMusic.name,
+            album = album,
+            artists = artists,
+            remotePath = cloudMusic.path,
+            albumPosition = cloudMusic.albumPosition,
+            cover = cover.takeIf { !it.isEmpty() } ?: Cover.Url(cloudMusic.coverPath),
+            lastUpdatedMillis = cloudMusic.lastUpdateAtMillis,
+            nbPlayed = max(nbPlayed, cloudMusic.nbPlayed),
+            isInQuickAccess = cloudMusic.isInQuickAccess,
+        )
 }

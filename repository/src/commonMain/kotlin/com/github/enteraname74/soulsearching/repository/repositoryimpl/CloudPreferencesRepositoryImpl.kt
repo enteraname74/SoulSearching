@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
+import com.github.enteraname74.domain.model.CloudPreferences
 import com.github.enteraname74.domain.repository.CloudPreferencesRepository
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import kotlinx.coroutines.flow.Flow
@@ -13,4 +14,11 @@ class CloudPreferencesRepositoryImpl(
     override suspend fun setUrl(url: String) {
         dataSource.setUrl(url)
     }
+
+    override suspend fun setLastSyncMillis(millis: Long) {
+        dataSource.setLastSyncMillis(millis)
+    }
+
+    override fun observePreferences(): Flow<CloudPreferences?> =
+        dataSource.observePreferences()
 }

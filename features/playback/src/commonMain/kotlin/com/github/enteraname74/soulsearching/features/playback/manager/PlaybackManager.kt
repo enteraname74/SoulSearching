@@ -18,9 +18,9 @@ import com.github.enteraname74.domain.model.player.PlayerPlayedList
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerRepository
+import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
-import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
@@ -54,7 +54,7 @@ class PlaybackManager(
     private val settings: SoulSearchingSettings,
     private val commonMusicUseCase: CommonMusicUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
-    private val coverRetriever: CoverRetriever,
+    private val commonCoverUseCase: CommonCoverUseCase,
 ) : KoinComponent, SoulSearchingPlayer.Listener {
     private val notification: SoulSearchingNotification by inject()
     private val player: SoulSearchingPlayer by inject()
@@ -96,7 +96,7 @@ class PlaybackManager(
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentCover: Flow<ImageBitmap?> =
         playerRepository.getCurrentMusic().map { currentMusic ->
-            currentMusic?.music?.cover?.let { coverRetriever.getCoverImageBitmap(it) }
+            currentMusic?.music?.cover?.let { commonCoverUseCase.getCoverImageBitmap(it) }
         }
 
     // TODO PLAYER: Find a way to make drag and drop and paging list work together

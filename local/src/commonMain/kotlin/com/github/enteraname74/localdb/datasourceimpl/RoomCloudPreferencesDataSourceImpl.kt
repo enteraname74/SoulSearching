@@ -1,5 +1,6 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
+import com.github.enteraname74.domain.model.CloudPreferences
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.RoomCloudPreferences
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
@@ -25,4 +26,20 @@ class RoomCloudPreferencesDataSourceImpl(
             )
         )
     }
+
+    override suspend fun setLastSyncMillis(millis: Long) {
+        val preferences: RoomCloudPreferences = appDatabase
+            .cloudPreferencesDao
+            .observe()
+            .firstOrNull() ?: RoomCloudPreferences()
+
+        appDatabase.cloudPreferencesDao.upsert(
+            preferences = preferences.copy(
+                lastSyncMillis = millis,
+            )
+        )
+    }
+
+    override fun observePreferences(): Flow<CloudPreferences?> =
+        appDatabase.cloudPreferencesDao.observe().map { it?.toCloudPreferences() }
 }

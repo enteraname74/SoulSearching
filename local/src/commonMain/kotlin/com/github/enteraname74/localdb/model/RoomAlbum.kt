@@ -8,6 +8,7 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Cover
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Room representation of an Album.
@@ -25,13 +26,16 @@ import java.util.UUID
 data class RoomAlbum(
     @PrimaryKey
     val albumId: UUID = UUID.randomUUID(),
+    val remoteId: Uuid?,
     val albumName: String,
     val coverId: UUID? = null,
+    val coverUrl: String?,
     val addedDate: LocalDateTime = LocalDateTime.now(),
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,
     @ColumnInfo(index = true)
     val artistId: UUID,
+    val lastUpdatedMillis: Long?,
 )
 
 /**
@@ -45,4 +49,7 @@ internal fun Album.toRoomAlbum(): RoomAlbum = RoomAlbum(
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
     artistId = artist.artistId,
+    remoteId = remoteId,
+    lastUpdatedMillis = lastUpdateMillis,
+    coverUrl = (cover as? Cover.Url)?.url,
 )

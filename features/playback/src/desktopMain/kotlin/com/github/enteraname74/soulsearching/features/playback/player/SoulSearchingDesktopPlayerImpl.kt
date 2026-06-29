@@ -77,6 +77,7 @@ class SoulSearchingDesktopPlayerImpl :
             }
             // Necessary to avoid blocking the app.
             delay(500)
+            // TODO CLOUD: Add remote player capability
             player.media().prepare(music.path)
         } catch (e: Exception) {
             println("SET MUSIC EXC: ${e.message}")

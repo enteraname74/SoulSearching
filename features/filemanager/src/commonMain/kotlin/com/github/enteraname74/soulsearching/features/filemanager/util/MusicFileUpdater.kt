@@ -27,7 +27,9 @@ class MusicFileUpdater : KoinComponent {
     suspend fun updateMusic(music: Music) {
         if (!settings.get(SoulSearchingSettingsKeys.IS_MUSIC_FILE_MODIFICATION_ON)) return
         try {
-            val musicFile = File(music.path)
+            val musicFile = music.localPath
+                ?.let { File(it) }
+                ?.takeIf { it.exists() } ?: return
 
             val audioFile = AudioFileIO.read(musicFile)
 

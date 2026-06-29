@@ -17,4 +17,5 @@ interface MusicArtistRepository {
     suspend fun deleteMusicArtist(musicArtist: MusicArtist)
 
     suspend fun deleteOfArtist(artistId: UUID)
+    suspend fun deleteOfMusic(musicId: UUID)
 }

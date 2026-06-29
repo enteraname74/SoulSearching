@@ -33,6 +33,9 @@ class CommonMusicUseCase(
     fun getAll(): Flow<List<Music>> =
         musicRepository.getAll()
 
+    suspend fun getAllLocalMusic(): List<Music> =
+        musicRepository.getAllLocalMusic()
+
     suspend fun getAllSorted(): List<Music> =
         musicRepository.getAllSorted()
 
@@ -165,8 +168,8 @@ class CommonMusicUseCase(
         musicRepository.cleanAllMusicCovers()
     }
 
-    suspend fun getAllMusicPath(): List<String> =
-        musicRepository.getAllMusicPath()
+    suspend fun getAllMusicLocalPath(): List<String> =
+        musicRepository.getAllMusicLocalPath()
 
     fun getMostListened(): Flow<List<Music>> =
         musicRepository.getMostListened()

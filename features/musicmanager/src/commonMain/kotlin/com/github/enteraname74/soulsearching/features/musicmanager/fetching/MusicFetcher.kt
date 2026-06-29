@@ -55,7 +55,7 @@ abstract class MusicFetcher : KoinComponent {
         onSongSaved: (Music) -> Unit = {},
     ) {
         // If the song has already been saved once, we do nothing.
-        if (optimizedCachedData.musicsByPath[musicToAdd.path] != null) return
+        if (optimizedCachedData.musicsByPath[musicToAdd.localPath.orEmpty()] != null) return
 
         /*
         We updated the list of artist of the music to check if an artist might already exist.
@@ -82,7 +82,7 @@ abstract class MusicFetcher : KoinComponent {
             album = updatedAlbum,
             artists = updatedListOfArtist,
         )
-        optimizedCachedData.musicsByPath[fixedMusic.path] = fixedMusic
+        optimizedCachedData.musicsByPath[fixedMusic.localPath.orEmpty()] = fixedMusic
 
         onSongSaved(fixedMusic)
     }

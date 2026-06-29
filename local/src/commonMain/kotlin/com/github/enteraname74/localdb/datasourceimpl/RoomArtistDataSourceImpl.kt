@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Implementation of the ArtistDataSource with Room's DAO.
@@ -52,6 +53,10 @@ internal class RoomArtistDataSourceImpl(
         )
     }
 
+    override suspend fun deleteAllEmpty() {
+        appDatabase.artistDao.deleteAllEmpty()
+    }
+
     override suspend fun getArtistNamesContainingSearch(search: String): List<String> =
         appDatabase.artistDao.getArtistNamesContainingSearch(search)
 
@@ -71,6 +76,10 @@ internal class RoomArtistDataSourceImpl(
         ).map { it?.toArtist() }
     }
 
+    override suspend fun getFromRemoteId(remoteId: Uuid): Artist? =
+        appDatabase.artistDao.getFromRemoteId(
+            remoteId = remoteId
+        )?.toArtist()
 
     override fun getFromIds(artistIds: List<UUID>): Flow<List<ArtistWithMusics>> =
         appDatabase.artistDao.getFromIds(artistIds).map { list ->

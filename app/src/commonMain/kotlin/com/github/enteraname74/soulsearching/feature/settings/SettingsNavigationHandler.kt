@@ -11,6 +11,7 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.code.Setting
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedDestination
@@ -142,6 +143,10 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+        SettingsCloudSyncDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
     }
 
     fun serializerModule(
@@ -170,6 +175,7 @@ object SettingsNavigationHandler {
             subclass(SettingsCloudSignUpDestination::class, SettingsCloudSignUpDestination.serializer())
             subclass(SettingsCloudUserDestination::class, SettingsCloudUserDestination.serializer())
             subclass(SettingsCloudCodeDestination::class, SettingsCloudCodeDestination.serializer())
+            subclass(SettingsCloudSyncDestination::class, SettingsCloudSyncDestination.serializer())
         }
     }
 }

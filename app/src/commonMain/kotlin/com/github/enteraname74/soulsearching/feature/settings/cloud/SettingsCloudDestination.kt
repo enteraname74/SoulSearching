@@ -5,6 +5,7 @@ import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
@@ -34,6 +35,10 @@ data object SettingsCloudDestination : SettingPage {
 
                     override fun toUser() {
                         navigator.push(SettingsCloudUserDestination)
+                    }
+
+                    override fun toSync() {
+                        navigator.push(SettingsCloudSyncDestination)
                     }
                 }
             )
