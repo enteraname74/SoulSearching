@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
+import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
@@ -18,6 +19,7 @@ import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistU
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
+import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -62,4 +64,10 @@ val domainModule = module {
 
     // Release
     factoryOf(::CommonReleaseUseCase)
+
+    // User
+    factoryOf(::CommonUserUseCase)
+
+    // CloudPreferences
+    factoryOf(::CommonCloudPreferencesUseCase)
 }

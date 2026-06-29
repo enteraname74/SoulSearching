@@ -25,6 +25,7 @@ val repositoryModule = module {
     }
     singleOf(::PlaylistRepositoryImpl) bind PlaylistRepository::class
     singleOf(::ReleaseRepositoryImpl) bind ReleaseRepository::class
-
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
+    singleOf(::CloudPreferencesRepositoryImpl) bind CloudPreferencesRepository::class
     singleOf(::LyricsLocalDataSource)
 }

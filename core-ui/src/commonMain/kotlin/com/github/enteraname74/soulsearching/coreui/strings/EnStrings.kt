@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
+import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 
 /**
@@ -315,6 +316,30 @@ object EnStrings : Strings {
     override val continuePlayedListAction = "Resume"
 
     override val savedChanges = "Saved changes"
+
+    override val cloudText: String = "Synchronize your songs with Cloudy"
+    override val cloudSettingsTitle: String = "Settings"
+    override val cloudSettingsText: String = "Host URL"
+    override val cloudUrlFieldLabel: String = "Host URL"
+    override val cloudNameFieldLabel: String = "Username"
+    override val cloudPasswordFieldLabel: String = "Password"
+    override val cloudSignUp: String = "Sign up"
+    override val cloudNoAccount: String = "I don't have an account"
+    override val cloudConnection: String = "Connection"
+    override val cloudSignIn: String = "Sign in"
+    override val cloudRegistrationCode: String = "Registration code"
+    override val cloudUserSettings: String = "User settings"
+    override val disconnect: String = "Disconnect"
+    override val generateCodeTitle: String = "Generate code"
+    override val generateCodeText: String = "Generate a one time usage code for a new user"
+    override val generatedCode: String = "Generated code"
+
+    override fun userType(type: User.Type): String =
+        when (type) {
+            User.Type.User -> "User"
+            User.Type.Admin -> "Admin"
+            User.Type.Unknown -> "No status"
+        }
 
     override fun musics(total: Int): String {
         return when (total) {

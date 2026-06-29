@@ -92,7 +92,6 @@ sealed interface ModifyMusicFormState {
                     modifier = Modifier
                         .fillMaxWidth(),
                     id = ALBUM_ARTIST,
-                    isValid = { true },
                     initialValue = savedData[ALBUM_ARTIST] ?: initialMusic.album.artist.artistName,
                     getLabel = { strings.albumArtistName },
                     style = SoulTextFieldStyle.Body,

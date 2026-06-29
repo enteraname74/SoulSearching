@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
+import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 
 /**
@@ -316,6 +317,30 @@ object FrStrings : Strings {
     override val continuePlayedListAction = "Reprendre"
 
     override val savedChanges = "Modifications sauvegardées"
+    override val cloudText: String = "Synchroniser vos musiques avec Cloudy"
+    override val cloudSettingsTitle: String = "Paramètres"
+    override val cloudSettingsText: String = "URL du service"
+    override val cloudUrlFieldLabel: String = "URL du service"
+
+    override val cloudNameFieldLabel: String = "Pseudo"
+    override val cloudPasswordFieldLabel: String = "Mot de passe"
+    override val cloudSignUp: String = "S'inscrire"
+    override val cloudNoAccount: String = "Je n'ai pas de compte"
+    override val cloudConnection: String = "Connexion"
+    override val cloudSignIn: String = "Se connecter"
+    override val cloudRegistrationCode: String = "Code d'inscription"
+    override val cloudUserSettings: String = "Paramètres utilisateur"
+    override val disconnect: String = "Déconnexion"
+    override val generateCodeTitle: String = "Générer un code"
+    override val generateCodeText: String = "Générer un code à usage unique pour un nouvel utilisateur"
+    override val generatedCode: String = "Code généré"
+
+    override fun userType(type: User.Type): String =
+        when (type) {
+            User.Type.User -> "Utilisateur"
+            User.Type.Admin -> "Administrateur"
+            User.Type.Unknown -> "Aucun statut"
+        }
 
     override fun musics(total: Int): String {
         return when (total) {

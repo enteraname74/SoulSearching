@@ -25,6 +25,12 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
+import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodeViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeViewModel
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain.SettingsThemeSelectionViewModel
@@ -54,6 +60,12 @@ internal val viewModelModule: Module = module {
     viewModelOf(::SettingsAdvancedViewModel)
     viewModelOf(::SettingsArtistCoverMethodViewModel)
     viewModelOf(::SettingsAboutViewModel)
+    viewModelOf(::SettingsCloudViewHolder)
+    viewModelOf(::SettingsCloudSettingsViewHolder)
+    viewModelOf(::SettingsCloudSignInViewHolder)
+    viewModelOf(::SettingsCloudSignUpViewHolder)
+    viewModelOf(::SettingsCloudUserViewHolder)
+    viewModelOf(::SettingsCloudCodeViewHolder)
 
     // Main page
     viewModelOf(::MainPageViewModel)

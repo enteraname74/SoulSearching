@@ -10,7 +10,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!-- TODO CLOUD: Remove usesCleartextTraffic for prod-->
     <application
+        android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
         android:name="com.github.enteraname74.soulsearching.App"
         android:allowBackup="true"
