@@ -48,6 +48,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.UUID
+import kotlin.time.Duration.Companion.milliseconds
 
 class PlaybackManager(
     private val playerRepository: PlayerRepository,
@@ -86,10 +87,10 @@ class PlaybackManager(
         playerRepository.getCurrentMusic().map {
             it?.music
         }.stateIn(
-                scope = workScope,
-                started = SharingStarted.Eagerly,
-                initialValue = null,
-            )
+            scope = workScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
 
     val currentSongProgressionState: Flow<Int> = playbackProgressJob.state
 
@@ -362,7 +363,6 @@ class PlaybackManager(
         playerRepository.togglePlayPause()
     }
 
-
     fun play() {
         workScope.launch {
             playerRepository.setPlayedListState(PlayedListState.Playing)
@@ -459,7 +459,7 @@ class PlaybackManager(
     private fun launchMusicCount(musicId: UUID) {
         updateMusicNbPlayedJob?.cancel()
         updateMusicNbPlayedJob = CoroutineScope(Dispatchers.IO).launch {
-            delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
+            delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED.milliseconds)
             commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }
     }
