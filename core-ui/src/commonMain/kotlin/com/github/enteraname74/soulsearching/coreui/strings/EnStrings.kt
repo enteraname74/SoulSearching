@@ -380,6 +380,9 @@ object EnStrings : Strings {
     """.trimIndent()
     override val cloudExplanationsRedirect: String = "Cloudy documentation"
 
+    override val cloudAddUrlToSharedListTitle: String = "Add a song from a URL"
+    override val add: String = "Add"
+
     override fun userType(type: UserType): String =
         when (type) {
             UserType.User -> "User"

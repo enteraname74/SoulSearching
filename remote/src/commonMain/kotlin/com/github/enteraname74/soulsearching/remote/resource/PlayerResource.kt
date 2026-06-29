@@ -43,4 +43,9 @@ class PlayerResource {
     class Musics(
         val parent: PlayerResource = PlayerResource()
     )
+
+    @Resource("url")
+    class Url(
+        val parent: PlayerResource = PlayerResource()
+    )
 }

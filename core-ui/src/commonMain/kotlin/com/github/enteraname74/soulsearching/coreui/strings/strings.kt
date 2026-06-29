@@ -383,6 +383,9 @@ interface Strings {
     val cloudDocumentationURL: String
         get() = "https://github.com/enteraname74/Cloudy/blob/main/README.md"
 
+    val cloudAddUrlToSharedListTitle: String
+    val add: String
+
     fun userType(type: UserType): String
 
     /**

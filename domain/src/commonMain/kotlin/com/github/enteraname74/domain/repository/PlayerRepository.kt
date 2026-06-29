@@ -86,6 +86,8 @@ interface PlayerRepository {
         musicRemoteIds: List<String>
     )
 
+    suspend fun addMusicFromURL(url: String)
+
     suspend fun removeFromSharedPlayedList(
         musicRemoteIds: List<String>
     )
@@ -97,6 +99,11 @@ interface PlayerRepository {
     suspend fun joinSharedList(
         code: String,
     ): SharedPlayedList
+
+    suspend fun removeUser(
+        userId: Uuid,
+        deviceId: String,
+    )
 
     fun observeCurrentSharedUsers(): Flow<List<SharedPlayedListUser>>
 

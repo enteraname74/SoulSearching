@@ -383,6 +383,9 @@ object FrStrings : Strings {
     """.trimIndent()
     override val cloudExplanationsRedirect: String = "Documentation de Cloudy"
 
+    override val cloudAddUrlToSharedListTitle: String = "Ajouter une musique depuis une URL"
+    override val add: String = "Ajouter"
+
     override fun userType(type: UserType): String =
         when (type) {
             UserType.User -> "Utilisateur"

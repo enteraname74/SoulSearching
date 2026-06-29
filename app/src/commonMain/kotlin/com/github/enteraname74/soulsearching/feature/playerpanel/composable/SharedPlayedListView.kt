@@ -26,7 +26,7 @@ import com.github.enteraname74.soulsearching.util.rememberClipboardController
 // TODO SHARED PLAYED LIST: actions on users
 @Composable
 fun SharedPlayedListView(
-    state: SharedListState
+    state: SharedListState,
 ) {
     LazyColumnCompat(
         modifier = Modifier

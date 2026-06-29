@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.toKotlinUuid
 
@@ -561,7 +562,7 @@ class PlaybackManager(
     private fun launchMusicCount(musicId: UUID) {
         updateMusicNbPlayedJob?.cancel()
         updateMusicNbPlayedJob = CoroutineScope(Dispatchers.IO).launch {
-            delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
+            delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED.milliseconds)
             commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }
     }
@@ -599,7 +600,7 @@ class PlaybackManager(
         val scope =
             playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.Success(Unit)
         return if (scope.isRemote) {
-            addMusicsToSharedPlayedListUseCase(musicIds = musics.map { it.musicId })
+            addMusicsToSharedPlayedListUseCase.local(musicIds = musics.map { it.musicId })
         } else {
             playerRepository.addAll(
                 musics = musics,
@@ -613,7 +614,7 @@ class PlaybackManager(
         val scope =
             playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.Success(Unit)
         return if (scope.isRemote) {
-            addMusicsToSharedPlayedListUseCase(musicIds = musics.map { it.musicId })
+            addMusicsToSharedPlayedListUseCase.local(musicIds = musics.map { it.musicId })
         } else {
             playerRepository.addAll(
                 musics = musics,

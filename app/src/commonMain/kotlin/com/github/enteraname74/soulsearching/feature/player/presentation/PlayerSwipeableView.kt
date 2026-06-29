@@ -185,6 +185,8 @@ fun PlayerDraggableView(
                 is PlayerViewState.Data -> {
                     val dataState = state as PlayerViewState.Data
 
+                    dataState.dialog?.Dialog()
+
                     PlayerSwipeableDataScreen(
                         maxHeight = maxHeight,
                         state = dataState,
@@ -238,7 +240,10 @@ fun PlayerDraggableView(
                         },
                         onClickOnMusic = ifAdmin(dataState) {
                             { playerViewModel.onClickOnMusic(it) }
-                        }
+                        },
+                        onAddFromUrl = ifRemote(dataState) {
+                            { playerViewModel.onAddFromUrlClicked() }
+                        },
                     )
 
                     /*
@@ -265,6 +270,13 @@ private fun <T>ifAdmin(state: PlayerViewState.Data, scope: () -> T): T? =
 
 private fun <T>ifLocal(state: PlayerViewState.Data, scope: () -> T): T? =
     if (!state.playedListScope.isRemote) {
+        scope()
+    } else {
+        null
+    }
+
+private fun <T>ifRemote(state: PlayerViewState.Data, scope: () -> T): T? =
+    if (state.playedListScope.isRemote) {
         scope()
     } else {
         null

@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerUserStatus
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingDarkLightThemes
 import java.util.*
@@ -24,6 +25,7 @@ sealed interface PlayerViewState {
         val playerMusicUsers: List<FullPlayerMusicUser>,
         val playedListScope: PlayedListScope,
         val sharedListState: SharedListState?,
+        val dialog: SoulDialog?,
     ) : PlayerViewState {
 
         fun getUserTag(

@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.composables.dialog
+package com.github.enteraname74.soulsearching.feature.player.presentation.composable
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
@@ -22,15 +22,13 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 
-
-class CreatePlaylistDialog(
-    private val onConfirm: (playlistName: String) -> Unit,
+class AddUrlToSharedPlayedListDialog(
+    private val onConfirm: (url: String) -> Unit,
     private val onDismiss: () -> Unit,
 ) : SoulDialog {
-
     @Composable
     override fun Dialog() {
-        var playlistName by rememberSaveable {
+        var url by rememberSaveable {
             mutableStateOf("")
         }
         val focusManager = LocalFocusManager.current
@@ -41,15 +39,15 @@ class CreatePlaylistDialog(
         }
 
         SoulAlertDialog(
-            confirmAction = { onConfirm(playlistName.trim()) },
+            confirmAction = { onConfirm(url.trim()) },
             dismissAction = {
                 focusRequester.freeFocus()
                 onDismiss()
             },
-            confirmText = strings.create,
-            isConfirmButtonEnabled = playlistName.isNotBlank(),
+            confirmText = strings.add,
+            isConfirmButtonEnabled = url.isNotBlank(),
             dismissText = strings.cancel,
-            title = strings.createPlaylistDialogTitle,
+            title = strings.cloudAddUrlToSharedListTitle,
             content = {
                 val baseHeight: Dp = 10.dp
                 var textFieldHeight: Float by rememberSaveable { mutableFloatStateOf(0f) }
@@ -65,20 +63,20 @@ class CreatePlaylistDialog(
                             .onGloballyPositioned {
                                 textFieldHeight = it.size.height.toFloat()
                             },
-                        value = playlistName,
-                        onValueChange = { playlistName = it },
-                        labelName = strings.playlistName,
+                        value = url,
+                        onValueChange = { url = it },
+                        labelName = strings.cloudFetchMusicFieldLabel,
                         focusManager = focusManager,
                         keyboardActions = KeyboardActions(
                             onDone = {
                                 focusRequester.freeFocus()
                                 focusManager.clearFocus()
-                                onConfirm(playlistName.trim())
+                                onConfirm(url.trim())
                             }
                         ),
                         style = SoulTextFieldStyle.Unique,
                         error = strings.fieldCannotBeEmpty,
-                        isInError = playlistName.isBlank(),
+                        isInError = url.isBlank(),
                         isReadOnly = false,
                     )
                 }

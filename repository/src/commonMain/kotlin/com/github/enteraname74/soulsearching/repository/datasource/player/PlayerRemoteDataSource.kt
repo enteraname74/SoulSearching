@@ -50,6 +50,12 @@ interface PlayerRemoteDataSource {
         musicIds: List<String>,
     )
 
+    suspend fun addMusicFromURL(
+        deviceId: String,
+        listId: Uuid,
+        url: String,
+    )
+
     suspend fun removeMusics(
         deviceId: String,
         listId: Uuid,

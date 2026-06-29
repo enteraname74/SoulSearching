@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayedListType
@@ -12,7 +13,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
-import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
@@ -26,24 +27,16 @@ import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerN
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.SharedListState
+import com.github.enteraname74.soulsearching.feature.player.presentation.composable.AddUrlToSharedPlayedListDialog
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
 /**
  * Handler for managing the PlayerViewModel.
@@ -58,7 +51,7 @@ class PlayerViewModel(
     val multiSelectionManager: MultiSelectionManager,
     private val loadingManager: LoadingManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
-    commonPlaylistUseCase: CommonPlaylistUseCase,
+    private val addMusicsToSharedPlayedListUseCase: AddMusicsToSharedPlayedListUseCase,
 ) : ViewModel() {
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
@@ -137,10 +130,13 @@ class PlayerViewModel(
         )
     )
 
+    private val dialog: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+
     val state: StateFlow<PlayerViewState> = combine(
         playbackManager.state,
         playbackManager.playedList,
-    ) { playbackMainState, playedList ->
+        dialog,
+    ) { playbackMainState, playedList, dialog ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
@@ -171,6 +167,7 @@ class PlayerViewModel(
                     playedListScope = playbackMainState.currentScope,
                     sharedListState = buildSharedListState(playbackMainState),
                     playerMusicUsers = playbackMainState.playerMusicUsers,
+                    dialog = dialog,
                 )
             }
 
@@ -360,6 +357,22 @@ class PlayerViewModel(
     fun onClickOnMusic(music: Music) {
         loadingManager.withLoadingOnScope(viewModelScope) {
             playbackManager.setAndPlayMusicFromCurrentPlayedList(music)
+        }
+    }
+
+    fun onAddFromUrlClicked() {
+        dialog.value = AddUrlToSharedPlayedListDialog(
+            onConfirm = ::addFromUrl,
+            onDismiss = { dialog.value = null }
+        )
+    }
+
+    private fun addFromUrl(url: String) {
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            when (val result = addMusicsToSharedPlayedListUseCase.url(url)) {
+                is SoulResult.Error -> feedbackPopUpManager.showErrorIfAny(result)
+                is SoulResult.Success -> dialog.value = null
+            }
         }
     }
 

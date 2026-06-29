@@ -2,20 +2,7 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.player.AddMusicMode
-import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
-import com.github.enteraname74.domain.model.player.PlayedListScope
-import com.github.enteraname74.domain.model.player.PlayedListSetup
-import com.github.enteraname74.domain.model.player.PlayedListState
-import com.github.enteraname74.domain.model.player.PlayedListToContinue
-import com.github.enteraname74.domain.model.player.PlayedListType
-import com.github.enteraname74.domain.model.player.PlayerMode
-import com.github.enteraname74.domain.model.player.PlayerMusic
-import com.github.enteraname74.domain.model.player.PlayerMusicUser
-import com.github.enteraname74.domain.model.player.PlayerPlayedList
-import com.github.enteraname74.domain.model.player.SharedPlayedList
-import com.github.enteraname74.domain.model.player.SharedPlayedListUser
-import com.github.enteraname74.domain.model.player.SharedPlayerMusic
+import com.github.enteraname74.domain.model.player.*
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerRepository
@@ -26,11 +13,10 @@ import com.github.enteraname74.soulsearching.repository.datasource.player.Player
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.UUID
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.uuid.Uuid
 import kotlin.uuid.toKotlinUuid
@@ -110,14 +96,9 @@ class PlayerRepositoryImpl(
                     PlayedListScope.LocalUser -> {
                         // no-op
                     }
-                    PlayedListScope.SharedHost -> {
-                        playerRemoteDataSource.deletePlayedList(
-                            deviceId = deviceLocalDataSource.getDeviceId(),
-                            listId = playedList.id.toKotlinUuid(),
-                        )
-                    }
-                    PlayedListScope.SharedGuest -> {
-                        val userId = userLocalDataSource.observeUser().first()!!.id
+
+                    PlayedListScope.SharedGuest, PlayedListScope.SharedHost -> {
+                        val userId = userLocalDataSource.observeUser().firstOrNull()?.id ?: return@launch
                         val deviceId = deviceLocalDataSource.getDeviceId()
 
                         playerRemoteDataSource.removeUserFromPlayedList(
@@ -486,8 +467,20 @@ class PlayerRepositoryImpl(
         withContext(workScope) {
             playerRemoteDataSource.addMusics(
                 deviceId = deviceLocalDataSource.getDeviceId(),
-                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()!!.id.toKotlinUuid(),
+                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id?.toKotlinUuid()
+                    ?: return@withContext,
                 musicIds = musicRemoteIds,
+            )
+        }
+    }
+
+    override suspend fun addMusicFromURL(url: String) {
+        withContext(workScope) {
+            playerRemoteDataSource.addMusicFromURL(
+                deviceId = deviceLocalDataSource.getDeviceId(),
+                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id?.toKotlinUuid()
+                    ?: return@withContext,
+                url = url,
             )
         }
     }
@@ -496,7 +489,8 @@ class PlayerRepositoryImpl(
         withContext(workScope) {
             playerRemoteDataSource.removeMusics(
                 deviceId = deviceLocalDataSource.getDeviceId(),
-                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()!!.id.toKotlinUuid(),
+                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id?.toKotlinUuid()
+                    ?: return@withContext,
                 musicIds = musicRemoteIds,
             )
         }
@@ -543,13 +537,20 @@ class PlayerRepositoryImpl(
             )
         }
 
+    override suspend fun removeUser(userId: Uuid, deviceId: String) {
+        withContext(workScope) {
+
+        }
+    }
+
     override suspend fun registerSharedPlayedListEventsListener(
         listener: SharedPlayedListListener
     ) {
         withContext(workScope) {
             playerRemoteDataSource.registerSharedPlayedListEventsListener(
-                listId = playerLocalDataSource.getCurrentPlayedList().first()!!.id.toKotlinUuid(),
-                userId = userLocalDataSource.observeUser().first()!!.id,
+                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id?.toKotlinUuid()
+                    ?: return@withContext,
+                userId = userLocalDataSource.observeUser().firstOrNull()?.id ?: return@withContext,
                 deviceId = deviceLocalDataSource.getDeviceId(),
                 listener = listener,
             )
