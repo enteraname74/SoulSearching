@@ -30,6 +30,8 @@ internal fun SoulDataImage(
     tint: Color,
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
+    crossfade: Boolean = true,
+    showPlaceholder: Boolean = true,
 ) {
     var previousSavedImage: Image? by remember {
         mutableStateOf(null)
@@ -50,10 +52,14 @@ internal fun SoulDataImage(
                 onSuccess(null)
             }
         },
-        placeholder = forwardingPainter(
-            painter = painterResource(Res.drawable.app_logo_uni_xml),
-            colorFilter = ColorFilter.tint(tint),
-        ),
+        placeholder = if (showPlaceholder) {
+            forwardingPainter(
+                painter = painterResource(Res.drawable.app_logo_uni_xml),
+                colorFilter = ColorFilter.tint(tint),
+            )
+        } else {
+            null
+        },
         error = forwardingPainter(
             painter = painterResource(Res.drawable.app_logo_uni_xml),
             colorFilter = ColorFilter.tint(tint),
@@ -61,7 +67,7 @@ internal fun SoulDataImage(
         model = ImageRequest.Builder(LocalPlatformContext.current)
             .builderOptions()
             .data(data)
-            .crossfade(true)
+            .crossfade(crossfade)
             .build(),
         contentDescription = contentDescription,
         modifier = modifier,
