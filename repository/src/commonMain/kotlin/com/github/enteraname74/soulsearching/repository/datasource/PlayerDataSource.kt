@@ -1,4 +1,5 @@
 package com.github.enteraname74.soulsearching.repository.datasource
+
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.player.PlayedListState
@@ -20,6 +21,7 @@ interface PlayerDataSource {
     fun getNextMusic(
         musicIdsToSkip: List<UUID> = emptyList()
     ): Flow<PlayerMusic?>
+
     fun getLastMusic(): Flow<PlayerMusic?>
     fun getPreviousMusic(): Flow<PlayerMusic?>
 
@@ -34,10 +36,12 @@ interface PlayerDataSource {
         fromMusicId: UUID,
         toMusicId: UUID,
     )
+
     suspend fun upsertPlayedList(
         playedList: PlayerPlayedList,
         playerMusics: List<PlayerMusic>,
     )
+
     suspend fun deleteAll(musicIds: List<UUID>)
     suspend fun deletePlayedList(playedListId: UUID)
 

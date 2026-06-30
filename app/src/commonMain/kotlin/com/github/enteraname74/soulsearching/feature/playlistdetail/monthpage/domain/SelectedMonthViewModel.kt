@@ -8,10 +8,10 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
-import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
@@ -38,7 +38,7 @@ class SelectedMonthViewModel(
     destination: SelectedMonthDestination,
 ) : ViewModel(), PlaylistDetailListener {
 
-    val multiSelectionState = multiSelectionManager.state
+    val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -52,6 +52,7 @@ class SelectedMonthViewModel(
         .cachedIn(viewModelScope)
 
     private var _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val searchResult: Flow<List<Music>> = _searchQuery.flatMapLatest { search ->
         if (search.isNotBlank()) {
@@ -64,29 +65,29 @@ class SelectedMonthViewModel(
         }
     }
 
-    var state =
+    var state: StateFlow<SelectedMonthState> =
         combine(
             commonMusicUseCase.getMonthMusicPreview(month = month),
             commonMusicUseCase.getMonthMusicsDuration(month),
             searchResult,
             playbackManager.getCachedPlaylist(month),
         ) { monthMusicPreview, duration, searchMusics, cachedPlaylist ->
-        when {
-            monthMusicPreview == null -> SelectedMonthState.Error
-            else -> SelectedMonthState.Data(
-                playlistDetail = monthMusicPreview.toPlaylistDetail(
-                    musics = musics,
-                    duration = duration,
-                    searchMusics = searchMusics,
-                    cachedPlaylist = cachedPlaylist,
-                ),
-            )
-        }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = SelectedMonthState.Loading,
-    )
+            when {
+                monthMusicPreview == null -> SelectedMonthState.Error
+                else -> SelectedMonthState.Data(
+                    playlistDetail = monthMusicPreview.toPlaylistDetail(
+                        musics = musics,
+                        duration = duration,
+                        searchMusics = searchMusics,
+                        cachedPlaylist = cachedPlaylist,
+                    ),
+                )
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = SelectedMonthState.Loading,
+        )
 
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
     val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
@@ -105,16 +106,6 @@ class SelectedMonthViewModel(
     }
 
     override val onEdit: (() -> Unit)? = null
-
-    override fun onUpdateNbPlayed(musicId: UUID) {
-        viewModelScope.launch {
-            commonMusicUseCase.incrementNbPlayed(musicId = musicId)
-        }
-    }
-
-    override fun onUpdateNbPlayed() {
-        /* no-op */
-    }
 
     override fun onCloseSelection() {
         multiSelectionManager.clearMultiSelection()
@@ -136,7 +127,6 @@ class SelectedMonthViewModel(
             val musics: List<Music> = commonMusicUseCase.getAllMusicFromMonth(month)
 
             if (musics.isNotEmpty()) {
-                onUpdateNbPlayed()
                 playbackManager.playShuffle(
                     musicList = musics,
                     playlistId = month,
@@ -152,9 +142,8 @@ class SelectedMonthViewModel(
             val musics: List<Music> = commonMusicUseCase.getAllMusicFromMonth(month)
 
             if (musics.isNotEmpty()) {
-                onUpdateNbPlayed()
                 playbackManager.setCurrentPlaylistAndMusic(
-                    music = music ?:  musics.first(),
+                    music = music ?: musics.first(),
                     musicList = musics,
                     playlistId = month,
                     isMainPlaylist = false

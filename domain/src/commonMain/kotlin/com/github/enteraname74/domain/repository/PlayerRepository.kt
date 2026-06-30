@@ -32,7 +32,11 @@ interface PlayerRepository {
 
     suspend fun deletePlayedList(playedListId: UUID)
 
-    suspend fun setup(playedListSetup: PlayedListSetup)
+    /**
+     * Setups a played list.
+     * Returns true if the played list was set up, false if the setup was skipped.
+     */
+    suspend fun setup(playedListSetup: PlayedListSetup): Boolean
 
     suspend fun moveMusic(
         fromMusicId: UUID,
@@ -42,6 +46,7 @@ interface PlayerRepository {
     suspend fun setCurrent(
         musicId: UUID,
     )
+
     suspend fun setProgress(progress: Int)
 
     suspend fun playNext()

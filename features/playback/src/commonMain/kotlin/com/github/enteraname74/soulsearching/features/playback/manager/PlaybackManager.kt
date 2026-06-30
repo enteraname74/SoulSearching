@@ -503,10 +503,8 @@ class PlaybackManager(
         musicList: List<Music>,
         playlistId: String?,
         isMain: Boolean,
-    ) {
-        if (musicList.isEmpty()) return
-
-        playerRepository.setup(
+    ): Boolean {
+        return playerRepository.setup(
             playedListSetup = PlayedListSetup.fromSelection(
                 musics = musicList.shuffled(),
                 state = PlayedListState.Playing,
@@ -516,15 +514,13 @@ class PlaybackManager(
         )
     }
 
-    suspend fun playSoulMix() {
+    suspend fun playSoulMix(): Boolean {
         val totalByFolder: Int =
             settings.get(SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST)
 
         val musicList: List<Music> = commonMusicUseCase.getSoulMixMusics(totalByFolder)
 
-        if (musicList.isEmpty()) return
-
-        playerRepository.setup(
+        return playerRepository.setup(
             playedListSetup = PlayedListSetup.fromSelection(
                 musics = musicList,
                 state = PlayedListState.Playing,
@@ -540,7 +536,7 @@ class PlaybackManager(
         playlistId: String?,
         isMainPlaylist: Boolean = false,
         isForcingNewPlaylist: Boolean = false
-    ) {
+    ): Boolean =
         playerRepository.setup(
             playedListSetup = PlayedListSetup(
                 musics = musicList,
@@ -551,7 +547,6 @@ class PlaybackManager(
                 forceOverride = isForcingNewPlaylist
             )
         )
-    }
 
     /**************** PLAYER LISTENER ******************/
 
