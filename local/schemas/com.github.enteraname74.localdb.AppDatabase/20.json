@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 20,
-    "identityHash": "fbcbed3b073010aaddfa9d572bff9c42",
+    "identityHash": "4da2d2d4c5794d75c3392849536815d7",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -1012,6 +1012,54 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "RoomSharedPlayedListPreview",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `code` TEXT NOT NULL, `totalUsers` INTEGER NOT NULL, `connectedUsers` INTEGER NOT NULL, `createdAtMillis` INTEGER NOT NULL, `isOwner` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalUsers",
+            "columnName": "totalUsers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "connectedUsers",
+            "columnName": "connectedUsers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAtMillis",
+            "columnName": "createdAtMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isOwner",
+            "columnName": "isOwner",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
       }
     ],
     "views": [
@@ -1042,7 +1090,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fbcbed3b073010aaddfa9d572bff9c42')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4da2d2d4c5794d75c3392849536815d7')"
     ]
   }
 }

@@ -8,5 +8,7 @@ class SyncPlayedListInformationUseCase(
 ) {
     suspend operator fun invoke(): SoulResult<Unit> = SoulResult.runCatching {
         playerRepository.syncSharedPlayedList()
+        // For UI updates
+        playerRepository.fetchUserListWhereIsIn().throwIfError()
     }
 }

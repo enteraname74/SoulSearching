@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
+import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
 import com.github.enteraname74.domain.model.user.User
 import com.github.enteraname74.domain.model.user.UserType
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
@@ -359,7 +360,9 @@ object FrStrings : Strings {
 
     override val sharedListCodeLabel: String = "Code d'invitation"
     override val cloudSharedListTitle: String = "Liste de lecture partagée"
-    override val cloudSharedListText: String = "Rejoindre une liste de lecture partagée avec un code"
+    override val cloudSharedListText: String = "Rejoindre et gérer des listes de lecture partagées"
+    override val cloudSharedListJoinTitle: String = "Rejoindre une liste de lecture"
+    override val cloudSharedlistJoinText: String = "Rejoindre une liste de lecture partagée avec un code"
 
     override val joinSharedListButton: String = "Rejoindre"
 
@@ -388,6 +391,22 @@ object FrStrings : Strings {
 
     override val cloudAddUrlToSharedListTitle: String = "Ajouter une musique depuis une URL"
     override val add: String = "Ajouter"
+    override val sharedListDeleteTitle: String = "Supprimer cette liste de lecture partagée"
+    override val sharedListDeleteText: String = "Les participants seront déconnectés de la liste et cette dernière sera supprimée"
+
+    override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =
+        when (preview.totalUsers) {
+            0 -> "Aucun utilisateur"
+            1 -> "1 utilisateur"
+            else -> "${preview.totalUsers} utilisateurs"
+        }
+
+    override fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String =
+        when (preview.connectedUsers) {
+            0 -> "Aucun utilisateur connecté"
+            1 -> "1 utilisateur connecté"
+            else -> "${preview.totalUsers} utilisateurs connectés"
+        }
 
     override fun userType(type: UserType): String =
         when (type) {

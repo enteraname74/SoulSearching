@@ -11,6 +11,7 @@ data class SharedPlayedList(
     val state: State,
     val owner: RemoteSharedPlayedListUser?,
     val users: List<RemoteSharedPlayedListUser>,
+    val createdAt: Long,
 ) {
     enum class State(val value: String) {
         Playing("playing"),

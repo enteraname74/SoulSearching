@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.*
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
@@ -118,6 +119,14 @@ class PlayerRepositoryImpl(
         withContext(workScope) {
             playerLocalDataSource.deletePlayedList(playedListId)
         }
+    }
+
+    override suspend fun deleteSharedListAndSync(listId: Uuid): SoulResult<Unit> = SoulResult.runCatching {
+        playerRemoteDataSource.deletePlayedList(
+            deviceId = deviceLocalDataSource.getDeviceId(),
+            listId = listId,
+        )
+        fetchUserListWhereIsIn().throwIfError()
     }
 
     override suspend fun continuePlayedList(playedListId: UUID) {
@@ -582,6 +591,22 @@ class PlayerRepositoryImpl(
 
     override suspend fun getDeviceId(): String =
         deviceLocalDataSource.getDeviceId()
+
+    override suspend fun fetchUserListWhereIsIn(): SoulResult<Unit> = SoulResult.runCatching {
+        val user = userLocalDataSource.observeUser().firstOrNull() ?: return@runCatching
+
+        val lists = playerRemoteDataSource.getAllWhereUserIsIn()
+        playerLocalDataSource.setSharedPlayedListPreviews(
+            previews = lists.map {
+                it.toPreview(
+                    userId = user.id,
+                )
+            }
+        )
+    }
+
+    override fun observeAllSharedPlayedListPreview(): Flow<List<SharedPlayedListPreview>> =
+        playerLocalDataSource.observeAllSharedPlayedListPreviews()
 
     private companion object {
         const val MAX_MUSICS_PER_PAGE = 300

@@ -25,6 +25,7 @@ internal class RoomPlayerLocalDataSourceImpl(
     private val progressDao = appDatabase.playerMusicProgressDao
     private val usersDao = appDatabase.sharedPlayedListUserDao
     private val playerMusicUserDao = appDatabase.playerMusicUserDao
+    private val previewsDao = appDatabase.sharedPlayedListPreviewDao
 
     override fun getAllPaginated(): Flow<PagingData<Music>> =
         listDao.getCurrentMode().flatMapLatest { mode ->
@@ -446,6 +447,17 @@ internal class RoomPlayerLocalDataSourceImpl(
                     list.map { it.toFullPlayerMusicUser() }
                 }
             } ?: flowOf(emptyList())
+        }
+
+    override suspend fun setSharedPlayedListPreviews(previews: List<SharedPlayedListPreview>) {
+        previewsDao.setPreviews(
+            previews = previews.map { it.toRoomSharedPlayedListPreview() }
+        )
+    }
+
+    override fun observeAllSharedPlayedListPreviews(): Flow<List<SharedPlayedListPreview>> =
+        previewsDao.observeAll().map { list ->
+            list.map { it.toSharedPlayedListPreview() }
         }
 
     private fun <T> withGlobalState(transform: suspend (GlobalState) -> Flow<T>): Flow<T> =

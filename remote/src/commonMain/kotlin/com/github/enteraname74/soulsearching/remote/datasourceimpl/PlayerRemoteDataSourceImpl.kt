@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
@@ -97,16 +98,13 @@ class PlayerRemoteDataSourceImpl(
             ).bodyOrThrow()
 
     override suspend fun deletePlayedList(deviceId: String, listId: Uuid) {
-        // Not and issue if the call fails
-        runCatching {
-            client.withUrl(cloudPreferencesDataSource.getUrl())
-                .delete(
-                    resource = PlayerResource.List(
-                        listId = listId,
-                        deviceId = deviceId,
-                    ),
-                ).successOrThrow()
-        }
+        client.withUrl(cloudPreferencesDataSource.getUrl())
+            .delete(
+                resource = PlayerResource.List(
+                    listId = listId,
+                    deviceId = deviceId,
+                ),
+            ).successOrThrow()
     }
 
     override suspend fun removeUserFromPlayedList(
@@ -246,4 +244,11 @@ class PlayerRemoteDataSourceImpl(
     override suspend fun removeSharedPlayedListEventsListener() {
         playerUserCommunication.unregister()
     }
+
+    override suspend fun getAllWhereUserIsIn(): List<SharedPlayedList> =
+        client
+            .withUrl(cloudPreferencesDataSource.getUrl())
+            .get(PlayerResource())
+            .bodyOrThrow()
+
 }

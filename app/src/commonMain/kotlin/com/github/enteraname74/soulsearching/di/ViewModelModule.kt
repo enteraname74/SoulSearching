@@ -31,6 +31,7 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations
 import com.github.enteraname74.soulsearching.feature.settings.cloud.fetchmusic.SettingsCloudFetchMusicViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.join.SettingsCloudSharedListJoinViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncViewHolder
@@ -72,8 +73,9 @@ internal val viewModelModule: Module = module {
     viewModelOf(::SettingsCloudUserViewHolder)
     viewModelOf(::SettingsCloudCodesViewHolder)
     viewModelOf(::SettingsCloudUsersViewHolder)
-    viewModelOf(::SettingsCloudSyncViewHolder)
     viewModelOf(::SettingsCloudSharedListViewHolder)
+    viewModelOf(::SettingsCloudSyncViewHolder)
+    viewModelOf(::SettingsCloudSharedListJoinViewHolder)
     viewModelOf(::SettingsCloudFetchMusicViewHolder)
     viewModelOf(::SettingsCloudExplanationsViewHolder)
 

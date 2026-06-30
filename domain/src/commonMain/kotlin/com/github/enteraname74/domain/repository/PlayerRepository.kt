@@ -2,6 +2,7 @@ package com.github.enteraname74.domain.repository
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.*
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -27,6 +28,8 @@ interface PlayerRepository {
     suspend fun deleteCurrentPlayedList()
 
     suspend fun deletePlayedList(playedListId: UUID)
+
+    suspend fun deleteSharedListAndSync(listId: Uuid): SoulResult<Unit>
 
     suspend fun setup(playedListSetup: PlayedListSetup)
 
@@ -121,6 +124,10 @@ interface PlayerRepository {
     fun observeFullPlayerMusicUsers(): Flow<List<FullPlayerMusicUser>>
 
     suspend fun getDeviceId(): String
+
+    suspend fun fetchUserListWhereIsIn(): SoulResult<Unit>
+
+    fun observeAllSharedPlayedListPreview(): Flow<List<SharedPlayedListPreview>>
 }
 
 interface SharedPlayedListListener {

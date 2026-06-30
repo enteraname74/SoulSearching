@@ -12,6 +12,7 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations
 import com.github.enteraname74.soulsearching.feature.settings.cloud.fetchmusic.SettingsCloudFetchMusicDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.join.SettingsCloudSharedListJoinDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncDestination
@@ -155,11 +156,15 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+        SettingsCloudSharedListDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
         SettingsCloudSyncDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
-        SettingsCloudSharedListDestination.register(
+        SettingsCloudSharedListJoinDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
@@ -196,10 +201,11 @@ object SettingsNavigationHandler {
             subclass(SettingsCloudUserDestination::class, SettingsCloudUserDestination.serializer())
             subclass(SettingsCloudCodesDestination::class, SettingsCloudCodesDestination.serializer())
             subclass(SettingsCloudSyncDestination::class, SettingsCloudSyncDestination.serializer())
-            subclass(SettingsCloudSharedListDestination::class, SettingsCloudSharedListDestination.serializer())
+            subclass(SettingsCloudSharedListJoinDestination::class, SettingsCloudSharedListJoinDestination.serializer())
             subclass(SettingsCloudFetchMusicDestination::class, SettingsCloudFetchMusicDestination.serializer())
             subclass(SettingsCloudUsersDestination::class, SettingsCloudUsersDestination.serializer())
             subclass(SettingsCloudExplanationsDestination::class, SettingsCloudExplanationsDestination.serializer())
+            subclass(SettingsCloudSharedListDestination::class, SettingsCloudSharedListDestination.serializer())
         }
     }
 }

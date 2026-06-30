@@ -10,6 +10,7 @@ import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerMusicUser
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
+import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
 import com.github.enteraname74.domain.model.player.SharedPlayedListUser
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -85,4 +86,8 @@ interface PlayerLocalDataSource {
 
     suspend fun setPlayerMusicUsers(playerMusicUsers: List<PlayerMusicUser>)
     fun observeFullPlayerMusicUsers(): Flow<List<FullPlayerMusicUser>>
+
+    suspend fun setSharedPlayedListPreviews(previews: List<SharedPlayedListPreview>)
+
+    fun observeAllSharedPlayedListPreviews(): Flow<List<SharedPlayedListPreview>>
 }

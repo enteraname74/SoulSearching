@@ -6,6 +6,3 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 
 fun Color.disabledIfNoAction(action: (() -> Unit)?): Color =
     copy(alpha = action?.let { 1f } ?: UiConstants.ALPHA_DISABLED)
-
-fun Color.disableIf(disable: Boolean): Color =
-    copy(alpha = if (disable) UiConstants.ALPHA_DISABLED else 1f)

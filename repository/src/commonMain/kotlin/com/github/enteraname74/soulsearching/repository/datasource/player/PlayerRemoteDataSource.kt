@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.datasource.player
 
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
@@ -87,5 +88,7 @@ interface PlayerRemoteDataSource {
     )
 
     suspend fun removeSharedPlayedListEventsListener()
+
+    suspend fun getAllWhereUserIsIn(): List<SharedPlayedList>
 }
 

@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
-import com.github.enteraname74.domain.model.user.User
+import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
 import com.github.enteraname74.domain.model.user.UserType
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 
@@ -357,7 +357,9 @@ object EnStrings : Strings {
 
     override val sharedListCodeLabel: String = "Invitation code"
     override val cloudSharedListTitle: String = "Shared played list"
-    override val cloudSharedListText: String = "Join a shared played list with a code"
+    override val cloudSharedListText: String = "Join and manages shared played lists"
+    override val cloudSharedListJoinTitle: String = "Join a played list"
+    override val cloudSharedlistJoinText: String = "Join a shared played list with a code"
     override val joinSharedListButton: String = "Join"
 
     override val cloudFetchMusicTitle: String = "Upload song from URL"
@@ -385,6 +387,23 @@ object EnStrings : Strings {
 
     override val cloudAddUrlToSharedListTitle: String = "Add a song from a URL"
     override val add: String = "Add"
+
+    override val sharedListDeleteTitle: String = "Delete this shared played list"
+    override val sharedListDeleteText: String = "Users will be disconnected from the list and it will be deleted"
+
+    override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =
+        when (preview.totalUsers) {
+            0 -> "No users"
+            1 -> "1 user"
+            else -> "${preview.totalUsers} users"
+        }
+
+    override fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String =
+        when (preview.connectedUsers) {
+            0 -> "No connected users"
+            1 -> "1 connected user"
+            else -> "${preview.totalUsers} connected users"
+        }
 
     override fun userType(type: UserType): String =
         when (type) {

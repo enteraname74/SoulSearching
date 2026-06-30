@@ -7,10 +7,12 @@ import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.UiComposable
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.Dp
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 
 @Composable
 fun SoulButton(
@@ -34,6 +36,8 @@ fun SoulButton(
             colors = ButtonDefaults.buttonColors(
                 containerColor = colors.containerColor,
                 contentColor = colors.contentColor,
+                disabledContainerColor = colors.containerColor.copy(UiConstants.ALPHA_DISABLED),
+                disabledContentColor = colors.contentColor.copy(UiConstants.ALPHA_DISABLED),
             ),
             contentPadding = contentPadding,
         ) {

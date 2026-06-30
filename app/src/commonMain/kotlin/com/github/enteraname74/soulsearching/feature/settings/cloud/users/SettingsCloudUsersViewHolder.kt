@@ -66,7 +66,7 @@ class SettingsCloudUsersViewHolder(
         navigate { navigateBack() }
     }
 
-    fun showDeleteDialog(userId: Uuid) {
+    private fun showDeleteDialog(userId: Uuid) {
         updateState {
             copy(
                 dialog = object : SoulDialog {

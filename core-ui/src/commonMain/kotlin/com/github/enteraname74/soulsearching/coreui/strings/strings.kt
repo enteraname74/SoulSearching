@@ -1,10 +1,9 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
+import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
-import com.github.enteraname74.domain.model.user.User
 import com.github.enteraname74.domain.model.user.UserType
-import javax.management.StringValueExp
 import kotlin.time.Duration
 
 val strings = when(Locale.current.language) {
@@ -367,6 +366,8 @@ interface Strings {
     val sharedListCodeLabel: String
     val cloudSharedListTitle: String
     val cloudSharedListText: String
+    val cloudSharedListJoinTitle: String
+    val cloudSharedlistJoinText: String
     val joinSharedListButton: String
 
     val cloudFetchMusicTitle: String
@@ -389,6 +390,12 @@ interface Strings {
 
     val cloudAddUrlToSharedListTitle: String
     val add: String
+
+    val sharedListDeleteTitle: String
+    val sharedListDeleteText: String
+
+    fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
+    fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String
 
     fun userType(type: UserType): String
 
