@@ -155,18 +155,19 @@ class PlayerRepositoryImpl(
         }
     }
 
-    override suspend fun setup(playedListSetup: PlayedListSetup) {
+    override suspend fun setup(playedListSetup: PlayedListSetup): Boolean =
         withContext(workScope) {
-            if (shouldSkipSetup(playedListSetup)) return@withContext
+            if (shouldSkipSetup(playedListSetup)) {
+                return@withContext false
+            }
             quitSharedPlayedListIfNeeded()
 
             playerLocalDataSource.upsertPlayedList(
                 playedList = playedListSetup.toPlayedList(),
                 playerMusics = playedListSetup.toPlayerMusics(),
             )
-
+            true
         }
-    }
 
     override suspend fun setupFromShared(
         sharedPlayedList: SharedPlayedList,
@@ -197,6 +198,7 @@ class PlayerRepositoryImpl(
         playedListSetup: PlayedListSetup,
     ): Boolean =
         withContext(workScope) {
+            if (playedListSetup.musics.isEmpty()) return@withContext true
             if (playedListSetup.forceOverride) return@withContext false
 
             val currentPlayedList: PlayerPlayedList = playerLocalDataSource

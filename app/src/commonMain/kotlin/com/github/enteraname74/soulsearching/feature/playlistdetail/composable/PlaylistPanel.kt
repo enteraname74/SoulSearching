@@ -67,7 +67,7 @@ private fun ImagesButton(
             editAction?.let { action ->
                 add(
                     SoulSegmentedIconButton(
-                        data =  CoreRes.drawable.ic_edit_filled,
+                        data = CoreRes.drawable.ic_edit_filled,
                         onClick = action,
                         contentPadding = SoulButtonDefaults.contentPadding(),
                     )
@@ -75,14 +75,14 @@ private fun ImagesButton(
             }
             add(
                 SoulSegmentedIconButton(
-                    data =  CoreRes.drawable.ic_play_filled,
+                    data = CoreRes.drawable.ic_play_filled,
                     onClick = playAction,
                     contentPadding = SoulButtonDefaults.contentPadding(),
                 )
             )
             add(
                 SoulSegmentedIconButton(
-                    data =  CoreRes.drawable.ic_shuffle,
+                    data = CoreRes.drawable.ic_shuffle,
                     onClick = shuffleAction,
                     contentPadding = SoulButtonDefaults.contentPadding(),
                 )

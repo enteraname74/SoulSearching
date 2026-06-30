@@ -567,19 +567,23 @@ class MainPageViewModel(
     fun onPlayAll() {
         coroutineScope.launch {
             // TODO OPTIMIZATION: find a way to not directly fetch all songs
-            playbackManager.playShuffle(
+            val hasBeenSetup = playbackManager.playShuffle(
                 musicList = commonMusicUseCase.getAllSorted(),
                 playlistId = null,
                 isMain = true,
-            )
-            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            ).getOrNull()
+            if (hasBeenSetup == true) {
+                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            }
         }
     }
 
     fun onSoulMixClicked() {
         viewModelScope.launch {
-            playbackManager.playSoulMix()
-            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            val hasBeenSetup = playbackManager.playSoulMix().getOrNull()
+            if (hasBeenSetup == true) {
+                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            }
         }
     }
 

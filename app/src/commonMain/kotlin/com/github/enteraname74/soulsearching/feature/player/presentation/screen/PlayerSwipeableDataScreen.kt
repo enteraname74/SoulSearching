@@ -22,7 +22,6 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,7 +55,6 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.composa
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.ExpandedPlayerControlsComposable
 import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelDraggableView
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
-import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
@@ -85,7 +83,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val alphaTransition = PlayerUiUtils.getAlphaTransition()
 
     val animatedBackgroundColor =
@@ -103,11 +100,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
             )
             .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
             .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED) {
-                coroutineScope.launch {
-                    playerViewManager.animateTo(
-                        newState = BottomSheetStates.EXPANDED,
-                    )
-                }
+                playerViewManager.animateTo(
+                    newState = BottomSheetStates.EXPANDED,
+                )
             }
             .align(Alignment.TopStart)
     ) {

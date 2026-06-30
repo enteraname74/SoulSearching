@@ -395,6 +395,9 @@ internal class RoomMusicLocalDataSourceImpl(
         appDatabase.musicDao.deleteSharedPlayedListMusics()
     }
 
+    override suspend fun getFromPath(path: String): Music? =
+        appDatabase.musicDao.getFromPath(path)?.toMusic()
+
     private fun withPaging(
         source: MusicDao.() -> PagingSource<Int, RoomCompleteMusic>,
     ): Flow<PagingData<Music>> =

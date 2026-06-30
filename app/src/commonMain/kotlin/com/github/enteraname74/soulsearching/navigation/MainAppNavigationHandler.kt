@@ -16,17 +16,20 @@ import androidx.navigation3.ui.NavDisplay
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetsNavigationHandler
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.feature.editableelement.ModifyElementNavigationHandler
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceDestination
 import com.github.enteraname74.soulsearching.feature.playlistdetail.PlaylistDetailNavigationHandler
 import com.github.enteraname74.soulsearching.feature.settings.SettingsNavigationHandler
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 
 @Composable
 fun MainAppNavigationHandler(
     backStack: NavBackStack<NavKey>,
     navigator: Navigator,
     loadingManager: LoadingManager = injectElement(),
+    colorThemeManager: ColorThemeManager = injectElement(),
 ) {
     val entryProvider = buildEntryProvider(navigator = navigator)
     val isLoading: Boolean by loadingManager.state.collectAsStateWithLifecycle()
@@ -42,9 +45,13 @@ fun MainAppNavigationHandler(
             rememberViewModelStoreNavEntryDecorator()
         ),
         onBack = {
-            if (!isLoading) {
-                navigator.pop()
+            if (isLoading) return@NavDisplay
+
+            if (!navigator.isPreviousScreenAPlaylistDetails()) {
+                colorThemeManager.removePlaylistTheme()
             }
+            navigator.pop()
+
         },
         transitionSpec = {
             NavigationAnimations.default

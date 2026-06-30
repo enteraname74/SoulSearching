@@ -264,4 +264,7 @@ class MusicRepositoryImpl(
     private companion object {
         const val MAX_MUSICS_PER_PAGE = 300
     }
+
+    override suspend fun getFromPath(path: String): Music? =
+        musicLocalDataSource.getFromPath(path)
 }

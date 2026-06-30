@@ -31,7 +31,11 @@ interface PlayerRepository {
 
     suspend fun deleteSharedListAndSync(listId: Uuid): SoulResult<Unit>
 
-    suspend fun setup(playedListSetup: PlayedListSetup)
+    /**
+     * Setups a played list.
+     * Returns true if the played list was set up, false if the setup was skipped.
+     */
+    suspend fun setup(playedListSetup: PlayedListSetup): Boolean
 
     suspend fun setupFromShared(
         sharedPlayedList: SharedPlayedList,

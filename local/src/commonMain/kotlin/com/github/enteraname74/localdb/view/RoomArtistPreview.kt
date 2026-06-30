@@ -93,6 +93,7 @@ data class RoomArtistPreview(
         return ArtistPreview(
             id = id,
             name = name,
+            nbPlayed = nbPlayed,
             totalMusics = totalMusics,
             cover = usedCover,
             isInQuickAccess = isInQuickAccess

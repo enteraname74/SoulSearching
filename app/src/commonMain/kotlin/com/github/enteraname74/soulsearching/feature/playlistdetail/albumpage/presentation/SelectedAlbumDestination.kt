@@ -22,7 +22,7 @@ import java.util.UUID
 data class SelectedAlbumDestination(
     @Serializable(UUIDSerializer::class)
     val selectedAlbumId: UUID,
-): PlaylistDetailPage {
+) : PlaylistDetailPage {
     companion object {
         fun register(
             entryProviderScope: EntryProviderScope<NavKey>,
@@ -47,11 +47,11 @@ data class SelectedAlbumDestination(
                                 /*no-op*/
                             }
                             is SelectedAlbumNavigationState.ToArtist -> {
-                               navigator.push(
-                                   SelectedArtistDestination(
-                                       selectedArtistId = it.artistId,
-                                   )
-                               )
+                                navigator.push(
+                                    SelectedArtistDestination(
+                                        selectedArtistId = it.artistId,
+                                    )
+                                )
                             }
                             is SelectedAlbumNavigationState.ToEdit -> {
                                 navigator.push(

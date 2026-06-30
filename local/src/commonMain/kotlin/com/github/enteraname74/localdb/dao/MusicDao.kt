@@ -637,4 +637,7 @@ interface MusicDao {
 
     @Query("DELETE FROM RoomMusic WHERE scope = 'SharedPlayedList'")
     suspend fun deleteSharedPlayedListMusics()
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE path = :path")
+    suspend fun getFromPath(path: String): RoomCompleteMusic?
 }

@@ -152,10 +152,28 @@ internal class RoomPlayerLocalDataSourceImpl(
 
     override suspend fun deleteAll(musicIds: List<UUID>) {
         val currentId = playerMusicDao.getCurrentMusic().firstOrNull()?.playerMusic?.musicId ?: return
-        if (currentId in musicIds) {
-            val next = getNextMusic().firstOrNull()?.music?.musicId ?: return
-            // TODO PLAYER: Set in writer connection?
-            setCurrent(next)
+        val mode = listDao.getCurrentMode().firstOrNull() ?: return
+        val willDeleteCurrent = currentId in musicIds
+
+        when {
+            // Deleting the current music in the loop mode should delete the played list.
+            willDeleteCurrent && mode == PlayerMode.Loop -> {
+                deleteCurrentPlayedList()
+                return
+            }
+            willDeleteCurrent -> {
+                val next = getNextMusic(
+                    musicIdsToSkip = musicIds,
+                ).firstOrNull()?.music?.musicId
+
+                if (next == null) {
+                    deleteCurrentPlayedList()
+                    return
+                }
+
+                // TODO PLAYER: Set in writer connection?
+                setCurrent(next)
+            }
         }
         appDatabase.useWriterConnection {
             playerMusicDao.deleteAll(musicIds)

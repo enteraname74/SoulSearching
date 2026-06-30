@@ -1,10 +1,25 @@
 package com.github.enteraname74.soulsearching.features.playback.manager
 
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.input.key.*
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.model.player.*
+import com.github.enteraname74.domain.model.player.AddMusicMode
+import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
+import com.github.enteraname74.domain.model.player.PlayedListScope
+import com.github.enteraname74.domain.model.player.PlayedListSetup
+import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayedListToContinue
+import com.github.enteraname74.domain.model.player.PlayedListType
+import com.github.enteraname74.domain.model.player.PlayerMode
+import com.github.enteraname74.domain.model.player.PlayerMusic
+import com.github.enteraname74.domain.model.player.PlayerPlayedList
+import com.github.enteraname74.domain.model.player.SharedPlayedListUser
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerRepository
@@ -12,17 +27,40 @@ import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
-import com.github.enteraname74.domain.usecase.player.*
+import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
+import com.github.enteraname74.domain.usecase.player.CreateSharedPlayedListUseCase
+import com.github.enteraname74.domain.usecase.player.RegisterSharedPlayedListEventsListenerUseCase
+import com.github.enteraname74.domain.usecase.player.RemoveMusicsFromSharedPlayedListUseCase
+import com.github.enteraname74.domain.usecase.player.SyncPlayedListInformationUseCase
+import com.github.enteraname74.domain.usecase.player.SyncPlayedListMusicsUseCase
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
 import com.github.enteraname74.soulsearching.features.playback.progressJob.PlaybackProgressJob
 import com.github.enteraname74.soulsearching.features.playback.progressJob.PlaybackProgressJobCallbacks
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.*
+import java.util.UUID
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -635,9 +673,7 @@ class PlaybackManager(
         musicList: List<Music>,
         playlistId: String?,
         isMain: Boolean,
-    ): SoulResult<Unit> = SoulResult.runCatching {
-        if (musicList.isEmpty()) return@runCatching
-
+    ): SoulResult<Boolean> = SoulResult.runCatching {
         playerRepository.setup(
             playedListSetup = PlayedListSetup.fromSelection(
                 musics = musicList.shuffled(),
@@ -650,13 +686,11 @@ class PlaybackManager(
         )
     }
 
-    suspend fun playSoulMix(): SoulResult<Unit> = SoulResult.runCatching {
+    suspend fun playSoulMix(): SoulResult<Boolean> = SoulResult.runCatching {
         val totalByFolder: Int =
             settings.get(SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST)
 
         val musicList: List<Music> = commonMusicUseCase.getSoulMixMusics(totalByFolder)
-
-        if (musicList.isEmpty()) return@runCatching
 
         playerRepository.setup(
             playedListSetup = PlayedListSetup.fromSelection(
@@ -676,7 +710,7 @@ class PlaybackManager(
         playlistId: String?,
         isMainPlaylist: Boolean = false,
         isForcingNewPlaylist: Boolean = false
-    ): SoulResult<Unit> = SoulResult.runCatching {
+    ): SoulResult<Boolean> = SoulResult.runCatching {
         playerRepository.setup(
             playedListSetup = PlayedListSetup(
                 musics = musicList,

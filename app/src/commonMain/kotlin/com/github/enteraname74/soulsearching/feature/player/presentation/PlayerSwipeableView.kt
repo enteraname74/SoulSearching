@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation
 
-
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
@@ -55,7 +54,6 @@ fun PlayerDraggableView(
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
-
     val state by playerViewModel.state.collectAsState()
     val lyricsState by playerViewModel.lyricsState.collectAsState()
     val settingsState by playerViewModel.viewSettingsState.collectAsState()
@@ -245,9 +243,9 @@ fun PlayerDraggableView(
                     )
 
                     /*
-                        If the previous state was expanded/minimized and the current one is collapsed,
-                        then it indicates that the playback should stop (user action for example).
-                         */
+                    If the previous state was expanded/minimised and the current one is collapsed,
+                    then it indicates that the playback should stop (user action for example).
+                     */
                     if ((previousDraggableState != BottomSheetStates.COLLAPSED && previousDraggableState != null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
                         LaunchedEffect(Unit) {
                             playerViewModel.stopPlayback()
