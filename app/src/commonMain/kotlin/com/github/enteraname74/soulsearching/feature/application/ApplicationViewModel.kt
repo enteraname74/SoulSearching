@@ -33,12 +33,11 @@ class ApplicationViewModel(
 
     private fun isApplicationReady(): Boolean =
         settings.get(SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION) == LocalDatabaseVersion.VERSION
-                && settings.get(SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY)
+            && settings.get(SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY)
 
     fun handleMusicLink(link: String) {
         viewModelScope.launch {
             if (!isApplicationReady()) return@launch
-            println("CLUELESS -- App is ready")
             musicLinkHandler.handleLink(link)
         }
     }

@@ -9,6 +9,8 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.features.musicmanager.ext.toMusic
 import androidx.core.net.toUri
+import com.github.enteraname74.domain.model.Folder
+import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.firstOrNull
 actual class MusicLinkHandler(
     private val context: Context,
     private val commonMusicUseCase: CommonMusicUseCase,
+    private val commonFolderUseCase: CommonFolderUseCase,
     private val playbackManager: PlaybackManager,
     private val loadingManager: LoadingManager,
     private val playerViewManager: PlayerViewManager,
@@ -32,16 +35,20 @@ actual class MusicLinkHandler(
                 }
             } ?: return@withLoading
 
-            println("CLUELESS -- built music: $builtMusic")
             var fromPath: Music? = commonMusicUseCase.getFromPath(path = builtMusic.path)
 
             if (fromPath == null) {
-                println("CLUELESS -- built music does not already exist!")
                 commonMusicUseCase.upsert(builtMusic)
+                commonFolderUseCase.upsertAll(
+                    allFolders = listOf(
+                        Folder(
+                            folderPath = builtMusic.folder,
+                            isSelected = true,
+                        )
+                    )
+                )
                 fromPath = commonMusicUseCase.getFromPath(path = builtMusic.path) ?: return@withLoading
             }
-
-            println("CLUELESS -- got existing music, will play")
 
             playbackManager.setCurrentPlaylistAndMusic(
                 music = fromPath,
@@ -52,7 +59,6 @@ actual class MusicLinkHandler(
             playerViewManager.animateTo(BottomSheetStates.EXPANDED)
         }
     }
-
 
     private fun getCursor(uri: Uri): Cursor? {
         val projection: Array<String> = arrayOf(

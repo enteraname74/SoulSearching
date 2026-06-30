@@ -43,14 +43,13 @@ class MainActivity : AppCompatActivity() {
     private val applicationViewModel: ApplicationViewModel by viewModel()
     private val playbackManager: PlaybackManager by inject()
 
-
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.d("MAIN ACTIVITY", "BROADCAST RECEIVE INFO TO RELAUNCH SERVICE")
-//            AndroidUtils.launchService(
-//                context = context,
-//                isFromSavedList = false
-//            )
+            //            AndroidUtils.launchService(
+            //                context = context,
+            //                isFromSavedList = false
+            //            )
         }
     }
 
@@ -65,7 +64,10 @@ class MainActivity : AppCompatActivity() {
                 RECEIVER_NOT_EXPORTED
             )
         } else {
-            registerReceiver(serviceReceiver, IntentFilter(com.github.enteraname74.soulsearching.features.playback.PlayerService.RESTART_SERVICE))
+            registerReceiver(
+                serviceReceiver,
+                IntentFilter(com.github.enteraname74.soulsearching.features.playback.PlayerService.RESTART_SERVICE)
+            )
         }
     }
 
@@ -113,6 +115,10 @@ class MainActivity : AppCompatActivity() {
 
                 SoulSearchingApplication()
             }
+        }
+
+        if (savedInstanceState == null) {
+            handleIncomingIntent(intent)
         }
     }
 
@@ -172,21 +178,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIncomingIntent(intent)
+    }
+
     override fun onNewIntent(intent: Intent, caller: ComponentCaller) {
         super.onNewIntent(intent, caller)
-//        setIntent(intent)
+        setIntent(intent)
         handleIncomingIntent(intent)
     }
 
     private fun handleIncomingIntent(intent: Intent) {
-        println("CLUELESS -- got new intent: $intent with data: ${intent.data}")
         if (intent.action == Intent.ACTION_VIEW) {
             val uri: Uri? = intent.data
             if (uri != null) {
-                println("CLUELESS -- got correct uri: $uri")
-                // Pass this to your player / ViewModel
                 applicationViewModel.handleMusicLink(uri.toString())
             }
         }
+
+        intent.data = null
     }
 }
