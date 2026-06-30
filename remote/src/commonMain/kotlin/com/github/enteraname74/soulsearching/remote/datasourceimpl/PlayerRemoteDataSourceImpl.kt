@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
-import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
@@ -237,7 +236,7 @@ class PlayerRemoteDataSourceImpl(
             listId = listId,
             userId = userId,
             deviceId = deviceId,
-            listener = listener,
+            newListener = listener,
         )
     }
 

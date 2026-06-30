@@ -11,6 +11,7 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlin.uuid.Uuid
@@ -19,18 +20,18 @@ class PlayerUserCommunication(
     private val client: HttpClient,
     private val cloudPreferencesDataSource: CloudPreferencesDataSource,
 ) {
-    private var currentUser: PlayerSocketUser? = null
     private var webSocketJob: Job? = null
+    private var session: DefaultClientWebSocketSession? = null
+    private var listener: SharedPlayedListListener? = null
 
-
-    suspend fun register(
+    fun register(
         listId: Uuid,
         userId: Uuid,
         deviceId: String,
-        listener: SharedPlayedListListener
+        newListener: SharedPlayedListListener,
     ) {
-        currentUser?.session?.close()
-        webSocketJob?.cancel()
+        unregister()
+        listener = newListener
         webSocketJob = CoroutineScope(Dispatchers.IO).launch {
             runCatching {
                 client.webSocket(
@@ -43,26 +44,31 @@ class PlayerUserCommunication(
                         deviceId = deviceId,
                     )
                 ) {
-                    listener.onConnected()
+                    session = this
+                    listener?.onConnected()
+
                     while (true) {
                         val frame = incoming.receiveCatching().getOrNull() as? Frame.Text
                         val event = runCatching { Json.decodeFromString<Event>(frame?.readText().orEmpty()) }.getOrNull()
                         when (event) {
-                            Event.SyncMusics -> listener.onSyncMusics()
-                            Event.SyncPlayedList -> listener.onSyncPlayedList()
+                            Event.SyncMusics -> listener?.onSyncMusics()
+                            Event.SyncPlayedList -> listener?.onSyncPlayedList()
                             Event.PlayedListDeleted, null -> break
                         }
                     }
                 }
             }
-            listener.onClose()
-            currentUser = null
+            listener?.onClose()
+            listener = null
         }
     }
 
-    suspend fun unregister() {
-        currentUser?.session?.close()
-        currentUser = null
+    fun unregister() {
+        listener = null
+        webSocketJob?.cancel()
+        session?.cancel()
+        webSocketJob = null
+        session = null
     }
 
     private suspend fun buildUrl(
@@ -87,10 +93,3 @@ class PlayerUserCommunication(
         PlayedListDeleted,
     }
 }
-
-data class PlayerSocketUser(
-    val listId: Uuid,
-    val userId: Uuid,
-    val deviceId: String,
-    val session: DefaultClientWebSocketSession,
-)

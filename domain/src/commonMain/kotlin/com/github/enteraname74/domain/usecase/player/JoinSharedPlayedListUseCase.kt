@@ -13,6 +13,9 @@ class JoinSharedPlayedListUseCase(
     private val registerSharedPlayedListEventsListenerUseCase: RegisterSharedPlayedListEventsListenerUseCase,
 ) {
     suspend operator fun invoke(code: String): SoulResult<Unit> = SoulResult.runCatching {
+        // Remove previous socket connection if there was one.
+        playerRepository.removeSharedPlayedListEventsListener()
+
         val sharedPlayedList: SharedPlayedList = playerRepository.joinSharedList(
             code = code,
         )

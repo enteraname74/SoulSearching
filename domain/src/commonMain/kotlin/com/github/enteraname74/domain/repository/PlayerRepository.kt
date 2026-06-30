@@ -46,6 +46,7 @@ interface PlayerRepository {
     suspend fun setCurrent(
         musicId: UUID,
     )
+
     suspend fun setProgress(progress: Int)
 
     suspend fun playNext()
@@ -75,7 +76,7 @@ interface PlayerRepository {
 
     suspend fun createSharedPlayedList(
         musicRemoteIds: List<String>
-    ) : SharedPlayedList
+    ): SharedPlayedList
 
     suspend fun fetchPlayedListMusics(
         playedListId: Uuid

@@ -15,6 +15,9 @@ class CreateSharedPlayedListUseCase(
     private val registerSharedPlayedListEventsListenerUseCase: RegisterSharedPlayedListEventsListenerUseCase,
 ) {
     suspend operator fun invoke(musicIds: List<UUID>): SoulResult<Unit> = SoulResult.runCatching {
+        // Remove previous socket connection if there was one.
+        playerRepository.removeSharedPlayedListEventsListener()
+
         val musicRemoteIds: List<String> = syncMusicForPlayerIfNeededUseCase(musicIds)
             .mapNotNull { it.remoteId }
 

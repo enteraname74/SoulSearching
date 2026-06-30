@@ -26,6 +26,7 @@ interface PlayerLocalDataSource {
     fun getNextMusic(
         musicIdsToSkip: List<UUID> = emptyList()
     ): Flow<PlayerMusic?>
+
     fun getLastMusic(): Flow<PlayerMusic?>
     fun getPreviousMusic(): Flow<PlayerMusic?>
 
@@ -41,10 +42,12 @@ interface PlayerLocalDataSource {
         fromMusicId: UUID,
         toMusicId: UUID,
     )
+
     suspend fun upsertPlayedList(
         playedList: PlayerPlayedList,
         playerMusics: List<PlayerMusic>,
     )
+
     suspend fun deleteAll(musicIds: List<UUID>)
     suspend fun deletePlayedList(playedListId: UUID)
 
@@ -82,6 +85,7 @@ interface PlayerLocalDataSource {
     suspend fun setSharedUsers(
         users: List<SharedPlayedListUser>,
     )
+
     fun observeCurrentSharedUsers(): Flow<List<SharedPlayedListUser>>
 
     suspend fun setPlayerMusicUsers(playerMusicUsers: List<PlayerMusicUser>)

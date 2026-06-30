@@ -25,6 +25,7 @@ class RegisterSharedPlayedListEventsListenerUseCase(
                 override suspend fun onClose() {
                     playerRepository.deletePlayedList(listId.toJavaUuid())
                     deleteMusicUseCase.deleteSharedMusics()
+                    playerRepository.fetchUserListWhereIsIn()
                 }
 
                 override suspend fun onSyncPlayedList() {
