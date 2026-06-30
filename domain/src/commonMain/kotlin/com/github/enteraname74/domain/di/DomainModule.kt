@@ -41,6 +41,7 @@ import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.domain.usecase.user.LogoutFromCloudUseCase
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val domainModule = module {
@@ -76,7 +77,7 @@ val domainModule = module {
     factoryOf(::UpsertCloudMusicUseCase)
     factoryOf(::UploadMusicToCloudUseCase)
     factoryOf(::UpdateMusicToCloudUseCase)
-    factoryOf(::SyncMusicWithCloudUseCase)
+    singleOf(::SyncMusicWithCloudUseCase)
 
     factoryOf(::DeleteEmptyAlbumsAndArtistsUseCase)
 

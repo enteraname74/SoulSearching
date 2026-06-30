@@ -42,6 +42,10 @@ class RoomUserLocalDataSourceImpl(
             list.map { it.toSimpleUser() }
         }
 
+    override suspend fun deleteAllSimpleUsers() {
+        appDatabase.simpleUserDao.clearAll()
+    }
+
     override suspend fun delete(userId: Uuid) {
         appDatabase.simpleUserDao.delete(userId)
     }

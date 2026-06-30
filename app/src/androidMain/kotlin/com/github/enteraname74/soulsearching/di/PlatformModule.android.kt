@@ -36,5 +36,5 @@ actual val platformModule = module {
         FileOperation(androidApplication())
     }
     workerOf(::CloudSyncWorker)
-    factoryOf(::CloudBackgroundSyncJobAndroidImpl) bind CloudBackgroundSyncJob::class
+    singleOf(::CloudBackgroundSyncJobAndroidImpl) bind CloudBackgroundSyncJob::class
 }

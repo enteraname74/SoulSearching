@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.coreui.strings
 import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
 import com.github.enteraname74.domain.model.user.User
 import com.github.enteraname74.domain.model.user.UserType
+import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 
 /**
@@ -13,7 +14,7 @@ object FrStrings : Strings {
     override val noElements = "Aucun élément"
     override val emptyQuickAccess = "Aucun élément dans les accès rapides"
     override val quickAccessExplanation = "Ajoutez une musique, un album, un artiste ou une playlist dans les accès rapides " +
-            "pour les voir apparaître ici."
+        "pour les voir apparaître ici."
     override val cannotRetrieveSongs = "Impossible de récupérer des musiques !"
     override val backButton = "Bouton de retour"
     override val createPlaylistButton = "Bouton pour créer une playlist"
@@ -32,11 +33,11 @@ object FrStrings : Strings {
     override val activateRemoteLyricsFetchTitle = "Activer la récupération des paroles à distance"
     override val activateRemoteLyricsFetchText by lazy {
         "L'application a besoin de votre permission pour rechercher les paroles de la musique courante via un service externe ($lyricsProviderName) " +
-                "lorsque aucune parole n'est trouvée dans le fichier de la musique."
+            "lorsque aucune parole n'est trouvée dans le fichier de la musique."
     }
     override val activateRemoteLyricsFetchHint by lazy {
         "L'application utilisera le nom, album et artiste d'une musique pour trouver les paroles de cette dernière via une source distante ($lyricsProviderName) " +
-                "lorsque aucune parole n'a été trouvée dans le fichier de la musique.."
+            "lorsque aucune parole n'a été trouvée dans le fichier de la musique.."
     }
     override val noLyricsFound = "Aucune parole n'a été trouvée pour cette musique"
     override val localLyricsProvider = "Paroles provenant du fichier de la musique"
@@ -86,7 +87,7 @@ object FrStrings : Strings {
     override val delete = "Supprimer"
 
     override val soulMixInfoDialogText = "Écoutez un mélange de musiques de chacun de vos dossiers !\nVous pouvez " +
-            "définir le nombre de musiques récupérées de chaque dossier dans les paramètres."
+        "définir le nombre de musiques récupérées de chaque dossier dans les paramètres."
 
     override val createPlaylistDialogTitle = "Créer une nouvelle playlist"
     override val playlistName = "Nom de la playlist"
@@ -127,7 +128,7 @@ object FrStrings : Strings {
     override val removeSelectedMusicFromPlaylistTitle =
         "Voulez-vous vraiment supprimer les musiques sélectionnées de cette playlist ?"
     override val removeSelectedMusicFromPlaylistText = "" +
-            "Elles seront retirées de cette playlist mais ne seront pas supprimées de l'application."
+        "Elles seront retirées de cette playlist mais ne seront pas supprimées de l'application."
 
     override val modifyAlbum = "Modifier cet album"
     override val modifyArtist = "Modifier cet artiste"
@@ -245,7 +246,6 @@ object FrStrings : Strings {
     override val useVerticalAccessBarTitle = "Utiliser la barre d'accès verticale"
     override val useHorizontalAccessBarText = "Utiliser la barre d'accès horizontale"
 
-
     override val manageAlbumViewTitle = "Vue d'un album"
     override val manageAlbumViewText = "Gérer la vue d'un album"
     override val managePlayerTitle = "Lecteur de musique"
@@ -286,7 +286,7 @@ object FrStrings : Strings {
     override val multipleArtistsTitle = "Musiques avec plusieurs artistes"
     override val multipleArtistsText =
         "Des musiques avec plusieurs artistes ont été trouvées par l'application. " +
-                "Choisissez si vous voulez diviser ces artistes en plusieurs ou les conserver comme un seul artiste."
+            "Choisissez si vous voulez diviser ces artistes en plusieurs ou les conserver comme un seul artiste."
     override val multipleArtistsSelectionTitle = "Artistes sélectionnés à diviser :"
     override val noMultipleArtists = "Aucun artiste à diviser"
 
@@ -340,8 +340,6 @@ object FrStrings : Strings {
     override val cloudSyncTitle: String = "Synchronisation"
     override val cloudSyncText: String = "Gérer la synchronisation entre l'application et Cloudy"
     override val cloudSyncButton: String = "synchroniser les musiques"
-    override val cloudSyncNotificationTitle: String = "Synchronisation"
-    override val cloudSyncNotificationText: String = "Synchronisation des données avec Cloudy en cours"
     override val musicChannelNotificationDescription: String = "Utilisé pour contrôler la musique couramment jouée."
     override val cloudSyncChannelNotificationDescription: String = "Utilisé pour synchroniser les données de l'application avec Cloudy"
     override val musicChannelNotificationName: String = "Notification de la musique en cours de lecture"
@@ -373,7 +371,7 @@ object FrStrings : Strings {
 
     override val cloudUsersTitle: String = "Utilisateurs de Cloudy"
     override val cloudUsersText: String = "Voir tous les utilisateurs de l'instance de Cloudy"
-    override val cloudUsersDeleteDialogTitle: String =" Supprimer cet utilisateur"
+    override val cloudUsersDeleteDialogTitle: String = " Supprimer cet utilisateur"
     override val cloudUsersDeleteDialogText: String = "Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
 
     override val cloudExplanationsTitle: String = "Un cloud pour Soul Searching"
@@ -393,6 +391,36 @@ object FrStrings : Strings {
     override val add: String = "Ajouter"
     override val sharedListDeleteTitle: String = "Supprimer cette liste de lecture partagée"
     override val sharedListDeleteText: String = "Les participants seront déconnectés de la liste et cette dernière sera supprimée"
+
+    override fun cloudSyncNotificationTitle(state: SyncMusicWithCloudUseCase.State): String =
+        when (state) {
+            SyncMusicWithCloudUseCase.State.Failure -> "Erreur"
+            SyncMusicWithCloudUseCase.State.Finish -> "Fin"
+            SyncMusicWithCloudUseCase.State.Idle -> "En attente"
+            SyncMusicWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique à envoyer"
+            SyncMusicWithCloudUseCase.State.CheckingMusicsToSend -> "Recherche"
+            SyncMusicWithCloudUseCase.State.Cleaning -> "Nettoyage"
+            SyncMusicWithCloudUseCase.State.ClearingRemoteIds -> "Nettoyage"
+            SyncMusicWithCloudUseCase.State.FetchingFromRemote -> "Téléchargement"
+            is SyncMusicWithCloudUseCase.State.SavingRemote -> "Sauvegarde"
+            is SyncMusicWithCloudUseCase.State.UpdateMusics -> "Mise à jour"
+            is SyncMusicWithCloudUseCase.State.UploadMusics -> "Téléversement"
+        }
+
+    override fun cloudSyncNotificationText(state: SyncMusicWithCloudUseCase.State): String =
+        when (state) {
+            SyncMusicWithCloudUseCase.State.Failure -> "Une erreur est survenue durant la synchronisation"
+            SyncMusicWithCloudUseCase.State.Finish -> "La synchronisation est terminée"
+            SyncMusicWithCloudUseCase.State.Idle -> "En attente de synchronisation"
+            SyncMusicWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique locale à envoyer au cloud"
+            SyncMusicWithCloudUseCase.State.CheckingMusicsToSend -> "Recherche de musiques à envoyer au cloud"
+            SyncMusicWithCloudUseCase.State.Cleaning -> "Nettoyage des anciennes data locales après la synchronisation"
+            SyncMusicWithCloudUseCase.State.ClearingRemoteIds -> "Nettoyage des anciennes data locales avant la synchronisation"
+            SyncMusicWithCloudUseCase.State.FetchingFromRemote -> "Téléchargement des musiques du cloud"
+            is SyncMusicWithCloudUseCase.State.SavingRemote -> "Sauvegarde des informations téléchargées du cloud"
+            is SyncMusicWithCloudUseCase.State.UpdateMusics -> "Mise à jour des musiques déjà existantes sur le cloud"
+            is SyncMusicWithCloudUseCase.State.UploadMusics -> "Téléversement de musiques vers le cloud"
+        }
 
     override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =
         when (preview.totalUsers) {
@@ -452,6 +480,7 @@ object FrStrings : Strings {
 
     override fun artistCoverMethodExampleTitle(artist: String): String =
         "Exemple de chemin avec l'artiste $artist :"
+
     override fun colorPaletteSeed(seed: ColorPaletteSeed): String =
         when (seed) {
             ColorPaletteSeed.DarkVibrant -> "Sombre et vive"
@@ -462,6 +491,7 @@ object FrStrings : Strings {
             ColorPaletteSeed.Muted -> "Discrète"
             ColorPaletteSeed.Vibrant -> "Vive"
         }
+
     override fun hours(hours: Long): String =
         if (hours == 1L) "heure" else "heures"
 }

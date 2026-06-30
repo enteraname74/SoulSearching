@@ -133,6 +133,8 @@ interface PlayerRepository {
     suspend fun fetchUserListWhereIsIn(): SoulResult<Unit>
 
     fun observeAllSharedPlayedListPreview(): Flow<List<SharedPlayedListPreview>>
+
+    suspend fun deleteAllSharedPlayedListPreviews()
 }
 
 interface SharedPlayedListListener {

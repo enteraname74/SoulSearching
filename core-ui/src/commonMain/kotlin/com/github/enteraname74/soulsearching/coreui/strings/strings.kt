@@ -4,6 +4,7 @@ import androidx.compose.ui.text.intl.Locale
 import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 import com.github.enteraname74.domain.model.user.UserType
+import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
 import kotlin.time.Duration
 
 val strings = when(Locale.current.language) {
@@ -344,8 +345,6 @@ interface Strings {
     val cloudSyncTitle: String
     val cloudSyncText: String
     val cloudSyncButton: String
-    val cloudSyncNotificationTitle: String
-    val cloudSyncNotificationText: String
 
     val musicChannelNotificationName: String
     val musicChannelNotificationDescription: String
@@ -398,6 +397,9 @@ interface Strings {
     fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String
 
     fun userType(type: UserType): String
+
+    fun cloudSyncNotificationTitle(state: SyncMusicWithCloudUseCase.State): String
+    fun cloudSyncNotificationText(state: SyncMusicWithCloudUseCase.State): String
 
     /**
      * Shows a text indicating the number of musics.

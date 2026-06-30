@@ -478,6 +478,10 @@ internal class RoomPlayerLocalDataSourceImpl(
             list.map { it.toSharedPlayedListPreview() }
         }
 
+    override suspend fun deleteAllSharedPlayedListPreviews() {
+        previewsDao.deleteAll()
+    }
+
     private fun <T> withGlobalState(transform: suspend (GlobalState) -> Flow<T>): Flow<T> =
         combine(
             playerMusicDao.getCurrentMusic(),

@@ -94,4 +94,6 @@ interface PlayerLocalDataSource {
     suspend fun setSharedPlayedListPreviews(previews: List<SharedPlayedListPreview>)
 
     fun observeAllSharedPlayedListPreviews(): Flow<List<SharedPlayedListPreview>>
+
+    suspend fun deleteAllSharedPlayedListPreviews()
 }

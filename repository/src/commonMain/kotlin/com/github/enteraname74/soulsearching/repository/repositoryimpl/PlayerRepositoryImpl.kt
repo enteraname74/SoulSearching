@@ -3,7 +3,22 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.model.player.*
+import com.github.enteraname74.domain.model.player.AddMusicMode
+import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
+import com.github.enteraname74.domain.model.player.PlayedListScope
+import com.github.enteraname74.domain.model.player.PlayedListSetup
+import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayedListToContinue
+import com.github.enteraname74.domain.model.player.PlayedListType
+import com.github.enteraname74.domain.model.player.PlayerMode
+import com.github.enteraname74.domain.model.player.PlayerMusic
+import com.github.enteraname74.domain.model.player.PlayerMusicUser
+import com.github.enteraname74.domain.model.player.PlayerPlayedList
+import com.github.enteraname74.domain.model.player.SharedPlayedList
+import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
+import com.github.enteraname74.domain.model.player.SharedPlayedListUser
+import com.github.enteraname74.domain.model.player.SharedPlayerMusic
+import com.github.enteraname74.domain.model.player.toPreview
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerRepository
@@ -17,7 +32,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import kotlin.coroutines.CoroutineContext
 import kotlin.uuid.Uuid
 import kotlin.uuid.toKotlinUuid
@@ -609,6 +624,10 @@ class PlayerRepositoryImpl(
 
     override fun observeAllSharedPlayedListPreview(): Flow<List<SharedPlayedListPreview>> =
         playerLocalDataSource.observeAllSharedPlayedListPreviews()
+
+    override suspend fun deleteAllSharedPlayedListPreviews() {
+        playerLocalDataSource.deleteAllSharedPlayedListPreviews()
+    }
 
     private companion object {
         const val MAX_MUSICS_PER_PAGE = 300

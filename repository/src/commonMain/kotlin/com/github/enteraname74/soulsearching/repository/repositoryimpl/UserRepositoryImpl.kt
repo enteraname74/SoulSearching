@@ -43,6 +43,7 @@ class UserRepositoryImpl(
     override suspend fun logout() {
         remoteDataSource.logout()
         localDataSource.clear()
+        localDataSource.deleteAllSimpleUsers()
     }
 
     override suspend fun fetchAll() : SoulResult<Unit> = SoulResult.runCatching {

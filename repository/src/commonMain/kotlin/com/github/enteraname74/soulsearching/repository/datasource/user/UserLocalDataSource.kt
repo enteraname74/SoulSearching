@@ -14,5 +14,7 @@ interface UserLocalDataSource {
 
     fun observeAll(): Flow<List<SimpleUser>>
 
+    suspend fun deleteAllSimpleUsers()
+
     suspend fun delete(userId: Uuid)
 }

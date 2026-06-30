@@ -3,6 +3,7 @@ package com.github.enteraname74.domain.usecase.user
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.CloudPreferencesRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.repository.UserRepository
 import com.github.enteraname74.domain.usecase.DeleteEmptyAlbumsAndArtistsUseCase
 
@@ -11,6 +12,7 @@ class LogoutFromCloudUseCase(
     private val cloudPreferencesRepository: CloudPreferencesRepository,
     private val deleteEmptyAlbumsAndArtistsUseCase: DeleteEmptyAlbumsAndArtistsUseCase,
     private val musicRepository: MusicRepository,
+    private val playerRepository: PlayerRepository,
 ) {
 
     /**
@@ -31,5 +33,7 @@ class LogoutFromCloudUseCase(
         musicRepository.deleteAllRemoteIds()
         musicRepository.deleteNotExisting()
         deleteEmptyAlbumsAndArtistsUseCase()
+
+        playerRepository.deleteAllSharedPlayedListPreviews()
     }
 }
