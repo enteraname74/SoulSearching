@@ -544,7 +544,6 @@ class PlaybackManager(
      * If the music is remote, we will pause the music.
      */
     private suspend fun onCurrentMusicError() {
-        // TODO SHARED PLAYED LIST: Handle remote deletion
         val currentMusic: Music = playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
         if (currentMusic.isRemoteOnly) {
             playerRepository.setPlayedListState(PlayedListState.Paused)

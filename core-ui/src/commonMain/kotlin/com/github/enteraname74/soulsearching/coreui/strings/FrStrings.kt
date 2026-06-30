@@ -405,7 +405,7 @@ object FrStrings : Strings {
         when (preview.connectedUsers) {
             0 -> "Aucun utilisateur connecté"
             1 -> "1 utilisateur connecté"
-            else -> "${preview.totalUsers} utilisateurs connectés"
+            else -> "${preview.connectedUsers} utilisateurs connectés"
         }
 
     override fun userType(type: UserType): String =

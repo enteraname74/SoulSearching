@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
@@ -105,7 +106,22 @@ class SoulSearchingNotificationBelowAndroid13(
             R.drawable.ic_favorite_filled
         } else {
             R.drawable.ic_favorite
-        }.takeIf { updateData.music.scope != Scope.SharedPlayedList }
+        }
+
+        val actions: List<NotificationCompat.Builder.() -> Unit> = buildList {
+            if (updateData.playedListScope.isAdmin) {
+                addAll(
+                    listOf(
+                        { addAction(R.drawable.ic_skip_previous, "previous", previousMusicIntent) },
+                        { addAction(pausePlayIcon, "pausePlay", pausePlayIntent) },
+                        { addAction(R.drawable.ic_skip_next, "next", nextMusicIntent) },
+                    )
+                )
+            }
+            if (updateData.music.scope != Scope.SharedPlayedList) {
+                add { addAction(favoriteIcon, "favorite", toggleFavoriteIntent) }
+            }
+        }
 
         return notificationBuilder
             .clearActions()
@@ -113,17 +129,14 @@ class SoulSearchingNotificationBelowAndroid13(
                 updateData = updateData,
                 mediaSessionToken = mediaSessionToken,
             )
-            .addAction(R.drawable.ic_skip_previous, "previous", previousMusicIntent)
-            .addAction(pausePlayIcon, "pausePlay", pausePlayIntent)
-            .addAction(R.drawable.ic_skip_next, "next", nextMusicIntent)
             .apply {
-                if (favoriteIcon != null) {
-                    addAction(favoriteIcon, "favorite", toggleFavoriteIntent)
-                }
+                actions.forEach { it() }
             }
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
-                    .setShowActionsInCompactView(0, 1, 2, 3)
+                    .setShowActionsInCompactView(
+                        *actions.indices.toList().toIntArray()
+                    )
                     .setMediaSession(mediaSessionToken)
             )
             .setLargeIcon(updateData.cover?.asAndroidBitmap())

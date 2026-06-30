@@ -52,6 +52,9 @@ class SettingsCloudSignUpViewHolder(
                     savedStateHandle[PASSWORD_FIELD_ID] = it
                 },
                 style = SoulTextFieldStyle.Body,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                )
             ),
             codeField = SoulTextFieldHolderImpl(
                 id = CODE_FIELD_ID,

@@ -402,7 +402,7 @@ object EnStrings : Strings {
         when (preview.connectedUsers) {
             0 -> "No connected users"
             1 -> "1 connected user"
-            else -> "${preview.totalUsers} connected users"
+            else -> "${preview.connectedUsers} connected users"
         }
 
     override fun userType(type: UserType): String =

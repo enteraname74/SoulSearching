@@ -37,7 +37,7 @@ data class CloudMusic(
             localPath = null,
             remotePath = path,
             // TODO CLOUD: Better cloud folder indication?
-            folder = "Cloud",
+            folder = "Cloudy",
             duration = duration,
             addedDate = LocalDateTime.now(),
             nbPlayed = nbPlayed,
