@@ -539,7 +539,14 @@ class PlayerRepositoryImpl(
 
     override suspend fun removeUser(userId: Uuid, deviceId: String) {
         withContext(workScope) {
-
+            playerRemoteDataSource.removeUserFromPlayedList(
+                deviceId = deviceLocalDataSource.getDeviceId(),
+                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id?.toKotlinUuid()
+                    ?: return@withContext,
+                userId = userLocalDataSource.observeUser().firstOrNull()?.id ?: return@withContext,
+                deviceIdToRemove = deviceId,
+                userIdToRemove = userId,
+            )
         }
     }
 
@@ -571,6 +578,9 @@ class PlayerRepositoryImpl(
 
     override fun observeFullPlayerMusicUsers(): Flow<List<FullPlayerMusicUser>> =
         playerLocalDataSource.observeFullPlayerMusicUsers()
+
+    override suspend fun getDeviceId(): String =
+        deviceLocalDataSource.getDeviceId()
 
     private companion object {
         const val MAX_MUSICS_PER_PAGE = 300

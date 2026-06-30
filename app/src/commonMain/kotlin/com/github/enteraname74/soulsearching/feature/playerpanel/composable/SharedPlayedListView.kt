@@ -7,12 +7,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.player.PlayerUserStatus
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
+import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_person_remove
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
@@ -21,6 +26,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.feature.player.domain.state.SharedListState
+import com.github.enteraname74.soulsearching.feature.player.ext.disableIf
 import com.github.enteraname74.soulsearching.util.rememberClipboardController
 
 // TODO SHARED PLAYED LIST: actions on users
@@ -140,18 +146,44 @@ private fun UserRow(
     style: ShapeListStyle,
     modifier: Modifier = Modifier,
 ) {
-    Box(
+
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(style.shape())
-            .background(SoulSearchingColorTheme.colorScheme.primary)
-            .alpha(if (user.status == PlayerUserStatus.Disconnected) UiConstants.ALPHA_DISABLED else 1.0f)
-            .padding(all = UiConstants.Spacing.large)
+            .background(
+                SoulSearchingColorTheme.colorScheme.primary
+                    .disableIf(user.status == PlayerUserStatus.Disconnected)
+            )
+            .padding(
+                vertical = UiConstants.Spacing.medium,
+                horizontal = UiConstants.Spacing.mediumPlus,
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
     ) {
         Text(
+            modifier = Modifier
+                .weight(1f),
             text = user.username,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             style = UiConstants.Typography.bodyLarge,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.onPrimary.disableIf(user.status == PlayerUserStatus.Disconnected),
         )
+        if (user.onRemove != null) {
+            SoulIconButton(
+                icon = CoreRes.drawable.ic_person_remove,
+                size = UiConstants.ImageSize.medium,
+                onClick = user.onRemove,
+                colors = SoulButtonDefaults.colors(
+                    containerColor = Color.Transparent,
+                )
+            )
+        } else {
+            Spacer(
+                modifier = Modifier.height(UiConstants.ImageSize.mediumLarge)
+            )
+        }
     }
 }

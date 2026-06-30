@@ -11,9 +11,11 @@ import com.github.enteraname74.domain.model.player.PlayedListType
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.model.user.User
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
+import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
@@ -27,7 +29,8 @@ import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerN
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.SharedListState
-import com.github.enteraname74.soulsearching.feature.player.presentation.composable.AddUrlToSharedPlayedListDialog
+import com.github.enteraname74.soulsearching.feature.player.presentation.composable.dialog.AddUrlToSharedPlayedListDialog
+import com.github.enteraname74.soulsearching.feature.player.presentation.composable.dialog.RemoveUserFromPlayedListDialog
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
@@ -37,6 +40,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.uuid.Uuid
 
 /**
  * Handler for managing the PlayerViewModel.
@@ -52,6 +56,7 @@ class PlayerViewModel(
     private val loadingManager: LoadingManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     private val addMusicsToSharedPlayedListUseCase: AddMusicsToSharedPlayedListUseCase,
+    commonUserUseCase: CommonUserUseCase,
 ) : ViewModel() {
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
@@ -130,13 +135,14 @@ class PlayerViewModel(
         )
     )
 
-    private val dialog: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
     val state: StateFlow<PlayerViewState> = combine(
         playbackManager.state,
         playbackManager.playedList,
-        dialog,
-    ) { playbackMainState, playedList, dialog ->
+        _dialogState,
+        commonUserUseCase.observeUser(),
+    ) { playbackMainState, playedList, dialog, user ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
@@ -165,7 +171,10 @@ class PlayerViewModel(
                     },
                     playedList = playedList,
                     playedListScope = playbackMainState.currentScope,
-                    sharedListState = buildSharedListState(playbackMainState),
+                    sharedListState = buildSharedListState(
+                        playbackManagerState = playbackMainState,
+                        currentUser = user,
+                    ),
                     playerMusicUsers = playbackMainState.playerMusicUsers,
                     dialog = dialog,
                 )
@@ -181,9 +190,6 @@ class PlayerViewModel(
         SharingStarted.Eagerly,
         PlayerViewState.Closed
     )
-
-    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
-    val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
 
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
@@ -228,8 +234,13 @@ class PlayerViewModel(
         }
     }
 
-    private fun buildSharedListState(playbackManagerState: PlaybackManagerState.Data): SharedListState? {
+    private suspend fun buildSharedListState(
+        playbackManagerState: PlaybackManagerState.Data,
+        currentUser: User?,
+    ): SharedListState? {
         val notRemote = !playbackManagerState.currentScope.isRemote
+        val isAdmin = playbackManagerState.currentScope.isAdmin
+        val deviceId = playbackManager.getDeviceId()
         val code: String? = (playbackManagerState.currentType as? PlayedListType.Shared)?.invitationCode
 
         return if (notRemote || code == null) {
@@ -247,6 +258,9 @@ class PlayerViewModel(
                     username = owner.username,
                     appearance = index,
                     status = owner.status,
+                    isCurrentUser = owner.id == currentUser?.id
+                            && owner.deviceId == deviceId,
+                    onRemove = null,
                 )
             }
 
@@ -255,12 +269,22 @@ class PlayerViewModel(
                 .groupBy { it.username }
                 .flatMap { (_, duplicates) ->
                     duplicates.mapIndexedNotNull { index, user ->
+                        val isCurrentUser = user.id == currentUser?.id
+                                && user.deviceId == deviceId
+
                         SharedListState.User(
                             id = user.id,
                             username = user.username,
                             deviceId = user.deviceId,
                             appearance = index.takeIf { duplicates.size > 1 },
                             status = user.status,
+                            isCurrentUser = isCurrentUser,
+                            onRemove = {
+                                showRemoveUserDialog(
+                                    userId = user.id,
+                                    deviceId = user.deviceId,
+                                )
+                            }.takeIf { isAdmin && !isCurrentUser }
                         ).takeIf { !user.isOwner }
                     }
                 }
@@ -361,9 +385,9 @@ class PlayerViewModel(
     }
 
     fun onAddFromUrlClicked() {
-        dialog.value = AddUrlToSharedPlayedListDialog(
+        _dialogState.value = AddUrlToSharedPlayedListDialog(
             onConfirm = ::addFromUrl,
-            onDismiss = { dialog.value = null }
+            onDismiss = { _dialogState.value = null }
         )
     }
 
@@ -371,8 +395,38 @@ class PlayerViewModel(
         loadingManager.withLoadingOnScope(viewModelScope) {
             when (val result = addMusicsToSharedPlayedListUseCase.url(url)) {
                 is SoulResult.Error -> feedbackPopUpManager.showErrorIfAny(result)
-                is SoulResult.Success -> dialog.value = null
+                is SoulResult.Success -> _dialogState.value = null
             }
+        }
+    }
+
+    private fun showRemoveUserDialog(
+        userId: Uuid,
+        deviceId: String
+    ) {
+        _dialogState.value = RemoveUserFromPlayedListDialog(
+            onRemove = {
+                removeUser(
+                    userId = userId,
+                    deviceId = deviceId,
+                )
+            },
+            onClose = { _dialogState.value = null }
+        )
+    }
+
+    private fun removeUser(
+        userId: Uuid,
+        deviceId: String
+    ) {
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            feedbackPopUpManager.showErrorIfAny(
+                playbackManager.removeUserFromSharedList(
+                    userId = userId,
+                    deviceId = deviceId,
+                )
+            )
+            _dialogState.value = null
         }
     }
 

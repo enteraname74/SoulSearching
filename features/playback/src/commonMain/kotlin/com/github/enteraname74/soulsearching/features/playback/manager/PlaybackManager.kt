@@ -25,6 +25,7 @@ import org.koin.core.component.inject
 import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import kotlin.uuid.toKotlinUuid
 
 // TODO SHARED PLAYED LIST: How to properly indicate the current music progression if we are a guest?
@@ -690,6 +691,19 @@ class PlaybackManager(
         createSharedPlayedListUseCase(
             musicIds = musicIds,
         )
+
+    suspend fun removeUserFromSharedList(
+        userId: Uuid,
+        deviceId: String
+    ): SoulResult<Unit> = SoulResult.runCatching {
+        playerRepository.removeUser(
+            userId = userId,
+            deviceId = deviceId,
+        )
+    }
+
+    suspend fun getDeviceId(): String =
+        playerRepository.getDeviceId()
 
     /**************** PLAYER LISTENER ******************/
 

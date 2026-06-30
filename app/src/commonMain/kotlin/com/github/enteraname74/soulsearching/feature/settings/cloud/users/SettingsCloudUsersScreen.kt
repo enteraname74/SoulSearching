@@ -14,7 +14,6 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_groups_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_person_filled
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.ShapeListStyle

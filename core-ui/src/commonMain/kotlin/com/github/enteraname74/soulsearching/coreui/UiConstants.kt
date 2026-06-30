@@ -44,6 +44,7 @@ object UiConstants {
         val smallPlus: Dp = 24.dp
         val medium: Dp = 32.dp
         val mediumPlus: Dp = 40.dp
+        val mediumLarge: Dp = 48.dp
         val large: Dp = 64.dp
         val largePlus: Dp = 120.dp
         val veryLarge: Dp

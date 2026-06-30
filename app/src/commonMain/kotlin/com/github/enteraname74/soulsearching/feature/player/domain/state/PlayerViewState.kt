@@ -64,5 +64,7 @@ data class SharedListState(
         val username: String,
         val appearance: Int?,
         val status: PlayerUserStatus,
+        val isCurrentUser: Boolean,
+        val onRemove: (() -> Unit)?,
     )
 }

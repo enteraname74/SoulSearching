@@ -360,6 +360,10 @@ interface Strings {
     val sharedListCodeTitle: String
     val sharedListCodeDescription: String
 
+    val sharedListRemoveUserTitle: String
+    val sharedListRemoveUserText: String
+    val sharedListRemoveUserButton: String
+
     val sharedListCodeLabel: String
     val cloudSharedListTitle: String
     val cloudSharedListText: String

@@ -119,6 +119,8 @@ interface PlayerRepository {
      * Observe the current list FullPlayerMusicUser if the list is a shared one (remote)
      */
     fun observeFullPlayerMusicUsers(): Flow<List<FullPlayerMusicUser>>
+
+    suspend fun getDeviceId(): String
 }
 
 interface SharedPlayedListListener {

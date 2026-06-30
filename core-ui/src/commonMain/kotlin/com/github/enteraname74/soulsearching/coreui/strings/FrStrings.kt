@@ -353,6 +353,9 @@ object FrStrings : Strings {
     override val sharedListGuests: String = "Invités"
     override val sharedListCodeTitle: String = "Code d'invitation"
     override val sharedListCodeDescription: String = "Partage ce code à tes amis pour qu'ils puissent te rejoindre dans cette liste de lecture partagée !"
+    override val sharedListRemoveUserTitle: String = "Retirer cet utilisateur de la liste partagée"
+    override val sharedListRemoveUserText: String = "Retirer cet utilisateur supprimera aussi ses musiques de la liste de lecture"
+    override val sharedListRemoveUserButton: String = "Retirer"
 
     override val sharedListCodeLabel: String = "Code d'invitation"
     override val cloudSharedListTitle: String = "Liste de lecture partagée"
