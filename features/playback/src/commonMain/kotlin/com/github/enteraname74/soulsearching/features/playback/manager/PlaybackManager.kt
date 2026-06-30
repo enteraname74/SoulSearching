@@ -188,19 +188,28 @@ class PlaybackManager(
              */
             playerRepository.setPlayedListState(PlayedListState.Loading)
             startSeek = playerRepository.getCurrentProgress().firstOrNull()
-            isInit.value = true
 
-            playerRepository.getCurrentPlayedList().firstOrNull()
-                ?.takeIf { it.type is PlayedListType.Shared }?.let {
-                    registerSharedPlayedListEventsListenerUseCase(
-                        listId = it.id.toKotlinUuid(),
-                        onConnected = {
-                            // Fetch the latest data to be sure that on, app launch, we are up-to-date with the backend.
-                            syncPlayedListInformationUseCase()
-                            syncPlayedListMusicsUseCase()
-                        }
-                    )
-                }
+            val remoteList = playerRepository.getCurrentPlayedList().firstOrNull()
+                ?.takeIf { it.type is PlayedListType.Shared }
+
+            /*
+            If we are in a remote played list, we MUST wait for the remote list to be synced,
+            before letting the user do anything on the remote list if he is the admin,
+            like setting the current played song.
+             */
+            if (remoteList != null) {
+                registerSharedPlayedListEventsListenerUseCase(
+                    listId = remoteList.id.toKotlinUuid(),
+                    onConnected = {
+                        // Fetch the latest data to be sure that on, app launch, we are up-to-date with the backend.
+                        syncPlayedListInformationUseCase()
+                        syncPlayedListMusicsUseCase()
+                        isInit.value = true
+                    }
+                )
+            } else {
+                isInit.value = true
+            }
         }
     }
 
