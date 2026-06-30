@@ -182,4 +182,7 @@ class MusicRepositoryImpl(
 
     override suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music> =
         musicDataSource.getSoulMixMusics(totalPerFolder)
+
+    override suspend fun getFromPath(path: String): Music? =
+        musicDataSource.getFromPath(path)
 }
