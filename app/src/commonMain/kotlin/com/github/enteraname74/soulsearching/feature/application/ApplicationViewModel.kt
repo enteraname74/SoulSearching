@@ -28,8 +28,8 @@ class ApplicationViewModel(
                 MainAppDestination
         }
 
-    var isReadPermissionGranted by mutableStateOf(false)
-    var isPostNotificationGranted by mutableStateOf(false)
+    var isReadPermissionGranted: Boolean by mutableStateOf(false)
+    var isPostNotificationGranted: Boolean by mutableStateOf(false)
 
     private fun isApplicationReady(): Boolean =
         settings.get(SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION) == LocalDatabaseVersion.VERSION
