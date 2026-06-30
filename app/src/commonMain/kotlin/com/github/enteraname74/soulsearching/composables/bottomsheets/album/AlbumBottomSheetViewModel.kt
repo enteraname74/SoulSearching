@@ -4,11 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Scope
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
+import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteAlbumDialog
@@ -38,6 +41,7 @@ class AlbumBottomSheetViewModel(
     private val loadingManager: LoadingManager,
     private val navScope: AlbumBottomSheetNavScope,
     private val feedbackPopUpManager: FeedbackPopUpManager,
+    hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
     settings: SoulSearchingSettings,
     params:  AlbumBottomSheetDestination,
 ): ViewModel() {
@@ -45,6 +49,7 @@ class AlbumBottomSheetViewModel(
 
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
+    @Suppress("UNCHECKED_CAST")
     val state: StateFlow<AlbumBottomSheetState> = combine(
         commonAlbumUseCase.getFromIds(albumIds),
         playbackManager.playedList,
@@ -52,14 +57,23 @@ class AlbumBottomSheetViewModel(
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
         ),
+        hasValidCloudInformationUseCase(),
         playbackManager.currentScope,
-    ) { albums, playedList, dialogState, isQuickAccessShown, playedListScope ->
+    ) { data ->
+        val albums = data[0] as List<AlbumWithMusics>
+        val playedList = data[1] as List<Music>
+        val dialogState = data[2] as SoulDialog?
+        val isQuickAccessShown = data[3] as Boolean
+        val hasValidCloudInformation = data[4] as Boolean
+        val playedListScope = data[5] as PlayedListScope?
+
         AlbumBottomSheetState(
             albums = albums,
             bottomSheetTopInformation = buildTopInformation(albums),
             rowSpecs = buildRowSpecs(
                 albums = albums,
                 isQuickAccessShown = isQuickAccessShown,
+                hasValidCloudInformation = hasValidCloudInformation,
                 playedList = playedList,
                 playedListScope = playedListScope,
             ),
@@ -75,11 +89,15 @@ class AlbumBottomSheetViewModel(
         albums: List<AlbumWithMusics>,
         playedList: List<Music>,
         isQuickAccessShown: Boolean,
+        hasValidCloudInformation: Boolean,
         playedListScope: PlayedListScope?,
     ) : List<BottomSheetRowSpec> = buildList {
         if (albums.isEmpty()) return@buildList
 
         val editEnabled: Boolean = albums.size == 1
+        val hasUserMusics: Boolean = albums.any { album ->
+            album.musics.any { it.scope == Scope.User }
+        }
 
         if (isQuickAccessShown) {
             val isInQuickAccess: Boolean = if (albums.size == 1) {
@@ -111,6 +129,10 @@ class AlbumBottomSheetViewModel(
         }
 
         add(BottomSheetRowSpec.addToQueue(::addToQueue))
+
+        if (hasValidCloudInformation && hasUserMusics) {
+            add(BottomSheetRowSpec.startSharedPlayedList(::startSharedPlayedList))
+        }
 
         if (playedList.isNotEmpty()) {
             add(
@@ -251,6 +273,28 @@ class AlbumBottomSheetViewModel(
             } else {
                 multiSelectionManager.clearMultiSelection()
                 navScope.navigateBack()
+            }
+        }
+    }
+
+    private fun startSharedPlayedList() {
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val musicIds: List<UUID> =
+                state.value.albums
+                    .flatMap { it.musics }
+                    .filter { it.scope != Scope.SharedPlayedList }
+                    .distinctBy { it.musicId }
+                    .map { it.musicId }
+
+            val result = playbackManager.startSharedList(
+                musicIds = musicIds,
+            )
+            when (result) {
+                is SoulResult.Error -> feedbackPopUpManager.showErrorIfAny(result)
+                is SoulResult.Success -> {
+                    multiSelectionManager.clearMultiSelection()
+                    navScope.navigateBack()
+                }
             }
         }
     }
