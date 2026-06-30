@@ -88,16 +88,18 @@ class PlayerRepositoryImpl(
         }
     }
 
-    override suspend fun setup(playedListSetup: PlayedListSetup) {
+    override suspend fun setup(playedListSetup: PlayedListSetup): Boolean =
         withContext(workScope) {
-            if (shouldSkipSetup(playedListSetup)) return@withContext
+            if (shouldSkipSetup(playedListSetup)) {
+                return@withContext false
+            }
 
             playerDataSource.upsertPlayedList(
                 playedList = playedListSetup.toPlayedList(),
                 playerMusics = playedListSetup.toPlayerMusics(),
             )
+            true
         }
-    }
 
     override suspend fun moveMusic(fromMusicId: UUID, afterMusicId: UUID) {
         withContext(workScope) {
@@ -112,6 +114,7 @@ class PlayerRepositoryImpl(
         playedListSetup: PlayedListSetup,
     ): Boolean =
         withContext(workScope) {
+            if (playedListSetup.musics.isEmpty()) return@withContext true
             if (playedListSetup.forceOverride) return@withContext false
 
             val currentPlayedList: PlayerPlayedList = playerDataSource

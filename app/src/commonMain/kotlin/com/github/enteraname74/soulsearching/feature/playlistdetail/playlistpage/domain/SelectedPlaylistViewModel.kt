@@ -9,10 +9,10 @@ import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
-import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
@@ -40,7 +40,7 @@ class SelectedPlaylistViewModel(
     destination: SelectedPlaylistDestination,
 ) : ViewModel(), PlaylistDetailListener {
 
-    val multiSelectionState = multiSelectionManager.state
+    val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -54,6 +54,7 @@ class SelectedPlaylistViewModel(
         .cachedIn(viewModelScope)
 
     private var _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val searchResult: Flow<List<Music>> = _searchQuery.flatMapLatest { search ->
         if (search.isNotBlank()) {
@@ -66,7 +67,7 @@ class SelectedPlaylistViewModel(
         }
     }
 
-    var state = combine(
+    var state: StateFlow<SelectedPlaylistState> = combine(
         commonMusicUseCase.getPlaylistDuration(playlistId),
         commonPlaylistUseCase.getPlaylistPreview(playlistId),
         searchResult,
@@ -110,13 +111,7 @@ class SelectedPlaylistViewModel(
         _navigationState.value = SelectedPlaylistNavigationState.ToEdit(playlistId = playlistId)
     }
 
-    override fun onUpdateNbPlayed(musicId: UUID) {
-        viewModelScope.launch {
-            commonMusicUseCase.incrementNbPlayed(musicId = musicId)
-        }
-    }
-
-    override fun onUpdateNbPlayed() {
+    private fun onUpdateNbPlayed() {
         viewModelScope.launch {
             val playlistId: UUID = (state.value as? SelectedPlaylistState.Data)?.playlistDetail?.id
                 ?: return@launch
@@ -176,7 +171,6 @@ class SelectedPlaylistViewModel(
     override fun onSearch(search: String) {
         _searchQuery.value = search
     }
-
 
     override fun showMusicBottomSheet(musicIds: List<UUID>) {
         _navigationState.value = SelectedPlaylistNavigationState.ToMusicBottomSheet(musicIds)

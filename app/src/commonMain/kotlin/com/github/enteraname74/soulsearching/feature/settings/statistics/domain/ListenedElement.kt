@@ -3,11 +3,9 @@ package com.github.enteraname74.soulsearching.feature.settings.statistics.domain
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.ArtistPreview
-import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistPreview
-import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import java.util.UUID
 
@@ -32,9 +30,9 @@ fun AlbumPreview.toListenedElement(): ListenedElement = ListenedElement(
     id = id,
 )
 
-fun ArtistPreview.toListenedElement(): ListenedElement = ListenedElement(
+fun ArtistPreview.toMostPlayedListenedElements(): ListenedElement = ListenedElement(
     title = name,
-    text = { strings.plays(totalMusics) },
+    text = { strings.plays(nbPlayed) },
     cover = cover,
     id = id,
 )

@@ -1,13 +1,11 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.domain
 
 import com.github.enteraname74.domain.model.Music
-import java.util.*
+import java.util.UUID
 
 interface PlaylistDetailListener {
     val onEdit: (() -> Unit)?
 
-    fun onUpdateNbPlayed(musicId: UUID)
-    fun onUpdateNbPlayed()
     fun onSubtitleClicked() {}
     fun onCloseSelection()
     fun onLongClickOnMusic(musicId: UUID)
