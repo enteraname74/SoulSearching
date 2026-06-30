@@ -1,7 +1,6 @@
 package com.github.enteraname74.domain.usecase.player
 
 import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys

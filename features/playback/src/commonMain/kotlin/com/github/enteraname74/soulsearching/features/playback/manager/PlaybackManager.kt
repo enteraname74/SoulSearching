@@ -171,20 +171,6 @@ class PlaybackManager(
         }
         init()
 
-        workScope.launch {
-            playerRepository.getCurrentPlayedList().firstOrNull()
-                ?.takeIf { it.type is PlayedListType.Shared }?.let {
-                    registerSharedPlayedListEventsListenerUseCase(
-                        listId = it.id.toKotlinUuid(),
-                        onConnected = {
-                            // Fetch the latest data to be sure that on, app launch, we are up-to-date with the backend.
-                            syncPlayedListInformationUseCase()
-                            syncPlayedListMusicsUseCase()
-                        }
-                    )
-                }
-        }
-
         listenPlayerVolume()
         listenToMusicCount()
         listenToState()
@@ -203,6 +189,18 @@ class PlaybackManager(
             playerRepository.setPlayedListState(PlayedListState.Loading)
             startSeek = playerRepository.getCurrentProgress().firstOrNull()
             isInit.value = true
+
+            playerRepository.getCurrentPlayedList().firstOrNull()
+                ?.takeIf { it.type is PlayedListType.Shared }?.let {
+                    registerSharedPlayedListEventsListenerUseCase(
+                        listId = it.id.toKotlinUuid(),
+                        onConnected = {
+                            // Fetch the latest data to be sure that on, app launch, we are up-to-date with the backend.
+                            syncPlayedListInformationUseCase()
+                            syncPlayedListMusicsUseCase()
+                        }
+                    )
+                }
         }
     }
 

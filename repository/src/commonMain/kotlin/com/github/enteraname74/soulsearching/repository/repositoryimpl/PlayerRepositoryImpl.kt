@@ -342,12 +342,6 @@ class PlayerRepositoryImpl(
     override suspend fun setPlayedListState(playedListState: PlayedListState) {
         withContext(workScope) {
             playerLocalDataSource.setState(playedListState)
-            setRemoteStateIfNeeded(playedListState)
-        }
-    }
-
-    private suspend fun setRemoteStateIfNeeded(playedListState: PlayedListState) {
-        withContext(workScope) {
             val playedList = playerLocalDataSource.getCurrentPlayedList().firstOrNull() ?: return@withContext
 
             if (playedList.scope == PlayedListScope.SharedHost) {
@@ -357,8 +351,8 @@ class PlayerRepositoryImpl(
                         listId = playedList.id.toKotlinUuid(),
                         state = playedListState,
                     )
-                    // We will not override the local value if it was loading
-                    if (playedListState != PlayedListState.Loading) {
+                    // We will not override the local value if it was loading, except if the new state is playing.
+                    if (playedListState != PlayedListState.Loading || updatedList.state == SharedPlayedList.State.Playing) {
                         playerLocalDataSource.setState(updatedList.state.toPlayedListState())
                     }
                 }
@@ -517,7 +511,14 @@ class PlayerRepositoryImpl(
                     deviceId = deviceLocalDataSource.getDeviceId(),
                     listId = playedList.id.toKotlinUuid(),
                 )
-                playerLocalDataSource.setState(sharedList.state.toPlayedListState())
+                /*
+                If the user is in loading state (app launch), we don't want to force a full screen of the player view.
+                To mitigate this issue, we keep the loading state if the remote list is paused.
+                Else, if the list is in playing mode, we will let the full screen happen.
+                 */
+                if (playedList.state != PlayedListState.Loading || sharedList.state == SharedPlayedList.State.Playing) {
+                    playerLocalDataSource.setState(sharedList.state.toPlayedListState())
+                }
                 playerLocalDataSource.setScope(sharedList.scope(userId))
                 playerLocalDataSource.setSharedUsers(sharedList.buildUsers())
             }

@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.player.JoinSharedPlayedListUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -40,8 +41,10 @@ class SettingsCloudSharedListViewHolder(
 
     override fun join() {
         loadingManager.withLoadingOnScope(viewModelScope) {
-            val result = joinSharedPlayedListUseCase(code = currentState.codeField.value.trim())
-            feedbackPopUpManager.showErrorIfAny(result)
+            when (val result = joinSharedPlayedListUseCase(code = currentState.codeField.value.trim())) {
+                is SoulResult.Error -> feedbackPopUpManager.showErrorIfAny(result)
+                is SoulResult.Success -> currentState.codeField.onValueChanged("")
+            }
         }
     }
 
