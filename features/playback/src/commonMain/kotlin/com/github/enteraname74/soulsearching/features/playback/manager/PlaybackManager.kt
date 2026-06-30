@@ -580,9 +580,9 @@ class PlaybackManager(
 
     suspend fun removeSongsFromPlayedList(musicIds: List<UUID>): SoulResult<Unit> {
         val scope =
-            playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.ofSuccess()
+            playerRepository.getCurrentScope().firstOrNull()
 
-        return if (scope.isRemote) {
+        return if (scope?.isRemote == true) {
             removeMusicsFromSharedPlayedListUseCase(musicIds)
         } else {
             playerRepository.deleteAll(musicIds)
@@ -605,8 +605,8 @@ class PlaybackManager(
 
     suspend fun addMultipleMusicsToPlayNext(musics: List<Music>): SoulResult<Unit> {
         val scope =
-            playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.Success(Unit)
-        return if (scope.isRemote) {
+            playerRepository.getCurrentScope().firstOrNull()
+        return if (scope?.isRemote == true) {
             addMusicsToSharedPlayedListUseCase.local(musicIds = musics.map { it.musicId })
         } else {
             playerRepository.addAll(
@@ -619,8 +619,8 @@ class PlaybackManager(
 
     suspend fun addMultipleMusicsToQueue(musics: List<Music>): SoulResult<Unit> {
         val scope =
-            playerRepository.getCurrentScope().firstOrNull() ?: return SoulResult.Success(Unit)
-        return if (scope.isRemote) {
+            playerRepository.getCurrentScope().firstOrNull()
+        return if (scope?.isRemote == true) {
             addMusicsToSharedPlayedListUseCase.local(musicIds = musics.map { it.musicId })
         } else {
             playerRepository.addAll(
