@@ -14,8 +14,12 @@ class MigrationViewModel(
     init {
         viewModelScope.launch {
             settings.getFlowOn(SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION).collect { currentDbVersion ->
-                if (currentDbVersion < LocalDatabaseVersion.VERSION) {
-                    navScope.toMainApp()
+                if (currentDbVersion >= LocalDatabaseVersion.VERSION) {
+                    if (settings.get(SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY)) {
+                        navScope.toMainApp()
+                    } else {
+                        navScope.toInitialFetch()
+                    }
                 }
             }
         }
