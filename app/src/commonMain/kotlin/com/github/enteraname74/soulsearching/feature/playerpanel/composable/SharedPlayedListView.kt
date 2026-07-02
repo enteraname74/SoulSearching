@@ -1,7 +1,15 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +32,6 @@ import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.list.ShapeListStyle
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.feature.player.domain.state.SharedListState
 import com.github.enteraname74.soulsearching.util.rememberClipboardController
@@ -32,6 +39,10 @@ import com.github.enteraname74.soulsearching.util.rememberClipboardController
 @Composable
 fun SharedPlayedListView(
     state: SharedListState,
+    contentColor: Color,
+    containerColor: Color,
+    secondaryContainerColor: Color,
+    secondaryContentColor: Color,
 ) {
     LazyColumnCompat(
         modifier = Modifier
@@ -45,18 +56,24 @@ fun SharedPlayedListView(
         item {
             InvitationCode(
                 code = state.code,
+                containerColor = secondaryContainerColor,
+                contentColor = secondaryContentColor,
             )
         }
         state.host?.let {
             stickyHeader {
                 SectionTitle(
                     title = strings.sharedListHost,
+                    containerColor = containerColor,
+                    contentColor = contentColor,
                 )
             }
             item {
                 UserRow(
                     user = it,
-                    style = ShapeListStyle.Unique
+                    style = ShapeListStyle.Unique,
+                    containerColor = secondaryContainerColor,
+                    contentColor = secondaryContentColor,
                 )
             }
         }
@@ -64,6 +81,8 @@ fun SharedPlayedListView(
             stickyHeader {
                 SectionTitle(
                     title = strings.sharedListGuests,
+                    containerColor = containerColor,
+                    contentColor = contentColor,
                 )
             }
             items(
@@ -72,6 +91,8 @@ fun SharedPlayedListView(
                 UserRow(
                     modifier = Modifier.padding(1.dp),
                     user = state.guests[index],
+                    containerColor = secondaryContainerColor,
+                    contentColor = secondaryContentColor,
                     style = ShapeListStyle.fromList(
                         listSize = state.guests.size,
                         index = index,
@@ -85,6 +106,8 @@ fun SharedPlayedListView(
 @Composable
 private fun InvitationCode(
     code: String,
+    contentColor: Color,
+    containerColor: Color,
 ) {
     val clipboard = rememberClipboardController()
 
@@ -92,7 +115,7 @@ private fun InvitationCode(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = SoulSearchingColorTheme.colorScheme.primary,
+                color = containerColor,
                 shape = RoundedCornerShape(20.dp),
             )
             .clickableWithHandCursor { clipboard.copy(code) }
@@ -105,17 +128,17 @@ private fun InvitationCode(
         Text(
             text = strings.sharedListCodeTitle,
             style = UiConstants.Typography.bodyTitle,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = contentColor,
         )
         Text(
             text = code,
             style = UiConstants.Typography.titleBig,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = contentColor,
         )
         Text(
             text = strings.sharedListCodeDescription,
             style = UiConstants.Typography.bodySmall,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = contentColor,
             textAlign = TextAlign.Center,
         )
     }
@@ -124,18 +147,18 @@ private fun InvitationCode(
 @Composable
 private fun SectionTitle(
     title: String,
+    containerColor: Color,
+    contentColor: Color,
 ) {
     Text(
         modifier = Modifier
-            .background(
-                color = SoulSearchingColorTheme.colorScheme.secondary,
-            )
+            .background(color = containerColor)
             .padding(
                 all = UiConstants.Spacing.medium,
             ),
         text = title,
         style = UiConstants.Typography.bodyLarge,
-        color = SoulSearchingColorTheme.colorScheme.onSecondary,
+        color = contentColor,
     )
 }
 
@@ -143,6 +166,8 @@ private fun SectionTitle(
 private fun UserRow(
     user: SharedListState.User,
     style: ShapeListStyle,
+    contentColor: Color,
+    containerColor: Color,
     modifier: Modifier = Modifier,
 ) {
 
@@ -151,7 +176,7 @@ private fun UserRow(
             .fillMaxWidth()
             .clip(style.shape())
             .background(
-                SoulSearchingColorTheme.colorScheme.primary
+                containerColor
                     .disableIf(user.status == PlayerUserStatus.Disconnected)
             )
             .padding(
@@ -168,7 +193,7 @@ private fun UserRow(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = UiConstants.Typography.bodyLarge,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary.disableIf(user.status == PlayerUserStatus.Disconnected),
+            color = contentColor.disableIf(user.status == PlayerUserStatus.Disconnected),
         )
         if (user.onRemove != null) {
             SoulIconButton(

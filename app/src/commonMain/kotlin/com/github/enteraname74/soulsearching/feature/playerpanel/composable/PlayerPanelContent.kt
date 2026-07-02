@@ -95,7 +95,13 @@ fun PlayerPanelContent(
             TabData(
                 title = strings.sharedListTitle,
                 screen = {
-                    SharedPlayedListView(state = it)
+                    SharedPlayedListView(
+                        state = it,
+                        contentColor = contentColor,
+                        containerColor = containerColor,
+                        secondaryContainerColor = buttonColors.containerColor,
+                        secondaryContentColor = buttonColors.contentColor,
+                    )
                 }
             )
         }
