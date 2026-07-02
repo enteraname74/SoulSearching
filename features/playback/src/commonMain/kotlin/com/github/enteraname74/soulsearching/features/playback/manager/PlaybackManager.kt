@@ -220,6 +220,7 @@ class PlaybackManager(
 
     private fun init() {
         workScope.launch {
+            // TODO PLAYER: Maybe not needed anymore with new draggable view management.
             /*
             At launch, we will set the current played list (if any) state to be Loading,
             as we want to only load the played list, and not launch it immediately

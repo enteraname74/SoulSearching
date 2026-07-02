@@ -9,7 +9,7 @@ import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.SharedPlayedListUser
 
 sealed interface PlaybackManagerState {
-    data object Stopped: PlaybackManagerState
+    data object Stopped : PlaybackManagerState
     data class Data(
         val currentMusic: Music,
         val next: Music?,
@@ -24,7 +24,7 @@ sealed interface PlaybackManagerState {
         val currentType: PlayedListType,
         val users: List<SharedPlayedListUser>,
         val playerMusicUsers: List<FullPlayerMusicUser>,
-    ): PlaybackManagerState
+    ) : PlaybackManagerState
 
     fun isEmpty(): Boolean =
         (this as? Data)?.listSize?.let { it == 0 } ?: true
