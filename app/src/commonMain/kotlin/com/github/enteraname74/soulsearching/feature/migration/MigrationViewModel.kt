@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 class MigrationViewModel(
     private val settings: SoulSearchingSettings,
     private val navScope: MigrationNavScope,
-): ViewModel() {
+) : ViewModel() {
     init {
         viewModelScope.launch {
             settings.getFlowOn(SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION).collect { currentDbVersion ->
