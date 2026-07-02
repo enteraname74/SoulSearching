@@ -74,6 +74,7 @@ fun SettingsCloudSignUpScreen(
                             top = UiConstants.Spacing.mediumPlus,
                         ),
                     text = strings.cloudSignUp,
+                    enabled = state.isValid(),
                     onClick = {
                         focusManager.clearFocus()
                         actions.signUp()

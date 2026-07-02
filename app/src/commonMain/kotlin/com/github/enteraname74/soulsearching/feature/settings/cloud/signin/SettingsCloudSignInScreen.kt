@@ -59,6 +59,7 @@ fun SettingsCloudSignInScreen(
             ) {
                 SoulFilledButton(
                     text = strings.cloudSignIn,
+                    enabled = state.isValid(),
                     onClick = {
                         focusManager.clearFocus()
                         actions.signIn()
