@@ -42,13 +42,25 @@ class SoulSearchingExoPlayerImpl(
             }
         }
 
-        override fun onIsPlayingChanged(isPlaying: Boolean) {
-            super.onIsPlayingChanged(isPlaying)
-            runBlocking {
-                if (isPlaying) {
-                    listener?.onPlay()
-                } else {
-                    listener?.onPause()
+        override fun onEvents(player: Player, events: Player.Events) {
+            if (!events.contains(Player.EVENT_IS_PLAYING_CHANGED) &&
+                !events.contains(Player.EVENT_PLAY_WHEN_READY_CHANGED) &&
+                !events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)
+            ) return
+
+            playerCoroutineScope.launch {
+                when {
+                    player.isPlaying -> listener?.onPlay()
+
+                    !player.playWhenReady &&
+                        player.playbackState != Player.STATE_ENDED -> {
+                        listener?.onPause()
+                    }
+
+                    else -> {
+                        // isPlaying=false but playWhenReady=true:
+                        // seeking, buffering, waiting, preparing. Not a real pause.
+                    }
                 }
             }
         }
