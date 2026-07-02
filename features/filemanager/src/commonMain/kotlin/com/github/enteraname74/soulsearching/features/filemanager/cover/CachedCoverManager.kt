@@ -11,13 +11,6 @@ abstract class CachedCoverManager {
     fun getCachedImageByteArray(key: String): ByteArray? =
         cachedImagesByteArray[key]
 
-    fun cacheImage(
-        key: String,
-        imageBitmap: ImageBitmap,
-    ) {
-        cachedImages[key] = imageBitmap
-    }
-
     abstract suspend fun fetchCoverOfMusicFile(musicPath: String): ImageBitmap?
     abstract suspend fun fetchCoverOfMusicFileAsByteArray(musicPath: String): ByteArray?
 }

@@ -14,7 +14,6 @@ import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCas
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 
 @Composable
 internal fun UrlImage(
@@ -26,7 +25,6 @@ internal fun UrlImage(
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
     commonCloudPreferencesUseCase: CommonCloudPreferencesUseCase = injectElement(),
     commonUserUseCase: CommonUserUseCase = injectElement(),
-    cachedCoverManager: CachedCoverManager = injectElement(),
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
     val user by commonUserUseCase.observeUser().collectAsStateWithLifecycle(null)
@@ -37,12 +35,6 @@ internal fun UrlImage(
         contentScale = contentScale,
         modifier = modifier,
         onSuccess = { bitmap ->
-            bitmap?.let {
-                cachedCoverManager.cacheImage(
-                    key = url.orEmpty(),
-                    imageBitmap = bitmap
-                )
-            }
             onSuccess?.invoke(bitmap)
         },
         builderOptions = {
