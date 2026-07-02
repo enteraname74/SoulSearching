@@ -392,6 +392,10 @@ object FrStrings : Strings {
     override val sharedListDeleteTitle: String = "Supprimer cette liste de lecture partagée"
     override val sharedListDeleteText: String = "Les participants seront déconnectés de la liste et cette dernière sera supprimée"
 
+    override val musicSyncedOnCloud: String = "Musique synchronisée avec le cloud"
+    override val musicRemoteOnly: String = "Musique provenant du cloud"
+    override val musicLocalOnly: String = "Musique non téléversée sur le cloud"
+
     override fun cloudSyncNotificationTitle(state: SyncMusicWithCloudUseCase.State): String =
         when (state) {
             SyncMusicWithCloudUseCase.State.Failure -> "Erreur"

@@ -28,7 +28,9 @@ data class Music(
     val scope: Scope,
 ) : QuickAccessible {
     val path: String? = localPath ?: remotePath
-    val isRemoteOnly: Boolean = localPath == null
+    val isRemoteOnly: Boolean = localPath == null && remotePath != null
+    val isSynced: Boolean = localPath != null && remotePath != null
+    val isLocalOnly: Boolean = localPath != null && remotePath == null
 
     val informationText: String = "${artists.joinToString { it.artistName }} | ${album.albumName}"
 

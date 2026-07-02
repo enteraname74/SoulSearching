@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.user.UserType
 import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
 import kotlin.time.Duration
 
-val strings = when(Locale.current.language) {
+val strings = when (Locale.current.language) {
     "fr" -> FrStrings
     else -> EnStrings
 }
@@ -392,6 +392,10 @@ interface Strings {
 
     val sharedListDeleteTitle: String
     val sharedListDeleteText: String
+
+    val musicSyncedOnCloud: String
+    val musicRemoteOnly: String
+    val musicLocalOnly: String
 
     fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
     fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String

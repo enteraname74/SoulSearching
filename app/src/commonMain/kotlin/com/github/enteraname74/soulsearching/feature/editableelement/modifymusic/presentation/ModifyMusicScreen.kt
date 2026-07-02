@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifymusi
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -9,9 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cloud_alert
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cloud_done
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cloud_download
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -51,15 +60,38 @@ fun ModifyMusicRoute(
 }
 
 @Composable
+private fun CloudStatus(music: Music) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+    ) {
+        SoulIcon(
+            color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+            icon = when {
+                music.isRemoteOnly -> CoreRes.drawable.ic_cloud_download
+                music.isLocalOnly -> CoreRes.drawable.ic_cloud_alert
+                else -> CoreRes.drawable.ic_cloud_done
+            }
+        )
+        Text(
+            text = when {
+                music.isRemoteOnly -> strings.musicRemoteOnly
+                music.isLocalOnly -> strings.musicLocalOnly
+                else -> strings.musicSyncedOnCloud
+            },
+            style = UiConstants.Typography.bodyVerySmall,
+            color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+        )
+    }
+}
+
+@Composable
 fun MusicPathFooter(
     musicPath: String,
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                bottom = UiConstants.Spacing.medium,
-            ),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.verySmall)
     ) {
         Text(
@@ -107,9 +139,26 @@ private fun ModifyMusicScreenView(
                         )
                     },
                     extraFormTopContent = {
-                        MusicPathFooter(
-                            musicPath = state.initialMusic.path.orEmpty(),
-                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(
+                                    bottom = UiConstants.Spacing.medium,
+                                ),
+                            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
+                        ) {
+                            state.initialMusic.localPath?.let { localPath ->
+                                MusicPathFooter(
+                                    musicPath = localPath,
+                                )
+                            }
+
+                            if (state.hasValidCloudInformation) {
+                                CloudStatus(
+                                    music = state.initialMusic
+                                )
+                            }
+                        }
                     }
                 )
             }

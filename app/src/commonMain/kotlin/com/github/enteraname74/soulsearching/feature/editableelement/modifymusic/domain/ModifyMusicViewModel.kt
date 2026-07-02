@@ -9,6 +9,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -54,6 +55,7 @@ class ModifyMusicViewModel(
     private val loadingManager: LoadingManager,
     private val cachedCoverManager: CachedCoverManager,
     private val coverFileManager: CoverFileManager,
+    hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
     destination: ModifyMusicDestination,
 ) : ViewModel() {
     private val musicId: UUID = destination.selectedMusicId
@@ -72,8 +74,9 @@ class ModifyMusicViewModel(
 
     val state: StateFlow<ModifyMusicState> = combine(
         initialMusic,
-        newCover
-    ) { initialMusic, newCover ->
+        newCover,
+        hasValidCloudInformationUseCase(),
+    ) { initialMusic, newCover, hasValidCloudInformation ->
         when {
             initialMusic == null -> ModifyMusicState.Loading
             else -> ModifyMusicState.Data(
@@ -81,7 +84,8 @@ class ModifyMusicViewModel(
                 editableElement = EditableElement(
                     initialCover = initialMusic.cover,
                     newCover = newCover
-                )
+                ),
+                hasValidCloudInformation = hasValidCloudInformation,
             )
         }
     }.stateIn(

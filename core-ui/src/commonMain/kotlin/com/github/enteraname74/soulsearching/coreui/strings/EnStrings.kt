@@ -389,6 +389,10 @@ object EnStrings : Strings {
     override val sharedListDeleteTitle: String = "Delete this shared played list"
     override val sharedListDeleteText: String = "Users will be disconnected from the list and it will be deleted"
 
+    override val musicSyncedOnCloud: String = "Song synced on the cloud"
+    override val musicRemoteOnly: String = "Song coming from the cloud"
+    override val musicLocalOnly: String = "Song not uploaded on the cloud"
+
     override fun cloudSyncNotificationTitle(state: SyncMusicWithCloudUseCase.State): String =
         when (state) {
             SyncMusicWithCloudUseCase.State.Failure -> "Failure"
