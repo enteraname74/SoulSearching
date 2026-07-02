@@ -82,8 +82,6 @@ class SyncMusicWithCloudUseCase(
             val cloudPreferences: CloudPreferences? =
                 cloudPreferencesRepository.observePreferences().firstOrNull()
 
-            val newSyncedMillis: Long = DateUtils.now()
-
             _state.value = State.FetchingFromRemote
             // Fetching updated songs from cloud
             val updatedRemoteSongs: List<CloudMusic> = musicRepository.fetchUpdatedSongsFromCloud(
@@ -113,7 +111,7 @@ class SyncMusicWithCloudUseCase(
             deleteEmptyAlbumsAndArtistsUseCase()
 
             // Update the sync date for the next time.
-            cloudPreferencesRepository.setLastSyncMillis(newSyncedMillis)
+            cloudPreferencesRepository.setLastSyncMillis(DateUtils.now())
         }
 
         _state.value = if (result.isError()) State.Failure else State.Finish

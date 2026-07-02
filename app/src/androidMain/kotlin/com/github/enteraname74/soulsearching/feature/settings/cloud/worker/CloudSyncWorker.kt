@@ -14,7 +14,6 @@ import com.github.enteraname74.soulsearching.model.utils.StringsUtils
 import com.github.soulsearching.R
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 

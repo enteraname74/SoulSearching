@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.firstOrNull
 class CloudBackgroundSyncJobAndroidImpl(
     private val context: Context,
     private val hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
-    private val syncMusicWithCloudUseCase: SyncMusicWithCloudUseCase,
+    syncMusicWithCloudUseCase: SyncMusicWithCloudUseCase,
 ) : CloudBackgroundSyncJob {
     override val state: StateFlow<SyncMusicWithCloudUseCase.State> = syncMusicWithCloudUseCase.state
 
@@ -36,9 +36,13 @@ class CloudBackgroundSyncJobAndroidImpl(
 
         WorkManager.getInstance(context).enqueueUniqueWork(
             SYNC_WORKER_NAME,
-            ExistingWorkPolicy.REPLACE,
+            ExistingWorkPolicy.KEEP,
             workRequest,
         )
+    }
+
+    override suspend fun cancelIfNeeded() {
+        WorkManager.getInstance(context).cancelUniqueWork(SYNC_WORKER_NAME)
     }
 
     companion object {

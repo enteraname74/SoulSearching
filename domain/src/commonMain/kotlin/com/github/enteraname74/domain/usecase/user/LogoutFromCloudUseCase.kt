@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.repository.UserRepository
 import com.github.enteraname74.domain.usecase.DeleteEmptyAlbumsAndArtistsUseCase
+import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 
 class LogoutFromCloudUseCase(
     private val userRepository: UserRepository,
@@ -13,6 +14,7 @@ class LogoutFromCloudUseCase(
     private val deleteEmptyAlbumsAndArtistsUseCase: DeleteEmptyAlbumsAndArtistsUseCase,
     private val musicRepository: MusicRepository,
     private val playerRepository: PlayerRepository,
+    private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
 ) {
 
     /**
@@ -22,6 +24,7 @@ class LogoutFromCloudUseCase(
      */
     suspend operator fun invoke(): SoulResult<Unit> = SoulResult.runCatching {
         userRepository.logout()
+        cloudBackgroundSyncJob.cancelIfNeeded()
         cloudPreferencesRepository.clearLastSyncMillis()
 
         /*

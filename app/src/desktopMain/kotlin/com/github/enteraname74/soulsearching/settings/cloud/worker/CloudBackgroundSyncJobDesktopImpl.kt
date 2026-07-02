@@ -13,4 +13,8 @@ class CloudBackgroundSyncJobDesktopImpl(
     override suspend fun launchIfPossible() {
         syncMusicWithCloudUseCase()
     }
+
+    override suspend fun cancelIfNeeded() {
+        // no-op
+    }
 }

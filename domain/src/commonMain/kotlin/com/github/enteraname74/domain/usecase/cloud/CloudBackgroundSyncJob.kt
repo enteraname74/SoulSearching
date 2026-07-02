@@ -8,4 +8,6 @@ interface CloudBackgroundSyncJob {
     val state: StateFlow<SyncMusicWithCloudUseCase.State>
 
     suspend fun launchIfPossible()
+
+    suspend fun cancelIfNeeded()
 }
