@@ -1,5 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("com.android.application")
@@ -13,9 +14,16 @@ group = "com.github.enteraname74.soulsearching"
 description = "Application's elements"
 
 kotlin {
-
     androidTarget()
     jvm("desktop")
+
+    js {
+        browser()
+    }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+    }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
@@ -25,54 +33,69 @@ kotlin {
     }
 
     sourceSets {
-        val desktopMain by getting {
-            dependencies {
-                implementation(compose.desktop.currentOs)
-                implementation(libs.coroutines.core.swing)
-                implementation(libs.vlcj)
-            }
+        val jsMain by getting
+        val wasmJsMain by getting
+        val commonMain by getting
+        val desktopMain by getting
+
+        val nonAndroidMain by creating {
+            dependsOn(commonMain)
         }
-        commonMain {
-            dependencies {
-                implementation(project(":domain"))
-                implementation(project(":core-ui"))
-                implementation(project(":shared-di"))
-                implementation(project(":playback"))
-                implementation(project(":filemanager"))
-                implementation(project(":musicmanager"))
-                implementation(project(":serialization"))
 
-                implementation(libs.bundles.koin)
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain)
+            dependsOn(nonAndroidMain)
+        }
 
-                implementation(libs.kotlinx.serialization)
-                implementation(libs.kotlinx.serialization.json)
+        jsMain.dependsOn(webMain)
+        wasmJsMain.dependsOn(webMain)
 
-                implementation(libs.kmpalette)
-                implementation(libs.multiplatform.settings)
+        desktopMain.dependsOn(nonAndroidMain)
 
-                implementation(libs.compose.foundation)
-                implementation(libs.compose.material)
-                implementation(libs.compose.material3)
-                implementation(libs.compose.resources)
-                implementation(libs.compose.ui)
+        desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.coroutines.core.swing)
+            implementation(libs.vlcj)
+        }
+        commonMain.dependencies {
+            implementation(project(":domain"))
+            implementation(project(":core-ui"))
+            implementation(project(":shared-di"))
+            implementation(project(":playback"))
+            implementation(project(":filemanager"))
+            implementation(project(":musicmanager"))
+            implementation(project(":serialization"))
 
-                implementation(libs.jaudiotagger)
-                implementation(libs.androidx.annotation)
+            implementation(libs.bundles.koin)
 
-                implementation(libs.coroutines.core)
+            implementation(libs.kotlinx.serialization)
+            implementation(libs.kotlinx.serialization.json)
 
-                implementation(libs.file.kit)
+            implementation(libs.kmpalette)
+            implementation(libs.multiplatform.settings)
 
-                implementation(libs.bundles.coil)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.material)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.resources)
+            implementation(libs.compose.ui)
 
-                implementation(libs.reorderable)
+            implementation(libs.jaudiotagger)
+            implementation(libs.androidx.annotation)
 
-                implementation(libs.androidx.paging.compose)
-                implementation(libs.androidx.paging.common)
+            implementation(libs.coroutines.core)
 
-                implementation(libs.navigation3.ui)
-                implementation(libs.navigation3.viewmodel)
-            }
+            implementation(libs.file.kit)
+
+            implementation(libs.bundles.coil)
+
+            implementation(libs.reorderable)
+
+            implementation(libs.androidx.paging.compose)
+            implementation(libs.androidx.paging.common)
+
+            implementation(libs.navigation3.ui)
+            implementation(libs.navigation3.viewmodel)
         }
         androidMain {
             dependencies {
