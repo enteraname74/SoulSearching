@@ -8,7 +8,7 @@ import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.localdb.model.player.RoomPlayerPlayedList
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Dao
 interface PlayerPlayedListDao {
@@ -106,14 +106,14 @@ interface PlayerPlayedListDao {
     )
     suspend fun setStateOfId(
         state: PlayedListState,
-        playedListId: UUID,
+        playedListId: Uuid,
     )
 
     @Upsert
     suspend fun upsert(playedList: RoomPlayerPlayedList)
 
     @Query("DELETE FROM RoomPlayerPlayedList WHERE id = :playedListId")
-    suspend fun delete(playedListId: UUID)
+    suspend fun delete(playedListId: Uuid)
 
     @Query(
         """

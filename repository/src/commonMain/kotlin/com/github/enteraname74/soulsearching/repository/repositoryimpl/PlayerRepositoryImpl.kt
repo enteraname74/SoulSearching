@@ -32,10 +32,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.UUID
-import kotlin.coroutines.CoroutineContext
 import kotlin.uuid.Uuid
-import kotlin.uuid.toKotlinUuid
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Repository of a PlayerMusic.
@@ -93,7 +91,7 @@ class PlayerRepositoryImpl(
         playerLocalDataSource.setProgress(progress)
     }
 
-    override suspend fun deleteAll(musicIds: List<UUID>) {
+    override suspend fun deleteAll(musicIds: List<Uuid>) {
         withContext(workScope) {
             playerLocalDataSource.deleteAll(musicIds)
         }
@@ -119,7 +117,7 @@ class PlayerRepositoryImpl(
 
                         playerRemoteDataSource.removeUserFromPlayedList(
                             deviceId = deviceId,
-                            listId = playedList.id.toKotlinUuid(),
+                            listId = playedList.id,
                             userId = userId,
                             deviceIdToRemove = deviceId,
                             userIdToRemove = userId,
@@ -130,7 +128,7 @@ class PlayerRepositoryImpl(
         }
     }
 
-    override suspend fun deletePlayedList(playedListId: UUID) {
+    override suspend fun deletePlayedList(playedListId: Uuid) {
         withContext(workScope) {
             playerLocalDataSource.deletePlayedList(playedListId)
         }
@@ -144,7 +142,7 @@ class PlayerRepositoryImpl(
         fetchUserListWhereIsIn().throwIfError()
     }
 
-    override suspend fun continuePlayedList(playedListId: UUID) {
+    override suspend fun continuePlayedList(playedListId: Uuid) {
         withContext(workScope) {
             quitSharedPlayedListIfNeeded()
             playerLocalDataSource.continuePlayedList(playedListId)
@@ -161,7 +159,7 @@ class PlayerRepositoryImpl(
 
                 playerRemoteDataSource.removeUserFromPlayedList(
                     deviceId = deviceId,
-                    listId = currentPlayedList.id.toKotlinUuid(),
+                    listId = currentPlayedList.id,
                     userId = user.id,
                     deviceIdToRemove = deviceId,
                     userIdToRemove = user.id
@@ -200,7 +198,7 @@ class PlayerRepositoryImpl(
         }
     }
 
-    override suspend fun moveMusic(fromMusicId: UUID, afterMusicId: UUID) {
+    override suspend fun moveMusic(fromMusicId: Uuid, afterMusicId: Uuid) {
         withContext(workScope) {
             playerLocalDataSource.moveMusic(
                 fromMusicId = fromMusicId,
@@ -238,7 +236,7 @@ class PlayerRepositoryImpl(
         }
 
     override suspend fun updatesMusics(
-        musicIdsToRemove: List<UUID>,
+        musicIdsToRemove: List<Uuid>,
         playerMusicsToAdd: List<PlayerMusic>
     ) {
         withContext(workScope) {
@@ -374,7 +372,7 @@ class PlayerRepositoryImpl(
                 runCatching {
                     val updatedList = playerRemoteDataSource.updateState(
                         deviceId = deviceLocalDataSource.getDeviceId(),
-                        listId = playedList.id.toKotlinUuid(),
+                        listId = playedList.id,
                         state = playedListState,
                     )
                     // We will not override the local value if it was loading, except if the new state is playing.
@@ -386,7 +384,7 @@ class PlayerRepositoryImpl(
         }
     }
 
-    override suspend fun setCurrent(musicId: UUID) {
+    override suspend fun setCurrent(musicId: Uuid) {
         withContext(workScope) {
             playerLocalDataSource.setCurrent(musicId = musicId)
         }
@@ -394,7 +392,7 @@ class PlayerRepositoryImpl(
 
     override suspend fun playNext() {
         withContext(workScope) {
-            val nextId: UUID = playerLocalDataSource
+            val nextId: Uuid = playerLocalDataSource
                 .getNextMusic().firstOrNull()?.music?.musicId ?: return@withContext
 
             playerLocalDataSource.setCurrent(musicId = nextId)
@@ -404,7 +402,7 @@ class PlayerRepositoryImpl(
 
     override suspend fun playPrevious() {
         withContext(workScope) {
-            val previousId: UUID = playerLocalDataSource
+            val previousId: Uuid = playerLocalDataSource
                 .getPreviousMusic().firstOrNull()?.music?.musicId ?: return@withContext
             playerLocalDataSource.setCurrent(musicId = previousId)
             setPlayedListState(PlayedListState.Playing)
@@ -467,7 +465,7 @@ class PlayerRepositoryImpl(
 
     override suspend fun getDeletedRemoteMusicIds(
         playedListId: Uuid,
-    ): List<UUID> =
+    ): List<Uuid> =
         withContext(workScope) {
             val musicRemoteIds = playerLocalDataSource
                 .getAll()
@@ -487,7 +485,7 @@ class PlayerRepositoryImpl(
         withContext(workScope) {
             playerRemoteDataSource.addMusics(
                 deviceId = deviceLocalDataSource.getDeviceId(),
-                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id?.toKotlinUuid()
+                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id
                     ?: return@withContext,
                 musicIds = musicRemoteIds,
             )
@@ -498,7 +496,7 @@ class PlayerRepositoryImpl(
         withContext(workScope) {
             playerRemoteDataSource.addMusicFromURL(
                 deviceId = deviceLocalDataSource.getDeviceId(),
-                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id?.toKotlinUuid()
+                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id
                     ?: return@withContext,
                 url = url,
             )
@@ -509,7 +507,7 @@ class PlayerRepositoryImpl(
         withContext(workScope) {
             playerRemoteDataSource.removeMusics(
                 deviceId = deviceLocalDataSource.getDeviceId(),
-                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id?.toKotlinUuid()
+                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id
                     ?: return@withContext,
                 musicIds = musicRemoteIds,
             )
@@ -521,7 +519,7 @@ class PlayerRepositoryImpl(
             val playedList = playerLocalDataSource.getCurrentPlayedList().firstOrNull() ?: return@withContext
             playerRemoteDataSource.updateCurrentMusic(
                 deviceId = deviceLocalDataSource.getDeviceId(),
-                listId = playedList.id.toKotlinUuid(),
+                listId = playedList.id,
                 musicRemoteId = musicRemoteId
             )
         }
@@ -535,7 +533,7 @@ class PlayerRepositoryImpl(
 
                 val sharedList = playerRemoteDataSource.getPlayedList(
                     deviceId = deviceLocalDataSource.getDeviceId(),
-                    listId = playedList.id.toKotlinUuid(),
+                    listId = playedList.id,
                 )
                 /*
                 If the user is in loading state (app launch), we don't want to force a full screen of the player view.
@@ -568,7 +566,7 @@ class PlayerRepositoryImpl(
         withContext(workScope) {
             playerRemoteDataSource.removeUserFromPlayedList(
                 deviceId = deviceLocalDataSource.getDeviceId(),
-                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id?.toKotlinUuid()
+                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id
                     ?: return@withContext,
                 userId = userLocalDataSource.observeUser().firstOrNull()?.id ?: return@withContext,
                 deviceIdToRemove = deviceId,
@@ -582,7 +580,7 @@ class PlayerRepositoryImpl(
     ) {
         withContext(workScope) {
             playerRemoteDataSource.registerSharedPlayedListEventsListener(
-                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id?.toKotlinUuid()
+                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id
                     ?: return@withContext,
                 userId = userLocalDataSource.observeUser().firstOrNull()?.id ?: return@withContext,
                 deviceId = deviceLocalDataSource.getDeviceId(),

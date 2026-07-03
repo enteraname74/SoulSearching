@@ -2,7 +2,6 @@ package com.github.enteraname74.domain.model.player
 
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
-import kotlin.uuid.toJavaUuid
 
 @Serializable
 data class SharedPlayedList(
@@ -48,7 +47,7 @@ data class SharedPlayedList(
         userId: Uuid,
     ): PlayerPlayedList =
         PlayerPlayedList(
-            id = id.toJavaUuid(),
+            id = id,
             playlistId = null,
             isMainPlaylist = false,
             mode = PlayerMode.Normal,
@@ -60,7 +59,7 @@ data class SharedPlayedList(
     fun buildUsers(): List<SharedPlayedListUser> =
         users.map { user ->
             SharedPlayedListUser(
-                listId = id.toJavaUuid(),
+                listId = id,
                 isOwner = user.id == owner?.id && user.deviceId == owner.deviceId,
                 id = user.id,
                 deviceId = user.deviceId,

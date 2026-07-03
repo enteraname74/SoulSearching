@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class SettingsAllFoldersViewModel(
     private val commonFolderUseCase: CommonFolderUseCase,
@@ -62,7 +62,7 @@ class SettingsAllFoldersViewModel(
         loadingManager.withLoadingOnScope(workScope) {
             commonFolderUseCase.upsertAll(allFolders = state.value.folders)
 
-            val musicIds: List<UUID> = commonMusicUseCase.getAllIdsFromUnselectedFolders()
+            val musicIds: List<Uuid> = commonMusicUseCase.getAllIdsFromUnselectedFolders()
             deleteMusicUseCase.fromUnselectedFolders(ids = musicIds)
             // TODO SHARED PLAYED LIST: Should we show the error if the call doesn't work?
             playbackManager.removeSongsFromPlayedList(musicIds = musicIds)

@@ -11,7 +11,6 @@ import com.github.enteraname74.localdb.view.RoomAlbumPreview
 import com.github.enteraname74.localdb.model.RoomCompleteAlbum
 import com.github.enteraname74.localdb.model.RoomCompleteAlbumWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
 import kotlin.uuid.Uuid
 
 /**
@@ -30,10 +29,10 @@ interface AlbumDao {
     suspend fun delete(roomAlbum: RoomAlbum)
 
     @Query("DELETE FROM RoomAlbum WHERE albumId = :id")
-    suspend fun delete(id: UUID)
+    suspend fun delete(id: Uuid)
 
     @Query("DELETE FROM RoomAlbum WHERE albumId IN (:ids)")
-    suspend fun deleteAll(ids: List<UUID>)
+    suspend fun deleteAll(ids: List<Uuid>)
 
     @Query(
         """
@@ -48,11 +47,11 @@ interface AlbumDao {
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId AND scope != 'SharedPlayedList'")
-    fun getAllAlbumsFromArtist(artistId: UUID): Flow<List<RoomCompleteAlbum>>
+    fun getAllAlbumsFromArtist(artistId: Uuid): Flow<List<RoomCompleteAlbum>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId AND scope != 'SharedPlayedList'")
-    fun getAllAlbumsWithMusicsFromArtist(artistId: UUID): Flow<List<RoomCompleteAlbumWithMusics>>
+    fun getAllAlbumsWithMusicsFromArtist(artistId: Uuid): Flow<List<RoomCompleteAlbumWithMusics>>
 
     @Transaction
     @Query(
@@ -110,7 +109,7 @@ interface AlbumDao {
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId LIMIT 1")
-    fun getFromId(albumId: UUID): Flow<RoomCompleteAlbum?>
+    fun getFromId(albumId: Uuid): Flow<RoomCompleteAlbum?>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE remoteId = :remoteId")
@@ -118,11 +117,11 @@ interface AlbumDao {
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId in (:albumIds)")
-    fun getFromIds(albumIds: List<UUID>): Flow<List<RoomCompleteAlbumWithMusics>>
+    fun getFromIds(albumIds: List<Uuid>): Flow<List<RoomCompleteAlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")
-    fun getAlbumWithMusics(albumId: UUID): Flow<RoomCompleteAlbumWithMusics?>
+    fun getAlbumWithMusics(albumId: Uuid): Flow<RoomCompleteAlbumWithMusics?>
 
     @Transaction
     @Query(
@@ -147,9 +146,9 @@ interface AlbumDao {
         """
     )
     suspend fun getDuplicatedAlbum(
-        albumId: UUID,
+        albumId: Uuid,
         albumName: String,
-        artistId: UUID
+        artistId: Uuid
     ): RoomCompleteAlbum?
 
     @Transaction
@@ -178,7 +177,7 @@ interface AlbumDao {
     )
     suspend fun getFromArtistId(
         albumName: String,
-        artistId: UUID,
+        artistId: Uuid,
     ): RoomCompleteAlbum?
 
     @Query(
@@ -198,7 +197,7 @@ interface AlbumDao {
             LIMIT 1
         """
     )
-    fun getAlbumPreview(albumId: UUID): Flow<RoomAlbumPreview?>
+    fun getAlbumPreview(albumId: Uuid): Flow<RoomAlbumPreview?>
 
     // TODO: Normalise with accents.
     @Query(

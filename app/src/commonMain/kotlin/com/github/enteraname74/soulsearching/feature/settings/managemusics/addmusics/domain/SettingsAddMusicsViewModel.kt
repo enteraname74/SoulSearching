@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class SettingsAddMusicsViewModel(
     private val musicFetcher: MusicFetcher,
@@ -47,7 +47,7 @@ class SettingsAddMusicsViewModel(
     val navigationState: StateFlow<SettingsAddMusicsNavigationState> =
         _navigationState.asStateFlow()
 
-    fun toggleMusicSelectedState(musicId: UUID) {
+    fun toggleMusicSelectedState(musicId: Uuid) {
         (state.value as? AddNewsSongsStepState.Data)?.fetchedMusics?.let { songs ->
             addNewsSongsStepManager.toStep(
                 AddNewsSongsStepState.Data(

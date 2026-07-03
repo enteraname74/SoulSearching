@@ -36,7 +36,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class MusicBottomSheetViewModel(
     private val playerMusicListViewManager: PlayerMusicListViewManager,
@@ -53,8 +53,8 @@ class MusicBottomSheetViewModel(
     settings: SoulSearchingSettings,
     params: MusicBottomSheetDestination,
 ) : ViewModel() {
-    private val musicIds: List<UUID> = params.musicIds
-    private val playlistId: UUID? = params.playlistId
+    private val musicIds: List<Uuid> = params.musicIds
+    private val playlistId: Uuid? = params.playlistId
 
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 

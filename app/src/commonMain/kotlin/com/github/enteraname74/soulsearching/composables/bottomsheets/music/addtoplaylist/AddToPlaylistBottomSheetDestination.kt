@@ -2,19 +2,17 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.music.add
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.enteraname74.domain.util.serializer.UUIDListSerializer
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetDestination
 import com.github.enteraname74.soulsearching.navigation.BottomSheetSceneStrategy
 import com.github.enteraname74.soulsearching.navigation.LocalBottomSheetCloseWithAnimAction
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Serializable
 data class AddToPlaylistBottomSheetDestination(
-    @Serializable(UUIDListSerializer::class)
-    val selectedMusicIds: List<UUID>,
+    val selectedMusicIds: List<Uuid>,
 ): BottomSheetDestination {
     companion object {
         fun register(

@@ -43,7 +43,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class ModifyMusicViewModel(
     commonMusicUseCase: CommonMusicUseCase,
@@ -58,8 +58,8 @@ class ModifyMusicViewModel(
     hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
     destination: ModifyMusicDestination,
 ) : ViewModel() {
-    private val musicId: UUID = destination.selectedMusicId
-    private val deletedArtistIds: MutableStateFlow<List<UUID>> = MutableStateFlow(emptyList())
+    private val musicId: Uuid = destination.selectedMusicId
+    private val deletedArtistIds: MutableStateFlow<List<Uuid>> = MutableStateFlow(emptyList())
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
     private val _navigationState: MutableStateFlow<ModifyMusicNavigationState> = MutableStateFlow(
         ModifyMusicNavigationState.Idle
@@ -165,7 +165,7 @@ class ModifyMusicViewModel(
         }
     }
 
-    private fun setNewCoverFromCoverId(coverId: UUID) {
+    private fun setNewCoverFromCoverId(coverId: Uuid) {
         CoroutineScope(Dispatchers.IO).launch {
             loadingManager.withLoading {
                 newCover.value = coverFileManager.getCoverData(coverId)
@@ -209,8 +209,8 @@ class ModifyMusicViewModel(
 
             loadingManager.startLoading()
 
-            val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
-                val newCoverId: UUID = UUID.randomUUID()
+            val coverFile: Uuid? = state.editableElement.newCover?.let { coverData ->
+                val newCoverId: Uuid = Uuid.random()
                 commonCoverUseCase.upsert(
                     id = newCoverId,
                     data = coverData,

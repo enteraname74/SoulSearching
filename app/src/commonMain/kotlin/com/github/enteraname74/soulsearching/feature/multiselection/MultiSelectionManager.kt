@@ -5,7 +5,7 @@ import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiS
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class MultiSelectionManager {
     private var _selectionMode: SelectionMode = SelectionMode.Music
@@ -27,9 +27,9 @@ class MultiSelectionManager {
      * Add or remove an element to the selection.
      */
     fun toggleElementInSelection(
-        id: UUID,
+        id: Uuid,
         mode: SelectionMode,
-        playlistId: UUID? = null,
+        playlistId: Uuid? = null,
     ) {
         if (_selectionMode != mode) {
             clearMultiSelection()

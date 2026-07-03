@@ -5,7 +5,7 @@ import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicFolderPreview
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.time.Duration
 
 /**
@@ -24,23 +24,23 @@ interface MusicLocalDataSource {
      */
     suspend fun delete(music: Music)
 
-    suspend fun deleteAll(ids: List<UUID>)
+    suspend fun deleteAll(ids: List<Uuid>)
 
     suspend fun deleteAllFromUnselectedFolders()
 
     /**
      * Retrieve a music from its id.
      */
-    fun getFromId(musicId: UUID): Flow<Music?>
+    fun getFromId(musicId: Uuid): Flow<Music?>
 
     suspend fun getFromRemoteId(remoteId: String): Music?
 
-    suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<UUID>
-    suspend fun getRemoteIdsFromIds(ids: List<UUID>): List<String>
+    suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<Uuid>
+    suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<String>
 
-    fun getFromIds(ids: List<UUID>): Flow<List<Music>>
+    fun getFromIds(ids: List<Uuid>): Flow<List<Music>>
 
-    suspend fun getAllIdsFromUnselectedFolders(): List<UUID>
+    suspend fun getAllIdsFromUnselectedFolders(): List<Uuid>
 
     /**
      * Retrieves a flow of all Music, sorted by name asc.
@@ -61,33 +61,33 @@ interface MusicLocalDataSource {
     suspend fun getAllRemoteIdsPossessedByUser(): List<String>
     suspend fun getAllToSendToCloud(): List<Music>
 
-    fun getAllPagedOfAlbum(albumId: UUID): Flow<PagingData<Music>>
+    fun getAllPagedOfAlbum(albumId: Uuid): Flow<PagingData<Music>>
 
     fun getAllPagedByNameAscOfFolder(folder: String): Flow<PagingData<Music>>
 
     fun getAllPagedByNameAscOfMonth(month: String): Flow<PagingData<Music>>
 
-    fun getAllPagedByNameAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>>
+    fun getAllPagedByNameAscOfPlaylist(playlistId: Uuid): Flow<PagingData<Music>>
 
-    fun getAllPagedByNameAscOfArtist(artistId: UUID): Flow<PagingData<Music>>
+    fun getAllPagedByNameAscOfArtist(artistId: Uuid): Flow<PagingData<Music>>
 
     /**
      * Retrieves all musics of an Album.
      */
-    suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music>
+    suspend fun getAllMusicFromAlbum(albumId: Uuid): List<Music>
 
     fun searchFromAlbum(
-        albumId: UUID,
+        albumId: Uuid,
         search: String,
     ): Flow<List<Music>>
 
     fun searchFromPlaylist(
-        playlistId: UUID,
+        playlistId: Uuid,
         search: String,
     ): Flow<List<Music>>
 
     fun searchFromArtist(
-        artistId: UUID,
+        artistId: Uuid,
         search: String,
     ): Flow<List<Music>>
 
@@ -105,21 +105,21 @@ interface MusicLocalDataSource {
         search: String,
     ): Flow<List<Music>>
 
-    suspend fun getAllMusicFromArtist(artistId: UUID): List<Music>
+    suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music>
 
-    suspend fun getAllMusicFromPlaylist(playlistId: UUID): List<Music>
+    suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music>
 
     suspend fun getAllMusicFromMonth(month: String) : List<Music>
 
     suspend fun getAllMusicFromFolder(folder: String) : List<Music>
 
-    fun getAlbumDuration(albumId: UUID): Flow<Duration>
-    fun getArtistDuration(artistId: UUID): Flow<Duration>
-    fun getPlaylistDuration(playlistId: UUID): Flow<Duration>
+    fun getAlbumDuration(albumId: Uuid): Flow<Duration>
+    fun getArtistDuration(artistId: Uuid): Flow<Duration>
+    fun getPlaylistDuration(playlistId: Uuid): Flow<Duration>
     fun getMonthMusicsDuration(month: String): Flow<Duration>
     fun getFolderMusicsDuration(folder: String): Flow<Duration>
 
-    suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
+    suspend fun updateMusicsAlbum(newAlbumId: Uuid, legacyAlbumId: Uuid)
 
     suspend fun cleanAllMusicCovers()
 
@@ -139,7 +139,7 @@ interface MusicLocalDataSource {
 
     suspend fun getFromInformation(
         musicName: String,
-        albumId: UUID,
+        albumId: Uuid,
     ): Music?
 
     suspend fun clearRemoteIds(remoteIds: List<String>)

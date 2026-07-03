@@ -28,7 +28,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerM
 import com.github.enteraname74.soulsearching.feature.player.domain.model.SwipeableViewManagerHandler
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -39,7 +39,7 @@ fun PlayerPanelDraggableView(
     maxHeight: Float,
     playerState: PlayerViewState.Data,
     lyricsState: LyricsFetchState,
-    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
+    onMoreClickedOnMusic: (musicId: Uuid) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
     multiSelectionState: MultiSelectionState,
     closeSelection: () -> Unit,

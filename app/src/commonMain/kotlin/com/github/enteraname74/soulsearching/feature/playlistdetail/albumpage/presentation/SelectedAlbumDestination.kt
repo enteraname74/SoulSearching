@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.p
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.enteraname74.domain.util.serializer.UUIDSerializer
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
@@ -16,12 +15,11 @@ import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Serializable
 data class SelectedAlbumDestination(
-    @Serializable(UUIDSerializer::class)
-    val selectedAlbumId: UUID,
+    val selectedAlbumId: Uuid,
 ) : PlaylistDetailPage {
     companion object {
         fun register(

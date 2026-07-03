@@ -60,11 +60,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
-import kotlin.uuid.toKotlinUuid
 
 // TODO SHARED PLAYED LIST: How to properly indicate the current music progression if we are a guest?
 @OptIn(ExperimentalUuidApi::class)
@@ -238,7 +236,7 @@ class PlaybackManager(
              */
             if (remoteList != null) {
                 registerSharedPlayedListEventsListenerUseCase(
-                    listId = remoteList.id.toKotlinUuid(),
+                    listId = remoteList.id,
                     onConnected = {
                         // Fetch the latest data to be sure that on, app launch, we are up-to-date with the backend.
                         syncPlayedListInformationUseCase()
@@ -447,11 +445,11 @@ class PlaybackManager(
     fun getCachedPlaylist(playlistId: String): Flow<PlayedListToContinue?> =
         playerRepository.getCachedPlayedList(playlistId)
 
-    suspend fun continuePlayedList(playedListId: UUID): SoulResult<Unit> = SoulResult.runCatching {
+    suspend fun continuePlayedList(playedListId: Uuid): SoulResult<Unit> = SoulResult.runCatching {
         playerRepository.continuePlayedList(playedListId)
     }
 
-    suspend fun deletePlayedList(playedListId: UUID) {
+    suspend fun deletePlayedList(playedListId: Uuid) {
         playerRepository.deletePlayedList(playedListId)
     }
 
@@ -572,7 +570,7 @@ class PlaybackManager(
             settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD && !skipRewind
 
         if (shouldRewind || playerMode == PlayerMode.Loop || size == 1) {
-            val currentMusicId: UUID =
+            val currentMusicId: Uuid =
                 playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
 
             player.seekToPosition(0)
@@ -605,7 +603,7 @@ class PlaybackManager(
         playerRepository.setPlayedListState(PlayedListState.Playing)
     }
 
-    private fun launchMusicCount(musicId: UUID) {
+    private fun launchMusicCount(musicId: Uuid) {
         updateMusicNbPlayedJob?.cancel()
         updateMusicNbPlayedJob = CoroutineScope(Dispatchers.IO).launch {
             delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED.milliseconds)
@@ -617,7 +615,7 @@ class PlaybackManager(
         playerRepository.switchPlayerMode()
     }
 
-    suspend fun removeSongsFromPlayedList(musicIds: List<UUID>): SoulResult<Unit> {
+    suspend fun removeSongsFromPlayedList(musicIds: List<Uuid>): SoulResult<Unit> {
         val scope =
             playerRepository.getCurrentScope().firstOrNull()
 
@@ -633,8 +631,8 @@ class PlaybackManager(
      * Updates the played list after a reorder in it.
      */
     suspend fun moveMusic(
-        fromMusicId: UUID,
-        afterMusicId: UUID
+        fromMusicId: Uuid,
+        afterMusicId: Uuid
     ) {
         playerRepository.moveMusic(
             fromMusicId = fromMusicId,
@@ -727,7 +725,7 @@ class PlaybackManager(
     }
 
     suspend fun startSharedList(
-        musicIds: List<UUID>
+        musicIds: List<Uuid>
     ): SoulResult<Unit> =
         createSharedPlayedListUseCase(
             musicIds = musicIds,

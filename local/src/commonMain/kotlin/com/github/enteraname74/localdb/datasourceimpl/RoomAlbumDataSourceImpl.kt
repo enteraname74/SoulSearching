@@ -19,7 +19,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import java.util.UUID
 import kotlin.uuid.Uuid
 
 /**
@@ -45,7 +44,7 @@ internal class RoomAlbumDataSourceImpl(
         )
     }
 
-    override suspend fun deleteAll(ids: List<UUID>) {
+    override suspend fun deleteAll(ids: List<Uuid>) {
         appDatabase.albumDao.deleteAll(
             ids = ids,
         )
@@ -58,7 +57,7 @@ internal class RoomAlbumDataSourceImpl(
     override suspend fun getAlbumNamesContainingSearch(search: String): List<String> =
         appDatabase.albumDao.getAlbumNamesContainingSearch(search)
 
-    override fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> {
+    override fun getAlbumsOfArtist(artistId: Uuid): Flow<List<Album>> {
         return appDatabase.albumDao.getAllAlbumsFromArtist(
             artistId = artistId
         ).map { list ->
@@ -68,7 +67,7 @@ internal class RoomAlbumDataSourceImpl(
         }
     }
 
-    override fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>> =
+    override fun getAlbumsWithMusicsOfArtist(artistId: Uuid): Flow<List<AlbumWithMusics>> =
         appDatabase.albumDao.getAllAlbumsWithMusicsFromArtist(
             artistId = artistId
         ).map { list ->
@@ -78,7 +77,7 @@ internal class RoomAlbumDataSourceImpl(
         }
 
 
-    override fun getFromId(albumId: UUID): Flow<Album?> {
+    override fun getFromId(albumId: Uuid): Flow<Album?> {
         return appDatabase.albumDao.getFromId(
             albumId = albumId
         ).map { it?.toAlbum() }
@@ -87,14 +86,14 @@ internal class RoomAlbumDataSourceImpl(
     override suspend fun getFromRemoteId(remoteId: Uuid): Album? =
         appDatabase.albumDao.getFromRemoteId(remoteId)?.toAlbum()
 
-    override fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>> =
+    override fun getFromIds(albumIds: List<Uuid>): Flow<List<AlbumWithMusics>> =
         appDatabase.albumDao.getFromIds(albumIds).map { list ->
             list
                 .sortedBy { albumIds.indexOf(it.roomAlbum.albumId) }
                 .map { it.toAlbumWithMusics() }
         }
 
-    override fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?> {
+    override fun getAlbumWithMusics(albumId: Uuid): Flow<AlbumWithMusics?> {
         return appDatabase.albumDao.getAlbumWithMusics(
             albumId = albumId
         ).map { it?.toAlbumWithMusics() }
@@ -146,9 +145,9 @@ internal class RoomAlbumDataSourceImpl(
     }
 
     override suspend fun getDuplicatedAlbum(
-        albumId: UUID,
+        albumId: Uuid,
         albumName: String,
-        artistId: UUID
+        artistId: Uuid
     ): Album? =
         appDatabase.albumDao.getDuplicatedAlbum(
             albumId = albumId,
@@ -167,7 +166,7 @@ internal class RoomAlbumDataSourceImpl(
 
     override suspend fun getFromArtistId(
         albumName: String,
-        artistId: UUID
+        artistId: Uuid
     ): Album? =
         appDatabase.albumDao.getFromArtistId(
             albumName = albumName,
@@ -179,7 +178,7 @@ internal class RoomAlbumDataSourceImpl(
             list.map { it.toAlbumPreview() }
         }
 
-    override fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?> =
+    override fun getAlbumPreview(albumId: Uuid): Flow<AlbumPreview?> =
         appDatabase.albumDao.getAlbumPreview(albumId).map { it?.toAlbumPreview() }
 
     override fun searchAll(search: String): Flow<List<AlbumPreview>> =

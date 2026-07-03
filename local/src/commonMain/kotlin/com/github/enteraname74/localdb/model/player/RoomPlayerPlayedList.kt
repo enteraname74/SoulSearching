@@ -7,12 +7,12 @@ import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayedListType
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Entity
 data class RoomPlayerPlayedList(
     @PrimaryKey
-    val id: UUID,
+    val id: Uuid,
     val playlistId: String?,
     val isMainPlaylist: Boolean,
     val mode: PlayerMode,

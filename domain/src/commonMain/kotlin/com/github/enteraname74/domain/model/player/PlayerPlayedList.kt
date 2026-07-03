@@ -1,9 +1,9 @@
 package com.github.enteraname74.domain.model.player
 
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 data class PlayerPlayedList(
-    val id: UUID,
+    val id: Uuid,
     val playlistId: String?,
     val isMainPlaylist: Boolean,
     val mode: PlayerMode,

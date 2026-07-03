@@ -1,8 +1,7 @@
 package com.github.enteraname74.domain.model
 
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
-import java.util.UUID
+import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 @Serializable
@@ -27,7 +26,7 @@ data class CloudMusic(
         artists: List<Artist>,
     ): Music =
         Music(
-            musicId = UUID.randomUUID(),
+            musicId = Uuid.random(),
             remoteId = fingerprint,
             name = name,
             album = album,
@@ -39,7 +38,7 @@ data class CloudMusic(
             // TODO CLOUD: Better cloud folder indication?
             folder = "Cloudy",
             duration = duration,
-            addedDate = LocalDateTime.now(),
+            addedDate = Instant.fromEpochMilliseconds(addedDateMillis),
             nbPlayed = nbPlayed,
             isInQuickAccess = isInQuickAccess,
             isHidden = false,

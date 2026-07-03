@@ -35,7 +35,7 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.screen.
 import com.github.enteraname74.soulsearching.feature.player.presentation.screen.PlayerSwipeableLoadingScreen
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.orDefault
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -44,11 +44,11 @@ import kotlin.math.roundToInt
 @Composable
 fun PlayerDraggableView(
     maxHeight: Float,
-    navigateToAlbum: (UUID) -> Unit,
-    navigateToArtist: (UUID) -> Unit,
-    navigateToModifyMusic: (UUID) -> Unit,
+    navigateToAlbum: (Uuid) -> Unit,
+    navigateToArtist: (Uuid) -> Unit,
+    navigateToModifyMusic: (Uuid) -> Unit,
     navigateToRemoteLyricsSettings: () -> Unit,
-    showMusicBottomSheet: (musicIds: List<UUID>) -> Unit,
+    showMusicBottomSheet: (musicIds: List<Uuid>) -> Unit,
     playerViewModel: PlayerViewModel,
     colorThemeManager: ColorThemeManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),

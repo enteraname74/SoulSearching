@@ -19,11 +19,11 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageListPaged
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 fun allPlaylistsTab(
     mainPageViewModel: MainPageViewModel,
-    navigateToPlaylist: (playlistId: UUID) -> Unit,
+    navigateToPlaylist: (playlistId: Uuid) -> Unit,
 ): PagerScreen =
     PagerScreen(
         type = ElementEnum.PLAYLISTS,

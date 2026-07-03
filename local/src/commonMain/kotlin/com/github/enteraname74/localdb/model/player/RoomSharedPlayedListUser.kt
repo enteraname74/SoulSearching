@@ -6,7 +6,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.github.enteraname74.domain.model.player.PlayerUserStatus
 import com.github.enteraname74.domain.model.player.SharedPlayedListUser
-import java.util.UUID
 import kotlin.uuid.Uuid
 
 @Entity(
@@ -22,7 +21,7 @@ import kotlin.uuid.Uuid
 )
 data class RoomSharedPlayedListUser(
     @PrimaryKey val id: String,
-    val playedListId: UUID,
+    val playedListId: Uuid,
     val userId: Uuid,
     val deviceId: String,
     val username: String,

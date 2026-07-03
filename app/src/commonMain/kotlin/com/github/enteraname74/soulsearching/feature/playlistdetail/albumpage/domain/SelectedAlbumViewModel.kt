@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class SelectedAlbumViewModel(
     private val commonAlbumUseCase: CommonAlbumUseCase,
@@ -52,7 +52,7 @@ class SelectedAlbumViewModel(
             started = SharingStarted.Eagerly,
             initialValue = MultiSelectionState(emptyList()),
         )
-    private var albumId: UUID = destination.selectedAlbumId
+    private var albumId: Uuid = destination.selectedAlbumId
 
     private val musics: Flow<PagingData<Music>> = commonMusicUseCase
         .getAllPagedOfAlbum(albumId)
@@ -120,7 +120,7 @@ class SelectedAlbumViewModel(
 
     private fun onUpdateNbPlayed() {
         viewModelScope.launch {
-            val albumId: UUID =
+            val albumId: Uuid =
                 (state.value as? SelectedAlbumState.Data)?.playlistDetail?.id ?: return@launch
             commonAlbumUseCase.incrementAlbumNbPlayed(albumId = albumId)
         }
@@ -140,7 +140,7 @@ class SelectedAlbumViewModel(
         multiSelectionManager.clearMultiSelection()
     }
 
-    override fun onLongClickOnMusic(musicId: UUID) {
+    override fun onLongClickOnMusic(musicId: Uuid) {
         multiSelectionManager.toggleElementInSelection(
             id = musicId,
             mode = SelectionMode.Music,
@@ -188,18 +188,18 @@ class SelectedAlbumViewModel(
         _searchQuery.value = search
     }
 
-    override fun showMusicBottomSheet(musicIds: List<UUID>) {
+    override fun showMusicBottomSheet(musicIds: List<Uuid>) {
         _navigationState.value = SelectedAlbumNavigationState.ToMusicBottomSheet(musicIds)
     }
 
-    override fun continuePlayedList(playedListId: UUID) {
+    override fun continuePlayedList(playedListId: Uuid) {
         viewModelScope.launch {
             playbackManager.continuePlayedList(playedListId)
             playerViewManager.animateTo(BottomSheetStates.EXPANDED)
         }
     }
 
-    override fun deletePlayedList(playedListId: UUID) {
+    override fun deletePlayedList(playedListId: Uuid) {
         viewModelScope.launch {
             playbackManager.deletePlayedList(playedListId)
         }

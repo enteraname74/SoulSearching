@@ -18,13 +18,13 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPartTitle
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistViewUiUtils
-import java.util.*
+import kotlin.uuid.Uuid
 
 @Composable
 fun ArtistAlbums(
     albums: List<AlbumWithMusics>,
     multiSelectionState: MultiSelectionState,
-    onAlbumClick: (albumId: UUID) -> Unit = {},
+    onAlbumClick: (albumId: Uuid) -> Unit = {},
     onAlbumLongClick: (AlbumWithMusics) -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()

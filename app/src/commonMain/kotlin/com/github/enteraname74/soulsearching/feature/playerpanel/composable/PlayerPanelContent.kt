@@ -30,13 +30,13 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerM
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Composable
 fun PlayerPanelContent(
     playerState: PlayerViewState.Data,
     lyricsState: LyricsFetchState,
-    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
+    onMoreClickedOnMusic: (musicId: Uuid) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
     onActivateRemoteLyrics: () -> Unit,
     onSwiped: ((Music) -> Unit)?,

@@ -14,11 +14,11 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Pager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageListPaged
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 fun allAlbumsTab(
     mainPageViewModel: MainPageViewModel,
-    navigateToAlbum: (albumId: UUID) -> Unit,
+    navigateToAlbum: (albumId: Uuid) -> Unit,
 ): PagerScreen = PagerScreen(
     type = ElementEnum.ALBUMS,
     screen = {

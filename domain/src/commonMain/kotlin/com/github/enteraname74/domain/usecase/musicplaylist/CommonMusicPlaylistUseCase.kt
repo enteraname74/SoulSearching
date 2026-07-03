@@ -2,7 +2,7 @@ package com.github.enteraname74.domain.usecase.musicplaylist
 
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
-import java.util.*
+import kotlin.uuid.Uuid
 
 class CommonMusicPlaylistUseCase(
     private val musicPlaylistRepository: MusicPlaylistRepository
@@ -14,8 +14,8 @@ class CommonMusicPlaylistUseCase(
     }
 
     suspend fun delete(
-        musicId: UUID,
-        playlistId: UUID
+        musicId: Uuid,
+        playlistId: Uuid
     ) {
         musicPlaylistRepository.deleteMusicFromPlaylist(
             musicId = musicId,

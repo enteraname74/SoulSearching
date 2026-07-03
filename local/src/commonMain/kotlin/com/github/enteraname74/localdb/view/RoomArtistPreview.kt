@@ -4,8 +4,8 @@ import androidx.room.DatabaseView
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Cover.CoverFile.DevicePathSpec
-import java.time.LocalDateTime
-import java.util.UUID
+import kotlin.time.Instant
+import kotlin.uuid.Uuid
 
 @DatabaseView(
     """
@@ -58,12 +58,12 @@ import java.util.UUID
     """
 )
 data class RoomArtistPreview(
-    val id: UUID,
+    val id: Uuid,
     val name: String,
-    val addedDate: LocalDateTime,
+    val addedDate: Instant,
     val nbPlayed: Int,
     val totalMusics: Int,
-    val coverId: UUID?,
+    val coverId: Uuid?,
     val coverUrl: String?,
     val musicCoverUrl: String?,
     val coverFolderKey: String?,

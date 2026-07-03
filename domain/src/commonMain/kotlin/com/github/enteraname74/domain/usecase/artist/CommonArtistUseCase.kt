@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.repository.ArtistRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class CommonArtistUseCase(
     private val artistRepository: ArtistRepository,
@@ -30,14 +30,14 @@ class CommonArtistUseCase(
     /**
      * Use [DeleteArtistUseCase] for a clean deletion of the songs and albums of artists.
      */
-    suspend fun deleteAll(artistsIds: List<UUID>) {
+    suspend fun deleteAll(artistsIds: List<Uuid>) {
         artistRepository.deleteAll(
             artistsIds = artistsIds,
         )
     }
 
     suspend fun deleteIfEmpty(
-        artistId: UUID
+        artistId: Uuid
     ) {
         val artistWithMusics: ArtistWithMusics =
             artistRepository.getArtistWithMusics(artistId = artistId).first() ?: return
@@ -57,13 +57,13 @@ class CommonArtistUseCase(
             artistRepository.getArtistNamesContainingSearch(searchString)
         }
 
-    fun getArtistWithMusic(artistId: UUID): Flow<ArtistWithMusics?> =
+    fun getArtistWithMusic(artistId: Uuid): Flow<ArtistWithMusics?> =
         artistRepository.getArtistWithMusics(
             artistId = artistId,
         )
 
     suspend fun getDuplicatedArtist(
-        artistId: UUID,
+        artistId: Uuid,
         artistName: String
     ): ArtistWithMusics? =
         artistRepository.getDuplicatedArtist(
@@ -74,7 +74,7 @@ class CommonArtistUseCase(
     fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>> =
         artistRepository.getArtistsWistMostMusics()
 
-    suspend fun incrementArtistNbPlayed(artistId: UUID) {
+    suspend fun incrementArtistNbPlayed(artistId: Uuid) {
         val artist: Artist = artistRepository.getFromId(artistId).first() ?: return
         artistRepository.upsert(
             artist = artist.copy(
@@ -83,7 +83,7 @@ class CommonArtistUseCase(
         )
     }
 
-    fun getFromIds(artistIds: List<UUID>) : Flow<List<ArtistWithMusics>> =
+    fun getFromIds(artistIds: List<Uuid>) : Flow<List<ArtistWithMusics>> =
         artistRepository.getFromIds(artistIds)
 
     suspend fun upsertAll(allArtists: List<Artist>) {
@@ -105,7 +105,7 @@ class CommonArtistUseCase(
     fun getMostListened(): Flow<List<ArtistPreview>> =
         artistRepository.getMostListened()
 
-    fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?> =
+    fun getArtistPreview(artistId: Uuid): Flow<ArtistPreview?> =
         artistRepository.getArtistPreview(artistId)
 
     fun searchAll(search: String): Flow<List<ArtistPreview>> =

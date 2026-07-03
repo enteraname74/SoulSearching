@@ -6,14 +6,14 @@ import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.*
+import kotlin.uuid.Uuid
 
 class ToggleMusicFavoriteStatusUseCase(
     private val musicPlaylistRepository: MusicPlaylistRepository,
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
 ) {
-    suspend operator fun invoke(musicId: UUID) {
+    suspend operator fun invoke(musicId: Uuid) {
         val favoritePlaylist: PlaylistWithMusics = commonPlaylistUseCase.getFavorite().firstOrNull() ?: return
 
         if (isMusicInFavoritePlaylistUseCase(musicId = musicId).first()) {

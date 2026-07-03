@@ -7,19 +7,19 @@ import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.repository.AlbumRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class CommonAlbumUseCase(
     private val albumRepository: AlbumRepository
 ) {
 
-    fun getFromId(albumId: UUID): Flow<Album?> =
+    fun getFromId(albumId: Uuid): Flow<Album?> =
         albumRepository.getFromId(albumId)
 
-    fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>> =
+    fun getFromIds(albumIds: List<Uuid>): Flow<List<AlbumWithMusics>> =
         albumRepository.getFromIds(albumIds)
 
-    fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?> =
+    fun getAlbumWithMusics(albumId: Uuid): Flow<AlbumWithMusics?> =
         albumRepository.getAlbumWithMusics(
             albumId = albumId,
         )
@@ -33,7 +33,7 @@ class CommonAlbumUseCase(
     fun getMostListened(): Flow<List<AlbumPreview>> =
         albumRepository.getMostListened()
 
-    fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?> =
+    fun getAlbumPreview(albumId: Uuid): Flow<AlbumPreview?> =
         albumRepository.getAlbumPreview(albumId)
 
     fun searchAll(search: String): Flow<List<AlbumPreview>> =
@@ -42,7 +42,7 @@ class CommonAlbumUseCase(
     /**
      * Call [DeleteAlbumUseCase] for a clean delete of related songs and artists if needed
      */
-    suspend fun deleteAll(albumsIds: List<UUID>) {
+    suspend fun deleteAll(albumsIds: List<Uuid>) {
         albumRepository.deleteAll(
             ids = albumsIds,
         )
@@ -55,17 +55,17 @@ class CommonAlbumUseCase(
             albumRepository.getAlbumNamesContainingSearch(searchString)
         }
 
-    fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> =
+    fun getAlbumsOfArtist(artistId: Uuid): Flow<List<Album>> =
         albumRepository.getAlbumsOfArtist(
             artistId = artistId,
         )
 
-    fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>> =
+    fun getAlbumsWithMusicsOfArtist(artistId: Uuid): Flow<List<AlbumWithMusics>> =
         albumRepository.getAlbumsWithMusicsOfArtist(
             artistId = artistId,
         )
 
-    suspend fun incrementAlbumNbPlayed(albumId: UUID) {
+    suspend fun incrementAlbumNbPlayed(albumId: Uuid) {
         val album: Album = albumRepository.getFromId(albumId = albumId).first() ?: return
         albumRepository.upsert(
             album = album.copy(

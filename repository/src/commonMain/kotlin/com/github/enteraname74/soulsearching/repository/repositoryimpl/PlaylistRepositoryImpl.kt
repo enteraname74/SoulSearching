@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import kotlin.uuid.Uuid
 
 /**
  * Repository of a Playlist.
@@ -27,7 +27,7 @@ class PlaylistRepositoryImpl(
         playlist = playlist
     )
 
-    override suspend fun deleteAll(playlistIds: List<UUID>) {
+    override suspend fun deleteAll(playlistIds: List<Uuid>) {
         playlistDataSource.deleteAll(playlistIds)
     }
 
@@ -37,18 +37,18 @@ class PlaylistRepositoryImpl(
     /**
      * Retrieves a Playlist from its id.
      */
-    override fun getFromId(playlistId: UUID): Flow<Playlist?> =
+    override fun getFromId(playlistId: Uuid): Flow<Playlist?> =
         playlistDataSource.getFromId(
             playlistId = playlistId
         )
 
-    override fun getFromIds(playlistIds: List<UUID>): Flow<List<PlaylistWithMusics>> =
+    override fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
         playlistDataSource.getFromIds(playlistIds)
 
     /**
      * Retrieves a flow of a PlaylistWithMusics.
      */
-    override fun getPlaylistWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?> =
+    override fun getPlaylistWithMusics(playlistId: Uuid): Flow<PlaylistWithMusics?> =
         playlistDataSource.getPlaylistWithMusics(
             playlistId = playlistId
         )
@@ -66,7 +66,7 @@ class PlaylistRepositoryImpl(
     override fun getMostListened(): Flow<List<PlaylistPreview>> =
         playlistDataSource.getMostListened()
 
-    override fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?> =
+    override fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?> =
         playlistDataSource.getPlaylistPreview(playlistId)
 
     override fun searchAll(search: String): Flow<List<PlaylistPreview>> =

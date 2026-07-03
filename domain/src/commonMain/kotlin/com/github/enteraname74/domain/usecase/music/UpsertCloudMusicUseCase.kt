@@ -8,7 +8,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.UpsertCloudAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertCloudArtistUseCase
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class UpsertCloudMusicUseCase(
     private val upsertCloudAlbumUseCase: UpsertCloudAlbumUseCase,
@@ -53,7 +53,7 @@ class UpsertCloudMusicUseCase(
 
     private suspend fun getExistingMusic(
         cloudMusic: CloudMusic,
-        albumId: UUID,
+        albumId: Uuid,
     ): Music? =
         musicRepository.getFromRemoteId(cloudMusic.fingerprint)
             ?: musicRepository.getFromInformation(

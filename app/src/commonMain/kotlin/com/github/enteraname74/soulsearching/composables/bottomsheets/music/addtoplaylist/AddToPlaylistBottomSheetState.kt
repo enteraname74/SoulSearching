@@ -2,10 +2,10 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.music.add
 
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 data class AddToPlaylistBottomSheetState(
     val dialogState: SoulDialog? = null,
-    val selectedPlaylistIds: Set<UUID> = emptySet(),
+    val selectedPlaylistIds: Set<Uuid> = emptySet(),
     val playlistsWithMusics: List<PlaylistWithMusics> = emptyList(),
 )

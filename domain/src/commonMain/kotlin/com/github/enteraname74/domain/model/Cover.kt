@@ -1,6 +1,6 @@
 package com.github.enteraname74.domain.model
 
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 sealed interface Cover {
 
@@ -11,7 +11,7 @@ sealed interface Cover {
 
     data class CoverFile(
         val initialCoverPath: String? = null,
-        val fileCoverId: UUID? = null,
+        val fileCoverId: Uuid? = null,
         val devicePathSpec: DevicePathSpec? = null,
     ): Cover {
         override fun isEmpty(): Boolean =

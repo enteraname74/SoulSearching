@@ -1,7 +1,6 @@
 package com.github.enteraname74.domain.model.player
 
 import kotlinx.serialization.Serializable
-import java.util.UUID
 import kotlin.uuid.Uuid
 
 @Serializable
@@ -14,7 +13,7 @@ data class RemoteSharedPlayedListUser(
 )
 
 data class SharedPlayedListUser(
-    val listId: UUID,
+    val listId: Uuid,
     val isOwner: Boolean,
     val id: Uuid,
     val deviceId: String,

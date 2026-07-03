@@ -21,7 +21,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 internal class RoomPlaylistDataSourceImpl(
     private val appDatabase: AppDatabase,
@@ -45,7 +45,7 @@ internal class RoomPlaylistDataSourceImpl(
         )
     }
 
-    override suspend fun deleteAll(playlistIds: List<UUID>) {
+    override suspend fun deleteAll(playlistIds: List<Uuid>) {
         appDatabase.playlistDao.deleteAll(
             ids = playlistIds,
         )
@@ -57,20 +57,20 @@ internal class RoomPlaylistDataSourceImpl(
         }
     }
 
-    override fun getFromId(playlistId: UUID): Flow<Playlist?> {
+    override fun getFromId(playlistId: Uuid): Flow<Playlist?> {
         return appDatabase.playlistDao.getFromId(
             playlistId = playlistId
         ).map { it?.toPlaylist() }
     }
 
-    override fun getFromIds(playlistIds: List<UUID>): Flow<List<PlaylistWithMusics>> =
+    override fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
         appDatabase.playlistDao.getFromIds(playlistIds).map { list ->
             list
                 .sortedBy { playlistIds.indexOf(it.roomPlaylist.playlistId) }
                 .map { it.toPlaylistWIthMusics() }
         }
 
-    override fun getPlaylistWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?> {
+    override fun getPlaylistWithMusics(playlistId: Uuid): Flow<PlaylistWithMusics?> {
         return appDatabase.playlistDao.getPlaylistWithMusics(playlistId = playlistId)
             .map { it?.toPlaylistWIthMusics() }
     }
@@ -125,7 +125,7 @@ internal class RoomPlaylistDataSourceImpl(
             list.map { it.toPlaylistPreview() }
         }
 
-    override fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?> =
+    override fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?> =
         appDatabase.playlistDao.getPlaylistPreview(playlistId).map { it?.toPlaylistPreview() }
 
     override fun searchAll(search: String): Flow<List<PlaylistPreview>> =

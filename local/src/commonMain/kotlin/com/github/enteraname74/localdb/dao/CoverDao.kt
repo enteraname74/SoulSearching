@@ -2,7 +2,7 @@ package com.github.enteraname74.localdb.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Dao
 interface CoverDao {
@@ -15,5 +15,5 @@ interface CoverDao {
                 OR EXISTS (SELECT 1 FROM RoomArtist WHERE coverId = :coverId)
         """
     )
-    suspend fun isCoverUsed(coverId: UUID): Boolean
+    suspend fun isCoverUsed(coverId: Uuid): Boolean
 }

@@ -5,7 +5,7 @@ import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toMusicArtist
 import com.github.enteraname74.localdb.model.toRoomMusicArtist
 import com.github.enteraname74.soulsearching.repository.datasource.MusicArtistDataSource
-import java.util.*
+import kotlin.uuid.Uuid
 
 /**
  * Implementation of the MusicArtistDataSource with Room's DAO.
@@ -13,7 +13,7 @@ import java.util.*
 internal class RoomMusicArtistDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : MusicArtistDataSource {
-    override suspend fun get(artistId: UUID, musicId: UUID): MusicArtist? =
+    override suspend fun get(artistId: Uuid, musicId: Uuid): MusicArtist? =
         appDatabase.musicArtistDao.get(
             artistId = artistId,
             musicId = musicId,
@@ -33,11 +33,11 @@ internal class RoomMusicArtistDataSourceImpl(
         appDatabase.musicArtistDao.delete(id = musicArtist.id)
     }
 
-    override suspend fun deleteOfArtist(artistId: UUID) {
+    override suspend fun deleteOfArtist(artistId: Uuid) {
         appDatabase.musicArtistDao.deleteOfArtist(artistId)
     }
 
-    override suspend fun deleteOfMusic(musicId: UUID) {
+    override suspend fun deleteOfMusic(musicId: Uuid) {
         appDatabase.musicArtistDao.deleteOfMusic(musicId)
     }
 }

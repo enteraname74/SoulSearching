@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class ModifyArtistViewModel(
     private val commonArtistUseCase: CommonArtistUseCase,
@@ -41,7 +41,7 @@ class ModifyArtistViewModel(
     private val loadingManager: LoadingManager,
     destination: ModifyArtistDestination,
 ) : ViewModel() {
-    private val artistId: UUID = destination.selectedArtistId
+    private val artistId: Uuid = destination.selectedArtistId
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
     private val _navigationState: MutableStateFlow<ModifyArtistNavigationState> = MutableStateFlow(
         ModifyArtistNavigationState.Idle,
@@ -144,9 +144,9 @@ class ModifyArtistViewModel(
             val form = (formState.value as? ModifyArtistFormState.Data)?.takeIf { it.isFormValid() } ?: return@launch
 
             loadingManager.withLoading {
-                val coverFile: UUID? =
+                val coverFile: Uuid? =
                     state.editableElement.newCover?.let { coverData ->
-                        val newCoverId: UUID = UUID.randomUUID()
+                        val newCoverId: Uuid = Uuid.random()
                         commonCoverUseCase.upsert(
                             id = newCoverId,
                             data = coverData,

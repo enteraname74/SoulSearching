@@ -8,18 +8,18 @@ import com.github.enteraname74.domain.repository.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import java.util.*
+import kotlin.uuid.Uuid
 
 class CommonPlaylistUseCase(
     private val playlistRepository: PlaylistRepository,
 ) {
-    fun getFromId(playlistId: UUID): Flow<Playlist?> =
+    fun getFromId(playlistId: Uuid): Flow<Playlist?> =
         playlistRepository.getFromId(playlistId)
 
-    fun getFromIds(playlistIds: List<UUID>): Flow<List<PlaylistWithMusics>> =
+    fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
         playlistRepository.getFromIds(playlistIds)
 
-    suspend fun deleteAll(playlistIds: List<UUID>) {
+    suspend fun deleteAll(playlistIds: List<Uuid>) {
         playlistRepository.deleteAll(playlistIds)
     }
 
@@ -38,13 +38,13 @@ class CommonPlaylistUseCase(
             list.firstOrNull { it.playlist.isFavorite }
         }
 
-    fun getWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?> =
+    fun getWithMusics(playlistId: Uuid): Flow<PlaylistWithMusics?> =
         playlistRepository.getPlaylistWithMusics(playlistId)
 
     fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
         playlistRepository.getAllPaged()
 
-    suspend fun incrementNbPlayed(playlistId: UUID) {
+    suspend fun incrementNbPlayed(playlistId: Uuid) {
         val playlist: Playlist = playlistRepository.getFromId(playlistId).first() ?: return
         playlistRepository.upsert(
             playlist.copy(
@@ -70,7 +70,7 @@ class CommonPlaylistUseCase(
     fun getMostListened(): Flow<List<PlaylistPreview>> =
         playlistRepository.getMostListened()
 
-    fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?> =
+    fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?> =
         playlistRepository.getPlaylistPreview(playlistId)
 
     fun searchAll(search: String): Flow<List<PlaylistPreview>> =

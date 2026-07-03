@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class ModifyPlaylistViewModel(
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
@@ -39,7 +39,7 @@ class ModifyPlaylistViewModel(
     private val loadingManager: LoadingManager,
     destination: ModifyPlaylistDestination,
 ) : ViewModel() {
-    private val playlistId: UUID = destination.selectedPlaylistId
+    private val playlistId: Uuid = destination.selectedPlaylistId
     private val _navigationState: MutableStateFlow<ModifyPlaylistNavigationState> = MutableStateFlow(
         ModifyPlaylistNavigationState.Idle
     )
@@ -132,8 +132,8 @@ class ModifyPlaylistViewModel(
 
             loadingManager.startLoading()
 
-            val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
-                val newCoverId: UUID = UUID.randomUUID()
+            val coverFile: Uuid? = state.editableElement.newCover?.let { coverData ->
+                val newCoverId: Uuid = Uuid.random()
                 commonCoverUseCase.upsert(
                     id = newCoverId,
                     data = coverData,

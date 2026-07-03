@@ -71,7 +71,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 import com.github.enteraname74.soulsearching.feature.playlistdetail.ext.title
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import org.jetbrains.compose.resources.DrawableResource
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.time.Duration
 
 @Composable
@@ -149,7 +149,7 @@ fun PlaylistLargeView(
         }
         items(
             count = musics.itemCount,
-            key = { musics[it]?.musicId ?: UUID.randomUUID() },
+            key = { musics[it]?.musicId ?: Uuid.random() },
             contentType = { PLAYLIST_MUSIC_CONTENT_TYPE }
         ) { pos ->
 

@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.*
+import kotlin.uuid.Uuid
 
 class DeleteAlbumUseCase(
     private val albumRepository: AlbumRepository,
@@ -15,7 +15,7 @@ class DeleteAlbumUseCase(
     private val commonArtistUseCase: CommonArtistUseCase,
     private val deleteMusicUseCase: DeleteMusicUseCase,
 ) {
-    suspend operator fun invoke(albumId: UUID) {
+    suspend operator fun invoke(albumId: Uuid) {
         val albumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first() ?: return
 
         /*
@@ -49,11 +49,11 @@ class DeleteAlbumUseCase(
     }
 
     // TODO OPTIMIZATION: Improve deletion of multiple albums?
-    suspend operator fun invoke(albumIds: List<UUID>) {
+    suspend operator fun invoke(albumIds: List<Uuid>) {
         albumIds.forEach { this(it) }
     }
 
-    suspend fun onlyAlbum(albumId: UUID) {
+    suspend fun onlyAlbum(albumId: Uuid) {
         albumRepository.getAlbumWithMusics(albumId = albumId).firstOrNull()?.let {
             albumRepository.delete(it.album)
         }

@@ -2,7 +2,7 @@ package com.github.enteraname74.localdb.dao
 
 import androidx.room.*
 import com.github.enteraname74.localdb.model.RoomMusicArtist
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * DAO of a MusicArtist
@@ -10,13 +10,13 @@ import java.util.UUID
 @Dao
 interface MusicArtistDao {
     @Query("SELECT * FROM RoomMusicArtist WHERE artistId = :artistId AND musicId = :musicId")
-    suspend fun get(artistId: UUID, musicId: UUID): RoomMusicArtist?
+    suspend fun get(artistId: Uuid, musicId: Uuid): RoomMusicArtist?
 
     @Query("DELETE FROM RoomMusicArtist WHERE artistId = :artistId")
-    suspend fun deleteOfArtist(artistId: UUID)
+    suspend fun deleteOfArtist(artistId: Uuid)
 
     @Query("DELETE FROM RoomMusicArtist WHERE musicId = :musicId")
-    suspend fun deleteOfMusic(musicId: UUID)
+    suspend fun deleteOfMusic(musicId: Uuid)
 
     @Query("DELETE FROM RoomMusicArtist WHERE id = :id")
     suspend fun delete(

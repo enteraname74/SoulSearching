@@ -82,7 +82,7 @@ import kotlinx.coroutines.plus
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Suppress("Deprecation")
 class MainPageViewModel(
@@ -543,7 +543,7 @@ class MainPageViewModel(
         multiSelectionManager.clearMultiSelection()
     }
 
-    fun toPlaylist(playlistId: UUID) {
+    fun toPlaylist(playlistId: Uuid) {
         navigateAndClearSelection(
             MainPageNavigationState.ToPlaylist(
                 playlistId = playlistId,
@@ -551,7 +551,7 @@ class MainPageViewModel(
         )
     }
 
-    fun toAlbum(albumId: UUID) {
+    fun toAlbum(albumId: Uuid) {
         navigateAndClearSelection(
             MainPageNavigationState.ToAlbum(
                 albumId = albumId,
@@ -559,7 +559,7 @@ class MainPageViewModel(
         )
     }
 
-    fun toArtist(artistId: UUID) {
+    fun toArtist(artistId: Uuid) {
         navigateAndClearSelection(
             MainPageNavigationState.ToArtist(
                 artistId = artistId,
@@ -613,23 +613,23 @@ class MainPageViewModel(
         _search.value = search
     }
 
-    fun showMusicBottomSheet(musicIds: List<UUID>) {
+    fun showMusicBottomSheet(musicIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToMusicBottomSheet(musicIds = musicIds)
     }
 
-    fun showPlaylistBottomSheet(playlistIds: List<UUID>) {
+    fun showPlaylistBottomSheet(playlistIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToPlaylistBottomSheet(
             playlistIds = playlistIds,
         )
     }
 
-    fun showArtistBottomSheet(artistIds: List<UUID>) {
+    fun showArtistBottomSheet(artistIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToArtistBottomSheet(
             artistIds = artistIds,
         )
     }
 
-    fun showAlbumBottomSheet(albumIds: List<UUID>) {
+    fun showAlbumBottomSheet(albumIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToAlbumBottomSheet(
             albumIds = albumIds,
         )
@@ -640,7 +640,7 @@ class MainPageViewModel(
     }
 
     fun toggleElementInSelection(
-        id: UUID,
+        id: Uuid,
         mode: SelectionMode,
     ) {
         multiSelectionManager.toggleElementInSelection(

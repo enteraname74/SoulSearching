@@ -42,7 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Composable
 fun SoulImage(
@@ -345,7 +345,7 @@ fun TemplateImage(
 
 @Composable
 private fun CoverIdImage(
-    coverId: UUID?,
+    coverId: Uuid?,
     modifier: Modifier = Modifier,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     contentScale: ContentScale = ContentScale.Crop,

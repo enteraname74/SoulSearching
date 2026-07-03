@@ -21,7 +21,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import java.util.UUID
 import kotlin.uuid.Uuid
 
 /**
@@ -47,7 +46,7 @@ internal class RoomArtistDataSourceImpl(
         )
     }
 
-    override suspend fun deleteAll(artistsIds: List<UUID>) {
+    override suspend fun deleteAll(artistsIds: List<Uuid>) {
         appDatabase.artistDao.deleteAll(
             ids = artistsIds,
         )
@@ -70,7 +69,7 @@ internal class RoomArtistDataSourceImpl(
         }
     }
 
-    override fun getFromId(artistId: UUID): Flow<Artist?> {
+    override fun getFromId(artistId: Uuid): Flow<Artist?> {
         return appDatabase.artistDao.getFromId(
             artistId = artistId
         ).map { it?.toArtist() }
@@ -81,7 +80,7 @@ internal class RoomArtistDataSourceImpl(
             remoteId = remoteId
         )?.toArtist()
 
-    override fun getFromIds(artistIds: List<UUID>): Flow<List<ArtistWithMusics>> =
+    override fun getFromIds(artistIds: List<Uuid>): Flow<List<ArtistWithMusics>> =
         appDatabase.artistDao.getFromIds(artistIds).map { list ->
             list
                 .sortedBy { artistIds.indexOf(it.roomArtist.artistId) }
@@ -135,13 +134,13 @@ internal class RoomArtistDataSourceImpl(
             artistsNames
         ).map { it.toArtist() }
 
-    override fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics?> {
+    override fun getArtistWithMusics(artistId: Uuid): Flow<ArtistWithMusics?> {
         return appDatabase.artistDao.getArtistWithMusics(
             artistId = artistId
         ).map { it?.toArtistWithMusics() }
     }
 
-    override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
+    override fun getArtistsOfMusic(musicId: Uuid): Flow<List<Artist>> =
         appDatabase.artistDao.getArtistsOfMusic(musicId = musicId).map { list ->
             list.map { it.toArtist() }
         }
@@ -152,7 +151,7 @@ internal class RoomArtistDataSourceImpl(
         }
 
     override suspend fun getDuplicatedArtist(
-        artistId: UUID,
+        artistId: Uuid,
         artistName: String
     ): ArtistWithMusics? =
         appDatabase.artistDao.getDuplicatedArtist(
@@ -174,7 +173,7 @@ internal class RoomArtistDataSourceImpl(
             list.map { it.toArtistPreview() }
         }
 
-    override fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?> =
+    override fun getArtistPreview(artistId: Uuid): Flow<ArtistPreview?> =
         appDatabase.artistDao.getArtistPreview(artistId).map { it?.toArtistPreview() }
 
     override fun searchAll(search: String): Flow<List<ArtistPreview>> =

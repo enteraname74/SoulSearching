@@ -19,6 +19,7 @@ kotlin {
     compilerOptions {
         // Common compiler options applied to all Kotlin source sets for expect / actual implementations
         freeCompilerArgs.add("-Xexpect-actual-classes")
+        optIn.add("kotlin.uuid.ExperimentalUuidApi")
     }
 
     sourceSets {

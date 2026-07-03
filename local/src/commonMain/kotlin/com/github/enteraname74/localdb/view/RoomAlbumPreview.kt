@@ -3,8 +3,8 @@ package com.github.enteraname74.localdb.view
 import androidx.room.DatabaseView
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.Cover
-import java.time.LocalDateTime
-import java.util.UUID
+import kotlin.time.Instant
+import kotlin.uuid.Uuid
 
 @DatabaseView(
     """
@@ -50,13 +50,13 @@ import java.util.UUID
     """
 )
 data class RoomAlbumPreview(
-    val id: UUID,
+    val id: Uuid,
     val nbPlayed: Int,
-    val addedDate: LocalDateTime,
+    val addedDate: Instant,
     val name: String,
     val artist: String,
-    val artistId: UUID,
-    val coverId: UUID?,
+    val artistId: Uuid,
+    val coverId: Uuid?,
     val coverUrl: String?,
     val musicCoverUrl: String?,
     val musicCoverPath: String?,

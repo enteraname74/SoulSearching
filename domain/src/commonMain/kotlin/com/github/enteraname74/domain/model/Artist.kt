@@ -1,13 +1,12 @@
 package com.github.enteraname74.domain.model
 
 import com.github.enteraname74.domain.util.DateUtils
-import com.github.enteraname74.domain.util.serializer.LocalDateTimeSerializer
-import com.github.enteraname74.domain.util.serializer.UUIDSerializer
+import com.github.enteraname74.domain.util.serializer.InstantSerializer
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
-import java.util.*
-import kotlin.math.max
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlin.uuid.Uuid
+import kotlin.math.max
 
 /**
  * Represent an artist with information related to it.
@@ -15,13 +14,12 @@ import kotlin.uuid.Uuid
  */
 @Serializable
 data class Artist(
-    @Serializable(with = UUIDSerializer::class)
-    val artistId: UUID = UUID.randomUUID(),
+    val artistId: Uuid = Uuid.random(),
     val remoteId: Uuid? = null,
     val artistName: String,
     val cover: Cover? = null,
-    @Serializable(with = LocalDateTimeSerializer::class)
-    val addedDate: LocalDateTime = LocalDateTime.now(),
+    @Serializable(with = InstantSerializer::class)
+    val addedDate: Instant = Clock.System.now(),
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,
     val lastUpdatedMillis: Long? = DateUtils.now(),

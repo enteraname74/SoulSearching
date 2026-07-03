@@ -1,7 +1,7 @@
 package com.github.enteraname74.domain.model.player
 
 import com.github.enteraname74.domain.model.Music
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.time.Clock
 
 data class PlayedListSetup(
@@ -16,7 +16,7 @@ data class PlayedListSetup(
     val scope: PlayedListScope,
     val forceOverride: Boolean = false,
 ) {
-    private val playedListId: UUID = UUID.randomUUID()
+    private val playedListId: Uuid = Uuid.random()
 
     fun toPlayedList(): PlayerPlayedList =
         PlayerPlayedList(
@@ -30,7 +30,7 @@ data class PlayedListSetup(
         )
 
     fun toPlayerMusics(): List<PlayerMusic> {
-        val currentMusicId: UUID = selectedMusic?.musicId ?: musics.first().musicId
+        val currentMusicId: Uuid = selectedMusic?.musicId ?: musics.first().musicId
 
         return musics.mapIndexed { index, music ->
             PlayerMusic(

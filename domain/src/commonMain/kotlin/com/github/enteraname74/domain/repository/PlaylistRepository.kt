@@ -5,7 +5,7 @@ import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 interface PlaylistRepository {
     /**
@@ -23,7 +23,7 @@ interface PlaylistRepository {
     /**
      * Deletes the playlists identified in the given list of ids.
      */
-    suspend fun deleteAll(playlistIds: List<UUID>)
+    suspend fun deleteAll(playlistIds: List<Uuid>)
 
     /**
      * Retrieves a flow of all PlaylistWithMusics, sorted by name asc.
@@ -33,14 +33,14 @@ interface PlaylistRepository {
     /**
      * Retrieves a Playlist from its id.
      */
-    fun getFromId(playlistId: UUID): Flow<Playlist?>
+    fun getFromId(playlistId: Uuid): Flow<Playlist?>
 
-    fun getFromIds(playlistIds: List<UUID>): Flow<List<PlaylistWithMusics>>
+    fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>>
 
     /**
      * Retrieves a flow of a PlaylistWithMusics.
      */
-    fun getPlaylistWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?>
+    fun getPlaylistWithMusics(playlistId: Uuid): Flow<PlaylistWithMusics?>
 
     fun getAllPaged(): Flow<PagingData<PlaylistPreview>>
 
@@ -50,7 +50,7 @@ interface PlaylistRepository {
 
     fun getMostListened(): Flow<List<PlaylistPreview>>
 
-    fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?>
+    fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?>
 
     fun searchAll(search: String): Flow<List<PlaylistPreview>>
 }

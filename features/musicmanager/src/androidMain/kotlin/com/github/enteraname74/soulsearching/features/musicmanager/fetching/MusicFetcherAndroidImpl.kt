@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Class handling music fetching for Android devices.
@@ -77,7 +77,7 @@ internal class MusicFetcherAndroidImpl(
                 if (commonPlaylistUseCase.getFavorite().firstOrNull() == null) {
                     commonPlaylistUseCase.upsert(
                         Playlist(
-                            playlistId = UUID.randomUUID(),
+                            playlistId = Uuid.random(),
                             name = strings.favorite,
                             isFavorite = true
                         )

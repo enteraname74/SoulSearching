@@ -13,7 +13,7 @@ import com.github.enteraname74.localdb.utils.PagingUtils
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import java.util.*
+import kotlin.uuid.Uuid
 import kotlin.time.Clock
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -70,7 +70,7 @@ internal class RoomPlayerLocalDataSourceImpl(
     }
 
     override fun getNextMusic(
-        musicIdsToSkip: List<UUID>,
+        musicIdsToSkip: List<Uuid>,
     ): Flow<PlayerMusic?> =
         withGlobalState { data ->
             when {
@@ -109,7 +109,7 @@ internal class RoomPlayerLocalDataSourceImpl(
         )
     }
 
-    override suspend fun moveMusic(fromMusicId: UUID, toMusicId: UUID) {
+    override suspend fun moveMusic(fromMusicId: Uuid, toMusicId: Uuid) {
         val musicToMove: RoomPlayerMusic = playerMusicDao.getOfCurrentList(fromMusicId) ?: return
         val mode: PlayerMode = listDao.getCurrentMode().firstOrNull() ?: return
 
@@ -150,7 +150,7 @@ internal class RoomPlayerLocalDataSourceImpl(
         )
     }
 
-    override suspend fun deleteAll(musicIds: List<UUID>) {
+    override suspend fun deleteAll(musicIds: List<Uuid>) {
         val currentId = playerMusicDao.getCurrentMusic().firstOrNull()?.playerMusic?.musicId ?: return
         val mode = listDao.getCurrentMode().firstOrNull() ?: return
         val willDeleteCurrent = currentId in musicIds
@@ -255,7 +255,7 @@ internal class RoomPlayerLocalDataSourceImpl(
         }
     }
 
-    override suspend fun deletePlayedList(playedListId: UUID) {
+    override suspend fun deletePlayedList(playedListId: Uuid) {
         listDao.delete(playedListId)
     }
 
@@ -263,13 +263,13 @@ internal class RoomPlayerLocalDataSourceImpl(
         listDao.deleteCurrent()
     }
 
-    override suspend fun handleListChange(musicIdsToKeep: List<UUID>) {
+    override suspend fun handleListChange(musicIdsToKeep: List<Uuid>) {
         appDatabase.useWriterConnection {
             val currentMode: PlayerMode = listDao
                 .getCurrentMode()
                 .firstOrNull() ?: return@useWriterConnection
 
-            val currentMusicId: UUID = playerMusicDao
+            val currentMusicId: Uuid = playerMusicDao
                 .getCurrentMusic()
                 .firstOrNull()
                 ?.playerMusic?.musicId ?: return@useWriterConnection
@@ -307,7 +307,7 @@ internal class RoomPlayerLocalDataSourceImpl(
         listDao.setScope(scope)
     }
 
-    override suspend fun continuePlayedList(playedListId: UUID) {
+    override suspend fun continuePlayedList(playedListId: Uuid) {
         appDatabase.useWriterConnection {
             listDao.deleteMainAndSearch()
             listDao.cacheAll()
@@ -352,7 +352,7 @@ internal class RoomPlayerLocalDataSourceImpl(
         )
     }
 
-    override suspend fun setCurrent(musicId: UUID) {
+    override suspend fun setCurrent(musicId: Uuid) {
         appDatabase.useWriterConnection {
             playerMusicDao.setCurrent(
                 musicId = musicId,
@@ -377,7 +377,7 @@ internal class RoomPlayerLocalDataSourceImpl(
 
     override suspend fun setProgress(progress: Int) {
         val currentPlayerMusicId: String = playerMusicDao.getCurrentMusic().firstOrNull()?.playerMusic?.id ?: return
-        val currentListId: UUID = listDao.getCurrentPlayedList().firstOrNull()?.id ?: return
+        val currentListId: Uuid = listDao.getCurrentPlayedList().firstOrNull()?.id ?: return
 
         progressDao.upsert(
             progress = RoomPlayerMusicProgress(
@@ -411,13 +411,13 @@ internal class RoomPlayerLocalDataSourceImpl(
 
     override suspend fun removeCurrentAndPlayNext() {
         appDatabase.useWriterConnection {
-            val currentId: UUID = playerMusicDao
+            val currentId: Uuid = playerMusicDao
                 .getCurrentMusic()
                 .firstOrNull()
                 ?.playerMusic
                 ?.musicId ?: return@useWriterConnection
 
-            val nextId: UUID = getNextMusic()
+            val nextId: Uuid = getNextMusic()
                 .firstOrNull()
                 ?.music?.musicId ?: return@useWriterConnection
 
@@ -430,7 +430,7 @@ internal class RoomPlayerLocalDataSourceImpl(
     }
 
     override suspend fun updatesMusics(
-        musicIdsToRemove: List<UUID>,
+        musicIdsToRemove: List<Uuid>,
         playerMusicsToAdd: List<PlayerMusic>
     ) {
         appDatabase.useWriterConnection {

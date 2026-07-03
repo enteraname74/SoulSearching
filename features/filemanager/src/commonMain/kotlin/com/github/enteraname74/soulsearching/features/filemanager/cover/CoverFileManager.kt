@@ -1,12 +1,12 @@
 package com.github.enteraname74.soulsearching.features.filemanager.cover
 
 import java.io.File
-import java.util.*
+import kotlin.uuid.Uuid
 
 interface CoverFileManager {
     fun getCoverFolder(): File
 
-    suspend fun saveCover(id: UUID, data: ByteArray) {
+    suspend fun saveCover(id: Uuid, data: ByteArray) {
         val coverFolder = getCoverFolder()
 
         if (getCoverPath(id = id) == null) {
@@ -15,7 +15,7 @@ interface CoverFileManager {
         }
     }
 
-    suspend fun getCoverPath(id: UUID): String? {
+    suspend fun getCoverPath(id: Uuid): String? {
         val coverFolder = getCoverFolder()
         val coverFile = File(coverFolder, buildFileName(id = id))
 
@@ -26,7 +26,7 @@ interface CoverFileManager {
         }
     }
 
-    suspend fun getAllCoverIds(): List<UUID> {
+    suspend fun getAllCoverIds(): List<Uuid> {
         val coverFolder = getCoverFolder()
         val allCoverFiles = coverFolder.listFiles() ?: return emptyList()
 
@@ -39,7 +39,7 @@ interface CoverFileManager {
         }
     }
 
-    suspend fun getCoverData(coverId: UUID): ByteArray? {
+    suspend fun getCoverData(coverId: Uuid): ByteArray? {
         val coverFolder = getCoverFolder()
         val coverFile = File(coverFolder, buildFileName(id = coverId))
 
@@ -50,21 +50,21 @@ interface CoverFileManager {
         }
     }
 
-    suspend fun deleteFromId(id: UUID) {
+    suspend fun deleteFromId(id: Uuid) {
         val coverFolder = getCoverFolder()
         val coverToDelete = File(coverFolder, buildFileName(id = id))
         coverToDelete.delete()
     }
 
-    private fun File.coverId(): UUID? =
+    private fun File.coverId(): Uuid? =
         this.name.split(".").firstOrNull()?.let { cover ->
             try {
-                UUID.fromString(cover)
+                Uuid.parse(cover)
             } catch (_: Exception) {
                 null
             }
         }
 
-    fun buildFileName(id: UUID): String =
+    fun buildFileName(id: Uuid): String =
         "$id.jpg"
 }

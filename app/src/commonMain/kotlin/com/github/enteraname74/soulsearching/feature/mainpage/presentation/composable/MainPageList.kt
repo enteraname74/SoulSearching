@@ -15,7 +15,7 @@ import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyVerticalGridCompat
 import com.github.enteraname74.soulsearching.coreui.utils.OptionalPaddingForPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Composable
 fun <T> MainPageList(
@@ -123,7 +123,7 @@ fun <T : Any> MainPageListPaged(
             if (list.itemCount > 0) {
                 items(
                     count = list.itemCount,
-                    key = { key?.invoke(list[it]) ?: UUID.randomUUID() },
+                    key = { key?.invoke(list[it]) ?: Uuid.random() },
                     contentType = { contentType },
                 ) { index ->
                     list[index]?.let {

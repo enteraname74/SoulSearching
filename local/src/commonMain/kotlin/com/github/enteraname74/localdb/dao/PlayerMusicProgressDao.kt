@@ -5,7 +5,7 @@ import androidx.room.Query
 import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Dao
 interface PlayerMusicProgressDao {
@@ -20,7 +20,7 @@ interface PlayerMusicProgressDao {
         """
     )
     fun getCurrent(
-        listId: UUID,
+        listId: Uuid,
         playerMusicId: String,
     ): Flow<RoomPlayerMusicProgress?>
 }

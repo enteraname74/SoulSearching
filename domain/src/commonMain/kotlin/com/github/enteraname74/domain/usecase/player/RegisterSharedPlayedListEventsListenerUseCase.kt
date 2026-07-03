@@ -4,7 +4,6 @@ import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.repository.SharedPlayedListListener
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import kotlin.uuid.Uuid
-import kotlin.uuid.toJavaUuid
 
 class RegisterSharedPlayedListEventsListenerUseCase(
     private val playerRepository: PlayerRepository,
@@ -23,7 +22,7 @@ class RegisterSharedPlayedListEventsListenerUseCase(
                 }
 
                 override suspend fun onClose() {
-                    playerRepository.deletePlayedList(listId.toJavaUuid())
+                    playerRepository.deletePlayedList(listId)
                     deleteMusicUseCase.deleteSharedMusics()
                     playerRepository.fetchUserListWhereIsIn()
                 }

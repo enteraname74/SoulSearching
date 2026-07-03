@@ -1,12 +1,12 @@
 package com.github.enteraname74.domain.model
 
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Represent a playlist with the total of songs it possess.
  */
 data class PlaylistPreview(
-    val id: UUID,
+    val id: Uuid,
     val isFavorite: Boolean,
     val name: String,
     val totalMusics : Int,

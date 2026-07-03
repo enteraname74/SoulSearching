@@ -74,7 +74,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -85,7 +85,7 @@ fun PlayerListView(
     currentMusicIndex: Int,
     playedList: List<Music>,
     onLongSelectOnMusic: (Music) -> Unit,
-    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
+    onMoreClickedOnMusic: (musicId: Uuid) -> Unit,
     onClickOnMusic: ((Music) -> Unit)?,
     onSwiped: ((Music) -> Unit)?,
     containerColor: Color,
@@ -94,7 +94,7 @@ fun PlayerListView(
     multiSelectionState: MultiSelectionState,
     selectedIconColors: SoulSelectedIconColors,
     playedListScope: PlayedListScope,
-    getUserTag: (musicId: UUID) -> UserTag?,
+    getUserTag: (musicId: Uuid) -> UserTag?,
     onAddFromUrl: (() -> Unit)?,
 ) {
 
@@ -209,11 +209,12 @@ fun PlayerListView(
                                     .draggableHandle(
                                         onDragStopped = {
                                             CoroutineScope(Dispatchers.IO).launch {
-                                                if (fromMusicId == null || afterMusicId == null) return@launch
+                                                val fromMusicIdValue = fromMusicId ?: return@launch
+                                                val afterMusicIdValue = afterMusicId ?: return@launch
 
                                                 playbackManager.moveMusic(
-                                                    fromMusicId = UUID.fromString(fromMusicId),
-                                                    afterMusicId = UUID.fromString(afterMusicId),
+                                                    fromMusicId = Uuid.parse(fromMusicIdValue),
+                                                    afterMusicId = Uuid.parse(afterMusicIdValue),
                                                 )
                                             }
                                         }

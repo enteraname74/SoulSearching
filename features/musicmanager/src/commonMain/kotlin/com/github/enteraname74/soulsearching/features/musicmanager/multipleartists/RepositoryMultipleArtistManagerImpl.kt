@@ -12,7 +12,7 @@ import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCa
 import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinComponent {
     private val commonMusicUseCase: CommonMusicUseCase by inject()
@@ -49,20 +49,20 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
     override suspend fun getArtistFromName(artistName: String): Artist? =
         cachedArtists.find { it.artistName == artistName }
 
-    override suspend fun getMusicIdsOfArtist(artist: Artist): List<UUID> =
+    override suspend fun getMusicIdsOfArtist(artist: Artist): List<Uuid> =
         commonArtistUseCase.getArtistWithMusic(artistId = artist.artistId)
             .firstOrNull()
             ?.musics
             ?.map { it.musicId }
             ?: emptyList()
 
-    override suspend fun getAlbumIdsOfArtist(artist: Artist): List<UUID> =
+    override suspend fun getAlbumIdsOfArtist(artist: Artist): List<Uuid> =
         commonAlbumUseCase.getAlbumsOfArtist(artistId = artist.artistId)
             .firstOrNull()
             ?.map { it.albumId }
             ?: emptyList()
 
-    override suspend fun linkMusicToArtists(musicId: UUID, artists: List<Artist>) {
+    override suspend fun linkMusicToArtists(musicId: Uuid, artists: List<Artist>) {
         cachedMusicArtists.addAll(
             artists.map { artist ->
                 MusicArtist(

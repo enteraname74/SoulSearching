@@ -7,7 +7,6 @@ import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
 import kotlin.uuid.Uuid
 
 /**
@@ -35,7 +34,7 @@ class ArtistRepositoryImpl(
         artist = artist
     )
 
-    override suspend fun deleteAll(artistsIds: List<UUID>) {
+    override suspend fun deleteAll(artistsIds: List<Uuid>) {
         artistDataSource.deleteAll(artistsIds)
     }
 
@@ -49,14 +48,14 @@ class ArtistRepositoryImpl(
     /**
      * Retrieves an Artist from its id.
      */
-    override fun getFromId(artistId: UUID): Flow<Artist?> = artistDataSource.getFromId(
+    override fun getFromId(artistId: Uuid): Flow<Artist?> = artistDataSource.getFromId(
         artistId = artistId
     )
 
     override suspend fun getFromRemoteId(remoteId: Uuid): Artist? =
         artistDataSource.getFromRemoteId(remoteId)
 
-    override fun getFromIds(artistIds: List<UUID>): Flow<List<ArtistWithMusics>> =
+    override fun getFromIds(artistIds: List<Uuid>): Flow<List<ArtistWithMusics>> =
         artistDataSource.getFromIds(artistIds)
 
     override suspend fun getFromName(artistName: String): Artist? =
@@ -75,19 +74,19 @@ class ArtistRepositoryImpl(
     /**
      * Retrieves a flow of an ArtistWithMusics.
      */
-    override fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics?> =
+    override fun getArtistWithMusics(artistId: Uuid): Flow<ArtistWithMusics?> =
         artistDataSource.getArtistWithMusics(
             artistId = artistId
         )
 
-    override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
+    override fun getArtistsOfMusic(musicId: Uuid): Flow<List<Artist>> =
         artistDataSource.getArtistsOfMusic(musicId = musicId)
 
     override fun getAllFromQuickAccess(): Flow<List<ArtistPreview>> =
         artistDataSource.getAllFromQuickAccess()
 
     override suspend fun getDuplicatedArtist(
-        artistId: UUID,
+        artistId: Uuid,
         artistName: String
     ): ArtistWithMusics? =
         artistDataSource.getDuplicatedArtist(
@@ -105,7 +104,7 @@ class ArtistRepositoryImpl(
     override fun getMostListened(): Flow<List<ArtistPreview>> =
         artistDataSource.getMostListened()
 
-    override fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?> =
+    override fun getArtistPreview(artistId: Uuid): Flow<ArtistPreview?> =
         artistDataSource.getArtistPreview(artistId)
 
     override fun searchAll(search: String): Flow<List<ArtistPreview>> =

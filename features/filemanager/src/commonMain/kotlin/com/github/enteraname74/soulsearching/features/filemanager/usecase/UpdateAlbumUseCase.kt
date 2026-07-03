@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
-import java.util.*
+import kotlin.uuid.Uuid
 
 class UpdateAlbumUseCase(
     private val albumRepository: AlbumRepository,
@@ -76,8 +76,8 @@ class UpdateAlbumUseCase(
 
     private suspend fun replaceArtistOfMusic(
         music: Music,
-        legacyArtistId: UUID,
-        newArtistId: UUID,
+        legacyArtistId: Uuid,
+        newArtistId: Uuid,
     ) {
         // We first remove the link to the legacy artist
         musicArtistRepository.deleteMusicArtist(

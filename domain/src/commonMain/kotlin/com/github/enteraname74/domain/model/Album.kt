@@ -1,22 +1,22 @@
 package com.github.enteraname74.domain.model
 
 import com.github.enteraname74.domain.util.DateUtils
-import java.time.LocalDateTime
-import java.util.UUID
-import kotlin.math.max
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlin.uuid.Uuid
+import kotlin.math.max
 
 /**
  * Represent an Album and information related to it.
  * It does not possess its musics or its cover directly.
  */
 data class Album(
-    val albumId: UUID = UUID.randomUUID(),
+    val albumId: Uuid = Uuid.random(),
     val remoteId: Uuid? = null,
     val albumName: String,
     val artist: Artist,
     val cover: Cover? = null,
-    val addedDate: LocalDateTime = LocalDateTime.now(),
+    val addedDate: Instant = Clock.System.now(),
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,
     val lastUpdateMillis: Long? = DateUtils.now(),

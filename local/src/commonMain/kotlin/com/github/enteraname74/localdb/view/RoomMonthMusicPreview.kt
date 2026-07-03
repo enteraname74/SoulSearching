@@ -3,19 +3,19 @@ package com.github.enteraname74.localdb.view
 import androidx.room.DatabaseView
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.MonthMusicsPreview
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @DatabaseView(
     """
         SELECT 
-                strftime('%m/%Y', monthMusic.addedDate) AS month,
+                strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch') AS month,
                 COUNT(*) AS totalMusics, 
                 (
                     SELECT music.coverId FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
                     AND scope != 'SharedPlayedList' 
                     AND music.coverId IS NOT NULL 
-                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate)
+                    AND strftime('%m/%Y', music.addedDate / 1000, 'unixepoch') = strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch')
                     ORDER BY
                     CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
                     name 
@@ -25,7 +25,7 @@ import java.util.UUID
                     SELECT music.localPath FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
                     AND scope != 'SharedPlayedList' 
-                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) 
+                    AND strftime('%m/%Y', music.addedDate / 1000, 'unixepoch') = strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch') 
                     ORDER BY name 
                     LIMIT 1 
                 ) AS musicCoverPath, 
@@ -33,20 +33,20 @@ import java.util.UUID
                     SELECT music.coverUrl FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
                     AND scope != 'SharedPlayedList' 
-                    AND strftime('%m/%Y', music.addedDate) = strftime('%m/%Y', monthMusic.addedDate) 
+                    AND strftime('%m/%Y', music.addedDate / 1000, 'unixepoch') = strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch') 
                     ORDER BY name 
                     LIMIT 1 
                 ) AS musicCoverUrl 
             FROM RoomMusic AS monthMusic
             WHERE isHidden = 0 
             AND scope != 'SharedPlayedList' 
-            GROUP BY strftime('%Y-%m', addedDate) 
-            ORDER BY strftime('%Y-%m', addedDate) DESC
+            GROUP BY strftime('%Y-%m', addedDate / 1000, 'unixepoch') 
+            ORDER BY strftime('%Y-%m', addedDate / 1000, 'unixepoch') DESC
     """
 )
 data class RoomMonthMusicPreview(
     val month: String,
-    val coverId: UUID?,
+    val coverId: Uuid?,
     val musicCoverPath: String?,
     val musicCoverUrl: String?,
     val totalMusics: Int,

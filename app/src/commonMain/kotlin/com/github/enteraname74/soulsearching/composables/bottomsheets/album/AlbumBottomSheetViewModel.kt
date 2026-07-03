@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class AlbumBottomSheetViewModel(
     private val commonAlbumUseCase: CommonAlbumUseCase,
@@ -45,7 +45,7 @@ class AlbumBottomSheetViewModel(
     settings: SoulSearchingSettings,
     params:  AlbumBottomSheetDestination,
 ): ViewModel() {
-    private val albumIds: List<UUID> = params.albumIds
+    private val albumIds: List<Uuid> = params.albumIds
 
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
@@ -259,7 +259,7 @@ class AlbumBottomSheetViewModel(
 
     private fun removeFromPlayedList() {
         loadingManager.withLoadingOnScope(viewModelScope) {
-            val musicIds: List<UUID> =
+            val musicIds: List<Uuid> =
                 state.value.albums
                     .flatMap { it.musics }
                     .distinctBy { it.musicId }
@@ -279,7 +279,7 @@ class AlbumBottomSheetViewModel(
 
     private fun startSharedPlayedList() {
         loadingManager.withLoadingOnScope(viewModelScope) {
-            val musicIds: List<UUID> =
+            val musicIds: List<Uuid> =
                 state.value.albums
                     .flatMap { it.musics }
                     .filter { it.scope != Scope.SharedPlayedList }

@@ -3,7 +3,7 @@ package com.github.enteraname74.soulsearching.features.musicmanager.multiplearti
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
-import java.util.*
+import kotlin.uuid.Uuid
 
 /**
  * Manages multiple artist.
@@ -24,15 +24,15 @@ abstract class MultipleArtistManager {
      */
     protected abstract suspend fun deleteArtists(artists: List<Artist>)
 
-    protected abstract suspend fun getMusicIdsOfArtist(artist: Artist): List<UUID>
-    protected abstract suspend fun getAlbumIdsOfArtist(artist: Artist): List<UUID>
+    protected abstract suspend fun getMusicIdsOfArtist(artist: Artist): List<Uuid>
+    protected abstract suspend fun getAlbumIdsOfArtist(artist: Artist): List<Uuid>
 
     protected abstract suspend fun unlinkMusicsOfArtist(
         artist: Artist,
     )
 
     protected abstract suspend fun linkMusicToArtists(
-        musicId: UUID,
+        musicId: Uuid,
         artists: List<Artist>,
     )
 
@@ -111,7 +111,7 @@ abstract class MultipleArtistManager {
      * All albums of the multiple artist will be linked to the first artist.
      */
     private suspend fun divideArtistAndLinkSongsToThem(
-        musicIdsOfInitialArtist: List<UUID>,
+        musicIdsOfInitialArtist: List<Uuid>,
         allArtistsName: List<String>,
         existingArtists: List<Artist>,
     ) {
@@ -142,7 +142,7 @@ abstract class MultipleArtistManager {
 
         // We update the concerned cached artists
         artistsToDivide.forEach { multipleArtist ->
-            val musicIdsOfMultipleArtist: List<UUID> = getMusicIdsOfArtist(
+            val musicIdsOfMultipleArtist: List<Uuid> = getMusicIdsOfArtist(
                 artist = multipleArtist,
             )
 

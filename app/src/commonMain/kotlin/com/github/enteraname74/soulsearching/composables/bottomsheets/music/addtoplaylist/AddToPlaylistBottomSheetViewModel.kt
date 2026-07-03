@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class AddToPlaylistBottomSheetViewModel(
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
@@ -31,7 +31,7 @@ class AddToPlaylistBottomSheetViewModel(
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
     val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
 
-    private val selectedPlaylistIds: MutableStateFlow<Set<UUID>> = MutableStateFlow(emptySet())
+    private val selectedPlaylistIds: MutableStateFlow<Set<Uuid>> = MutableStateFlow(emptySet())
 
     private val playlistsWithMusics: Flow<List<PlaylistWithMusics>> =
         commonPlaylistUseCase.getAllWithMusics().map { playlist ->
@@ -84,7 +84,7 @@ class AddToPlaylistBottomSheetViewModel(
     }
 
     private suspend fun addMusicsToPlaylist(
-        playlistIds: List<UUID>
+        playlistIds: List<Uuid>
     ) {
         loadingManager.withLoading {
             params.selectedMusicIds.forEach { musicId ->
@@ -100,7 +100,7 @@ class AddToPlaylistBottomSheetViewModel(
         }
     }
 
-    fun toggleSelection(playlistId: UUID) {
+    fun toggleSelection(playlistId: Uuid) {
         selectedPlaylistIds.value = if (selectedPlaylistIds.value.contains(playlistId)) {
             selectedPlaylistIds.value - playlistId
         } else {

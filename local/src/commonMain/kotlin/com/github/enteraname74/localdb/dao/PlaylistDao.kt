@@ -10,7 +10,7 @@ import com.github.enteraname74.localdb.model.RoomPlaylist
 import com.github.enteraname74.localdb.view.RoomPlaylistPreview
 import com.github.enteraname74.localdb.model.RoomPlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * DAO of a Playlist.
@@ -28,22 +28,22 @@ interface PlaylistDao {
     suspend fun delete(roomPlaylist : RoomPlaylist)
 
     @Query("DELETE FROM RoomPlaylist WHERE playlistId IN (:ids) AND isFavorite = 0")
-    suspend fun deleteAll(ids: List<UUID>)
+    suspend fun deleteAll(ids: List<Uuid>)
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
     fun getAllPlaylistWithMusics(): Flow<List<RoomPlaylistWithMusics>>
 
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId LIMIT 1")
-    fun getFromId(playlistId: UUID) : Flow<RoomPlaylist?>
+    fun getFromId(playlistId: Uuid) : Flow<RoomPlaylist?>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId IN (:playlistIds)")
-    fun getFromIds(playlistIds: List<UUID>) : Flow<List<RoomPlaylistWithMusics>>
+    fun getFromIds(playlistIds: List<Uuid>) : Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
-    fun getPlaylistWithMusics(playlistId : UUID): Flow<RoomPlaylistWithMusics?>
+    fun getPlaylistWithMusics(playlistId : Uuid): Flow<RoomPlaylistWithMusics?>
 
     @Query("UPDATE RoomPlaylist SET coverId = NULL")
     suspend fun cleanAllCovers()
@@ -130,7 +130,7 @@ interface PlaylistDao {
             LIMIT 1
         """
     )
-    fun getPlaylistPreview(playlistId: UUID): Flow<RoomPlaylistPreview?>
+    fun getPlaylistPreview(playlistId: Uuid): Flow<RoomPlaylistPreview?>
 
     // TODO: Normalise with accents.
     @Transaction

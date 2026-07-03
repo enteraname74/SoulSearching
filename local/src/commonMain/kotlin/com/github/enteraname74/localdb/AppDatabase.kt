@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import com.github.enteraname74.domain.util.LocalDatabaseVersion
-import com.github.enteraname74.localdb.converters.LocalDateTimeConverters
+import com.github.enteraname74.localdb.converters.InstantConverters
 import com.github.enteraname74.localdb.converters.UserTypeConverters
 import com.github.enteraname74.localdb.converters.UuidTypeConverters
 import com.github.enteraname74.localdb.dao.AlbumDao
@@ -87,7 +87,7 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 @TypeConverters(
-    LocalDateTimeConverters::class,
+    InstantConverters::class,
     UserTypeConverters::class,
     UuidTypeConverters::class,
 )

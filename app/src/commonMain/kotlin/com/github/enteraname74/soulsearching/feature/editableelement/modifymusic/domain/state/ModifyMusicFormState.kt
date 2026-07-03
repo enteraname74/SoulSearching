@@ -15,7 +15,7 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolde
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldLeadingIconSpec
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 sealed interface ModifyMusicFormState {
     data object NoData : ModifyMusicFormState
@@ -24,7 +24,7 @@ sealed interface ModifyMusicFormState {
         private val artistsOfMusic: List<Artist>,
         private val updateFoundAlbums: suspend (name: String) -> List<String>,
         private val updateFoundArtists: suspend (name: String) -> List<String>,
-        private val onDeleteArtist: (artistId: UUID) -> Unit,
+        private val onDeleteArtist: (artistId: Uuid) -> Unit,
         private val savedData: Map<String, String>,
         private val onFieldChange: (id: String, value: String) -> Unit,
     ) : ModifyMusicFormState {

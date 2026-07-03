@@ -4,7 +4,7 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.features.musicmanager.domain.OptimizedCachedData
-import java.util.*
+import kotlin.uuid.Uuid
 
 open class FetchAllMultipleArtistManagerImpl(
     private val optimizedCachedData: OptimizedCachedData
@@ -31,18 +31,18 @@ open class FetchAllMultipleArtistManagerImpl(
             .flatMap { it.artists }
             .filter { it.artistName in artistsNames }
 
-    override suspend fun getMusicIdsOfArtist(artist: Artist): List<UUID> =
+    override suspend fun getMusicIdsOfArtist(artist: Artist): List<Uuid> =
         optimizedCachedData.musicsByPath.values
             .filter{ music -> music.artists.any { it.artistId == artist.artistId } }
             .map { it.musicId }
 
-    override suspend fun getAlbumIdsOfArtist(artist: Artist): List<UUID> =
+    override suspend fun getAlbumIdsOfArtist(artist: Artist): List<Uuid> =
         optimizedCachedData.musicsByPath
             .values
             .filter { it.album.artist.artistId == artist.artistId }
             .map { it.album.albumId }
 
-    override suspend fun linkMusicToArtists(musicId: UUID, artists: List<Artist>) {
+    override suspend fun linkMusicToArtists(musicId: Uuid, artists: List<Artist>) {
         val musicEntry: Map<String, Music> = optimizedCachedData.musicsByPath
             .filter { it.value.musicId == musicId }
 

@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class ModifyAlbumViewModel(
     private val commonAlbumUseCase: CommonAlbumUseCase,
@@ -149,8 +149,8 @@ class ModifyAlbumViewModel(
 
             loadingManager.withLoading {
                 // If the image has changed, we need to save it and retrieve its id.
-                val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
-                    val newCoverId: UUID = UUID.randomUUID()
+                val coverFile: Uuid? = state.editableElement.newCover?.let { coverData ->
+                    val newCoverId: Uuid = Uuid.random()
 
                     commonCoverUseCase.upsert(
                         id = newCoverId,

@@ -48,7 +48,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
 import kotlin.uuid.Uuid
 
 /**
@@ -462,7 +461,7 @@ class PlayerViewModel(
         _navigationState.value = PlayerNavigationState.ToRemoteLyricsSettings
     }
 
-    fun showMusicBottomSheet(musicIds: List<UUID>) {
+    fun showMusicBottomSheet(musicIds: List<Uuid>) {
         _navigationState.value = PlayerNavigationState.ToMusicBottomSheet(musicIds)
     }
 

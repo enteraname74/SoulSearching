@@ -16,7 +16,7 @@ import org.jaudiotagger.tag.Tag
 import java.io.File
 import java.net.URLConnection
 import java.nio.file.Files
-import java.util.*
+import kotlin.uuid.Uuid
 
 
 /**
@@ -140,7 +140,7 @@ internal class MusicFetcherDesktopImpl(
         if (commonPlaylistUseCase.getFavorite().firstOrNull() == null) {
             commonPlaylistUseCase.upsert(
                 Playlist(
-                    playlistId = UUID.randomUUID(),
+                    playlistId = Uuid.random(),
                     name = strings.favorite,
                     isFavorite = true
                 )

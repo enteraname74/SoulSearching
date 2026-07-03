@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Scope
-import java.time.LocalDateTime
-import java.util.UUID
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 /**
@@ -26,16 +26,16 @@ import kotlin.uuid.Uuid
 )
 data class RoomAlbum(
     @PrimaryKey
-    val albumId: UUID = UUID.randomUUID(),
+    val albumId: Uuid = Uuid.random(),
     val remoteId: Uuid?,
     val albumName: String,
-    val coverId: UUID? = null,
+    val coverId: Uuid? = null,
     val coverUrl: String?,
-    val addedDate: LocalDateTime = LocalDateTime.now(),
+    val addedDate: Instant = Clock.System.now(),
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,
     @ColumnInfo(index = true)
-    val artistId: UUID,
+    val artistId: Uuid,
     val lastUpdatedMillis: Long?,
     val scope: Scope,
 )

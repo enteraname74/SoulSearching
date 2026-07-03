@@ -36,13 +36,13 @@ import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.DrawableResource
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class MusicCoversBottomSheet(
     private val musicCover: Cover,
     private val albumCoversStateFlow: StateFlow<CoverListState>,
     private val onMusicFileCoverSelected: (path: String) -> Unit,
-    private val onFileCoverSelected: (coverId: UUID) -> Unit,
+    private val onFileCoverSelected: (coverId: Uuid) -> Unit,
     private val onAlbumCoverSelected: (ByteArray) -> Unit,
     private val onCoverFromStorageSelected: (imageFile: PlatformFile) -> Unit,
     private val onClose: () -> Unit,

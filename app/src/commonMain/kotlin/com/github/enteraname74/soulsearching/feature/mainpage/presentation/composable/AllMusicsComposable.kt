@@ -23,7 +23,7 @@ import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -89,7 +89,7 @@ fun AllMusicsComposable(
         }
         if (musics.itemCount > 0) {
             items(
-                key = { musics[it]?.musicId ?: UUID.randomUUID() },
+                key = { musics[it]?.musicId ?: Uuid.random() },
                 contentType = { ALL_MUSICS_CONTENT_TYPE },
                 count = musics.itemCount,
             ) { index ->

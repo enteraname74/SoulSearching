@@ -1,8 +1,7 @@
 package com.github.enteraname74.domain.model
 
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
-import java.util.UUID
+import kotlin.time.Clock
 import kotlin.uuid.Uuid
 
 @Serializable
@@ -18,11 +17,11 @@ data class CloudArtist(
         scope: Scope,
     ): Artist =
         Artist(
-            artistId = UUID.randomUUID(),
+            artistId = Uuid.random(),
             artistName = name,
             remoteId = id,
             cover = coverPath?.let { Cover.Url(it) },
-            addedDate = LocalDateTime.now(),
+            addedDate = Clock.System.now(),
             nbPlayed = nbPlayed,
             isInQuickAccess = isInQuickAccess,
             lastUpdatedMillis = lastUpdateAtMillis,

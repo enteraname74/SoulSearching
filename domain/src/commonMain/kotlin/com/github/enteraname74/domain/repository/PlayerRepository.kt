@@ -5,7 +5,6 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.*
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 import kotlin.uuid.Uuid
 
 interface PlayerRepository {
@@ -23,11 +22,11 @@ interface PlayerRepository {
     fun getCurrentProgress(): Flow<Int>
     fun getCurrentScope(): Flow<PlayedListScope?>
 
-    suspend fun deleteAll(musicIds: List<UUID>)
+    suspend fun deleteAll(musicIds: List<Uuid>)
 
     suspend fun deleteCurrentPlayedList()
 
-    suspend fun deletePlayedList(playedListId: UUID)
+    suspend fun deletePlayedList(playedListId: Uuid)
 
     suspend fun deleteSharedListAndSync(listId: Uuid): SoulResult<Unit>
 
@@ -43,12 +42,12 @@ interface PlayerRepository {
     )
 
     suspend fun moveMusic(
-        fromMusicId: UUID,
-        afterMusicId: UUID
+        fromMusicId: Uuid,
+        afterMusicId: Uuid
     )
 
     suspend fun setCurrent(
-        musicId: UUID,
+        musicId: Uuid,
     )
 
     suspend fun setProgress(progress: Int)
@@ -62,12 +61,12 @@ interface PlayerRepository {
     )
 
     suspend fun updatesMusics(
-        musicIdsToRemove: List<UUID>,
+        musicIdsToRemove: List<Uuid>,
         playerMusicsToAdd: List<PlayerMusic>,
     )
 
     suspend fun continuePlayedList(
-        playedListId: UUID,
+        playedListId: Uuid,
     )
 
     suspend fun switchPlayerMode()
@@ -88,7 +87,7 @@ interface PlayerRepository {
 
     suspend fun getDeletedRemoteMusicIds(
         playedListId: Uuid,
-    ): List<UUID>
+    ): List<Uuid>
 
     suspend fun addToSharedPlayedList(
         musicRemoteIds: List<String>

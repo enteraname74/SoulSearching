@@ -27,7 +27,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -86,7 +86,7 @@ internal class RoomMusicLocalDataSourceImpl(
         }
     }
 
-    override suspend fun deleteAll(ids: List<UUID>) {
+    override suspend fun deleteAll(ids: List<Uuid>) {
         appDatabase.useWriterConnection {
             appDatabase.musicDao.deleteAll(ids = ids)
             appDatabase.albumDao.deleteAllEmpty()
@@ -102,10 +102,10 @@ internal class RoomMusicLocalDataSourceImpl(
         }
     }
 
-    override suspend fun getAllIdsFromUnselectedFolders(): List<UUID> =
+    override suspend fun getAllIdsFromUnselectedFolders(): List<Uuid> =
         appDatabase.musicDao.getAllIdsFromUnselectedFolders()
 
-    override fun getFromId(musicId: UUID): Flow<Music?> {
+    override fun getFromId(musicId: Uuid): Flow<Music?> {
         return appDatabase.musicDao.getFromId(
             musicId = musicId
         ).map { it?.toMusic() }
@@ -114,13 +114,13 @@ internal class RoomMusicLocalDataSourceImpl(
     override suspend fun getFromRemoteId(remoteId: String): Music? =
         appDatabase.musicDao.getFromRemoteId(remoteId)?.toMusic()
 
-    override suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<UUID> =
+    override suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<Uuid> =
         appDatabase.musicDao.getIdsFromRemoteIds(remoteIds)
 
-    override suspend fun getRemoteIdsFromIds(ids: List<UUID>): List<String> =
+    override suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<String> =
         appDatabase.musicDao.getRemoteIdsFromIds(ids)
 
-    override fun getFromIds(ids: List<UUID>): Flow<List<Music>> =
+    override fun getFromIds(ids: List<Uuid>): Flow<List<Music>> =
         appDatabase.musicDao.getFromIds(ids).map { list ->
             list
                 .sortedBy { ids.indexOf(it.music.musicId) }
@@ -216,7 +216,7 @@ internal class RoomMusicLocalDataSourceImpl(
     override suspend fun getAllToSendToCloud(): List<Music> =
         appDatabase.musicDao.getAllToSendToCloud().map { it.toMusic() }
 
-    override fun getAllPagedOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
+    override fun getAllPagedOfAlbum(albumId: Uuid): Flow<PagingData<Music>> =
         withPaging { getAllPagedOfAlbum(albumId) }
 
     override fun getAllPagedByNameAscOfFolder(folder: String): Flow<PagingData<Music>> =
@@ -225,19 +225,19 @@ internal class RoomMusicLocalDataSourceImpl(
     override fun getAllPagedByNameAscOfMonth(month: String): Flow<PagingData<Music>> =
         withPaging { getAllPagedByNameAscOfMonth(month) }
 
-    override fun getAllPagedByNameAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>> =
+    override fun getAllPagedByNameAscOfPlaylist(playlistId: Uuid): Flow<PagingData<Music>> =
         withPaging { getAllPagedByNameAscOfPlaylist(playlistId) }
 
-    override fun getAllPagedByNameAscOfArtist(artistId: UUID): Flow<PagingData<Music>> =
+    override fun getAllPagedByNameAscOfArtist(artistId: Uuid): Flow<PagingData<Music>> =
         withPaging { getAllPagedByNameAscOfArtist(artistId) }
 
-    override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
+    override suspend fun getAllMusicFromAlbum(albumId: Uuid): List<Music> =
         appDatabase.musicDao.getAllMusicFromAlbum(
             albumId = albumId
         ).map { it.toMusic() }
 
     override fun searchFromAlbum(
-        albumId: UUID,
+        albumId: Uuid,
         search: String
     ): Flow<List<Music>> =
         appDatabase.musicDao.searchFromAlbum(
@@ -248,7 +248,7 @@ internal class RoomMusicLocalDataSourceImpl(
         }
 
     override fun searchFromPlaylist(
-        playlistId: UUID,
+        playlistId: Uuid,
         search: String
     ): Flow<List<Music>> =
         appDatabase.musicDao.searchFromPlaylist(
@@ -259,7 +259,7 @@ internal class RoomMusicLocalDataSourceImpl(
         }
 
     override fun searchFromArtist(
-        artistId: UUID,
+        artistId: Uuid,
         search: String
     ): Flow<List<Music>> =
         appDatabase.musicDao.searchFromArtist(
@@ -296,10 +296,10 @@ internal class RoomMusicLocalDataSourceImpl(
             list.map { it.toMusic() }
         }
 
-    override suspend fun getAllMusicFromArtist(artistId: UUID): List<Music> =
+    override suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music> =
         appDatabase.musicDao.getAllMusicFromArtist(artistId).map { it.toMusic() }
 
-    override suspend fun getAllMusicFromPlaylist(playlistId: UUID): List<Music> =
+    override suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music> =
         appDatabase.musicDao.getAllMusicFromPlaylist(playlistId).map { it.toMusic() }
 
     override suspend fun getAllMusicFromMonth(month: String): List<Music> =
@@ -308,13 +308,13 @@ internal class RoomMusicLocalDataSourceImpl(
     override suspend fun getAllMusicFromFolder(folder: String): List<Music> =
         appDatabase.musicDao.getAllMusicFromFolder(folder).map { it.toMusic() }
 
-    override fun getAlbumDuration(albumId: UUID): Flow<Duration> =
+    override fun getAlbumDuration(albumId: Uuid): Flow<Duration> =
         appDatabase.musicDao.getAlbumDuration(albumId).map { it.milliseconds }
 
-    override fun getArtistDuration(artistId: UUID): Flow<Duration> =
+    override fun getArtistDuration(artistId: Uuid): Flow<Duration> =
         appDatabase.musicDao.getArtistDuration(artistId).map { it.milliseconds }
 
-    override fun getPlaylistDuration(playlistId: UUID): Flow<Duration> =
+    override fun getPlaylistDuration(playlistId: Uuid): Flow<Duration> =
         appDatabase.musicDao.getPlaylistDuration(playlistId).map { it.milliseconds }
 
     override fun getMonthMusicsDuration(month: String): Flow<Duration> =
@@ -323,7 +323,7 @@ internal class RoomMusicLocalDataSourceImpl(
     override fun getFolderMusicsDuration(folder: String): Flow<Duration> =
         appDatabase.musicDao.getFolderMusicsDuration(folder).map { it.milliseconds }
 
-    override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
+    override suspend fun updateMusicsAlbum(newAlbumId: Uuid, legacyAlbumId: Uuid) {
         appDatabase.musicDao.updateMusicsAlbum(newAlbumId, legacyAlbumId)
     }
 
@@ -372,7 +372,7 @@ internal class RoomMusicLocalDataSourceImpl(
 
     override suspend fun getFromInformation(
         musicName: String,
-        albumId: UUID
+        albumId: Uuid
     ): Music? =
         appDatabase.musicDao.getFromInformation(
             musicName = musicName,

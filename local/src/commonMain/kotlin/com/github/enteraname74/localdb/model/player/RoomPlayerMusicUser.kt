@@ -4,9 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import com.github.enteraname74.domain.model.player.PlayerMusicUser
 import com.github.enteraname74.localdb.model.RoomMusic
-import java.util.*
 import kotlin.uuid.Uuid
-import kotlin.uuid.toJavaUuid
 
 // TODO: Can we use different Uuid (kotlin and Java) for foreign keys?
 @Entity(
@@ -28,14 +26,14 @@ import kotlin.uuid.toJavaUuid
     ]
 )
 data class RoomPlayerMusicUser(
-    val playedListId: UUID,
+    val playedListId: Uuid,
     val userId: Uuid,
-    val musicId: UUID,
+    val musicId: Uuid,
 )
 
 internal fun PlayerMusicUser.toRoomPlayerMusicUser(): RoomPlayerMusicUser =
     RoomPlayerMusicUser(
-        playedListId = playedListId.toJavaUuid(),
+        playedListId = playedListId,
         userId = userId,
         musicId = musicId,
     )

@@ -55,7 +55,7 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.composa
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.ExpandedPlayerControlsComposable
 import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelDraggableView
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Composable
 fun BoxScope.PlayerSwipeableDataScreen(
@@ -67,7 +67,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
     onArtistClicked: ((selectedArtist: Artist) -> Unit)?,
     onAlbumClicked: (() -> Unit)?,
     closeSelection: () -> Unit,
-    showMusicBottomSheet: (musicId: UUID) -> Unit,
+    showMusicBottomSheet: (musicId: Uuid) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
     onSwiped: ((Music) -> Unit)?,
     onClickOnMusic: ((Music) -> Unit)?,
