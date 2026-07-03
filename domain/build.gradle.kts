@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     id("com.android.library")
     alias(libs.plugins.kotlinMultiplatform)
@@ -9,6 +11,13 @@ plugins {
 kotlin {
     androidTarget()
     jvm("desktop")
+    js {
+        browser()
+    }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+    }
     jvmToolchain(17)
 
     compilerOptions {
@@ -25,8 +34,6 @@ kotlin {
                 implementation(libs.androidx.paging.common)
                 implementation(libs.koin.core)
                 implementation(libs.coroutines.core)
-                implementation(libs.coroutines.core.jvm)
-                implementation(libs.jaudiotagger)
                 implementation(libs.kotlinx.serialization.json)
             }
         }
