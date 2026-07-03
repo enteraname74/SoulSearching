@@ -51,16 +51,19 @@ kotlin {
         desktopMain.dependsOn(nonAndroidMain)
 
         commonMain.dependencies {
+            implementation(libs.androidx.annotation)
+
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.compose.resources)
             implementation(libs.compose.ui)
-            implementation(libs.androidx.annotation)
+            implementation(libs.compose.navigationevent)
 
             implementation(libs.kmpalette)
 
             implementation(libs.markdown.renderer.core)
             implementation(libs.markdown.renderer.m3)
+
 
             implementation(project(":domain"))
         }

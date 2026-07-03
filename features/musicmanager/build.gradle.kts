@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("com.android.library")
@@ -12,6 +13,13 @@ kotlin {
     jvmToolchain(17)
     androidTarget()
     jvm("desktop")
+    js {
+        browser()
+    }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+    }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
@@ -24,6 +32,17 @@ kotlin {
     }
 
     sourceSets {
+        val jsMain by getting
+        val wasmJsMain by getting
+        val commonMain by getting
+
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain)
+        }
+
+        jsMain.dependsOn(webMain)
+        wasmJsMain.dependsOn(webMain)
+
         val desktopMain by getting {
             dependencies {
                 implementation(libs.coroutines.core.swing)

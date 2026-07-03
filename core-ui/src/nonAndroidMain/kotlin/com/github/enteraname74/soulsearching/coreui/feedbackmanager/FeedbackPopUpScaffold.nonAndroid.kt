@@ -16,7 +16,7 @@ actual fun FeedbackPopUpScaffold(
 
     val coroutineScope = rememberCoroutineScope()
     var isShowingFeedback: Boolean by remember { mutableStateOf(false) }
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     val state: String? by manager.state.collectAsState()
 
@@ -24,7 +24,7 @@ actual fun FeedbackPopUpScaffold(
         if (isShowingFeedback) return@let
         coroutineScope.launch {
             isShowingFeedback = true
-            snackbarHostState.showSnackbar(it)
+            snackBarHostState.showSnackbar(it)
         }.invokeOnCompletion {
             isShowingFeedback = false
             manager.consumeFeedback()
@@ -34,7 +34,7 @@ actual fun FeedbackPopUpScaffold(
     Scaffold(
         snackbarHost = {
             SnackbarHost(
-                hostState = snackbarHostState
+                hostState = snackBarHostState
             )
         },
     ) {
