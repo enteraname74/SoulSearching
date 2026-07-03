@@ -1,11 +1,9 @@
 package com.github.enteraname74.soulsearching.features.filemanager.cover
 
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.util.AppEnvironment
 import java.io.File
 
-internal class CoverFileManagerDesktopImpl: CoverFileManager {
+internal class CoverFileManagerDesktopImpl: JvmCoverFileManager() {
     override fun getCoverFolder(): File {
         val userHome = System.getProperty("user.home") ?: ""
         val userFolder = File(userHome)
