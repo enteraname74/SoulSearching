@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.repository.di
 import com.github.enteraname74.domain.repository.*
 import com.github.enteraname74.soulsearching.repository.datasource.lyrics.LyricsLocalDataSource
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.*
-import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -20,7 +19,7 @@ val repositoryModule = module {
     single<PlayerRepository> {
         PlayerRepositoryImpl(
             playerLocalDataSource = get(),
-            workScope = Dispatchers.IO,
+            workScope = repositoryWorkDispatcher,
             playerRemoteDataSource = get(),
             deviceLocalDataSource = get(),
             userLocalDataSource = get(),
