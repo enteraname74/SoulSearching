@@ -1,11 +1,11 @@
 package com.github.enteraname74.localdb.dao
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Update
-import androidx.room.Upsert
+import androidx.room3.Dao
+import androidx.room3.Query
+import androidx.room3.Transaction
+import androidx.room3.Update
+import androidx.room3.Upsert
 import com.github.enteraname74.localdb.model.player.RoomCompletePlayerMusic
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
 import kotlinx.coroutines.flow.Flow

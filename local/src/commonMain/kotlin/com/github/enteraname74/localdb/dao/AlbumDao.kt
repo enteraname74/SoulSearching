@@ -1,11 +1,11 @@
 package com.github.enteraname74.localdb.dao
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Upsert
+import androidx.room3.Dao
+import androidx.room3.Delete
+import androidx.room3.Query
+import androidx.room3.Transaction
+import androidx.room3.Upsert
 import com.github.enteraname74.localdb.model.RoomAlbum
 import com.github.enteraname74.localdb.view.RoomAlbumPreview
 import com.github.enteraname74.localdb.model.RoomCompleteAlbum

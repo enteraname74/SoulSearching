@@ -1,8 +1,8 @@
 package com.github.enteraname74.localdb.dao
 
-import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.Upsert
+import androidx.room3.Dao
+import androidx.room3.Query
+import androidx.room3.Upsert
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid

@@ -1,6 +1,6 @@
 package com.github.enteraname74.localdb.dao
 
-import androidx.room.*
+import androidx.room3.*
 import com.github.enteraname74.localdb.model.RoomMusicArtist
 import kotlin.uuid.Uuid
 

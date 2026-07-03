@@ -1,7 +1,7 @@
 package com.github.enteraname74.localdb.model.player
 
-import androidx.room.Embedded
-import androidx.room.Relation
+import androidx.room3.Embedded
+import androidx.room3.Relation
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.localdb.model.RoomCompleteMusic
 import com.github.enteraname74.localdb.model.RoomMusic
@@ -9,8 +9,8 @@ import com.github.enteraname74.localdb.model.RoomMusic
 data class RoomCompletePlayerMusic(
     @Embedded val playerMusic: RoomPlayerMusic,
     @Relation(
-        parentColumn = "musicId",
-        entityColumn = "musicId",
+        parentColumns = ["musicId"],
+        entityColumns = ["musicId"],
         entity = RoomMusic::class,
     )
     val completeMusic: RoomCompleteMusic,

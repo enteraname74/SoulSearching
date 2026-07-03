@@ -1,15 +1,15 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room.Embedded
-import androidx.room.Relation
+import androidx.room3.Embedded
+import androidx.room3.Relation
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Cover
 
 data class RoomCompleteAlbum(
     @Embedded val roomAlbum: RoomAlbum,
     @Relation(
-        parentColumn = "artistId",
-        entityColumn = "artistId",
+        parentColumns = ["artistId"],
+        entityColumns = ["artistId"],
     )
     val roomArtist: RoomArtist
 ) {

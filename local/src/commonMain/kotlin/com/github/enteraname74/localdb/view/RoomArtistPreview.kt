@@ -1,6 +1,6 @@
 package com.github.enteraname74.localdb.view
 
-import androidx.room.DatabaseView
+import androidx.room3.DatabaseView
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Cover.CoverFile.DevicePathSpec

@@ -1,10 +1,8 @@
 package com.github.enteraname74.localdb
 
 import android.content.Context
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.sqlite.SQLiteDriver
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import androidx.room3.Room
+import androidx.room3.RoomDatabase
 
 actual class RoomPlatformBuilder(private val context: Context) {
     actual fun builder(): RoomDatabase.Builder<AppDatabase> =

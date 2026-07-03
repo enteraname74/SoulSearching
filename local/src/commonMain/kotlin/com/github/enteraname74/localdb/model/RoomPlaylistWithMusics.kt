@@ -1,8 +1,8 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room.Embedded
-import androidx.room.Junction
-import androidx.room.Relation
+import androidx.room3.Embedded
+import androidx.room3.Junction
+import androidx.room3.Relation
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 
 /**
@@ -11,8 +11,8 @@ import com.github.enteraname74.domain.model.PlaylistWithMusics
 data class RoomPlaylistWithMusics(
     @Embedded val roomPlaylist: RoomPlaylist,
     @Relation(
-        parentColumn = "playlistId",
-        entityColumn = "musicId",
+        parentColumns = ["playlistId"],
+        entityColumns = ["musicId"],
         associateBy = Junction(RoomMusicPlaylist::class),
         entity = RoomMusic::class,
     )

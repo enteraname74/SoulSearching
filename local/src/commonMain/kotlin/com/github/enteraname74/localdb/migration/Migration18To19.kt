@@ -1,6 +1,6 @@
 package com.github.enteraname74.localdb.migration
 
-import androidx.room.migration.Migration
+import androidx.room3.migration.Migration
 import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.execSQL
 import com.github.enteraname74.localdb.migration.ext.getId
@@ -15,7 +15,7 @@ private typealias SqlUuid = ByteArray
 class Migration18To19(
     private val musicMetadataHelper: MusicMetadataHelper,
 ) : Migration(18, 19) {
-    private fun mxnTableMigration(
+    private suspend fun mxnTableMigration(
         tableName: String,
         mColumnName: String,
         mTableName: String,
@@ -49,7 +49,7 @@ class Migration18To19(
         connection.execSQL("CREATE INDEX index_${tableName}_${nColumnName} ON ${tableName}(${nColumnName})")
     }
 
-    private fun musicArtistMigration(connection: SQLiteConnection) {
+    private suspend fun musicArtistMigration(connection: SQLiteConnection) {
         mxnTableMigration(
             tableName = "RoomMusicArtist",
             mColumnName = "musicId",
@@ -60,7 +60,7 @@ class Migration18To19(
         )
     }
 
-    private fun musicPlaylistMigration(connection: SQLiteConnection) {
+    private suspend fun musicPlaylistMigration(connection: SQLiteConnection) {
         mxnTableMigration(
             tableName = "RoomMusicPlaylist",
             mColumnName = "musicId",
@@ -71,14 +71,14 @@ class Migration18To19(
         )
     }
 
-    private fun artistMigration(connection: SQLiteConnection) {
+    private suspend fun artistMigration(connection: SQLiteConnection) {
         connection.execSQL("ALTER TABLE RoomArtist ADD COLUMN coverFolderKey TEXT")
     }
 
     /**
      * Migrates musics and returns the list of [CachedMusicUpdate] that possess an album artist.
      */
-    private fun musicMigration(connection: SQLiteConnection) {
+    private suspend fun musicMigration(connection: SQLiteConnection) {
         // We will add the album id to the music directly.
         connection.execSQL(
             """
@@ -174,7 +174,7 @@ class Migration18To19(
         }
     }
 
-    private fun albumMigration(connection: SQLiteConnection) {
+    private suspend fun albumMigration(connection: SQLiteConnection) {
         connection.execSQL(
             """
             CREATE TABLE RoomAlbum_new (
@@ -209,7 +209,7 @@ class Migration18To19(
         connection.execSQL("DROP TABLE RoomAlbumArtist")
     }
 
-    override fun migrate(connection: SQLiteConnection) {
+    override suspend fun migrate(connection: SQLiteConnection) {
         artistMigration(connection)
         musicArtistMigration(connection)
         musicPlaylistMigration(connection)
@@ -224,9 +224,7 @@ class Migration18To19(
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as SQLMusicArtist
+            if (other !is SQLMusicArtist) return false
 
             if (!musicId.contentEquals(other.musicId)) return false
             if (!artistId.contentEquals(other.artistId)) return false
@@ -247,9 +245,7 @@ class Migration18To19(
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as MusicInformation
+            if (other !is MusicInformation) return false
 
             if (!musicId.contentEquals(other.musicId)) return false
             if (!albumId.contentEquals(other.albumId)) return false
@@ -272,9 +268,7 @@ class Migration18To19(
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as CachedMusicUpdate
+            if (other !is CachedMusicUpdate) return false
 
             if (!musicIdAsBlob.contentEquals(other.musicIdAsBlob)) return false
             if (albumPosition != other.albumPosition) return false

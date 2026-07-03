@@ -1,6 +1,5 @@
 package com.github.enteraname74.localdb
 
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.github.enteraname74.localdb.datasourceimpl.RoomAlbumDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomArtistDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomCloudPreferencesDataSourceImpl
@@ -34,7 +33,6 @@ import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataS
 import com.github.enteraname74.soulsearching.repository.datasource.code.UserInscriptionCodeLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.scope.Scope
@@ -47,7 +45,7 @@ private fun Scope.getAppDatabase(
 ): AppDatabase {
     return builder
         .builder()
-        .setDriver(BundledSQLiteDriver())
+        .setDriver(localDatabaseDriver())
         .setQueryCoroutineContext(dispatcher)
         .addMigrations(
             Migration16To17(
@@ -75,7 +73,7 @@ val localModule: Module = module {
     single {
         getAppDatabase(
             builder = get(),
-            dispatcher = Dispatchers.IO,
+            dispatcher = localDatabaseDispatcher,
         )
     }
 

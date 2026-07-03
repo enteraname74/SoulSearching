@@ -1,8 +1,8 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TransactionScope
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
+import androidx.room3.TransactionScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Cover.CoverFile.DevicePathSpec

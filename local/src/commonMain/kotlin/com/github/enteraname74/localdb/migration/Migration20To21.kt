@@ -1,11 +1,11 @@
 package com.github.enteraname74.localdb.migration
 
-import androidx.room.migration.Migration
+import androidx.room3.migration.Migration
 import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.execSQL
 
 object Migration20To21 : Migration(20, 21) {
-    override fun migrate(connection: SQLiteConnection) {
+    override suspend fun migrate(connection: SQLiteConnection) {
         connection.dropViews()
         connection.backupExistingTables()
         connection.dropExistingTables()
@@ -16,7 +16,7 @@ object Migration20To21 : Migration(20, 21) {
         connection.createViews()
     }
 
-    private fun SQLiteConnection.backupExistingTables() {
+    private suspend fun SQLiteConnection.backupExistingTables() {
         listOf(
             "RoomMusic",
             "RoomAlbum",
@@ -34,7 +34,7 @@ object Migration20To21 : Migration(20, 21) {
         }
     }
 
-    private fun SQLiteConnection.dropExistingTables() {
+    private suspend fun SQLiteConnection.dropExistingTables() {
         listOf(
             "RoomPlayerMusicProgress",
             "RoomPlayerMusic",
@@ -51,7 +51,7 @@ object Migration20To21 : Migration(20, 21) {
         }
     }
 
-    private fun SQLiteConnection.createTables() {
+    private suspend fun SQLiteConnection.createTables() {
         execSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomMusic (
@@ -297,7 +297,7 @@ object Migration20To21 : Migration(20, 21) {
         )
     }
 
-    private fun SQLiteConnection.restoreExistingData() {
+    private suspend fun SQLiteConnection.restoreExistingData() {
         execSQL(
             """
             INSERT INTO RoomArtist (
@@ -402,7 +402,7 @@ object Migration20To21 : Migration(20, 21) {
         )
     }
 
-    private fun SQLiteConnection.createIndices() {
+    private suspend fun SQLiteConnection.createIndices() {
         execSQL("CREATE INDEX IF NOT EXISTS index_RoomMusic_albumId ON RoomMusic(albumId)")
         execSQL("CREATE INDEX IF NOT EXISTS index_RoomAlbum_artistId ON RoomAlbum(artistId)")
         execSQL("CREATE INDEX IF NOT EXISTS index_RoomMusicPlaylist_musicId ON RoomMusicPlaylist(musicId)")
@@ -414,7 +414,7 @@ object Migration20To21 : Migration(20, 21) {
         execSQL("CREATE INDEX IF NOT EXISTS index_RoomSharedPlayedListUser_playedListId ON RoomSharedPlayedListUser(playedListId)")
     }
 
-    private fun SQLiteConnection.dropBackupTables() {
+    private suspend fun SQLiteConnection.dropBackupTables() {
         listOf(
             "RoomMusic",
             "RoomAlbum",
@@ -431,7 +431,7 @@ object Migration20To21 : Migration(20, 21) {
         }
     }
 
-    private fun SQLiteConnection.dropViews() {
+    private suspend fun SQLiteConnection.dropViews() {
         execSQL("DROP VIEW IF EXISTS CurrentPlayerMusicsView")
         execSQL("DROP VIEW IF EXISTS RoomMusicFolderPreview")
         execSQL("DROP VIEW IF EXISTS RoomMonthMusicPreview")
@@ -440,7 +440,7 @@ object Migration20To21 : Migration(20, 21) {
         execSQL("DROP VIEW IF EXISTS RoomPlaylistPreview")
     }
 
-    private fun SQLiteConnection.createViews() {
+    private suspend fun SQLiteConnection.createViews() {
         execSQL(
             """
             CREATE VIEW CurrentPlayerMusicsView AS WITH currentPlayedList AS (
@@ -685,7 +685,7 @@ object Migration20To21 : Migration(20, 21) {
         )
     }
 
-    private fun uuid(column: String): String =
+    private suspend fun uuid(column: String): String =
         """
         CASE WHEN $column IS NULL THEN NULL ELSE lower(
             substr(hex($column), 1, 8) || '-' ||
@@ -696,6 +696,6 @@ object Migration20To21 : Migration(20, 21) {
         ) END
         """.trimIndent()
 
-    private fun localDateTimeToMillis(column: String): String =
+    private suspend fun localDateTimeToMillis(column: String): String =
         "CAST(strftime('%s', $column) AS INTEGER) * 1000"
 }

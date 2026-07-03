@@ -1,13 +1,10 @@
 package com.github.enteraname74.localdb.migration
 
-import androidx.room.migration.Migration
-import androidx.room.util.getColumnIndex
+import androidx.room3.migration.Migration
+import androidx.room3.util.getColumnIndex
 import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.execSQL
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.uuid.ExperimentalUuidApi
@@ -18,7 +15,7 @@ internal class Migration16To17(
 ) : Migration(16, 17) {
 
     @OptIn(ExperimentalUuidApi::class, ExperimentalEncodingApi::class)
-    private fun imageCoverMigration(connection: SQLiteConnection) {
+    private suspend fun imageCoverMigration(connection: SQLiteConnection) {
         val cursor = connection.prepare("SELECT coverId, cover FROM RoomImageCover")
 
 
@@ -35,12 +32,10 @@ internal class Migration16To17(
 
                 if (!coverAsString.isNullOrEmpty()) {
                     val imageBytes = Base64.decode(coverAsString, 0)
-                    CoroutineScope(Dispatchers.IO).launch {
-                        coverFileManager.saveCover(
-                            id = coverId,
-                            data = imageBytes,
-                        )
-                    }
+                    coverFileManager.saveCover(
+                        id = coverId,
+                        data = imageBytes,
+                    )
                 }
             }
         }
@@ -49,11 +44,11 @@ internal class Migration16To17(
         connection.execSQL("DROP TABLE IF EXISTS ImageCover")
     }
 
-    private fun musicInitialCoverPathMigration(connection: SQLiteConnection) {
+    private suspend fun musicInitialCoverPathMigration(connection: SQLiteConnection) {
         connection.execSQL("ALTER TABLE RoomMusic ADD COLUMN initialCoverPath TEXT")
     }
 
-    override fun migrate(connection: SQLiteConnection) {
+    override suspend fun migrate(connection: SQLiteConnection) {
         try {
             imageCoverMigration(connection = connection)
             musicInitialCoverPathMigration(connection = connection)
