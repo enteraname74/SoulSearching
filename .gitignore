@@ -17,3 +17,4 @@ local.properties
 database.db
 
 .kotlin
+kotlin-js-store
