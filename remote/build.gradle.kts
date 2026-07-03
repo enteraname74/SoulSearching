@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("com.android.library")
@@ -13,6 +14,13 @@ kotlin {
     jvmToolchain(17)
     androidTarget()
     jvm("desktop")
+    js {
+        browser()
+    }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+    }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
@@ -22,10 +30,37 @@ kotlin {
     }
 
     sourceSets {
+        val commonMain by getting
+        val androidMain by getting
+        val desktopMain by getting
+        val jsMain by getting
+        val wasmJsMain by getting
+        val jvmMain = maybeCreate("jvmMain").apply {
+            dependsOn(commonMain)
+
+            dependencies {
+                implementation(libs.ktor.client.cio)
+            }
+        }
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain)
+        }
+
+        androidMain.dependsOn(jvmMain)
+        desktopMain.dependsOn(jvmMain)
+        jsMain.dependsOn(webMain)
+        wasmJsMain.dependsOn(webMain)
+
         commonMain.dependencies {
             implementation(project(":domain"))
             implementation(project(":repository"))
-            implementation(libs.bundles.ktor)
+            implementation(libs.ktor.client.auth)
+            implementation(libs.ktor.client.content.negoctiation)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.resources)
+            implementation(libs.ktor.client.websockets)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.serialization.logging)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.serialization.json)
         }

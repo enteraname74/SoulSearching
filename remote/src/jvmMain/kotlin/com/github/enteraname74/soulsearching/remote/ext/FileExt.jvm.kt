@@ -5,7 +5,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.file.Files
 
-suspend fun File.contentType(): String =
+internal suspend fun File.contentType(): String =
     withContext(Dispatchers.IO) {
         Files.probeContentType(this@contentType.toPath())
     } ?: "application/octet-stream"

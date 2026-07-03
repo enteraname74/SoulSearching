@@ -2,11 +2,11 @@ package com.github.enteraname74.soulsearching.remote.di
 
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.user.UserTokens
+import com.github.enteraname74.domain.util.LocaleUtils
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserRemoteDataSource
 import io.ktor.client.*
 import io.ktor.client.engine.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
@@ -19,20 +19,20 @@ import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
-import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
 
-internal fun currentLanguage(): String =
-    Locale.getDefault().language
+internal expect fun createPlatformHttpClient(
+    block: HttpClientConfig<*>.() -> Unit,
+): HttpClient
 
 private fun <T : HttpClientEngineConfig> HttpClientConfig<T>.setLanguage() {
     defaultRequest {
-        header(HttpHeaders.AcceptLanguage, currentLanguage())
+        header(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
     }
 }
 fun provideHttpClient(): HttpClient =
-    HttpClient(CIO) {
+    createPlatformHttpClient {
         install(Resources)
         setLanguage()
         installContentNegotiation()
@@ -52,7 +52,7 @@ fun provideCloudHttpClient(
     userLocalDataSource: UserLocalDataSource,
     userRemoteDataSource: UserRemoteDataSource,
 ): HttpClient =
-    HttpClient(CIO) {
+    createPlatformHttpClient {
         install(Resources)
         setLanguage()
         installContentNegotiation()

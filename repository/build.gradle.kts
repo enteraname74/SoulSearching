@@ -30,11 +30,21 @@ kotlin {
     }
 
     sourceSets {
+        val commonMain by getting
         val desktopMain by getting {
             dependencies {
                 implementation(libs.jaudiotagger)
             }
         }
+        val jsMain by getting
+        val wasmJsMain by getting
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain)
+        }
+
+        jsMain.dependsOn(webMain)
+        wasmJsMain.dependsOn(webMain)
+
         androidMain.dependencies {
             implementation(libs.jaudiotagger)
         }

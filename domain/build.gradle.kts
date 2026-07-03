@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
@@ -20,7 +21,9 @@ kotlin {
     }
     jvmToolchain(17)
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
         optIn.addAll(
             "kotlin.time.ExperimentalTime",
             "kotlin.uuid.ExperimentalUuidApi"
