@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("com.android.library")
@@ -15,6 +16,14 @@ kotlin {
     androidTarget()
     jvm("desktop")
 
+    js {
+        browser()
+    }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+    }
+
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         // Common compiler options applied to all Kotlin source sets for expect / actual implementations
@@ -22,6 +31,25 @@ kotlin {
     }
 
     sourceSets {
+        val jsMain by getting
+        val wasmJsMain by getting
+        val commonMain by getting
+        val desktopMain by getting
+
+        val nonAndroidMain by creating {
+            dependsOn(commonMain)
+        }
+
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain)
+            dependsOn(nonAndroidMain)
+        }
+
+        jsMain.dependsOn(webMain)
+        wasmJsMain.dependsOn(webMain)
+
+        desktopMain.dependsOn(nonAndroidMain)
+
         commonMain.dependencies {
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)

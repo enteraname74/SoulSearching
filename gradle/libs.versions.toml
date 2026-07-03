@@ -21,7 +21,7 @@ ffmpeg = "6.0-2"
 file-kit = "0.12.0"
 jaudiotagger = "3.0.1"
 jlibnotify = "1.2.3"
-kmpalette = "3.1.0"
+kmpalette = "4.0.0-beta02"
 kotlin = "2.3.20"
 kotlinx-serialization = "1.10.0"
 kotlinx-browser = "0.3"
@@ -78,7 +78,7 @@ file-kit = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref 
 gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 jaudiotagger = { module = "net.jthink:jaudiotagger", version.ref = "jaudiotagger" }
 jlibnotify = { module = "es.blackleg:jlibnotify", version.ref = "jlibnotify" }
-kmpalette = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }
+kmpalette = { module = "com.materialkolor.palette:core", version.ref = "kmpalette" }
 
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
