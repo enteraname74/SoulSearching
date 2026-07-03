@@ -339,7 +339,7 @@ object FrStrings : Strings {
     override val generatedCode: String = "Code généré"
     override val cloudSyncTitle: String = "Synchronisation"
     override val cloudSyncText: String = "Gérer la synchronisation entre l'application et Cloudy"
-    override val cloudSyncButton: String = "synchroniser les musiques"
+    override val cloudSyncButton: String = "Synchroniser les musiques"
     override val musicChannelNotificationDescription: String = "Utilisé pour contrôler la musique couramment jouée."
     override val cloudSyncChannelNotificationDescription: String = "Utilisé pour synchroniser les données de l'application avec Cloudy"
     override val musicChannelNotificationName: String = "Notification de la musique en cours de lecture"
