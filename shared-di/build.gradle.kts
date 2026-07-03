@@ -29,8 +29,35 @@ kotlin {
     }
 
     sourceSets {
+        val commonMain by getting
+        val androidMain by getting
+        val desktopMain by getting {
+            dependencies {
+                implementation(libs.coroutines.core.swing)
+            }
+        }
+        val jsMain by getting
+        val wasmJsMain by getting
+        val jvmMain by creating {
+            dependsOn(commonMain)
+
+            dependencies {
+                implementation(libs.jaudiotagger)
+            }
+        }
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain)
+        }
+
+        androidMain.dependsOn(jvmMain)
+        desktopMain.dependsOn(jvmMain)
+        jsMain.dependsOn(webMain)
+        wasmJsMain.dependsOn(webMain)
+
         commonMain.dependencies {
             implementation(libs.koin.core)
+            implementation(libs.coroutines.core)
+
             implementation(project(":domain"))
             implementation(project(":repository"))
             implementation(project(":remote"))

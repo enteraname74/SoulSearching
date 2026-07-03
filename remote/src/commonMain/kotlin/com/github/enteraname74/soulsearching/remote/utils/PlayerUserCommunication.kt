@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.remote.utils
 
 import com.github.enteraname74.domain.repository.SharedPlayedListListener
 import com.github.enteraname74.domain.util.LocaleUtils
-import com.github.enteraname74.soulsearching.remote.di.remoteWorkDispatcher
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
@@ -19,7 +19,9 @@ import kotlin.uuid.Uuid
 class PlayerUserCommunication(
     private val client: HttpClient,
     private val cloudPreferencesDataSource: CloudPreferencesDataSource,
+    workDispatcher: WorkDispatcher,
 ) {
+    private val workScope = CoroutineScope(workDispatcher.dispatcher)
     private var webSocketJob: Job? = null
     private var session: DefaultClientWebSocketSession? = null
     private var listener: SharedPlayedListListener? = null
@@ -32,7 +34,7 @@ class PlayerUserCommunication(
     ) {
         unregister()
         listener = newListener
-        webSocketJob = CoroutineScope(remoteWorkDispatcher).launch {
+        webSocketJob = workScope.launch {
             runCatching {
                 client.webSocket(
                     request = {

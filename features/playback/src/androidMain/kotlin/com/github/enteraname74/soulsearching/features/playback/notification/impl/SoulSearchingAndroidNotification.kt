@@ -9,6 +9,7 @@ import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.features.playback.PlayerService
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -118,6 +119,7 @@ abstract class SoulSearchingAndroidNotification(
             context: Context,
             playbackManager: PlaybackManager,
             toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
+            workDispatcher: WorkDispatcher,
         ): SoulSearchingNotification =
             if (Build.VERSION.SDK_INT >= 33) {
                 SoulSearchingNotificationAndroid13(
@@ -128,6 +130,7 @@ abstract class SoulSearchingAndroidNotification(
                     context = context,
                     playbackManager = playbackManager,
                     toggleMusicFavoriteStatusUseCase = toggleMusicFavoriteStatusUseCase,
+                    workDispatcher = workDispatcher,
                 )
             }
 

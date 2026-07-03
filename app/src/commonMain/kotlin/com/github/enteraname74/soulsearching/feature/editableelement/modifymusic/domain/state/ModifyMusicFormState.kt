@@ -7,6 +7,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -27,6 +28,7 @@ sealed interface ModifyMusicFormState {
         private val onDeleteArtist: (artistId: Uuid) -> Unit,
         private val savedData: Map<String, String>,
         private val onFieldChange: (id: String, value: String) -> Unit,
+        private val workDispatcher: WorkDispatcher,
     ) : ModifyMusicFormState {
         val textFields: List<SoulTextFieldHolder> = buildList {
             add(
@@ -56,6 +58,7 @@ sealed interface ModifyMusicFormState {
                     isValid = { it.isNotBlank() },
                     initialValue = savedData[ALBUM_NAME] ?: initialMusic.album.albumName,
                     updateProposedValues = updateFoundAlbums,
+                    workDispatcher = workDispatcher,
                     getLabel = { strings.albumName },
                     style = SoulTextFieldStyle.Body,
                     getError = { strings.fieldCannotBeEmpty },
@@ -100,6 +103,7 @@ sealed interface ModifyMusicFormState {
                         onFieldChange(ALBUM_ARTIST, it)
                     },
                     updateProposedValues = updateFoundArtists,
+                    workDispatcher = workDispatcher,
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
                         keyboardType = KeyboardType.Text,
@@ -118,6 +122,7 @@ sealed interface ModifyMusicFormState {
                         isValid = { it.isNotBlank() },
                         initialValue = savedData[artistId] ?: artist.artistName,
                         updateProposedValues = updateFoundArtists,
+                        workDispatcher = workDispatcher,
                         getLabel = { strings.artistName },
                         style = if (index == artistsOfMusic.lastIndex) {
                             SoulTextFieldStyle.Bottom

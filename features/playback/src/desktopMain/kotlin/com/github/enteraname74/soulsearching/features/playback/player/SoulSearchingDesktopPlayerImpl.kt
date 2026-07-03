@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -13,11 +13,14 @@ import uk.co.caprica.vlcj.player.base.State
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 import kotlin.time.Duration.Companion.milliseconds
 
-class SoulSearchingDesktopPlayerImpl :
+class SoulSearchingDesktopPlayerImpl(
+    workDispatcher: WorkDispatcher,
+) :
     SoulSearchingPlayer,
     MediaPlayerEventAdapter() {
 
     private var player: MediaPlayer = AudioPlayerComponent().mediaPlayer()
+    private val workScope = CoroutineScope(workDispatcher.dispatcher)
     private var isOnlyLoadingMusic: Boolean = false
     private var positionToReachWhenLoadingMusic: Int = 0
 
@@ -33,7 +36,7 @@ class SoulSearchingDesktopPlayerImpl :
 
     override fun finished(mediaPlayer: MediaPlayer?) {
         super.finished(mediaPlayer)
-        CoroutineScope(Dispatchers.IO).launch {
+        workScope.launch {
             listener?.onCompletion()
         }
     }

@@ -33,13 +33,13 @@ import com.github.enteraname74.domain.usecase.player.RegisterSharedPlayedListEve
 import com.github.enteraname74.domain.usecase.player.RemoveMusicsFromSharedPlayedListUseCase
 import com.github.enteraname74.domain.usecase.player.SyncPlayedListInformationUseCase
 import com.github.enteraname74.domain.usecase.player.SyncPlayedListMusicsUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
 import com.github.enteraname74.soulsearching.features.playback.progressJob.PlaybackProgressJob
 import com.github.enteraname74.soulsearching.features.playback.progressJob.PlaybackProgressJobCallbacks
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -79,15 +79,17 @@ class PlaybackManager(
     private val registerSharedPlayedListEventsListenerUseCase: RegisterSharedPlayedListEventsListenerUseCase,
     private val syncPlayedListInformationUseCase: SyncPlayedListInformationUseCase,
     private val syncPlayedListMusicsUseCase: SyncPlayedListMusicsUseCase,
+    workDispatcher: WorkDispatcher,
 ) : KoinComponent, SoulSearchingPlayer.Listener {
     private val notification: SoulSearchingNotification by inject()
     private val player: SoulSearchingPlayer by inject()
 
-    private val workScope = CoroutineScope(Dispatchers.IO)
+    private val workScope = CoroutineScope(workDispatcher.dispatcher)
     private var updateMusicNbPlayedJob: Job? = null
 
     private val playbackProgressJob: PlaybackProgressJob = PlaybackProgressJob(
         playerRepository = playerRepository,
+        workDispatcher = workDispatcher,
         callback = object : PlaybackProgressJobCallbacks {
             override suspend fun isPlaying(): Boolean =
                 player.isPlaying() == true
@@ -605,7 +607,7 @@ class PlaybackManager(
 
     private fun launchMusicCount(musicId: Uuid) {
         updateMusicNbPlayedJob?.cancel()
-        updateMusicNbPlayedJob = CoroutineScope(Dispatchers.IO).launch {
+        updateMusicNbPlayedJob = workScope.launch {
             delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED.milliseconds)
             commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }

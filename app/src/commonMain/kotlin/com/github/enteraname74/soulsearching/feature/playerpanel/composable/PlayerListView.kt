@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.player.PlayedListScope
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
@@ -70,7 +71,6 @@ import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiS
 import com.github.enteraname74.soulsearching.feature.player.domain.state.UserTag
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -96,6 +96,7 @@ fun PlayerListView(
     playedListScope: PlayedListScope,
     getUserTag: (musicId: Uuid) -> UserTag?,
     onAddFromUrl: (() -> Unit)?,
+    workDispatcher: WorkDispatcher = injectElement(),
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -208,7 +209,7 @@ fun PlayerListView(
                                 reorderableModifier = Modifier
                                     .draggableHandle(
                                         onDragStopped = {
-                                            CoroutineScope(Dispatchers.IO).launch {
+                                            CoroutineScope(workDispatcher.dispatcher).launch {
                                                 val fromMusicIdValue = fromMusicId ?: return@launch
                                                 val afterMusicIdValue = afterMusicId ?: return@launch
 

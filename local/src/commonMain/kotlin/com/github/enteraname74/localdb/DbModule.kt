@@ -1,5 +1,6 @@
 package com.github.enteraname74.localdb
 
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.localdb.datasourceimpl.RoomAlbumDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomArtistDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomCloudPreferencesDataSourceImpl
@@ -73,7 +74,7 @@ val localModule: Module = module {
     single {
         getAppDatabase(
             builder = get(),
-            dispatcher = localDatabaseDispatcher,
+            dispatcher = get<WorkDispatcher>().dispatcher,
         )
     }
 

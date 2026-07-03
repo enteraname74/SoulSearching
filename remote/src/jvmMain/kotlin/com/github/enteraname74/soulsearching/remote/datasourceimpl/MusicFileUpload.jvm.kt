@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.remote.datasourceimpl
 import com.github.enteraname74.domain.model.CloudMusic
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.remote.ext.appendFile
 import com.github.enteraname74.soulsearching.remote.ext.appendJson
 import com.github.enteraname74.soulsearching.remote.ext.contentType
@@ -17,11 +18,12 @@ internal actual suspend fun uploadMusicFile(
     client: HttpClient,
     baseUrl: String,
     music: Music,
+    workDispatcher: WorkDispatcher,
 ): SoulResult<CloudMusic> {
     val file: File = music.localPath
         ?.let { File(it) }
         ?.takeIf { it.exists() } ?: return SoulResult.Error()
-    val contentType = file.contentType()
+    val contentType = file.contentType(workDispatcher)
 
     return client
         .safeRequest {

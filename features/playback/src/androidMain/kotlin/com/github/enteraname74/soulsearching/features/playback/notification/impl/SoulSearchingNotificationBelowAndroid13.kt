@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
@@ -20,7 +21,6 @@ import com.github.enteraname74.soulsearching.features.playback.notification.rece
 import com.github.enteraname74.soulsearching.features.playback.notification.receivers.PreviousMusicNotificationReceiver
 import com.github.enteraname74.soulsearching.features.playback.notification.receivers.ToggleFavoriteNotificationReceiver
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -31,9 +31,11 @@ class SoulSearchingNotificationBelowAndroid13(
     context: Context,
     playbackManager: PlaybackManager,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
+    workDispatcher: WorkDispatcher,
 ) : SoulSearchingAndroidNotification(
     context = context,
 ) {
+    private val workScope = CoroutineScope(workDispatcher.dispatcher)
     private val previousMusicIntent: PendingIntent = PendingIntent.getBroadcast(
         context,
         2,
@@ -67,7 +69,7 @@ class SoulSearchingNotificationBelowAndroid13(
             val broadcastContext = this
             val extras = intent.extras ?: return
 
-            CoroutineScope(Dispatchers.IO).launch {
+            workScope.launch {
                 when {
                     extras.getBoolean(STOP_RECEIVE) -> context.unregisterReceiver(broadcastContext)
                     extras.getBoolean(NEXT) -> playbackManager.next()

@@ -28,6 +28,7 @@ import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
@@ -61,7 +62,6 @@ import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsA
 import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -94,6 +94,7 @@ class MainPageViewModel(
     private val tabManager: TabManager,
     private val commonUserUseCase: CommonUserUseCase,
     private val hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
+    workDispatcher: WorkDispatcher,
 ) : ViewModel(), KoinComponent,
     SortingInformationDelegate by sortingInformationDelegateImpl {
 
@@ -110,11 +111,11 @@ class MainPageViewModel(
     private val commonReleaseUseCase: CommonReleaseUseCase by inject()
     private val shouldInformOfNewReleaseUseCase: ShouldInformOfNewReleaseUseCase by inject()
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope = CoroutineScope(workDispatcher.dispatcher)
 
     val shouldShowNewVersionPin: StateFlow<Boolean> = shouldInformOfNewReleaseUseCase()
         .stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
             started = SharingStarted.Lazily,
             initialValue = false
         )
@@ -146,7 +147,7 @@ class MainPageViewModel(
     val isUsingVerticalAccessBar: StateFlow<Boolean> = settings.getFlowOn(
         SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR,
     ).stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Lazily,
         initialValue = true,
     )
@@ -225,7 +226,7 @@ class MainPageViewModel(
             monthMusicPreviews = allMonthMusics,
         )
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Lazily,
         initialValue = AllMusicsState(),
     )
@@ -236,7 +237,7 @@ class MainPageViewModel(
                 allMusicFolders = allMusicFolders,
             )
         }.stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
             started = SharingStarted.Lazily,
             initialValue = AllMusicFoldersState()
         )
@@ -249,7 +250,7 @@ class MainPageViewModel(
                 sortDirection = sortingInformation.direction,
             )
         }.stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
             started = SharingStarted.Lazily,
             initialValue = AllArtistsState()
         )
@@ -262,7 +263,7 @@ class MainPageViewModel(
                 sortDirection = sortingInformation.direction,
             )
         }.stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
             started = SharingStarted.Lazily,
             initialValue = AllAlbumsState()
         )
@@ -275,7 +276,7 @@ class MainPageViewModel(
                 sortDirection = sortingInformation.direction,
             )
         }.stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
             started = SharingStarted.Lazily,
             initialValue = AllPlaylistsState()
         )

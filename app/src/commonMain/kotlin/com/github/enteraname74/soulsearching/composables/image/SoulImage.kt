@@ -28,6 +28,7 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.CoverFolderRetriever
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.app.generated.resources.Res
 import com.github.enteraname74.soulsearching.app.generated.resources.app_logo_uni_xml
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -38,7 +39,6 @@ import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFil
 import com.github.enteraname74.soulsearching.features.serialization.SerializationUtils
 import com.github.enteraname74.soulsearching.util.FileOperation
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -201,7 +201,8 @@ private fun CoverFolderImage(
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder,
     settings: SoulSearchingSettings = injectElement(),
-    fileOperation: FileOperation = injectElement()
+    fileOperation: FileOperation = injectElement(),
+    workDispatcher: WorkDispatcher = injectElement(),
 ) {
     var inputStream: String? by rememberSaveable {
         mutableStateOf(null)
@@ -214,7 +215,7 @@ private fun CoverFolderImage(
             return@LaunchedEffect
         }
 
-        job = CoroutineScope(Dispatchers.IO).launch {
+        job = CoroutineScope(workDispatcher.dispatcher).launch {
             inputStream = settings.get(SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER)
                 .takeIf { it.isNotBlank() }?.let {
                     runCatching {
@@ -276,6 +277,7 @@ private fun MusicFileImage(
     tint: Color,
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
     coverUtils: CachedCoverManager = injectElement(),
+    workDispatcher: WorkDispatcher = injectElement(),
 ) {
     var fileData: ImageBitmap? by remember {
         mutableStateOf(
@@ -289,7 +291,7 @@ private fun MusicFileImage(
             return@LaunchedEffect
         }
 
-        job = CoroutineScope(Dispatchers.IO).launch {
+        job = CoroutineScope(workDispatcher.dispatcher).launch {
             val fetchedCover = coverUtils.fetchCoverOfMusicFile(musicPath = musicPath)
             fileData = fetchedCover
             onSuccess?.let { it(fetchedCover) }

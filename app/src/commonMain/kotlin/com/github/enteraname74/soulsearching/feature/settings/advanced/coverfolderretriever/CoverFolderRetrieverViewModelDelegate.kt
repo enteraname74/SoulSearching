@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfol
 import com.github.enteraname74.domain.model.CoverFolderRetriever
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldDefaults
@@ -11,11 +12,11 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolde
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
 import com.github.enteraname74.soulsearching.features.serialization.SerializationUtils
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 abstract class CoverFolderRetrieverViewModelDelegate(
     private val settings: SoulSearchingSettings,
     private val loadingManager: LoadingManager,
+    private val workDispatcher: WorkDispatcher,
 ): CoverFolderRetrieverActions {
 
     var coverFolderRetriever: CoverFolderRetriever = CoverFolderRetriever.default
@@ -65,7 +66,7 @@ abstract class CoverFolderRetrieverViewModelDelegate(
     abstract suspend fun handleToggleActivation(isActivated: Boolean)
 
     override fun onToggleActivation() {
-        loadingManager.withLoadingOnScope(CoroutineScope(Dispatchers.IO)) {
+        loadingManager.withLoadingOnScope(CoroutineScope(workDispatcher.dispatcher)) {
             val newIsActivated = !coverFolderRetriever.isActivated
             settings.set(
                 key = settingsKey,

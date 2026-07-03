@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.CoverFolderRetriever
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.CoverFolderRetrieverActions
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.CoverFolderRetrieverState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +18,7 @@ import kotlinx.coroutines.plus
 class SettingsArtistCoverMethodViewModel(
     settings: SoulSearchingSettings,
     private val artistCoverFolderRetrieverViewModelDelegate: ArtistCoverFolderRetrieverViewModelDelegate,
+    workDispatcher: WorkDispatcher,
 ): ViewModel(), CoverFolderRetrieverActions by artistCoverFolderRetrieverViewModelDelegate {
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<CoverFolderRetrieverState> = settings.getFlowOn(
@@ -32,7 +33,7 @@ class SettingsArtistCoverMethodViewModel(
             coverFolderRetriever = deserialized,
         )
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = CoverFolderRetrieverState(
             coverFolderRetriever = CoverFolderRetriever.default,

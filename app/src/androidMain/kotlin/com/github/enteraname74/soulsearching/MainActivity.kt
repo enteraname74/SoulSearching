@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import coil3.annotation.ExperimentalCoilApi
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.feature.appinit.MissingPermissionsComposable
@@ -27,7 +28,6 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.ui.theme.SoulSearchingTheme
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     private val mainPageViewModel: MainPageViewModel by viewModel()
     private val applicationViewModel: ApplicationViewModel by viewModel()
     private val playbackManager: PlaybackManager by inject()
+    private val workDispatcher: WorkDispatcher by inject()
 
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -172,7 +173,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(workDispatcher.dispatcher).launch {
                 playbackManager.stopPlayback(resetPlayedList = false)
             }
         }

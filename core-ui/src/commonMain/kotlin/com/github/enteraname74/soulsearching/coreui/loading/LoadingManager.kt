@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.loading
 
+import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,11 +9,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class LoadingManager {
+class LoadingManager(
+    workDispatcher: WorkDispatcher,
+) {
     private val _state: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val state: StateFlow<Boolean> = _state.asStateFlow()
 
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope: CoroutineScope = CoroutineScope(workDispatcher.dispatcher)
 
     private var loadingUiWaitJob: Job? = null
 

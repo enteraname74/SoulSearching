@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.chainIf
@@ -24,7 +25,6 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.util.CoverUtils
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -40,6 +40,7 @@ fun PlayerMusicCover(
     modifier: Modifier = Modifier,
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
+    workDispatcher: WorkDispatcher = injectElement(),
 ) {
     val imageModifier = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED && onLongClick != null) {
         Modifier.combinedClickableWithRightClick(
@@ -77,7 +78,7 @@ fun PlayerMusicCover(
 
                 LaunchedEffect(pagerState.settledPage, pagerState.isScrollInProgress) {
                     if (pagerState.settledPage == currentMusicPos || pagerState.isScrollInProgress) return@LaunchedEffect
-                    CoroutineScope(Dispatchers.IO).launch {
+                    CoroutineScope(workDispatcher.dispatcher).launch {
                         when (pagerState.settledPage) {
                             0 -> playbackManager.previous(skipRewind = true)
                             2 -> playbackManager.next()

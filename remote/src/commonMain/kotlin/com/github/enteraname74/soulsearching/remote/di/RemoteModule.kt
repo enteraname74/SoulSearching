@@ -43,7 +43,8 @@ val remoteModule = module {
     factory<MusicRemoteDataSource> {
         MusicRemoteDataSourceImpl(
             client = get(named(HttpClientNames.CLOUD)),
-            cloudPreferencesDataSource = get()
+            cloudPreferencesDataSource = get(),
+            workDispatcher = get(),
         )
     }
 
@@ -65,6 +66,7 @@ val remoteModule = module {
         PlayerUserCommunication(
             client = get(named(HttpClientNames.CLOUD)),
             cloudPreferencesDataSource = get(),
+            workDispatcher = get(),
         )
     }
 }

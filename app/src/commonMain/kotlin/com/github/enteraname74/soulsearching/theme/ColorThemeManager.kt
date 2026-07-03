@@ -3,12 +3,12 @@ package com.github.enteraname74.soulsearching.theme
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.theme.color.*
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.kmpalette.palette.graphics.Palette
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
 /**
@@ -17,10 +17,17 @@ import kotlinx.coroutines.flow.*
 class ColorThemeManager(
     settings: SoulSearchingSettings,
     playerViewManager: PlayerViewManager,
+    workDispatcher: WorkDispatcher,
 ) {
 
-    private val playerPaletteGenerator: ColorPaletteGenerator = ColorPaletteGenerator(settings = settings)
-    private val playlistPaletteGenerator: ColorPaletteGenerator = ColorPaletteGenerator(settings = settings)
+    private val playerPaletteGenerator: ColorPaletteGenerator = ColorPaletteGenerator(
+        settings = settings,
+        workDispatcher = workDispatcher,
+    )
+    private val playlistPaletteGenerator: ColorPaletteGenerator = ColorPaletteGenerator(
+        settings = settings,
+        workDispatcher = workDispatcher,
+    )
     
     var isInDarkMode: Boolean
         get() = isInDarkTheme.value
@@ -42,7 +49,7 @@ class ColorThemeManager(
             forceLightTheme = forceLightTheme,
         )
     }.stateIn(
-        scope = CoroutineScope(Dispatchers.IO),
+        scope = CoroutineScope(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = DefaultThemeSettings(
             themeId = SoulSearchingTheme.from(
@@ -70,7 +77,7 @@ class ColorThemeManager(
             else -> ColorThemeSettings.FromSystem
         }
     }.stateIn(
-        scope = CoroutineScope(Dispatchers.IO),
+        scope = CoroutineScope(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = ColorThemeSettings.DynamicTheme,
     )
@@ -135,7 +142,7 @@ class ColorThemeManager(
             )
         }
     }.stateIn(
-        scope = CoroutineScope(Dispatchers.IO),
+        scope = CoroutineScope(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = null,
     )
@@ -176,7 +183,7 @@ class ColorThemeManager(
             )
         }
     }.stateIn(
-        scope = CoroutineScope(Dispatchers.IO),
+        scope = CoroutineScope(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = null,
     )
@@ -212,7 +219,7 @@ class ColorThemeManager(
             )
         }
     }.stateIn(
-        scope = CoroutineScope(Dispatchers.IO),
+        scope = CoroutineScope(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = null,
     )

@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.multipleartistschoice
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.ArtistChoice
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistChoiceState
@@ -15,7 +16,6 @@ import com.github.enteraname74.soulsearching.features.musicmanager.multipleartis
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.RepositoryMultipleArtistManagerImpl
 import com.github.enteraname74.soulsearching.features.musicmanager.persistence.MusicPersistence
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +30,7 @@ class MultipleArtistsChoiceViewModel(
     private val loadingManager: LoadingManager,
     private val addNewsSongsStepManager: AddNewsSongsStepManager,
     destination: MultipleArtistsChoiceDestination,
+    private val workDispatcher: WorkDispatcher,
 ): ViewModel() {
     val mode = destination.mode
     private val artists: MutableStateFlow<List<ArtistChoice>?> = MutableStateFlow(null)
@@ -103,7 +104,7 @@ class MultipleArtistsChoiceViewModel(
             return
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             loadingManager.withLoading {
                 val artistsToDivide: List<Artist> = (state.value as MultipleArtistChoiceState.UserAction)
                     .artists

@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
@@ -15,6 +15,7 @@ import kotlin.math.max
 class SettingsMainPagePersonalisationViewModel(
     private val settings: SoulSearchingSettings,
     viewSettingsManager: ViewSettingsManager,
+    workDispatcher: WorkDispatcher,
 ) : ViewModel() {
     val state: StateFlow<SettingsMainPagePersonalisationState> = combine(
         viewSettingsManager.visibleElements,
@@ -31,7 +32,7 @@ class SettingsMainPagePersonalisationViewModel(
             initialTab = savedInitial?.takeIf { it in selectableTabs } ?: selectableTabs.first(),
         )
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = SettingsMainPagePersonalisationState.Loading
     )

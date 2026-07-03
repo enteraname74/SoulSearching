@@ -16,11 +16,11 @@ import androidx.core.graphics.scale
 import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -32,10 +32,11 @@ class MediaSessionManager(
     private val context: Context,
     private val playbackManager: PlaybackManager,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
+    workDispatcher: WorkDispatcher,
 ) {
     private var mediaSession: MediaSessionCompat? = null
     private var seekToJob: Job? = null
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope = CoroutineScope(workDispatcher.dispatcher)
 
     private val standardNotificationBitmap: Bitmap =
         BitmapFactory.decodeResource(context.resources, R.drawable.new_notification_default)
@@ -80,7 +81,7 @@ class MediaSessionManager(
         mediaSession?.setCallback(object : MediaSessionCompat.Callback() {
             override fun onSeekTo(pos: Long) {
                 seekToJob?.cancel()
-                seekToJob = CoroutineScope(Dispatchers.IO).launch {
+                seekToJob = coroutineScope.launch {
                     playbackManager.seekToPosition(pos.toInt())
                 }
             }
@@ -109,14 +110,14 @@ class MediaSessionManager(
 
             override fun onSkipToNext() {
                 super.onSkipToNext()
-                CoroutineScope(Dispatchers.IO).launch {
+                coroutineScope.launch {
                     playbackManager.next()
                 }
             }
 
             override fun onSkipToPrevious() {
                 super.onSkipToPrevious()
-                CoroutineScope(Dispatchers.IO).launch {
+                coroutineScope.launch {
                     playbackManager.previous()
                 }
             }

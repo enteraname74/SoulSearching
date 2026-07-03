@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.remote.datasourceimpl
 import com.github.enteraname74.domain.model.CloudMusic
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.safeRequest
 import com.github.enteraname74.soulsearching.remote.ext.safeUnitRequest
@@ -27,6 +28,7 @@ import io.ktor.http.contentType
 class MusicRemoteDataSourceImpl(
     private val client: HttpClient,
     private val cloudPreferencesDataSource: CloudPreferencesDataSource,
+    private val workDispatcher: WorkDispatcher,
 ) : MusicRemoteDataSource {
     override suspend fun getDeletedRemoteMusicIds(idsToCheck: List<String>): List<String> =
         client
@@ -55,6 +57,7 @@ class MusicRemoteDataSourceImpl(
             client = client,
             baseUrl = cloudPreferencesDataSource.getUrl(),
             music = music,
+            workDispatcher = workDispatcher,
         )
     }
 

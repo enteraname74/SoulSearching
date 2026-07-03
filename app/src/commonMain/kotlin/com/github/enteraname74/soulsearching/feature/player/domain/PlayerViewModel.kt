@@ -17,6 +17,7 @@ import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
@@ -36,7 +37,6 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -66,6 +66,7 @@ class PlayerViewModel(
     private val addMusicsToSharedPlayedListUseCase: AddMusicsToSharedPlayedListUseCase,
     private val savedStateHandle: SavedStateHandle,
     commonUserUseCase: CommonUserUseCase,
+    private val workDispatcher: WorkDispatcher,
 ) : ViewModel() {
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
@@ -346,25 +347,25 @@ class PlayerViewModel(
      * Set the player mode.
      */
     fun changePlayerMode() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             playbackManager.switchPlayerMode()
         }
     }
 
     fun next() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             playbackManager.next()
         }
     }
 
     fun previous() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             playbackManager.previous()
         }
     }
 
     fun stopPlayback() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             playbackManager.stopPlayback(resetPlayedList = true)
         }
     }
@@ -374,7 +375,7 @@ class PlayerViewModel(
      */
     fun toggleFavoriteState() {
         (state.value as? PlayerViewState.Data)?.currentMusic?.let {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(workDispatcher.dispatcher).launch {
                 toggleMusicFavoriteStatusUseCase(musicId = it.musicId)
             }
         }

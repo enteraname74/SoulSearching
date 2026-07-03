@@ -6,12 +6,12 @@ import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,9 +26,10 @@ class SettingsAllFoldersViewModel(
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
+    workDispatcher: WorkDispatcher,
 ) : ViewModel() {
 
-    private val workScope = CoroutineScope(Dispatchers.IO)
+    private val workScope = CoroutineScope(workDispatcher.dispatcher)
     private val folderPathSelectionState: MutableStateFlow<Map<String, Boolean>> =
         MutableStateFlow(mapOf())
 

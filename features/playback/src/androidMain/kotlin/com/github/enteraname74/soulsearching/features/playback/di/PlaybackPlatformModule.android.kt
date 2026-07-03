@@ -30,6 +30,7 @@ internal actual val playbackPlatformModule: Module = module {
             context = get(),
             playbackManager = get(),
             toggleMusicFavoriteStatusUseCase = get(),
+            workDispatcher = get(),
         )
     }.binds(
         arrayOf(

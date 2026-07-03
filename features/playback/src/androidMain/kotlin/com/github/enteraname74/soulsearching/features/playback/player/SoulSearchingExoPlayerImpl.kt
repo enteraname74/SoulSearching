@@ -22,9 +22,9 @@ import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -40,6 +40,7 @@ class SoulSearchingExoPlayerImpl(
     context: Context,
     commonCloudPreferencesUseCase: CommonCloudPreferencesUseCase,
     commonUserUseCase: CommonUserUseCase,
+    workDispatcher: WorkDispatcher,
 ) : SoulSearchingPlayer {
     private val httpFactory = DefaultHttpDataSource.Factory()
         .setUserAgent("Soul Searching")
@@ -57,7 +58,7 @@ class SoulSearchingExoPlayerImpl(
         .build()
     private val playerDispatcher = PlayerDispatcher(player.applicationLooper)
     private val playerCoroutineScope = CoroutineScope(playerDispatcher)
-    private val workScope = CoroutineScope(Dispatchers.IO)
+    private val workScope = CoroutineScope(workDispatcher.dispatcher)
 
     private var accessToken: StateFlow<String?> = commonUserUseCase
         .observeUser()
