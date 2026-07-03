@@ -93,4 +93,10 @@ class MusicRemoteDataSourceImpl(
                 contentType(ContentType.Application.Json)
                 setBody(FetchFromUrlBody(url))
             }.bodyOrThrow()
+
+    override suspend fun getSignedUrl(path: String): String =
+        client
+            .withUrl(cloudPreferencesDataSource.getUrl())
+            .get(MusicResource.Url(path = path))
+            .bodyOrThrow()
 }

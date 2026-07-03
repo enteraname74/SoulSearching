@@ -31,6 +31,15 @@ kotlin {
     }
 
     sourceSets {
+        val jsMain by getting
+        val wasmJsMain by getting
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain.get())
+        }
+
+        jsMain.dependsOn(webMain)
+        wasmJsMain.dependsOn(webMain)
+
         val desktopMain by getting {
             dependencies {
 //                implementation(libs.jlibnotify)

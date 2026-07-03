@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -14,6 +15,7 @@ import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 import kotlin.time.Duration.Companion.milliseconds
 
 class SoulSearchingDesktopPlayerImpl(
+    private val commonMusicUseCase: CommonMusicUseCase,
     workDispatcher: WorkDispatcher,
 ) :
     SoulSearchingPlayer,
@@ -81,12 +83,14 @@ class SoulSearchingDesktopPlayerImpl(
             }
             // Necessary to avoid blocking the app.
             delay(500.milliseconds)
-            // TODO CLOUD: Add remote player capability
-            player.media().prepare(music.path)
+            player.media().prepare(music.playablePath())
         } catch (e: Exception) {
             println("SET MUSIC EXC: ${e.message}")
         }
     }
+
+    private suspend fun Music.playablePath(): String? =
+        localPath ?: remotePath?.let { commonMusicUseCase.getSignedUrl(it) }
 
     override suspend fun onlyLoadMusic(seekTo: Int) {
         isOnlyLoadingMusic = true

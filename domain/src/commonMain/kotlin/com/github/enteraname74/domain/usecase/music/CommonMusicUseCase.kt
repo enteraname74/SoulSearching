@@ -187,4 +187,7 @@ class CommonMusicUseCase(
 
     suspend fun getFromPath(path: String): Music? =
         musicRepository.getFromPath(path)
+
+    suspend fun getSignedUrl(path: String): String? =
+        musicRepository.getSignedUrl(path)
 }

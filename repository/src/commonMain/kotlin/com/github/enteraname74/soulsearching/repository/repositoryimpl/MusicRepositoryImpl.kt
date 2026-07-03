@@ -267,4 +267,9 @@ class MusicRepositoryImpl(
 
     override suspend fun getFromPath(path: String): Music? =
         musicLocalDataSource.getFromPath(path)
+
+    override suspend fun getSignedUrl(path: String): String? =
+        runCatching {
+            musicRemoteDataSource.getSignedUrl(path)
+        }.getOrNull()
 }

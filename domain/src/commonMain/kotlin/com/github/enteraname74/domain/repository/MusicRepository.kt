@@ -149,4 +149,5 @@ interface MusicRepository {
 
     suspend fun fetch(url: String): CloudMusic
     suspend fun getFromPath(path: String): Music?
+    suspend fun getSignedUrl(path: String): String?
 }
