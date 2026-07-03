@@ -4,8 +4,8 @@ import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
 import kotlinx.coroutines.flow.StateFlow
 
-// TODO SYNC: Improve for Desktop.
-class CloudBackgroundSyncJobDesktopImpl(
+// TODO SYNC: Improve for non Android platforms.
+class CloudBackgroundSyncJobNonAndroidImpl(
     private val syncMusicWithCloudUseCase: SyncMusicWithCloudUseCase,
 ) : CloudBackgroundSyncJob {
     override val state: StateFlow<SyncMusicWithCloudUseCase.State> = syncMusicWithCloudUseCase.state

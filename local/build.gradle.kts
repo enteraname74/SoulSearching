@@ -50,7 +50,7 @@ kotlin {
 
             dependencies {
                 implementation(libs.androidx.sqlite.web)
-                implementation(npm("sqlite-wasm-worker", layout.projectDirectory.dir("worker").asFile))
+                implementation(npm("sql-js-worker", layout.projectDirectory.dir("worker").asFile))
             }
         }
 

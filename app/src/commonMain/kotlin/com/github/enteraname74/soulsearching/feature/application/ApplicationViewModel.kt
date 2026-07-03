@@ -18,15 +18,15 @@ class ApplicationViewModel(
     private val settings: SoulSearchingSettings,
     private val musicLinkHandler: MusicLinkHandler,
 ) : ViewModel() {
-    val initialRoute: NavKey =
-        when {
-            settings.get(SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION) < LocalDatabaseVersion.VERSION ->
-                MigrationDestination
-            !settings.get(SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY) ->
-                AppInitSongFetchingDestination
-            else ->
-                MainAppDestination
-        }
+    val initialRoute: NavKey = MainAppDestination
+//        when {
+//            settings.get(SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION) < LocalDatabaseVersion.VERSION ->
+//                MigrationDestination
+//            !settings.get(SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY) ->
+//                AppInitSongFetchingDestination
+//            else ->
+//                MainAppDestination
+//        }
 
     var isReadPermissionGranted: Boolean by mutableStateOf(false)
     var isPostNotificationGranted: Boolean by mutableStateOf(false)

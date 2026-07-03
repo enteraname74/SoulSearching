@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class FeedbackPopUpDesktopManager : FeedbackPopUpManager {
+class FeedbackPopUpNonAndroidManager : FeedbackPopUpManager {
     private var _state: MutableStateFlow<String?> = MutableStateFlow(null)
     val state: StateFlow<String?> = _state.asStateFlow()
 

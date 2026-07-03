@@ -61,6 +61,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
 import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import com.github.enteraname74.soulsearching.util.pathExists
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -81,7 +82,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.io.File
 import kotlin.uuid.Uuid
 
 @Suppress("Deprecation")
@@ -319,7 +319,7 @@ class MainPageViewModel(
 
         coroutineScope.launch {
             val allFolders = commonFolderUseCase.getAll().first()
-            val foldersToDelete = allFolders.filter { !File(it.folderPath).exists() }
+            val foldersToDelete = allFolders.filter { !pathExists(it.folderPath) }
             commonFolderUseCase.deleteAll(foldersToDelete)
         }
 
@@ -372,7 +372,7 @@ class MainPageViewModel(
             val all = commonMusicUseCase.getAllLocalMusic()
             for (music in all) {
                 music.localPath?.let {
-                    if (!File(it).exists()) {
+                    if (!pathExists(it)) {
                         playbackManager.removeSongsFromPlayedList(
                             musicIds = listOf(music.musicId)
                         )

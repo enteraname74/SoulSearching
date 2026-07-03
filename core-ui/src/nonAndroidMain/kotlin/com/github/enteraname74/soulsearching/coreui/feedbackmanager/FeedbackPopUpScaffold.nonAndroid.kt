@@ -12,7 +12,7 @@ actual fun FeedbackPopUpScaffold(
     content: @Composable () -> Unit
 ) {
 
-    val manager: FeedbackPopUpDesktopManager = feedbackPopUpManager as FeedbackPopUpDesktopManager
+    val manager: FeedbackPopUpNonAndroidManager = feedbackPopUpManager as FeedbackPopUpNonAndroidManager
 
     val coroutineScope = rememberCoroutineScope()
     var isShowingFeedback: Boolean by remember { mutableStateOf(false) }
