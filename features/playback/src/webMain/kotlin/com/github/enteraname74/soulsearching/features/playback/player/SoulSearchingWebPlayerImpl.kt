@@ -22,10 +22,11 @@ class SoulSearchingWebPlayerImpl(
 ) : SoulSearchingPlayer {
     private val audio: HTMLAudioElement = document
         .createElement("audio")
-        .unsafeCast()
+        .unsafeCast<HTMLAudioElement>()
     private val workScope = CoroutineScope(workDispatcher.dispatcher)
 
     private var playerToken: PlayerToken? = null
+    private var currentSource: String? = null
 
     override var listener: SoulSearchingPlayer.Listener? = null
 
@@ -80,15 +81,20 @@ class SoulSearchingWebPlayerImpl(
             return
         }
 
-        audio.src = getMusicUrl(
+        val musicUrl = getMusicUrl(
             token = token,
             remoteId = music.remoteId.orEmpty(),
         )
+
+        if (currentSource == musicUrl) return
+
+        audio.pause()
+        currentSource = musicUrl
+        audio.src = musicUrl
         audio.load()
     }
 
     override suspend fun onlyLoadMusic(seekTo: Int) {
-        audio.load()
         audio.currentTime = seekTo / MILLIS_IN_SECOND
     }
 
@@ -98,7 +104,9 @@ class SoulSearchingWebPlayerImpl(
 
     override suspend fun play() {
         try {
-            audio.play()
+            audio.play().catch {
+                null
+            }
         } catch (_: Throwable) {
             listener?.onError()
         }
@@ -118,6 +126,7 @@ class SoulSearchingWebPlayerImpl(
     override suspend fun dismiss() {
         audio.pause()
         audio.removeAttribute("src")
+        currentSource = null
         audio.load()
     }
 
