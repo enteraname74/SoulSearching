@@ -50,6 +50,7 @@ kotlin {
 
             dependencies {
                 implementation(libs.androidx.sqlite.web)
+                implementation(project(":serialization"))
                 implementation(npm("sql-js-worker", layout.projectDirectory.dir("worker").asFile))
             }
         }

@@ -1,35 +1,45 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingElement
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.settingElementOf
 import com.github.enteraname74.domain.model.user.SimpleUser
 import com.github.enteraname74.domain.model.user.User
 import com.github.enteraname74.localdb.AppDatabase
-import com.github.enteraname74.localdb.model.RoomUser
 import com.github.enteraname74.localdb.model.toRoomSimpleUser
-import com.github.enteraname74.localdb.model.toRoomUser
+import com.github.enteraname74.soulsearching.features.serialization.SerializationUtils
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlin.uuid.Uuid
 
-class RoomUserLocalDataSourceImpl(
+class SettingsUserLocalDataSourceImpl(
+    private val settings: SoulSearchingSettings,
     private val appDatabase: AppDatabase,
-): UserLocalDataSource {
-    override suspend fun upsert(user: User) {
-        val existingUser: RoomUser? = appDatabase.userDao.observe().firstOrNull()
+) : UserLocalDataSource {
+    private val USER: SoulSearchingSettingElement<String> = settingElementOf(
+        key = "USER",
+        defaultValue = Uuid.random().toString(),
+    )
 
-        if (existingUser != null && existingUser.id != user.id) {
-            appDatabase.userDao.clear()
-        }
-        appDatabase.userDao.upsert(user.toRoomUser())
+    private fun parseToUser(json: String): User? =
+        runCatching { SerializationUtils.deserialize<User>(json) }.getOrNull()
+
+    override suspend fun upsert(user: User) {
+        settings.set(
+            key = USER.key,
+            value = SerializationUtils.serialize(user)
+        )
     }
 
     override suspend fun clear() {
-        appDatabase.userDao.clear()
+        settings.delete(USER)
     }
 
     override fun observeUser(): Flow<User?> =
-        appDatabase.userDao.observe().map { it?.toUser() }
+        settings.getFlowOn(USER).map { json ->
+            parseToUser(json)
+        }
 
     override suspend fun setUsers(users: List<SimpleUser>) {
         appDatabase.simpleUserDao.setUsers(
