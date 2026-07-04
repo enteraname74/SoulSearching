@@ -19,6 +19,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
@@ -34,6 +35,7 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.domain.model.Platform
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
@@ -61,6 +63,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
 import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import com.github.enteraname74.soulsearching.util.PlatformUtils
 import com.github.enteraname74.soulsearching.util.pathExists
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -94,6 +97,7 @@ class MainPageViewModel(
     private val tabManager: TabManager,
     private val commonUserUseCase: CommonUserUseCase,
     private val hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
+    private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
     workDispatcher: WorkDispatcher,
 ) : ViewModel(), KoinComponent,
     SortingInformationDelegate by sortingInformationDelegateImpl {
@@ -308,6 +312,12 @@ class MainPageViewModel(
 
         coroutineScope.launch {
             commonCoverUseCase.deleteUnusedFileCovers()
+        }
+
+        if (PlatformUtils.platform == Platform.Web) {
+            coroutineScope.launch {
+                cloudBackgroundSyncJob.launchIfPossible()
+            }
         }
 
         coroutineScope.launch {

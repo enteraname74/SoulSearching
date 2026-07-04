@@ -5,15 +5,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_bar_chart
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cloud_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_handyman_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_info_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_palette_filled
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cloud_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.domain.model.Platform
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.util.PlatformUtils
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -35,13 +37,15 @@ fun SettingsRoute(
         navigateBack = navigateBack,
         title = strings.settings,
     ) {
-        item {
-            SoulMenuElement(
-                title = strings.manageMusicsTitle,
-                subTitle = strings.manageMusicsText,
-                leadIcon = CoreRes.drawable.ic_music_note_filled,
-                onClick = toManageMusics
-            )
+        if (PlatformUtils.platform != Platform.Web) {
+            item {
+                SoulMenuElement(
+                    title = strings.manageMusicsTitle,
+                    subTitle = strings.manageMusicsText,
+                    leadIcon = CoreRes.drawable.ic_music_note_filled,
+                    onClick = toManageMusics
+                )
+            }
         }
         item {
             SoulMenuElement(
@@ -63,7 +67,7 @@ fun SettingsRoute(
             SoulMenuElement(
                 title = strings.statisticsTitle,
                 subTitle = strings.statisticsText,
-                leadIcon =  CoreRes.drawable.ic_bar_chart,
+                leadIcon = CoreRes.drawable.ic_bar_chart,
                 onClick = toStatistics
             )
         }
@@ -71,7 +75,7 @@ fun SettingsRoute(
             SoulMenuElement(
                 title = strings.advancedSettingsTitle,
                 subTitle = strings.advancedSettingsText,
-                leadIcon =  CoreRes.drawable.ic_handyman_filled,
+                leadIcon = CoreRes.drawable.ic_handyman_filled,
                 onClick = toAdvancedSettings,
             )
         }
@@ -79,7 +83,7 @@ fun SettingsRoute(
             SoulMenuElement(
                 title = strings.cloudTitle,
                 subTitle = strings.cloudText,
-                leadIcon =  CoreRes.drawable.ic_cloud_filled,
+                leadIcon = CoreRes.drawable.ic_cloud_filled,
                 onClick = toCloudSettings,
             )
         }
@@ -87,7 +91,7 @@ fun SettingsRoute(
             SoulMenuElement(
                 title = strings.aboutTitle,
                 subTitle = strings.aboutText,
-                leadIcon =  CoreRes.drawable.ic_info_filled,
+                leadIcon = CoreRes.drawable.ic_info_filled,
                 onClick = toAbout,
                 isBadged = shouldShowNewVersionPin,
             )

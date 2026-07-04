@@ -39,12 +39,15 @@ import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
+import com.github.enteraname74.soulsearching.domain.model.Platform
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedNavigationState
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedPermissionState
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedState
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.util.PlatformUtils
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
+import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
 enum class SettingsAdvancedScreenFocusedElement {
@@ -97,7 +100,7 @@ private fun SettingsAdvancedComposable(
     )
 
     LaunchInit {
-        delay(UiConstants.AnimationDuration.short.toLong())
+        delay(UiConstants.AnimationDuration.short.toLong().milliseconds)
         shouldAnimate = true
     }
 
@@ -132,13 +135,15 @@ private fun SettingsAdvancedComposable(
                 onClick = { onAction(SettingsAdvancedAction.ToMultipleArtists) },
             )
         }
-        item {
-            SoulMenuElement(
-                title = strings.artistCoverMethodTitle,
-                subTitle = strings.artistCoverMethodText,
-                leadIcon = CoreRes.drawable.ic_image_filled,
-                onClick = { onAction(SettingsAdvancedAction.ToArtistCoverMethod) },
-            )
+        if (PlatformUtils.platform != Platform.Web) {
+            item {
+                SoulMenuElement(
+                    title = strings.artistCoverMethodTitle,
+                    subTitle = strings.artistCoverMethodText,
+                    leadIcon = CoreRes.drawable.ic_image_filled,
+                    onClick = { onAction(SettingsAdvancedAction.ToArtistCoverMethod) },
+                )
+            }
         }
         item {
             Box(
@@ -156,7 +161,7 @@ private fun SettingsAdvancedComposable(
                     isChecked = permissionState.isLyricsPermissionEnabled,
                     maxLines = Int.MAX_VALUE,
                     trailingIcon = SoulMenuLeadingIconSpec(
-                        icon =  CoreRes.drawable.ic_info_filled,
+                        icon = CoreRes.drawable.ic_info_filled,
                         onClick = { onAction(SettingsAdvancedAction.ShowLyricsPermissionDialog) },
                     )
                 )
@@ -178,7 +183,7 @@ private fun SettingsAdvancedComposable(
                     isChecked = permissionState.isGitHubReleaseFetchPermissionEnabled,
                     maxLines = Int.MAX_VALUE,
                     trailingIcon = SoulMenuLeadingIconSpec(
-                        icon =  CoreRes.drawable.ic_info_filled,
+                        icon = CoreRes.drawable.ic_info_filled,
                         onClick = { onAction(SettingsAdvancedAction.ShowGitHubReleasePermissionDialog) },
                     )
                 )
