@@ -4,13 +4,17 @@ import com.github.enteraname74.domain.model.CloudPreferences
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingElement
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.settingElementOf
+import com.github.enteraname74.localdb.AppDatabase
+import com.github.enteraname74.localdb.model.RoomCloudPreferences
 import com.github.enteraname74.soulsearching.features.serialization.SerializationUtils
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 class SettingsCloudPreferencesDataSourceImpl(
     private val settings: SoulSearchingSettings,
+    private val appDatabase: AppDatabase,
 ) : CloudPreferencesDataSource {
     private val CLOUD_PREFERENCES: SoulSearchingSettingElement<String> = settingElementOf(
         key = "CLOUD_PREFERENCES",
@@ -34,7 +38,9 @@ class SettingsCloudPreferencesDataSourceImpl(
     }
 
     override fun observeUrl(): Flow<String?> =
-        observePreferences().map { it?.url }
+        settings.getFlowOn(CLOUD_PREFERENCES).map { json ->
+            parseToCloudPreferences(json)?.url
+        }
 
     override suspend fun setUrl(url: String) {
         val updatedPreferences = getCloudPreferences().copy(
@@ -43,17 +49,22 @@ class SettingsCloudPreferencesDataSourceImpl(
         setCloudPreferences(updatedPreferences)
     }
 
+    // Last sync millis should be cleaned like other database data as we need a full refresh on reload
     override suspend fun setLastSyncMillis(millis: Long) {
-        val updatedPreferences = getCloudPreferences().copy(
-            lastSyncMillis = millis,
+        val preferences: RoomCloudPreferences = appDatabase
+            .cloudPreferencesDao
+            .observe()
+            .firstOrNull() ?: RoomCloudPreferences()
+
+        appDatabase.cloudPreferencesDao.upsert(
+            preferences = preferences.copy(
+                lastSyncMillis = millis,
+            )
         )
-        setCloudPreferences(updatedPreferences)
     }
 
-    override fun observePreferences(): Flow<CloudPreferences?> =
-        settings.getFlowOn(CLOUD_PREFERENCES).map { json ->
-            parseToCloudPreferences(json)
-        }
+    override suspend fun getLastSyncMillis(): Long? =
+        appDatabase.cloudPreferencesDao.observe().firstOrNull()?.lastSyncMillis
 
     override suspend fun clearLastSyncMillis() {
         settings.delete(CLOUD_PREFERENCES)

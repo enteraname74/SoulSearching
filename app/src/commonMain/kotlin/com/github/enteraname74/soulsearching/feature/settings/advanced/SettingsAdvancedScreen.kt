@@ -39,12 +39,12 @@ import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
-import com.github.enteraname74.soulsearching.domain.model.Platform
+import com.github.enteraname74.domain.model.Platform
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedNavigationState
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedPermissionState
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedState
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import com.github.enteraname74.soulsearching.util.PlatformUtils
+import com.github.enteraname74.domain.util.PlatformUtils
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import kotlin.time.Duration.Companion.milliseconds

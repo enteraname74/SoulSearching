@@ -13,9 +13,9 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_palette_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.model.Platform
+import com.github.enteraname74.domain.model.Platform
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import com.github.enteraname74.soulsearching.util.PlatformUtils
+import com.github.enteraname74.domain.util.PlatformUtils
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

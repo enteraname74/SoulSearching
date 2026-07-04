@@ -1,7 +1,6 @@
 package com.github.enteraname74.domain.usecase.music
 
 import com.github.enteraname74.domain.model.CloudMusic
-import com.github.enteraname74.domain.model.CloudPreferences
 import com.github.enteraname74.domain.model.MergeMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
@@ -12,7 +11,6 @@ import com.github.enteraname74.domain.util.DateUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 
 /**
  * Sync local songs with remote one.
@@ -79,13 +77,10 @@ class SyncMusicWithCloudUseCase(
                 )?.remoteId
             }
 
-            val cloudPreferences: CloudPreferences? =
-                cloudPreferencesRepository.observePreferences().firstOrNull()
-
             _state.value = State.FetchingFromRemote
             // Fetching updated songs from cloud
             val updatedRemoteSongs: List<CloudMusic> = musicRepository.fetchUpdatedSongsFromCloud(
-                lastSyncMillis = cloudPreferences?.lastSyncMillis,
+                lastSyncMillis = cloudPreferencesRepository.getLastSyncMillis(),
             )
 
             // Keeping only songs not already handled
