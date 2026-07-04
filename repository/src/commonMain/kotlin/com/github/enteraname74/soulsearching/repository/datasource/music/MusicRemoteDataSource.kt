@@ -17,6 +17,4 @@ interface MusicRemoteDataSource {
     ): List<CloudMusic>
 
     suspend fun fetch(url: String): CloudMusic
-
-    suspend fun getSignedUrl(path: String): String
 }

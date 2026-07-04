@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
 import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayerToken
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
 import com.github.enteraname74.domain.repository.SharedPlayedListListener
@@ -12,6 +13,7 @@ import com.github.enteraname74.soulsearching.remote.model.player.CheckPlayerMusi
 import com.github.enteraname74.soulsearching.remote.model.player.JoinPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.MusicsOperationOnPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.NewPlayedListBody
+import com.github.enteraname74.soulsearching.remote.model.player.RemotePlayerToken
 import com.github.enteraname74.soulsearching.remote.model.player.RemoveUserFromPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.UpdateCurrentMusicBody
 import com.github.enteraname74.soulsearching.remote.model.player.UpdatePlayedListBody
@@ -250,4 +252,10 @@ class PlayerRemoteDataSourceImpl(
             .get(PlayerResource())
             .bodyOrThrow()
 
+
+    override suspend fun getPlayerToken(): PlayerToken =
+        client
+            .withUrl(cloudPreferencesDataSource.getUrl())
+            .get(PlayerResource.Token())
+            .bodyOrThrow<RemotePlayerToken>().toPlayerToken()
 }

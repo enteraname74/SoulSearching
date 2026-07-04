@@ -7,8 +7,8 @@ import com.github.enteraname74.domain.model.MusicFolderPreview
 import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlin.uuid.Uuid
 import kotlin.time.Duration
+import kotlin.uuid.Uuid
 
 class CommonMusicUseCase(
     private val musicRepository: MusicRepository,
@@ -187,7 +187,4 @@ class CommonMusicUseCase(
 
     suspend fun getFromPath(path: String): Music? =
         musicRepository.getFromPath(path)
-
-    suspend fun getSignedUrl(path: String): String? =
-        musicRepository.getSignedUrl(path)
 }

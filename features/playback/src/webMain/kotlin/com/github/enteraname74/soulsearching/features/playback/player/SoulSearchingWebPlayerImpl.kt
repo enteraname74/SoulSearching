@@ -1,23 +1,31 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.model.player.PlayerToken
+import com.github.enteraname74.domain.repository.CloudPreferencesRepository
+import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.browser.document
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.w3c.dom.HTMLAudioElement
 import kotlin.js.unsafeCast
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.minutes
 
 @OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
 class SoulSearchingWebPlayerImpl(
-    private val commonMusicUseCase: CommonMusicUseCase,
+    private val playerRepository: PlayerRepository,
+    private val cloudPreferencesRepository: CloudPreferencesRepository,
     workDispatcher: WorkDispatcher,
 ) : SoulSearchingPlayer {
     private val audio: HTMLAudioElement = document
         .createElement("audio")
-        .unsafeCast<HTMLAudioElement>()
+        .unsafeCast()
     private val workScope = CoroutineScope(workDispatcher.dispatcher)
+
+    private var playerToken: PlayerToken? = null
 
     override var listener: SoulSearchingPlayer.Listener? = null
 
@@ -45,20 +53,39 @@ class SoulSearchingWebPlayerImpl(
         }
     }
 
-    override suspend fun setMusic(music: Music) {
-        val source = music.playableSource()
+    private suspend fun getUpdatedToken(): PlayerToken? {
+        val nearFuture = Clock.System.now().plus(2.minutes)
 
-        if (source == null) {
+        val isTokenValid = playerToken?.expireAt?.let { expireAt ->
+            expireAt < nearFuture
+        } ?: false
+
+        if (isTokenValid) return playerToken
+
+        playerToken = playerRepository.getPlayerToken().getOrNull()
+        return playerToken
+    }
+
+    private suspend fun getMusicUrl(
+        token: PlayerToken,
+        remoteId: String,
+    ): String =
+        "${cloudPreferencesRepository.observeUrl().firstOrNull().orEmpty()}/music/token?token=${token.token}&musicId=$remoteId"
+
+    override suspend fun setMusic(music: Music) {
+        val token = getUpdatedToken()
+
+        if (token == null || music.remoteId == null) {
             listener?.onError()
             return
         }
 
-        audio.src = source
+        audio.src = getMusicUrl(
+            token = token,
+            remoteId = music.remoteId.orEmpty(),
+        )
         audio.load()
     }
-
-    private suspend fun Music.playableSource(): String? =
-        localPath ?: remotePath?.let { commonMusicUseCase.getSignedUrl(it) }
 
     override suspend fun onlyLoadMusic(seekTo: Int) {
         audio.load()

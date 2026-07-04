@@ -14,6 +14,7 @@ import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.model.player.PlayerMusicUser
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
+import com.github.enteraname74.domain.model.player.PlayerToken
 import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
 import com.github.enteraname74.domain.model.player.SharedPlayedListUser
@@ -625,6 +626,10 @@ class PlayerRepositoryImpl(
 
     override suspend fun deleteAllSharedPlayedListPreviews() {
         playerLocalDataSource.deleteAllSharedPlayedListPreviews()
+    }
+
+    override suspend fun getPlayerToken(): SoulResult<PlayerToken> = SoulResult.runCatching {
+        playerRemoteDataSource.getPlayerToken()
     }
 
     private companion object {

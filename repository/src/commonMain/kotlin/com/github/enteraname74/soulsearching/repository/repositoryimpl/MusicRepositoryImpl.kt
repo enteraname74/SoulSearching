@@ -1,17 +1,13 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.CloudMusic
-import com.github.enteraname74.domain.model.MonthMusicsPreview
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicFolderPreview
-import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlin.uuid.Uuid
 import kotlin.time.Duration
+import kotlin.uuid.Uuid
 
 /**
  * Repository for handling Music related work.
@@ -267,9 +263,4 @@ class MusicRepositoryImpl(
 
     override suspend fun getFromPath(path: String): Music? =
         musicLocalDataSource.getFromPath(path)
-
-    override suspend fun getSignedUrl(path: String): String? =
-        runCatching {
-            musicRemoteDataSource.getSignedUrl(path)
-        }.getOrNull()
 }

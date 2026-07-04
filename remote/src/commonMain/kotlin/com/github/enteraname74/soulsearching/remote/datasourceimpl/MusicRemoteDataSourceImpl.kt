@@ -15,15 +15,11 @@ import com.github.enteraname74.soulsearching.remote.model.update.toMusicUpdate
 import com.github.enteraname74.soulsearching.remote.resource.MusicResource
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.plugins.resources.delete
-import io.ktor.client.plugins.resources.get
-import io.ktor.client.plugins.resources.post
-import io.ktor.client.plugins.resources.put
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.resources.*
+import io.ktor.client.request.*
+import io.ktor.http.*
 
 class MusicRemoteDataSourceImpl(
     private val client: HttpClient,
@@ -93,10 +89,4 @@ class MusicRemoteDataSourceImpl(
                 contentType(ContentType.Application.Json)
                 setBody(FetchFromUrlBody(url))
             }.bodyOrThrow()
-
-    override suspend fun getSignedUrl(path: String): String =
-        client
-            .withUrl(cloudPreferencesDataSource.getUrl())
-            .get(MusicResource.Url(path = path))
-            .bodyOrThrow()
 }

@@ -134,6 +134,8 @@ interface PlayerRepository {
     fun observeAllSharedPlayedListPreview(): Flow<List<SharedPlayedListPreview>>
 
     suspend fun deleteAllSharedPlayedListPreviews()
+
+    suspend fun getPlayerToken(): SoulResult<PlayerToken>
 }
 
 interface SharedPlayedListListener {
