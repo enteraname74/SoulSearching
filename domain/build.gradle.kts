@@ -31,14 +31,23 @@ kotlin {
     }
 
     sourceSets {
-        commonMain {
-            dependencies {
-                implementation(libs.compose.ui)
-                implementation(libs.androidx.paging.common)
-                implementation(libs.koin.core)
-                implementation(libs.coroutines.core)
-                implementation(libs.kotlinx.serialization.json)
-            }
+        val commonMain by getting
+        val jsMain by getting
+        val wasmJsMain by getting
+
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain)
+        }
+
+        jsMain.dependsOn(webMain)
+        wasmJsMain.dependsOn(webMain)
+
+        commonMain.dependencies {
+            implementation(libs.compose.ui)
+            implementation(libs.androidx.paging.common)
+            implementation(libs.koin.core)
+            implementation(libs.coroutines.core)
+            implementation(libs.kotlinx.serialization.json)
         }
 
         commonTest.dependencies {

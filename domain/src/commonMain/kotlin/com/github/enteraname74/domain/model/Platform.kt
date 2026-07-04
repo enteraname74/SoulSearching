@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.domain.model
+package com.github.enteraname74.domain.model
 
 enum class Platform {
     Android,
