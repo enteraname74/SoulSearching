@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.features.playback.notification.impl
+package com.github.enteraname74.soulsearching.features.playback.notification
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -6,34 +6,32 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.v4.media.session.MediaSessionCompat
+import androidx.annotation.OptIn
 import androidx.core.app.NotificationCompat
-import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
-import com.github.enteraname74.domain.util.WorkDispatcher
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaStyleNotificationHelper
 import com.github.enteraname74.soulsearching.features.playback.PlayerService
 import com.github.enteraname74.soulsearching.features.playback.R
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaSessionManager
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
-import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
-import com.github.enteraname74.soulsearching.features.playback.notification.receivers.DeletedNotificationIntentReceiver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-abstract class SoulSearchingAndroidNotification(
+class SoulSearchingAndroidNotification(
     private val context: Context,
 ) : SoulSearchingNotification, KoinComponent {
     private val mediaSessionManager: MediaSessionManager by inject()
 
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    protected val notificationBuilder: NotificationCompat.Builder = NotificationCompat.Builder(
+    private val notificationBuilder: NotificationCompat.Builder = NotificationCompat.Builder(
         context,
         MUSIC_NOTIFICATION_CHANNEL_ID
     )
     lateinit var notification: Notification
-        protected set
+        private set
 
     private val activityPendingIntent: PendingIntent = PendingIntent.getActivity(
         context,
@@ -50,36 +48,34 @@ abstract class SoulSearchingAndroidNotification(
             PendingIntent.FLAG_UPDATE_CURRENT
     )
 
-    private val deleteNotificationIntent: PendingIntent = PendingIntent.getBroadcast(
-        context,
-        5,
-        Intent(context, DeletedNotificationIntentReceiver::class.java),
-        PendingIntent.FLAG_IMMUTABLE
-    )
-
     private var hasServiceBeenLaunched: Boolean = false
 
-    protected fun NotificationCompat.Builder.soulNotificationBuilder(
+    @OptIn(UnstableApi::class)
+    private fun NotificationCompat.Builder.soulNotificationBuilder(
         updateData: UpdateData,
-        mediaSessionToken: MediaSessionCompat.Token,
+        mediaSession: MediaSession,
     ): NotificationCompat.Builder =
         this
             .setSmallIcon(R.drawable.app_logo)
             .setContentTitle(updateData.music.name)
             .setContentText(updateData.music.artistsNames)
             .setContentIntent(activityPendingIntent)
-            .setDeleteIntent(deleteNotificationIntent)
             .setSilent(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setStyle(
-                androidx.media.app.NotificationCompat.MediaStyle()
-                    .setMediaSession(mediaSessionToken)
+                MediaStyleNotificationHelper.MediaStyle(mediaSession)
             )
 
-    abstract fun provideNotification(
+    fun provideNotification(
         updateData: UpdateData,
-        mediaSessionToken: MediaSessionCompat.Token,
-    ): Notification
+        mediaSession: MediaSession,
+    ): Notification =
+        notificationBuilder
+            .soulNotificationBuilder(
+                updateData = updateData,
+                mediaSession = mediaSession,
+            )
+            .build()
 
     private fun release() {
         val notificationManager =
@@ -91,13 +87,13 @@ abstract class SoulSearchingAndroidNotification(
         updateData: UpdateData,
     ) {
         withContext(Dispatchers.Main) {
-            val mediaSessionToken = mediaSessionManager.getUpdatedMediaSessionToken(
+            val mediaSession = mediaSessionManager.getUpdatedMediaSession(
                 updateData = updateData,
             )
 
             notification = provideNotification(
                 updateData = updateData,
-                mediaSessionToken = mediaSessionToken,
+                mediaSession = mediaSession,
             )
             if (!hasServiceBeenLaunched) {
                 PlayerService.launchService(context = context)
@@ -115,28 +111,11 @@ abstract class SoulSearchingAndroidNotification(
     }
 
     companion object {
-        fun buildNotification(
-            context: Context,
-            playbackManager: PlaybackManager,
-            toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
-            workDispatcher: WorkDispatcher,
-        ): SoulSearchingNotification =
-            if (Build.VERSION.SDK_INT >= 33) {
-                SoulSearchingNotificationAndroid13(
-                    context = context,
-                )
-            } else {
-                SoulSearchingNotificationBelowAndroid13(
-                    context = context,
-                    playbackManager = playbackManager,
-                    toggleMusicFavoriteStatusUseCase = toggleMusicFavoriteStatusUseCase,
-                    workDispatcher = workDispatcher,
-                )
-            }
+        const val MUSIC_NOTIFICATION_CHANNEL_ID: String = "SoulSearchingMusicNotificationChannel"
+        const val CHANNEL_ID: Int = 69
 
-        const val MUSIC_NOTIFICATION_CHANNEL_ID = "SoulSearchingMusicNotificationChannel"
-        const val CHANNEL_ID = 69
+        const val BROADCAST_NOTIFICATION: String = "BROADCAST_NOTIFICATION"
 
-        const val BROADCAST_NOTIFICATION = "BROADCAST_NOTIFICATION"
+        const val STOP_RECEIVE: String = "STOP RECEIVE"
     }
 }

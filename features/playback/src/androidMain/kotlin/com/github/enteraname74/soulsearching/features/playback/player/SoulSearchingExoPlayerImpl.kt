@@ -12,11 +12,23 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DataSpec
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
+import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -26,13 +38,44 @@ import kotlin.coroutines.CoroutineContext
 @UnstableApi
 class SoulSearchingExoPlayerImpl(
     context: Context,
-    private val commonMusicUseCase: CommonMusicUseCase,
+    commonCloudPreferencesUseCase: CommonCloudPreferencesUseCase,
+    commonUserUseCase: CommonUserUseCase,
 ) : SoulSearchingPlayer {
+    private val httpFactory = DefaultHttpDataSource.Factory()
+        .setUserAgent("Soul Searching")
+
+    private val resolvingDataSourceFactory: DataSource.Factory =
+        ResolvingDataSource.Factory(
+            DefaultDataSource.Factory(context, httpFactory)
+        ) { dataSpec: DataSpec -> resolveDataSpec(dataSpec) }
+
+    private val mediaSourceFactory = DefaultMediaSourceFactory(context)
+        .setDataSourceFactory(resolvingDataSourceFactory)
     private val player = ExoPlayer
         .Builder(context)
+        .setMediaSourceFactory(mediaSourceFactory)
         .build()
+    internal val media3Player: Player
+        get() = player
     private val playerDispatcher = PlayerDispatcher(player.applicationLooper)
     private val playerCoroutineScope = CoroutineScope(playerDispatcher)
+    private val workScope = CoroutineScope(Dispatchers.IO)
+
+    private var accessToken: StateFlow<String?> = commonUserUseCase
+        .observeUser()
+        .map { it?.accessToken }
+        .stateIn(
+            scope = workScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
+    private var baseUrl: StateFlow<String?> = commonCloudPreferencesUseCase
+        .observeUrl()
+        .stateIn(
+            scope = workScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
 
     private val playerListener = object : Player.Listener {
         override fun onPlayerError(error: PlaybackException) {
@@ -101,29 +144,63 @@ class SoulSearchingExoPlayerImpl(
         }
     }
 
-    override suspend fun setMusic(music: Music) {
-        val uri = music.toPlayableUri()
+    private fun resolveDataSpec(original: DataSpec): DataSpec {
+        val originalUri = original.uri
+        val scheme = originalUri.scheme?.lowercase()
 
-        if (uri == null) {
-            listener?.onError()
-            return
+        // Local file / content / asset => do nothing
+        if (
+            scheme == "file" ||
+            scheme == "content" ||
+            scheme == "asset" ||
+            scheme == "android.resource"
+        ) {
+            return original
         }
 
-        onPlayerThread {
-            val mediaItem = MediaItem.fromUri(uri)
-            player.setMediaItem(mediaItem)
-            player.prepare()
-        }
+        val bearerToken = accessToken.value ?: return original
+        val baseUrl = baseUrl.value ?: return original
+
+        val mergedHeaders = HashMap(original.httpRequestHeaders)
+        mergedHeaders["Authorization"] = "Bearer $bearerToken"
+
+        val resolvedUri = resolveRelativeUri(
+            baseUrl = baseUrl,
+            relativePath = originalUri.toString()
+        )
+
+        return original
+            .withUri(resolvedUri)
+            .withRequestHeaders(mergedHeaders)
     }
 
-    private suspend fun Music.toPlayableUri(): Uri? {
-        localPath
-            ?.takeIf { File(it).exists() }
-            ?.let { return Uri.fromFile(File(it)) }
+    private fun resolveRelativeUri(baseUrl: String, relativePath: String): Uri {
+        val base = baseUrl.toUri()
+        val cleanedPath = relativePath.removePrefix("/")
+        return base.buildUpon()
+            .appendEncodedPath(cleanedPath)
+            .build()
+    }
 
-        return remotePath
-            ?.let { commonMusicUseCase.getSignedUrl(it) }
-            ?.toUri()
+    override suspend fun setMusic(music: Music) {
+        onPlayerThread {
+            when {
+                music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
+                    val file = File(music.localPath.orEmpty())
+                    val mediaItem = MediaItem.fromUri(Uri.fromFile(file))
+                    player.setMediaItem(mediaItem)
+                    player.prepare()
+                }
+                music.remotePath != null -> {
+                    val mediaItem = MediaItem.fromUri(music.remotePath.orEmpty())
+                    player.setMediaItem(mediaItem)
+                    player.prepare()
+                }
+                else -> {
+                    listener?.onError()
+                }
+            }
+        }
     }
 
     override suspend fun onlyLoadMusic(seekTo: Int) {

@@ -48,6 +48,7 @@ kotlin {
         val wasmJsMain by getting
         val commonMain by getting
         val desktopMain by getting
+        val androidMain by getting
 
         val nonAndroidMain by creating {
             dependsOn(commonMain)
@@ -58,10 +59,21 @@ kotlin {
             dependsOn(nonAndroidMain)
         }
 
+        val jvmMain by creating {
+            dependsOn(commonMain)
+
+            dependencies {
+                implementation(libs.jaudiotagger)
+            }
+        }
+
         jsMain.dependsOn(webMain)
         wasmJsMain.dependsOn(webMain)
 
         desktopMain.dependsOn(nonAndroidMain)
+
+        desktopMain.dependsOn(jvmMain)
+        androidMain.dependsOn(jvmMain)
 
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -108,16 +120,14 @@ kotlin {
             implementation(libs.navigation3.ui)
             implementation(libs.navigation3.viewmodel)
         }
-        androidMain {
-            dependencies {
-                implementation(libs.koin.androidx.compose)
-                implementation(libs.koin.androidx.workmanager)
-                implementation(libs.bundles.androidx)
+        androidMain.dependencies {
+            implementation(libs.koin.androidx.compose)
+            implementation(libs.koin.androidx.workmanager)
+            implementation(libs.bundles.androidx)
 
-                implementation(libs.bundles.accompanist)
-                // https://mvnrepository.com/artifact/androidx.documentfile/documentfile
-                implementation(libs.androidx.documentfile)
-            }
+            implementation(libs.bundles.accompanist)
+            // https://mvnrepository.com/artifact/androidx.documentfile/documentfile
+            implementation(libs.androidx.documentfile)
         }
     }
 }

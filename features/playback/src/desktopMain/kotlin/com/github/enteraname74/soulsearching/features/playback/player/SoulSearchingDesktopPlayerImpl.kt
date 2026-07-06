@@ -1,9 +1,8 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -14,15 +13,11 @@ import uk.co.caprica.vlcj.player.base.State
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 import kotlin.time.Duration.Companion.milliseconds
 
-class SoulSearchingDesktopPlayerImpl(
-    private val commonMusicUseCase: CommonMusicUseCase,
-    workDispatcher: WorkDispatcher,
-) :
+class SoulSearchingDesktopPlayerImpl :
     SoulSearchingPlayer,
     MediaPlayerEventAdapter() {
 
     private var player: MediaPlayer = AudioPlayerComponent().mediaPlayer()
-    private val workScope = CoroutineScope(workDispatcher.dispatcher)
     private var isOnlyLoadingMusic: Boolean = false
     private var positionToReachWhenLoadingMusic: Int = 0
 
@@ -38,7 +33,7 @@ class SoulSearchingDesktopPlayerImpl(
 
     override fun finished(mediaPlayer: MediaPlayer?) {
         super.finished(mediaPlayer)
-        workScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             listener?.onCompletion()
         }
     }
@@ -83,14 +78,12 @@ class SoulSearchingDesktopPlayerImpl(
             }
             // Necessary to avoid blocking the app.
             delay(500.milliseconds)
-            player.media().prepare(music.playablePath())
+            // TODO CLOUD: Add remote player capability
+            player.media().prepare(music.path)
         } catch (e: Exception) {
             println("SET MUSIC EXC: ${e.message}")
         }
     }
-
-    private suspend fun Music.playablePath(): String? =
-        localPath ?: remotePath?.let { commonMusicUseCase.getSignedUrl(it) }
 
     override suspend fun onlyLoadMusic(seekTo: Int) {
         isOnlyLoadingMusic = true
@@ -135,7 +128,7 @@ class SoulSearchingDesktopPlayerImpl(
     override suspend fun dismiss() {
         try {
             player.controls().stop()
-//            player.release()
+            //            player.release()
         } catch (e: Exception) {
             println("Exception while stopping: $e")
         }
