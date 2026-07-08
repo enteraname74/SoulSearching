@@ -685,7 +685,7 @@ object Migration20To21 : Migration(20, 21) {
         )
     }
 
-    private suspend fun uuid(column: String): String =
+    private fun uuid(column: String): String =
         """
         CASE WHEN $column IS NULL THEN NULL ELSE lower(
             substr(hex($column), 1, 8) || '-' ||
@@ -696,6 +696,6 @@ object Migration20To21 : Migration(20, 21) {
         ) END
         """.trimIndent()
 
-    private suspend fun localDateTimeToMillis(column: String): String =
+    private fun localDateTimeToMillis(column: String): String =
         "CAST(strftime('%s', $column) AS INTEGER) * 1000"
 }
