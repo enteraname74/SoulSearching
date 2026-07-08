@@ -195,7 +195,7 @@ class MusicBottomSheetViewModel(
             add(BottomSheetRowSpec.addToQueue(::addToQueue))
         }
 
-        if (hasValidCloudInformation && possessMusics) {
+        if (hasValidCloudInformation && possessMusics && playedListScope?.isRemote != true) {
             add(BottomSheetRowSpec.startSharedPlayedList(::startSharedPlayedList))
         }
 

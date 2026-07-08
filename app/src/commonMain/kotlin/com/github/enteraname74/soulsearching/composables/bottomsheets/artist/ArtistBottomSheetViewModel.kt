@@ -43,7 +43,7 @@ class ArtistBottomSheetViewModel(
     private val feedbackPopUpManager: FeedbackPopUpManager,
     hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
     settings: SoulSearchingSettings,
-    params:  ArtistBottomSheetDestination,
+    params: ArtistBottomSheetDestination,
 ) : ViewModel() {
     private val artistIds: List<Uuid> = params.artistIds
 
@@ -91,7 +91,7 @@ class ArtistBottomSheetViewModel(
         isQuickAccessShown: Boolean,
         hasValidCloudInformation: Boolean,
         playedListScope: PlayedListScope?,
-    ) : List<BottomSheetRowSpec> = buildList {
+    ): List<BottomSheetRowSpec> = buildList {
         if (artists.isEmpty()) return@buildList
 
         val editEnabled: Boolean = artists.size == 1
@@ -130,7 +130,7 @@ class ArtistBottomSheetViewModel(
 
         add(BottomSheetRowSpec.addToQueue(::addToQueue))
 
-        if (hasValidCloudInformation && hasUserMusics) {
+        if (hasValidCloudInformation && hasUserMusics && playedListScope?.isRemote != true) {
             add(BottomSheetRowSpec.startSharedPlayedList(::startSharedPlayedList))
         }
 
