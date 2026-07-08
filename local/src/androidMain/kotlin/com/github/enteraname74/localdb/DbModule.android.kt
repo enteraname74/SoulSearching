@@ -13,9 +13,6 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 
 internal actual val platformModule: Module = module {
-    singleOf(::RoomCloudPreferencesDataSourceImpl) bind CloudPreferencesDataSource::class
-    singleOf(::RoomUserLocalDataSourceImpl) bind UserLocalDataSource::class
-    singleOf(::RoomDeviceLocalDataSourceImpl) bind DeviceLocalDataSource::class
     single {
         RoomPlatformBuilder(
             context = androidApplication()
