@@ -8,23 +8,24 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
 import kotlinx.browser.document
 import org.koin.compose.KoinApplication
+import org.koin.core.KoinApplication
+import org.koin.dsl.koinConfiguration
 import org.w3c.dom.HTMLElement
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     ComposeViewport(document.getElementById("root") as HTMLElement) {
         KoinApplication(
-            application = {
-                modules(appModule)
-            }
-        ) {
-            val applicationViewModel = injectElement<ApplicationViewModel>()
+            configuration = koinConfiguration(
+                declaration = { modules(appModule) }),
+            content = {
+                val applicationViewModel = injectElement<ApplicationViewModel>()
 
-            with(applicationViewModel) {
-                isReadPermissionGranted = SoulSearchingContext.checkIfReadPermissionGranted()
-                isPostNotificationGranted = SoulSearchingContext.checkIfPostNotificationGranted()
-            }
-            SoulSearchingApplication()
-        }
+                with(applicationViewModel) {
+                    isReadPermissionGranted = SoulSearchingContext.checkIfReadPermissionGranted()
+                    isPostNotificationGranted = SoulSearchingContext.checkIfPostNotificationGranted()
+                }
+                SoulSearchingApplication()
+            })
     }
 }

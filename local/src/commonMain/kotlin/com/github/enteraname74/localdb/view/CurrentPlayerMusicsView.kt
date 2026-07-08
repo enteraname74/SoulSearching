@@ -9,7 +9,7 @@ import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
     """
     WITH currentPlayedList AS (
         SELECT * FROM RoomPlayerPlayedList  
-        WHERE state != "Cached"
+        WHERE state != 'Cached'
         LIMIT 1
     )
     SELECT 

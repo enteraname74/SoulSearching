@@ -1,181 +1,248 @@
-import initSqlJs from 'sql.js';
+import sqlite3InitModule from "@sqlite.org/sqlite-wasm";
 
-let SQL = null;
+let sqlite3 = null;
 
-// Maps to track active database connections and prepared statements by their unique IDs.
-const databases = new Map(); // stores databaseId -> SQL.Database
-const statements = new Map(); // stores statementId -> SQL.Statement
+const databases = new Map(); // databaseId -> sqlite3.oo1.DB
+const statements = new Map(); // statementId -> sqlite3.oo1.Stmt
+const statementDatabases = new Map(); // statementId -> databaseId
 
-// Counters to generate unique IDs for new database connections and statements.
 let nextDatabaseId = 0;
 let nextStatementId = 0;
 
+const messageQueue = [];
+
+function postError(id, error) {
+    postMessage({
+        id,
+        error: error instanceof Error ? error.message : String(error),
+    });
+}
+
 function openRequest(id, requestData) {
     try {
-        const newDatabaseId = nextDatabaseId++;
+        if (!sqlite3.oo1.OpfsDb) {
+            postError(id, "OPFS is not available. Check browser support and COOP/COEP headers.");
+            return;
+        }
 
-        // sql.js operates in-memory by default. If you want to load from requestData.fileName,
-        // you would normally fetch the file as an ArrayBuffer and pass it here:
-        // new SQL.Database(new Uint8Array(buffer));
-        const newDatabase = new SQL.Database();
-        databases.set(newDatabaseId, newDatabase);
-        postMessage({'id': id, data: {'databaseId': newDatabaseId}});
+        const databaseId = nextDatabaseId++;
+
+        // Room may send fileName. If not, use a stable default name.
+        const fileName = requestData.fileName || "/SoulSearching.db";
+
+        // "c" means create if needed.
+        // This database persists in OPFS across page reloads.
+        const database = new sqlite3.oo1.OpfsDb(fileName, "c");
+
+        databases.set(databaseId, database);
+
+        postMessage({
+            id,
+            data: {
+                databaseId,
+            },
+        });
     } catch (error) {
-        postMessage({'id': id, error: error.message});
+        postError(id, error);
     }
 }
 
 function prepareRequest(id, requestData) {
     try {
-        const newStatementId = nextStatementId++;
+        console.log("CLUELESS -- SQL:", requestData.sql);
+        console.log("CLUELESS -- Bindings:", requestData.bindings);
         const database = databases.get(requestData.databaseId);
+
         if (!database) {
-            postMessage({'id': id, error: "Invalid database ID: " + requestData.databaseId});
+            postError(id, "Invalid database ID: " + requestData.databaseId);
             return;
         }
+
+        const statementId = nextStatementId++;
         const statement = database.prepare(requestData.sql);
-        statements.set(newStatementId, statement);
 
-        const resultData = {
-            'statementId': newStatementId,
-            // sql.js doesn't expose bind_parameter_count easily, defaulting to a big number
-            'parameterCount': 256,
-            'columnNames': statement.getColumnNames()
-        };
+        statements.set(statementId, statement);
+        statementDatabases.set(statementId, requestData.databaseId);
 
-        postMessage({'id': id, data: resultData});
+        const columnNames = [];
+        const columnCount = statement.columnCount;
+
+        for (let i = 0; i < columnCount; i++) {
+            columnNames.push(statement.getColumnName(i));
+        }
+
+        postMessage({
+            id,
+            data: {
+                statementId,
+                // Some APIs expose parameterCount, but keep a safe fallback
+                // matching your previous worker behavior.
+                parameterCount: statement.parameterCount || 256,
+                columnNames,
+            },
+        });
     } catch (error) {
-        postMessage({'id': id, error: error.message});
+        postError(id, error);
     }
+}
+
+function bindStatement(statement, bindings) {
+    if (!bindings || bindings.length === 0) return;
+
+    // Room sends an array of bind values.
+    // SQLite WASM supports array binding.
+    statement.bind(bindings);
+}
+
+function getColumnTypes(statement) {
+    const columnTypes = [];
+
+    for (let i = 0; i < statement.columnCount; i++) {
+        // SQLite column type constants:
+        // SQLITE_INTEGER = 1
+        // SQLITE_FLOAT   = 2
+        // SQLITE_TEXT    = 3
+        // SQLITE_BLOB    = 4
+        // SQLITE_NULL    = 5
+        columnTypes.push(
+            sqlite3.capi.sqlite3_column_type(statement.pointer, i)
+        );
+    }
+
+    return columnTypes;
 }
 
 function stepRequest(id, requestData) {
     const statement = statements.get(requestData.statementId);
+
     if (!statement) {
-        postMessage({'id': id, error: "Invalid statement ID: " + requestData.statementId});
+        postError(id, "Invalid statement ID: " + requestData.statementId);
         return;
     }
 
     try {
         const resultData = {
-            'rows': [],
-            'columnTypes': []
+            rows: [],
+            columnTypes: [],
         };
 
-        // Reset the statement state so we can bind new parameters and execute again
         statement.reset();
+        statement.clearBindings();
 
-        if (requestData.bindings && requestData.bindings.length > 0) {
-            statement.bind(requestData.bindings);
-        }
+        bindStatement(statement, requestData.bindings);
 
         while (statement.step()) {
-            const row = statement.get();
-
-            // sql.js doesn't expose sqlite3_column_type. We infer the types
-            // from the first row's JavaScript values.
-            // 1=INTEGER, 2=FLOAT, 3=TEXT, 4=BLOB, 5=NULL
             if (resultData.columnTypes.length === 0) {
-                for (let i = 0; i < row.length; i++) {
-                    const val = row[i];
-                    if (val === null) {
-                        resultData.columnTypes.push(5);
-                    } else if (typeof val === 'number') {
-                        resultData.columnTypes.push(Number.isInteger(val) ? 1 : 2);
-                    } else if (typeof val === 'string') {
-                        resultData.columnTypes.push(3);
-                    } else if (val instanceof Uint8Array) {
-                        resultData.columnTypes.push(4);
-                    } else {
-                        resultData.columnTypes.push(5); // fallback
-                    }
-                }
+                resultData.columnTypes = getColumnTypes(statement);
             }
 
+            // [] means return the row as an array.
+            const row = statement.get([]);
             resultData.rows.push(row);
         }
 
-        postMessage({'id': id, data: resultData});
+        postMessage({
+            id,
+            data: resultData,
+        });
     } catch (error) {
-        postMessage({'id': id, error: error.message});
+        postError(id, error);
     }
 }
 
 function closeRequest(id, requestData) {
-    if (requestData.statementId !== undefined && requestData.statementId != null) {
+    if (requestData.statementId !== undefined && requestData.statementId !== null) {
         const statement = statements.get(requestData.statementId);
-        if (statement == null) {
-            postMessage({'id': id, error: "Invalid statement ID: " + requestData.statementId});
+
+        if (!statement) {
+            postError(id, "Invalid statement ID: " + requestData.statementId);
             return;
         }
+
         try {
-            statement.free(); // sql.js uses free() instead of finalize()
+            statement.finalize();
             statements.delete(requestData.statementId);
+            statementDatabases.delete(requestData.statementId);
         } catch (error) {
-            postMessage({'id': id, error: error.message});
+            postError(id, error);
+            return;
         }
     }
 
-    if (requestData.databaseId !== undefined && requestData.databaseId != null) {
+    if (requestData.databaseId !== undefined && requestData.databaseId !== null) {
         const database = databases.get(requestData.databaseId);
-        if (database == null) {
-            postMessage({'id': id, error: "Invalid database ID: " + requestData.databaseId});
+
+        if (!database) {
+            postError(id, "Invalid database ID: " + requestData.databaseId);
             return;
         }
+
         try {
             database.close();
             databases.delete(requestData.databaseId);
         } catch (error) {
-            postMessage({'id': id, error: error.message});
+            postError(id, error);
+            return;
         }
     }
+
+    // Important for Room:
+    // Do NOT post a success response for close.
 }
 
-// A map that links command names (strings) to their respective handler functions.
 const commandMap = {
-    'open': openRequest,
-    'prepare': prepareRequest,
-    'step': stepRequest,
-    'close': closeRequest,
+    open: openRequest,
+    prepare: prepareRequest,
+    step: stepRequest,
+    close: closeRequest,
 };
 
 function handleMessage(e) {
     const requestMsg = e.data;
-    console.log("handleMessage: " + JSON.stringify(requestMsg));
-    if (!Object.hasOwn(requestMsg, 'data') && requestMsg.data == null) {
-        postMessage({'id': requestMsg.id, 'error': "Invalid request, missing 'data'."});
+
+    if (!requestMsg || !requestMsg.data) {
+        postError(requestMsg?.id, "Invalid request, missing 'data'.");
         return;
     }
-    if (!Object.hasOwn(requestMsg.data, 'cmd') && requestMsg.data.cmd == null) {
-        postMessage({'id': requestMsg.id, 'error': "Invalid request, missing 'cmd'."});
-        return;
-    }
+
     const command = requestMsg.data.cmd;
-    const requestHandler = commandMap[command];
-    if (requestHandler) {
-        requestHandler(requestMsg.id, requestMsg.data);
-    } else {
-        postMessage({'id': requestMsg.id, 'error': "Invalid request, unknown command: '" + command + "'."});
+
+    if (!command) {
+        postError(requestMsg.id, "Invalid request, missing 'cmd'.");
+        return;
     }
+
+    const requestHandler = commandMap[command];
+
+    if (!requestHandler) {
+        postError(requestMsg.id, "Invalid request, unknown command: '" + command + "'.");
+        return;
+    }
+
+    requestHandler(requestMsg.id, requestMsg.data);
 }
 
-// Queue messages that arrive before sql.js has finished initializing
-const messageQueue = [];
 onmessage = (e) => {
-    if (!SQL) {
+    if (!sqlite3) {
         messageQueue.push(e);
     } else {
         handleMessage(e);
     }
 };
 
-// Initialize sql.js. Depending on your build system, you may need to specify
-// the `locateFile` option to point to the sql-wasm.wasm file.
-initSqlJs({
-    locateFile: file => 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.wasm'
-}).then(instance => {
-    SQL = instance;
+sqlite3InitModule({
+    print: console.log,
+    printErr: console.error,
+}).then((instance) => {
+    sqlite3 = instance;
+
+    if (!sqlite3.oo1.OpfsDb) {
+        console.warn("SQLite OPFS is not available in this browser/context.");
+    }
+
     while (messageQueue.length > 0) {
         handleMessage(messageQueue.shift());
     }
+}).catch((error) => {
+    console.error("Failed to initialize SQLite WASM:", error);
 });

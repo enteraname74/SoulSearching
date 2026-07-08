@@ -3,7 +3,9 @@ package com.github.enteraname74.localdb.migration
 import androidx.room3.migration.Migration
 import androidx.room3.util.getColumnIndex
 import androidx.sqlite.SQLiteConnection
-import androidx.sqlite.execSQL
+import androidx.sqlite.async.executeSQL
+import androidx.sqlite.async.prepare
+import androidx.sqlite.async.step
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
@@ -41,11 +43,11 @@ internal class Migration16To17(
         }
 
         // Step 4: Drop the ImageCover table
-        connection.execSQL("DROP TABLE IF EXISTS ImageCover")
+        connection.executeSQL("DROP TABLE IF EXISTS ImageCover")
     }
 
     private suspend fun musicInitialCoverPathMigration(connection: SQLiteConnection) {
-        connection.execSQL("ALTER TABLE RoomMusic ADD COLUMN initialCoverPath TEXT")
+        connection.executeSQL("ALTER TABLE RoomMusic ADD COLUMN initialCoverPath TEXT")
     }
 
     override suspend fun migrate(connection: SQLiteConnection) {

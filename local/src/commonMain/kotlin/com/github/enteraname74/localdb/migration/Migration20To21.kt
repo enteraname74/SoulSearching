@@ -2,7 +2,7 @@ package com.github.enteraname74.localdb.migration
 
 import androidx.room3.migration.Migration
 import androidx.sqlite.SQLiteConnection
-import androidx.sqlite.execSQL
+import androidx.sqlite.async.executeSQL
 
 object Migration20To21 : Migration(20, 21) {
     override suspend fun migrate(connection: SQLiteConnection) {
@@ -29,8 +29,8 @@ object Migration20To21 : Migration(20, 21) {
             "RoomPlayerPlayedList",
             "RoomFolder",
         ).forEach { table ->
-            execSQL("DROP TABLE IF EXISTS migration_backup_$table")
-            execSQL("CREATE TABLE migration_backup_$table AS SELECT * FROM $table")
+            executeSQL("DROP TABLE IF EXISTS migration_backup_$table")
+            executeSQL("CREATE TABLE migration_backup_$table AS SELECT * FROM $table")
         }
     }
 
@@ -47,12 +47,12 @@ object Migration20To21 : Migration(20, 21) {
             "RoomPlayerPlayedList",
             "RoomFolder",
         ).forEach { table ->
-            execSQL("DROP TABLE IF EXISTS $table")
+            executeSQL("DROP TABLE IF EXISTS $table")
         }
     }
 
     private suspend fun SQLiteConnection.createTables() {
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomMusic (
                 musicId TEXT NOT NULL,
@@ -78,7 +78,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomAlbum (
                 albumId TEXT NOT NULL,
@@ -97,7 +97,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomArtist (
                 artistId TEXT NOT NULL,
@@ -115,7 +115,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomPlaylist (
                 playlistId TEXT NOT NULL,
@@ -132,7 +132,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomMusicPlaylist (
                 id TEXT NOT NULL,
@@ -144,7 +144,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomMusicArtist (
                 id TEXT NOT NULL,
@@ -156,7 +156,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomPlayerMusic (
                 id TEXT NOT NULL,
@@ -171,7 +171,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomPlayerMusicProgress (
                 id TEXT NOT NULL,
@@ -182,7 +182,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomPlayerPlayedList (
                 id TEXT NOT NULL,
@@ -196,7 +196,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomFolder (
                 folderPath TEXT NOT NULL,
@@ -205,7 +205,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomUser (
                 id TEXT NOT NULL,
@@ -217,7 +217,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomCloudPreferences (
                 id TEXT NOT NULL,
@@ -227,7 +227,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomDeviceId (
                 id TEXT NOT NULL,
@@ -236,7 +236,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomSharedPlayedListUser (
                 id TEXT NOT NULL,
@@ -252,7 +252,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomUserInscriptionCode (
                 code TEXT NOT NULL,
@@ -260,7 +260,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomSimpleUser (
                 id TEXT NOT NULL,
@@ -270,7 +270,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomPlayerMusicUser (
                 playedListId TEXT NOT NULL,
@@ -282,7 +282,7 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomSharedPlayedListPreview (
                 id TEXT NOT NULL,
@@ -298,7 +298,7 @@ object Migration20To21 : Migration(20, 21) {
     }
 
     private suspend fun SQLiteConnection.restoreExistingData() {
-        execSQL(
+        executeSQL(
             """
             INSERT INTO RoomArtist (
                 artistId, remoteId, artistName, coverId, coverFolderKey, coverUrl, addedDate,
@@ -311,7 +311,7 @@ object Migration20To21 : Migration(20, 21) {
             FROM migration_backup_RoomArtist
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             INSERT INTO RoomAlbum (
                 albumId, remoteId, albumName, coverId, coverUrl, addedDate, nbPlayed,
@@ -324,7 +324,7 @@ object Migration20To21 : Migration(20, 21) {
             FROM migration_backup_RoomAlbum
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             INSERT INTO RoomMusic (
                 musicId, remoteId, lastUpdateMillis, name, coverId, coverUrl, duration,
@@ -338,7 +338,7 @@ object Migration20To21 : Migration(20, 21) {
             FROM migration_backup_RoomMusic
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             INSERT INTO RoomPlaylist (
                 playlistId, remoteId, name, coverId, coverUrl, isFavorite, addedDate,
@@ -351,7 +351,7 @@ object Migration20To21 : Migration(20, 21) {
             FROM migration_backup_RoomPlaylist
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             INSERT INTO RoomPlayerPlayedList (
                 id, playlistId, isMainPlaylist, mode, state, invitationCode, scope
@@ -361,21 +361,21 @@ object Migration20To21 : Migration(20, 21) {
             FROM migration_backup_RoomPlayerPlayedList
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             INSERT INTO RoomMusicPlaylist (id, musicId, playlistId)
             SELECT id, ${uuid("musicId")}, ${uuid("playlistId")}
             FROM migration_backup_RoomMusicPlaylist
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             INSERT INTO RoomMusicArtist (id, musicId, artistId)
             SELECT id, ${uuid("musicId")}, ${uuid("artistId")}
             FROM migration_backup_RoomMusicArtist
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             INSERT INTO RoomPlayerMusic (
                 id, musicId, playedListId, `order`, shuffledOrder, lastPlayedMillis
@@ -386,14 +386,14 @@ object Migration20To21 : Migration(20, 21) {
             FROM migration_backup_RoomPlayerMusic
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             INSERT INTO RoomPlayerMusicProgress (id, playedListId, playerMusicId, progress)
             SELECT id, ${uuid("playedListId")}, playerMusicId, progress
             FROM migration_backup_RoomPlayerMusicProgress
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             INSERT INTO RoomFolder (folderPath, isSelected)
             SELECT folderPath, isSelected
@@ -403,15 +403,15 @@ object Migration20To21 : Migration(20, 21) {
     }
 
     private suspend fun SQLiteConnection.createIndices() {
-        execSQL("CREATE INDEX IF NOT EXISTS index_RoomMusic_albumId ON RoomMusic(albumId)")
-        execSQL("CREATE INDEX IF NOT EXISTS index_RoomAlbum_artistId ON RoomAlbum(artistId)")
-        execSQL("CREATE INDEX IF NOT EXISTS index_RoomMusicPlaylist_musicId ON RoomMusicPlaylist(musicId)")
-        execSQL("CREATE INDEX IF NOT EXISTS index_RoomMusicPlaylist_playlistId ON RoomMusicPlaylist(playlistId)")
-        execSQL("CREATE INDEX IF NOT EXISTS index_RoomMusicArtist_musicId ON RoomMusicArtist(musicId)")
-        execSQL("CREATE INDEX IF NOT EXISTS index_RoomMusicArtist_artistId ON RoomMusicArtist(artistId)")
-        execSQL("CREATE INDEX IF NOT EXISTS index_RoomPlayerMusic_playedListId ON RoomPlayerMusic(playedListId)")
-        execSQL("CREATE INDEX IF NOT EXISTS index_RoomPlayerMusic_musicId ON RoomPlayerMusic(musicId)")
-        execSQL("CREATE INDEX IF NOT EXISTS index_RoomSharedPlayedListUser_playedListId ON RoomSharedPlayedListUser(playedListId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomMusic_albumId ON RoomMusic(albumId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomAlbum_artistId ON RoomAlbum(artistId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomMusicPlaylist_musicId ON RoomMusicPlaylist(musicId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomMusicPlaylist_playlistId ON RoomMusicPlaylist(playlistId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomMusicArtist_musicId ON RoomMusicArtist(musicId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomMusicArtist_artistId ON RoomMusicArtist(artistId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomPlayerMusic_playedListId ON RoomPlayerMusic(playedListId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomPlayerMusic_musicId ON RoomPlayerMusic(musicId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomSharedPlayedListUser_playedListId ON RoomSharedPlayedListUser(playedListId)")
     }
 
     private suspend fun SQLiteConnection.dropBackupTables() {
@@ -427,25 +427,25 @@ object Migration20To21 : Migration(20, 21) {
             "RoomPlayerPlayedList",
             "RoomFolder",
         ).forEach { table ->
-            execSQL("DROP TABLE migration_backup_$table")
+            executeSQL("DROP TABLE migration_backup_$table")
         }
     }
 
     private suspend fun SQLiteConnection.dropViews() {
-        execSQL("DROP VIEW IF EXISTS CurrentPlayerMusicsView")
-        execSQL("DROP VIEW IF EXISTS RoomMusicFolderPreview")
-        execSQL("DROP VIEW IF EXISTS RoomMonthMusicPreview")
-        execSQL("DROP VIEW IF EXISTS RoomAlbumPreview")
-        execSQL("DROP VIEW IF EXISTS RoomArtistPreview")
-        execSQL("DROP VIEW IF EXISTS RoomPlaylistPreview")
+        executeSQL("DROP VIEW IF EXISTS CurrentPlayerMusicsView")
+        executeSQL("DROP VIEW IF EXISTS RoomMusicFolderPreview")
+        executeSQL("DROP VIEW IF EXISTS RoomMonthMusicPreview")
+        executeSQL("DROP VIEW IF EXISTS RoomAlbumPreview")
+        executeSQL("DROP VIEW IF EXISTS RoomArtistPreview")
+        executeSQL("DROP VIEW IF EXISTS RoomPlaylistPreview")
     }
 
     private suspend fun SQLiteConnection.createViews() {
-        execSQL(
+        executeSQL(
             """
             CREATE VIEW CurrentPlayerMusicsView AS WITH currentPlayedList AS (
                 SELECT * FROM RoomPlayerPlayedList
-                WHERE state != "Cached"
+                WHERE state != 'Cached'
                 LIMIT 1
             )
             SELECT
@@ -461,7 +461,7 @@ object Migration20To21 : Migration(20, 21) {
             ORDER BY currentOrder
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE VIEW RoomMusicFolderPreview AS SELECT
                 folderMusic.folder,
@@ -499,7 +499,7 @@ object Migration20To21 : Migration(20, 21) {
             GROUP BY folderMusic.folder
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE VIEW RoomMonthMusicPreview AS SELECT
                 strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch') AS month,
@@ -541,7 +541,7 @@ object Migration20To21 : Migration(20, 21) {
             ORDER BY strftime('%Y-%m', addedDate / 1000, 'unixepoch') DESC
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE VIEW RoomAlbumPreview AS SELECT
                 album.albumId AS id,
@@ -584,7 +584,7 @@ object Migration20To21 : Migration(20, 21) {
             WHERE album.scope != 'SharedPlayedList'
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE VIEW RoomArtistPreview AS SELECT
                 artist.artistId AS id,
@@ -634,7 +634,7 @@ object Migration20To21 : Migration(20, 21) {
             WHERE artist.scope != 'SharedPlayedList'
             """.trimIndent()
         )
-        execSQL(
+        executeSQL(
             """
             CREATE VIEW RoomPlaylistPreview AS SELECT playlist.playlistId AS id,
                 playlist.name,

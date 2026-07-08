@@ -9,4 +9,4 @@ internal actual fun localDatabaseDriver(): SQLiteDriver =
 
 @OptIn(ExperimentalWasmJsInterop::class)
 private fun createWorker(): Worker =
-    js("""new Worker(new URL("sql-js-worker/worker.js", import.meta.url))""")
+    js("""new Worker(new URL("sql-js-worker/worker.js", import.meta.url), { type: "module" })""")

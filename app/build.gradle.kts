@@ -18,21 +18,13 @@ kotlin {
     jvm("desktop")
 
     js {
-        browser {
-            commonWebpackConfig {
-                outputFileName = "app.js"
-            }
-        }
+        browser()
         binaries.executable()
     }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser {
-            commonWebpackConfig {
-                outputFileName = "app.js"
-            }
-        }
+        browser()
         binaries.executable()
     }
 
