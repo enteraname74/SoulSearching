@@ -31,23 +31,28 @@ kotlin {
 
     sourceSets {
         val commonMain by getting
-        val desktopMain by getting {
+        val desktopMain by getting
+        val androidMain by getting
+        val jsMain by getting
+        val wasmJsMain by getting
+
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain)
+        }
+
+        val jvmMain by creating {
+            dependsOn(commonMain)
             dependencies {
                 implementation(libs.jaudiotagger)
             }
-        }
-        val jsMain by getting
-        val wasmJsMain by getting
-        val webMain = maybeCreate("webMain").apply {
-            dependsOn(commonMain)
         }
 
         jsMain.dependsOn(webMain)
         wasmJsMain.dependsOn(webMain)
 
-        androidMain.dependencies {
-            implementation(libs.jaudiotagger)
-        }
+        desktopMain.dependsOn(jvmMain)
+        androidMain.dependsOn(jvmMain)
+
         commonMain {
             dependencies {
                 implementation(libs.compose.ui)
