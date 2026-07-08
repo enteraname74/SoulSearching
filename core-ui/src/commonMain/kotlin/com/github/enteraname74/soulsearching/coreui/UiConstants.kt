@@ -46,15 +46,15 @@ object UiConstants {
         val large: Dp = 64.dp
         val largePlus: Dp = 120.dp
         val veryLarge: Dp
-        @Composable
-        get() {
-            val windowSize = rememberWindowSize()
-            return if (windowSize == WindowSize.Large) {
-                148.dp
-            } else {
-                128.dp
+            @Composable
+            get() {
+                val windowSize = rememberWindowSize()
+                return if (windowSize == WindowSize.Large) {
+                    148.dp
+                } else {
+                    128.dp
+                }
             }
-        }
         val huge: Dp = 160.dp
 
         val veryHuge: Dp
@@ -74,15 +74,15 @@ object UiConstants {
      */
     object CoverSize {
         val small: Dp
-        @Composable
-        get() {
-            val windowSize = rememberWindowSize()
-            return if (windowSize == WindowSize.Large) {
-                65.dp
-            } else {
-                55.dp
+            @Composable
+            get() {
+                val windowSize = rememberWindowSize()
+                return if (windowSize == WindowSize.Large) {
+                    65.dp
+                } else {
+                    55.dp
+                }
             }
-        }
         val medium: Dp = 80.dp
         val huge: Dp = 200.dp
     }
@@ -97,7 +97,7 @@ object UiConstants {
     }
 
     object Typography {
-        val titleBig : TextStyle = TextStyle(
+        val titleBig: TextStyle = TextStyle(
             fontWeight = FontWeight.ExtraBold,
             fontSize = 36.sp
         )

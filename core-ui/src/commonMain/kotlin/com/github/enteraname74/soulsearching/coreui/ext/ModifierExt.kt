@@ -62,13 +62,12 @@ fun Modifier.chainIf(
  * Disable the focus and click action on a composable.
  */
 fun Modifier.disableFocus(): Modifier = this
-    .pointerInput(Unit) { detectTapGestures {  } }
+    .pointerInput(Unit) { detectTapGestures { } }
     .semantics(mergeDescendants = true) {
         contentDescription = ""
         onClick { true }
     }
     .onKeyEvent { true }
-
 
 expect fun Modifier.combinedClickableWithRightClick(
     onClick: () -> Unit,
