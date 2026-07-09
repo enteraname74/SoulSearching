@@ -47,7 +47,6 @@ class MusicRemoteDataSourceImpl(
             }
     }
 
-
     override suspend fun uploadMusicToCloud(music: Music): SoulResult<CloudMusic> {
         return uploadMusicFile(
             client = client,
