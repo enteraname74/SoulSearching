@@ -4,6 +4,7 @@ import com.github.enteraname74.domain.model.CloudMusic
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.remote.ext.appendJson
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.safeRequest
 import com.github.enteraname74.soulsearching.remote.ext.safeUnitRequest
@@ -19,6 +20,8 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.resources.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.http.*
 
 class MusicRemoteDataSourceImpl(

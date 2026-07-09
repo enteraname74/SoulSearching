@@ -95,7 +95,7 @@ abstract class MusicFetcher(
     }
 
     protected suspend fun ensureFavoritePlaylistCreated() {
-        if (commonPlaylistUseCase.getFavorite().firstOrNull() == null) {
+        if (commonPlaylistUseCase.observeFavorite().firstOrNull() == null) {
             commonPlaylistUseCase.upsert(
                 Playlist(
                     playlistId = Uuid.random(),

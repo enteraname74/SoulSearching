@@ -196,4 +196,7 @@ class CommonMusicUseCase(
             musicName = musicName,
             albumId = albumId,
         )
+
+    suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<Uuid> =
+        musicRepository.getIdsFromRemoteIds(remoteIds)
 }

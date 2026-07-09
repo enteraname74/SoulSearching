@@ -15,6 +15,9 @@ interface MusicPlaylistDao {
     @Upsert
     suspend fun upsertMusicIntoPlaylist(roomMusicPlaylist: RoomMusicPlaylist)
 
+    @Upsert
+    suspend fun upsertAll(musicPlaylists: List<RoomMusicPlaylist>)
+
     @Query("DELETE FROM RoomMusicPlaylist WHERE musicId = :musicId AND playlistId = :playlistId")
     suspend fun deleteMusicFromPlaylist(musicId: Uuid, playlistId: Uuid)
 
@@ -23,4 +26,7 @@ interface MusicPlaylistDao {
 
     @Query("DELETE FROM RoomMusicPlaylist WHERE musicId = :musicId")
     suspend fun deleteMusicFromAllPlaylists(musicId: Uuid)
+
+    @Query("SELECT playlistId FROM RoomMusicPlaylist WHERE musicId = :musicId")
+    suspend fun getPlaylistIdsOfMusic(musicId: Uuid): List<Uuid>
 }

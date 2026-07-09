@@ -9,7 +9,7 @@ class IsMusicInFavoritePlaylistUseCase(
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
 ) {
     operator fun invoke(musicId: Uuid): Flow<Boolean> =
-        commonPlaylistUseCase.getFavorite().map { favoritePlaylist ->
+        commonPlaylistUseCase.observeFavorite().map { favoritePlaylist ->
             favoritePlaylist?.musics?.any { it.musicId == musicId } ?: false
         }
 }

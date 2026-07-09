@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.ext.coverFromSongs
  */
 data class PlaylistWithMusics(
     val playlist: Playlist,
-    val musics : List<Music>,
+    val musics: List<Music>,
 ) {
 
     val cover: Cover? = if (playlist.cover?.isEmpty() == false) {

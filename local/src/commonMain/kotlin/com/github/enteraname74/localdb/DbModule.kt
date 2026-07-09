@@ -11,7 +11,7 @@ import com.github.enteraname74.localdb.datasourceimpl.RoomMusicArtistDataSourceI
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicPlaylistDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomPlayerLocalDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomPlaylistDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomPlaylistLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomUserInscriptionCodeLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomUserLocalDataSourceImpl
 import com.github.enteraname74.localdb.migration.EndMigrationCallback
@@ -27,11 +27,11 @@ import com.github.enteraname74.soulsearching.repository.datasource.DeviceLocalDa
 import com.github.enteraname74.soulsearching.repository.datasource.FolderDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.MusicArtistDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.MusicPlaylistDataSource
-import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.code.UserInscriptionCodeLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.cover.CoverLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.module.Module
@@ -85,7 +85,7 @@ val localModule: Module = module {
     singleOf(::RoomMusicLocalDataSourceImpl) bind MusicLocalDataSource::class
     singleOf(::RoomMusicPlaylistDataSourceImpl) bind MusicPlaylistDataSource::class
     singleOf(::RoomPlayerLocalDataSourceImpl) bind PlayerLocalDataSource::class
-    singleOf(::RoomPlaylistDataSourceImpl) bind PlaylistDataSource::class
+    singleOf(::RoomPlaylistLocalDataSourceImpl) bind PlaylistLocalDataSource::class
     singleOf(::RoomCoverLocalDataSourceImpl) bind CoverLocalDataSource::class
     singleOf(::RoomUserInscriptionCodeLocalDataSourceImpl) bind UserInscriptionCodeLocalDataSource::class
     singleOf(::RoomCloudPreferencesDataSourceImpl) bind CloudPreferencesDataSource::class

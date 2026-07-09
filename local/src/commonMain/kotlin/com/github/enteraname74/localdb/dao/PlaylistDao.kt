@@ -6,6 +6,7 @@ import androidx.room3.Delete
 import androidx.room3.Query
 import androidx.room3.Transaction
 import androidx.room3.Upsert
+import com.github.enteraname74.localdb.model.RoomFolder
 import com.github.enteraname74.localdb.model.RoomPlaylist
 import com.github.enteraname74.localdb.view.RoomPlaylistPreview
 import com.github.enteraname74.localdb.model.RoomPlaylistWithMusics
@@ -19,13 +20,13 @@ import kotlin.uuid.Uuid
 interface PlaylistDao {
 
     @Upsert
-    suspend fun upsert(roomPlaylist : RoomPlaylist)
+    suspend fun upsert(roomPlaylist: RoomPlaylist)
 
     @Upsert
-    suspend fun upsertAll(roomPlaylists : List<RoomPlaylist>)
+    suspend fun upsertAll(roomPlaylists: List<RoomPlaylist>)
 
     @Delete
-    suspend fun delete(roomPlaylist : RoomPlaylist)
+    suspend fun delete(roomPlaylist: RoomPlaylist)
 
     @Query("DELETE FROM RoomPlaylist WHERE playlistId IN (:ids) AND isFavorite = 0")
     suspend fun deleteAll(ids: List<Uuid>)
@@ -35,15 +36,21 @@ interface PlaylistDao {
     fun getAllPlaylistWithMusics(): Flow<List<RoomPlaylistWithMusics>>
 
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId LIMIT 1")
-    fun getFromId(playlistId: Uuid) : Flow<RoomPlaylist?>
+    fun getFromId(playlistId: Uuid): Flow<RoomPlaylist?>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId IN (:playlistIds)")
-    fun getFromIds(playlistIds: List<Uuid>) : Flow<List<RoomPlaylistWithMusics>>
+    fun getFromIds(playlistIds: List<Uuid>): Flow<List<RoomPlaylistWithMusics>>
+
+    @Query("SELECT * FROM RoomPlaylist WHERE isFavorite = 1 LIMIT 1")
+    suspend fun getFavorite(): RoomPlaylist?
+
+    @Query("SELECT * FROM RoomPlaylist WHERE name = :name LIMIT 1")
+    suspend fun getFromName(name: String): RoomPlaylist?
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
-    fun getPlaylistWithMusics(playlistId : Uuid): Flow<RoomPlaylistWithMusics?>
+    fun getPlaylistWithMusics(playlistId: Uuid): Flow<RoomPlaylistWithMusics?>
 
     @Query("UPDATE RoomPlaylist SET coverId = NULL")
     suspend fun cleanAllCovers()
@@ -141,4 +148,16 @@ interface PlaylistDao {
         """
     )
     fun searchAll(search: String): Flow<List<RoomPlaylistPreview>>
+
+    @Query(
+        """
+            UPDATE RoomPlaylist 
+            SET lastUpdatedMillis = :updatedAt 
+            WHERE playlistId IN (:playlistIds)
+        """
+    )
+    suspend fun updateLastUpdatedAtField(
+        playlistIds: List<Uuid>,
+        updatedAt: Long,
+    )
 }

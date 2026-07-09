@@ -39,6 +39,9 @@ class MusicRepositoryImpl(
     override suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<String> =
         musicLocalDataSource.getRemoteIdsFromIds(ids)
 
+    override suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<Uuid> =
+        musicLocalDataSource.getIdsFromRemoteIds(remoteIds)
+
     override suspend fun deleteRemotely(remoteIds: List<String>): SoulResult<Unit> =
         musicRemoteDataSource.delete(remoteIds)
 

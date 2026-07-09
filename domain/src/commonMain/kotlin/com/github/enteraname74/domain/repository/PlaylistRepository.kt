@@ -37,6 +37,10 @@ interface PlaylistRepository {
 
     fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>>
 
+    suspend fun getFavorite(): Playlist?
+
+    suspend fun getFromName(name: String): Playlist?
+
     /**
      * Retrieves a flow of a PlaylistWithMusics.
      */

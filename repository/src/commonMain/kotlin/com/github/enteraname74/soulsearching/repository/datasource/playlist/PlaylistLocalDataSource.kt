@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.repository.datasource
+package com.github.enteraname74.soulsearching.repository.datasource.playlist
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Playlist
@@ -10,7 +10,7 @@ import kotlin.uuid.Uuid
 /**
  * Data source of a Playlist.
  */
-interface PlaylistDataSource {
+interface PlaylistLocalDataSource {
     /**
      * Inserts or updates a Playlist.
      */
@@ -39,6 +39,10 @@ interface PlaylistDataSource {
     fun getFromId(playlistId: Uuid): Flow<Playlist?>
 
     fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>>
+
+    suspend fun getFavorite(): Playlist?
+
+    suspend fun getFromName(name: String): Playlist?
 
     /**
      * Retrieves a flow of a PlaylistWithMusics.

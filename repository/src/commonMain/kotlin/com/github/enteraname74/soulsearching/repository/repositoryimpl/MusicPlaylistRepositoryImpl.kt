@@ -10,17 +10,23 @@ import kotlin.uuid.Uuid
  */
 class MusicPlaylistRepositoryImpl(
     private val musicPlaylistDataSource: MusicPlaylistDataSource
-): MusicPlaylistRepository {
-    override suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) =
+) : MusicPlaylistRepository {
+    override suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) {
         musicPlaylistDataSource.upsertMusicIntoPlaylist(
             musicPlaylist = musicPlaylist
         )
+    }
 
-    override suspend fun deleteMusicFromPlaylist(musicId: Uuid, playlistId: Uuid) =
+    override suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>) {
+        musicPlaylistDataSource.upsertAll(musicPlaylists)
+    }
+
+    override suspend fun deleteMusicFromPlaylist(musicId: Uuid, playlistId: Uuid) {
         musicPlaylistDataSource.deleteMusicFromPlaylist(
             musicId = musicId,
             playlistId = playlistId
         )
+    }
 
     override suspend fun getMusicPlaylist(musicId: Uuid, playlistId: Uuid): MusicPlaylist? =
         musicPlaylistDataSource.getMusicPlaylist(
@@ -28,8 +34,9 @@ class MusicPlaylistRepositoryImpl(
             playlistId = playlistId
         )
 
-    override suspend fun deleteMusicFromAllPlaylists(musicId: Uuid) =
+    override suspend fun deleteMusicFromAllPlaylists(musicId: Uuid) {
         musicPlaylistDataSource.deleteMusicFromAllPlaylists(
             musicId = musicId
         )
+    }
 }

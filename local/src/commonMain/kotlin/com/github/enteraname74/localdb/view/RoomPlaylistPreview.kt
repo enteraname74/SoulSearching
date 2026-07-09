@@ -60,7 +60,7 @@ data class RoomPlaylistPreview(
     val isFavorite: Boolean,
     val addedDate: Instant,
     val name: String,
-    val totalMusics : Int,
+    val totalMusics: Int,
     val nbPlayed: Int,
     val coverId: Uuid?,
     val coverUrl: String?,

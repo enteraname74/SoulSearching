@@ -13,6 +13,8 @@ interface MusicPlaylistDataSource {
      */
     suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist)
 
+    suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>)
+
     /**
      * Deletes a MusicPlaylist.
      * It is the equivalent of removing a Music from a Playlist.

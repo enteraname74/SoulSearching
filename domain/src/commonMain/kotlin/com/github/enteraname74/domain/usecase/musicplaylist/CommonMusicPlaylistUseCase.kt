@@ -13,6 +13,10 @@ class CommonMusicPlaylistUseCase(
         )
     }
 
+    suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>) {
+        musicPlaylistRepository.upsertAll(musicPlaylists)
+    }
+
     suspend fun delete(
         musicId: Uuid,
         playlistId: Uuid

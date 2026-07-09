@@ -4,10 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.github.enteraname74.localdb.AppDatabase
-import com.github.enteraname74.localdb.model.toPlaylist
-import com.github.enteraname74.localdb.model.toPlaylistWIthMusics
-import com.github.enteraname74.localdb.model.toRoomPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
@@ -15,27 +11,40 @@ import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.util.DateUtils
+import com.github.enteraname74.localdb.AppDatabase
+import com.github.enteraname74.localdb.model.toPlaylist
+import com.github.enteraname74.localdb.model.toPlaylistWIthMusics
+import com.github.enteraname74.localdb.model.toRoomPlaylist
 import com.github.enteraname74.localdb.utils.PagingUtils
-import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlin.uuid.Uuid
 
-internal class RoomPlaylistDataSourceImpl(
+internal class RoomPlaylistLocalDataSourceImpl(
     private val appDatabase: AppDatabase,
     private val settings: SoulSearchingSettings,
-) : PlaylistDataSource {
+) : PlaylistLocalDataSource {
     override suspend fun upsert(playlist: Playlist) {
         appDatabase.playlistDao.upsert(
-            roomPlaylist = playlist.toRoomPlaylist()
+            roomPlaylist = playlist
+                .copy(
+                    lastUpdatedMillis = DateUtils.now(),
+                )
+                .toRoomPlaylist()
         )
     }
 
     override suspend fun upsertAll(playlists: List<Playlist>) {
         appDatabase.playlistDao.upsertAll(
-            roomPlaylists = playlists.map { it.toRoomPlaylist() }
+            roomPlaylists = playlists.map {
+                it.copy(
+                    lastUpdatedMillis = DateUtils.now(),
+                ).toRoomPlaylist()
+            }
         )
     }
 
@@ -70,6 +79,12 @@ internal class RoomPlaylistDataSourceImpl(
                 .map { it.toPlaylistWIthMusics() }
         }
 
+    override suspend fun getFavorite(): Playlist? =
+        appDatabase.playlistDao.getFavorite()?.toPlaylist()
+
+    override suspend fun getFromName(name: String): Playlist? =
+        appDatabase.playlistDao.getFromName(name = name)?.toPlaylist()
+
     override fun getPlaylistWithMusics(playlistId: Uuid): Flow<PlaylistWithMusics?> {
         return appDatabase.playlistDao.getPlaylistWithMusics(playlistId = playlistId)
             .map { it?.toPlaylistWIthMusics() }
@@ -88,7 +103,7 @@ internal class RoomPlaylistDataSourceImpl(
                         enablePlaceholders = false,
                     ),
                     pagingSourceFactory = {
-                        when(sortDirection) {
+                        when (sortDirection) {
                             SortDirection.ASC -> {
                                 when (sortType) {
                                     SortType.NAME -> appDatabase.playlistDao.getAllPagedByNameAsc()

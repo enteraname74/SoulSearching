@@ -26,6 +26,8 @@ interface MusicRepository {
 
     suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<String>
 
+    suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<Uuid>
+
     suspend fun deleteRemotely(remoteIds: List<String>): SoulResult<Unit>
 
     /**

@@ -27,13 +27,20 @@ class CommonPlaylistUseCase(
         playlistRepository.delete(playlist = playlist)
     }
 
+    suspend fun getFavorite(): Playlist? =
+        playlistRepository.getFavorite()
+
+    suspend fun getFromName(name: String): Playlist? =
+        playlistRepository.getFromName(name = name)
+
     fun getAllWithMusics(): Flow<List<PlaylistWithMusics>> =
         playlistRepository.getAllPlaylistWithMusics()
 
     fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>> =
         playlistRepository.getAllFromQuickAccess()
 
-    fun getFavorite(): Flow<PlaylistWithMusics?> =
+    // TODO OPTI: Improve favorite playlist retrieving
+    fun observeFavorite(): Flow<PlaylistWithMusics?> =
         playlistRepository.getAllPlaylistWithMusics().map { list ->
             list.firstOrNull { it.playlist.isFavorite }
         }

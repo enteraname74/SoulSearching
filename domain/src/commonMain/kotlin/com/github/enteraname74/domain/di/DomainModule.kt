@@ -36,15 +36,17 @@ import com.github.enteraname74.domain.usecase.player.SyncMusicForPlayerIfNeededU
 import com.github.enteraname74.domain.usecase.player.SyncPlayedListInformationUseCase
 import com.github.enteraname74.domain.usecase.player.SyncPlayedListMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.UpsertCloudPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.domain.usecase.user.LogoutFromCloudUseCase
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val domainModule = module {
+val domainModule: Module = module {
     // USE CASES
     // Album
     factoryOf(::CommonAlbumUseCase)
@@ -89,6 +91,7 @@ val domainModule = module {
 
     // Playlist
     factoryOf(::CommonPlaylistUseCase)
+    factoryOf(::UpsertCloudPlaylistUseCase)
 
     // QuickAccess
     factoryOf(::GetAllQuickAccessElementsUseCase)

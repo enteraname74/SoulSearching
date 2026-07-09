@@ -19,4 +19,23 @@ data class Playlist(
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,
     val lastUpdatedMillis: Long? = DateUtils.now(),
-)
+) {
+    fun merge(
+        cloudPlaylistInfo: CloudPlaylist.Info,
+        mergeMode: MergeMode,
+    ): Playlist =
+        when (mergeMode) {
+            MergeMode.LocalFirst -> copy(
+                remoteId = cloudPlaylistInfo.id,
+            )
+            MergeMode.RemoteFirst -> copy(
+                remoteId = cloudPlaylistInfo.id,
+                name = cloudPlaylistInfo.name,
+                cover = cover.takeIf { it?.isEmpty() == false } ?: cloudPlaylistInfo.coverPath?.let(Cover::Url),
+                isFavorite = cloudPlaylistInfo.isFavorite,
+                nbPlayed = cloudPlaylistInfo.nbPlayed,
+                isInQuickAccess = cloudPlaylistInfo.isInQuickAccess,
+                lastUpdatedMillis = cloudPlaylistInfo.lastUpdateAtMillis
+            )
+        }
+}
