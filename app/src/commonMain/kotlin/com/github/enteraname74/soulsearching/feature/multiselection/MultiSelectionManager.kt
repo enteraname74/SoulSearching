@@ -9,8 +9,6 @@ import kotlin.uuid.Uuid
 
 class MultiSelectionManager {
     private var _selectionMode: SelectionMode = SelectionMode.Music
-    val selectionMode: SelectionMode
-        get() = _selectionMode
 
     private val _state: MutableStateFlow<MultiSelectionState> = MutableStateFlow(
         MultiSelectionState()

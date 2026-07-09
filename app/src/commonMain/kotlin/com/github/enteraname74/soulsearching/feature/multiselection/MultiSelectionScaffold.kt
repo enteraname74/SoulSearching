@@ -6,15 +6,26 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_close
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_more_vertical
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
+import com.github.enteraname74.soulsearching.coreui.multiselection.LocalMultiSelectionTopBarHeight
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
@@ -60,25 +71,38 @@ fun MultiSelectionScaffold(
         modifier = Modifier
             .fillMaxSize(),
     ) {
-        content()
-        AnimatedVisibility(
-            visible = isMultiSelectionActive,
-            enter = expandVertically(),
-            exit = shrinkVertically()
+
+        var topBarHeight: Int by rememberSaveable {
+            mutableIntStateOf(0)
+        }
+
+        CompositionLocalProvider(
+            LocalMultiSelectionTopBarHeight provides topBarHeight.toDp()
         ) {
-            MultiSelectionTopBar(
-                total = state.selectedIds.size,
-                topBarColors = if (
-                    !PlayerUiUtils.canShowSidePanel()
-                    && playerViewManager.currentValue == BottomSheetStates.EXPANDED
-                ) {
-                    SoulTopBarDefaults.primary()
-                } else {
-                    SoulTopBarDefaults.secondary()
-                },
-                onCancel = multiSelectionManager::clearMultiSelection,
-                onMore = multiSelectionManager::showBottomSheet,
-            )
+            content()
+            AnimatedVisibility(
+                modifier = Modifier
+                    .onGloballyPositioned { layoutCoordinates ->
+                        topBarHeight = layoutCoordinates.size.height
+                    },
+                visible = isMultiSelectionActive,
+                enter = expandVertically(),
+                exit = shrinkVertically()
+            ) {
+                MultiSelectionTopBar(
+                    total = state.selectedIds.size,
+                    topBarColors = if (
+                        !PlayerUiUtils.canShowSidePanel()
+                        && playerViewManager.currentValue == BottomSheetStates.EXPANDED
+                    ) {
+                        SoulTopBarDefaults.primary()
+                    } else {
+                        SoulTopBarDefaults.secondary()
+                    },
+                    onCancel = multiSelectionManager::clearMultiSelection,
+                    onMore = multiSelectionManager::showBottomSheet,
+                )
+            }
         }
     }
 }

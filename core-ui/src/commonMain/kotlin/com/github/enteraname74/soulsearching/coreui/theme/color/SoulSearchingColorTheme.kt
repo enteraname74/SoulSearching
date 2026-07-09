@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.theme.color
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 
 /**
@@ -12,4 +13,4 @@ object SoulSearchingColorTheme {
         get() = LocalColors.current
 }
 
-val LocalColors = compositionLocalOf { SoulSearchingPalettes.lightTheme }
+val LocalColors: ProvidableCompositionLocal<SoulSearchingPalette> = compositionLocalOf { SoulSearchingPalettes.lightTheme }
