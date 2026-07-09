@@ -39,13 +39,15 @@ fun LazyRowCompat(
         ) {
             content()
         }
-        SoulHorizontalScrollBar(
-            modifier = Modifier
-                .padding(
-                    start = contentPadding.calculateStartPadding(LayoutDirection.Rtl),
-                    end = contentPadding.calculateEndPadding(LayoutDirection.Rtl),
-                ),
-            lazyListState = state,
-        )
+        if (state.canScrollForward || state.canScrollBackward) {
+            SoulHorizontalScrollBar(
+                modifier = Modifier
+                    .padding(
+                        start = contentPadding.calculateStartPadding(LayoutDirection.Rtl),
+                        end = contentPadding.calculateEndPadding(LayoutDirection.Rtl),
+                    ),
+                lazyListState = state,
+            )
+        }
     }
 }
