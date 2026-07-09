@@ -88,4 +88,12 @@ class CommonAlbumUseCase(
         albumRepository.cleanAllCovers()
     }
 
+    suspend fun getFromInformation(
+        albumName: String,
+        artistName: String,
+    ): Album? =
+        albumRepository.getFromInformation(
+            albumName = albumName,
+            artistName = artistName,
+        )
 }

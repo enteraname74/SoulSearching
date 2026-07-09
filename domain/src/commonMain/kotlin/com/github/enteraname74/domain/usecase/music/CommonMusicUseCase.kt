@@ -187,4 +187,13 @@ class CommonMusicUseCase(
 
     suspend fun getFromPath(path: String): Music? =
         musicRepository.getFromPath(path)
+
+    suspend fun getFromInformation(
+        musicName: String,
+        albumId: Uuid,
+    ): Music? =
+        musicRepository.getFromInformation(
+            musicName = musicName,
+            albumId = albumId,
+        )
 }

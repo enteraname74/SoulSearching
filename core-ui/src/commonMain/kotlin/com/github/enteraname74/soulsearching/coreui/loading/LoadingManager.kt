@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class LoadingManager(
     workDispatcher: WorkDispatcher,
@@ -23,7 +24,7 @@ class LoadingManager(
         delayMillis: Long = DEFAULT_UI_DELAY_MILLIS,
     ) {
         loadingUiWaitJob = coroutineScope.launch {
-            delay(delayMillis)
+            delay(delayMillis.milliseconds)
             _state.value = true
         }
     }
