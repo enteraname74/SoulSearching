@@ -27,6 +27,7 @@ fun SoulMenuSwitch(
     subTitle: String? = null,
     trailingIcon: SoulMenuLeadingIconSpec? = null,
     maxLines: Int = 2,
+    withClickIndication: Boolean = true,
     titleColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
     padding: PaddingValues = PaddingValues(
@@ -37,7 +38,9 @@ fun SoulMenuSwitch(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickableWithHandCursor {
+            .clickableWithHandCursor(
+                withIndication = withClickIndication,
+            ) {
                 toggleAction()
             }
             .padding(padding),

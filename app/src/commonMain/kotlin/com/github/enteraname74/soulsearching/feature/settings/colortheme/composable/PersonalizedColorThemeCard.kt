@@ -19,8 +19,10 @@ fun PersonalizedColorThemeCard(
     togglePersonalizedDynamicPlayerTheme: () -> Unit,
     togglePersonalizedDynamicPlaylistTheme: () -> Unit,
     togglePersonalizedDynamicOtherViewsTheme: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     ColorCard(
+        modifier = modifier,
         title = strings.personalizedThemeTitle,
         text = strings.personalizedThemeText,
         onClick = onClick,
@@ -39,6 +41,7 @@ fun PersonalizedColorThemeCard(
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 padding = PaddingValues(all = 0.dp),
+                withClickIndication = false,
             )
             SoulMenuSwitch(
                 title = strings.dynamicPlaylistView,
@@ -47,6 +50,7 @@ fun PersonalizedColorThemeCard(
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 padding = PaddingValues(all = 0.dp),
+                withClickIndication = false,
             )
             SoulMenuSwitch(
                 title = strings.dynamicOtherView,
@@ -55,6 +59,7 @@ fun PersonalizedColorThemeCard(
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 padding = PaddingValues(all = 0.dp),
+                withClickIndication = false,
             )
         }
     }

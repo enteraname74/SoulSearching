@@ -1,14 +1,18 @@
 package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.composable
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.ContentAlpha
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -39,7 +43,7 @@ fun CoverFolderRetrieverScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val disabledAlpha: Float by animateFloatAsState(
-        targetValue = if (state.coverFolderRetriever.isActivated) 1f else ContentAlpha.disabled,
+        targetValue = if (state.coverFolderRetriever.isActivated) 1f else UiConstants.ALPHA_DISABLED,
         animationSpec = tween(UiConstants.AnimationDuration.short),
     )
     SettingPage(
@@ -133,4 +137,4 @@ private fun DisabledHover(
     }
 }
 
-const val EXAMPLE_ARTIST_NAME = "John Doe"
+const val EXAMPLE_ARTIST_NAME: String = "John Doe"

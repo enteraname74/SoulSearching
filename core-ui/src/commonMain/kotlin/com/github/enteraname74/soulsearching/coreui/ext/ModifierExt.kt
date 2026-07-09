@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.ext
 
+import androidx.compose.foundation.Indication
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.Composable
@@ -14,11 +16,20 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-fun Modifier.clickableWithHandCursor(onClick: () -> Unit): Modifier =
+@Composable
+fun Modifier.clickableWithHandCursor(
+    withIndication: Boolean = true,
+    onClick: () -> Unit,
+): Modifier =
     this
         .pointerHoverIcon(PointerIcon.Hand)
-        .clickable(onClick = onClick)
+        .clickable(
+            onClick = onClick,
+            indication = if (withIndication) LocalIndication.current else null,
+            interactionSource = null,
+        )
 
+@Composable
 fun Modifier.clickableIf(enabled: Boolean, block: () -> Unit): Modifier =
     if (enabled) {
         this
@@ -29,6 +40,7 @@ fun Modifier.clickableIf(enabled: Boolean, block: () -> Unit): Modifier =
         this
     }
 
+@Composable
 fun Modifier.optionalClickable(onClick: (() -> Unit)?): Modifier =
     if (onClick == null) {
         this
@@ -38,6 +50,7 @@ fun Modifier.optionalClickable(onClick: (() -> Unit)?): Modifier =
         }
     }
 
+@Composable
 fun Modifier.optionalClickable(onClick: (() -> Unit)?, onLongClick: (() -> Unit)?): Modifier =
     if (onClick == null && onLongClick == null) {
         this
