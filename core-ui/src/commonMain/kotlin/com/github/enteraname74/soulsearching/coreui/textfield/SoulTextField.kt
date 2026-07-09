@@ -38,7 +38,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SoulTextField(
@@ -216,6 +215,7 @@ class SoulTextFieldHolderImpl(
     private val style: SoulTextFieldStyle = SoulTextFieldStyle.Unique,
     private val isPassword: Boolean = false,
     private val onValueChange: ((String) -> Unit)? = null,
+    private val onDone: (() -> Unit)? = null,
     private val keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Text,
         imeAction = ImeAction.Done,
@@ -248,6 +248,12 @@ class SoulTextFieldHolderImpl(
             labelName = label,
             focusManager = focusManager,
             keyboardOptions = keyboardOptions,
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    onDone?.invoke()
+                }
+            ),
             style = style,
             colors = colors,
             error = error,

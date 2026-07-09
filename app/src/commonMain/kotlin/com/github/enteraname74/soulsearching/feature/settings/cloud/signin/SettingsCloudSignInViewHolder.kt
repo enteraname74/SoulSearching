@@ -21,10 +21,10 @@ class SettingsCloudSignInViewHolder(
     private val feedbackPopUpManager: FeedbackPopUpManager,
     private val savedStateHandle: SavedStateHandle,
 ) : SoulViewModelHolder<
-        SettingsCloudSignInActions,
-        SettingsCloudSignInNavScope,
-        SettingsCloudSignInState,
-        >(
+    SettingsCloudSignInActions,
+    SettingsCloudSignInNavScope,
+    SettingsCloudSignInState,
+    >(
     initialState = SettingsCloudSignInState(
         nameField = SoulTextFieldHolderImpl(
             id = NAME_FIELD_ID,

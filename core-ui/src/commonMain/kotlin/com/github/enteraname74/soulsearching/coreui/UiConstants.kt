@@ -127,6 +127,10 @@ object UiConstants {
             get() = MaterialTheme.typography.bodySmall
     }
 
+    object Size {
+        val textFieldMaxWidth: Dp = 500.dp
+    }
+
     // Based on material values
     const val ALPHA_DISABLED: Float = 0.38f
 }
