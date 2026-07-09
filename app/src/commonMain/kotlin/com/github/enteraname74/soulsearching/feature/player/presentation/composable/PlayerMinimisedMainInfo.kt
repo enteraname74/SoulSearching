@@ -1,6 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +22,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.MinimisedPlayerControlsComposable
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -24,11 +31,8 @@ fun PlayerMinimisedMainInfo(
     imageSize: Dp,
     playerViewManager: PlayerViewManager = injectElement(),
     currentMusic: Music,
-    isPlaying: Boolean,
     alphaTransition: Float,
-    previous: (() -> Unit)?,
-    togglePlayPause: (() -> Unit)?,
-    next: (() -> Unit)?,
+    playbackCommandsState: PlaybackCommandsState,
 ) {
     Row(
         modifier = Modifier
@@ -46,7 +50,7 @@ fun PlayerMinimisedMainInfo(
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .weight(1f, fill= false),
+                .weight(1f, fill = false),
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
@@ -69,10 +73,7 @@ fun PlayerMinimisedMainInfo(
         }
         MinimisedPlayerControlsComposable(
             playerViewState = playerViewManager.draggableState.currentValue,
-            isPlaying = isPlaying,
-            next = next,
-            previous = previous,
-            togglePlayPause = togglePlayPause,
+            playbackCommandsState = playbackCommandsState,
         )
     }
 }

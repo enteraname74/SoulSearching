@@ -187,6 +187,7 @@ fun PlayerDraggableView(
                         maxHeight = maxHeight,
                         state = dataState,
                         lyricsState = lyricsState,
+                        playbackCommandsState = dataState.playbackCommandsState,
                         onArtistClicked = ifOwnedByUser(dataState) {
                             {
                                 playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
@@ -200,24 +201,6 @@ fun PlayerDraggableView(
                             }
                         },
                         showMusicBottomSheet = { playerViewModel.showMusicBottomSheet(listOf(it)) },
-                        toggleFavoriteState = ifOwnedByUser(dataState) {
-                            { playerViewModel.toggleFavoriteState() }
-                        },
-                        seekTo = ifAdmin(dataState) {
-                            { playerViewModel.seekTo(it) }
-                        },
-                        changePlayerMode = ifLocal(dataState) {
-                            { playerViewModel.changePlayerMode() }
-                        },
-                        previous = ifAdmin(dataState) {
-                            { playerViewModel.previous() }
-                        },
-                        next = ifAdmin(dataState) {
-                            { playerViewModel.next() }
-                        },
-                        togglePlayPause = ifAdmin(dataState) {
-                            { playerViewModel.togglePlayPause() }
-                        },
                         currentMusicProgression = currentMusicProgressionState,
                         settingsState = settingsState,
                         onLongSelectOnMusic = {
@@ -257,28 +240,21 @@ fun PlayerDraggableView(
     }
 }
 
-private fun <T>ifAdmin(state: PlayerViewState.Data, scope: () -> T): T? =
+private fun <T> ifAdmin(state: PlayerViewState.Data, scope: () -> T): T? =
     if (state.playedListScope.isAdmin) {
         scope()
     } else {
         null
     }
 
-private fun <T>ifLocal(state: PlayerViewState.Data, scope: () -> T): T? =
-    if (!state.playedListScope.isRemote) {
-        scope()
-    } else {
-        null
-    }
-
-private fun <T>ifRemote(state: PlayerViewState.Data, scope: () -> T): T? =
+private fun <T> ifRemote(state: PlayerViewState.Data, scope: () -> T): T? =
     if (state.playedListScope.isRemote) {
         scope()
     } else {
         null
     }
 
-private fun <T>ifOwnedByUser(state: PlayerViewState.Data, scope: () -> T): T? =
+private fun <T> ifOwnedByUser(state: PlayerViewState.Data, scope: () -> T): T? =
     if (state.currentMusic.scope != Scope.SharedPlayedList) {
         scope()
     } else {

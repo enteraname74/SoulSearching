@@ -47,6 +47,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMinimisedMainInfo
@@ -61,6 +62,7 @@ import kotlin.uuid.Uuid
 fun BoxScope.PlayerSwipeableDataScreen(
     maxHeight: Float,
     state: PlayerViewState.Data,
+    playbackCommandsState: PlaybackCommandsState,
     lyricsState: LyricsFetchState,
     settingsState: PlayerViewSettingsState,
     currentMusicProgression: Int,
@@ -72,12 +74,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
     onSwiped: ((Music) -> Unit)?,
     onClickOnMusic: ((Music) -> Unit)?,
     multiSelectionState: MultiSelectionState,
-    toggleFavoriteState: (() -> Unit)?,
-    seekTo: ((newPosition: Int) -> Unit)?,
-    changePlayerMode: (() -> Unit)?,
-    previous: (() -> Unit)?,
-    togglePlayPause: (() -> Unit)?,
-    next: (() -> Unit)?,
     onActivateRemoteLyrics: () -> Unit,
     onAddFromUrl: (() -> Unit)?,
     playerViewManager: PlayerViewManager = injectElement(),
@@ -112,14 +108,14 @@ fun BoxScope.PlayerSwipeableDataScreen(
 
 
         AnimatedVisibility(
-            visible = settingsState.isMinimisedSongProgressionShown && seekTo != null
+            visible = settingsState.isMinimisedSongProgressionShown && playbackCommandsState.seekTo != null
         ) {
             LinearProgressIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(1f - alphaTransition)
                     .height(SONG_PROGRESSION_HEIGHT),
-                progress = { (currentMusicProgression.toFloat() / state.currentMusic.duration.toFloat()).coerceIn(0f,1f) },
+                progress = { (currentMusicProgression.toFloat() / state.currentMusic.duration.toFloat()).coerceIn(0f, 1f) },
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 trackColor = SoulSearchingColorTheme.colorScheme.subSecondaryText.blend(
                     other = SoulSearchingColorTheme.colorScheme.primary,
@@ -197,13 +193,8 @@ fun BoxScope.PlayerSwipeableDataScreen(
                         modifier = Modifier
                             .width(playerControlsWidth)
                             .alpha(alphaTransition),
-                        toggleFavoriteState = toggleFavoriteState,
+                        playbackCommandsState = playbackCommandsState,
                         state = state,
-                        next = next,
-                        previous = previous,
-                        changePlayerMode = changePlayerMode,
-                        seekTo = seekTo,
-                        togglePlayPause = togglePlayPause,
                         currentMusicProgression = currentMusicProgression,
                     )
                 }
@@ -230,13 +221,8 @@ fun BoxScope.PlayerSwipeableDataScreen(
                         .padding(
                             horizontal = UiConstants.Spacing.medium,
                         ),
-                    toggleFavoriteState = toggleFavoriteState,
                     state = state,
-                    next = next,
-                    previous = previous,
-                    changePlayerMode = changePlayerMode,
-                    seekTo = seekTo,
-                    togglePlayPause = togglePlayPause,
+                    playbackCommandsState = playbackCommandsState,
                     currentMusicProgression = currentMusicProgression,
                 )
 
@@ -328,11 +314,8 @@ fun BoxScope.PlayerSwipeableDataScreen(
         PlayerMinimisedMainInfo(
             imageSize = imageSize,
             currentMusic = state.currentMusic,
-            isPlaying = state.isPlaying,
             alphaTransition = 1f - alphaTransition,
-            previous = previous,
-            next = next,
-            togglePlayPause = togglePlayPause,
+            playbackCommandsState = playbackCommandsState,
         )
     }
 }

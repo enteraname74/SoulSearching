@@ -19,16 +19,14 @@ import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
 import com.github.enteraname74.soulsearching.feature.player.ext.disabledIfNoAction
 
 @Composable
 fun MinimisedPlayerControlsComposable(
     modifier: Modifier = Modifier,
     playerViewState: BottomSheetStates,
-    isPlaying: Boolean,
-    previous: (() -> Unit)?,
-    togglePlayPause: (() -> Unit)?,
-    next: (() -> Unit)?,
+    playbackCommandsState: PlaybackCommandsState,
 ) {
     val isMinimised = playerViewState == BottomSheetStates.MINIMISED
 
@@ -43,11 +41,11 @@ fun MinimisedPlayerControlsComposable(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .optionalClickable(previous.takeIf { isMinimised }),
-            color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(previous)
+                .optionalClickable(playbackCommandsState.previous.takeIf { isMinimised }),
+            color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.previous)
         )
         SoulIcon(
-            icon = if (isPlaying) {
+            icon = if (playbackCommandsState.isPlaying) {
                 CoreRes.drawable.ic_pause_filled
             } else {
                 CoreRes.drawable.ic_play_filled
@@ -56,8 +54,8 @@ fun MinimisedPlayerControlsComposable(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .optionalClickable(togglePlayPause.takeIf { isMinimised }),
-            color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(togglePlayPause)
+                .optionalClickable(playbackCommandsState.togglePlayPause.takeIf { isMinimised }),
+            color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.togglePlayPause)
         )
         SoulIcon(
             icon = CoreRes.drawable.ic_skip_next_filled,
@@ -65,8 +63,8 @@ fun MinimisedPlayerControlsComposable(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .optionalClickable(next.takeIf { isMinimised }),
-            color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(next)
+                .optionalClickable(playbackCommandsState.next.takeIf { isMinimised }),
+            color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.next)
         )
     }
 }

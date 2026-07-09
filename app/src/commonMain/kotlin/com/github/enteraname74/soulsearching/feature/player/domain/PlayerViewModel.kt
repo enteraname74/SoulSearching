@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.lyrics.MusicLyrics
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayedListType
 import com.github.enteraname74.domain.model.player.PlayerMode
@@ -27,6 +29,7 @@ import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelecti
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
@@ -160,7 +163,11 @@ class PlayerViewModel(
                     currentMusicIndex = playbackMainState.currentMusicIndex,
                     isCurrentMusicInFavorite = playbackMainState.isCurrentMusicInFavorite,
                     playerMode = playbackMainState.playerMode,
-                    isPlaying = playbackMainState.isPlaying,
+                    playbackCommandsState = buildPlaybackState(
+                        scope = playbackMainState.currentScope,
+                        isPlaying = playbackMainState.isPlaying,
+                        currentMusicScope = playbackMainState.currentMusic.scope
+                    ),
                     aroundSongs = if (playbackMainState.playerMode == PlayerMode.Loop) {
                         listOfNotNull(
                             playbackMainState.currentMusic,
@@ -261,6 +268,21 @@ class PlayerViewModel(
             }
         }
     }
+
+    private fun buildPlaybackState(
+        scope: PlayedListScope,
+        isPlaying: Boolean,
+        currentMusicScope: Scope,
+    ): PlaybackCommandsState =
+        PlaybackCommandsState(
+            isPlaying = isPlaying,
+            previous = { previous() }.takeIf { scope.isAdmin },
+            next = { next() }.takeIf { scope.isAdmin },
+            togglePlayPause = { togglePlayPause() }.takeIf { scope.isAdmin },
+            changePlayerMode = { changePlayerMode() }.takeIf { !scope.isRemote },
+            toggleFavoriteState = { toggleFavoriteState() }.takeIf { currentMusicScope != Scope.SharedPlayedList },
+            seekTo = { newPosition: Int -> seekTo(newPosition) }.takeIf { scope.isAdmin }
+        )
 
     private suspend fun buildSharedListState(
         playbackManagerState: PlaybackManagerState.Data,

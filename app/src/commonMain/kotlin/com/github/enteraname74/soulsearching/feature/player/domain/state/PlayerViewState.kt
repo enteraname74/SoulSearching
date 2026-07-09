@@ -19,7 +19,7 @@ sealed interface PlayerViewState {
         val isCurrentMusicInFavorite: Boolean,
         val playedList: List<Music>,
         val playerMode: PlayerMode,
-        val isPlaying: Boolean,
+        val playbackCommandsState: PlaybackCommandsState,
         val aroundSongs: List<Music>,
         val playerMusicUsers: List<FullPlayerMusicUser>,
         val playedListScope: PlayedListScope,
@@ -51,6 +51,16 @@ sealed interface PlayerViewState {
         }
     }
 }
+
+data class PlaybackCommandsState(
+    val isPlaying: Boolean,
+    val previous: (() -> Unit)?,
+    val next: (() -> Unit)?,
+    val togglePlayPause: (() -> Unit)?,
+    val changePlayerMode: (() -> Unit)?,
+    val toggleFavoriteState: (() -> Unit)?,
+    val seekTo: ((newPosition: Int) -> Unit)?,
+)
 
 data class SharedListState(
     val code: String,
