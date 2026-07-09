@@ -25,6 +25,7 @@ import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseC
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.music.ObserveDataChangedForCloudSync
 import com.github.enteraname74.domain.usecase.music.RemoveLocallyOrDeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
@@ -98,6 +99,7 @@ class MainPageViewModel(
     private val commonUserUseCase: CommonUserUseCase,
     private val hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
     private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
+    private val observeDataChangedForCloudSync: ObserveDataChangedForCloudSync,
     workDispatcher: WorkDispatcher,
 ) : ViewModel(), KoinComponent,
     SortingInformationDelegate by sortingInformationDelegateImpl {
@@ -318,6 +320,9 @@ class MainPageViewModel(
             coroutineScope.launch {
                 cloudBackgroundSyncJob.launchIfPossible()
             }
+        }
+        coroutineScope.launch {
+            observeDataChangedForCloudSync()
         }
 
         coroutineScope.launch {

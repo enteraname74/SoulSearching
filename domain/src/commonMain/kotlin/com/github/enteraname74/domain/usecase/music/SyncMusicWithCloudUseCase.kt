@@ -11,6 +11,8 @@ import com.github.enteraname74.domain.util.DateUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 /**
  * Sync local songs with remote one.
@@ -40,6 +42,12 @@ class SyncMusicWithCloudUseCase(
             if (musicsToSend.isEmpty()) {
                 _state.value = State.NoMusicsToSend
             }
+
+            val a = musicRepository.getAllFromQuickAccess().first().map { it.lastUpdatedMillis }
+            val pref = cloudPreferencesRepository.getLastSyncMillis()
+            val isAfter = pref?.let { a.firstOrNull()?.let { it > pref } }
+
+            println("CLUELESS -- musics to send: $musicsToSend, ${musicRepository.getAll().first().size}, $a, $pref, $isAfter")
 
             // TODO SYNC: Let user choose its merge mode.
             val mergeMode = MergeMode.LocalFirst
@@ -102,11 +110,13 @@ class SyncMusicWithCloudUseCase(
             }
             _state.value = State.Cleaning
             // Deleting potential empty albums, artists and music (localPath and remoteId null).
+            println("CLUELESS -- after before cleaning: ${musicRepository.getAll().first().size}")
             musicRepository.deleteNotExisting()
             deleteEmptyAlbumsAndArtistsUseCase()
 
             // Update the sync date for the next time.
             cloudPreferencesRepository.setLastSyncMillis(DateUtils.now())
+            println("CLUELESS -- after sync: ${musicRepository.getAll().first().size}")
         }
 
         _state.value = if (result.isError()) State.Failure else State.Finish

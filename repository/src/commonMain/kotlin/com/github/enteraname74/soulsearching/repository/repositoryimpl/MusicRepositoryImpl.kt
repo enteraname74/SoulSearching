@@ -266,4 +266,7 @@ class MusicRepositoryImpl(
 
     override suspend fun getFromPath(path: String): Music? =
         musicLocalDataSource.getFromPath(path)
+
+    override fun observeDataChanged(): Flow<Unit> =
+        musicLocalDataSource.observeDataChanged()
 }

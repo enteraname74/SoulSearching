@@ -188,6 +188,7 @@ class CommonMusicUseCase(
     suspend fun getFromPath(path: String): Music? =
         musicRepository.getFromPath(path)
 
+<<<<<<< HEAD
     suspend fun getFromInformation(
         musicName: String,
         albumId: Uuid,
@@ -199,4 +200,7 @@ class CommonMusicUseCase(
 
     suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<Uuid> =
         musicRepository.getIdsFromRemoteIds(remoteIds)
+
+    fun observeDataChanged(): Flow<Unit> =
+        musicRepository.observeDataChanged()
 }

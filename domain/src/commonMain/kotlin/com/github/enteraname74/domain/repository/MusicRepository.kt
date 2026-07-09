@@ -151,4 +151,9 @@ interface MusicRepository {
 
     suspend fun fetch(url: String): CloudMusic
     suspend fun getFromPath(path: String): Music?
+
+    /**
+     * Observe data changes in tables that will need a backend sync
+     */
+    fun observeDataChanged(): Flow<Unit>
 }

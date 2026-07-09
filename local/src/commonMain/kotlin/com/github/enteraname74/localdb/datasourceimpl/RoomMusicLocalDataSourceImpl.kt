@@ -60,18 +60,20 @@ internal class RoomMusicLocalDataSourceImpl(
         appDatabase.useWriterConnection {
             appDatabase.artistDao.upsertAll(
                 roomArtists = musics.flatMap { music ->
-                    music.artists.map {
-                        it.copy(
-                            lastUpdatedMillis = DateUtils.now(),
-                        ).toRoomArtist()
-                    }
+                    music.artists.map { it.toRoomArtist() }
                 }
             )
 
             appDatabase.albumDao.upsertAll(
                 roomAlbums = musics.map { it.album.toRoomAlbum() }
             )
-            appDatabase.musicDao.upsertAll(musics.map { it.toRoomMusic() })
+            appDatabase.musicDao.upsertAll(
+                musics.map {
+                    it.copy(
+                        lastUpdatedMillis = DateUtils.now()
+                    ).toRoomMusic()
+                }
+            )
             appDatabase.musicArtistDao.upsertAll(
                 roomMusicArtists = musics.flatMap { it.toRoomMusicArtists() }
             )
@@ -397,6 +399,17 @@ internal class RoomMusicLocalDataSourceImpl(
 
     override suspend fun getFromPath(path: String): Music? =
         appDatabase.musicDao.getFromPath(path)?.toMusic()
+
+    override fun observeDataChanged(): Flow<Unit> =
+        appDatabase.invalidationTracker.createFlow(
+            "RoomMusic",
+            "RoomAlbum",
+            "RoomArtist",
+            "RoomPlaylist",
+            "RoomMusicPlaylist",
+            "RoomMusicArtist",
+            emitInitialState = false,
+        ).map { }
 
     private fun withPaging(
         source: MusicDao.() -> PagingSource<Int, RoomCompleteMusic>,

@@ -148,4 +148,6 @@ interface MusicLocalDataSource {
     suspend fun deleteNotExisting()
     suspend fun deleteSharedPlayedListMusics()
     suspend fun getFromPath(path: String): Music?
+
+    fun observeDataChanged(): Flow<Unit>
 }
