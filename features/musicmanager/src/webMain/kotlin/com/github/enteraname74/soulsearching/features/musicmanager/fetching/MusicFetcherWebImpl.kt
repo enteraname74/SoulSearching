@@ -1,8 +1,12 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 
-class MusicFetcherWebImpl : MusicFetcher() {
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+
+class MusicFetcherWebImpl(
+    commonPlaylistUseCase: CommonPlaylistUseCase,
+) : MusicFetcher(commonPlaylistUseCase) {
     override suspend fun fetchMusics(updateProgress: (Float, String?) -> Unit) {
-        // no-op on web targets
+        ensureFavoritePlaylistCreated()
     }
 
     override suspend fun fetchMusicsFromSelectedFolders(

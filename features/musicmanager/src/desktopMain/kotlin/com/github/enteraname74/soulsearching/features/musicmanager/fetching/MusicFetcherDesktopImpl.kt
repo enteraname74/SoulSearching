@@ -18,13 +18,12 @@ import java.net.URLConnection
 import java.nio.file.Files
 import kotlin.uuid.Uuid
 
-
 /**
  * Class handling music fetching for desktop application.
  */
 internal class MusicFetcherDesktopImpl(
-    private val commonPlaylistUseCase: CommonPlaylistUseCase,
-) : MusicFetcher() {
+    commonPlaylistUseCase: CommonPlaylistUseCase,
+) : MusicFetcher(commonPlaylistUseCase) {
 
     private val foldersNamesBlackList: List<String> = listOf(
         "node_modules"
@@ -137,15 +136,7 @@ internal class MusicFetcherDesktopImpl(
             updateProgress = updateProgress,
             onMusicFetched = ::cacheMusic
         )
-        if (commonPlaylistUseCase.getFavorite().firstOrNull() == null) {
-            commonPlaylistUseCase.upsert(
-                Playlist(
-                    playlistId = Uuid.random(),
-                    name = strings.favorite,
-                    isFavorite = true
-                )
-            )
-        }
+        ensureFavoritePlaylistCreated()
     }
 
     override suspend fun fetchMusicsFromSelectedFolders(

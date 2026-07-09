@@ -6,7 +6,6 @@ import androidx.sqlite.async.executeSQL
 
 object Migration20To21 : Migration(20, 21) {
     override suspend fun migrate(connection: SQLiteConnection) {
-        connection.dropViews()
         connection.backupExistingTables()
         connection.dropExistingTables()
         connection.createTables()

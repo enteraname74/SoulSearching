@@ -22,8 +22,8 @@ import kotlin.uuid.Uuid
 internal class MusicFetcherAndroidImpl(
     private val context: Context,
     private val feedbackPopUpManager: FeedbackPopUpManager,
-    private val commonPlaylistUseCase: CommonPlaylistUseCase,
-) : MusicFetcher() {
+    commonPlaylistUseCase: CommonPlaylistUseCase,
+) : MusicFetcher(commonPlaylistUseCase) {
     /**
      * Build a cursor for fetching musics on device.
      */
@@ -74,15 +74,7 @@ internal class MusicFetcherAndroidImpl(
                     updateProgress((count * 1F) / cursor.count, null)
                 }
                 cursor.close()
-                if (commonPlaylistUseCase.getFavorite().firstOrNull() == null) {
-                    commonPlaylistUseCase.upsert(
-                        Playlist(
-                            playlistId = Uuid.random(),
-                            name = strings.favorite,
-                            isFavorite = true
-                        )
-                    )
-                }
+                ensureFavoritePlaylistCreated()
             }
         }
     }

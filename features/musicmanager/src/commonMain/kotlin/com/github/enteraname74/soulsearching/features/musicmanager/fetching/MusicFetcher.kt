@@ -3,13 +3,20 @@ package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.features.musicmanager.domain.OptimizedCachedData
+import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.component.KoinComponent
+import kotlin.uuid.Uuid
 
 /**
  * Utilities for fetching musics on current device.
  */
-abstract class MusicFetcher : KoinComponent {
+abstract class MusicFetcher(
+    private val commonPlaylistUseCase: CommonPlaylistUseCase,
+) : KoinComponent {
     /**
      * Fetch all musics on the device.
      */
@@ -70,7 +77,7 @@ abstract class MusicFetcher : KoinComponent {
         }
         val updatedAlbum: Album = optimizedCachedData.musicsByPath.values.find { music ->
             music.album.albumName == musicToAdd.album.albumName
-                    && music.album.artist.artistName == musicToAdd.album.artist.artistName
+                && music.album.artist.artistName == musicToAdd.album.artist.artistName
         }?.album ?: musicToAdd.album.copy(artist = updatedListOfArtist.first())
 
         /*
@@ -85,5 +92,17 @@ abstract class MusicFetcher : KoinComponent {
         optimizedCachedData.musicsByPath[fixedMusic.localPath.orEmpty()] = fixedMusic
 
         onSongSaved(fixedMusic)
+    }
+
+    protected suspend fun ensureFavoritePlaylistCreated() {
+        if (commonPlaylistUseCase.getFavorite().firstOrNull() == null) {
+            commonPlaylistUseCase.upsert(
+                Playlist(
+                    playlistId = Uuid.random(),
+                    name = strings.favorite,
+                    isFavorite = true
+                )
+            )
+        }
     }
 }

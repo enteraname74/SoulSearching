@@ -8,7 +8,7 @@ import com.github.enteraname74.domain.util.LocalDatabaseVersion
 
 class EndMigrationCallback(
     private val settings: SoulSearchingSettings,
-): RoomDatabase.Callback() {
+) : RoomDatabase.Callback() {
     override suspend fun onOpen(connection: SQLiteConnection) {
         super.onOpen(connection)
         settings.set(
