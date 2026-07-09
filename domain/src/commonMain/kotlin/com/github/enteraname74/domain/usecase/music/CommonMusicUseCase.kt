@@ -59,19 +59,19 @@ class CommonMusicUseCase(
     fun getFromIds(ids: List<Uuid>): Flow<List<Music>> =
         musicRepository.getFromIds(ids)
 
-    suspend fun getAllMusicFromMonth(month: String) : List<Music> =
+    suspend fun getAllMusicFromMonth(month: String): List<Music> =
         musicRepository.getAllMusicFromMonth(month)
 
-    suspend fun getAllMusicFromFolder(folder: String) : List<Music> =
+    suspend fun getAllMusicFromFolder(folder: String): List<Music> =
         musicRepository.getAllMusicFromFolder(folder)
 
-    suspend fun getAllMusicFromArtist(artistId: Uuid) : List<Music> =
+    suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music> =
         musicRepository.getAllMusicFromArtist(artistId)
 
-    suspend fun getAllMusicFromPlaylist(playlistId: Uuid) : List<Music> =
+    suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music> =
         musicRepository.getAllMusicFromPlaylist(playlistId)
 
-    suspend fun getAllMusicFromAlbum(albumId: Uuid) : List<Music> =
+    suspend fun getAllMusicFromAlbum(albumId: Uuid): List<Music> =
         musicRepository.getAllMusicFromAlbum(albumId)
 
     fun searchFromAlbum(
@@ -123,7 +123,7 @@ class CommonMusicUseCase(
         search: String,
     ): Flow<List<Music>> =
         musicRepository.searchAll(search)
-    
+
     fun getAlbumDuration(albumId: Uuid): Flow<Duration> =
         musicRepository.getAlbumDuration(albumId)
 

@@ -250,7 +250,7 @@ interface MusicDao {
 
     @Query(
         """
-            SELECT SUM(duration) FROM RoomMusic 
+            SELECT COALESCE(SUM(duration), 0) FROM RoomMusic 
             WHERE isHidden = 0 
             AND scope != 'SharedPlayedList' 
             AND albumId = :albumId
@@ -310,7 +310,7 @@ interface MusicDao {
 
     @Query(
         """
-            SELECT SUM(music.duration) FROM RoomMusic AS music
+            SELECT COALESCE(SUM(music.duration), 0) FROM RoomMusic AS music
             INNER JOIN RoomMusicArtist as musicArtist
             ON music.musicId = musicArtist.musicId 
             AND musicArtist.artistId = :artistId 
@@ -372,7 +372,7 @@ interface MusicDao {
 
     @Query(
         """
-            SELECT SUM(music.duration) FROM RoomMusic AS music
+            SELECT COALESCE(SUM(music.duration), 0) FROM RoomMusic AS music
             INNER JOIN RoomMusicPlaylist as musicPlaylist
             ON music.musicId = musicPlaylist.musicId 
             AND musicPlaylist.playlistId = :playlistId 
@@ -430,7 +430,7 @@ interface MusicDao {
 
     @Query(
         """
-            SELECT SUM(duration) FROM RoomMusic 
+            SELECT COALESCE(SUM(duration), 0) FROM RoomMusic 
             WHERE isHidden = 0 
             AND scope != 'SharedPlayedList' 
             AND strftime('%m/%Y', addedDate / 1000, 'unixepoch') = :month
@@ -518,7 +518,7 @@ interface MusicDao {
 
     @Query(
         """
-            SELECT SUM(duration) FROM RoomMusic 
+            SELECT COALESCE(SUM(duration), 0) FROM RoomMusic 
             WHERE isHidden = 0 
             AND scope != 'SharedPlayedList' 
             AND folder = :folder

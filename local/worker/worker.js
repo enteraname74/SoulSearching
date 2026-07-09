@@ -49,8 +49,6 @@ function openRequest(id, requestData) {
 
 function prepareRequest(id, requestData) {
     try {
-        console.log("CLUELESS -- SQL:", requestData.sql);
-        console.log("CLUELESS -- Bindings:", requestData.bindings);
         const database = databases.get(requestData.databaseId);
 
         if (!database) {
