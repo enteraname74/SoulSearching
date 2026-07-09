@@ -1,13 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.presentation
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulChoiceButtonData
 import com.github.enteraname74.soulsearching.coreui.composable.SoulDivider
@@ -43,7 +39,7 @@ private fun SettingsMainPagePersonalisationScreenView(
     viewModel: SettingsMainPagePersonalisationViewModel,
     state: SettingsMainPagePersonalisationState
 ) {
-    when(state) {
+    when (state) {
         SettingsMainPagePersonalisationState.Loading -> {
             SoulLoadingScreen(navigateBack = navigateBack)
         }
@@ -150,28 +146,28 @@ private fun Data(
             SoulDivider()
         }
         item {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = UiConstants.Spacing.large),
-                verticalArrangement = Arrangement.spacedBy(
-                    UiConstants.Spacing.medium,
-                )
-            ) {
-                SoulMenuAction(
-                    title = strings.useVerticalAccessBarTitle,
-                    subTitle = null,
-                    clickAction = { setShortcutAccessChoice(true) },
-                    isSelected = state.isUsingVerticalAccessBar,
-                    padding = PaddingValues.Absolute(),
-                )
-                SoulMenuAction(
-                    title = strings.useHorizontalAccessBarText,
-                    subTitle = null,
-                    clickAction = { setShortcutAccessChoice(false) },
-                    isSelected = !state.isUsingVerticalAccessBar,
-                    padding = PaddingValues.Absolute(),
-                )
-            }
+            SoulMenuAction(
+                title = strings.useVerticalAccessBarTitle,
+                subTitle = null,
+                clickAction = { setShortcutAccessChoice(true) },
+                isSelected = state.isUsingVerticalAccessBar,
+                padding = PaddingValues(
+                    horizontal = UiConstants.Spacing.large,
+                    vertical = UiConstants.Spacing.medium,
+                ),
+            )
+        }
+        item {
+            SoulMenuAction(
+                title = strings.useHorizontalAccessBarText,
+                subTitle = null,
+                clickAction = { setShortcutAccessChoice(false) },
+                isSelected = !state.isUsingVerticalAccessBar,
+                padding = PaddingValues(
+                    horizontal = UiConstants.Spacing.large,
+                    vertical = UiConstants.Spacing.medium,
+                ),
+            )
         }
     }
 }
