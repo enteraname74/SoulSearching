@@ -30,14 +30,13 @@ fun ColorCard(
             containerColor = SoulSearchingColorTheme.colorScheme.secondary
         )
     ) {
-        Column(
-            modifier = Modifier
-                .clickableWithHandCursor { onClick() }
-                .padding(
-                    all = UiConstants.Spacing.large,
-                )
-        ) {
+        Column {
             SoulMenuAction(
+                modifier = Modifier
+                    .clickableWithHandCursor { onClick() }
+                    .padding(
+                        all = UiConstants.Spacing.large,
+                    ),
                 clickEnabled = false,
                 title = title,
                 subTitle = text,

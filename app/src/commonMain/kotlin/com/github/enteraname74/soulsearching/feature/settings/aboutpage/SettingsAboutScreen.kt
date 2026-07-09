@@ -192,9 +192,7 @@ private fun Screen(
                     clickAction = { isChangelogExpanded = !isChangelogExpanded },
                     isExpanded = isChangelogExpanded,
                     textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    containerColor = SoulSearchingColorTheme.colorScheme.primary,
                     subTextColor = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                    padding = UiConstants.Spacing.large,
                 ) {
                     Column(
                         modifier = Modifier
