@@ -1,8 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.github.enteraname74.domain.model.AlbumWithMusics
@@ -22,8 +20,6 @@ sealed interface ModifyAlbumFormState {
     ) : ModifyAlbumFormState {
         val textFields: List<SoulTextFieldHolder> = listOf(
             SoulDropdownTextFieldHolderImpl(
-                modifier = Modifier
-                    .fillMaxWidth(),
                 id = ALBUM_NAME,
                 isValid = { it.isNotBlank() },
                 initialValue = initialAlbum.album.albumName,
@@ -38,8 +34,6 @@ sealed interface ModifyAlbumFormState {
                 ),
             ),
             SoulDropdownTextFieldHolderImpl(
-                modifier = Modifier
-                    .fillMaxWidth(),
                 id = ARTIST_NAME,
                 isValid = { it.isNotBlank() },
                 initialValue = initialAlbum.album.artist.artistName,

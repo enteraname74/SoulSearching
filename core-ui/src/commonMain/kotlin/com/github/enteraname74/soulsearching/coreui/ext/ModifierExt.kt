@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.coreui.ext
 
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -19,11 +18,15 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Modifier.clickableWithHandCursor(
     withIndication: Boolean = true,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ): Modifier =
     this
-        .pointerHoverIcon(PointerIcon.Hand)
+        .chainIf(enabled) {
+            pointerHoverIcon(PointerIcon.Hand)
+        }
         .clickable(
+            enabled = enabled,
             onClick = onClick,
             indication = if (withIndication) LocalIndication.current else null,
             interactionSource = null,

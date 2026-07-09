@@ -144,8 +144,10 @@ fun PlaylistLargeView(
         item {
             optionalContent()
         }
-        item {
-            PlaylistPartTitle(title = strings.elementDetailTitles)
+        if (musics.itemCount > 0) {
+            item {
+                PlaylistPartTitle(title = strings.elementDetailTitles)
+            }
         }
         items(
             count = musics.itemCount,

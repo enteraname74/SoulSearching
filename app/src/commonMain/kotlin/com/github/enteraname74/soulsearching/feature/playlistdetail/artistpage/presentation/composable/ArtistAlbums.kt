@@ -37,9 +37,9 @@ fun ArtistAlbums(
             .padding(bottom = UiConstants.Spacing.veryLarge),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
     ) {
-        PlaylistPartTitle(title = strings.albums)
-
         if (albums.isNotEmpty()) {
+            PlaylistPartTitle(title = strings.albums)
+
             LazyRowCompat(
                 state = lazyListState,
                 modifier = Modifier
