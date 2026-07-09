@@ -8,7 +8,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
-import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
+import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.ext.toWorkerResult
 import com.github.enteraname74.soulsearching.model.utils.StringsUtils
 import com.github.soulsearching.R
@@ -20,12 +20,12 @@ import kotlinx.coroutines.launch
 class CloudSyncWorker(
     context: Context,
     parameters: WorkerParameters,
-    private val syncMusicWithCloudUseCase: SyncMusicWithCloudUseCase,
+    private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase,
 ) : CoroutineWorker(context, parameters) {
     override suspend fun doWork(): Result = coroutineScope {
-        setForeground(setForegroundInfo(syncMusicWithCloudUseCase.state.value))
+        setForeground(setForegroundInfo(syncDataWithCloudUseCase.state.value))
         val foregroundUpdateJob = launch {
-            syncMusicWithCloudUseCase
+            syncDataWithCloudUseCase
                 .state
                 .drop(1)
                 .collect { state ->
@@ -34,17 +34,17 @@ class CloudSyncWorker(
         }
 
         val result = try {
-            syncMusicWithCloudUseCase()
+            syncDataWithCloudUseCase()
         } finally {
             foregroundUpdateJob.cancelAndJoin()
         }
 
-        setForeground(setForegroundInfo(syncMusicWithCloudUseCase.state.value))
+        setForeground(setForegroundInfo(syncDataWithCloudUseCase.state.value))
         result.toWorkerResult()
     }
 
     private fun setForegroundInfo(
-        state: SyncMusicWithCloudUseCase.State,
+        state: SyncDataWithCloudUseCase.State,
     ) =
         if (Build.VERSION.SDK_INT >= 29) {
             ForegroundInfo(
@@ -57,7 +57,7 @@ class CloudSyncWorker(
         }
 
     private fun createNotification(
-        state: SyncMusicWithCloudUseCase.State,
+        state: SyncDataWithCloudUseCase.State,
     ): Notification {
         val strings = StringsUtils.getStrings(applicationContext)
 
@@ -66,7 +66,7 @@ class CloudSyncWorker(
             .setContentText(strings.cloudSyncNotificationText(state))
             .setSmallIcon(R.drawable.app_logo_uni_xml)
             .apply {
-                (state as? SyncMusicWithCloudUseCase.State.ProgressState)?.progress?.let { progress ->
+                (state as? SyncDataWithCloudUseCase.State.ProgressState)?.progress?.let { progress ->
                     setProgress(100, (progress * 100).toInt(), false)
                 }
             }
@@ -79,11 +79,11 @@ class CloudSyncWorker(
         return if (Build.VERSION.SDK_INT >= 29) {
             ForegroundInfo(
                 NOTIFICATION_ID,
-                createNotification(syncMusicWithCloudUseCase.state.value),
+                createNotification(syncDataWithCloudUseCase.state.value),
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
             )
         } else {
-            ForegroundInfo(NOTIFICATION_ID, createNotification(syncMusicWithCloudUseCase.state.value))
+            ForegroundInfo(NOTIFICATION_ID, createNotification(syncDataWithCloudUseCase.state.value))
         }
     }
 

@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.repository
 
 import androidx.paging.PagingData
+import com.github.enteraname74.domain.model.CloudPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
@@ -57,4 +58,10 @@ interface PlaylistRepository {
     fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?>
 
     fun searchAll(search: String): Flow<List<PlaylistPreview>>
+
+    suspend fun getAllToSendToCloud(): List<PlaylistWithMusics>
+
+    suspend fun fetchUpdatedPlaylistsFromCloud(lastSyncMillis: Long?): List<CloudPlaylist>
+
+    suspend fun uploadToCloud(playlistWithMusics: PlaylistWithMusics): CloudPlaylist
 }

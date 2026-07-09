@@ -14,28 +14,37 @@ class UpsertCloudPlaylistUseCase(
     private val commonMusicUseCase: CommonMusicUseCase,
 ) {
     suspend operator fun invoke(
-        cloudPlaylist: CloudPlaylist,
+        cloudPlaylists: List<CloudPlaylist>,
         mergeMode: MergeMode,
     ) {
-        val existingPlaylist: Playlist? = getExistingPlaylist(cloudPlaylistInfo = cloudPlaylist.playlist)
 
-        val playlistToSave: Playlist = existingPlaylist?.merge(
-            cloudPlaylistInfo = cloudPlaylist.playlist,
-            mergeMode = mergeMode,
-        ) ?: cloudPlaylist.toNewPlaylist()
+        val playlistToSaves: List<Playlist> = cloudPlaylists.map {
+            val existingPlaylist: Playlist? = getExistingPlaylist(cloudPlaylistInfo = it.playlist)
 
-        commonPlaylistUseCase.upsert(playlistToSave)
-        val safeMusicIds: List<Uuid> = commonMusicUseCase.getIdsFromRemoteIds(
-            remoteIds = cloudPlaylist.musicIds,
-        )
-        commonMusicPlaylistUseCase.upsertAll(
-            musicPlaylists = safeMusicIds.map {
-                MusicPlaylist(
-                    musicId = it,
-                    playlistId = playlistToSave.playlistId,
+            existingPlaylist?.merge(
+                cloudPlaylistInfo = it.playlist,
+                mergeMode = mergeMode,
+            ) ?: it.toNewPlaylist()
+        }
+
+        commonPlaylistUseCase.upsertAll(playlistToSaves)
+
+        playlistToSaves.forEach { playlist ->
+            cloudPlaylists.find { it.playlist.id == playlist.remoteId }?.musicIds?.let { musicRemoteIds ->
+                val safeMusicIds: List<Uuid> = commonMusicUseCase.getIdsFromRemoteIds(
+                    remoteIds = musicRemoteIds,
                 )
+                commonMusicPlaylistUseCase.upsertAll(
+                    musicPlaylists = safeMusicIds.map {
+                        MusicPlaylist(
+                            musicId = it,
+                            playlistId = playlist.playlistId,
+                        )
+                    }
+                )
+
             }
-        )
+        }
     }
 
     private suspend fun getExistingPlaylist(

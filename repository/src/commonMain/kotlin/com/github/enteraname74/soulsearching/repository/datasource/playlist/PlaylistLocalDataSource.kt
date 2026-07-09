@@ -60,4 +60,6 @@ interface PlaylistLocalDataSource {
     fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?>
 
     fun searchAll(search: String): Flow<List<PlaylistPreview>>
+
+    suspend fun getAllToSendToCloud(): List<PlaylistWithMusics>
 }

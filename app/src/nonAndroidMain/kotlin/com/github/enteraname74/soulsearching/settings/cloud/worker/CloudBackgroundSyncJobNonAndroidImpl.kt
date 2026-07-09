@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.settings.cloud.worker
 
 import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
-import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
+import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -12,11 +12,11 @@ import kotlinx.coroutines.launch
 
 // TODO SYNC: Improve for non Android platforms.
 class CloudBackgroundSyncJobNonAndroidImpl(
-    private val syncMusicWithCloudUseCase: SyncMusicWithCloudUseCase,
+    private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase,
     private val workDispatcher: WorkDispatcher,
     private val hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
 ) : CloudBackgroundSyncJob {
-    override val state: StateFlow<SyncMusicWithCloudUseCase.State> = syncMusicWithCloudUseCase.state
+    override val state: StateFlow<SyncDataWithCloudUseCase.State> = syncDataWithCloudUseCase.state
     private var job: Job? = null
 
     override suspend fun launchIfPossible() {
@@ -28,7 +28,7 @@ class CloudBackgroundSyncJobNonAndroidImpl(
 
         if (job?.isActive != true) {
             job = CoroutineScope(workDispatcher.dispatcher).launch {
-                syncMusicWithCloudUseCase()
+                syncDataWithCloudUseCase()
             }
         }
     }

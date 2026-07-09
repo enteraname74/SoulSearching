@@ -1,9 +1,8 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
 import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
-import com.github.enteraname74.domain.model.user.User
 import com.github.enteraname74.domain.model.user.UserType
-import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
+import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 
 /**
@@ -396,34 +395,34 @@ object FrStrings : Strings {
     override val musicRemoteOnly: String = "Musique provenant du cloud"
     override val musicLocalOnly: String = "Musique non téléversée sur le cloud"
 
-    override fun cloudSyncNotificationTitle(state: SyncMusicWithCloudUseCase.State): String =
+    override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncMusicWithCloudUseCase.State.Failure -> "Erreur"
-            SyncMusicWithCloudUseCase.State.Finish -> "Fin"
-            SyncMusicWithCloudUseCase.State.Idle -> "En attente"
-            SyncMusicWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique à envoyer"
-            SyncMusicWithCloudUseCase.State.CheckingMusicsToSend -> "Recherche"
-            SyncMusicWithCloudUseCase.State.Cleaning -> "Nettoyage"
-            SyncMusicWithCloudUseCase.State.ClearingRemoteIds -> "Nettoyage"
-            SyncMusicWithCloudUseCase.State.FetchingFromRemote -> "Téléchargement"
-            is SyncMusicWithCloudUseCase.State.SavingRemote -> "Sauvegarde"
-            is SyncMusicWithCloudUseCase.State.UpdateMusics -> "Mise à jour"
-            is SyncMusicWithCloudUseCase.State.UploadMusics -> "Téléversement"
+            SyncDataWithCloudUseCase.State.Failure -> "Erreur"
+            SyncDataWithCloudUseCase.State.Finish -> "Fin"
+            SyncDataWithCloudUseCase.State.Idle -> "En attente"
+            SyncDataWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique à envoyer"
+            SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Recherche"
+            SyncDataWithCloudUseCase.State.Cleaning -> "Nettoyage"
+            SyncDataWithCloudUseCase.State.ClearingRemoteIds -> "Nettoyage"
+            SyncDataWithCloudUseCase.State.FetchingFromRemote -> "Téléchargement"
+            is SyncDataWithCloudUseCase.State.SavingRemote -> "Sauvegarde"
+            is SyncDataWithCloudUseCase.State.UpdateMusics -> "Mise à jour"
+            is SyncDataWithCloudUseCase.State.UploadMusics -> "Téléversement"
         }
 
-    override fun cloudSyncNotificationText(state: SyncMusicWithCloudUseCase.State): String =
+    override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncMusicWithCloudUseCase.State.Failure -> "Une erreur est survenue durant la synchronisation"
-            SyncMusicWithCloudUseCase.State.Finish -> "La synchronisation est terminée"
-            SyncMusicWithCloudUseCase.State.Idle -> "En attente de synchronisation"
-            SyncMusicWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique locale à envoyer au cloud"
-            SyncMusicWithCloudUseCase.State.CheckingMusicsToSend -> "Recherche de musiques à envoyer au cloud"
-            SyncMusicWithCloudUseCase.State.Cleaning -> "Nettoyage des anciennes data locales après la synchronisation"
-            SyncMusicWithCloudUseCase.State.ClearingRemoteIds -> "Nettoyage des anciennes data locales avant la synchronisation"
-            SyncMusicWithCloudUseCase.State.FetchingFromRemote -> "Téléchargement des musiques du cloud"
-            is SyncMusicWithCloudUseCase.State.SavingRemote -> "Sauvegarde des informations téléchargées du cloud"
-            is SyncMusicWithCloudUseCase.State.UpdateMusics -> "Mise à jour des musiques déjà existantes sur le cloud"
-            is SyncMusicWithCloudUseCase.State.UploadMusics -> "Téléversement de musiques vers le cloud"
+            SyncDataWithCloudUseCase.State.Failure -> "Une erreur est survenue durant la synchronisation"
+            SyncDataWithCloudUseCase.State.Finish -> "La synchronisation est terminée"
+            SyncDataWithCloudUseCase.State.Idle -> "En attente de synchronisation"
+            SyncDataWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique locale à envoyer au cloud"
+            SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Recherche de musiques à envoyer au cloud"
+            SyncDataWithCloudUseCase.State.Cleaning -> "Nettoyage des anciennes data locales après la synchronisation"
+            SyncDataWithCloudUseCase.State.ClearingRemoteIds -> "Nettoyage des anciennes data locales avant la synchronisation"
+            SyncDataWithCloudUseCase.State.FetchingFromRemote -> "Téléchargement des musiques du cloud"
+            is SyncDataWithCloudUseCase.State.SavingRemote -> "Sauvegarde des informations téléchargées du cloud"
+            is SyncDataWithCloudUseCase.State.UpdateMusics -> "Mise à jour des musiques déjà existantes sur le cloud"
+            is SyncDataWithCloudUseCase.State.UploadMusics -> "Téléversement de musiques vers le cloud"
         }
 
     override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =

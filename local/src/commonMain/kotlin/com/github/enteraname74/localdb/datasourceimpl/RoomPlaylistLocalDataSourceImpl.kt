@@ -14,7 +14,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.util.DateUtils
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toPlaylist
-import com.github.enteraname74.localdb.model.toPlaylistWIthMusics
+import com.github.enteraname74.localdb.model.toPlaylistWithMusics
 import com.github.enteraname74.localdb.model.toRoomPlaylist
 import com.github.enteraname74.localdb.utils.PagingUtils
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
@@ -62,7 +62,7 @@ internal class RoomPlaylistLocalDataSourceImpl(
 
     override fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>> {
         return appDatabase.playlistDao.getAllPlaylistWithMusics().map { list ->
-            list.map { it.toPlaylistWIthMusics() }
+            list.map { it.toPlaylistWithMusics() }
         }
     }
 
@@ -76,7 +76,7 @@ internal class RoomPlaylistLocalDataSourceImpl(
         appDatabase.playlistDao.getFromIds(playlistIds).map { list ->
             list
                 .sortedBy { playlistIds.indexOf(it.roomPlaylist.playlistId) }
-                .map { it.toPlaylistWIthMusics() }
+                .map { it.toPlaylistWithMusics() }
         }
 
     override suspend fun getFavorite(): Playlist? =
@@ -87,7 +87,7 @@ internal class RoomPlaylistLocalDataSourceImpl(
 
     override fun getPlaylistWithMusics(playlistId: Uuid): Flow<PlaylistWithMusics?> {
         return appDatabase.playlistDao.getPlaylistWithMusics(playlistId = playlistId)
-            .map { it?.toPlaylistWIthMusics() }
+            .map { it?.toPlaylistWithMusics() }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -146,5 +146,10 @@ internal class RoomPlaylistLocalDataSourceImpl(
     override fun searchAll(search: String): Flow<List<PlaylistPreview>> =
         appDatabase.playlistDao.searchAll(search).map { list ->
             list.map { it.toPlaylistPreview() }
+        }
+
+    override suspend fun getAllToSendToCloud(): List<PlaylistWithMusics> =
+        appDatabase.playlistDao.getAllToSendToCloud().map {
+            it.toPlaylistWithMusics()
         }
 }

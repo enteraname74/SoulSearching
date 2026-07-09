@@ -6,6 +6,7 @@ import androidx.room3.Delete
 import androidx.room3.Query
 import androidx.room3.Transaction
 import androidx.room3.Upsert
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.localdb.model.RoomFolder
 import com.github.enteraname74.localdb.model.RoomPlaylist
 import com.github.enteraname74.localdb.view.RoomPlaylistPreview
@@ -160,4 +161,16 @@ interface PlaylistDao {
         playlistIds: List<Uuid>,
         updatedAt: Long,
     )
+
+    @Query(
+        """
+            SELECT p.* FROM RoomPlaylist p 
+            CROSS JOIN RoomCloudPreferences cp 
+            WHERE p.lastUpdatedMillis IS NULL 
+                OR cp.lastSyncMillis IS NULL
+                OR p.lastUpdatedMillis > cp.lastSyncMillis 
+                OR p.remoteId IS NULL
+        """
+    )
+    suspend fun getAllToSendToCloud(): List<RoomPlaylistWithMusics>
 }

@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
+import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -42,7 +42,7 @@ fun SettingsCloudSyncScreen(
                 SoulFilledButton(
                     text = strings.cloudSyncButton,
                     onClick = actions::launchSync,
-                    enabled = state.syncingState !is SyncMusicWithCloudUseCase.State.WorkingState,
+                    enabled = state.syncingState !is SyncDataWithCloudUseCase.State.WorkingState,
                 )
             }
         }
@@ -54,7 +54,7 @@ fun SettingsCloudSyncScreen(
 
 @Composable
 private fun SyncingStateView(
-    state: SyncMusicWithCloudUseCase.State,
+    state: SyncDataWithCloudUseCase.State,
 ) {
     Column(
         modifier = Modifier
@@ -71,7 +71,7 @@ private fun SyncingStateView(
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.body
         )
-        (state as? SyncMusicWithCloudUseCase.State.ProgressState)?.progress?.let { progress ->
+        (state as? SyncDataWithCloudUseCase.State.ProgressState)?.progress?.let { progress ->
 
             val animatedProgress by animateFloatAsState(
                 targetValue = progress,

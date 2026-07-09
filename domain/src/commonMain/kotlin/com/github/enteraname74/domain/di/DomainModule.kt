@@ -20,7 +20,7 @@ import com.github.enteraname74.domain.usecase.music.FetchMusicFromUrlUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.ObserveDataChangedForCloudSync
 import com.github.enteraname74.domain.usecase.music.RemoveLocallyOrDeleteMusicUseCase
-import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
+import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateMusicToCloudUseCase
 import com.github.enteraname74.domain.usecase.music.UploadMusicToCloudUseCase
@@ -37,6 +37,7 @@ import com.github.enteraname74.domain.usecase.player.SyncMusicForPlayerIfNeededU
 import com.github.enteraname74.domain.usecase.player.SyncPlayedListInformationUseCase
 import com.github.enteraname74.domain.usecase.player.SyncPlayedListMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.UploadPlaylistToCloudUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertCloudPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
@@ -81,7 +82,7 @@ val domainModule: Module = module {
     factoryOf(::UpsertCloudMusicUseCase)
     factoryOf(::UploadMusicToCloudUseCase)
     factoryOf(::UpdateMusicToCloudUseCase)
-    singleOf(::SyncMusicWithCloudUseCase)
+    singleOf(::SyncDataWithCloudUseCase)
 
     factoryOf(::DeleteEmptyAlbumsAndArtistsUseCase)
 
@@ -94,6 +95,7 @@ val domainModule: Module = module {
     // Playlist
     factoryOf(::CommonPlaylistUseCase)
     factoryOf(::UpsertCloudPlaylistUseCase)
+    factoryOf(::UploadPlaylistToCloudUseCase)
 
     // QuickAccess
     factoryOf(::GetAllQuickAccessElementsUseCase)

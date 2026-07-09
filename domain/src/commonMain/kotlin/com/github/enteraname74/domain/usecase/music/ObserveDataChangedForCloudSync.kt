@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ObserveDataChangedForCloudSync(
-    private val syncMusicWithCloudUseCase: SyncMusicWithCloudUseCase,
+    private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
     private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
     workDispatcher: WorkDispatcher,
@@ -28,7 +28,7 @@ class ObserveDataChangedForCloudSync(
             launch {
                 commonMusicUseCase.observeDataChanged().collectLatest {
                     println("CLUELESS -- DATA CHANGED")
-                    if (syncMusicWithCloudUseCase.state.value is SyncMusicWithCloudUseCase.State.WorkingState) {
+                    if (syncDataWithCloudUseCase.state.value is SyncDataWithCloudUseCase.State.WorkingState) {
                         buffer.value = Buffer.Waiting
                     } else {
                         buffer.value = Buffer.Launch
@@ -42,8 +42,8 @@ class ObserveDataChangedForCloudSync(
             we can launch a new one.
              */
             launch {
-                syncMusicWithCloudUseCase.state.collectLatest { syncState ->
-                    if (syncState is SyncMusicWithCloudUseCase.State.EndState && buffer.value == Buffer.Waiting) {
+                syncDataWithCloudUseCase.state.collectLatest { syncState ->
+                    if (syncState is SyncDataWithCloudUseCase.State.EndState && buffer.value == Buffer.Waiting) {
                         println("CLUELESS -- Sync ended or not in progress, will launch a sync")
                         buffer.value = Buffer.Launch
                     }

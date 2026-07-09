@@ -22,7 +22,7 @@ data class RoomPlaylistWithMusics(
 /**
  * Converts a RoomPlaylistWithMusics to a PlaylistWithMusics.
  */
-internal fun RoomPlaylistWithMusics.toPlaylistWIthMusics(): PlaylistWithMusics = PlaylistWithMusics(
+internal fun RoomPlaylistWithMusics.toPlaylistWithMusics(): PlaylistWithMusics = PlaylistWithMusics(
     playlist = roomPlaylist.toPlaylist(),
     musics = roomMusics.map { it.toMusic() }
 )

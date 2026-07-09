@@ -16,5 +16,6 @@ interface PlaylistRemoteDataSource {
 
     suspend fun upload(
         playlist: PlaylistWithMusics,
-    ): SoulResult<CloudPlaylist>
+        coverPath: String?,
+    ): CloudPlaylist
 }

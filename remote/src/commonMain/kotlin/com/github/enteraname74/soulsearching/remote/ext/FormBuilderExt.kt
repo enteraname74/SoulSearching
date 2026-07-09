@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.remote.ext
 
+import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.util.WorkDispatcher
 import io.ktor.client.request.forms.FormBuilder
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
@@ -18,3 +20,9 @@ inline fun <reified T> FormBuilder.appendJson(
         }
     )
 }
+
+expect suspend fun FormBuilder.appendCoverFile(
+    key: String,
+    path: String,
+    workDispatcher: WorkDispatcher,
+)

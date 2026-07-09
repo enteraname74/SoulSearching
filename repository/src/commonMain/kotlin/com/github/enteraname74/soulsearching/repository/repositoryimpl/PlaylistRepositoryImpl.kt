@@ -1,10 +1,13 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
+import com.github.enteraname74.domain.model.CloudPlaylist
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistRemoteDataSource
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +19,7 @@ import kotlin.uuid.Uuid
 class PlaylistRepositoryImpl(
     private val playlistDataSource: PlaylistLocalDataSource,
     private val playlistRemoteDataSource: PlaylistRemoteDataSource,
+    private val coverFileManager: CoverFileManager,
 ) : PlaylistRepository {
     override suspend fun upsert(playlist: Playlist) {
         playlistDataSource.upsert(
@@ -83,4 +87,35 @@ class PlaylistRepositoryImpl(
 
     override fun searchAll(search: String): Flow<List<PlaylistPreview>> =
         playlistDataSource.searchAll(search)
+
+    override suspend fun getAllToSendToCloud(): List<PlaylistWithMusics> =
+        playlistDataSource.getAllToSendToCloud()
+
+    override suspend fun fetchUpdatedPlaylistsFromCloud(lastSyncMillis: Long?): List<CloudPlaylist> {
+        var page = 0
+
+        val fetchedPlaylists: MutableList<CloudPlaylist> = mutableListOf()
+        while (true) {
+            val fetchedData = playlistRemoteDataSource.getOfUser(
+                lastUpdateAt = lastSyncMillis,
+                maxPerPage = 1,
+                page = page
+            )
+
+            fetchedPlaylists += fetchedData
+            if (fetchedData.isEmpty()) break
+
+            page += 1
+        }
+
+        return fetchedPlaylists
+    }
+
+    override suspend fun uploadToCloud(playlistWithMusics: PlaylistWithMusics): CloudPlaylist =
+        playlistRemoteDataSource.upload(
+            playlist = playlistWithMusics,
+            coverPath = (playlistWithMusics.playlist.cover as? Cover.CoverFile)?.fileCoverId?.let { coverId ->
+                coverFileManager.getCoverPath(coverId)
+            },
+        )
 }
