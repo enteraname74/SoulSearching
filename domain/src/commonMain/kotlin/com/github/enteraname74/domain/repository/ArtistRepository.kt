@@ -44,6 +44,8 @@ interface ArtistRepository {
 
     fun getAllPaged(): Flow<PagingData<ArtistPreview>>
 
+    suspend fun getAll(page: Int, pageSize: Int): List<ArtistPreview>
+
     /**
      * Retrieves a flow of an ArtistWithMusics.
      */

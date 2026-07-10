@@ -32,6 +32,8 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * Manage Media3 session state exposed to system UI, headset controls and external controllers.
@@ -39,12 +41,13 @@ import kotlinx.coroutines.launch
 @OptIn(UnstableApi::class)
 class MediaSessionManager(
     private val context: Context,
-    private val playbackManager: PlaybackManager,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     private val soulSearchingPlayer: SoulSearchingExoPlayerImpl,
-    private val mediaItemUtils: MediaItemUtils,
+    private val mediaMetadataUtils: MediaMetadataUtils,
     workDispatcher: WorkDispatcher,
-) {
+) : KoinComponent {
+    private val playbackManager: PlaybackManager by inject()
+
     private var mediaSession: MediaSession? = null
     private var currentPlayedListScope: PlayedListScope? = null
     private var isFavoriteActionAvailable: Boolean = false
@@ -74,7 +77,7 @@ class MediaSessionManager(
     private val sessionPlayer: Player by lazy {
         SoulSearchingSessionPlayer(
             player = soulSearchingPlayer.player,
-            playbackManager = playbackManager,
+            playbackManager = { playbackManager },
             coroutineScope = coroutineScope,
             canControl = { currentPlayedListScope?.isAdmin == true },
         )
@@ -195,8 +198,8 @@ class MediaSessionManager(
      */
     private fun updateMetadata(updateData: UpdateData) {
         soulSearchingPlayer.playerDispatcher.handler.post {
-            val metadata = mediaItemUtils
-                .metadataBuilderFromMusic(
+            val metadata = mediaMetadataUtils
+                .fromMusic(
                     music = updateData.music,
                     cover = updateData.cover?.asAndroidBitmap(),
                 )
@@ -329,7 +332,7 @@ class MediaSessionManager(
 @OptIn(UnstableApi::class)
 private class SoulSearchingSessionPlayer(
     player: Player,
-    private val playbackManager: PlaybackManager,
+    private val playbackManager: () -> PlaybackManager,
     private val coroutineScope: CoroutineScope,
     private val canControl: () -> Boolean,
 ) : ForwardingPlayer(player) {
@@ -431,20 +434,20 @@ private class SoulSearchingSessionPlayer(
 
     override fun play() {
         if (canControl()) {
-            playbackManager.play()
+            playbackManager().play()
         }
     }
 
     override fun pause() {
         if (canControl()) {
-            playbackManager.pause()
+            playbackManager().pause()
         }
     }
 
     override fun seekTo(positionMs: Long) {
         if (canControl()) {
             coroutineScope.launch {
-                playbackManager.seekToPosition(positionMs.toInt())
+                playbackManager().seekToPosition(positionMs.toInt())
             }
         }
     }
@@ -456,7 +459,7 @@ private class SoulSearchingSessionPlayer(
     override fun seekToPrevious() {
         if (canControl()) {
             coroutineScope.launch {
-                playbackManager.previous()
+                playbackManager().previous()
             }
         }
     }
@@ -468,7 +471,7 @@ private class SoulSearchingSessionPlayer(
     override fun seekToNext() {
         if (canControl()) {
             coroutineScope.launch {
-                playbackManager.next()
+                playbackManager().next()
             }
         }
     }
@@ -481,5 +484,5 @@ private class SoulSearchingSessionPlayer(
         any { it.isFromAndroidAutoLibrary() }
 
     private fun MediaItem.isFromAndroidAutoLibrary(): Boolean =
-        mediaId.startsWith(AndroidAutoMediaIds.MUSIC_PREFIX)
+        mediaId.startsWith(AndroidAutoMediaIdsUtils.MUSIC_PREFIX)
 }

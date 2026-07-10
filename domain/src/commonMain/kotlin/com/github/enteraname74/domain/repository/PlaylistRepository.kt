@@ -49,6 +49,8 @@ interface PlaylistRepository {
 
     fun getAllPaged(): Flow<PagingData<PlaylistPreview>>
 
+    suspend fun getAll(page: Int, pageSize: Int): List<PlaylistPreview>
+
     suspend fun cleanAllCovers()
 
     fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>>

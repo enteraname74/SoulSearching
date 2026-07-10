@@ -43,6 +43,8 @@ interface ArtistDataSource {
 
     fun getAllPaged(): Flow<PagingData<ArtistPreview>>
 
+    suspend fun getAll(page: Int, pageSize: Int): List<ArtistPreview>
+
     /**
      * Tries to find an artist from its name.
      */

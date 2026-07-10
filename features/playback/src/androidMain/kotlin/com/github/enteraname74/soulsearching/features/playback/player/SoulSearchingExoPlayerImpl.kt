@@ -22,7 +22,7 @@ import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
-import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaItemUtils
+import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaMetadataUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +41,7 @@ class SoulSearchingExoPlayerImpl(
     context: Context,
     commonCloudPreferencesUseCase: CommonCloudPreferencesUseCase,
     commonUserUseCase: CommonUserUseCase,
-    private val mediaItemUtils: MediaItemUtils,
+    private val mediaMetadataUtils: MediaMetadataUtils,
 ) : SoulSearchingPlayer {
     private val httpFactory = DefaultHttpDataSource.Factory()
         .setUserAgent("Soul Searching")
@@ -189,8 +189,8 @@ class SoulSearchingExoPlayerImpl(
                 .setMediaId(music.musicId.toString())
                 .setUriFromMusic(music)
                 .setMediaMetadata(
-                    mediaItemUtils
-                        .metadataBuilderFromMusic(
+                    mediaMetadataUtils
+                        .fromMusic(
                             music = music,
                             // Will be set later, on notification callbacks from PLaybackManager
                             cover = null,
@@ -274,11 +274,18 @@ class SoulSearchingExoPlayerImpl(
 }
 
 class PlayerDispatcher(
-    looper: Looper
+    private val looper: Looper
 ) : CoroutineDispatcher() {
     val handler: Handler = Handler(looper)
 
+    override fun isDispatchNeeded(context: CoroutineContext): Boolean =
+        Looper.myLooper() != looper
+
     override fun dispatch(context: CoroutineContext, block: Runnable) {
-        handler.post(block)
+        if (Looper.myLooper() == looper) {
+            block.run()
+        } else {
+            handler.post(block)
+        }
     }
 }

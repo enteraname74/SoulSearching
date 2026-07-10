@@ -123,6 +123,39 @@ internal class RoomArtistDataSourceImpl(
             }
         }
 
+    override suspend fun getAll(page: Int, pageSize: Int): List<ArtistPreview> {
+        val direction: SortDirection = SortDirection
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_DIRECTION_KEY))
+            ?: SortDirection.DEFAULT
+
+        val type: SortType = SortType
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_TYPE_KEY))
+            ?: SortType.DEFAULT
+
+        val limit = pageSize.takeIf { it > 0 } ?: DEFAULT_ANDROID_AUTO_PAGE_SIZE
+        val offset = page.coerceAtLeast(0) * limit
+
+        return with(appDatabase.artistDao) {
+            when (direction) {
+                SortDirection.ASC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameAsc(limit = limit, offset = offset)
+                        SortType.ADDED_DATE -> getAllByDateAsc(limit = limit, offset = offset)
+                        SortType.NB_PLAYED -> getAllByNbPlayedAsc(limit = limit, offset = offset)
+                    }
+                }
+
+                SortDirection.DESC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameDesc(limit = limit, offset = offset)
+                        SortType.ADDED_DATE -> getAllByDateDesc(limit = limit, offset = offset)
+                        SortType.NB_PLAYED -> getAllByNbPlayedDesc(limit = limit, offset = offset)
+                    }
+                }
+            }
+        }.map { it.toArtistPreview() }
+    }
+
     override suspend fun getFromName(artistName: String): Artist? {
         return appDatabase.artistDao.getFromName(
             artistName = artistName
@@ -184,3 +217,5 @@ internal class RoomArtistDataSourceImpl(
     override suspend fun getPotentialMultipleArtists(): List<Artist> =
         appDatabase.artistDao.getPotentialMultipleArtists().map { it.toArtist() }
 }
+
+private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

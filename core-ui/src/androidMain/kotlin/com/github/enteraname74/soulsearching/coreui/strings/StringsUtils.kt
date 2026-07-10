@@ -1,9 +1,7 @@
-package com.github.enteraname74.soulsearching.model.utils
+package com.github.enteraname74.soulsearching.coreui.strings
 
 import android.content.Context
-import com.github.enteraname74.soulsearching.coreui.strings.EnStrings
-import com.github.enteraname74.soulsearching.coreui.strings.FrStrings
-import com.github.enteraname74.soulsearching.coreui.strings.Strings
+import kotlin.collections.get
 
 object StringsUtils {
     fun getStrings(

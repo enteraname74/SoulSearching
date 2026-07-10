@@ -27,6 +27,9 @@ class CommonAlbumUseCase(
     fun getAllPaged(): Flow<PagingData<AlbumPreview>> =
         albumRepository.getAllPaged()
 
+    suspend fun getAll(page: Int, pageSize: Int): List<AlbumPreview> =
+        albumRepository.getAll(page = page, pageSize = pageSize)
+
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
         albumRepository.getAllFromQuickAccess()
 

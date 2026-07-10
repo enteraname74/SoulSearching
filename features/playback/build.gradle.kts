@@ -66,6 +66,8 @@ kotlin {
             implementation(libs.koin.androidx.compose)
             implementation(libs.coroutines.guava)
 //            implementation(libs.ffmpeg)
+
+            implementation(project(":core-ui"))
         }
     }
 }

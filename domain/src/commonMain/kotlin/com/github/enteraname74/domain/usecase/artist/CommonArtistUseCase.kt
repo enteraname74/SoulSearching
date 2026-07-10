@@ -15,6 +15,9 @@ class CommonArtistUseCase(
     fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
         artistRepository.getAllPaged()
 
+    suspend fun getAll(page: Int, pageSize: Int): List<ArtistPreview> =
+        artistRepository.getAll(page = page, pageSize = pageSize)
+
     fun getAllFromQuickAccess(): Flow<List<ArtistPreview>> =
         artistRepository.getAllFromQuickAccess()
 

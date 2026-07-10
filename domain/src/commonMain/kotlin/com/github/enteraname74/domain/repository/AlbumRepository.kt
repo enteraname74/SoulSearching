@@ -49,6 +49,8 @@ interface AlbumRepository {
 
     fun getAllPaged(): Flow<PagingData<AlbumPreview>>
 
+    suspend fun getAll(page: Int, pageSize: Int): List<AlbumPreview>
+
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>>
 
     suspend fun cleanAllCovers()
