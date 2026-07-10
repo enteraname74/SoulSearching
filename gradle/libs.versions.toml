@@ -70,6 +70,7 @@ compose-navigationevent = { module = "org.jetbrains.androidx.navigationevent:nav
 
 
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-core" }
+coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "coroutines-core" }
 coroutines-core-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines-core" }
 
 dbus = { module = "com.github.hypfvieh:dbus-java", version.ref = "dbus" }

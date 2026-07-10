@@ -64,6 +64,7 @@ kotlin {
             implementation(libs.androidx.media3.datasource)
             implementation(libs.androidx.media3.session)
             implementation(libs.koin.androidx.compose)
+            implementation(libs.coroutines.guava)
 //            implementation(libs.ffmpeg)
         }
     }

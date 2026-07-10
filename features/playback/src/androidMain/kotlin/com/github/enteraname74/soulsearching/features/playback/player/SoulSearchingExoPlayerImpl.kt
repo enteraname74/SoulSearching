@@ -51,12 +51,11 @@ class SoulSearchingExoPlayerImpl(
 
     private val mediaSourceFactory = DefaultMediaSourceFactory(context)
         .setDataSourceFactory(resolvingDataSourceFactory)
-    private val player = ExoPlayer
+
+    val player: ExoPlayer = ExoPlayer
         .Builder(context)
         .setMediaSourceFactory(mediaSourceFactory)
         .build()
-    internal val media3Player: Player
-        get() = player
     private val playerDispatcher = PlayerDispatcher(player.applicationLooper)
     private val playerCoroutineScope = CoroutineScope(playerDispatcher)
     private val workScope = CoroutineScope(Dispatchers.IO)

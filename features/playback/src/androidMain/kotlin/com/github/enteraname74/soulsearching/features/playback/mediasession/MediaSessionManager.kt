@@ -9,10 +9,12 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.core.graphics.scale
 import androidx.media3.common.C
 import androidx.media3.common.ForwardingPlayer
+import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.CommandButton
+import androidx.media3.session.MediaLibraryService.MediaLibrarySession
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionError
 import androidx.media3.session.SessionCommand
@@ -52,7 +54,7 @@ class MediaSessionManager(
 
     private val sessionPlayer: Player by lazy {
         SoulSearchingSessionPlayer(
-            player = soulSearchingPlayer.media3Player,
+            player = soulSearchingPlayer.player,
             playbackManager = playbackManager,
             coroutineScope = coroutineScope,
             canControl = { currentPlayedListScope?.isAdmin == true },
@@ -86,43 +88,66 @@ class MediaSessionManager(
                         session: MediaSession,
                         controller: MediaSession.ControllerInfo,
                     ): MediaSession.ConnectionResult =
-                        MediaSession.ConnectionResult.AcceptedResultBuilder(session)
-                            .setAvailableSessionCommands(buildSessionCommands())
-                            .setAvailablePlayerCommands(buildPlayerCommands())
-                            .setMediaButtonPreferences(buildMediaButtonPreferences())
-                            .build()
+                        this@MediaSessionManager.onConnect(session, controller)
 
                     override fun onCustomCommand(
                         session: MediaSession,
                         controller: MediaSession.ControllerInfo,
                         customCommand: SessionCommand,
                         args: Bundle,
-                    ): ListenableFuture<SessionResult> {
-                        if (
-                            customCommand.customAction == FAVORITE_ACTION &&
-                            isFavoriteActionAvailable
-                        ) {
-                            playbackManager.currentSong.value
-                                ?.takeIf { it.scope != Scope.SharedPlayedList }
-                                ?.musicId
-                                ?.let { musicId ->
-                                    coroutineScope.launch {
-                                        toggleMusicFavoriteStatusUseCase(musicId = musicId)
-                                    }
-                                }
-                            return Futures.immediateFuture(
-                                SessionResult(SessionResult.RESULT_SUCCESS)
-                            )
-                        }
-
-                        return Futures.immediateFuture(
-                            SessionResult(SessionError.ERROR_NOT_SUPPORTED)
-                        )
-                    }
+                    ): ListenableFuture<SessionResult> =
+                        this@MediaSessionManager.onCustomCommand(customCommand)
                 }
             )
             .setMediaButtonPreferences(buildMediaButtonPreferences())
             .build()
+
+    fun getOrCreateMediaLibrarySession(
+        callback: MediaLibrarySession.Callback,
+    ): MediaLibrarySession {
+        (mediaSession as? MediaLibrarySession)?.let { return it }
+
+        mediaSession?.release()
+        return MediaLibrarySession.Builder(context, sessionPlayer, callback)
+            .setMediaButtonPreferences(buildMediaButtonPreferences())
+            .build()
+            .also { mediaSession = it }
+    }
+
+    fun onConnect(
+        session: MediaSession,
+        controller: MediaSession.ControllerInfo,
+    ): MediaSession.ConnectionResult =
+        MediaSession.ConnectionResult.AcceptedResultBuilder(session)
+            .setAvailableSessionCommands(buildSessionCommands(session))
+            .setAvailablePlayerCommands(buildPlayerCommands())
+            .setMediaButtonPreferences(buildMediaButtonPreferences())
+            .build()
+
+    fun onCustomCommand(
+        customCommand: SessionCommand,
+    ): ListenableFuture<SessionResult> {
+        if (
+            customCommand.customAction == FAVORITE_ACTION &&
+            isFavoriteActionAvailable
+        ) {
+            playbackManager.currentSong.value
+                ?.takeIf { it.scope != Scope.SharedPlayedList }
+                ?.musicId
+                ?.let { musicId ->
+                    coroutineScope.launch {
+                        toggleMusicFavoriteStatusUseCase(musicId = musicId)
+                    }
+                }
+            return Futures.immediateFuture(
+                SessionResult(SessionResult.RESULT_SUCCESS)
+            )
+        }
+
+        return Futures.immediateFuture(
+            SessionResult(SessionError.ERROR_NOT_SUPPORTED)
+        )
+    }
 
     /**
      * Release all elements related to the media session.
@@ -151,11 +176,11 @@ class MediaSessionManager(
             .setTotalTrackCount(updateData.playedListSize.toInt())
             .build()
 
-        val currentMediaItem = soulSearchingPlayer.media3Player.currentMediaItem ?: return
-        val currentIndex = soulSearchingPlayer.media3Player.currentMediaItemIndex
+        val currentMediaItem = soulSearchingPlayer.player.currentMediaItem ?: return
+        val currentIndex = soulSearchingPlayer.player.currentMediaItemIndex
         if (currentIndex == C.INDEX_UNSET) return
 
-        soulSearchingPlayer.media3Player.replaceMediaItem(
+        soulSearchingPlayer.player.replaceMediaItem(
             currentIndex,
             currentMediaItem.buildUpon()
                 .setMediaMetadata(metadata)
@@ -164,7 +189,7 @@ class MediaSessionManager(
     }
 
     private fun updateAvailableCommands(session: MediaSession) {
-        val sessionCommands = buildSessionCommands()
+        val sessionCommands = buildSessionCommands(session)
         val playerCommands = buildPlayerCommands()
         val mediaButtonPreferences = buildMediaButtonPreferences()
 
@@ -182,8 +207,12 @@ class MediaSessionManager(
         }
     }
 
-    private fun buildSessionCommands(): SessionCommands =
-        SessionCommands.Builder()
+    private fun buildSessionCommands(session: MediaSession): SessionCommands =
+        if (session is MediaLibrarySession) {
+            MediaSession.ConnectionResult.DEFAULT_SESSION_AND_LIBRARY_COMMANDS
+        } else {
+            MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS
+        }.buildUpon()
             .apply {
                 if (isFavoriteActionAvailable) {
                     add(favoriteCommand)
@@ -194,6 +223,9 @@ class MediaSessionManager(
     private fun buildPlayerCommands(): Player.Commands =
         Player.Commands.Builder()
             .apply {
+                add(Player.COMMAND_SET_MEDIA_ITEM)
+                add(Player.COMMAND_PREPARE)
+
                 if (currentPlayedListScope?.isAdmin == true) {
                     add(Player.COMMAND_PLAY_PAUSE)
                     add(Player.COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM)
@@ -258,6 +290,67 @@ private class SoulSearchingSessionPlayer(
     private val coroutineScope: CoroutineScope,
     private val canControl: () -> Boolean,
 ) : ForwardingPlayer(player) {
+    private var shouldIgnoreNextPrepare: Boolean = false
+
+    override fun setMediaItems(mediaItems: List<MediaItem>) {
+        if (mediaItems.isFromAndroidAutoLibrary()) {
+            shouldIgnoreNextPrepare = true
+        } else {
+            super.setMediaItems(mediaItems)
+        }
+    }
+
+    override fun setMediaItems(mediaItems: List<MediaItem>, resetPosition: Boolean) {
+        if (mediaItems.isFromAndroidAutoLibrary()) {
+            shouldIgnoreNextPrepare = true
+        } else {
+            super.setMediaItems(mediaItems, resetPosition)
+        }
+    }
+
+    override fun setMediaItems(
+        mediaItems: List<MediaItem>,
+        startIndex: Int,
+        startPositionMs: Long,
+    ) {
+        if (mediaItems.isFromAndroidAutoLibrary()) {
+            shouldIgnoreNextPrepare = true
+        } else {
+            super.setMediaItems(mediaItems, startIndex, startPositionMs)
+        }
+    }
+
+    override fun setMediaItem(mediaItem: MediaItem) {
+        if (mediaItem.isFromAndroidAutoLibrary()) {
+            shouldIgnoreNextPrepare = true
+        } else {
+            super.setMediaItem(mediaItem)
+        }
+    }
+
+    override fun setMediaItem(mediaItem: MediaItem, startPositionMs: Long) {
+        if (mediaItem.isFromAndroidAutoLibrary()) {
+            shouldIgnoreNextPrepare = true
+        } else {
+            super.setMediaItem(mediaItem, startPositionMs)
+        }
+    }
+
+    override fun setMediaItem(mediaItem: MediaItem, resetPosition: Boolean) {
+        if (mediaItem.isFromAndroidAutoLibrary()) {
+            shouldIgnoreNextPrepare = true
+        } else {
+            super.setMediaItem(mediaItem, resetPosition)
+        }
+    }
+
+    override fun prepare() {
+        if (shouldIgnoreNextPrepare) {
+            shouldIgnoreNextPrepare = false
+        } else {
+            super.prepare()
+        }
+    }
 
     override fun getAvailableCommands(): Player.Commands =
         super.getAvailableCommands()
@@ -340,4 +433,10 @@ private class SoulSearchingSessionPlayer(
     override fun seekToNextMediaItem() {
         seekToNext()
     }
+
+    private fun List<MediaItem>.isFromAndroidAutoLibrary(): Boolean =
+        any { it.isFromAndroidAutoLibrary() }
+
+    private fun MediaItem.isFromAndroidAutoLibrary(): Boolean =
+        mediaId.startsWith(AndroidAutoMediaIds.MUSIC_PREFIX)
 }
