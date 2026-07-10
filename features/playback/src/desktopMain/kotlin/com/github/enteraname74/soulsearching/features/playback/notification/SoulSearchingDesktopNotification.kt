@@ -42,7 +42,7 @@ class SoulSearchingDesktopNotification : SoulSearchingNotification {
 
     }
 
-    override fun dismiss() {
+    override fun dismiss(forceStop: Boolean) {
 //        libNotify?.unInit()
 //        notification?.close()
     }

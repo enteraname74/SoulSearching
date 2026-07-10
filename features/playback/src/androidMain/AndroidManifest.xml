@@ -8,12 +8,6 @@
 
     <application>
         <service
-            android:name="com.github.enteraname74.soulsearching.features.playback.PlayerService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="mediaPlayback" />
-
-        <service
             android:name="com.github.enteraname74.soulsearching.features.playback.PlayerLibraryService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="true">

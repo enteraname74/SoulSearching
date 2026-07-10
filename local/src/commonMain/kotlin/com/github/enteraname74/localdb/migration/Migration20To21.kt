@@ -7,6 +7,7 @@ import androidx.sqlite.async.executeSQL
 object Migration20To21 : Migration(20, 21) {
     override suspend fun migrate(connection: SQLiteConnection) {
         connection.backupExistingTables()
+        connection.dropViews()
         connection.dropExistingTables()
         connection.createTables()
         connection.restoreExistingData()
@@ -35,16 +36,24 @@ object Migration20To21 : Migration(20, 21) {
 
     private suspend fun SQLiteConnection.dropExistingTables() {
         listOf(
+            "RoomPlayerMusicUser",
+            "RoomSharedPlayedListUser",
             "RoomPlayerMusicProgress",
             "RoomPlayerMusic",
             "RoomMusicPlaylist",
             "RoomMusicArtist",
+            "RoomSharedPlayedListPreview",
+            "RoomUserInscriptionCode",
+            "RoomSimpleUser",
             "RoomMusic",
             "RoomAlbum",
             "RoomArtist",
             "RoomPlaylist",
             "RoomPlayerPlayedList",
             "RoomFolder",
+            "RoomUser",
+            "RoomCloudPreferences",
+            "RoomDeviceId",
         ).forEach { table ->
             executeSQL("DROP TABLE IF EXISTS $table")
         }
@@ -441,258 +450,247 @@ object Migration20To21 : Migration(20, 21) {
 
     private suspend fun SQLiteConnection.createViews() {
         executeSQL(
-            """
-            CREATE VIEW CurrentPlayerMusicsView AS WITH currentPlayedList AS (
-                SELECT * FROM RoomPlayerPlayedList
-                WHERE state != 'Cached'
-                LIMIT 1
-            )
-            SELECT
-                m.*,
-                CASE
-                    WHEN c.mode = 'Shuffle'
-                    THEN m.shuffledOrder
-                    ELSE m.`order`
-                END AS currentOrder,
-                c.mode
-            FROM RoomPlayerMusic m
-            INNER JOIN currentPlayedList c ON m.playedListId = c.id
-            ORDER BY currentOrder
-            """.trimIndent()
+            "CREATE VIEW `CurrentPlayerMusicsView` AS WITH currentPlayedList AS (\n" +
+                "        SELECT * FROM RoomPlayerPlayedList  \n" +
+                "        WHERE state != 'Cached'\n" +
+                "        LIMIT 1\n" +
+                "    )\n" +
+                "    SELECT \n" +
+                "        m.*,\n" +
+                "        CASE\n" +
+                "            WHEN c.mode = 'Shuffle'\n" +
+                "            THEN m.shuffledOrder\n" +
+                "            ELSE m.`order`\n" +
+                "        END AS currentOrder,\n" +
+                "        c.mode \n" +
+                "    FROM RoomPlayerMusic m\n" +
+                "    INNER JOIN currentPlayedList c ON m.playedListId = c.id\n" +
+                "    ORDER BY currentOrder"
         )
         executeSQL(
-            """
-            CREATE VIEW RoomMusicFolderPreview AS SELECT
-                folderMusic.folder,
-                COUNT(*) AS totalMusics,
-                (
-                    SELECT music.coverId FROM RoomMusic AS music
-                    WHERE music.isHidden = 0
-                    AND scope != 'SharedPlayedList'
-                    AND music.coverId IS NOT NULL
-                    AND music.folder = folderMusic.folder
-                    ORDER BY
-                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END,
-                    name
-                    LIMIT 1
-                ) AS coverId,
-                (
-                    SELECT music.localPath FROM RoomMusic AS music
-                    WHERE music.isHidden = 0
-                    AND scope != 'SharedPlayedList'
-                    AND music.folder = folderMusic.folder
-                    ORDER BY name
-                    LIMIT 1
-                ) AS musicCoverPath,
-                (
-                    SELECT music.coverUrl FROM RoomMusic AS music
-                    WHERE music.isHidden = 0
-                    AND scope != 'SharedPlayedList'
-                    AND music.folder = folderMusic.folder
-                    ORDER BY name
-                    LIMIT 1
-                ) AS musicCoverUrl
-            FROM RoomMusic As folderMusic
-            WHERE isHidden = 0
-            AND scope != 'SharedPlayedList'
-            GROUP BY folderMusic.folder
-            """.trimIndent()
+            "CREATE VIEW `RoomMusicFolderPreview` AS SELECT \n" +
+                "                folderMusic.folder,\n" +
+                "                COUNT(*) AS totalMusics, \n" +
+                "                (\n" +
+                "                    SELECT music.coverId FROM RoomMusic AS music \n" +
+                "                    WHERE music.isHidden = 0 \n" +
+                "                    AND scope != 'SharedPlayedList' \n" +
+                "                    AND music.coverId IS NOT NULL \n" +
+                "                    AND music.folder = folderMusic.folder \n" +
+                "                    ORDER BY\n" +
+                "                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, \n" +
+                "                    name \n" +
+                "                    LIMIT 1\n" +
+                "                ) AS coverId,\n" +
+                "                (\n" +
+                "                    SELECT music.localPath FROM RoomMusic AS music \n" +
+                "                    WHERE music.isHidden = 0 \n" +
+                "                    AND scope != 'SharedPlayedList' \n" +
+                "                    AND music.folder = folderMusic.folder \n" +
+                "                    ORDER BY name \n" +
+                "                    LIMIT 1 \n" +
+                "                ) AS musicCoverPath, \n" +
+                "                (\n" +
+                "                    SELECT music.coverUrl FROM RoomMusic AS music \n" +
+                "                    WHERE music.isHidden = 0 \n" +
+                "                    AND scope != 'SharedPlayedList' \n" +
+                "                    AND music.folder = folderMusic.folder \n" +
+                "                    ORDER BY name \n" +
+                "                    LIMIT 1 \n" +
+                "                ) AS musicCoverUrl \n" +
+                "            FROM RoomMusic As folderMusic\n" +
+                "            WHERE isHidden = 0 \n" +
+                "            AND scope != 'SharedPlayedList' \n" +
+                "            GROUP BY folderMusic.folder"
         )
         executeSQL(
-            """
-            CREATE VIEW RoomMonthMusicPreview AS SELECT
-                strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch') AS month,
-                COUNT(*) AS totalMusics,
-                (
-                    SELECT music.coverId FROM RoomMusic AS music
-                    WHERE music.isHidden = 0
-                    AND scope != 'SharedPlayedList'
-                    AND music.coverId IS NOT NULL
-                    AND strftime('%m/%Y', music.addedDate / 1000, 'unixepoch') =
-                        strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch')
-                    ORDER BY
-                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END,
-                    name
-                    LIMIT 1
-                ) AS coverId,
-                (
-                    SELECT music.localPath FROM RoomMusic AS music
-                    WHERE music.isHidden = 0
-                    AND scope != 'SharedPlayedList'
-                    AND strftime('%m/%Y', music.addedDate / 1000, 'unixepoch') =
-                        strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch')
-                    ORDER BY name
-                    LIMIT 1
-                ) AS musicCoverPath,
-                (
-                    SELECT music.coverUrl FROM RoomMusic AS music
-                    WHERE music.isHidden = 0
-                    AND scope != 'SharedPlayedList'
-                    AND strftime('%m/%Y', music.addedDate / 1000, 'unixepoch') =
-                        strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch')
-                    ORDER BY name
-                    LIMIT 1
-                ) AS musicCoverUrl
-            FROM RoomMusic AS monthMusic
-            WHERE isHidden = 0
-            AND scope != 'SharedPlayedList'
-            GROUP BY strftime('%Y-%m', addedDate / 1000, 'unixepoch')
-            ORDER BY strftime('%Y-%m', addedDate / 1000, 'unixepoch') DESC
-            """.trimIndent()
+            "CREATE VIEW `RoomMonthMusicPreview` AS SELECT \n" +
+                "                strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch') AS month,\n" +
+                "                COUNT(*) AS totalMusics, \n" +
+                "                (\n" +
+                "                    SELECT music.coverId FROM RoomMusic AS music \n" +
+                "                    WHERE music.isHidden = 0 \n" +
+                "                    AND scope != 'SharedPlayedList' \n" +
+                "                    AND music.coverId IS NOT NULL \n" +
+                "                    AND strftime('%m/%Y', music.addedDate / 1000, 'unixepoch') = strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch')\n" +
+                "                    ORDER BY\n" +
+                "                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, \n" +
+                "                    name \n" +
+                "                    LIMIT 1\n" +
+                "                ) AS coverId,\n" +
+                "                (\n" +
+                "                    SELECT music.localPath FROM RoomMusic AS music \n" +
+                "                    WHERE music.isHidden = 0 \n" +
+                "                    AND scope != 'SharedPlayedList' \n" +
+                "                    AND strftime('%m/%Y', music.addedDate / 1000, 'unixepoch') = strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch') \n" +
+                "                    ORDER BY name \n" +
+                "                    LIMIT 1 \n" +
+                "                ) AS musicCoverPath, \n" +
+                "                (\n" +
+                "                    SELECT music.coverUrl FROM RoomMusic AS music \n" +
+                "                    WHERE music.isHidden = 0 \n" +
+                "                    AND scope != 'SharedPlayedList' \n" +
+                "                    AND strftime('%m/%Y', music.addedDate / 1000, 'unixepoch') = strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch') \n" +
+                "                    ORDER BY name \n" +
+                "                    LIMIT 1 \n" +
+                "                ) AS musicCoverUrl \n" +
+                "            FROM RoomMusic AS monthMusic\n" +
+                "            WHERE isHidden = 0 \n" +
+                "            AND scope != 'SharedPlayedList' \n" +
+                "            GROUP BY strftime('%Y-%m', addedDate / 1000, 'unixepoch') \n" +
+                "            ORDER BY strftime('%Y-%m', addedDate / 1000, 'unixepoch') DESC"
         )
         executeSQL(
-            """
-            CREATE VIEW RoomAlbumPreview AS SELECT
-                album.albumId AS id,
-                album.albumName AS name,
-                album.nbPlayed,
-                album.addedDate,
-                album.artistId,
-                album.coverUrl,
-                (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist,
-                (
-                    CASE WHEN album.coverId IS NULL THEN
-                        (
-                            SELECT music.coverId FROM RoomMusic AS music
-                            WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY
-                            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END,
-                            music.albumPosition,
-                            CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END,
-                            music.name
-                        )
-                    ELSE album.coverId END
-                ) AS coverId,
-                (
-                    SELECT music.localPath FROM RoomMusic AS music
-                    WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY
-                    CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END,
-                    music.albumPosition,
-                    music.name
-                    LIMIT 1
-                ) AS musicCoverPath,
-                (
-                    SELECT music.coverUrl FROM RoomMusic AS music
-                    WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY
-                    CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END,
-                    music.albumPosition,
-                    music.name
-                    LIMIT 1
-                ) AS musicCoverUrl,
-                album.isInQuickAccess
-            FROM RoomAlbum AS album
-            WHERE album.scope != 'SharedPlayedList'
-            """.trimIndent()
+            "CREATE VIEW `RoomAlbumPreview` AS SELECT \n" +
+                "        album.albumId AS id, \n" +
+                "        album.albumName AS name, \n" +
+                "        album.nbPlayed, \n" +
+                "        album.addedDate, \n" +
+                "        album.artistId,\n" +
+                "        album.coverUrl, \n" +
+                "        (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, \n" +
+                "        (\n" +
+                "            CASE WHEN album.coverId IS NULL THEN \n" +
+                "                (\n" +
+                "                    SELECT music.coverId FROM RoomMusic AS music \n" +
+                "                    WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY \n" +
+                "                    CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, \n" +
+                "                    music.albumPosition, \n" +
+                "                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, \n" +
+                "                    music.name \n" +
+                "                )\n" +
+                "            ELSE album.coverId END\n" +
+                "        ) AS coverId,\n" +
+                "        (\n" +
+                "            SELECT music.localPath FROM RoomMusic AS music \n" +
+                "            WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY \n" +
+                "            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, \n" +
+                "            music.albumPosition, \n" +
+                "            music.name \n" +
+                "            LIMIT 1 \n" +
+                "        ) AS musicCoverPath,\n" +
+                "        (\n" +
+                "            SELECT music.coverUrl FROM RoomMusic AS music \n" +
+                "            WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY \n" +
+                "            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, \n" +
+                "            music.albumPosition, \n" +
+                "            music.name \n" +
+                "            LIMIT 1 \n" +
+                "        ) AS musicCoverUrl,\n" +
+                "        album.isInQuickAccess \n" +
+                "        FROM RoomAlbum AS album \n" +
+                "        WHERE album.scope != 'SharedPlayedList'"
         )
         executeSQL(
-            """
-            CREATE VIEW RoomArtistPreview AS SELECT
-                artist.artistId AS id,
-                artist.artistName AS name,
-                artist.coverFolderKey,
-                artist.addedDate,
-                artist.nbPlayed,
-                artist.coverUrl,
-                (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics,
-                (
-                    CASE WHEN artist.coverId IS NULL THEN
-                        (
-                            SELECT music.coverId FROM RoomMusic AS music
-                            INNER JOIN RoomMusicArtist AS musicArtist
-                            ON music.musicId = musicArtist.musicId
-                            AND artist.artistId = musicArtist.artistId
-                            AND music.isHidden = 0
-                            AND scope != 'SharedPlayedList'
-                            AND music.coverId IS NOT NULL
-                            ORDER BY name ASC
-                            LIMIT 1
-                        )
-                    ELSE artist.coverId END
-                ) AS coverId,
-                (
-                    SELECT music.localPath FROM RoomMusic AS music
-                    INNER JOIN RoomMusicArtist AS musicArtist
-                    ON music.musicId = musicArtist.musicId
-                    AND artist.artistId = musicArtist.artistId
-                    AND music.isHidden = 0
-                    AND scope != 'SharedPlayedList'
-                    ORDER BY name ASC
-                    LIMIT 1
-                ) AS musicCoverPath,
-                (
-                    SELECT music.coverUrl FROM RoomMusic AS music
-                    INNER JOIN RoomMusicArtist AS musicArtist
-                    ON music.musicId = musicArtist.musicId
-                    AND artist.artistId = musicArtist.artistId
-                    AND music.isHidden = 0
-                    AND scope != 'SharedPlayedList'
-                    ORDER BY name ASC
-                    LIMIT 1
-                ) AS musicCoverUrl,
-                artist.isInQuickAccess
-            FROM RoomArtist AS artist
-            WHERE artist.scope != 'SharedPlayedList'
-            """.trimIndent()
+            "CREATE VIEW `RoomArtistPreview` AS SELECT \n" +
+                "        artist.artistId AS id, \n" +
+                "        artist.artistName AS name, \n" +
+                "        artist.coverFolderKey,\n" +
+                "        artist.addedDate, \n" +
+                "        artist.nbPlayed, \n" +
+                "        artist.coverUrl, \n" +
+                "        (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, \n" +
+                "        (\n" +
+                "            CASE WHEN artist.coverId IS NULL THEN \n" +
+                "                (\n" +
+                "                    SELECT music.coverId FROM RoomMusic AS music \n" +
+                "                    INNER JOIN RoomMusicArtist AS musicArtist \n" +
+                "                    ON music.musicId = musicArtist.musicId \n" +
+                "                    AND artist.artistId = musicArtist.artistId \n" +
+                "                    AND music.isHidden = 0 \n" +
+                "                    AND scope != 'SharedPlayedList' \n" +
+                "                    AND music.coverId IS NOT NULL \n" +
+                "                    ORDER BY name ASC \n" +
+                "                    LIMIT 1\n" +
+                "                )\n" +
+                "            ELSE artist.coverId END\n" +
+                "        ) AS coverId,\n" +
+                "        (\n" +
+                "            SELECT music.localPath FROM RoomMusic AS music \n" +
+                "            INNER JOIN RoomMusicArtist AS musicArtist \n" +
+                "            ON music.musicId = musicArtist.musicId \n" +
+                "            AND artist.artistId = musicArtist.artistId \n" +
+                "            AND music.isHidden = 0 \n" +
+                "            AND scope != 'SharedPlayedList' \n" +
+                "            ORDER BY name ASC \n" +
+                "            LIMIT 1\n" +
+                "        ) AS musicCoverPath,\n" +
+                "        (\n" +
+                "            SELECT music.coverUrl FROM RoomMusic AS music \n" +
+                "            INNER JOIN RoomMusicArtist AS musicArtist \n" +
+                "            ON music.musicId = musicArtist.musicId \n" +
+                "            AND artist.artistId = musicArtist.artistId \n" +
+                "            AND music.isHidden = 0 \n" +
+                "            AND scope != 'SharedPlayedList' \n" +
+                "            ORDER BY name ASC \n" +
+                "            LIMIT 1\n" +
+                "        ) AS musicCoverUrl,\n" +
+                "        artist.isInQuickAccess \n" +
+                "        FROM RoomArtist AS artist \n" +
+                "        WHERE artist.scope != 'SharedPlayedList'"
         )
         executeSQL(
-            """
-            CREATE VIEW RoomPlaylistPreview AS SELECT playlist.playlistId AS id,
-                playlist.name,
-                playlist.isFavorite,
-                playlist.addedDate,
-                playlist.coverUrl,
-                (
-                    SELECT COUNT(*)
-                    FROM RoomMusicPlaylist AS musicPlaylist
-                    WHERE musicPlaylist.playlistId = playlist.playlistId
-                ) AS totalMusics,
-                (
-                    CASE WHEN playlist.coverId IS NULL THEN
-                        (
-                            SELECT music.coverId FROM RoomMusic AS music
-                            INNER JOIN RoomMusicPlaylist AS musicPlaylist
-                            ON music.musicId = musicPlaylist.musicId
-                            AND playlist.playlistId = musicPlaylist.playlistId
-                            AND music.isHidden = 0
-                            AND scope != 'SharedPlayedList'
-                            AND music.coverId IS NOT NULL
-                            LIMIT 1
-                        )
-                    ELSE playlist.coverId END
-                ) AS coverId,
-                (
-                    SELECT music.localPath FROM RoomMusic AS music
-                    INNER JOIN RoomMusicPlaylist AS musicPlaylist
-                    ON music.musicId = musicPlaylist.musicId
-                    AND playlist.playlistId = musicPlaylist.playlistId
-                    AND music.isHidden = 0
-                    AND scope != 'SharedPlayedList'
-                    LIMIT 1
-                ) AS musicCoverPath,
-                (
-                    SELECT music.coverUrl FROM RoomMusic AS music
-                    INNER JOIN RoomMusicPlaylist AS musicPlaylist
-                    ON music.musicId = musicPlaylist.musicId
-                    AND playlist.playlistId = musicPlaylist.playlistId
-                    AND music.isHidden = 0
-                    AND scope != 'SharedPlayedList'
-                    LIMIT 1
-                ) AS musicCoverUrl,
-                playlist.isInQuickAccess,
-                playlist.nbPlayed
-            FROM RoomPlaylist AS playlist
-            """.trimIndent()
+            "CREATE VIEW `RoomPlaylistPreview` AS SELECT playlist.playlistId AS id, \n" +
+                "        playlist.name, \n" +
+                "        playlist.isFavorite, \n" +
+                "        playlist.addedDate, \n" +
+                "        playlist.coverUrl, \n" +
+                "        (\n" +
+                "            SELECT COUNT(*) \n" +
+                "            FROM RoomMusicPlaylist AS musicPlaylist \n" +
+                "            WHERE musicPlaylist.playlistId = playlist.playlistId\n" +
+                "        ) AS totalMusics, \n" +
+                "        (\n" +
+                "            CASE WHEN playlist.coverId IS NULL THEN \n" +
+                "                (\n" +
+                "                    SELECT music.coverId FROM RoomMusic AS music \n" +
+                "                    INNER JOIN RoomMusicPlaylist AS musicPlaylist \n" +
+                "                    ON music.musicId = musicPlaylist.musicId \n" +
+                "                    AND playlist.playlistId = musicPlaylist.playlistId \n" +
+                "                    AND music.isHidden = 0 \n" +
+                "                    AND scope != 'SharedPlayedList' \n" +
+                "                    AND music.coverId IS NOT NULL \n" +
+                "                    LIMIT 1\n" +
+                "                )\n" +
+                "            ELSE playlist.coverId END\n" +
+                "        ) AS coverId,\n" +
+                "        (\n" +
+                "            SELECT music.localPath FROM RoomMusic AS music \n" +
+                "            INNER JOIN RoomMusicPlaylist AS musicPlaylist \n" +
+                "            ON music.musicId = musicPlaylist.musicId \n" +
+                "            AND playlist.playlistId = musicPlaylist.playlistId \n" +
+                "            AND music.isHidden = 0 \n" +
+                "            AND scope != 'SharedPlayedList' \n" +
+                "            LIMIT 1\n" +
+                "        ) AS musicCoverPath,\n" +
+                "        (\n" +
+                "            SELECT music.coverUrl FROM RoomMusic AS music \n" +
+                "            INNER JOIN RoomMusicPlaylist AS musicPlaylist \n" +
+                "            ON music.musicId = musicPlaylist.musicId \n" +
+                "            AND playlist.playlistId = musicPlaylist.playlistId \n" +
+                "            AND music.isHidden = 0 \n" +
+                "            AND scope != 'SharedPlayedList' \n" +
+                "            LIMIT 1\n" +
+                "        ) AS musicCoverUrl,\n" +
+                "        playlist.isInQuickAccess, \n" +
+                "        playlist.nbPlayed \n" +
+                "        FROM RoomPlaylist AS playlist"
         )
     }
 
     private fun uuid(column: String): String =
         """
-        CASE WHEN $column IS NULL THEN NULL ELSE lower(
-            substr(hex($column), 1, 8) || '-' ||
-            substr(hex($column), 9, 4) || '-' ||
-            substr(hex($column), 13, 4) || '-' ||
-            substr(hex($column), 17, 4) || '-' ||
-            substr(hex($column), 21, 12)
-        ) END
+        CASE
+            WHEN $column IS NULL THEN NULL
+            WHEN typeof($column) = 'text' THEN lower($column)
+            ELSE lower(
+                substr(hex($column), 1, 8) || '-' ||
+                substr(hex($column), 9, 4) || '-' ||
+                substr(hex($column), 13, 4) || '-' ||
+                substr(hex($column), 17, 4) || '-' ||
+                substr(hex($column), 21, 12)
+            )
+        END
         """.trimIndent()
 
     private fun localDateTimeToMillis(column: String): String =

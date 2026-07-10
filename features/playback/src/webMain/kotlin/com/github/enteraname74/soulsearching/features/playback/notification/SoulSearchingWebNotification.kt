@@ -6,6 +6,6 @@ class SoulSearchingWebNotification : SoulSearchingNotification {
     override suspend fun update(updateData: UpdateData) {
     }
 
-    override fun dismiss() {
+    override fun dismiss(forceStop: Boolean) {
     }
 }

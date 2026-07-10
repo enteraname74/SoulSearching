@@ -2,14 +2,10 @@ package com.github.enteraname74.soulsearching
 
 import android.annotation.SuppressLint
 import android.app.ComponentCaller
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -28,14 +24,10 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.ui.theme.SoulSearchingTheme
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.jaudiotagger.tag.TagOptionSingleton
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.context.loadKoinModules
-import org.koin.core.context.unloadKoinModules
 
 class MainActivity : AppCompatActivity() {
     // Main page view models
@@ -43,34 +35,6 @@ class MainActivity : AppCompatActivity() {
     private val applicationViewModel: ApplicationViewModel by viewModel()
     private val playbackManager: PlaybackManager by inject()
     private val workDispatcher: WorkDispatcher by inject()
-
-    private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            Log.d("MAIN ACTIVITY", "BROADCAST RECEIVE INFO TO RELAUNCH SERVICE")
-            //            AndroidUtils.launchService(
-            //                context = context,
-            //                isFromSavedList = false
-            //            )
-        }
-    }
-
-    /**
-     * Initialize the broadcast receiver, used by the foreground service handling the playback.
-     */
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    private fun initializeBroadcastReceive() {
-        if (Build.VERSION.SDK_INT >= 33) {
-            registerReceiver(
-                serviceReceiver, IntentFilter(com.github.enteraname74.soulsearching.features.playback.PlayerService.RESTART_SERVICE),
-                RECEIVER_NOT_EXPORTED
-            )
-        } else {
-            registerReceiver(
-                serviceReceiver,
-                IntentFilter(com.github.enteraname74.soulsearching.features.playback.PlayerService.RESTART_SERVICE)
-            )
-        }
-    }
 
     @OptIn(ExperimentalCoilApi::class)
     @SuppressLint("CoroutineCreationDuringComposition", "UnspecifiedRegisterReceiverFlag")
@@ -81,7 +45,6 @@ class MainActivity : AppCompatActivity() {
 
         // For JAudiotagger to work on android.
         TagOptionSingleton.getInstance().isAndroid = true
-        initializeBroadcastReceive()
 
         setContent {
             applicationViewModel.isReadPermissionGranted =

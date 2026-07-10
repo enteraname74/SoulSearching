@@ -1,30 +1,30 @@
 package com.github.enteraname74.soulsearching.features.playback.mediasession
 
+import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import androidx.annotation.OptIn
 import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.core.graphics.scale
 import androidx.media3.common.C
 import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.CommandButton
 import androidx.media3.session.MediaLibraryService.MediaLibrarySession
 import androidx.media3.session.MediaSession
-import androidx.media3.session.SessionError
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionCommands
+import androidx.media3.session.SessionError
 import androidx.media3.session.SessionResult
 import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.util.WorkDispatcher
-import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingExoPlayerImpl
@@ -32,7 +32,6 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 
 /**
  * Manage Media3 session state exposed to system UI, headset controls and external controllers.
@@ -43,14 +42,34 @@ class MediaSessionManager(
     private val playbackManager: PlaybackManager,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     private val soulSearchingPlayer: SoulSearchingExoPlayerImpl,
+    private val mediaItemUtils: MediaItemUtils,
     workDispatcher: WorkDispatcher,
 ) {
     private var mediaSession: MediaSession? = null
     private var currentPlayedListScope: PlayedListScope? = null
     private var isFavoriteActionAvailable: Boolean = false
+    private var isCurrentMusicInFavorite: Boolean = false
 
     private val coroutineScope = CoroutineScope(workDispatcher.dispatcher)
     private val favoriteCommand = SessionCommand(FAVORITE_ACTION, Bundle.EMPTY)
+
+    @SuppressLint("ObsoleteSdkInt")
+    private val activityPendingIntent: PendingIntent = PendingIntent.getActivity(
+        context,
+        0,
+        Intent().apply {
+            setClassName(context.packageName, MAIN_ACTIVITY_CLASS_NAME)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            action = Intent.ACTION_MAIN
+            addCategory(Intent.CATEGORY_LAUNCHER)
+        },
+        PendingIntent.FLAG_UPDATE_CURRENT or
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.FLAG_IMMUTABLE
+            } else {
+                0
+            }
+    )
 
     private val sessionPlayer: Player by lazy {
         SoulSearchingSessionPlayer(
@@ -61,15 +80,12 @@ class MediaSessionManager(
         )
     }
 
-    private val standardNotificationBitmap: Bitmap =
-        BitmapFactory.decodeResource(context.resources, R.drawable.new_notification_default)
-            .scale(DEFAULT_NOTIFICATION_SIZE, DEFAULT_NOTIFICATION_SIZE, false)
-
-    fun getUpdatedMediaSession(
+    fun updateMediaSession(
         updateData: UpdateData,
     ): MediaSession {
         currentPlayedListScope = updateData.playedListScope
         isFavoriteActionAvailable = updateData.music.scope != Scope.SharedPlayedList
+        isCurrentMusicInFavorite = updateData.isInFavorite
 
         val session = mediaSession ?: init().also {
             mediaSession = it
@@ -82,13 +98,14 @@ class MediaSessionManager(
 
     private fun init(): MediaSession =
         MediaSession.Builder(context, sessionPlayer)
+            .setSessionActivity(activityPendingIntent)
             .setCallback(
                 object : MediaSession.Callback {
                     override fun onConnect(
                         session: MediaSession,
                         controller: MediaSession.ControllerInfo,
                     ): MediaSession.ConnectionResult =
-                        this@MediaSessionManager.onConnect(session, controller)
+                        this@MediaSessionManager.onConnect(session)
 
                     override fun onCustomCommand(
                         session: MediaSession,
@@ -109,6 +126,7 @@ class MediaSessionManager(
 
         mediaSession?.release()
         return MediaLibrarySession.Builder(context, sessionPlayer, callback)
+            .setSessionActivity(activityPendingIntent)
             .setMediaButtonPreferences(buildMediaButtonPreferences())
             .build()
             .also { mediaSession = it }
@@ -116,7 +134,6 @@ class MediaSessionManager(
 
     fun onConnect(
         session: MediaSession,
-        controller: MediaSession.ControllerInfo,
     ): MediaSession.ConnectionResult =
         MediaSession.ConnectionResult.AcceptedResultBuilder(session)
             .setAvailableSessionCommands(buildSessionCommands(session))
@@ -158,34 +175,47 @@ class MediaSessionManager(
     }
 
     /**
+     * Clear the player state that keeps the media notification alive.
+     */
+    fun clearPlaybackState() {
+        currentPlayedListScope = null
+        isFavoriteActionAvailable = false
+        isCurrentMusicInFavorite = false
+        mediaSession?.let(::updateAvailableCommands)
+
+        val player = soulSearchingPlayer.player
+        Handler(player.applicationLooper).post {
+            player.stop()
+            player.clearMediaItems()
+        }
+    }
+
+    /**
      * Update session metadata with information for the current played song.
      */
     private fun updateMetadata(updateData: UpdateData) {
-        val metadata = MediaMetadata.Builder()
-            .setArtworkData(
-                (updateData.cover?.asAndroidBitmap() ?: standardNotificationBitmap).toPngBytes(),
-                MediaMetadata.PICTURE_TYPE_FRONT_COVER,
-            )
-            .setDurationMs(updateData.music.duration)
-            .setDisplayTitle(updateData.music.name)
-            .setTitle(updateData.music.name)
-            .setArtist(updateData.music.artistsNames)
-            .setAlbumTitle(updateData.music.album.albumName)
-            .setAlbumArtist(updateData.music.album.artist.artistName)
-            .setTrackNumber(updateData.position.toInt())
-            .setTotalTrackCount(updateData.playedListSize.toInt())
-            .build()
-
-        val currentMediaItem = soulSearchingPlayer.player.currentMediaItem ?: return
-        val currentIndex = soulSearchingPlayer.player.currentMediaItemIndex
-        if (currentIndex == C.INDEX_UNSET) return
-
-        soulSearchingPlayer.player.replaceMediaItem(
-            currentIndex,
-            currentMediaItem.buildUpon()
-                .setMediaMetadata(metadata)
+        soulSearchingPlayer.playerDispatcher.handler.post {
+            val metadata = mediaItemUtils
+                .metadataBuilderFromMusic(
+                    music = updateData.music,
+                    cover = updateData.cover?.asAndroidBitmap(),
+                )
+                .setTrackNumber(updateData.position.toInt())
+                .setTotalTrackCount(updateData.playedListSize.toInt())
                 .build()
-        )
+
+            val currentMediaItem = soulSearchingPlayer.player.currentMediaItem ?: return@post
+            val currentIndex = soulSearchingPlayer.player.currentMediaItemIndex
+
+            if (currentIndex == C.INDEX_UNSET) return@post
+
+            soulSearchingPlayer.player.replaceMediaItem(
+                currentIndex,
+                currentMediaItem.buildUpon()
+                    .setMediaMetadata(metadata)
+                    .build()
+            )
+        }
     }
 
     private fun updateAvailableCommands(session: MediaSession) {
@@ -223,6 +253,13 @@ class MediaSessionManager(
     private fun buildPlayerCommands(): Player.Commands =
         Player.Commands.Builder()
             .apply {
+                add(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)
+                add(Player.COMMAND_GET_TIMELINE)
+                add(Player.COMMAND_GET_METADATA)
+                add(Player.COMMAND_GET_AUDIO_ATTRIBUTES)
+                add(Player.COMMAND_GET_VOLUME)
+                add(Player.COMMAND_GET_DEVICE_VOLUME)
+                add(Player.COMMAND_GET_TRACKS)
                 add(Player.COMMAND_SET_MEDIA_ITEM)
                 add(Player.COMMAND_PREPARE)
 
@@ -262,24 +299,30 @@ class MediaSessionManager(
 
             if (isFavoriteActionAvailable) {
                 add(
-                    CommandButton.Builder(CommandButton.ICON_HEART_UNFILLED)
-                        .setDisplayName("Favorite")
+                    CommandButton.Builder(
+                        if (isCurrentMusicInFavorite) {
+                            CommandButton.ICON_HEART_FILLED
+                        } else {
+                            CommandButton.ICON_HEART_UNFILLED
+                        }
+                    )
+                        .setDisplayName(
+                            if (isCurrentMusicInFavorite) {
+                                "Remove from favorites"
+                            } else {
+                                "Add to favorites"
+                            }
+                        )
                         .setSessionCommand(favoriteCommand)
                         .build()
                 )
             }
         }
 
-    private fun Bitmap.toPngBytes(): ByteArray =
-        ByteArrayOutputStream().use { outputStream ->
-            compress(Bitmap.CompressFormat.PNG, BITMAP_COMPRESS_QUALITY, outputStream)
-            outputStream.toByteArray()
-        }
-
     private companion object {
-        private const val DEFAULT_NOTIFICATION_SIZE: Int = 300
-        private const val BITMAP_COMPRESS_QUALITY: Int = 100
         private const val FAVORITE_ACTION: String = "FAVORITE_ACTION"
+        private const val MAIN_ACTIVITY_CLASS_NAME: String =
+            "com.github.enteraname74.soulsearching.MainActivity"
     }
 }
 

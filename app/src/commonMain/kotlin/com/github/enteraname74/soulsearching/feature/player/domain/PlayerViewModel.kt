@@ -223,9 +223,11 @@ class PlayerViewModel(
 
     init {
         viewModelScope.launch {
-            playbackManager.state.collectLatest { playbackState ->
+            playbackManager.state.collect { playbackState ->
                 val isCollapsed = playerViewManager.currentValue == BottomSheetStates.COLLAPSED
                 val hasRestoredPlayerView = savedStateHandle.get<Boolean>(PlayerViewInitKey) ?: false
+                println("CLUELESS -- IS COLLAPSED: $isCollapsed, HAS RESTORED: $hasRestoredPlayerView")
+                if (playerViewManager.isAnimationRunning) return@collect
                 when (playbackState) {
                     /*
                     If playback is stopped, we must ensure that the view is collapsed.
@@ -238,6 +240,7 @@ class PlayerViewModel(
                     we need to move to minimized mode.
                      */
                     is PlaybackManagerState.Data if !hasRestoredPlayerView && isCollapsed -> {
+                        println("CLUELESS -- THERE")
                         playerViewManager.animateTo(BottomSheetStates.MINIMISED)
                     }
                     /*
@@ -253,6 +256,7 @@ class PlayerViewModel(
                     animate to expanded.
                      */
                     is PlaybackManagerState.Data if isCollapsed -> {
+                        println("CLUELESS -- HERE")
                         playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                     }
                     else -> {

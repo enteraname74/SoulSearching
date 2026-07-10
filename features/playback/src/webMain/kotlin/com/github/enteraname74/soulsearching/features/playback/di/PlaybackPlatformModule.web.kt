@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.features.playback.di
 
+import com.github.enteraname74.soulsearching.features.playback.environment.NoOpPlaybackEnvironment
+import com.github.enteraname74.soulsearching.features.playback.environment.SoulSearchingPlaybackEnvironment
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingWebNotification
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
@@ -10,6 +12,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal actual val playbackPlatformModule: Module = module {
+    singleOf(::NoOpPlaybackEnvironment) bind SoulSearchingPlaybackEnvironment::class
     singleOf(::SoulSearchingWebNotification) bind SoulSearchingNotification::class
     singleOf(::SoulSearchingWebPlayerImpl) bind SoulSearchingPlayer::class
 }

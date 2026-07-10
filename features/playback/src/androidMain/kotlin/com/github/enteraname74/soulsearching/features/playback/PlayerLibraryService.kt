@@ -1,31 +1,40 @@
 package com.github.enteraname74.soulsearching.features.playback
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.annotation.OptIn
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionError
 import androidx.media3.session.SessionResult
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.mediasession.AndroidAutoMediaIds
+import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaItemUtils
 import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaSessionManager
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.guava.future
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.lang.ref.WeakReference
 
 @OptIn(UnstableApi::class)
 class PlayerLibraryService : MediaLibraryService(), KoinComponent {
@@ -33,6 +42,7 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
     private val mediaSessionManager: MediaSessionManager by inject()
     private val playbackManager: PlaybackManager by inject()
     private val workDispatcher: WorkDispatcher by inject()
+    private val mediaItemUtils: MediaItemUtils by inject()
 
     private val serviceScope: CoroutineScope by lazy {
         CoroutineScope(SupervisorJob() + workDispatcher.dispatcher)
@@ -45,7 +55,7 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                 session: MediaSession,
                 controller: MediaSession.ControllerInfo,
             ): MediaSession.ConnectionResult =
-                mediaSessionManager.onConnect(session, controller)
+                mediaSessionManager.onConnect(session)
 
             override fun onCustomCommand(
                 session: MediaSession,
@@ -76,7 +86,7 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                         else -> getMusicFromMediaId(mediaId)
                             ?.let { LibraryResult.ofItem(it.toMediaItem(), null) }
                             ?: LibraryResult.ofError<MediaItem>(
-                                LibraryResult.RESULT_ERROR_BAD_VALUE
+                                SessionError.ERROR_BAD_VALUE
                             )
                     }
                 }
@@ -149,15 +159,48 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
 
     override fun onCreate() {
         super.onCreate()
+        activeService = WeakReference(this)
+        setMediaNotificationProvider(createNotificationProvider())
         mediaLibrarySession = mediaSessionManager.getOrCreateMediaLibrarySession(callback)
     }
 
     override fun onDestroy() {
+        if (activeService?.get() === this) {
+            activeService = null
+        }
         mediaSessionManager.release()
         mediaLibrarySession = null
         serviceScope.cancel()
         super.onDestroy()
     }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        serviceScope.launch {
+            playbackManager.stopPlayback(resetPlayedList = false)
+            withContext(Dispatchers.Main) {
+                removeForegroundNotification()
+                stopSelf()
+            }
+        }
+    }
+
+    private fun removeForegroundNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        } else {
+            @Suppress("DEPRECATION")
+            stopForeground(true)
+        }
+    }
+
+    private fun createNotificationProvider(): DefaultMediaNotificationProvider =
+        DefaultMediaNotificationProvider.Builder(this)
+            .setNotificationId(MEDIA_NOTIFICATION_ID)
+            .setChannelId(MUSIC_NOTIFICATION_CHANNEL_ID)
+            .build()
+            .also { provider ->
+                provider.setSmallIcon(R.drawable.app_logo_uni_xml)
+            }
 
     private suspend fun getMusicFromMediaId(mediaId: String): Music? {
         val musicId = AndroidAutoMediaIds.musicIdFrom(mediaId) ?: return null
@@ -196,18 +239,12 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
         MediaItem.Builder()
             .setMediaId(AndroidAutoMediaIds.forMusic(musicId))
             .setMediaMetadata(
-                MediaMetadata.Builder()
-                    .setTitle(name)
-                    .setDisplayTitle(name)
-                    .setArtist(artistsNames)
-                    .setAlbumTitle(album.albumName)
-                    .setAlbumArtist(album.artist.artistName)
-                    .setTrackNumber(albumPosition)
-                    .setDurationMs(duration)
-                    .setIsBrowsable(false)
-                    .setIsPlayable(true)
-                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
-                    .build()
+                mediaItemUtils
+                    .metadataBuilderFromMusic(
+                        music = this,
+                        // Should be set from PlaybackManager, but maybe not in the case of Android Auto?
+                        cover = null,
+                    ).build()
             )
             .build()
 
@@ -219,5 +256,16 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
 
         val toIndex = minOf(fromIndex + pageSize, size)
         return subList(fromIndex, toIndex)
+    }
+
+    companion object {
+        private const val MEDIA_NOTIFICATION_ID = 69
+        private const val MUSIC_NOTIFICATION_CHANNEL_ID = "SoulSearchingMusicNotificationChannel"
+
+        private var activeService: WeakReference<PlayerLibraryService>? = null
+
+        fun triggerActiveNotificationUpdate() {
+            activeService?.get()?.triggerNotificationUpdate()
+        }
     }
 }

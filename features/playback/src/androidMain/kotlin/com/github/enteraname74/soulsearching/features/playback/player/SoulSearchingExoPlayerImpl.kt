@@ -22,6 +22,7 @@ import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaItemUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,7 @@ class SoulSearchingExoPlayerImpl(
     context: Context,
     commonCloudPreferencesUseCase: CommonCloudPreferencesUseCase,
     commonUserUseCase: CommonUserUseCase,
+    private val mediaItemUtils: MediaItemUtils,
 ) : SoulSearchingPlayer {
     private val httpFactory = DefaultHttpDataSource.Factory()
         .setUserAgent("Soul Searching")
@@ -56,7 +58,7 @@ class SoulSearchingExoPlayerImpl(
         .Builder(context)
         .setMediaSourceFactory(mediaSourceFactory)
         .build()
-    private val playerDispatcher = PlayerDispatcher(player.applicationLooper)
+    val playerDispatcher: PlayerDispatcher = PlayerDispatcher(player.applicationLooper)
     private val playerCoroutineScope = CoroutineScope(playerDispatcher)
     private val workScope = CoroutineScope(Dispatchers.IO)
 
@@ -183,24 +185,33 @@ class SoulSearchingExoPlayerImpl(
 
     override suspend fun setMusic(music: Music) {
         onPlayerThread {
-            when {
-                music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
-                    val file = File(music.localPath.orEmpty())
-                    val mediaItem = MediaItem.fromUri(Uri.fromFile(file))
-                    player.setMediaItem(mediaItem)
-                    player.prepare()
-                }
-                music.remotePath != null -> {
-                    val mediaItem = MediaItem.fromUri(music.remotePath.orEmpty())
-                    player.setMediaItem(mediaItem)
-                    player.prepare()
-                }
-                else -> {
-                    listener?.onError()
-                }
-            }
+            val mediaItem = MediaItem.Builder()
+                .setMediaId(music.musicId.toString())
+                .setUriFromMusic(music)
+                .setMediaMetadata(
+                    mediaItemUtils
+                        .metadataBuilderFromMusic(
+                            music = music,
+                            // Will be set later, on notification callbacks from PLaybackManager
+                            cover = null,
+                        ).build()
+                ).build()
+            player.setMediaItem(mediaItem)
+            player.prepare()
         }
     }
+
+    private fun MediaItem.Builder.setUriFromMusic(
+        music: Music
+    ): MediaItem.Builder =
+        when {
+            music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
+                val file = File(music.localPath.orEmpty())
+                setUri(Uri.fromFile(file))
+            }
+            music.remotePath != null -> setUri(music.remotePath.orEmpty())
+            else -> this
+        }
 
     override suspend fun onlyLoadMusic(seekTo: Int) {
         onPlayerThread {
@@ -240,8 +251,8 @@ class SoulSearchingExoPlayerImpl(
 
     override suspend fun dismiss() {
         onPlayerThread {
-            // TODO PLAYER: Really dismiss player?
-            player.pause()
+            player.stop()
+            player.clearMediaItems()
         }
     }
 
@@ -262,10 +273,10 @@ class SoulSearchingExoPlayerImpl(
     }
 }
 
-private class PlayerDispatcher(
+class PlayerDispatcher(
     looper: Looper
 ) : CoroutineDispatcher() {
-    private val handler = Handler(looper)
+    val handler: Handler = Handler(looper)
 
     override fun dispatch(context: CoroutineContext, block: Runnable) {
         handler.post(block)

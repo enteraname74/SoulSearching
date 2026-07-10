@@ -34,6 +34,9 @@ open class SwipeableViewManager {
         get() = draggableState.currentValue
     val targetValue: BottomSheetStates
         get() = draggableState.targetValue
+
+    val isAnimationRunning: Boolean
+        get() = draggableState.isAnimationRunning
     val offset: Float
         get() = draggableState.offset.value
 
