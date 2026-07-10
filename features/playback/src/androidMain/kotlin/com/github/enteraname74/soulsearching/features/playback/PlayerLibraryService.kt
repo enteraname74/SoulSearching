@@ -75,7 +75,9 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                         AndroidAutoMediaIds.ALL_SONGS -> LibraryResult.ofItem(allSongsItem(), null)
                         else -> getMusicFromMediaId(mediaId)
                             ?.let { LibraryResult.ofItem(it.toMediaItem(), null) }
-                            ?: LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+                            ?: LibraryResult.ofError<MediaItem>(
+                                LibraryResult.RESULT_ERROR_BAD_VALUE
+                            )
                     }
                 }
 
