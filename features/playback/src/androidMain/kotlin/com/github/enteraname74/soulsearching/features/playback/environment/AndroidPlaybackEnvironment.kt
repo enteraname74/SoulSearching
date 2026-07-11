@@ -7,7 +7,7 @@ class AndroidPlaybackEnvironment(
         mediaServiceConnector.ensureMediaServiceConnected()
     }
 
-    override fun release() {
+    override suspend fun release() {
         mediaServiceConnector.release()
     }
 }

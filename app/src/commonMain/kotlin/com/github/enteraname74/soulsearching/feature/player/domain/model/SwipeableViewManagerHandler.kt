@@ -24,7 +24,19 @@ fun SwipeableViewManagerHandler(
     }
 
     val nextState by swipeableViewManager.nextState.collectAsState()
+    val snapState by swipeableViewManager.snapState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(snapState) {
+        snapState?.let {
+            coroutineScope.launch {
+                swipeableViewManager.draggableState.snapTo(
+                    targetValue = it,
+                )
+                swipeableViewManager.consumeSnapState()
+            }
+        }
+    }
 
     LaunchedEffect(nextState) {
         nextState?.let {

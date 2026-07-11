@@ -226,8 +226,8 @@ class PlayerViewModel(
             playbackManager.state.collect { playbackState ->
                 val isCollapsed = playerViewManager.currentValue == BottomSheetStates.COLLAPSED
                 val hasRestoredPlayerView = savedStateHandle.get<Boolean>(PlayerViewInitKey) ?: false
-                println("CLUELESS -- IS COLLAPSED: $isCollapsed, HAS RESTORED: $hasRestoredPlayerView")
                 if (playerViewManager.isAnimationRunning) return@collect
+
                 when (playbackState) {
                     /*
                     If playback is stopped, we must ensure that the view is collapsed.
@@ -239,9 +239,12 @@ class PlayerViewModel(
                     On first app launch, if we had a played list,
                     we need to move to minimized mode.
                      */
-                    is PlaybackManagerState.Data if !hasRestoredPlayerView && isCollapsed -> {
-                        println("CLUELESS -- THERE")
-                        playerViewManager.animateTo(BottomSheetStates.MINIMISED)
+                    is PlaybackManagerState.Data if !hasRestoredPlayerView -> {
+                        if (playerViewManager.currentValue != BottomSheetStates.COLLAPSED) {
+                            playerViewManager.snapTo(BottomSheetStates.MINIMISED)
+                        } else {
+                            playerViewManager.animateTo(BottomSheetStates.MINIMISED)
+                        }
                     }
                     /*
                     If we have a played list,
@@ -253,11 +256,10 @@ class PlayerViewModel(
                     }
                     /*
                     Finally, for other cases were the view is collapsed and we have a played list,
-                    animate to expanded.
+                    keep the restored player available without forcing the full player.
                      */
                     is PlaybackManagerState.Data if isCollapsed -> {
-                        println("CLUELESS -- HERE")
-                        playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+                        playerViewManager.animateTo(BottomSheetStates.MINIMISED)
                     }
                     else -> {
                         // no-op

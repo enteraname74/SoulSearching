@@ -61,9 +61,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.uuid.Uuid
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 // TODO SHARED PLAYED LIST: How to properly indicate the current music progression if we are a guest?
 @OptIn(ExperimentalUuidApi::class)
@@ -204,8 +204,6 @@ class PlaybackManager(
                     playedListScope = playedListScope,
                 )
             }
-        }.distinctUntilChanged { old, new ->
-            old.hasSameNotificationContentAs(new)
         }
 
     private var isInit: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -415,26 +413,6 @@ class PlaybackManager(
         }
     }
 
-    private fun UpdateData?.hasSameNotificationContentAs(
-        other: UpdateData?,
-    ): Boolean {
-        if (this == null || other == null) return this == other
-
-        return music.musicId == other.music.musicId &&
-            music.name == other.music.name &&
-            music.artistsNames == other.music.artistsNames &&
-            music.album.albumName == other.music.album.albumName &&
-            music.album.artist.artistName == other.music.album.artist.artistName &&
-            music.duration == other.music.duration &&
-            music.cover == other.music.cover &&
-            (cover == null) == (other.cover == null) &&
-            position == other.position &&
-            playedListSize == other.playedListSize &&
-            isPlaying == other.isPlaying &&
-            isInFavorite == other.isInFavorite &&
-            playedListScope == other.playedListScope
-    }
-
     private fun listenToState() {
         launchWithInit {
             combine(
@@ -448,11 +426,20 @@ class PlaybackManager(
 
                 when (state) {
                     PlayedListState.Playing if scope?.isAdmin == true -> {
-                        playbackEnvironment.ensureReadyForPlayback()
-                        playbackProgressJob.launchDurationJobIfNecessary()
+                        ensureReadyForPlayback()
                         if (player.isPlaying() == false) {
+                            val currentMusic: Music =
+                                playerRepository.getCurrentMusic().firstOrNull()?.music
+                                    ?: return@collectLatest
+                            val currentProgress: Int =
+                                playerRepository.getCurrentProgress().firstOrNull() ?: 0
+
+                            player.setMusic(currentMusic)
+                            player.onlyLoadMusic(seekTo = currentProgress)
                             player.play()
                         }
+                        playbackProgressJob.launchDurationJobIfNecessary()
+                        updateNotification()
                     }
 
                     PlayedListState.Paused if scope?.isAdmin == true -> {
@@ -498,10 +485,17 @@ class PlaybackManager(
         playbackProgressJob.releaseDurationJob()
         if (resetPlayedList) {
             playerRepository.deleteCurrentPlayedList()
+        } else {
+            playerRepository.setPlayedListState(PlayedListState.Paused)
         }
 
         player.dismiss()
         notification.dismiss(forceStop = true)
+        playbackEnvironment.release()
+    }
+
+    private suspend fun ensureReadyForPlayback() {
+        playbackEnvironment.ensureReadyForPlayback()
     }
 
     /**
@@ -511,7 +505,7 @@ class PlaybackManager(
         val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return
         if (!playerScope.isAdmin) return
 
-        playbackEnvironment.ensureReadyForPlayback()
+        ensureReadyForPlayback()
         playerRepository.togglePlayPause()
     }
 
@@ -521,7 +515,7 @@ class PlaybackManager(
             if (!playerScope.isAdmin) return@launch
             if (playerRepository.getCurrentState().firstOrNull() == PlayedListState.Playing) return@launch
 
-            playbackEnvironment.ensureReadyForPlayback()
+            ensureReadyForPlayback()
             playerRepository.setPlayedListState(PlayedListState.Playing)
         }
     }
@@ -583,7 +577,7 @@ class PlaybackManager(
             val currentMusic: Music =
                 playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
 
-            playbackEnvironment.ensureReadyForPlayback()
+            ensureReadyForPlayback()
             player.setMusic(currentMusic)
             player.launchMusic()
             playerRepository.setPlayedListState(PlayedListState.Playing)
@@ -609,7 +603,7 @@ class PlaybackManager(
             val currentMusicId: Uuid =
                 playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
 
-            playbackEnvironment.ensureReadyForPlayback()
+            ensureReadyForPlayback()
             player.seekToPosition(0)
             updateNotification()
             playerRepository.setPlayedListState(PlayedListState.Playing)
@@ -636,7 +630,7 @@ class PlaybackManager(
     }
 
     suspend fun setAndPlayMusicFromCurrentPlayedList(music: Music) {
-        playbackEnvironment.ensureReadyForPlayback()
+        ensureReadyForPlayback()
         playerRepository.setCurrent(music.musicId)
         playerRepository.setPlayedListState(PlayedListState.Playing)
     }
@@ -765,7 +759,7 @@ class PlaybackManager(
     suspend fun startSharedList(
         musicIds: List<Uuid>
     ): SoulResult<Unit> {
-        playbackEnvironment.ensureReadyForPlayback()
+        ensureReadyForPlayback()
         return createSharedPlayedListUseCase(
             musicIds = musicIds,
         )
@@ -774,7 +768,7 @@ class PlaybackManager(
     private suspend fun setupAndPlay(
         playedListSetup: PlayedListSetup,
     ): Boolean {
-        playbackEnvironment.ensureReadyForPlayback()
+        ensureReadyForPlayback()
         return playerRepository.setup(playedListSetup = playedListSetup)
     }
 

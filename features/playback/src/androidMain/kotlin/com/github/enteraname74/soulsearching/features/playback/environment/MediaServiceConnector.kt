@@ -39,8 +39,14 @@ class MediaServiceConnector(
         }
     }
 
-    fun release() {
-        browser?.release()
-        browser = null
+    suspend fun release() {
+        mutex.withLock {
+            val browserToRelease = browser ?: return
+            browser = null
+
+            withContext(Dispatchers.Main) {
+                browserToRelease.release()
+            }
+        }
     }
 }

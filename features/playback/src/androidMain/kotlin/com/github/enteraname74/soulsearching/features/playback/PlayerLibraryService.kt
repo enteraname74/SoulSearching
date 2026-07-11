@@ -251,6 +251,7 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                         isMainPlaylist = musicRequest.context is AndroidAutoPlaybackContext.AllSongs,
                         isForcingNewPlaylist = true,
                     )
+                    mediaSessionManager.enablePlayedListTimelineSync()
 
                     MediaSession.MediaItemsWithStartPosition(
                         musicList.mapIndexed { index, music ->

@@ -96,7 +96,6 @@ class MediaSessionManager(
     fun updateMediaSession(
         updateData: UpdateData,
     ): MediaSession {
-        ensureListeningToPlayedListTimeline()
         currentPlayedListScope = updateData.playedListScope
         isFavoriteActionAvailable = updateData.music.scope != Scope.SharedPlayedList
         isCurrentMusicInFavorite = updateData.isInFavorite
@@ -108,6 +107,20 @@ class MediaSessionManager(
         updateMetadata(updateData)
         updateAvailableCommands(session)
         return session
+    }
+
+    fun updateExistingMediaSession(
+        updateData: UpdateData,
+    ): Boolean {
+        val session = mediaSession ?: return false
+
+        currentPlayedListScope = updateData.playedListScope
+        isFavoriteActionAvailable = updateData.music.scope != Scope.SharedPlayedList
+        isCurrentMusicInFavorite = updateData.isInFavorite
+
+        updateMetadata(updateData)
+        updateAvailableCommands(session)
+        return true
     }
 
     private fun init(): MediaSession =
@@ -136,7 +149,6 @@ class MediaSessionManager(
     fun getOrCreateMediaLibrarySession(
         callback: MediaLibrarySession.Callback,
     ): MediaLibrarySession {
-        ensureListeningToPlayedListTimeline()
         (mediaSession as? MediaLibrarySession)?.let { return it }
 
         mediaSession?.release()
@@ -145,6 +157,14 @@ class MediaSessionManager(
             .setMediaButtonPreferences(buildMediaButtonPreferences())
             .build()
             .also { mediaSession = it }
+    }
+
+    /**
+     * Android Auto needs the full ExoPlayer timeline for queue browsing and item selection.
+     * Keep this opt-in so normal notification/service startup does not mirror huge playlists.
+     */
+    fun enablePlayedListTimelineSync() {
+        ensureListeningToPlayedListTimeline()
     }
 
     fun onConnect(

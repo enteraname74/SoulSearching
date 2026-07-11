@@ -30,6 +30,9 @@ open class SwipeableViewManager {
     private val _nextState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
     val nextState = _nextState.asStateFlow()
 
+    private val _snapState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
+    val snapState = _snapState.asStateFlow()
+
     val currentValue: BottomSheetStates
         get() = draggableState.currentValue
     val targetValue: BottomSheetStates
@@ -44,12 +47,20 @@ open class SwipeableViewManager {
         _nextState.value = newState
     }
 
+    fun snapTo(newState: BottomSheetStates) {
+        _snapState.value = newState
+    }
+
     fun consumePreviousState() {
         _previousState.value = null
     }
 
     fun consumeNextState() {
         _nextState.value = null
+    }
+
+    fun consumeSnapState() {
+        _snapState.value = null
     }
 
     fun updateState(newState: BottomSheetStates) {
