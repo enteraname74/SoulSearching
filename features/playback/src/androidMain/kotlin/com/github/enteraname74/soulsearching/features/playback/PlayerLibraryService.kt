@@ -46,6 +46,7 @@ import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.io.File
 import java.lang.ref.WeakReference
@@ -57,7 +58,7 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
     private val commonMusicUseCase: CommonMusicUseCase by inject()
     private val commonPlaylistUseCase: CommonPlaylistUseCase by inject()
     private val mediaSessionManager: MediaSessionManager by inject()
-    private val playbackManager: PlaybackManager by inject()
+    private val playbackManager: PlaybackManager = get()
     private val workDispatcher: WorkDispatcher by inject()
     private val mediaMetadataUtils: MediaMetadataUtils by inject()
     private val coverFileManager: CoverFileManager by inject()
@@ -67,30 +68,35 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
         AndroidAutoMediaIds.AllSongs.browsableItem(
             title = strings.musics,
             mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_MIXED,
+            iconResId = R.drawable.ic_music_note_filled,
         )
     }
     private val allAlbumsItem: MediaItem by lazy {
         AndroidAutoMediaIds.AllAlbums.browsableItem(
             title = strings.albums,
             mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS,
+            iconResId = R.drawable.ic_album_filled,
         )
     }
     private val allArtistsItem: MediaItem by lazy {
         AndroidAutoMediaIds.AllArtists.browsableItem(
             title = strings.artists,
             mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS,
+            iconResId = R.drawable.ic_person_filled,
         )
     }
     private val allPlaylistsItem: MediaItem by lazy {
         AndroidAutoMediaIds.AllPlaylists.browsableItem(
             title = strings.playlists,
             mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS,
+            iconResId = R.drawable.ic_queue_music,
         )
     }
     private val allFoldersItem: MediaItem by lazy {
         AndroidAutoMediaIds.AllFolders.browsableItem(
             title = strings.folders,
             mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_MIXED,
+            iconResId = R.drawable.ic_folder_filled,
         )
     }
     private val rootItem: MediaItem by lazy {
@@ -102,9 +108,9 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
     private val rootChildren: List<MediaItem>
         get() = listOf(
             allSongsItem,
+            allPlaylistsItem,
             allAlbumsItem,
             allArtistsItem,
-            allPlaylistsItem,
             allFoldersItem,
         )
 
@@ -134,11 +140,14 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                 browser: MediaSession.ControllerInfo,
                 params: LibraryParams?,
             ): ListenableFuture<LibraryResult<MediaItem>> {
+                prepareSavedPlayedListTimeline()
+
                 return Futures.immediateFuture(
                     LibraryResult.ofItem(
                         AndroidAutoMediaIds.Root.browsableItem(
                             title = "Soul Searching",
                             mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_MIXED,
+                            iconResId = R.drawable.app_logo_uni_xml,
                         ), params
                     )
                 )
@@ -175,7 +184,10 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
             ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> =
                 serviceScope.future {
                     val children = when (AndroidAutoMediaIds.fromString(parentId)) {
-                        AndroidAutoMediaIds.Root -> rootChildren.page(page, pageSize)
+                        AndroidAutoMediaIds.Root -> {
+                            prepareSavedPlayedListTimeline()
+                            rootChildren.page(page, pageSize)
+                        }
                         AndroidAutoMediaIds.AllSongs -> commonMusicUseCase
                             .getAllSorted(
                                 page = page,
@@ -266,6 +278,10 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                 }
             }
         }
+
+    private fun prepareSavedPlayedListTimeline() {
+        mediaSessionManager.enablePlayedListTimelineSync()
+    }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? =
         mediaLibrarySession
@@ -412,6 +428,7 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
     private fun AndroidAutoMediaIds.browsableItem(
         title: String,
         mediaType: Int,
+        iconResId: Int? = null,
     ): MediaItem =
         MediaItem.Builder()
             .setMediaId(value)
@@ -421,8 +438,18 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                     .setIsBrowsable(true)
                     .setIsPlayable(false)
                     .setMediaType(mediaType)
+                    .apply {
+                        iconResId?.let { setArtworkUri(it.asAndroidResourceUri()) }
+                    }
                     .build()
             )
+            .build()
+
+    private fun Int.asAndroidResourceUri(): Uri =
+        Uri.Builder()
+            .scheme("android.resource")
+            .authority(packageName)
+            .appendPath(toString())
             .build()
 
     private fun Music.toMediaItem(
