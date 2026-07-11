@@ -27,6 +27,7 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_menu
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_more_vertical
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -65,15 +66,17 @@ fun PlayerTopInformation(
             icon = CoreRes.drawable.ic_keyboard_arrow_down,
             modifier = Modifier
                 .padding(top = UiConstants.Spacing.medium)
-                .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                    if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
-                        playerMusicListViewManager.animateTo(
-                            newState = BottomSheetStates.COLLAPSED,
+                .clickableWithHandCursor {
+                    if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+                        if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
+                            playerMusicListViewManager.animateTo(
+                                newState = BottomSheetStates.COLLAPSED,
+                            )
+                        }
+                        playerViewManager.animateTo(
+                            newState = BottomSheetStates.MINIMISED,
                         )
                     }
-                    playerViewManager.animateTo(
-                        newState = BottomSheetStates.MINIMISED,
-                    )
                 },
             size = UiConstants.ImageSize.medium,
         )
@@ -100,7 +103,7 @@ fun PlayerTopInformation(
 
             val canClickOnArtistsAndAlbum =
                 playerViewManager.currentValue == BottomSheetStates.EXPANDED
-                        && state.currentMusic.scope == Scope.User
+                    && state.currentMusic.scope == Scope.User
 
             FlowRow(
                 horizontalArrangement = Arrangement.Center,
@@ -164,7 +167,9 @@ fun PlayerTopInformation(
                 icon = CoreRes.drawable.ic_more_vertical,
                 modifier = Modifier
                     .padding(top = UiConstants.Spacing.medium)
-                    .optionalClickable(onSongInfoClicked.takeIf { isExpanded }),
+                    .clickableWithHandCursor {
+                        onSongInfoClicked.takeIf { isExpanded }?.invoke()
+                    },
                 size = UiConstants.ImageSize.medium,
                 color = SoulSearchingColorTheme.colorScheme.onPrimary.disabledIfNoAction(onSongInfoClicked)
             )
