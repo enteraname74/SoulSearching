@@ -241,7 +241,7 @@ class MediaSessionManager(
      * Update session metadata with information for the current played song.
      */
     private fun updateMetadata(updateData: UpdateData) {
-        soulSearchingPlayer.playerDispatcher.handler.post {
+        coroutineScope.launch {
             val metadata = mediaMetadataUtils
                 .fromMusic(
                     music = updateData.music,
@@ -251,18 +251,20 @@ class MediaSessionManager(
                 .setTotalTrackCount(updateData.playedListSize.toInt())
                 .build()
 
-            val currentMediaItem = soulSearchingPlayer.player.currentMediaItem ?: return@post
-            val currentIndex = soulSearchingPlayer.player.currentMediaItemIndex
+            soulSearchingPlayer.playerDispatcher.handler.post {
+                val currentMediaItem = soulSearchingPlayer.player.currentMediaItem ?: return@post
+                val currentIndex = soulSearchingPlayer.player.currentMediaItemIndex
 
-            if (currentIndex == C.INDEX_UNSET) return@post
-            if (currentMediaItem.mediaMetadata.hasSameQueueVisibleContentAs(metadata)) return@post
+                if (currentIndex == C.INDEX_UNSET) return@post
+                if (currentMediaItem.mediaMetadata.hasSameQueueVisibleContentAs(metadata)) return@post
 
-            soulSearchingPlayer.player.replaceMediaItem(
-                currentIndex,
-                currentMediaItem.buildUpon()
-                    .setMediaMetadata(metadata)
-                    .build()
-            )
+                soulSearchingPlayer.player.replaceMediaItem(
+                    currentIndex,
+                    currentMediaItem.buildUpon()
+                        .setMediaMetadata(metadata)
+                        .build()
+                )
+            }
         }
     }
 

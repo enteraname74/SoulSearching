@@ -8,7 +8,7 @@ import com.github.enteraname74.domain.model.Music
 interface SoulSearchingPlayer {
     var listener: Listener?
 
-    suspend fun registerListener(listener: Listener) {
+    fun registerListener(listener: Listener) {
         this.listener = listener
     }
 

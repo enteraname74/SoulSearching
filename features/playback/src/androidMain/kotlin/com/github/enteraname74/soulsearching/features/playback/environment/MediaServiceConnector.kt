@@ -21,9 +21,9 @@ class MediaServiceConnector(
     private val mutex = Mutex()
     private var browser: MediaBrowser? = null
 
-    suspend fun ensureMediaServiceConnected(): MediaBrowser =
+    suspend fun ensureMediaServiceConnected() {
         mutex.withLock {
-            browser?.let { return it }
+            browser?.let { return }
 
             withContext(Dispatchers.Main) {
                 val sessionToken = SessionToken(
@@ -37,6 +37,7 @@ class MediaServiceConnector(
                     .also { browser = it }
             }
         }
+    }
 
     fun release() {
         browser?.release()

@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.CoroutineContext
@@ -44,40 +43,6 @@ class SoulSearchingExoPlayerImpl(
     commonUserUseCase: CommonUserUseCase,
     private val mediaMetadataUtils: MediaMetadataUtils,
 ) : SoulSearchingPlayer {
-    private val httpFactory = DefaultHttpDataSource.Factory()
-        .setUserAgent("Soul Searching")
-
-    private val resolvingDataSourceFactory: DataSource.Factory =
-        ResolvingDataSource.Factory(
-            DefaultDataSource.Factory(context, httpFactory)
-        ) { dataSpec: DataSpec -> resolveDataSpec(dataSpec) }
-
-    private val mediaSourceFactory = DefaultMediaSourceFactory(context)
-        .setDataSourceFactory(resolvingDataSourceFactory)
-
-    val player: ExoPlayer = ExoPlayer
-        .Builder(context)
-        .setMediaSourceFactory(mediaSourceFactory)
-        .build()
-    val playerDispatcher: PlayerDispatcher = PlayerDispatcher(player.applicationLooper)
-    private val playerCoroutineScope = CoroutineScope(playerDispatcher)
-    private val workScope = CoroutineScope(Dispatchers.IO)
-
-    private var accessToken: StateFlow<String?> = commonUserUseCase
-        .observeUser()
-        .map { it?.accessToken }
-        .stateIn(
-            scope = workScope,
-            started = SharingStarted.Eagerly,
-            initialValue = null,
-        )
-    private var baseUrl: StateFlow<String?> = commonCloudPreferencesUseCase
-        .observeUrl()
-        .stateIn(
-            scope = workScope,
-            started = SharingStarted.Eagerly,
-            initialValue = null,
-        )
     private var lastReportedIsPlaying: Boolean? = null
 
     private val playerListener = object : Player.Listener {
@@ -123,6 +88,52 @@ class SoulSearchingExoPlayerImpl(
             }
         }
     }
+
+    private val httpFactory = DefaultHttpDataSource.Factory()
+        .setUserAgent("Soul Searching")
+
+    private val resolvingDataSourceFactory: DataSource.Factory =
+        ResolvingDataSource.Factory(
+            DefaultDataSource.Factory(context, httpFactory)
+        ) { dataSpec: DataSpec -> resolveDataSpec(dataSpec) }
+
+    private val mediaSourceFactory = DefaultMediaSourceFactory(context)
+        .setDataSourceFactory(resolvingDataSourceFactory)
+
+    val player: ExoPlayer = ExoPlayer
+        .Builder(context)
+        .setMediaSourceFactory(mediaSourceFactory)
+        .build()
+        .apply {
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                    .build(),
+                true
+            )
+            addListener(playerListener)
+        }
+    val playerDispatcher: PlayerDispatcher = PlayerDispatcher(player.applicationLooper)
+    private val playerCoroutineScope = CoroutineScope(playerDispatcher)
+    private val workScope = CoroutineScope(Dispatchers.IO)
+
+    private var accessToken: StateFlow<String?> = commonUserUseCase
+        .observeUser()
+        .map { it?.accessToken }
+        .stateIn(
+            scope = workScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
+    private var baseUrl: StateFlow<String?> = commonCloudPreferencesUseCase
+        .observeUrl()
+        .stateIn(
+            scope = workScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
+
     override var listener: SoulSearchingPlayer.Listener? = null
 
     private suspend fun <T> onPlayerThread(block: suspend () -> T): Result<T> =
@@ -133,23 +144,6 @@ class SoulSearchingExoPlayerImpl(
                 Log.e("PLAYER", "got player error: $it")
             }
         }
-
-    init {
-        runBlocking { init() }
-    }
-
-    suspend fun init() {
-        onPlayerThread {
-            player.setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(C.USAGE_MEDIA)
-                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-                    .build(),
-                true
-            )
-            player.addListener(playerListener)
-        }
-    }
 
     private fun resolveDataSpec(original: DataSpec): DataSpec {
         val originalUri = original.uri
@@ -207,23 +201,28 @@ class SoulSearchingExoPlayerImpl(
         musics: List<Music>,
         currentMusicId: Uuid?,
     ) {
-        onPlayerThread {
-            if (musics.isEmpty() || currentMusicId == null) {
+
+        if (musics.isEmpty() || currentMusicId == null) {
+            onPlayerThread {
                 if (player.mediaItemCount > 0) {
                     player.clearMediaItems()
                 }
-                return@onPlayerThread
             }
+            return
+        }
 
-            val mediaItems = musics.mapIndexed { index, music ->
-                music.toPlayableMediaItem(
-                    trackNumber = index + 1,
-                    totalTrackCount = musics.size,
-                )
-            }
-            val targetIndex = musics.indexOfFirst { it.musicId == currentMusicId }
-                .takeIf { it != -1 }
-                ?: C.INDEX_UNSET
+        val mediaItems = musics.mapIndexed { index, music ->
+            music.toPlayableMediaItem(
+                trackNumber = index + 1,
+                totalTrackCount = musics.size,
+            )
+        }
+
+        val targetIndex = musics.indexOfFirst { it.musicId == currentMusicId }
+            .takeIf { it != -1 }
+            ?: C.INDEX_UNSET
+
+        onPlayerThread {
             val currentTimelineMusicId = player.currentMediaItem?.musicId()
             val shouldPrepareAfterTimelineUpdate =
                 player.playWhenReady || player.playbackState != Player.STATE_IDLE

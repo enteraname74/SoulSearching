@@ -212,9 +212,8 @@ class PlaybackManager(
     private var startSeek: Int? = null
 
     init {
-        workScope.launch {
-            player.registerListener(this@PlaybackManager)
-        }
+        player.registerListener(this@PlaybackManager)
+
         init()
 
         listenPlayerVolume()

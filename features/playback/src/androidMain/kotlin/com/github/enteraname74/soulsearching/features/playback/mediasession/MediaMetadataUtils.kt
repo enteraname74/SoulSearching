@@ -16,9 +16,11 @@ import java.io.ByteArrayOutputStream
 class MediaMetadataUtils(
     context: Context,
 ) {
-    private val standardNotificationBitmap: Bitmap =
+    private val standardNotificationBitmap: ByteArray by lazy {
         BitmapFactory.decodeResource(context.resources, R.drawable.new_notification_default)
             .scale(DEFAULT_NOTIFICATION_SIZE, DEFAULT_NOTIFICATION_SIZE, false)
+            .toPngBytes()
+    }
 
     fun fromMusic(
         music: Music,
@@ -26,7 +28,7 @@ class MediaMetadataUtils(
     ): MediaMetadata.Builder =
         MediaMetadata.Builder()
             .setArtworkData(
-                (cover ?: standardNotificationBitmap).toPngBytes(),
+                cover?.toPngBytes() ?: standardNotificationBitmap,
                 MediaMetadata.PICTURE_TYPE_FRONT_COVER,
             )
             .setTitle(music.name)
@@ -90,7 +92,7 @@ class MediaMetadataUtils(
     ): MediaMetadata.Builder =
         MediaMetadata.Builder()
             .setArtworkData(
-                (cover ?: standardNotificationBitmap).toPngBytes(),
+                cover?.toPngBytes() ?: standardNotificationBitmap,
                 MediaMetadata.PICTURE_TYPE_FRONT_COVER,
             )
             .setTitle(title)

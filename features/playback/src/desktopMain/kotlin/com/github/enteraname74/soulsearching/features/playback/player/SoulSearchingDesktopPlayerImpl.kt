@@ -27,10 +27,6 @@ class SoulSearchingDesktopPlayerImpl :
         init()
     }
 
-    override suspend fun registerListener(listener: SoulSearchingPlayer.Listener) {
-        this.listener = listener
-    }
-
     override fun finished(mediaPlayer: MediaPlayer?) {
         super.finished(mediaPlayer)
         CoroutineScope(Dispatchers.IO).launch {
