@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 internal class PlaybackProgressJob(
     private val playerRepository: PlayerRepository,
@@ -33,7 +34,7 @@ internal class PlaybackProgressJob(
         if (durationJob != null) return
         durationJob = CoroutineScope(workDispatcher.dispatcher).launch {
             while (true) {
-                delay(DELAY_BEFORE_SENDING_VALUE)
+                delay(DELAY_BEFORE_SENDING_VALUE.milliseconds)
                 val position = callback.getMusicPosition()
                 _state.value = position
                 playerRepository.setProgress(position)

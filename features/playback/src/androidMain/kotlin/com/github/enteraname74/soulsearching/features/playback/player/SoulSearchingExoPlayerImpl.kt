@@ -35,6 +35,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.CoroutineContext
+import kotlin.uuid.Uuid
 
 @UnstableApi
 class SoulSearchingExoPlayerImpl(
@@ -77,6 +78,7 @@ class SoulSearchingExoPlayerImpl(
             started = SharingStarted.Eagerly,
             initialValue = null,
         )
+    private var lastReportedIsPlaying: Boolean? = null
 
     private val playerListener = object : Player.Listener {
         override fun onPlayerError(error: PlaybackException) {
@@ -100,19 +102,23 @@ class SoulSearchingExoPlayerImpl(
                 !events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)
             ) return
 
+            val isPlayingState = when {
+                player.isPlaying -> true
+
+                !player.playWhenReady &&
+                    player.playbackState != Player.STATE_ENDED -> false
+
+                else -> null
+            }
+
+            if (isPlayingState == null || isPlayingState == lastReportedIsPlaying) return
+
+            lastReportedIsPlaying = isPlayingState
             playerCoroutineScope.launch {
-                when {
-                    player.isPlaying -> listener?.onPlay()
-
-                    !player.playWhenReady &&
-                        player.playbackState != Player.STATE_ENDED -> {
-                        listener?.onPause()
-                    }
-
-                    else -> {
-                        // isPlaying=false but playWhenReady=true:
-                        // seeking, buffering, waiting, preparing. Not a real pause.
-                    }
+                if (isPlayingState) {
+                    listener?.onPlay()
+                } else {
+                    listener?.onPause()
                 }
             }
         }
@@ -185,21 +191,107 @@ class SoulSearchingExoPlayerImpl(
 
     override suspend fun setMusic(music: Music) {
         onPlayerThread {
-            val mediaItem = MediaItem.Builder()
-                .setMediaId(music.musicId.toString())
-                .setUriFromMusic(music)
-                .setMediaMetadata(
-                    mediaMetadataUtils
-                        .fromMusic(
-                            music = music,
-                            // Will be set later, on notification callbacks from PLaybackManager
-                            cover = null,
-                        ).build()
-                ).build()
-            player.setMediaItem(mediaItem)
+            val timelineIndex = player.timelineIndexOf(music.musicId)
+            if (timelineIndex != C.INDEX_UNSET) {
+                player.seekTo(timelineIndex, 0L)
+                player.prepare()
+                return@onPlayerThread
+            }
+
+            player.setMediaItem(music.toPlayableMediaItem())
             player.prepare()
         }
     }
+
+    suspend fun syncPlayedListTimeline(
+        musics: List<Music>,
+        currentMusicId: Uuid?,
+    ) {
+        onPlayerThread {
+            if (musics.isEmpty() || currentMusicId == null) {
+                if (player.mediaItemCount > 0) {
+                    player.clearMediaItems()
+                }
+                return@onPlayerThread
+            }
+
+            val mediaItems = musics.mapIndexed { index, music ->
+                music.toPlayableMediaItem(
+                    trackNumber = index + 1,
+                    totalTrackCount = musics.size,
+                )
+            }
+            val targetIndex = musics.indexOfFirst { it.musicId == currentMusicId }
+                .takeIf { it != -1 }
+                ?: C.INDEX_UNSET
+            val currentTimelineMusicId = player.currentMediaItem?.musicId()
+            val shouldPrepareAfterTimelineUpdate =
+                player.playWhenReady || player.playbackState != Player.STATE_IDLE
+
+            if (!player.hasSameTimeline(mediaItems)) {
+                player.setMediaItems(
+                    mediaItems,
+                    targetIndex.takeIf { it != C.INDEX_UNSET } ?: 0,
+                    if (currentTimelineMusicId == currentMusicId) {
+                        player.currentPosition.coerceAtLeast(0L)
+                    } else {
+                        0L
+                    },
+                )
+
+                if (shouldPrepareAfterTimelineUpdate) {
+                    player.prepare()
+                }
+                return@onPlayerThread
+            }
+
+            if (
+                targetIndex != C.INDEX_UNSET &&
+                player.currentMediaItemIndex != targetIndex
+            ) {
+                player.seekTo(targetIndex, 0L)
+            }
+        }
+    }
+
+    private fun Music.toPlayableMediaItem(
+        trackNumber: Int? = null,
+        totalTrackCount: Int? = null,
+    ): MediaItem =
+        MediaItem.Builder()
+            .setMediaId(musicId.toString())
+            .setUriFromMusic(this)
+            .setMediaMetadata(
+                mediaMetadataUtils
+                    .fromMusic(
+                        music = this,
+                        // Will be set later, on notification callbacks from PlaybackManager
+                        cover = null,
+                    )
+                    .apply {
+                        trackNumber?.let(::setTrackNumber)
+                        totalTrackCount?.let(::setTotalTrackCount)
+                    }
+                    .build()
+            )
+            .build()
+
+    private fun ExoPlayer.hasSameTimeline(mediaItems: List<MediaItem>): Boolean {
+        if (mediaItemCount != mediaItems.size) return false
+
+        return mediaItems.indices.all { index ->
+            getMediaItemAt(index).mediaId == mediaItems[index].mediaId
+        }
+    }
+
+    private fun ExoPlayer.timelineIndexOf(musicId: Uuid): Int =
+        (0 until mediaItemCount)
+            .firstOrNull { index ->
+                getMediaItemAt(index).musicId() == musicId
+            } ?: C.INDEX_UNSET
+
+    private fun MediaItem.musicId(): Uuid? =
+        runCatching { Uuid.parse(mediaId) }.getOrNull()
 
     private fun MediaItem.Builder.setUriFromMusic(
         music: Music

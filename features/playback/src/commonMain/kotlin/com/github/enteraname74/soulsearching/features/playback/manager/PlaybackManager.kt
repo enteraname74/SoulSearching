@@ -126,9 +126,13 @@ class PlaybackManager(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentCover: Flow<ImageBitmap?> =
-        playerRepository.getCurrentMusic().map { currentMusic ->
-            currentMusic?.music?.cover?.let { commonCoverUseCase.getCoverImageBitmap(it) }
-        }
+        playerRepository
+            .getCurrentMusic()
+            .map { currentMusic -> currentMusic?.music?.cover }
+            .distinctUntilChanged()
+            .map { cover ->
+                cover?.let { commonCoverUseCase.getCoverImageBitmap(it) }
+            }
 
     // TODO PLAYER: Find a way to make drag and drop and paging list work together
     val playedList: Flow<List<Music>> = playerRepository.getAll()
@@ -200,7 +204,9 @@ class PlaybackManager(
                     playedListScope = playedListScope,
                 )
             }
-        }.distinctUntilChanged()
+        }.distinctUntilChanged { old, new ->
+            old.hasSameNotificationContentAs(new)
+        }
 
     private var isInit: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private var startSeek: Int? = null
@@ -410,6 +416,26 @@ class PlaybackManager(
         }
     }
 
+    private fun UpdateData?.hasSameNotificationContentAs(
+        other: UpdateData?,
+    ): Boolean {
+        if (this == null || other == null) return this == other
+
+        return music.musicId == other.music.musicId &&
+            music.name == other.music.name &&
+            music.artistsNames == other.music.artistsNames &&
+            music.album.albumName == other.music.album.albumName &&
+            music.album.artist.artistName == other.music.album.artist.artistName &&
+            music.duration == other.music.duration &&
+            music.cover == other.music.cover &&
+            (cover == null) == (other.cover == null) &&
+            position == other.position &&
+            playedListSize == other.playedListSize &&
+            isPlaying == other.isPlaying &&
+            isInFavorite == other.isInFavorite &&
+            playedListScope == other.playedListScope
+    }
+
     private fun listenToState() {
         launchWithInit {
             combine(
@@ -494,6 +520,7 @@ class PlaybackManager(
         workScope.launch {
             val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return@launch
             if (!playerScope.isAdmin) return@launch
+            if (playerRepository.getCurrentState().firstOrNull() == PlayedListState.Playing) return@launch
 
             playbackEnvironment.ensureReadyForPlayback()
             playerRepository.setPlayedListState(PlayedListState.Playing)
@@ -504,6 +531,7 @@ class PlaybackManager(
         workScope.launch {
             val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return@launch
             if (!playerScope.isAdmin) return@launch
+            if (playerRepository.getCurrentState().firstOrNull() == PlayedListState.Paused) return@launch
 
             playerRepository.setPlayedListState(PlayedListState.Paused)
         }

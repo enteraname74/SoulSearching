@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.features.playback
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.OptIn
@@ -30,6 +31,7 @@ import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFil
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.mediasession.AndroidAutoMediaIds
 import com.github.enteraname74.soulsearching.features.playback.mediasession.AndroidAutoMediaIdsUtils
+import com.github.enteraname74.soulsearching.features.playback.mediasession.AndroidAutoPlaybackContext
 import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaMetadataUtils
 import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaSessionManager
 import com.google.common.collect.ImmutableList
@@ -39,12 +41,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.io.File
 import java.lang.ref.WeakReference
 
 @OptIn(UnstableApi::class)
@@ -223,9 +226,9 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                 val selectedMediaItem = mediaItems.getOrNull(
                     startIndex.takeIf { it != C.INDEX_UNSET } ?: 0
                 )
-                val selectedMusicId = selectedMediaItem
+                val musicRequest = selectedMediaItem
                     ?.mediaId
-                    ?.let(AndroidAutoMediaIdsUtils::musicIdFrom)
+                    ?.let(AndroidAutoMediaIdsUtils::musicRequestFrom)
                     ?: return super.onSetMediaItems(
                         mediaSession,
                         controller,
@@ -235,21 +238,28 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                     )
 
                 return serviceScope.future {
-                    val allMusics = commonMusicUseCase.getAllSorted()
-                    val selectedMusic = allMusics.firstOrNull { it.musicId == selectedMusicId }
-                        ?: throw IllegalArgumentException("Unknown music id: $selectedMusicId")
+                    val musicList = getAllMusicsFromPlaybackContext(musicRequest.context)
+                    val selectedIndex = musicList.indexOfFirst { it.musicId == musicRequest.musicId }
+                        .takeIf { it >= 0 }
+                        ?: throw IllegalArgumentException("Unknown music id: ${musicRequest.musicId}")
+                    val selectedMusic = musicList[selectedIndex]
 
                     playbackManager.setCurrentPlaylistAndMusic(
                         music = selectedMusic,
-                        musicList = allMusics,
-                        playlistId = null,
-                        isMainPlaylist = true,
+                        musicList = musicList,
+                        playlistId = musicRequest.context.playedListId,
+                        isMainPlaylist = musicRequest.context is AndroidAutoPlaybackContext.AllSongs,
                         isForcingNewPlaylist = true,
                     )
 
                     MediaSession.MediaItemsWithStartPosition(
-                        listOf(selectedMusic.toMediaItem()),
-                        0,
+                        musicList.mapIndexed { index, music ->
+                            music.toPlayableMediaItem(
+                                trackNumber = index + 1,
+                                totalTrackCount = musicList.size,
+                            )
+                        },
+                        selectedIndex,
                         startPositionMs,
                     )
                 }
@@ -304,17 +314,31 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                 provider.setSmallIcon(R.drawable.app_logo_uni_xml)
             }
 
-    private suspend fun getMusicFromMediaId(mediaId: String): Music? {
-        val musicId = AndroidAutoMediaIdsUtils.musicIdFrom(mediaId) ?: return null
-        return commonMusicUseCase.getFromId(musicId).firstOrNull()
-    }
+    private suspend fun getAllMusicsFromPlaybackContext(
+        context: AndroidAutoPlaybackContext,
+    ): List<Music> =
+        when (context) {
+            AndroidAutoPlaybackContext.AllSongs -> commonMusicUseCase.getAllSorted()
+            is AndroidAutoPlaybackContext.Album -> commonMusicUseCase.getAllMusicFromAlbum(context.albumId)
+            is AndroidAutoPlaybackContext.Artist -> commonMusicUseCase.getAllMusicFromArtist(context.artistId)
+            is AndroidAutoPlaybackContext.Playlist -> commonMusicUseCase.getAllMusicFromPlaylist(context.playlistId)
+            is AndroidAutoPlaybackContext.Folder -> commonMusicUseCase.getAllMusicFromFolder(context.folder)
+        }
 
     private suspend fun getMediaItemFromMediaId(mediaId: String): MediaItem? =
-        getMusicFromMediaId(mediaId)?.toMediaItem()
+        getMusicItemFromMediaId(mediaId)
             ?: getAlbumFromMediaId(mediaId)?.toMediaItem()
             ?: getArtistFromMediaId(mediaId)?.toMediaItem()
             ?: getPlaylistFromMediaId(mediaId)?.toMediaItem()
             ?: getFolderFromMediaId(mediaId)?.toMediaItem()
+
+    private suspend fun getMusicItemFromMediaId(mediaId: String): MediaItem? {
+        val musicRequest = AndroidAutoMediaIdsUtils.musicRequestFrom(mediaId) ?: return null
+        return commonMusicUseCase
+            .getFromId(musicRequest.musicId)
+            .firstOrNull()
+            ?.toMediaItem(musicRequest.context)
+    }
 
     private suspend fun getAlbumFromMediaId(mediaId: String): AlbumPreview? {
         val albumId = AndroidAutoMediaIdsUtils.albumIdFrom(mediaId) ?: return null
@@ -341,13 +365,15 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
         page: Int,
         pageSize: Int,
     ): List<MediaItem> {
-        val musics = AndroidAutoMediaIdsUtils.albumIdFrom(mediaId)
+        return AndroidAutoMediaIdsUtils.albumIdFrom(mediaId)
             ?.let { albumId ->
                 commonMusicUseCase.getAllMusicFromAlbum(
                     albumId = albumId,
                     page = page,
                     pageSize = pageSize,
-                )
+                ).map { music ->
+                    music.toMediaItem(AndroidAutoPlaybackContext.Album(albumId))
+                }
             }
             ?: AndroidAutoMediaIdsUtils.artistIdFrom(mediaId)
                 ?.let { artistId ->
@@ -355,7 +381,9 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                         artistId = artistId,
                         page = page,
                         pageSize = pageSize,
-                    )
+                    ).map { music ->
+                        music.toMediaItem(AndroidAutoPlaybackContext.Artist(artistId))
+                    }
                 }
             ?: AndroidAutoMediaIdsUtils.playlistIdFrom(mediaId)
                 ?.let { playlistId ->
@@ -363,7 +391,9 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                         playlistId = playlistId,
                         page = page,
                         pageSize = pageSize,
-                    )
+                    ).map { music ->
+                        music.toMediaItem(AndroidAutoPlaybackContext.Playlist(playlistId))
+                    }
                 }
             ?: AndroidAutoMediaIdsUtils.folderFrom(mediaId)
                 ?.let { folder ->
@@ -371,11 +401,11 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                         folder = folder,
                         page = page,
                         pageSize = pageSize,
-                    )
+                    ).map { music ->
+                        music.toMediaItem(AndroidAutoPlaybackContext.Folder(folder))
+                    }
                 }
             ?: emptyList()
-
-        return musics.map { it.toMediaItem() }
     }
 
     private fun AndroidAutoMediaIds.browsableItem(
@@ -394,9 +424,11 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
             )
             .build()
 
-    private fun Music.toMediaItem(): MediaItem =
+    private fun Music.toMediaItem(
+        context: AndroidAutoPlaybackContext = AndroidAutoPlaybackContext.AllSongs,
+    ): MediaItem =
         MediaItem.Builder()
-            .setMediaId(AndroidAutoMediaIdsUtils.forMusic(musicId))
+            .setMediaId(context.mediaIdFor(this))
             .setMediaMetadata(
                 mediaMetadataUtils
                     .fromMusic(
@@ -406,6 +438,69 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                     ).build()
             )
             .build()
+
+    private fun Music.toPlayableMediaItem(
+        trackNumber: Int? = null,
+        totalTrackCount: Int? = null,
+    ): MediaItem =
+        MediaItem.Builder()
+            .setMediaId(musicId.toString())
+            .setUriFromMusic(this)
+            .setMediaMetadata(
+                mediaMetadataUtils
+                    .fromMusic(
+                        music = this,
+                        cover = null,
+                    )
+                    .apply {
+                        trackNumber?.let(::setTrackNumber)
+                        totalTrackCount?.let(::setTotalTrackCount)
+                    }
+                    .build()
+            )
+            .build()
+
+    private fun MediaItem.Builder.setUriFromMusic(
+        music: Music,
+    ): MediaItem.Builder =
+        when {
+            music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
+                setUri(Uri.fromFile(File(music.localPath.orEmpty())))
+            }
+            music.remotePath != null -> setUri(music.remotePath.orEmpty())
+            else -> this
+        }
+
+    private val AndroidAutoPlaybackContext.playedListId: String?
+        get() =
+            when (this) {
+                AndroidAutoPlaybackContext.AllSongs -> null
+                is AndroidAutoPlaybackContext.Album -> albumId.toString()
+                is AndroidAutoPlaybackContext.Artist -> artistId.toString()
+                is AndroidAutoPlaybackContext.Playlist -> playlistId.toString()
+                is AndroidAutoPlaybackContext.Folder -> folder
+            }
+
+    private fun AndroidAutoPlaybackContext.mediaIdFor(music: Music): String =
+        when (this) {
+            AndroidAutoPlaybackContext.AllSongs -> AndroidAutoMediaIdsUtils.forMusic(music.musicId)
+            is AndroidAutoPlaybackContext.Album -> AndroidAutoMediaIdsUtils.forMusicFromAlbum(
+                musicId = music.musicId,
+                albumId = albumId,
+            )
+            is AndroidAutoPlaybackContext.Artist -> AndroidAutoMediaIdsUtils.forMusicFromArtist(
+                musicId = music.musicId,
+                artistId = artistId,
+            )
+            is AndroidAutoPlaybackContext.Playlist -> AndroidAutoMediaIdsUtils.forMusicFromPlaylist(
+                musicId = music.musicId,
+                playlistId = playlistId,
+            )
+            is AndroidAutoPlaybackContext.Folder -> AndroidAutoMediaIdsUtils.forMusicFromFolder(
+                musicId = music.musicId,
+                folder = folder,
+            )
+        }
 
     private fun AlbumPreview.toMediaItem(): MediaItem =
         MediaItem.Builder()
