@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -62,6 +63,7 @@ class MediaSessionManager(
     private var isFavoriteActionAvailable: Boolean = false
     private var isCurrentMusicInFavorite: Boolean = false
     private var playedListTimelineJob: Job? = null
+    private var isPlayedListTimelineSyncEnabled: Boolean = false
 
     private val coroutineScope = CoroutineScope(workDispatcher.dispatcher)
     private val favoriteCommand = SessionCommand(FAVORITE_ACTION, Bundle.EMPTY)
@@ -90,6 +92,7 @@ class MediaSessionManager(
             playbackManager = { playbackManager },
             coroutineScope = coroutineScope,
             canControl = { currentPlayedListScope?.isAdmin == true },
+            canUseTimeline = { isPlayedListTimelineSyncEnabled },
         )
     }
 
@@ -164,7 +167,18 @@ class MediaSessionManager(
      * Keep this opt-in so normal notification/service startup does not mirror huge playlists.
      */
     fun enablePlayedListTimelineSync() {
+        if (!isPlayedListTimelineSyncEnabled) {
+            isPlayedListTimelineSyncEnabled = true
+            mediaSession?.let(::updateAvailableCommands)
+        }
         ensureListeningToPlayedListTimeline()
+    }
+
+    fun disablePlayedListTimelineSync() {
+        playedListTimelineJob?.cancel()
+        playedListTimelineJob = null
+        isPlayedListTimelineSyncEnabled = false
+        mediaSession?.let(::updateAvailableCommands)
     }
 
     fun onConnect(
@@ -205,8 +219,7 @@ class MediaSessionManager(
      * Release all elements related to the media session.
      */
     fun release() {
-        playedListTimelineJob?.cancel()
-        playedListTimelineJob = null
+        disablePlayedListTimelineSync()
         mediaSession?.release()
         mediaSession = null
     }
@@ -215,6 +228,7 @@ class MediaSessionManager(
      * Clear the player state that keeps the media notification alive.
      */
     fun clearPlaybackState() {
+        disablePlayedListTimelineSync()
         currentPlayedListScope = null
         isFavoriteActionAvailable = false
         isCurrentMusicInFavorite = false
@@ -231,26 +245,47 @@ class MediaSessionManager(
         if (playedListTimelineJob != null) return
 
         playedListTimelineJob = coroutineScope.launch {
-            combine(
-                playbackManager.playedList,
-                playbackManager.state,
-            ) { playedList, state ->
-                val currentMusicId = (state as? PlaybackManagerState.Data)
-                    ?.currentMusic
-                    ?.musicId
+            val playedListSnapshotFlow = playbackManager.playedList
+                .map { musics ->
+                    PlayedListTimelineSnapshot(
+                        musics = musics,
+                        musicIds = musics.map { it.musicId },
+                    )
+                }
+                .distinctUntilChanged { old, new ->
+                    old.musicIds == new.musicIds
+                }
 
+            val currentMusicIdFlow = playbackManager.state
+                .map { state ->
+                    (state as? PlaybackManagerState.Data)
+                        ?.currentMusic
+                        ?.musicId
+                }
+                .distinctUntilChanged()
+
+            combine(
+                playedListSnapshotFlow,
+                currentMusicIdFlow,
+            ) { playedListSnapshot, currentMusicId ->
                 PlayedListTimelineData(
-                    musics = if (currentMusicId == null) emptyList() else playedList,
+                    musics = if (currentMusicId == null) {
+                        emptyList()
+                    } else {
+                        playedListSnapshot.musics
+                    },
+                    musicIds = if (currentMusicId == null) {
+                        emptyList()
+                    } else {
+                        playedListSnapshot.musicIds
+                    },
                     currentMusicId = currentMusicId,
                 )
             }
-                .distinctUntilChanged { old, new ->
-                    old.currentMusicId == new.currentMusicId &&
-                        old.musics.map { it.musicId } == new.musics.map { it.musicId }
-                }
                 .collectLatest { timelineData ->
                     soulSearchingPlayer.syncPlayedListTimeline(
                         musics = timelineData.musics,
+                        musicIds = timelineData.musicIds,
                         currentMusicId = timelineData.currentMusicId,
                     )
                 }
@@ -347,7 +382,6 @@ class MediaSessionManager(
         Player.Commands.Builder()
             .apply {
                 add(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)
-                add(Player.COMMAND_GET_TIMELINE)
                 add(Player.COMMAND_GET_METADATA)
                 add(Player.COMMAND_GET_AUDIO_ATTRIBUTES)
                 add(Player.COMMAND_GET_VOLUME)
@@ -363,8 +397,12 @@ class MediaSessionManager(
                     add(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
                     add(Player.COMMAND_SEEK_TO_NEXT)
                     add(Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
-                    add(Player.COMMAND_SEEK_TO_MEDIA_ITEM)
                     add(Player.COMMAND_SEEK_TO_DEFAULT_POSITION)
+
+                    if (isPlayedListTimelineSyncEnabled) {
+                        add(Player.COMMAND_GET_TIMELINE)
+                        add(Player.COMMAND_SEEK_TO_MEDIA_ITEM)
+                    }
                 }
             }
             .build()
@@ -427,6 +465,7 @@ private class SoulSearchingSessionPlayer(
     private val playbackManager: () -> PlaybackManager,
     private val coroutineScope: CoroutineScope,
     private val canControl: () -> Boolean,
+    private val canUseTimeline: () -> Boolean,
 ) : ForwardingPlayer(player) {
     private var shouldIgnoreNextPrepare: Boolean = false
 
@@ -501,8 +540,15 @@ private class SoulSearchingSessionPlayer(
                     add(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
                     add(COMMAND_SEEK_TO_NEXT)
                     add(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
-                    add(COMMAND_SEEK_TO_MEDIA_ITEM)
                     add(COMMAND_SEEK_TO_DEFAULT_POSITION)
+
+                    if (canUseTimeline()) {
+                        add(COMMAND_GET_TIMELINE)
+                        add(COMMAND_SEEK_TO_MEDIA_ITEM)
+                    } else {
+                        remove(COMMAND_GET_TIMELINE)
+                        remove(COMMAND_SEEK_TO_MEDIA_ITEM)
+                    }
                 } else {
                     remove(COMMAND_PLAY_PAUSE)
                     remove(COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM)
@@ -510,6 +556,7 @@ private class SoulSearchingSessionPlayer(
                     remove(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
                     remove(COMMAND_SEEK_TO_NEXT)
                     remove(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+                    remove(COMMAND_GET_TIMELINE)
                     remove(COMMAND_SEEK_TO_MEDIA_ITEM)
                     remove(COMMAND_SEEK_TO_DEFAULT_POSITION)
                 }
@@ -524,8 +571,9 @@ private class SoulSearchingSessionPlayer(
             COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM,
             COMMAND_SEEK_TO_NEXT,
             COMMAND_SEEK_TO_NEXT_MEDIA_ITEM,
-            COMMAND_SEEK_TO_MEDIA_ITEM,
             COMMAND_SEEK_TO_DEFAULT_POSITION -> canControl()
+            COMMAND_GET_TIMELINE,
+            COMMAND_SEEK_TO_MEDIA_ITEM -> canControl() && canUseTimeline()
 
             else -> super.isCommandAvailable(command)
         }
@@ -567,7 +615,7 @@ private class SoulSearchingSessionPlayer(
     }
 
     private fun selectMediaItem(mediaItemIndex: Int, positionMs: Long) {
-        if (!canControl()) return
+        if (!canControl() || !canUseTimeline()) return
 
         if (mediaItemIndex == currentMediaItemIndex) {
             if (positionMs > 0) {
@@ -633,7 +681,13 @@ private class SoulSearchingSessionPlayer(
         runCatching { Uuid.parse(mediaId) }.getOrNull()
 }
 
+private data class PlayedListTimelineSnapshot(
+    val musics: List<Music>,
+    val musicIds: List<Uuid>,
+)
+
 private data class PlayedListTimelineData(
     val musics: List<Music>,
+    val musicIds: List<Uuid>,
     val currentMusicId: Uuid?,
 )

@@ -117,6 +117,7 @@ class SoulSearchingExoPlayerImpl(
     val playerDispatcher: PlayerDispatcher = PlayerDispatcher(player.applicationLooper)
     private val playerCoroutineScope = CoroutineScope(playerDispatcher)
     private val workScope = CoroutineScope(Dispatchers.IO)
+    private var lastSyncedTimelineMusicIds: List<Uuid> = emptyList()
 
     private var accessToken: StateFlow<String?> = commonUserUseCase
         .observeUser()
@@ -200,12 +201,14 @@ class SoulSearchingExoPlayerImpl(
             }
 
             player.setMediaItem(music.toPlayableMediaItem())
+            lastSyncedTimelineMusicIds = emptyList()
             player.prepare()
         }
     }
 
     suspend fun syncPlayedListTimeline(
         musics: List<Music>,
+        musicIds: List<Uuid>,
         currentMusicId: Uuid?,
     ) {
 
@@ -214,18 +217,12 @@ class SoulSearchingExoPlayerImpl(
                 if (player.mediaItemCount > 0) {
                     player.clearMediaItems()
                 }
+                lastSyncedTimelineMusicIds = emptyList()
             }
             return
         }
 
-        val mediaItems = musics.mapIndexed { index, music ->
-            music.toPlayableMediaItem(
-                trackNumber = index + 1,
-                totalTrackCount = musics.size,
-            )
-        }
-
-        val targetIndex = musics.indexOfFirst { it.musicId == currentMusicId }
+        val targetIndex = musicIds.indexOf(currentMusicId)
             .takeIf { it != -1 }
             ?: C.INDEX_UNSET
 
@@ -234,7 +231,14 @@ class SoulSearchingExoPlayerImpl(
             val shouldPrepareAfterTimelineUpdate =
                 player.playWhenReady || player.playbackState != Player.STATE_IDLE
 
-            if (!player.hasSameTimeline(mediaItems)) {
+            if (lastSyncedTimelineMusicIds != musicIds || player.mediaItemCount != musicIds.size) {
+                val mediaItems = musics.mapIndexed { index, music ->
+                    music.toPlayableMediaItem(
+                        trackNumber = index + 1,
+                        totalTrackCount = musics.size,
+                    )
+                }
+
                 player.setMediaItems(
                     mediaItems,
                     targetIndex.takeIf { it != C.INDEX_UNSET } ?: 0,
@@ -248,6 +252,7 @@ class SoulSearchingExoPlayerImpl(
                 if (shouldPrepareAfterTimelineUpdate) {
                     player.prepare()
                 }
+                lastSyncedTimelineMusicIds = musicIds
                 return@onPlayerThread
             }
 
@@ -281,14 +286,6 @@ class SoulSearchingExoPlayerImpl(
                     .build()
             )
             .build()
-
-    private fun ExoPlayer.hasSameTimeline(mediaItems: List<MediaItem>): Boolean {
-        if (mediaItemCount != mediaItems.size) return false
-
-        return mediaItems.indices.all { index ->
-            getMediaItemAt(index).mediaId == mediaItems[index].mediaId
-        }
-    }
 
     private fun ExoPlayer.timelineIndexOf(musicId: Uuid): Int =
         (0 until mediaItemCount)
@@ -351,6 +348,7 @@ class SoulSearchingExoPlayerImpl(
         onPlayerThread {
             player.stop()
             player.clearMediaItems()
+            lastSyncedTimelineMusicIds = emptyList()
         }
     }
 
