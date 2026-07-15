@@ -2,22 +2,7 @@ package com.github.enteraname74.soulsearching.feature.player.presentation.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.BoxWithConstraintsScope
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,7 +20,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.blend
-import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.animated
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -95,7 +80,10 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 color = animatedBackgroundColor
             )
             .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
-            .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED) {
+            .clickableWithHandCursor(
+                enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED,
+                withIndication = false,
+            ) {
                 playerViewManager.animateTo(
                     newState = BottomSheetStates.EXPANDED,
                 )
