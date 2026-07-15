@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.androidKmpLibrary)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
@@ -10,7 +10,12 @@ plugins {
 
 kotlin {
     jvmToolchain(17)
-    androidTarget()
+    android {
+        namespace = "com.github.enteraname74.soulsearching.data"
+        compileSdk = libs.versions.android.compile.sdk.get().toInt()
+        minSdk = libs.versions.android.min.sdk.get().toInt()
+        compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
     jvm("desktop")
     js {
         browser()
@@ -97,28 +102,6 @@ dependencies {
     add("kspDesktop", libs.androidx.room.compiler)
     add("kspJs", libs.androidx.room.compiler)
     add("kspWasmJs", libs.androidx.room.compiler)
-}
-
-android {
-    namespace = "com.github.enteraname74.soulsearching.data"
-    compileSdk = libs.versions.android.compile.sdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.min.sdk.get().toInt()
-    }
-
-    buildTypes {
-        create("dev-release")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        jvmToolchain(17)
-    }
 }
 
 java {

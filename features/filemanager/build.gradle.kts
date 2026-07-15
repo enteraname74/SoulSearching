@@ -2,18 +2,23 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.androidKmpLibrary)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
 }
 
-group = "com.github.enteraname74.soulsearching.features.playback"
+group = "com.github.enteraname74.soulsearching.features.filemanager"
 description = "File manager elements of the application"
 
 kotlin {
     jvmToolchain(17)
-    androidTarget()
+    android {
+        namespace = "com.github.enteraname74.soulsearching.features.filemanager"
+        compileSdk = libs.versions.android.compile.sdk.get().toInt()
+        minSdk = libs.versions.android.min.sdk.get().toInt()
+        compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
     jvm("desktop")
     js {
         browser()
@@ -72,27 +77,5 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.bundles.androidx)
         }
-    }
-}
-
-android {
-    namespace = "com.github.enteraname74.soulsearching.features.playback"
-    compileSdk = libs.versions.android.compile.sdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.min.sdk.get().toInt()
-    }
-
-    buildTypes {
-        create("dev-release")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        jvmToolchain(17)
     }
 }

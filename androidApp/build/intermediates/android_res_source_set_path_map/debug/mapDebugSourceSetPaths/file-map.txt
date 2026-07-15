@@ -1,0 +1,6 @@
+com.github.soulsearching.androidApp-updated_navigation_xml-0 /Users/noah/Documents/Projects/SoulSearching/androidApp/build/generated/updated_navigation_xml/debug
+com.github.soulsearching.androidApp-packageDebugResources-1 /Users/noah/Documents/Projects/SoulSearching/androidApp/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.github.soulsearching.androidApp-packageDebugResources-2 /Users/noah/Documents/Projects/SoulSearching/androidApp/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.github.soulsearching.androidApp-debug-3 /Users/noah/Documents/Projects/SoulSearching/androidApp/build/intermediates/merged_res/debug/mergeDebugResources
+com.github.soulsearching.androidApp-debug-4 /Users/noah/Documents/Projects/SoulSearching/androidApp/src/debug/res
+com.github.soulsearching.androidApp-main-5 /Users/noah/Documents/Projects/SoulSearching/androidApp/src/main/res

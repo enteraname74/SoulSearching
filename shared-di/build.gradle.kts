@@ -3,14 +3,19 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    id("com.android.library")
+    alias(libs.plugins.androidKmpLibrary)
 }
 
 group = "com.github.enteraname74.soulsearching.shareddi"
 description = "Shared DI elements of the application"
 
 kotlin {
-    androidTarget()
+    android {
+        namespace = "com.github.enteraname74.soulsearching.shareddi"
+        compileSdk = libs.versions.android.compile.sdk.get().toInt()
+        minSdk = libs.versions.android.min.sdk.get().toInt()
+        compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
     jvm("desktop")
     jvmToolchain(17)
 
@@ -67,28 +72,6 @@ kotlin {
             implementation(project(":local"))
 
         }
-    }
-}
-
-android {
-    namespace = "com.github.enteraname74.soulsearching.shareddi"
-    compileSdk = libs.versions.android.compile.sdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.min.sdk.get().toInt()
-    }
-
-    buildTypes {
-        create("dev-release")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        jvmToolchain(17)
     }
 }
 

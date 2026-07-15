@@ -2,16 +2,21 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.androidKmpLibrary)
     alias(libs.plugins.kotlinMultiplatform)
 }
 
-group = "com.github.enteraname74.soulsearching.features.playback"
-description = "File manager elements of the application"
+group = "com.github.enteraname74.soulsearching.features.musicmanager"
+description = "Music manager elements of the application"
 
 kotlin {
     jvmToolchain(17)
-    androidTarget()
+    android {
+        namespace = "com.github.enteraname74.soulsearching.features.musicmanager"
+        compileSdk = libs.versions.android.compile.sdk.get().toInt()
+        minSdk = libs.versions.android.min.sdk.get().toInt()
+        compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
     jvm("desktop")
     js {
         browser()
@@ -55,27 +60,5 @@ kotlin {
             implementation(libs.jaudiotagger)
             implementation(libs.coroutines.core)
         }
-    }
-}
-
-android {
-    namespace = "com.github.enteraname74.soulsearching.features.playback"
-    compileSdk = libs.versions.android.compile.sdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.min.sdk.get().toInt()
-    }
-
-    buildTypes {
-        create("dev-release")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        jvmToolchain(17)
     }
 }
