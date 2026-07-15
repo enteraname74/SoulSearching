@@ -172,7 +172,7 @@ class SoulSearchingWebNotification(
                 renotify = false
                 silent = true
                 icon = artworkUrl
-                image = artworkUrl
+                image = artworkUrl.takeIf { areNotificationImagesSupported() }
             }
 
     private fun mediaMetadataOptions(
@@ -315,6 +315,9 @@ private fun buildAbsoluteArtworkUrl(
 
 private fun areNotificationsSupported(): Boolean =
     js("typeof Notification !== 'undefined'")
+
+private fun areNotificationImagesSupported(): Boolean =
+    js("typeof Notification !== 'undefined' && 'image' in Notification.prototype && !navigator.userAgent.includes('Firefox')")
 
 private fun isMediaSessionSupported(): Boolean =
     js("typeof navigator !== 'undefined' && 'mediaSession' in navigator && typeof MediaMetadata !== 'undefined'")
