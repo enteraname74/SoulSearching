@@ -2,11 +2,9 @@ package com.github.enteraname74.soulsearching.feature.migration
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.Platform
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.util.LocalDatabaseVersion
-import com.github.enteraname74.domain.util.PlatformUtils
 import kotlinx.coroutines.launch
 
 class MigrationViewModel(
@@ -17,7 +15,7 @@ class MigrationViewModel(
         viewModelScope.launch {
             settings.getFlowOn(SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION).collect { currentDbVersion ->
                 if (currentDbVersion >= LocalDatabaseVersion.VERSION) {
-                    if (settings.get(SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY) && PlatformUtils.platform != Platform.Web) {
+                    if (settings.get(SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY)) {
                         navScope.toMainApp()
                     } else {
                         navScope.toInitialFetch()

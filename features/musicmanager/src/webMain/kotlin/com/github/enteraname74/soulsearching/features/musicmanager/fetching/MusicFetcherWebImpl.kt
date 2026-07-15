@@ -6,6 +6,7 @@ class MusicFetcherWebImpl(
     commonPlaylistUseCase: CommonPlaylistUseCase,
 ) : MusicFetcher(commonPlaylistUseCase) {
     override suspend fun fetchMusics(updateProgress: (Float, String?) -> Unit) {
+        println("CLUELESS -- FOZBFPIUZBFP%OABIOE%IGUBE")
         ensureFavoritePlaylistCreated()
     }
 

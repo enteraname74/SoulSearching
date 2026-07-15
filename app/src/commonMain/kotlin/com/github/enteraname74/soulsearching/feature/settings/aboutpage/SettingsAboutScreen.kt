@@ -26,7 +26,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.enteraname74.domain.model.Platform
 import com.github.enteraname74.domain.model.Release
+import com.github.enteraname74.domain.util.PlatformUtils
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_open_in_new
@@ -166,14 +168,16 @@ private fun Screen(
         navigateBack = navigateBack,
         title = strings.aboutTitle,
     ) {
-        item {
-            AnimatedVisibility(
-                visible = state.mostRecentRelease?.isNewerThanCurrentVersion() == true,
-                enter = slideInVertically(),
-                exit = slideOutVertically(),
-            ) {
-                state.mostRecentRelease?.let {
-                    LatestReleaseCard(it)
+        if (PlatformUtils.platform != Platform.Web) {
+            item {
+                AnimatedVisibility(
+                    visible = state.mostRecentRelease?.isNewerThanCurrentVersion() == true,
+                    enter = slideInVertically(),
+                    exit = slideOutVertically(),
+                ) {
+                    state.mostRecentRelease?.let {
+                        LatestReleaseCard(it)
+                    }
                 }
             }
         }
