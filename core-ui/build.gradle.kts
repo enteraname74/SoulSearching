@@ -1,61 +1,15 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-
 plugins {
-    alias(libs.plugins.androidKmpLibrary)
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
+    id("soulsearching.kmp.compose")
 }
 
 group = "com.github.enteraname74.soulsearching.coreui"
 description = "Core UI elements of the application"
 
 kotlin {
-    jvmToolchain(17)
-    android {
-        namespace = "com.github.enteraname74.soulsearching.coreui"
-        compileSdk = libs.versions.android.compile.sdk.get().toInt()
-        minSdk = libs.versions.android.min.sdk.get().toInt()
-        androidResources.enable = true
-        compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-    }
-    jvm("desktop")
-
-    js {
-        browser()
-    }
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-    }
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    compilerOptions {
-        // Common compiler options applied to all Kotlin source sets for expect / actual implementations
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
+    android.namespace = "com.github.enteraname74.soulsearching.coreui"
+    android.androidResources.enable = true
 
     sourceSets {
-        val jsMain by getting
-        val wasmJsMain by getting
-        val commonMain by getting
-        val desktopMain by getting
-
-        val nonAndroidMain by creating {
-            dependsOn(commonMain)
-        }
-
-        val webMain = maybeCreate("webMain").apply {
-            dependsOn(commonMain)
-            dependsOn(nonAndroidMain)
-        }
-
-        jsMain.dependsOn(webMain)
-        wasmJsMain.dependsOn(webMain)
-
-        desktopMain.dependsOn(nonAndroidMain)
-
         commonMain.dependencies {
             implementation(libs.androidx.annotation)
 

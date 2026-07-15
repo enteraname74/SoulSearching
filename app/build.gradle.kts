@@ -1,12 +1,8 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    alias(libs.plugins.androidKmpLibrary)
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
+    id("soulsearching.kmp.compose")
     alias(libs.plugins.kotlinSerialization)
 }
 
@@ -14,64 +10,24 @@ group = "com.github.enteraname74.soulsearching"
 description = "Application's elements"
 
 kotlin {
-    android {
-        namespace = "com.github.enteraname74.soulsearching.sharedapp"
-        compileSdk = libs.versions.android.compile.sdk.get().toInt()
-        minSdk = libs.versions.android.min.sdk.get().toInt()
-        androidResources.enable = true
-        compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-    }
-    jvm("desktop")
+    android.namespace = "com.github.enteraname74.soulsearching.sharedapp"
+    android.androidResources.enable = true
 
     js {
-        browser()
         binaries.executable()
     }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
         binaries.executable()
     }
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    compilerOptions {
-        // Common compiler options applied to all Kotlin source sets for expect / actual implementations
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-        optIn.add("kotlin.uuid.ExperimentalUuidApi")
-    }
-
     sourceSets {
-        val jsMain by getting
-        val wasmJsMain by getting
-        val commonMain by getting
-        val desktopMain by getting
-        val androidMain by getting
-
-        val nonAndroidMain by creating {
-            dependsOn(commonMain)
-        }
-
-        val webMain = maybeCreate("webMain").apply {
-            dependsOn(commonMain)
-            dependsOn(nonAndroidMain)
-        }
-
-        val jvmMain by creating {
-            dependsOn(commonMain)
-
+        val jvmMain by getting {
             dependencies {
                 implementation(libs.jaudiotagger)
             }
         }
-
-        jsMain.dependsOn(webMain)
-        wasmJsMain.dependsOn(webMain)
-
-        desktopMain.dependsOn(nonAndroidMain)
-
-        desktopMain.dependsOn(jvmMain)
-        androidMain.dependsOn(jvmMain)
 
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
