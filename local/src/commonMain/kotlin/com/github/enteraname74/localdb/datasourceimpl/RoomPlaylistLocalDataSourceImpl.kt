@@ -48,12 +48,6 @@ internal class RoomPlaylistLocalDataSourceImpl(
         )
     }
 
-    override suspend fun delete(playlist: Playlist) {
-        appDatabase.playlistDao.delete(
-            roomPlaylist = playlist.toRoomPlaylist()
-        )
-    }
-
     override suspend fun deleteAll(playlistIds: List<Uuid>) {
         appDatabase.playlistDao.deleteAll(
             ids = playlistIds,

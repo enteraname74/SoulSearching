@@ -26,9 +26,6 @@ interface PlaylistDao {
     @Upsert
     suspend fun upsertAll(roomPlaylists: List<RoomPlaylist>)
 
-    @Delete
-    suspend fun delete(roomPlaylist: RoomPlaylist)
-
     @Query("DELETE FROM RoomPlaylist WHERE playlistId IN (:ids) AND isFavorite = 0")
     suspend fun deleteAll(ids: List<Uuid>)
 

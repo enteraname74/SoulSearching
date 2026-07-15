@@ -19,11 +19,6 @@ interface PlaylistLocalDataSource {
     suspend fun upsertAll(playlists: List<Playlist>)
 
     /**
-     * Deletes a Playlist.
-     */
-    suspend fun delete(playlist: Playlist)
-
-    /**
      * Delete the playlists identified in the given list of ids.
      */
     suspend fun deleteAll(playlistIds: List<Uuid>)

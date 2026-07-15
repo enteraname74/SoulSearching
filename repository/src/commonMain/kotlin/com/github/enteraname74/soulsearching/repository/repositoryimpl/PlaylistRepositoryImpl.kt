@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
@@ -31,14 +32,9 @@ class PlaylistRepositoryImpl(
         playlistDataSource.upsertAll(playlists)
     }
 
-    override suspend fun delete(playlist: Playlist) {
-        playlistDataSource.delete(
-            playlist = playlist
-        )
-    }
-
-    override suspend fun deleteAll(playlistIds: List<Uuid>) {
+    override suspend fun deleteAll(playlistIds: List<Uuid>): SoulResult<Unit> = SoulResult.runCatching {
         playlistDataSource.deleteAll(playlistIds)
+        playlistRemoteDataSource.deleteAll(playlistIds)
     }
 
     override fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>> =

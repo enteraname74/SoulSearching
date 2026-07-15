@@ -1,5 +1,7 @@
 package com.github.enteraname74.domain.usecase.player
 
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.MergeMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
@@ -22,12 +24,26 @@ class SyncMusicForPlayerIfNeededUseCase(
             it.remoteId == null
         }
 
+        val cachedAlbums: MutableSet<Album> = mutableSetOf()
+        val cachedArtists: MutableSet<Artist> = mutableSetOf()
+        val cachedMusics: MutableSet<Music> = mutableSetOf()
+
         val updatedMusics = musicsToSend.mapNotNull {
-            uploadMusicToCloudUseCase(
+            val music = uploadMusicToCloudUseCase(
                 music = it,
                 mergeMode = MergeMode.LocalFirst,
+                cachedArtists = cachedArtists,
+                cachedAlbums = cachedAlbums,
+                cachedMusics = cachedMusics,
             )
+            music?.let {
+                cachedAlbums += music.album
+                cachedArtists += music.artists
+                cachedMusics += music
+            }
+            music
         }
+        musicRepository.upsertAll(updatedMusics)
 
         return (updatedMusics + alreadySyncMusics).distinctBy { it.musicId }
     }
