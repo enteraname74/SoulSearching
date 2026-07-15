@@ -89,6 +89,7 @@ class SoulSearchingWebPlayerImpl(
         if (currentSource == musicUrl) return
 
         audio.pause()
+        audio.currentTime = 0.0
         currentSource = musicUrl
         audio.src = musicUrl
         audio.load()
