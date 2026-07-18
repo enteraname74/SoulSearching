@@ -72,16 +72,25 @@ class SoulSearchingWebNotification(
     ) {
         if (!areNotificationsSupported()) return
 
-        val permission = when (BrowserNotification.permission) {
-            NOTIFICATION_PERMISSION_GRANTED -> NOTIFICATION_PERMISSION_GRANTED
-            NOTIFICATION_PERMISSION_DEFAULT -> BrowserNotification.requestPermission()
-                .await()
+        val permission: String = when (BrowserNotification.permission) {
+            NOTIFICATION_PERMISSION_GRANTED -> {
+                NOTIFICATION_PERMISSION_GRANTED
+            }
+
+            NOTIFICATION_PERMISSION_DEFAULT -> {
+                val jsPermission: JsString =
+                    BrowserNotification.requestPermission().await()
+
+                jsPermission.toString()
+            }
+
             else -> return
         }
 
         if (permission != NOTIFICATION_PERMISSION_GRANTED) return
 
         closeNotification()
+
         notification = BrowserNotification(
             title = updateData.music.name,
             options = notificationOptions(
@@ -234,7 +243,7 @@ class SoulSearchingWebNotification(
 
             val context = canvas
                 .getContext("2d")
-                as CanvasRenderingContext2D
+                    as CanvasRenderingContext2D
             val imageData = context.createImageData(
                 sw = width.toDouble(),
                 sh = height.toDouble(),
