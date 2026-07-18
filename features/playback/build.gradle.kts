@@ -48,7 +48,7 @@ kotlin {
             }
         }
         commonMain.dependencies {
-            implementation(compose.ui)
+            implementation(libs.compose.ui)
             implementation(libs.koin.core)
 
             implementation(libs.androidx.paging.compose)

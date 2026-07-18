@@ -15,7 +15,6 @@ class UploadPlaylistToCloudUseCase(
         mergeMode: MergeMode,
     ): SoulResult<Unit> = SoulResult.runCatching {
         val cloudPlaylist: CloudPlaylist = playlistRepository.uploadToCloud(playlistWithMusics)
-        println("CLUELESS -- got playlist: $cloudPlaylist")
         upsertCloudPlaylistUseCase(
             cloudPlaylists = listOf(cloudPlaylist),
             mergeMode = mergeMode,

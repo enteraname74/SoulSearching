@@ -159,7 +159,6 @@ class SyncDataWithCloudUseCase(
             cloudPreferencesRepository.setLastSyncMillis(DateUtils.now())
         }
 
-        println("CLUELESS -- result: $result")
         _state.value = if (result.isError()) State.Failure else State.Finish
 
         return result
@@ -169,26 +168,29 @@ class SyncDataWithCloudUseCase(
         lastSyncMillis: Long?,
         mergeMode: MergeMode,
     ) {
+        _state.value = State.FetchingRemotePlaylists
         val updatedFromCloud: List<CloudPlaylist> = playlistRepository.fetchUpdatedPlaylistsFromCloud(
             lastSyncMillis = lastSyncMillis,
         )
+        _state.value = State.SavingRemotePlaylists
         upsertCloudPlaylistUseCase(
             cloudPlaylists = updatedFromCloud,
             mergeMode = mergeMode,
         )
 
         val playlistsToSend: List<PlaylistWithMusics> = playlistRepository.getAllToSendToCloud()
-
-        println("CLUELESS -- playlists: ${updatedFromCloud.size}")
-        println("CLUELESS -- playlists to send: ${playlistsToSend.size}")
-        playlistsToSend.forEach {
-            val result = uploadPlaylistToCloudUseCase(
-                playlistWithMusics = it,
+        playlistsToSend.forEachIndexed { index, playlist ->
+            _state.value = State.UploadingPlaylists(
+                progress = buildProgress(
+                    index = index,
+                    size = playlistsToSend.size,
+                )
+            )
+            uploadPlaylistToCloudUseCase(
+                playlistWithMusics = playlist,
                 mergeMode = mergeMode,
             )
-            println("CLUELESS -- result: $result")
         }
-        println("CLUELESS -- playlists: ${updatedFromCloud.size}")
     }
 
     private fun buildProgress(
@@ -225,6 +227,12 @@ class SyncDataWithCloudUseCase(
         data class SavingRemote(override val progress: Float) : ProgressState
 
         data object Cleaning : WorkingState
+
+        data object FetchingRemotePlaylists : WorkingState
+
+        data object SavingRemotePlaylists : WorkingState
+
+        data class UploadingPlaylists(override val progress: Float) : ProgressState
 
         data object Failure : EndState
 

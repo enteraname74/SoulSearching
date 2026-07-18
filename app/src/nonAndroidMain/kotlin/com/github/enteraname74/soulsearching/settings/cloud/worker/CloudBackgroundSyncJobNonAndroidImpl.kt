@@ -21,7 +21,6 @@ class CloudBackgroundSyncJobNonAndroidImpl(
 
     override suspend fun launchIfPossible() {
         val hasValidCloudInformation: Boolean? = hasValidCloudInformationUseCase().firstOrNull()
-        println("CLUELESS -- has valid infos? $hasValidCloudInformation")
 
         // No-op if no valid cloud information
         if (hasValidCloudInformation != true) return

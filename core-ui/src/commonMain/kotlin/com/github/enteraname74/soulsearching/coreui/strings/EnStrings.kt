@@ -337,7 +337,7 @@ object EnStrings : Strings {
     override val generatedCode: String = "Generated code"
     override val cloudSyncTitle: String = "Synchronization"
     override val cloudSyncText: String = "Manage synchronization between the app and Cloudy"
-    override val cloudSyncButton: String = "Synchronize songs"
+    override val cloudSyncButton: String = "Synchronize with cloud"
     override val musicChannelNotificationDescription: String = "Used for controlling the song that is currently playing"
     override val cloudSyncChannelNotificationDescription: String = "used for syncing data between the app and Cloudy"
     override val musicChannelNotificationName: String = "Currently played music notification"
@@ -401,10 +401,13 @@ object EnStrings : Strings {
             SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Checking"
             SyncDataWithCloudUseCase.State.Cleaning -> "Cleaning"
             SyncDataWithCloudUseCase.State.ClearingRemoteIds -> "Cleaning"
-            SyncDataWithCloudUseCase.State.FetchingFromRemote -> "Fetching"
-            is SyncDataWithCloudUseCase.State.SavingRemote -> "Saving"
-            is SyncDataWithCloudUseCase.State.UpdateMusics -> "Update"
-            is SyncDataWithCloudUseCase.State.UploadMusics -> "Upload"
+            SyncDataWithCloudUseCase.State.FetchingFromRemote -> "Fetching songs"
+            is SyncDataWithCloudUseCase.State.SavingRemote -> "Saving songs"
+            is SyncDataWithCloudUseCase.State.UpdateMusics -> "Updating songs"
+            is SyncDataWithCloudUseCase.State.UploadMusics -> "Uploading songs"
+            SyncDataWithCloudUseCase.State.FetchingRemotePlaylists -> "Fetching playlists"
+            is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Uploading playlists"
+            SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists"
             SyncDataWithCloudUseCase.State.Finish -> "Finish"
         }
 
@@ -421,6 +424,9 @@ object EnStrings : Strings {
             is SyncDataWithCloudUseCase.State.SavingRemote -> "Saving fetched information from cloud"
             is SyncDataWithCloudUseCase.State.UpdateMusics -> "Updating existing remote musics to cloud"
             is SyncDataWithCloudUseCase.State.UploadMusics -> "Uploading musics to cloud"
+            SyncDataWithCloudUseCase.State.FetchingRemotePlaylists -> "Fetching playlists from cloud"
+            is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Uploading playlists to cloud"
+            SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists from cloud"
         }
 
     override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =

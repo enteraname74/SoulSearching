@@ -34,7 +34,10 @@ fun MinimisedPlayerControlsComposable(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
+        horizontalArrangement = Arrangement.spacedBy(
+            space = UiConstants.Spacing.medium,
+            alignment = Alignment.CenterHorizontally,
+        ),
     ) {
         if (PlayerUiUtils.canShowSidePanel()) {
             SoulIcon(

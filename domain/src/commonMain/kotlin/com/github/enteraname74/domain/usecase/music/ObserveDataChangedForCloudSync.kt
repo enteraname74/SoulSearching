@@ -27,7 +27,6 @@ class ObserveDataChangedForCloudSync(
              */
             launch {
                 commonMusicUseCase.observeDataChanged().collectLatest {
-                    println("CLUELESS -- DATA CHANGED")
                     if (syncDataWithCloudUseCase.state.value is SyncDataWithCloudUseCase.State.WorkingState) {
                         buffer.value = Buffer.Waiting
                     } else {
@@ -44,7 +43,6 @@ class ObserveDataChangedForCloudSync(
             launch {
                 syncDataWithCloudUseCase.state.collectLatest { syncState ->
                     if (syncState is SyncDataWithCloudUseCase.State.EndState && buffer.value == Buffer.Waiting) {
-                        println("CLUELESS -- Sync ended or not in progress, will launch a sync")
                         buffer.value = Buffer.Launch
                     }
                 }
@@ -61,7 +59,6 @@ class ObserveDataChangedForCloudSync(
                             //no-op
                         }
                         Buffer.Launch -> {
-                            println("CLUELESS -- buffer ready, will launch")
                             cloudBackgroundSyncJob.launchIfPossible()
                             buffer.value = Buffer.Idle
                         }

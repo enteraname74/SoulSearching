@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.SliderDefaults
@@ -8,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -55,7 +57,7 @@ fun PlayerMinimisedMainInfo(
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .weight(1f, fill = false),
+                .weight(1f, fill = PlayerUiUtils.canShowSidePanel()),
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
@@ -77,12 +79,16 @@ fun PlayerMinimisedMainInfo(
             )
         }
         MinimisedPlayerControlsComposable(
+            modifier = Modifier
+                .weight(1f, fill = PlayerUiUtils.canShowSidePanel()),
             playerViewState = playerViewManager.draggableState.currentValue,
             playbackCommandsState = playbackCommandsState,
             state = state,
         )
         if (PlayerUiUtils.canShowSidePanel()) {
             PlayerVolume(
+                modifier = Modifier
+                    .weight(1f, fill = true),
                 playbackCommandsState = playbackCommandsState,
             )
         }
@@ -92,9 +98,12 @@ fun PlayerMinimisedMainInfo(
 @Composable
 private fun PlayerVolume(
     playbackCommandsState: PlaybackCommandsState,
+    modifier: Modifier = Modifier,
 ) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End,
     ) {
         SoulIcon(
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
