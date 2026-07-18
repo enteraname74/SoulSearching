@@ -121,7 +121,12 @@ fun BoxScope.PlayerSwipeableDataScreen(
                     .fillMaxWidth()
                     .alpha(1f - alphaTransition)
                     .height(SONG_PROGRESSION_HEIGHT),
-                progress = { (currentMusicProgression.toFloat() / state.currentMusic.duration.toFloat()).coerceIn(0f, 1f) },
+                progress = {
+                    (currentMusicProgression.toFloat() / state.currentMusic.duration.toFloat()).coerceIn(
+                        0f,
+                        1f
+                    )
+                },
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 trackColor = SoulSearchingColorTheme.colorScheme.subSecondaryText.blend(
                     other = SoulSearchingColorTheme.colorScheme.primary,
@@ -357,6 +362,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
             currentMusic = state.currentMusic,
             alphaTransition = 1f - alphaTransition,
             playbackCommandsState = playbackCommandsState,
+            state = state,
         )
     }
 }

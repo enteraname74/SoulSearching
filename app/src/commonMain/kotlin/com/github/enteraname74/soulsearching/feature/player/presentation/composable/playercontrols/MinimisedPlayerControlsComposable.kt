@@ -3,29 +3,30 @@ package com.github.enteraname74.soulsearching.feature.player.presentation.compos
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.ext.disabledIfNoAction
+import com.github.enteraname74.soulsearching.feature.player.ext.icon
 
 @Composable
 fun MinimisedPlayerControlsComposable(
     modifier: Modifier = Modifier,
     playerViewState: BottomSheetStates,
+    state: PlayerViewState.Data,
     playbackCommandsState: PlaybackCommandsState,
 ) {
     val isMinimised = playerViewState == BottomSheetStates.MINIMISED
@@ -36,15 +37,19 @@ fun MinimisedPlayerControlsComposable(
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
     ) {
         if (PlayerUiUtils.canShowSidePanel()) {
-            PlayerVolume(
-                playbackCommandsState = playbackCommandsState,
+            SoulIcon(
+                icon = state.playerMode.icon(),
+                modifier = Modifier
+                    .size(OPTIONAL_ICON_SIZE)
+                    .clip(CircleShape)
+                    .optionalClickable(playbackCommandsState.changePlayerMode.takeIf { isMinimised }),
+                color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.previous)
             )
         }
         SoulIcon(
             icon = CoreRes.drawable.ic_skip_previous_filled,
-            contentDescription = "",
             modifier = Modifier
-                .size(40.dp)
+                .size(MAIN_ICON_SIZE)
                 .clip(CircleShape)
                 .optionalClickable(playbackCommandsState.previous.takeIf { isMinimised }),
             color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.previous)
@@ -55,63 +60,36 @@ fun MinimisedPlayerControlsComposable(
             } else {
                 CoreRes.drawable.ic_play_filled
             },
-            contentDescription = "",
             modifier = Modifier
-                .size(40.dp)
+                .size(MAIN_ICON_SIZE)
                 .clip(CircleShape)
                 .optionalClickable(playbackCommandsState.togglePlayPause.takeIf { isMinimised }),
             color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.togglePlayPause)
         )
         SoulIcon(
             icon = CoreRes.drawable.ic_skip_next_filled,
-            contentDescription = "",
             modifier = Modifier
-                .size(40.dp)
+                .size(MAIN_ICON_SIZE)
                 .clip(CircleShape)
                 .optionalClickable(playbackCommandsState.next.takeIf { isMinimised }),
             color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.next)
         )
+        if (PlayerUiUtils.canShowSidePanel()) {
+            SoulIcon(
+                icon = if (state.isCurrentMusicInFavorite) {
+                    CoreRes.drawable.ic_favorite_filled
+                } else {
+                    CoreRes.drawable.ic_favorite
+                },
+                modifier = Modifier
+                    .size(OPTIONAL_ICON_SIZE)
+                    .clip(CircleShape)
+                    .optionalClickable(playbackCommandsState.toggleFavoriteState.takeIf { isMinimised }),
+                color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.previous)
+            )
+        }
     }
 }
 
-
-@Composable
-private fun PlayerVolume(
-    playbackCommandsState: PlaybackCommandsState,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        SoulIcon(
-            icon = if (playbackCommandsState.playerVolume > .5f) {
-                CoreRes.drawable.ic_volume_up
-            } else {
-                CoreRes.drawable.ic_volume_down
-            }
-        )
-        SoulSlider(
-            modifier = Modifier
-                .width(200.dp),
-            minValue = 1f,
-            maxValue = 10f,
-            steps = 8,
-            value = playbackCommandsState.playerVolume * 10,
-            sliderColors = SliderDefaults.colors(
-                thumbColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                activeTrackColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                inactiveTrackColor = SoulSearchingColorTheme.colorScheme.primary,
-                activeTickColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                inactiveTickColor = SoulSearchingColorTheme.colorScheme.primary,
-            ),
-            onThumbDragged = { playerVolume ->
-                playerVolume?.let {
-                    val fixedVolume = (it / 10).coerceIn(0.1f, 1f)
-                    playbackCommandsState.setPlayerVolume(fixedVolume)
-                }
-            },
-            onValueChanged = {
-                // update done on drag
-            }
-        )
-    }
-}
+private val MAIN_ICON_SIZE: Dp = 40.dp
+private val OPTIONAL_ICON_SIZE: Dp = 22.dp
