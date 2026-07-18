@@ -59,7 +59,7 @@ import kotlin.uuid.Uuid
 class PlayerViewModel(
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
-    settings: SoulSearchingSettings,
+    private val settings: SoulSearchingSettings,
     private val colorThemeManager: ColorThemeManager,
     private val commonLyricsUseCase: CommonLyricsUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
@@ -155,7 +155,8 @@ class PlayerViewModel(
         playbackManager.playedList,
         _dialogState,
         commonUserUseCase.observeUser(),
-    ) { playbackMainState, playedList, dialog, user ->
+        settings.getFlowOn(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME),
+    ) { playbackMainState, playedList, dialog, user, playerVolume ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
@@ -166,7 +167,8 @@ class PlayerViewModel(
                     playbackCommandsState = buildPlaybackState(
                         scope = playbackMainState.currentScope,
                         isPlaying = playbackMainState.isPlaying,
-                        currentMusicScope = playbackMainState.currentMusic.scope
+                        currentMusicScope = playbackMainState.currentMusic.scope,
+                        playerVolume = playerVolume,
                     ),
                     aroundSongs = if (playbackMainState.playerMode == PlayerMode.Loop) {
                         listOfNotNull(
@@ -272,16 +274,24 @@ class PlayerViewModel(
     private fun buildPlaybackState(
         scope: PlayedListScope,
         isPlaying: Boolean,
+        playerVolume: Float,
         currentMusicScope: Scope,
     ): PlaybackCommandsState =
         PlaybackCommandsState(
             isPlaying = isPlaying,
+            playerVolume = playerVolume,
             previous = { previous() }.takeIf { scope.isAdmin },
             next = { next() }.takeIf { scope.isAdmin },
             togglePlayPause = { togglePlayPause() }.takeIf { scope.isAdmin },
             changePlayerMode = { changePlayerMode() }.takeIf { !scope.isRemote },
             toggleFavoriteState = { toggleFavoriteState() }.takeIf { currentMusicScope != Scope.SharedPlayedList },
-            seekTo = { newPosition: Int -> seekTo(newPosition) }.takeIf { scope.isAdmin }
+            seekTo = { newPosition: Int -> seekTo(newPosition) }.takeIf { scope.isAdmin },
+            setPlayerVolume = { newVolume ->
+                settings.set(
+                    key = SoulSearchingSettingsKeys.Player.PLAYER_VOLUME.key,
+                    value = newVolume,
+                )
+            }
         )
 
     private suspend fun buildSharedListState(

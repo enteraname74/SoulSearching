@@ -54,12 +54,14 @@ sealed interface PlayerViewState {
 
 data class PlaybackCommandsState(
     val isPlaying: Boolean,
+    val playerVolume: Float,
     val previous: (() -> Unit)?,
     val next: (() -> Unit)?,
     val togglePlayPause: (() -> Unit)?,
     val changePlayerMode: (() -> Unit)?,
     val toggleFavoriteState: (() -> Unit)?,
     val seekTo: ((newPosition: Int) -> Unit)?,
+    val setPlayerVolume: (Float) -> Unit,
 )
 
 data class SharedListState(

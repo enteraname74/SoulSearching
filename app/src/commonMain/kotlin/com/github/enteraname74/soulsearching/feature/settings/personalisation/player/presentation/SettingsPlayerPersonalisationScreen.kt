@@ -149,6 +149,8 @@ private fun SettingsPlayerPersonalisationScreenView(
                         style = UiConstants.Typography.body,
                     )
                     SoulSlider(
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         minValue = 1f,
                         maxValue = 10f,
                         steps = 8,
