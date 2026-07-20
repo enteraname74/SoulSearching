@@ -50,7 +50,7 @@ object UiConstants {
             get() {
                 val windowSize = rememberWindowSize()
                 return if (windowSize == WindowSize.Large) {
-                    148.dp
+                    164.dp
                 } else {
                     128.dp
                 }
