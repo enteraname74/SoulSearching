@@ -58,7 +58,7 @@ class SoulSearchingWebPlayerImpl(
         val nearFuture = Clock.System.now().plus(2.minutes)
 
         val isTokenValid = playerToken?.expireAt?.let { expireAt ->
-            expireAt < nearFuture
+            expireAt > nearFuture
         } ?: false
 
         if (isTokenValid) return playerToken
