@@ -1,13 +1,6 @@
 package com.github.enteraname74.domain.usecase.music
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.CloudMusic
-import com.github.enteraname74.domain.model.CloudPlaylist
-import com.github.enteraname74.domain.model.MergeMode
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.CloudPreferencesRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
@@ -15,9 +8,11 @@ import com.github.enteraname74.domain.usecase.DeleteEmptyAlbumsAndArtistsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UploadPlaylistToCloudUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertCloudPlaylistUseCase
 import com.github.enteraname74.domain.util.DateUtils
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.Uuid
 
 /**
@@ -85,6 +80,7 @@ class SyncDataWithCloudUseCase(
                 music?.let {
                     cachedAlbums += music.album
                     cachedArtists += music.artists
+                    cachedArtists += music.album.artist
                     cachedMusics += music
                 }
                 music
@@ -106,6 +102,7 @@ class SyncDataWithCloudUseCase(
                 music?.let {
                     cachedAlbums += music.album
                     cachedArtists += music.artists
+                    cachedArtists += music.album.artist
                     cachedMusics += music
                 }
                 music
@@ -141,12 +138,14 @@ class SyncDataWithCloudUseCase(
                 )
                 cachedAlbums += music.album
                 cachedArtists += music.artists
+                cachedArtists += music.album.artist
                 cachedMusics += music
 
                 music
             }
             musicRepository.upsertAll(toSave)
             _state.value = State.Cleaning
+
             // Deleting potential empty albums, artists and music (localPath and remoteId null).
             musicRepository.deleteNotExisting()
             deleteEmptyAlbumsAndArtistsUseCase()

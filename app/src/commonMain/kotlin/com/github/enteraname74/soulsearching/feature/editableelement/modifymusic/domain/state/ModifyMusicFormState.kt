@@ -1,8 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.github.enteraname74.domain.model.Artist
@@ -11,11 +9,7 @@ import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextFieldHolderImpl
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldLeadingIconSpec
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
+import com.github.enteraname74.soulsearching.coreui.textfield.*
 import kotlin.uuid.Uuid
 
 sealed interface ModifyMusicFormState {
@@ -33,8 +27,6 @@ sealed interface ModifyMusicFormState {
         val textFields: List<SoulTextFieldHolder> = buildList {
             add(
                 SoulTextFieldHolderImpl(
-                    modifier = Modifier
-                        .fillMaxWidth(),
                     id = MUSIC_NAME,
                     initialValue = savedData[MUSIC_NAME] ?: initialMusic.name,
                     isValid = { it.isNotBlank() },
@@ -52,8 +44,6 @@ sealed interface ModifyMusicFormState {
             )
             add(
                 SoulDropdownTextFieldHolderImpl(
-                    modifier = Modifier
-                        .fillMaxWidth(),
                     id = ALBUM_NAME,
                     isValid = { it.isNotBlank() },
                     initialValue = savedData[ALBUM_NAME] ?: initialMusic.album.albumName,
@@ -73,8 +63,6 @@ sealed interface ModifyMusicFormState {
             )
             add(
                 SoulTextFieldHolderImpl(
-                    modifier = Modifier
-                        .fillMaxWidth(),
                     id = POSITION_IN_ALBUM,
                     isValid = { it.toIntOrNull() != null || it.isBlank() },
                     initialValue = savedData[POSITION_IN_ALBUM] ?: initialMusic.albumPosition?.toString().orEmpty(),
@@ -92,8 +80,6 @@ sealed interface ModifyMusicFormState {
             )
             add(
                 SoulDropdownTextFieldHolderImpl(
-                    modifier = Modifier
-                        .fillMaxWidth(),
                     id = ALBUM_ARTIST,
                     initialValue = savedData[ALBUM_ARTIST] ?: initialMusic.album.artist.artistName,
                     getLabel = { strings.albumArtistName },
@@ -116,8 +102,6 @@ sealed interface ModifyMusicFormState {
 
                 add(
                     SoulDropdownTextFieldHolderImpl(
-                        modifier = Modifier
-                            .fillMaxWidth(),
                         id = artistId,
                         isValid = { it.isNotBlank() },
                         initialValue = savedData[artistId] ?: artist.artistName,

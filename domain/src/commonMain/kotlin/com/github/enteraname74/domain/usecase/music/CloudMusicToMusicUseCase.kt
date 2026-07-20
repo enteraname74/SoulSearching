@@ -34,7 +34,7 @@ class CloudMusicToMusicUseCase(
             cloudAlbum = cloudMusic.album,
             mergeMode = mergeMode,
             scope = cloudMusic.scope,
-            cachedArtists = cachedArtists,
+            cachedArtists = cachedArtists + artistsOfMusic,
             cachedAlbums = cachedAlbums,
         )
 

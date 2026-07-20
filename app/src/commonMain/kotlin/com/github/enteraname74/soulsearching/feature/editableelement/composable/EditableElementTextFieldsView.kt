@@ -22,6 +22,8 @@ fun LazyListScope.editableElementTextFieldsView(
         item {
             Box(
                 modifier = Modifier
+                    .widthIn(max = UiConstants.Size.textFieldMaxWidth)
+                    .fillMaxWidth()
                     .animateItem()
             ) {
                 it()

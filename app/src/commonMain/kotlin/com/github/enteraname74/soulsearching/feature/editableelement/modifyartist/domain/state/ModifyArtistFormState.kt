@@ -17,8 +17,6 @@ sealed interface ModifyArtistFormState {
     ) : ModifyArtistFormState {
         val textFields: List<SoulTextFieldHolder> = listOf(
             SoulDropdownTextFieldHolderImpl(
-                modifier = Modifier
-                    .fillMaxWidth(),
                 id = ARTIST_NAME,
                 isValid = { it.isNotBlank() },
                 initialValue = initialArtist.artistName,
