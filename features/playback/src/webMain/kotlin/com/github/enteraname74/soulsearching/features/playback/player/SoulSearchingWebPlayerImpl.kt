@@ -19,6 +19,8 @@ class SoulSearchingWebPlayerImpl(
     private val workScope = CoroutineScope(workDispatcher.dispatcher)
 
     private var currentSource: String? = null
+    private var sourceVersion: Int = 0
+    private var suppressedPauseEvents: Int = 0
 
     override var listener: SoulSearchingPlayer.Listener? = null
 
@@ -35,6 +37,11 @@ class SoulSearchingWebPlayerImpl(
             }
         }
         audio.addEventListener("pause") {
+            if (audio.ended || suppressedPauseEvents > 0) {
+                suppressedPauseEvents = (suppressedPauseEvents - 1).coerceAtLeast(0)
+                return@addEventListener
+            }
+
             workScope.launch {
                 listener?.onPause()
             }
@@ -47,7 +54,10 @@ class SoulSearchingWebPlayerImpl(
     }
 
     override suspend fun setMusic(music: Music) {
+        val version = ++sourceVersion
         val token = signedPlaybackUrlProvider.getUpdatedToken()
+
+        if (version != sourceVersion) return
 
         if (token == null || music.remoteId == null) {
             listener?.onError()
@@ -59,9 +69,10 @@ class SoulSearchingWebPlayerImpl(
             remoteId = music.remoteId.orEmpty(),
         )
 
+        if (version != sourceVersion) return
         if (currentSource == musicUrl) return
 
-        audio.pause()
+        pauseSilently()
         audio.currentTime = 0.0
         currentSource = musicUrl
         audio.src = musicUrl
@@ -90,7 +101,8 @@ class SoulSearchingWebPlayerImpl(
         !audio.paused
 
     override suspend fun dismiss() {
-        audio.pause()
+        sourceVersion++
+        pauseSilently()
         audio.removeAttribute("src")
         currentSource = null
         audio.load()
@@ -112,6 +124,13 @@ class SoulSearchingWebPlayerImpl(
         audio.volume = volume
             .coerceIn(0f, 1f)
             .toDouble()
+    }
+
+    private fun pauseSilently() {
+        if (!audio.paused) {
+            suppressedPauseEvents++
+            audio.pause()
+        }
     }
 
     private companion object {
