@@ -3,20 +3,18 @@ package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.features.musicmanager.ext.toMusic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.*
+import java.util.UUID
 
 /**
  * Class handling music fetching for Android devices.
@@ -50,42 +48,6 @@ internal class MusicFetcherAndroidImpl(
             null
         )
     }
-
-    private fun Cursor.getFilteredSafeString(index: Int): String =
-        getString(index)?.trim().orEmpty()
-
-    private fun Cursor.toMusic(): Music? =
-        try {
-            val albumArtist = this.getFilteredSafeString(6).takeIf { it.isNotBlank() }
-            val artist = this.getFilteredSafeString(1)
-
-            val artists: List<Artist> = buildList {
-                if (albumArtist != null && albumArtist != artist) {
-                    add(Artist(artistName = albumArtist))
-                }
-                add(Artist(artistName = artist))
-            }
-
-            Music(
-                name = this.getFilteredSafeString(0),
-                album = Album(
-                    albumName = this.getFilteredSafeString(2),
-                    artist = artists.first(),
-                ),
-                artists = artists,
-                duration = this.getLong(3),
-                folder = File(this.getFilteredSafeString(4)).parent ?: "",
-                cover = Cover.CoverFile(initialCoverPath = this.getFilteredSafeString(4)),
-                albumPosition = this.getFilteredSafeString(5).toIntOrNull(),
-                remoteId = null,
-                localPath = this.getFilteredSafeString(4),
-                remotePath = null,
-                lastUpdatedMillis = null,
-            )
-        } catch (e: Exception) {
-            println("MusicFetcher -- Exception while fetching song on the device: $e")
-            null
-        }
 
     override suspend fun fetchMusics(
         updateProgress: (Float, String?) -> Unit,

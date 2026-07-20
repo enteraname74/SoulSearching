@@ -46,7 +46,7 @@ class SelectedAlbumViewModel(
     ViewModel(),
     PlaylistDetailListener {
 
-    val multiSelectionState = multiSelectionManager.state
+    val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -59,6 +59,7 @@ class SelectedAlbumViewModel(
         .cachedIn(viewModelScope)
 
     private var _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val searchResult: Flow<List<Music>> = _searchQuery.flatMapLatest { search ->
         if (search.isNotBlank()) {
@@ -117,13 +118,7 @@ class SelectedAlbumViewModel(
         _navigationState.value = SelectedAlbumNavigationState.ToEdit(albumId = albumId)
     }
 
-    override fun onUpdateNbPlayed(musicId: UUID) {
-        viewModelScope.launch {
-            commonMusicUseCase.incrementNbPlayed(musicId)
-        }
-    }
-
-    override fun onUpdateNbPlayed() {
+    private fun onUpdateNbPlayed() {
         viewModelScope.launch {
             val albumId: UUID =
                 (state.value as? SelectedAlbumState.Data)?.playlistDetail?.id ?: return@launch
@@ -192,7 +187,6 @@ class SelectedAlbumViewModel(
     override fun onSearch(search: String) {
         _searchQuery.value = search
     }
-
 
     override fun showMusicBottomSheet(musicIds: List<UUID>) {
         _navigationState.value = SelectedAlbumNavigationState.ToMusicBottomSheet(musicIds)

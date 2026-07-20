@@ -11,6 +11,7 @@ import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.base.State
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
+import kotlin.time.Duration.Companion.milliseconds
 
 class SoulSearchingDesktopPlayerImpl :
     SoulSearchingPlayer,
@@ -76,7 +77,7 @@ class SoulSearchingDesktopPlayerImpl :
                 player.controls().pause()
             }
             // Necessary to avoid blocking the app.
-            delay(500)
+            delay(500.milliseconds)
             // TODO CLOUD: Add remote player capability
             player.media().prepare(music.path)
         } catch (e: Exception) {

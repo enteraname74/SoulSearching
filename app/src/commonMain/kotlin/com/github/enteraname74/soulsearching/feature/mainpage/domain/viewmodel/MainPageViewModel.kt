@@ -19,6 +19,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
@@ -26,6 +27,7 @@ import com.github.enteraname74.domain.usecase.music.RemoveLocallyOrDeleteMusicUs
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
+import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
@@ -69,6 +71,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -89,6 +92,8 @@ class MainPageViewModel(
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
     private val multiSelectionManager: MultiSelectionManager,
     private val tabManager: TabManager,
+    private val commonUserUseCase: CommonUserUseCase,
+    private val hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
 ) : ViewModel(), KoinComponent,
     SortingInformationDelegate by sortingInformationDelegateImpl {
 
@@ -305,6 +310,13 @@ class MainPageViewModel(
         }
 
         coroutineScope.launch {
+            val canAccessCloud = hasValidCloudInformationUseCase().firstOrNull() == true
+            if (canAccessCloud) {
+                commonUserUseCase.fetchAll()
+            }
+        }
+
+        coroutineScope.launch {
             val allFolders = commonFolderUseCase.getAll().first()
             val foldersToDelete = allFolders.filter { !File(it.folderPath).exists() }
             commonFolderUseCase.deleteAll(foldersToDelete)
@@ -360,7 +372,7 @@ class MainPageViewModel(
             for (music in all) {
                 music.localPath?.let {
                     if (!File(it).exists()) {
-                        playbackManager.removeSongsFromPlayedPlaylist(
+                        playbackManager.removeSongsFromPlayedList(
                             musicIds = listOf(music.musicId)
                         )
                         val hasBeenDeleted = removeLocallyOrDeleteMusicUseCase(music = music)
@@ -577,19 +589,23 @@ class MainPageViewModel(
     fun onPlayAll() {
         coroutineScope.launch {
             // TODO OPTIMIZATION: find a way to not directly fetch all songs
-            playbackManager.playShuffle(
+            val hasBeenSetup = playbackManager.playShuffle(
                 musicList = commonMusicUseCase.getAllSorted(),
                 playlistId = null,
                 isMain = true,
-            )
-            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            ).getOrNull()
+            if (hasBeenSetup == true) {
+                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            }
         }
     }
 
     fun onSoulMixClicked() {
         viewModelScope.launch {
-            playbackManager.playSoulMix()
-            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            val hasBeenSetup = playbackManager.playSoulMix().getOrNull()
+            if (hasBeenSetup == true) {
+                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            }
         }
     }
 

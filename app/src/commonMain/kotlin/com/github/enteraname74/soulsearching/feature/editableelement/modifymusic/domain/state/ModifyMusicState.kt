@@ -7,9 +7,10 @@ import com.github.enteraname74.soulsearching.feature.editableelement.domain.Edit
  * UI state of the modify music screen.
  */
 sealed interface ModifyMusicState {
-    data object Loading: ModifyMusicState
+    data object Loading : ModifyMusicState
     data class Data(
         val initialMusic: Music,
         val editableElement: EditableElement,
-    ): ModifyMusicState
+        val hasValidCloudInformation: Boolean,
+    ) : ModifyMusicState
 }

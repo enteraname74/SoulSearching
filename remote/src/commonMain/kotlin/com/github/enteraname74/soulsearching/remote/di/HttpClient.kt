@@ -1,25 +1,40 @@
 package com.github.enteraname74.soulsearching.remote.di
 
 import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.model.UserTokens
+import com.github.enteraname74.domain.model.user.UserTokens
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserRemoteDataSource
-import io.ktor.client.HttpClient
-import io.ktor.client.HttpClientConfig
-import io.ktor.client.engine.HttpClientEngineConfig
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BearerTokens
-import io.ktor.client.plugins.auth.providers.bearer
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.resources.Resources
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.client.*
+import io.ktor.client.engine.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.auth.*
+import io.ktor.client.plugins.auth.providers.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.resources.*
+import io.ktor.client.plugins.websocket.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
+import java.util.*
+import kotlin.time.Duration.Companion.seconds
 
+
+internal fun currentLanguage(): String =
+    Locale.getDefault().language
+
+private fun <T : HttpClientEngineConfig> HttpClientConfig<T>.setLanguage() {
+    defaultRequest {
+        header(HttpHeaders.AcceptLanguage, currentLanguage())
+    }
+}
 fun provideHttpClient(): HttpClient =
     HttpClient(CIO) {
         install(Resources)
+        setLanguage()
         installContentNegotiation()
     }
 
@@ -39,6 +54,7 @@ fun provideCloudHttpClient(
 ): HttpClient =
     HttpClient(CIO) {
         install(Resources)
+        setLanguage()
         installContentNegotiation()
 
         install(Auth) {
@@ -71,6 +87,16 @@ fun provideCloudHttpClient(
                     )
                 }
             }
+        }
+
+        install(WebSockets) {
+            pingInterval = 15.seconds
+            maxFrameSize = Long.MAX_VALUE
+            contentConverter = KotlinxWebsocketSerializationConverter(
+                Json {
+                    ignoreUnknownKeys = true
+                }
+            )
         }
     }
 

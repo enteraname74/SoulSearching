@@ -4,6 +4,7 @@ import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.*
@@ -12,6 +13,7 @@ class DeleteAlbumUseCase(
     private val albumRepository: AlbumRepository,
     private val musicRepository: MusicRepository,
     private val commonArtistUseCase: CommonArtistUseCase,
+    private val deleteMusicUseCase: DeleteMusicUseCase,
 ) {
     suspend operator fun invoke(albumId: UUID) {
         val albumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first() ?: return
@@ -41,6 +43,9 @@ class DeleteAlbumUseCase(
         linkedArtists.forEach {
             commonArtistUseCase.deleteIfEmpty(it.artistId)
         }
+
+        // We only use the DeleteMusicUseCase for the remote part, as the rest is handled in this use case
+        deleteMusicUseCase.deleteRemoteIfPossible(remoteIds = albumWithMusics.musics.mapNotNull { it.remoteId })
     }
 
     // TODO OPTIMIZATION: Improve deletion of multiple albums?

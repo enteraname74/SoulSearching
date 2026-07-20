@@ -4,12 +4,14 @@ import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import kotlinx.coroutines.flow.first
 
 class DeleteArtistUseCase(
     private val commonAlbumUseCase: CommonAlbumUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
+    private val deleteMusicUseCase: DeleteMusicUseCase,
 ) {
     suspend operator fun invoke(artistWithMusics: ArtistWithMusics) {
         /*
@@ -42,6 +44,9 @@ class DeleteArtistUseCase(
         linkedArtists.forEach {
             commonArtistUseCase.deleteIfEmpty(it.artistId)
         }
+
+        // We only use the DeleteMusicUseCase for the remote part, as the rest is handled in this use case
+        deleteMusicUseCase.deleteRemoteIfPossible(remoteIds = artistWithMusics.musics.mapNotNull { it.remoteId })
     }
 
     // TODO OPTIMIZATION: Improve deletion of multiple artists?

@@ -3,8 +3,12 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.music.mai
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Scope
+import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
@@ -18,6 +22,7 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
@@ -43,6 +48,8 @@ class MusicBottomSheetViewModel(
     private val playbackManager: PlaybackManager,
     private val navScope: MusicBottomSheetNavScope,
     private val loadingManager: LoadingManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
+    hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
     settings: SoulSearchingSettings,
     params: MusicBottomSheetDestination,
 ) : ViewModel() {
@@ -51,6 +58,7 @@ class MusicBottomSheetViewModel(
 
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
+    @Suppress("UNCHECKED_CAST")
     val state: StateFlow<MusicBottomSheetState> = combine(
         commonMusicUseCase.getFromIds(musicIds),
         playbackManager.playedList,
@@ -58,8 +66,18 @@ class MusicBottomSheetViewModel(
         dialogState,
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
-        )
-    ) { musics, playedList, playbackState, dialogState, isQuickAccessShown ->
+        ),
+        hasValidCloudInformationUseCase(),
+        playbackManager.currentScope,
+    ) { data ->
+        val musics = data[0] as List<Music>
+        val playedList = data[1] as List<Music>
+        val playbackState = data[2] as PlaybackManagerState
+        val dialogState = data[3] as SoulDialog?
+        val isQuickAccessShown = data[4] as Boolean
+        val hasValidCloudInformation = data[5] as Boolean
+        val playedListScope = data[6] as PlayedListScope?
+
         MusicBottomSheetState(
             musics = musics,
             bottomSheetTopInformation = buildTopInformation(musics),
@@ -68,6 +86,8 @@ class MusicBottomSheetViewModel(
                 playedList = playedList,
                 currentPlayedMusic = (playbackState as? PlaybackManagerState.Data)?.currentMusic,
                 isQuickAccessShown = isQuickAccessShown,
+                hasValidCloudInformation = hasValidCloudInformation,
+                playedListScope = playedListScope,
             ),
             dialogState = dialogState,
         )
@@ -82,22 +102,57 @@ class MusicBottomSheetViewModel(
         playedList: List<Music>,
         currentPlayedMusic: Music?,
         isQuickAccessShown: Boolean,
+        hasValidCloudInformation: Boolean,
+        playedListScope: PlayedListScope?,
     ): List<BottomSheetRowSpec> = buildList {
-        val editEnabled: Boolean = musics.size == 1
-        val queueAction: Boolean = if (musics.size == 1) {
-            val isSameMusic =
-                currentPlayedMusic != null && musics.first().musicId == currentPlayedMusic.musicId
-            !isSameMusic || playedList.isEmpty()
-        } else {
-            true
-        }
-        val removeFromPlayedList: Boolean = if (musics.size == 1) {
-            playedList.any { it.musicId == musics.first().musicId }
-        } else {
-            playedList.isNotEmpty()
+        if (musics.isEmpty()) return@buildList
+
+        val possessMusics = musics.any { it.scope == Scope.User }
+        val editEnabled: Boolean = musics.size == 1 && musics.first().scope == Scope.User
+        val canAddNext: Boolean = when {
+            playedListScope?.isRemote == true -> false
+            musics.size == 1 -> {
+                val isSameMusic =
+                    currentPlayedMusic != null && musics.first().musicId == currentPlayedMusic.musicId
+                !isSameMusic || playedList.isEmpty()
+            }
+
+            else -> true
         }
 
-        if (isQuickAccessShown) {
+        val canAddToQueue: Boolean = when {
+            musics.size == 1 -> {
+                val isSameMusic =
+                    currentPlayedMusic != null && musics.first().musicId == currentPlayedMusic.musicId
+                !isSameMusic || playedList.isEmpty()
+            }
+
+            else -> true
+        }
+
+        val removeFromPlayedList: Boolean = when {
+            musics.first().scope == Scope.SharedPlayedList && playedListScope?.isAdmin == false -> false
+            musics.size == 1 -> playedList.any { it.musicId == musics.first().musicId }
+            else -> playedList.isNotEmpty()
+        }
+
+        val canAddToPlaylist = when {
+            musics.size == 1 && musics.first().scope != Scope.User -> false
+            else -> true
+        }
+
+        val canAddToQuickAccess = when {
+            !isQuickAccessShown -> false
+            musics.size == 1 && musics.first().scope != Scope.User -> false
+            else -> true
+        }
+
+        val canDelete = when {
+            musics.size == 1 && musics.first().scope != Scope.User -> false
+            else -> true
+        }
+
+        if (canAddToQuickAccess) {
             val isInQuickAccess: Boolean = if (musics.size == 1) {
                 musics.first().isInQuickAccess
             } else {
@@ -114,11 +169,15 @@ class MusicBottomSheetViewModel(
                 )
             )
         }
-        add(
-            BottomSheetRowSpec.addToPlaylist(
-                onClick = ::addToPlaylists
+
+        if (canAddToPlaylist) {
+            add(
+                BottomSheetRowSpec.addToPlaylist(
+                    onClick = ::addToPlaylists
+                )
             )
-        )
+        }
+
         if (editEnabled) {
             add(
                 BottomSheetRowSpec(
@@ -128,13 +187,16 @@ class MusicBottomSheetViewModel(
                 )
             )
         }
-        if (queueAction) {
-            addAll(
-                listOf(
-                    BottomSheetRowSpec.playNext(::playNext),
-                    BottomSheetRowSpec.addToQueue(::addToQueue),
-                )
-            )
+        if (canAddNext) {
+            add(BottomSheetRowSpec.playNext(::playNext))
+        }
+
+        if (canAddToQueue) {
+            add(BottomSheetRowSpec.addToQueue(::addToQueue))
+        }
+
+        if (hasValidCloudInformation && possessMusics) {
+            add(BottomSheetRowSpec.startSharedPlayedList(::startSharedPlayedList))
         }
 
         if (removeFromPlayedList) {
@@ -155,17 +217,19 @@ class MusicBottomSheetViewModel(
             )
         }
 
-        add(
-            BottomSheetRowSpec(
-                icon = CoreRes.drawable.ic_delete_filled,
-                title = if (musics.size == 1) {
-                    strings.deleteMusic
-                } else {
-                    strings.deleteSelectedMusics
-                },
-                onClick = ::showDeleteDialog,
+        if (canDelete) {
+            add(
+                BottomSheetRowSpec(
+                    icon = CoreRes.drawable.ic_delete_filled,
+                    title = if (musics.size == 1) {
+                        strings.deleteMusic
+                    } else {
+                        strings.deleteSelectedMusics
+                    },
+                    onClick = ::showDeleteDialog,
+                )
             )
-        )
+        }
     }
 
     private fun buildTopInformation(musics: List<Music>): BottomSheetTopInformation =
@@ -190,13 +254,16 @@ class MusicBottomSheetViewModel(
     }
 
     private fun deleteMusics() {
-        viewModelScope.launch {
+        loadingManager.withLoadingOnScope(viewModelScope) {
             dialogState.value = null
-            loadingManager.withLoading { deleteMusicUseCase(musicIds = musicIds) }
-            multiSelectionManager.clearMultiSelection()
-            // TODO PLAYER: This call should be unnecessary
-            playbackManager.removeSongsFromPlayedPlaylist(musicIds)
-            navScope.navigateBack()
+            when (val result = playbackManager.removeSongsFromPlayedList(musicIds)) {
+                is SoulResult.Error<*> -> feedbackPopUpManager.showErrorIfAny(result)
+                is SoulResult.Success -> {
+                    deleteMusicUseCase(musicIds = musicIds)
+                    multiSelectionManager.clearMultiSelection()
+                    navScope.navigateBack()
+                }
+            }
         }
     }
 
@@ -278,27 +345,55 @@ class MusicBottomSheetViewModel(
     }
 
     private fun removeFromPlayedList() {
-        viewModelScope.launch {
-            // TODO PLAYER: Should no longer be useful
-            playbackManager.removeSongsFromPlayedPlaylist(musicIds)
-            multiSelectionManager.clearMultiSelection()
-            navScope.navigateBack()
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val result = playbackManager.removeSongsFromPlayedList(musicIds)
+            if (result.isError()) {
+                feedbackPopUpManager.showErrorIfAny(result)
+            } else {
+                multiSelectionManager.clearMultiSelection()
+                navScope.navigateBack()
+            }
         }
     }
 
     private fun playNext() {
-        viewModelScope.launch {
-            playbackManager.addMultipleMusicsToPlayNext(state.value.musics)
-            multiSelectionManager.clearMultiSelection()
-            navScope.navigateBack()
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val result = playbackManager.addMultipleMusicsToPlayNext(state.value.musics)
+            if (result.isError()) {
+                feedbackPopUpManager.showErrorIfAny(result)
+            } else {
+                multiSelectionManager.clearMultiSelection()
+                navScope.navigateBack()
+            }
         }
     }
 
     private fun addToQueue() {
-        viewModelScope.launch {
-            playbackManager.addMultipleMusicsToQueue(state.value.musics)
-            multiSelectionManager.clearMultiSelection()
-            navScope.navigateBack()
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val result = playbackManager.addMultipleMusicsToQueue(state.value.musics)
+            if (result.isError()) {
+                feedbackPopUpManager.showErrorIfAny(result)
+            } else {
+                multiSelectionManager.clearMultiSelection()
+                navScope.navigateBack()
+            }
+        }
+    }
+
+    private fun startSharedPlayedList() {
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val result = playbackManager.startSharedList(
+                musicIds = state.value.musics
+                    .filter { it.scope != Scope.SharedPlayedList }
+                    .map { it.musicId }
+            )
+            when (result) {
+                is SoulResult.Error -> feedbackPopUpManager.showErrorIfAny(result)
+                is SoulResult.Success -> {
+                    multiSelectionManager.clearMultiSelection()
+                    navScope.navigateBack()
+                }
+            }
         }
     }
 }

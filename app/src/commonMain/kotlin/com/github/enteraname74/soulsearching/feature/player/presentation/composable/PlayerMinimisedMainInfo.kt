@@ -26,9 +26,9 @@ fun PlayerMinimisedMainInfo(
     currentMusic: Music,
     isPlaying: Boolean,
     alphaTransition: Float,
-    previous: () -> Unit,
-    togglePlayPause: () -> Unit,
-    next: () -> Unit,
+    previous: (() -> Unit)?,
+    togglePlayPause: (() -> Unit)?,
+    next: (() -> Unit)?,
 ) {
     Row(
         modifier = Modifier

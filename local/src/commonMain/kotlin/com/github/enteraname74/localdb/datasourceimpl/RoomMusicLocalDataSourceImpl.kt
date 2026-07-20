@@ -13,6 +13,7 @@ import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.util.DateUtils
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.dao.MusicDao
 import com.github.enteraname74.localdb.ext.toRoomMusicArtists
@@ -41,7 +42,14 @@ internal class RoomMusicLocalDataSourceImpl(
         appDatabase.useWriterConnection {
             appDatabase.artistDao.upsertAll(music.artists.map { it.toRoomArtist() })
             appDatabase.albumDao.upsert(music.album.toRoomAlbum())
-            appDatabase.musicDao.upsert(music.toRoomMusic())
+            appDatabase.musicDao.upsert(
+                music.copy(
+                    lastUpdatedMillis = DateUtils.now(),
+                ).toRoomMusic()
+            )
+
+            // Update links
+            appDatabase.musicArtistDao.deleteOfMusic(music.musicId)
             appDatabase.musicArtistDao.upsertAll(
                 roomMusicArtists = music.toRoomMusicArtists()
             )
@@ -53,7 +61,9 @@ internal class RoomMusicLocalDataSourceImpl(
             appDatabase.artistDao.upsertAll(
                 roomArtists = musics.flatMap { music ->
                     music.artists.map {
-                        it.toRoomArtist()
+                        it.copy(
+                            lastUpdatedMillis = DateUtils.now(),
+                        ).toRoomArtist()
                     }
                 }
             )
@@ -103,6 +113,12 @@ internal class RoomMusicLocalDataSourceImpl(
 
     override suspend fun getFromRemoteId(remoteId: String): Music? =
         appDatabase.musicDao.getFromRemoteId(remoteId)?.toMusic()
+
+    override suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<UUID> =
+        appDatabase.musicDao.getIdsFromRemoteIds(remoteIds)
+
+    override suspend fun getRemoteIdsFromIds(ids: List<UUID>): List<String> =
+        appDatabase.musicDao.getRemoteIdsFromIds(ids)
 
     override fun getFromIds(ids: List<UUID>): Flow<List<Music>> =
         appDatabase.musicDao.getFromIds(ids).map { list ->
@@ -194,8 +210,8 @@ internal class RoomMusicLocalDataSourceImpl(
                     }
             }
 
-    override suspend fun getAllRemoteIds(): List<String> =
-        appDatabase.musicDao.getAllRemoteIds()
+    override suspend fun getAllRemoteIdsPossessedByUser(): List<String> =
+        appDatabase.musicDao.getAllRemoteIdsPossessedByUser()
 
     override suspend fun getAllToSendToCloud(): List<Music> =
         appDatabase.musicDao.getAllToSendToCloud().map { it.toMusic() }
@@ -367,9 +383,20 @@ internal class RoomMusicLocalDataSourceImpl(
         appDatabase.musicDao.clearRemoteIds(remoteIds)
     }
 
+    override suspend fun deleteAllRemoteIds() {
+        appDatabase.musicDao.deleteAllRemoteIds()
+    }
+
     override suspend fun deleteNotExisting() {
         appDatabase.musicDao.deleteNotExisting()
     }
+
+    override suspend fun deleteSharedPlayedListMusics() {
+        appDatabase.musicDao.deleteSharedPlayedListMusics()
+    }
+
+    override suspend fun getFromPath(path: String): Music? =
+        appDatabase.musicDao.getFromPath(path)?.toMusic()
 
     private fun withPaging(
         source: MusicDao.() -> PagingSource<Int, RoomCompleteMusic>,

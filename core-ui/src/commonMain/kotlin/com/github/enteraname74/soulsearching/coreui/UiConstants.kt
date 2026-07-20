@@ -44,6 +44,7 @@ object UiConstants {
         val smallPlus: Dp = 24.dp
         val medium: Dp = 32.dp
         val mediumPlus: Dp = 40.dp
+        val mediumLarge: Dp = 48.dp
         val large: Dp = 64.dp
         val largePlus: Dp = 120.dp
         val veryLarge: Dp
@@ -98,6 +99,10 @@ object UiConstants {
     }
 
     object Typography {
+        val titleBig : TextStyle = TextStyle(
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 36.sp
+        )
         val titleSmall: TextStyle = TextStyle(
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
@@ -123,4 +128,7 @@ object UiConstants {
             @Composable
             get() = MaterialTheme.typography.bodySmall
     }
+
+    // Based on material values
+    const val ALPHA_DISABLED: Float = 0.38f
 }

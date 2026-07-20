@@ -26,6 +26,7 @@ import java.util.UUID
                     ON music.musicId = musicPlaylist.musicId 
                     AND playlist.playlistId = musicPlaylist.playlistId 
                     AND music.isHidden = 0 
+                    AND scope != 'SharedPlayedList' 
                     AND music.coverId IS NOT NULL 
                     LIMIT 1
                 )
@@ -37,6 +38,7 @@ import java.util.UUID
             ON music.musicId = musicPlaylist.musicId 
             AND playlist.playlistId = musicPlaylist.playlistId 
             AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             LIMIT 1
         ) AS musicCoverPath,
         (
@@ -45,6 +47,7 @@ import java.util.UUID
             ON music.musicId = musicPlaylist.musicId 
             AND playlist.playlistId = musicPlaylist.playlistId 
             AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             LIMIT 1
         ) AS musicCoverUrl,
         playlist.isInQuickAccess, 

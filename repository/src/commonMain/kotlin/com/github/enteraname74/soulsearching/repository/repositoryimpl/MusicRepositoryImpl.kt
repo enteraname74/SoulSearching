@@ -5,6 +5,7 @@ import com.github.enteraname74.domain.model.CloudMusic
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicFolderPreview
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
@@ -38,6 +39,12 @@ class MusicRepositoryImpl(
     override suspend fun deleteAllFromUnselectedFolders() {
         musicLocalDataSource.deleteAllFromUnselectedFolders()
     }
+
+    override suspend fun getRemoteIdsFromIds(ids: List<UUID>): List<String> =
+        musicLocalDataSource.getRemoteIdsFromIds(ids)
+
+    override suspend fun deleteRemotely(remoteIds: List<String>): SoulResult<Unit> =
+        musicRemoteDataSource.delete(remoteIds)
 
     override fun getFromId(musicId: UUID): Flow<Music?> = musicLocalDataSource.getFromId(
         musicId = musicId
@@ -193,7 +200,7 @@ class MusicRepositoryImpl(
         musicLocalDataSource.getSoulMixMusics(totalPerFolder)
 
     override suspend fun getDeletedRemoteMusicIds(): List<String> {
-        val allRemoteIds: List<String> = musicLocalDataSource.getAllRemoteIds()
+        val allRemoteIds: List<String> = musicLocalDataSource.getAllRemoteIdsPossessedByUser()
         return musicRemoteDataSource.getDeletedRemoteMusicIds(idsToCheck = allRemoteIds)
     }
 
@@ -217,9 +224,9 @@ class MusicRepositoryImpl(
                 page = page
             )
 
-            if (fetchedData.isEmpty()) break
-
             fetchedMusics += fetchedData
+            if (fetchedData.size < MAX_MUSICS_PER_PAGE) break
+
             page += 1
         }
 
@@ -239,11 +246,25 @@ class MusicRepositoryImpl(
         musicLocalDataSource.clearRemoteIds(remoteIds)
     }
 
+    override suspend fun deleteAllRemoteIds() {
+        musicLocalDataSource.deleteAllRemoteIds()
+    }
+
     override suspend fun deleteNotExisting() {
         musicLocalDataSource.deleteNotExisting()
     }
 
+    override suspend fun deleteSharedPlayedListMusics() {
+        musicLocalDataSource.deleteSharedPlayedListMusics()
+    }
+
+    override suspend fun fetch(url: String): CloudMusic =
+        musicRemoteDataSource.fetch(url = url)
+
     private companion object {
         const val MAX_MUSICS_PER_PAGE = 300
     }
+
+    override suspend fun getFromPath(path: String): Music? =
+        musicLocalDataSource.getFromPath(path)
 }

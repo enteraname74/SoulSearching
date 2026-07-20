@@ -120,6 +120,10 @@ object SoulSearchingSettingsKeys {
             key = "IS_REMOTE_LYRICS_FETCH_ENABLED",
             defaultValue = false,
         )
+        val SHARED_PLAYED_LIST_MUSIC_UPDATE_MILLIS = settingElementOf(
+            key = "SHARED_PLAYED_LIST_MUSIC_UPDATE_MILLIS",
+            defaultValue = 0L,
+        )
     }
 
     object ColorTheme {

@@ -5,6 +5,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingDestination
 import com.github.enteraname74.soulsearching.feature.application.MainAppDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
@@ -33,6 +34,11 @@ data object MigrationDestination : NavKey {
                         object : MigrationNavScope {
                             override val toMainApp: () -> Unit = {
                                 navigator.push(MainAppDestination) {
+                                    clearBackStack = true
+                                }
+                            }
+                            override val toInitialFetch: () -> Unit = {
+                                navigator.push(AppInitSongFetchingDestination) {
                                     clearBackStack = true
                                 }
                             }

@@ -1,12 +1,9 @@
 package com.github.enteraname74.domain.repository
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.CloudMusic
-import com.github.enteraname74.domain.model.MonthMusicsPreview
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicFolderPreview
+import com.github.enteraname74.domain.model.*
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import java.util.*
 import kotlin.time.Duration
 
 interface MusicRepository {
@@ -26,6 +23,10 @@ interface MusicRepository {
     suspend fun deleteAll(ids: List<UUID>)
 
     suspend fun deleteAllFromUnselectedFolders()
+
+    suspend fun getRemoteIdsFromIds(ids: List<UUID>): List<String>
+
+    suspend fun deleteRemotely(remoteIds: List<String>): SoulResult<Unit>
 
     /**
      * Retrieve a music from its id.
@@ -129,6 +130,7 @@ interface MusicRepository {
 
     suspend fun getDeletedRemoteMusicIds(): List<String>
     suspend fun clearRemoteIds(remoteIds: List<String>)
+    suspend fun deleteAllRemoteIds()
     suspend fun deleteNotExisting()
     suspend fun getAllToSendToCloud(): List<Music>
     suspend fun updateMusicToCloud(music: Music): CloudMusic?
@@ -142,4 +144,9 @@ interface MusicRepository {
         musicName: String,
         albumId: UUID,
     ): Music?
+
+    suspend fun deleteSharedPlayedListMusics()
+
+    suspend fun fetch(url: String): CloudMusic
+    suspend fun getFromPath(path: String): Music?
 }

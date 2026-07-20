@@ -4,5 +4,9 @@ interface SettingsCloudActions {
     fun onUserClick()
     fun toSettings()
     fun toSync()
+    fun toSharedList()
     fun navigateBack()
+    fun toFetchMusic()
+    fun toExplanations()
+    fun toUsers()
 }

@@ -19,6 +19,12 @@ sealed interface SoulResult<T> {
     fun isError(): Boolean =
         this is Error
 
+    fun throwIfError() {
+        (this as? Error)?.let {
+            throw Exception(this.error.orEmpty())
+        }
+    }
+
     companion object {
         fun ofSuccess(): Success<Unit> = Success(Unit)
 

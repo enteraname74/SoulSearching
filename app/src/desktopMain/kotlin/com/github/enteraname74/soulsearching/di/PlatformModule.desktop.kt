@@ -1,11 +1,14 @@
 package com.github.enteraname74.soulsearching.di
 
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.domain.util.AppEnvironment
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpDesktopManager
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
+import com.github.enteraname74.soulsearching.feature.musiclink.MusicLinkHandler
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingDesktopPlayerImpl
+import com.github.enteraname74.soulsearching.settings.cloud.worker.CloudBackgroundSyncJobDesktopImpl
 import com.github.enteraname74.soulsearching.util.FileOperation
 import com.russhwolf.settings.PreferencesSettings
 import org.koin.core.module.Module
@@ -29,7 +32,10 @@ actual val platformModule: Module = module {
             )
         )
     }
+    singleOf(::MusicLinkHandler)
     factory {
         FileOperation()
     }
+
+    singleOf(::CloudBackgroundSyncJobDesktopImpl) bind CloudBackgroundSyncJob::class
 }

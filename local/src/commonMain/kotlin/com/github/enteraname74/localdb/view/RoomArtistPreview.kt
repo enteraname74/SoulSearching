@@ -25,6 +25,7 @@ import java.util.UUID
                     ON music.musicId = musicArtist.musicId 
                     AND artist.artistId = musicArtist.artistId 
                     AND music.isHidden = 0 
+                    AND scope != 'SharedPlayedList' 
                     AND music.coverId IS NOT NULL 
                     ORDER BY name ASC 
                     LIMIT 1
@@ -37,6 +38,7 @@ import java.util.UUID
             ON music.musicId = musicArtist.musicId 
             AND artist.artistId = musicArtist.artistId 
             AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             ORDER BY name ASC 
             LIMIT 1
         ) AS musicCoverPath,
@@ -46,11 +48,13 @@ import java.util.UUID
             ON music.musicId = musicArtist.musicId 
             AND artist.artistId = musicArtist.artistId 
             AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             ORDER BY name ASC 
             LIMIT 1
         ) AS musicCoverUrl,
         artist.isInQuickAccess 
         FROM RoomArtist AS artist 
+        WHERE artist.scope != 'SharedPlayedList'
     """
 )
 data class RoomArtistPreview(
@@ -89,6 +93,7 @@ data class RoomArtistPreview(
         return ArtistPreview(
             id = id,
             name = name,
+            nbPlayed = nbPlayed,
             totalMusics = totalMusics,
             cover = usedCover,
             isInQuickAccess = isInQuickAccess

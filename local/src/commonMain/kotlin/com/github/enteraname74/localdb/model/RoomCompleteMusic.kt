@@ -51,6 +51,7 @@ data class RoomCompleteMusic(
             remoteId = music.remoteId,
             remotePath = music.remotePath,
             lastUpdatedMillis = music.lastUpdateMillis,
+            scope = music.scope,
         )
     }
 }

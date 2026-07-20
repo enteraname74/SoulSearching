@@ -14,9 +14,9 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun SoulByteArrayImage(
     data: ByteArray?,
-    size : Dp?,
+    size: Dp?,
     modifier: Modifier = Modifier,
-    roundedPercent : Int = 10,
+    roundedPercent: Int = 10,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
     val modifierBase = if (size != null) {

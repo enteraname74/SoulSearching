@@ -10,8 +10,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
 import coil3.request.ImageRequest
-import com.github.enteraname74.domain.model.CloudPreferences
-import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -29,47 +27,35 @@ internal fun UrlImage(
     commonUserUseCase: CommonUserUseCase = injectElement(),
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
-    val preferences: CloudPreferences? by commonCloudPreferencesUseCase
-        .observePreferences()
-        .collectAsStateWithLifecycle(null)
+    val user by commonUserUseCase.observeUser().collectAsStateWithLifecycle(null)
+    val preferences by commonCloudPreferencesUseCase.observeUrl().collectAsStateWithLifecycle("")
 
-    val user: User? by commonUserUseCase
-        .observeUser()
-        .collectAsStateWithLifecycle(null)
-
-    AnimatedImage(
-        data = url,
+    SoulDataImage(
+        data = "$preferences/$url",
         contentScale = contentScale,
         modifier = modifier,
-        tint = tint,
-    ) { foundUrl ->
-        if (foundUrl.isBlank() || user?.accessToken == null || preferences?.url == null) {
-            TemplateImage(
-                modifier = modifier,
-                contentScale = contentScale,
-                tint = tint,
-            )
-        } else {
-            SoulDataImage(
-                data = "${preferences!!.url}/$foundUrl",
-                contentScale = contentScale,
-                modifier = modifier,
-                onSuccess = onSuccess,
-                builderOptions = {
-                    builderOptions()
-                        .httpHeaders(
-                            NetworkHeaders
-                                .Builder()
-                                .set(
+        onSuccess = { bitmap ->
+            onSuccess?.invoke(bitmap)
+        },
+        builderOptions = {
+            builderOptions()
+                .memoryCacheKey("url-image:$url")
+                .placeholderMemoryCacheKey("url-image:$url")
+                .httpHeaders(
+                    NetworkHeaders
+                        .Builder()
+                        .apply {
+                            user?.accessToken?.let {
+                                set(
                                     key = "Authorization",
-                                    value = "Bearer ${user?.accessToken}"
+                                    value = "Bearer $it"
                                 )
-                                .build()
-                        )
-                },
-                contentDescription = contentDescription,
-                tint = tint,
-            )
-        }
-    }
+                            }
+                        }
+                        .build()
+                )
+        },
+        contentDescription = contentDescription,
+        tint = tint,
+    )
 }

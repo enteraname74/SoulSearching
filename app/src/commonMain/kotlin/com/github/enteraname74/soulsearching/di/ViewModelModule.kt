@@ -26,12 +26,17 @@ import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.S
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudViewHolder
-import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodeViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodesViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations.SettingsCloudExplanationsViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.fetchmusic.SettingsCloudFetchMusicViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.join.SettingsCloudSharedListJoinViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.users.SettingsCloudUsersViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeViewModel
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain.SettingsThemeSelectionViewModel
@@ -66,8 +71,13 @@ internal val viewModelModule: Module = module {
     viewModelOf(::SettingsCloudSignInViewHolder)
     viewModelOf(::SettingsCloudSignUpViewHolder)
     viewModelOf(::SettingsCloudUserViewHolder)
-    viewModelOf(::SettingsCloudCodeViewHolder)
+    viewModelOf(::SettingsCloudCodesViewHolder)
+    viewModelOf(::SettingsCloudUsersViewHolder)
+    viewModelOf(::SettingsCloudSharedListViewHolder)
     viewModelOf(::SettingsCloudSyncViewHolder)
+    viewModelOf(::SettingsCloudSharedListJoinViewHolder)
+    viewModelOf(::SettingsCloudFetchMusicViewHolder)
+    viewModelOf(::SettingsCloudExplanationsViewHolder)
 
     // Main page
     viewModelOf(::MainPageViewModel)

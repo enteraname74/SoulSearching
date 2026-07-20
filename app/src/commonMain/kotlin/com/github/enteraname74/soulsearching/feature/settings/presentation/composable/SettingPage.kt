@@ -12,6 +12,7 @@ import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 
 @Composable
@@ -20,6 +21,7 @@ fun SettingPage(
     title: String,
     modifier: Modifier = Modifier,
     verticalPadding: Dp = 0.dp,
+    rightAction: TopBarActionSpec? = null,
     contentPadding: PaddingValues = PaddingValues(
         all = 0.dp
     ),
@@ -33,7 +35,8 @@ fun SettingPage(
                 title = title,
                 leftAction = TopBarNavigationAction(
                     onClick = navigateBack,
-                )
+                ),
+                rightAction = rightAction,
             )
             LazyColumnCompat(
                 contentPadding = contentPadding,

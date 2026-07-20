@@ -3,10 +3,12 @@ package com.github.enteraname74.domain.model
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Serializable
 data class CloudMusic(
     val fingerprint: String,
+    val userId: Uuid,
     val name: String,
     val album: CloudAlbum,
     val artists: List<CloudArtist>,
@@ -18,6 +20,7 @@ data class CloudMusic(
     val lastUpdateAtMillis: Long,
     val nbPlayed: Int,
     val isInQuickAccess: Boolean,
+    val scope: Scope,
 ) {
     fun toNewMusic(
         album: Album,
@@ -34,12 +37,13 @@ data class CloudMusic(
             localPath = null,
             remotePath = path,
             // TODO CLOUD: Better cloud folder indication?
-            folder = "Cloud",
+            folder = "Cloudy",
             duration = duration,
             addedDate = LocalDateTime.now(),
             nbPlayed = nbPlayed,
             isInQuickAccess = isInQuickAccess,
             isHidden = false,
             lastUpdatedMillis = lastUpdateAtMillis,
+            scope = scope,
         )
 }

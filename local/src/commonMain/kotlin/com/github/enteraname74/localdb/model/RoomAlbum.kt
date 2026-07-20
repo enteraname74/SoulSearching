@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.Scope
 import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.uuid.Uuid
@@ -36,6 +37,7 @@ data class RoomAlbum(
     @ColumnInfo(index = true)
     val artistId: UUID,
     val lastUpdatedMillis: Long?,
+    val scope: Scope,
 )
 
 /**
@@ -52,4 +54,5 @@ internal fun Album.toRoomAlbum(): RoomAlbum = RoomAlbum(
     remoteId = remoteId,
     lastUpdatedMillis = lastUpdateMillis,
     coverUrl = (cover as? Cover.Url)?.url,
+    scope = scope,
 )

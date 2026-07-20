@@ -25,8 +25,12 @@ data class Music(
     override val isInQuickAccess: Boolean = false,
     val isHidden: Boolean = false,
     val lastUpdatedMillis: Long?,
+    val scope: Scope,
 ) : QuickAccessible {
     val path: String? = localPath ?: remotePath
+    val isRemoteOnly: Boolean = localPath == null && remotePath != null
+    val isSynced: Boolean = localPath != null && remotePath != null
+    val isLocalOnly: Boolean = localPath != null && remotePath == null
 
     val informationText: String = "${artists.joinToString { it.artistName }} | ${album.albumName}"
 
@@ -46,18 +50,25 @@ data class Music(
     fun merge(
         cloudMusic: CloudMusic,
         album: Album,
-        artists: List<Artist>
+        artists: List<Artist>,
+        mergeMode: MergeMode,
     ): Music =
-        copy(
-            remoteId = cloudMusic.fingerprint,
-            name = cloudMusic.name,
-            album = album,
-            artists = artists,
-            remotePath = cloudMusic.path,
-            albumPosition = cloudMusic.albumPosition,
-            cover = cover.takeIf { !it.isEmpty() } ?: Cover.Url(cloudMusic.coverPath),
-            lastUpdatedMillis = cloudMusic.lastUpdateAtMillis,
-            nbPlayed = max(nbPlayed, cloudMusic.nbPlayed),
-            isInQuickAccess = cloudMusic.isInQuickAccess,
-        )
+        when (mergeMode) {
+            MergeMode.LocalFirst -> copy(
+                remoteId = cloudMusic.fingerprint,
+            )
+            MergeMode.RemoteFirst -> copy(
+                remoteId = cloudMusic.fingerprint,
+                name = cloudMusic.name,
+                album = album,
+                artists = artists,
+                remotePath = cloudMusic.path,
+                albumPosition = cloudMusic.albumPosition,
+                cover = cover.takeIf { !it.isEmpty() } ?: Cover.Url(cloudMusic.coverPath),
+                lastUpdatedMillis = cloudMusic.lastUpdateAtMillis,
+                nbPlayed = max(nbPlayed, cloudMusic.nbPlayed),
+                isInQuickAccess = cloudMusic.isInQuickAccess,
+                scope = cloudMusic.scope,
+            )
+        }
 }

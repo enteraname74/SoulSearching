@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.composables
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -26,14 +27,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_drag_handle
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_more_vertical
-import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.ext.chainIf
 import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
+import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -41,13 +44,15 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIcon
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconDefaults
+import com.github.enteraname74.soulsearching.feature.player.domain.state.UserTag
+import com.github.enteraname74.soulsearching.feature.player.ext.disabledIfNoAction
 
 @Composable
 fun MusicItemComposable(
     modifier: Modifier = Modifier,
     music: Music,
-    onClick: (Music) -> Unit,
-    onMoreClicked: () -> Unit,
+    onClick: ((Music) -> Unit)?,
+    onMoreClicked: (() -> Unit)?,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
     isPlayedMusic: Boolean,
@@ -57,6 +62,7 @@ fun MusicItemComposable(
     isSelectionModeOn: Boolean = false,
     padding: PaddingValues = PaddingValues(UiConstants.Spacing.medium),
     leadingSpec: MusicItemLeadingSpec = MusicItemLeadingSpec.Cover,
+    userTag: UserTag? = null,
 ) {
     BoxWithConstraints(
         modifier = modifier,
@@ -64,16 +70,18 @@ fun MusicItemComposable(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .combinedClickableWithRightClick(
-                    onClick = {
-                        if (isSelectionModeOn) {
-                            onLongClick()
-                        } else {
-                            onClick(music)
-                        }
-                    },
-                    onLongClick = onLongClick,
-                )
+                .chainIf(onClick != null) {
+                    Modifier.combinedClickableWithRightClick(
+                        onClick = {
+                            if (isSelectionModeOn) {
+                                onLongClick()
+                            } else {
+                                onClick?.invoke(music)
+                            }
+                        },
+                        onLongClick = onLongClick,
+                    )
+                }
                 .padding(padding),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -138,6 +146,8 @@ fun MusicItemComposable(
                     }
                 }
 
+                userTag?.let { UserTagView(it) }
+
                 if (reorderableModifier != null) {
                     SoulIcon(
                         modifier = reorderableModifier,
@@ -148,14 +158,35 @@ fun MusicItemComposable(
                     SoulIcon(
                         modifier = Modifier
                             .clip(CircleShape)
-                            .clickableWithHandCursor { onMoreClicked() },
+                            .optionalClickable(onMoreClicked),
                         icon = CoreRes.drawable.ic_more_vertical,
                         contentDescription = strings.moreButton,
-                        color = textColor
+                        color = textColor.disabledIfNoAction(onMoreClicked),
                     )
                 }
             }
         }
+    }
+}
+
+@Composable
+fun UserTagView(
+    userTag: UserTag
+) {
+    Box(
+        modifier = Modifier
+            .size(UiConstants.ImageSize.smallPlus)
+            .background(
+                color = userTag.containerColor,
+                shape = CircleShape,
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = userTag.username.firstOrNull()?.toString().orEmpty(),
+            style = UiConstants.Typography.bodySmall,
+            color = userTag.contentColor
+        )
     }
 }
 

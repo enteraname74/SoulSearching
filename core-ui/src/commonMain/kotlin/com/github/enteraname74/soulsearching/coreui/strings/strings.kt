@@ -1,11 +1,13 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
+import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
-import com.github.enteraname74.domain.model.User
+import com.github.enteraname74.domain.model.user.UserType
+import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
 import kotlin.time.Duration
 
-val strings = when(Locale.current.language) {
+val strings = when (Locale.current.language) {
     "fr" -> FrStrings
     else -> EnStrings
 }
@@ -335,21 +337,73 @@ interface Strings {
     val cloudRegistrationCode: String
     val cloudUserSettings: String
     val disconnect: String
-    val generateCodeTitle: String
-    val generateCodeText: String
+    val inscriptionCodeSettingsTitle: String
+    val generateCodeButton: String
+    val inscriptionCodeSettingsText: String
     val generatedCode: String
 
     val cloudSyncTitle: String
     val cloudSyncText: String
     val cloudSyncButton: String
-    val cloudSyncNotificationTitle: String
-    val cloudSyncNotificationText: String
 
     val musicChannelNotificationName: String
     val musicChannelNotificationDescription: String
     val cloudSyncChannelNotificationName: String
     val cloudSyncChannelNotificationDescription: String
-    fun userType(type: User.Type): String
+    val startSharedPlayedList: String
+
+    val sharedListTitle: String
+    val sharedListHost: String
+    val sharedListGuests: String
+    val sharedListCodeTitle: String
+    val sharedListCodeDescription: String
+
+    val sharedListRemoveUserTitle: String
+    val sharedListRemoveUserText: String
+    val sharedListRemoveUserButton: String
+
+    val sharedListCodeLabel: String
+    val cloudSharedListTitle: String
+    val cloudSharedListText: String
+    val cloudSharedListJoinTitle: String
+    val cloudSharedlistJoinText: String
+    val joinSharedListButton: String
+
+    val cloudFetchMusicTitle: String
+    val cloudFetchMusicText: String
+    val cloudFetchMusicFieldLabel: String
+    val cloudFetchMusicButton: String
+
+    val cloudUsersTitle: String
+    val cloudUsersText: String
+    val cloudUsersDeleteDialogTitle: String
+    val cloudUsersDeleteDialogText: String
+
+    val cloudAlphaWarningText: String
+
+    val cloudExplanationsTitle: String
+    val cloudExplanationsText: String
+    val cloudExplanationsRedirect: String
+    val cloudDocumentationURL: String
+        get() = "https://github.com/enteraname74/Cloudy/blob/main/README.md"
+
+    val cloudAddUrlToSharedListTitle: String
+    val add: String
+
+    val sharedListDeleteTitle: String
+    val sharedListDeleteText: String
+
+    val musicSyncedOnCloud: String
+    val musicRemoteOnly: String
+    val musicLocalOnly: String
+
+    fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
+    fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String
+
+    fun userType(type: UserType): String
+
+    fun cloudSyncNotificationTitle(state: SyncMusicWithCloudUseCase.State): String
+    fun cloudSyncNotificationText(state: SyncMusicWithCloudUseCase.State): String
 
     /**
      * Shows a text indicating the number of musics.

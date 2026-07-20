@@ -1,22 +1,24 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
 import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.model.User
-import com.github.enteraname74.domain.model.UserTokens
+import com.github.enteraname74.domain.model.user.SimpleUser
+import com.github.enteraname74.domain.model.user.User
+import com.github.enteraname74.domain.model.user.UserTokens
 import com.github.enteraname74.soulsearching.remote.di.HttpClientNames
-import com.github.enteraname74.soulsearching.remote.ext.bodyOrError
+import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.clearToken
 import com.github.enteraname74.soulsearching.remote.ext.safeRequest
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
-import com.github.enteraname74.soulsearching.remote.model.GeneratedCode
-import com.github.enteraname74.soulsearching.remote.model.RemoteUserAuth
-import com.github.enteraname74.soulsearching.remote.model.UserLogin
-import com.github.enteraname74.soulsearching.remote.model.UserSignIn
+import com.github.enteraname74.soulsearching.remote.model.user.RemoteSimpleUser
+import com.github.enteraname74.soulsearching.remote.model.user.RemoteUserAuth
+import com.github.enteraname74.soulsearching.remote.model.user.UserLogin
+import com.github.enteraname74.soulsearching.remote.model.user.UserSignIn
 import com.github.enteraname74.soulsearching.remote.resource.AuthResource
 import com.github.enteraname74.soulsearching.remote.resource.UserResource
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserRemoteDataSource
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.resources.delete
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
 import io.ktor.client.request.header
@@ -24,24 +26,24 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
-import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 import java.util.Locale
+import kotlin.uuid.Uuid
 
 class UserRemoteDataSourceImpl(
     private val cloudPreferencesDataSource: CloudPreferencesDataSource,
     private val client: HttpClient,
 ) : UserRemoteDataSource, KoinComponent {
-    private val cloudClient: HttpClient by inject(qualifier = named(HttpClientNames.CLOUD))
+    private val authenticatedClient: HttpClient by inject(qualifier = named(HttpClientNames.CLOUD))
 
     override suspend fun signIn(
         username: String,
         password: String
     ): User {
         return client
-            .withUrl(url = cloudPreferencesDataSource.observeUrl().firstOrNull().orEmpty())
+            .withUrl(url = cloudPreferencesDataSource.getUrl())
             .post(AuthResource.LogIn()) {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.AcceptLanguage, Locale.getDefault().language)
@@ -51,7 +53,7 @@ class UserRemoteDataSourceImpl(
                         password = password,
                     )
                 )
-            }.bodyOrError<RemoteUserAuth>().toUser()
+            }.bodyOrThrow<RemoteUserAuth>().toUser()
     }
 
     override suspend fun signUp(
@@ -60,7 +62,7 @@ class UserRemoteDataSourceImpl(
         code: String
     ): User =
         client
-            .withUrl(url = cloudPreferencesDataSource.observeUrl().firstOrNull().orEmpty())
+            .withUrl(url = cloudPreferencesDataSource.getUrl())
             .post(AuthResource.SignIn()) {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.AcceptLanguage, Locale.getDefault().language)
@@ -71,23 +73,29 @@ class UserRemoteDataSourceImpl(
                         inscriptionCode = code,
                     )
                 )
-            }.bodyOrError<RemoteUserAuth>().toUser()
+            }.bodyOrThrow<RemoteUserAuth>().toUser()
 
     override suspend fun refreshTokens(): SoulResult<UserTokens> =
-        cloudClient
-            .withUrl(url = cloudPreferencesDataSource.observeUrl().firstOrNull().orEmpty())
+        authenticatedClient
+            .withUrl(url = cloudPreferencesDataSource.getUrl())
             .safeRequest {
                 get(AuthResource.RefreshTokens())
             }
 
-    override suspend fun generateCode(): SoulResult<String> =
-        cloudClient
-            .withUrl(url = cloudPreferencesDataSource.observeUrl().firstOrNull().orEmpty())
-            .safeRequest<GeneratedCode> {
-                get(UserResource.GenerateCode())
-            }.map { it.code }
-
     override suspend fun logout() {
-        cloudClient.clearToken()
+        authenticatedClient.clearToken()
+    }
+
+    override suspend fun fetchAll(): List<SimpleUser> =
+        authenticatedClient
+            .withUrl(url = cloudPreferencesDataSource.getUrl())
+            .get(UserResource())
+            .bodyOrThrow<List<RemoteSimpleUser>>()
+            .map { it.toSimpleUsers() }
+
+    override suspend fun delete(userId: Uuid) {
+        authenticatedClient
+            .withUrl(url = cloudPreferencesDataSource.getUrl())
+            .delete(UserResource.Delete(id = userId))
     }
 }

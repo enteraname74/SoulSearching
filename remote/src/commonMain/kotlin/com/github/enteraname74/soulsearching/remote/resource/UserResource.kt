@@ -16,4 +16,15 @@ class UserResource {
     data class GenerateCode(
         val parent: UserResource = UserResource(),
     )
+
+    @Resource("codes")
+    data class AllCodes(
+        val parent: UserResource = UserResource()
+    )
+
+    @Resource("codes/{id}")
+    data class Code(
+        val parent: UserResource = UserResource(),
+        val id: Uuid
+    )
 }

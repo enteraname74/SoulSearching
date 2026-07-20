@@ -19,20 +19,21 @@ import java.util.UUID
 @Dao
 interface MusicDao {
 
+    @Upsert
+    suspend fun upsert(roomMusic: RoomMusic)
 
     @Upsert
-    suspend fun upsert(roomMusic : RoomMusic)
-
-    @Upsert
-    suspend fun upsertAll(roomMusics : List<RoomMusic>)
+    suspend fun upsertAll(roomMusics: List<RoomMusic>)
 
     @Delete
-    suspend fun delete(roomMusic : RoomMusic)
+    suspend fun delete(roomMusic: RoomMusic)
 
-    @Query("""
+    @Query(
+        """
         DELETE FROM RoomMusic WHERE 
         folder IN (SELECT RoomFolder.folderPath FROM RoomFolder WHERE RoomFolder.isSelected = 0)
-    """)
+    """
+    )
     suspend fun deleteFromUnselectedFolders()
 
     @Query("DELETE FROM RoomMusic WHERE musicId IN (:ids)")
@@ -40,26 +41,32 @@ interface MusicDao {
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE musicId = :musicId LIMIT 1")
-    fun getFromId(musicId : UUID): Flow<RoomCompleteMusic?>
+    fun getFromId(musicId: UUID): Flow<RoomCompleteMusic?>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE remoteId = :remoteId LIMIT 1")
     suspend fun getFromRemoteId(remoteId: String): RoomCompleteMusic?
+
+    @Query("SELECT musicId FROM RoomMusic WHERE remoteId IN (:remoteIds)")
+    suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<UUID>
+
+    @Query("SELECT remoteId FROM RoomMusic WHERE musicId IN (:ids) AND remoteId IS NOT NULL")
+    suspend fun getRemoteIdsFromIds(ids: List<UUID>): List<String>
 
     @Transaction
     @Query("SELECT DISTINCT * FROM RoomMusic WHERE musicId IN (:ids)")
     fun getFromIds(ids: List<UUID>): Flow<List<RoomCompleteMusic>>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY name ASC")
     fun getAll(): Flow<List<RoomCompleteMusic>>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE localPath IS NOT NULL AND isHidden = 0")
+    @Query("SELECT * FROM RoomMusic WHERE localPath IS NOT NULL AND isHidden = 0 AND scope != 'SharedPlayedList'")
     suspend fun getAllLocalMusic(): List<RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND isInQuickAccess = 1 ORDER BY name ASC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND isInQuickAccess = 1 AND scope != 'SharedPlayedList' ORDER BY name ASC")
     fun getAllFromQuickAccess(): Flow<List<RoomCompleteMusic>>
 
     @Query(
@@ -71,51 +78,51 @@ interface MusicDao {
     suspend fun getAllIdsFromUnselectedFolders(): List<UUID>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY name ASC")
     fun getAllPagedByNameAsc(): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY name ASC")
     suspend fun getAllByNameAsc(): List<RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name DESC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY name DESC")
     fun getAllPagedByNameDesc(): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name DESC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY name DESC")
     suspend fun getAllByNameDesc(): List<RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate ASC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY addedDate ASC")
     fun getAllPagedByDateAsc(): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate ASC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY addedDate ASC")
     suspend fun getAllByDateAsc(): List<RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate DESC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY addedDate DESC")
     fun getAllPagedByDateDesc(): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate DESC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY addedDate DESC")
     suspend fun getAllByDateDesc(): List<RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY nbPlayed ASC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY nbPlayed ASC")
     fun getAllPagedByNbPlayedAsc(): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY nbPlayed ASC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY nbPlayed ASC")
     suspend fun getAllByNbPlayedAsc(): List<RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY nbPlayed DESC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY nbPlayed DESC")
     fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
-    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY nbPlayed DESC")
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY nbPlayed DESC")
     suspend fun getAllByNbPlayedDesc(): List<RoomCompleteMusic>
 
     @Transaction
@@ -124,6 +131,7 @@ interface MusicDao {
             SELECT * FROM RoomMusic 
             WHERE isHidden = 0 
             AND albumId = :albumId
+            AND scope != 'SharedPlayedList'
             ORDER BY 
             CASE WHEN albumPosition IS NULL THEN 1 ELSE 0 END, 
             albumPosition,
@@ -138,6 +146,7 @@ interface MusicDao {
             SELECT * FROM RoomMusic 
             WHERE isHidden = 0 
             AND folder = :folder
+            AND scope != 'SharedPlayedList'
             ORDER BY name ASC
         """
     )
@@ -148,6 +157,7 @@ interface MusicDao {
         """
             SELECT * FROM RoomMusic 
             WHERE isHidden = 0 
+            AND scope != 'SharedPlayedList'
             AND strftime('%m/%Y', addedDate) = :month
             ORDER BY name ASC
         """
@@ -162,6 +172,7 @@ interface MusicDao {
             ON music.musicId = musicPlaylist.musicId 
             AND musicPlaylist.playlistId = :playlistId 
             AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList'
             ORDER BY name ASC
         """
     )
@@ -173,8 +184,9 @@ interface MusicDao {
             SELECT music.* FROM RoomMusic AS music
             INNER JOIN RoomMusicArtist as musicArtist
             ON music.musicId = musicArtist.musicId 
-            AND musicArtist.artistId = :artistId 
+            AND musicArtist.artistId = :artistId
             AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList'
             ORDER BY name ASC
         """
     )
@@ -189,15 +201,15 @@ interface MusicDao {
         """
             SELECT * FROM RoomMusic 
             WHERE isHidden = 0 
-            AND albumId = :albumId
+            AND albumId = :albumId 
+            AND scope != 'SharedPlayedList' 
             ORDER BY 
             CASE WHEN albumPosition IS NULL THEN 1 ELSE 0 END, 
             albumPosition,
             name
         """
     )
-    suspend fun getAllMusicFromAlbum(albumId : UUID) : List<RoomCompleteMusic>
-
+    suspend fun getAllMusicFromAlbum(albumId: UUID): List<RoomCompleteMusic>
 
     // TODO: Normalise with accents.
     @Transaction
@@ -205,6 +217,7 @@ interface MusicDao {
         """
             SELECT music.* FROM RoomMusic AS music
             WHERE music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             AND (
                 music.name LIKE '%' || :search || '%'
                 COLLATE NOCASE 
@@ -239,10 +252,11 @@ interface MusicDao {
         """
             SELECT SUM(duration) FROM RoomMusic 
             WHERE isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             AND albumId = :albumId
         """
     )
-    fun getAlbumDuration(albumId : UUID) : Flow<Long>
+    fun getAlbumDuration(albumId: UUID): Flow<Long>
 
     @Transaction
     @Query(
@@ -252,10 +266,11 @@ interface MusicDao {
             ON music.musicId = musicArtist.musicId 
             AND musicArtist.artistId = :artistId 
             AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             ORDER BY name ASC
         """
     )
-    suspend fun getAllMusicFromArtist(artistId : UUID) : List<RoomCompleteMusic>
+    suspend fun getAllMusicFromArtist(artistId: UUID): List<RoomCompleteMusic>
 
     // TODO: Normalise with accents.
     @Transaction
@@ -266,6 +281,7 @@ interface MusicDao {
             ON music.musicId = musicArtist.musicId 
             AND musicArtist.artistId = :artistId 
             AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             AND (
                 music.name LIKE '%' || :search || '%'
                 COLLATE NOCASE 
@@ -298,10 +314,11 @@ interface MusicDao {
             INNER JOIN RoomMusicArtist as musicArtist
             ON music.musicId = musicArtist.musicId 
             AND musicArtist.artistId = :artistId 
-            AND music.isHidden = 0
+            AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList'
         """
     )
-    fun getArtistDuration(artistId : UUID) : Flow<Long>
+    fun getArtistDuration(artistId: UUID): Flow<Long>
 
     @Transaction
     @Query(
@@ -310,11 +327,12 @@ interface MusicDao {
             INNER JOIN RoomMusicPlaylist as musicPlaylist
             ON music.musicId = musicPlaylist.musicId 
             AND musicPlaylist.playlistId = :playlistId 
-            AND music.isHidden = 0
+            AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList'
             ORDER BY name ASC
         """
     )
-    suspend fun getAllMusicFromPlaylist(playlistId : UUID) : List<RoomCompleteMusic>
+    suspend fun getAllMusicFromPlaylist(playlistId: UUID): List<RoomCompleteMusic>
 
     // TODO: Normalise with accents.
     @Transaction
@@ -325,6 +343,7 @@ interface MusicDao {
             ON music.musicId = musicPlaylist.musicId 
             AND musicPlaylist.playlistId = :playlistId 
             AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             AND (
                 music.name LIKE '%' || :search || '%'
                 COLLATE NOCASE 
@@ -357,21 +376,23 @@ interface MusicDao {
             INNER JOIN RoomMusicPlaylist as musicPlaylist
             ON music.musicId = musicPlaylist.musicId 
             AND musicPlaylist.playlistId = :playlistId 
-            AND music.isHidden = 0
+            AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
         """
     )
-    fun getPlaylistDuration(playlistId : UUID) : Flow<Long>
+    fun getPlaylistDuration(playlistId: UUID): Flow<Long>
 
     @Transaction
     @Query(
         """
             SELECT * FROM RoomMusic 
             WHERE isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             AND strftime('%m/%Y', addedDate) = :month
             ORDER BY name ASC
         """
     )
-    suspend fun getAllMusicFromMonth(month: String) : List<RoomCompleteMusic>
+    suspend fun getAllMusicFromMonth(month: String): List<RoomCompleteMusic>
 
     // TODO: Normalise with accents.
     @Transaction
@@ -379,6 +400,7 @@ interface MusicDao {
         """
             SELECT music.* FROM RoomMusic AS music
             WHERE music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             AND strftime('%m/%Y', music.addedDate) = :month
             AND (
                 music.name LIKE '%' || :search || '%'
@@ -410,21 +432,23 @@ interface MusicDao {
         """
             SELECT SUM(duration) FROM RoomMusic 
             WHERE isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             AND strftime('%m/%Y', addedDate) = :month
         """
     )
-    fun getMonthMusicsDuration(month: String) : Flow<Long>
+    fun getMonthMusicsDuration(month: String): Flow<Long>
 
     @Transaction
     @Query(
         """
             SELECT * FROM RoomMusic 
             WHERE isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             AND folder = :folder
             ORDER BY name ASC
         """
     )
-    suspend fun getAllMusicFromFolder(folder : String) : List<RoomCompleteMusic>
+    suspend fun getAllMusicFromFolder(folder: String): List<RoomCompleteMusic>
 
     // TODO: Normalise with accents.
     @Transaction
@@ -432,6 +456,7 @@ interface MusicDao {
         """
             SELECT music.* FROM RoomMusic AS music 
             WHERE music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             AND music.folder = :folder
             AND (
                 music.name LIKE '%' || :search || '%'
@@ -465,6 +490,7 @@ interface MusicDao {
         """
             SELECT music.* FROM RoomMusic AS music 
             WHERE music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             AND (
                 music.name LIKE '%' || :search || '%'
                 COLLATE NOCASE 
@@ -494,10 +520,11 @@ interface MusicDao {
         """
             SELECT SUM(duration) FROM RoomMusic 
             WHERE isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             AND folder = :folder
         """
     )
-    fun getFolderMusicsDuration(folder: String) : Flow<Long>
+    fun getFolderMusicsDuration(folder: String): Flow<Long>
 
     @Query("UPDATE RoomMusic SET albumId = :newAlbumId WHERE albumId = :legacyAlbumId")
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
@@ -505,10 +532,10 @@ interface MusicDao {
     @Query("UPDATE RoomMusic SET coverId = NULL")
     suspend fun cleanAllMusicCovers()
 
-    @Query("SELECT localPath FROM RoomMusic WHERE localPath IS NOT NULL")
+    @Query("SELECT localPath FROM RoomMusic WHERE localPath IS NOT NULL AND isHidden = 0 AND scope != 'SharedPlayedList'")
     suspend fun getAllMusicLocalPath(): List<String>
 
-    @Query("SELECT DISTINCT folder FROM RoomMusic")
+    @Query("SELECT DISTINCT folder FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList'")
     suspend fun getAllMusicFolders(): List<String>
 
     @Transaction
@@ -516,6 +543,7 @@ interface MusicDao {
         """
             SELECT * FROM RoomMusic 
             WHERE nbPlayed >= 1 AND isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             ORDER BY nbPlayed DESC 
             LIMIT 11
         """
@@ -523,7 +551,7 @@ interface MusicDao {
     fun getMostListened(): Flow<List<RoomCompleteMusic>>
 
     @Transaction
-    @Query("SELECT * FROM RoomMonthMusicPreview" )
+    @Query("SELECT * FROM RoomMonthMusicPreview")
     fun getAllMonthMusics(): Flow<List<RoomMonthMusicPreview>>
 
     @Transaction
@@ -561,6 +589,7 @@ interface MusicDao {
             SELECT * FROM RoomMusic 
             WHERE folder = :folder 
             AND isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             LIMIT :totalPerFolder
         """
     )
@@ -572,17 +601,17 @@ interface MusicDao {
     @Query(
         """
             SELECT remoteId FROM RoomMusic 
-            WHERE remoteId IS NOT NULL
+            WHERE remoteId IS NOT NULL AND scope != 'SharedPlayedList'
         """
     )
-    suspend fun getAllRemoteIds(): List<String>
+    suspend fun getAllRemoteIdsPossessedByUser(): List<String>
 
     @Transaction
     @Query(
         """
-            SELECT m.* FROM RoomMusic m
+            SELECT m.* FROM RoomMusic m 
             CROSS JOIN RoomCloudPreferences cp
-            WHERE m.lastUpdateMillis IS NULL
+            WHERE scope != 'SharedPlayedList' AND m.lastUpdateMillis IS NULL
                OR cp.lastSyncMillis IS NULL
                OR m.lastUpdateMillis > cp.lastSyncMillis 
                OR m.remoteId IS NULL
@@ -600,6 +629,15 @@ interface MusicDao {
     @Query("UPDATE RoomMusic SET remoteId = NULL WHERE remoteId IN (:remoteIds)")
     suspend fun clearRemoteIds(remoteIds: List<String>)
 
+    @Query("UPDATE RoomMusic SET remoteId = NULL")
+    suspend fun deleteAllRemoteIds()
+
     @Query("DELETE FROM RoomMusic WHERE localPath IS NULL AND remoteId IS NULL")
     suspend fun deleteNotExisting()
+
+    @Query("DELETE FROM RoomMusic WHERE scope = 'SharedPlayedList'")
+    suspend fun deleteSharedPlayedListMusics()
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE path = :path")
+    suspend fun getFromPath(path: String): RoomCompleteMusic?
 }

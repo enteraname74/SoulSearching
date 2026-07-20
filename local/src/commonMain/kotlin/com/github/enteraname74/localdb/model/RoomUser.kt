@@ -2,7 +2,8 @@ package com.github.enteraname74.localdb.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.enteraname74.domain.model.User
+import com.github.enteraname74.domain.model.user.User
+import com.github.enteraname74.domain.model.user.UserType
 import kotlin.uuid.Uuid
 
 @Entity
@@ -11,7 +12,7 @@ data class RoomUser(
     val username: String,
     val accessToken: String,
     val refreshToken: String,
-    val type: User.Type,
+    val type: UserType,
 ) {
     fun toUser(): User =
         User(

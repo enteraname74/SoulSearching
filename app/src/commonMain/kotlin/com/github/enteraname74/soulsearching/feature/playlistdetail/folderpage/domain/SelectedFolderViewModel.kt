@@ -8,10 +8,10 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
-import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
@@ -39,7 +39,7 @@ class SelectedFolderViewModel(
 ) : ViewModel(),
     PlaylistDetailListener {
 
-    val multiSelectionState = multiSelectionManager.state
+    val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -53,6 +53,7 @@ class SelectedFolderViewModel(
         .cachedIn(viewModelScope)
 
     private var _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val searchResult: Flow<List<Music>> = _searchQuery.flatMapLatest { search ->
         if (search.isNotBlank()) {
@@ -109,16 +110,6 @@ class SelectedFolderViewModel(
 
     override val onEdit: (() -> Unit)? = null
 
-    override fun onUpdateNbPlayed(musicId: UUID) {
-        viewModelScope.launch {
-            commonMusicUseCase.incrementNbPlayed(musicId = musicId)
-        }
-    }
-
-    override fun onUpdateNbPlayed() {
-        /* no-op */
-    }
-
     override fun onCloseSelection() {
         multiSelectionManager.clearMultiSelection()
     }
@@ -139,7 +130,6 @@ class SelectedFolderViewModel(
             val musics: List<Music> = commonMusicUseCase.getAllMusicFromFolder(folderPath)
 
             if (musics.isNotEmpty()) {
-                onUpdateNbPlayed()
                 playbackManager.playShuffle(
                     musicList = musics,
                     playlistId = folderPath,
@@ -155,7 +145,6 @@ class SelectedFolderViewModel(
             val musics: List<Music> = commonMusicUseCase.getAllMusicFromFolder(folderPath)
 
             if (musics.isNotEmpty()) {
-                onUpdateNbPlayed()
                 playbackManager.setCurrentPlaylistAndMusic(
                     music = music ?: musics.first(),
                     musicList = musics,
@@ -170,7 +159,6 @@ class SelectedFolderViewModel(
     override fun onSearch(search: String) {
         _searchQuery.value = search
     }
-
 
     override fun showMusicBottomSheet(musicIds: List<UUID>) {
         _navigationState.value = SelectedFolderNavigationState.ToMusicBottomSheet(musicIds)

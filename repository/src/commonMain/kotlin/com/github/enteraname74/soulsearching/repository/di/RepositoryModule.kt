@@ -19,8 +19,13 @@ val repositoryModule = module {
     singleOf(::MusicRepositoryImpl) bind MusicRepository::class
     single<PlayerRepository> {
         PlayerRepositoryImpl(
-            playerDataSource = get(),
+            playerLocalDataSource = get(),
             workScope = Dispatchers.IO,
+            playerRemoteDataSource = get(),
+            deviceLocalDataSource = get(),
+            userLocalDataSource = get(),
+            musicLocalDataSource = get(),
+            settings = get()
         )
     }
     singleOf(::PlaylistRepositoryImpl) bind PlaylistRepository::class
@@ -28,4 +33,5 @@ val repositoryModule = module {
     singleOf(::UserRepositoryImpl) bind UserRepository::class
     singleOf(::CloudPreferencesRepositoryImpl) bind CloudPreferencesRepository::class
     singleOf(::LyricsLocalDataSource)
+    singleOf(::UserInscriptionCodeRepositoryImpl) bind UserInscriptionCodeRepository::class
 }

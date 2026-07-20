@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cloud_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_playlist_add
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_playlist_play
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_playlist_remove
@@ -102,6 +103,15 @@ data class BottomSheetRowSpec(
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_playlist_remove,
                 title = strings.removeFromPlayedList,
+                onClick = onClick,
+            )
+
+        fun startSharedPlayedList(
+            onClick: () -> Unit,
+        ) : BottomSheetRowSpec =
+            BottomSheetRowSpec(
+                icon = CoreRes.drawable.ic_cloud_filled,
+                title = strings.startSharedPlayedList,
                 onClick = onClick,
             )
     }

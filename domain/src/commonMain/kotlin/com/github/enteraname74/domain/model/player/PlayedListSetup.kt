@@ -12,6 +12,8 @@ data class PlayedListSetup(
     val state: PlayedListState,
     val seekTo: Long? = null,
     val mode: PlayerMode = PlayerMode.Normal,
+    val type: PlayedListType,
+    val scope: PlayedListScope,
     val forceOverride: Boolean = false,
 ) {
     private val playedListId: UUID = UUID.randomUUID()
@@ -23,6 +25,8 @@ data class PlayedListSetup(
             isMainPlaylist = isMain,
             mode = mode,
             state = state,
+            type = type,
+            scope = scope,
         )
 
     fun toPlayerMusics(): List<PlayerMusic> {
@@ -48,6 +52,8 @@ data class PlayedListSetup(
             musics: List<Music>,
             playlistId: String?,
             isMain: Boolean,
+            type: PlayedListType,
+            scope: PlayedListScope,
             state: PlayedListState = PlayedListState.Loading,
         ): PlayedListSetup =
             PlayedListSetup(
@@ -58,6 +64,8 @@ data class PlayedListSetup(
                 isMain = isMain,
                 state = state,
                 mode = PlayerMode.Normal,
+                type = type,
+                scope = scope,
             )
     }
 }

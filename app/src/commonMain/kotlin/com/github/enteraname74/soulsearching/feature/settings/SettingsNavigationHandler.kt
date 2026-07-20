@@ -7,12 +7,17 @@ import com.github.enteraname74.soulsearching.feature.settings.aboutpage.develope
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudDestination
-import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodeDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodesDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations.SettingsCloudExplanationsDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.fetchmusic.SettingsCloudFetchMusicDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.join.SettingsCloudSharedListJoinDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.users.SettingsCloudUsersDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.SettingsThemeSelectionDestination
@@ -127,6 +132,10 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+        SettingsCloudFetchMusicDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
         SettingsCloudSignInDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
@@ -139,11 +148,27 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
-        SettingsCloudCodeDestination.register(
+        SettingsCloudCodesDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudUsersDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudSharedListDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
         SettingsCloudSyncDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudSharedListJoinDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudExplanationsDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
@@ -174,8 +199,13 @@ object SettingsNavigationHandler {
             subclass(SettingsCloudSignInDestination::class, SettingsCloudSignInDestination.serializer())
             subclass(SettingsCloudSignUpDestination::class, SettingsCloudSignUpDestination.serializer())
             subclass(SettingsCloudUserDestination::class, SettingsCloudUserDestination.serializer())
-            subclass(SettingsCloudCodeDestination::class, SettingsCloudCodeDestination.serializer())
+            subclass(SettingsCloudCodesDestination::class, SettingsCloudCodesDestination.serializer())
             subclass(SettingsCloudSyncDestination::class, SettingsCloudSyncDestination.serializer())
+            subclass(SettingsCloudSharedListJoinDestination::class, SettingsCloudSharedListJoinDestination.serializer())
+            subclass(SettingsCloudFetchMusicDestination::class, SettingsCloudFetchMusicDestination.serializer())
+            subclass(SettingsCloudUsersDestination::class, SettingsCloudUsersDestination.serializer())
+            subclass(SettingsCloudExplanationsDestination::class, SettingsCloudExplanationsDestination.serializer())
+            subclass(SettingsCloudSharedListDestination::class, SettingsCloudSharedListDestination.serializer())
         }
     }
 }

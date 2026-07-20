@@ -28,7 +28,7 @@ class SettingsStatisticsViewModel(
     ) { mostListenedMusics, mostListenedAlbums, mostListenedPlaylists, mostListenedArtists, artistsWithMostSongs ->
         SettingsStatisticsState(
             mostListenedMusics = mostListenedMusics.map { it.toListenedElement() },
-            mostListenedArtists = mostListenedArtists.map { it.toListenedElement() },
+            mostListenedArtists = mostListenedArtists.map { it.toMostPlayedListenedElements() },
             mostListenedPlaylists = mostListenedPlaylists.map { it.toListenedElement() },
             mostListenedAlbums = mostListenedAlbums.map { it.toListenedElement() },
             artistsWithMostSongs = artistsWithMostSongs.map { it.toMostSongsListenedElement() },

@@ -3,10 +3,15 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
+import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations.SettingsCloudExplanationsDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.fetchmusic.SettingsCloudFetchMusicDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.join.SettingsCloudSharedListJoinDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.users.SettingsCloudUsersDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
@@ -39,6 +44,22 @@ data object SettingsCloudDestination : SettingPage {
 
                     override fun toSync() {
                         navigator.push(SettingsCloudSyncDestination)
+                    }
+
+                    override fun toFetchMusic() {
+                        navigator.push(SettingsCloudFetchMusicDestination)
+                    }
+
+                    override fun toSharedList() {
+                        navigator.push(SettingsCloudSharedListDestination)
+                    }
+
+                    override fun toUsers() {
+                        navigator.push(SettingsCloudUsersDestination)
+                    }
+
+                    override fun toExplanations() {
+                        navigator.push(SettingsCloudExplanationsDestination)
                     }
                 }
             )

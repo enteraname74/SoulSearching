@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -16,12 +17,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import java.util.UUID
 
 class SettingsAllFoldersViewModel(
     private val commonFolderUseCase: CommonFolderUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
+    private val deleteMusicUseCase: DeleteMusicUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
@@ -58,17 +59,16 @@ class SettingsAllFoldersViewModel(
     }
 
     fun saveSelection() {
-        workScope.launch {
-            loadingManager.withLoading {
-                commonFolderUseCase.upsertAll(allFolders = state.value.folders)
+        loadingManager.withLoadingOnScope(workScope) {
+            commonFolderUseCase.upsertAll(allFolders = state.value.folders)
 
-                val musicIds: List<UUID> = commonMusicUseCase.getAllIdsFromUnselectedFolders()
-                commonMusicUseCase.deleteAllFromUnselectedFolders()
-                playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicIds)
-                feedbackPopUpManager.showFeedback(
-                    feedback = strings.savedChanges,
-                )
-            }
+            val musicIds: List<UUID> = commonMusicUseCase.getAllIdsFromUnselectedFolders()
+            deleteMusicUseCase.fromUnselectedFolders(ids = musicIds)
+            // TODO SHARED PLAYED LIST: Should we show the error if the call doesn't work?
+            playbackManager.removeSongsFromPlayedList(musicIds = musicIds)
+            feedbackPopUpManager.showFeedback(
+                feedback = strings.savedChanges,
+            )
         }
     }
 }

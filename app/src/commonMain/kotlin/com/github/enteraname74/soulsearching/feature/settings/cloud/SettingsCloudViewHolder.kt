@@ -15,7 +15,7 @@ class SettingsCloudViewHolder(
     SoulViewModelHolder<SettingsCloudActions, SettingsCloudNavScope, SettingsCloudState>(
         initialState = SettingsCloudState(
             user = null,
-            hasUrl = false,
+            hasUrl = null,
         )
     ),
     SettingsCloudActions {
@@ -58,6 +58,22 @@ class SettingsCloudViewHolder(
 
     override fun toSync() {
         navigate { toSync() }
+    }
+
+    override fun toSharedList() {
+        navigate { toSharedList() }
+    }
+
+    override fun toFetchMusic() {
+        navigate { toFetchMusic() }
+    }
+
+    override fun toUsers() {
+        navigate { toUsers() }
+    }
+
+    override fun toExplanations() {
+        navigate { toExplanations() }
     }
 
     @Composable

@@ -8,9 +8,13 @@ interface MusicRemoteDataSource {
     suspend fun getDeletedRemoteMusicIds(idsToCheck: List<String>): List<String>
     suspend fun updateMusicToCloud(music: Music): SoulResult<CloudMusic>
     suspend fun uploadMusicToCloud(music: Music): SoulResult<CloudMusic>
+
+    suspend fun delete(remoteIds: List<String>): SoulResult<Unit>
     suspend fun getOfUser(
         lastUpdateAt: Long?,
         maxPerPage: Int?,
         page: Int?,
     ): List<CloudMusic>
+
+    suspend fun fetch(url: String): CloudMusic
 }

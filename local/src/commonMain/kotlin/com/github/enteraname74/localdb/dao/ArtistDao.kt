@@ -45,7 +45,7 @@ interface ArtistDao {
     @Query("UPDATE RoomArtist SET coverFolderKey = NULL")
     suspend fun deactivateCoverFolderMode()
 
-    @Query("SELECT artistName FROM RoomArtist WHERE LOWER(artistName) LIKE LOWER('%' || :search || '%')")
+    @Query("SELECT artistName FROM RoomArtist WHERE LOWER(artistName) LIKE LOWER('%' || :search || '%') AND scope != 'SharedPlayedList'")
     suspend fun getArtistNamesContainingSearch(search: String): List<String>
 
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId LIMIT 1")
@@ -61,7 +61,7 @@ interface ArtistDao {
     @Transaction
     @Query(
         """
-            SELECT * FROM RoomArtistPreview 
+            SELECT * FROM RoomArtistPreview
             ORDER BY name ASC
         """
     )
@@ -161,7 +161,7 @@ interface ArtistDao {
             LIMIT 11
         """
     )
-    fun getArtistsWistMostMusics(): Flow<List<RoomArtistPreview>>
+    fun getArtistsWithMostMusics(): Flow<List<RoomArtistPreview>>
 
     @Query("UPDATE RoomArtist SET coverId = NULL")
     suspend fun cleanAllCovers()

@@ -11,16 +11,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.github.enteraname74.domain.model.User
+import com.github.enteraname74.domain.model.user.UserType
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_key
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
+import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 
 @Composable
 fun SettingsCloudUserScreen(
@@ -41,13 +43,16 @@ fun SettingsCloudUserScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(
                         all = UiConstants.Spacing.large,
+                    )
+                    .padding(
+                        bottom = PlayerMinimisedHeight.toDp()
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                if (state.user?.type == User.Type.Admin) {
+                if (state.user?.type == UserType.Admin) {
                     SoulMenuElement(
-                        title = strings.generateCodeTitle,
-                        subTitle = strings.generateCodeText,
+                        title = strings.inscriptionCodeSettingsTitle,
+                        subTitle = strings.inscriptionCodeSettingsText,
                         leadIcon = CoreRes.drawable.ic_key,
                         onClick = actions::toCode,
                     )

@@ -42,4 +42,8 @@ class RoomCloudPreferencesDataSourceImpl(
 
     override fun observePreferences(): Flow<CloudPreferences?> =
         appDatabase.cloudPreferencesDao.observe().map { it?.toCloudPreferences() }
+
+    override suspend fun clearLastSyncMillis() {
+        appDatabase.cloudPreferencesDao.clearLastSyncMillis()
+    }
 }

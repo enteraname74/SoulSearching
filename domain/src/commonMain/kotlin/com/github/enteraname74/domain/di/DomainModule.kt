@@ -10,11 +10,13 @@ import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertCloudArtistUseCase
 import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
+import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
+import com.github.enteraname74.domain.usecase.music.FetchMusicFromUrlUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.RemoveLocallyOrDeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
@@ -24,11 +26,22 @@ import com.github.enteraname74.domain.usecase.music.UploadMusicToCloudUseCase
 import com.github.enteraname74.domain.usecase.music.UpsertCloudMusicUseCase
 import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
+import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
+import com.github.enteraname74.domain.usecase.player.CreateSharedPlayedListUseCase
+import com.github.enteraname74.domain.usecase.player.FetchPlayedListMusicsUseCase
+import com.github.enteraname74.domain.usecase.player.JoinSharedPlayedListUseCase
+import com.github.enteraname74.domain.usecase.player.RegisterSharedPlayedListEventsListenerUseCase
+import com.github.enteraname74.domain.usecase.player.RemoveMusicsFromSharedPlayedListUseCase
+import com.github.enteraname74.domain.usecase.player.SyncMusicForPlayerIfNeededUseCase
+import com.github.enteraname74.domain.usecase.player.SyncPlayedListInformationUseCase
+import com.github.enteraname74.domain.usecase.player.SyncPlayedListMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.domain.usecase.user.LogoutFromCloudUseCase
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val domainModule = module {
@@ -57,13 +70,14 @@ val domainModule = module {
     // Music
     factoryOf(::CommonMusicUseCase)
     factoryOf(::DeleteMusicUseCase)
+    factoryOf(::FetchMusicFromUrlUseCase)
     factoryOf(::RemoveLocallyOrDeleteMusicUseCase)
     factoryOf(::IsMusicInFavoritePlaylistUseCase)
     factoryOf(::ToggleMusicFavoriteStatusUseCase)
     factoryOf(::UpsertCloudMusicUseCase)
     factoryOf(::UploadMusicToCloudUseCase)
     factoryOf(::UpdateMusicToCloudUseCase)
-    factoryOf(::SyncMusicWithCloudUseCase)
+    singleOf(::SyncMusicWithCloudUseCase)
 
     factoryOf(::DeleteEmptyAlbumsAndArtistsUseCase)
 
@@ -84,7 +98,22 @@ val domainModule = module {
 
     // User
     factoryOf(::CommonUserUseCase)
+    factoryOf(::LogoutFromCloudUseCase)
 
     // CloudPreferences
     factoryOf(::CommonCloudPreferencesUseCase)
+
+    // Cloud
+    factoryOf(::HasValidCloudInformationUseCase)
+
+    // Player
+    factoryOf(::CreateSharedPlayedListUseCase)
+    factoryOf(::FetchPlayedListMusicsUseCase)
+    factoryOf(::SyncMusicForPlayerIfNeededUseCase)
+    factoryOf(::SyncPlayedListMusicsUseCase)
+    factoryOf(::SyncPlayedListInformationUseCase)
+    factoryOf(::RegisterSharedPlayedListEventsListenerUseCase)
+    factoryOf(::AddMusicsToSharedPlayedListUseCase)
+    factoryOf(::RemoveMusicsFromSharedPlayedListUseCase)
+    factoryOf(::JoinSharedPlayedListUseCase)
 }

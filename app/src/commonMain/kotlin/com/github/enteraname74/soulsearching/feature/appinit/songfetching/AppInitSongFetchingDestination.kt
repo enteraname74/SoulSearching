@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.appinit.songfetching
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingNavigationState
+import com.github.enteraname74.soulsearching.feature.application.MainAppDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceMode
 import com.github.enteraname74.soulsearching.navigation.Navigator
@@ -26,6 +27,11 @@ data object AppInitSongFetchingDestination : NavKey {
                             navigator.push(
                                 MultipleArtistsChoiceDestination(MultipleArtistsChoiceMode.InitialFetch)
                             ) {
+                                clearBackStack = true
+                            }
+                        }
+                        AppInitSongFetchingNavigationState.ToApp -> {
+                            navigator.push(MainAppDestination) {
                                 clearBackStack = true
                             }
                         }

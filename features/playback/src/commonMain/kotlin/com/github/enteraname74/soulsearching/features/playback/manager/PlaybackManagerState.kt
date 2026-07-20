@@ -1,13 +1,15 @@
 package com.github.enteraname74.soulsearching.features.playback.manager
 
-import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListState
+import com.github.enteraname74.domain.model.player.PlayedListType
 import com.github.enteraname74.domain.model.player.PlayerMode
-import kotlinx.coroutines.flow.Flow
+import com.github.enteraname74.domain.model.player.SharedPlayedListUser
 
 sealed interface PlaybackManagerState {
-    data object Stopped: PlaybackManagerState
+    data object Stopped : PlaybackManagerState
     data class Data(
         val currentMusic: Music,
         val next: Music?,
@@ -18,7 +20,11 @@ sealed interface PlaybackManagerState {
         val playerMode: PlayerMode,
         val isPlaying: Boolean,
         val currentState: PlayedListState,
-    ): PlaybackManagerState
+        val currentScope: PlayedListScope,
+        val currentType: PlayedListType,
+        val users: List<SharedPlayedListUser>,
+        val playerMusicUsers: List<FullPlayerMusicUser>,
+    ) : PlaybackManagerState
 
     fun isEmpty(): Boolean =
         (this as? Data)?.listSize?.let { it == 0 } ?: true

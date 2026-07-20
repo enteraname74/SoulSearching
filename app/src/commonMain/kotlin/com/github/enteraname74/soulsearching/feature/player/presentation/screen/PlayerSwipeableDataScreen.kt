@@ -22,7 +22,6 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,7 +55,6 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.composa
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.ExpandedPlayerControlsComposable
 import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelDraggableView
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
-import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
@@ -66,23 +64,25 @@ fun BoxScope.PlayerSwipeableDataScreen(
     lyricsState: LyricsFetchState,
     settingsState: PlayerViewSettingsState,
     currentMusicProgression: Int,
-    onArtistClicked: (selectedArtist: Artist) -> Unit,
-    onAlbumClicked: () -> Unit,
+    onArtistClicked: ((selectedArtist: Artist) -> Unit)?,
+    onAlbumClicked: (() -> Unit)?,
     closeSelection: () -> Unit,
     showMusicBottomSheet: (musicId: UUID) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
+    onSwiped: ((Music) -> Unit)?,
+    onClickOnMusic: ((Music) -> Unit)?,
     multiSelectionState: MultiSelectionState,
-    toggleFavoriteState: () -> Unit,
-    seekTo: (newPosition: Int) -> Unit,
-    changePlayerMode: () -> Unit,
-    previous: () -> Unit,
-    togglePlayPause: () -> Unit,
-    next: () -> Unit,
+    toggleFavoriteState: (() -> Unit)?,
+    seekTo: ((newPosition: Int) -> Unit)?,
+    changePlayerMode: (() -> Unit)?,
+    previous: (() -> Unit)?,
+    togglePlayPause: (() -> Unit)?,
+    next: (() -> Unit)?,
     onActivateRemoteLyrics: () -> Unit,
+    onAddFromUrl: (() -> Unit)?,
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val alphaTransition = PlayerUiUtils.getAlphaTransition()
 
     val animatedBackgroundColor =
@@ -100,11 +100,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
             )
             .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
             .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED) {
-                coroutineScope.launch {
-                    playerViewManager.animateTo(
-                        newState = BottomSheetStates.EXPANDED,
-                    )
-                }
+                playerViewManager.animateTo(
+                    newState = BottomSheetStates.EXPANDED,
+                )
             }
             .align(Alignment.TopStart)
     ) {
@@ -114,7 +112,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
 
 
         AnimatedVisibility(
-            visible = settingsState.isMinimisedSongProgressionShown
+            visible = settingsState.isMinimisedSongProgressionShown && seekTo != null
         ) {
             LinearProgressIndicator(
                 modifier = Modifier
@@ -155,8 +153,8 @@ fun BoxScope.PlayerSwipeableDataScreen(
             } else {
                 null
             },
-            onSongInfoClicked = {
-                showMusicBottomSheet(state.currentMusic.musicId)
+            onSongInfoClicked = showMusicBottomSheet.let {
+                { it(state.currentMusic.musicId) }
             }
         )
 
@@ -180,9 +178,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 imageSize = imageSize,
                 horizontalPadding = imageHorizontalPadding,
                 topPadding = imageTopPadding,
-                onLongClick = {
-                    showMusicBottomSheet(state.currentMusic.musicId)
-                },
+                onLongClick = { showMusicBottomSheet(state.currentMusic.musicId) },
                 canSwipeCover = settingsState.canSwipeCover,
                 aroundSongs = state.aroundSongs,
                 currentMusic = state.currentMusic,
@@ -268,6 +264,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
                         multiSelectionState = multiSelectionState,
                         onLongSelectOnMusic = onLongSelectOnMusic,
                         onActivateRemoteLyrics = onActivateRemoteLyrics,
+                        onSwiped = onSwiped,
+                        onClickOnMusic = onClickOnMusic,
+                        onAddFromUrl = onAddFromUrl,
                     )
                 }
             }
@@ -288,6 +287,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 onLongSelectOnMusic = onLongSelectOnMusic,
                 closeSelection = closeSelection,
                 onActivateRemoteLyrics = onActivateRemoteLyrics,
+                onSwiped = onSwiped,
+                onClickOnMusic = onClickOnMusic,
+                onAddFromUrl = onAddFromUrl,
             )
         } else if (!PlayerUiUtils.canShowRowControlPanel()) {
             BoxWithConstraints(
@@ -316,6 +318,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
                     onLongSelectOnMusic = onLongSelectOnMusic,
                     multiSelectionState = multiSelectionState,
                     onActivateRemoteLyrics = onActivateRemoteLyrics,
+                    onSwiped = onSwiped,
+                    onClickOnMusic = onClickOnMusic,
+                    onAddFromUrl = onAddFromUrl,
                 )
             }
         }

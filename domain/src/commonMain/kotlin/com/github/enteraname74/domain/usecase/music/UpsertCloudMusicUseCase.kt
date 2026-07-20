@@ -3,24 +3,34 @@ package com.github.enteraname74.domain.usecase.music
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.CloudMusic
+import com.github.enteraname74.domain.model.MergeMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.UpsertCloudAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertCloudArtistUseCase
-import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
 import java.util.UUID
 
 class UpsertCloudMusicUseCase(
     private val upsertCloudAlbumUseCase: UpsertCloudAlbumUseCase,
     private val upsertCloudArtistUseCase: UpsertCloudArtistUseCase,
     private val musicRepository: MusicRepository,
-    private val commonMusicArtistUseCase: CommonMusicArtistUseCase,
 ) {
-    suspend operator fun invoke(cloudMusic: CloudMusic): Music {
+    suspend operator fun invoke(
+        cloudMusic: CloudMusic,
+        mergeMode: MergeMode,
+    ): Music {
         val artistsOfMusic: List<Artist> = cloudMusic.artists.map {
-            upsertCloudArtistUseCase(it)
+            upsertCloudArtistUseCase(
+                cloudArtist = it,
+                mergeMode = mergeMode,
+                scope = cloudMusic.scope,
+            )
         }
-        val albumOfMusic: Album = upsertCloudAlbumUseCase(cloudMusic.album)
+        val albumOfMusic: Album = upsertCloudAlbumUseCase(
+            cloudAlbum = cloudMusic.album,
+            mergeMode = mergeMode,
+            scope = cloudMusic.scope,
+        )
 
         val existingMusic: Music? = getExistingMusic(
             cloudMusic = cloudMusic,
@@ -31,17 +41,13 @@ class UpsertCloudMusicUseCase(
             cloudMusic = cloudMusic,
             album = albumOfMusic,
             artists = artistsOfMusic,
+            mergeMode = mergeMode,
         ) ?: cloudMusic.toNewMusic(
             album = albumOfMusic,
             artists = artistsOfMusic,
         )
 
         musicRepository.upsert(savedMusic)
-        commonMusicArtistUseCase.setArtistsOfMusic(
-            musicId = savedMusic.musicId,
-            artistIds = artistsOfMusic.map { it.artistId },
-        )
-
         return savedMusic
     }
 

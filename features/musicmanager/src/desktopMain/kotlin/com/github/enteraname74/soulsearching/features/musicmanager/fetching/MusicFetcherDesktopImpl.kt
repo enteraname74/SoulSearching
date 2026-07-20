@@ -4,6 +4,7 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -99,12 +100,16 @@ internal class MusicFetcherDesktopImpl(
                         ),
                         artists = artists,
                         duration = (audioFile.audioHeader.trackLength * 1_000).toLong(),
-                        path = file.path,
+                        localPath = file.path,
                         folder = file.parent,
                         cover = Cover.CoverFile(
                             initialCoverPath = file.path,
                         ),
                         albumPosition = tag.getFirst(FieldKey.TRACK)?.toIntOrNull(),
+                        scope = Scope.User,
+                        remoteId = null,
+                        remotePath = null,
+                        lastUpdatedMillis = null,
                     )
                     onMusicFetched(musicToAdd)
                 } catch (e: Exception) {

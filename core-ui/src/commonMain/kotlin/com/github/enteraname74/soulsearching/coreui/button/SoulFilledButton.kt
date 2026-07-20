@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.disableIf
 
 @Composable
 fun SoulFilledButton(
@@ -30,12 +31,14 @@ fun SoulFilledButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = colors.containerColor,
             contentColor = colors.contentColor,
+            disabledContainerColor = colors.containerColor.disableIf(!enabled),
+            disabledContentColor = colors.contentColor.disableIf(!enabled),
         ),
         contentPadding = contentPadding,
     ) {
         Text(
             text = text,
-            color = colors.contentColor,
+            color = colors.contentColor.disableIf(!enabled),
             style = UiConstants.Typography.body,
         )
     }

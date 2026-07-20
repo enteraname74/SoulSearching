@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.user
 
-import com.github.enteraname74.domain.model.User
+import com.github.enteraname74.domain.model.user.User
 
 data class SettingsCloudUserState(
     val user: User?,

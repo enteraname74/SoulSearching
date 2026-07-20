@@ -33,6 +33,7 @@ data class RoomCompleteAlbum(
             isInQuickAccess = roomAlbum.isInQuickAccess,
             remoteId = roomAlbum.remoteId,
             lastUpdateMillis = roomAlbum.lastUpdatedMillis,
+            scope = roomAlbum.scope,
         )
     }
 }

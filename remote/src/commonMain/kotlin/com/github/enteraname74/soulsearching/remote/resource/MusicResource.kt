@@ -17,4 +17,9 @@ class MusicResource {
         val maxPerPage: Int? = null,
         val page: Int? = null,
     )
+
+    @Resource("fetch")
+    data class FetchFromUrl(
+        val parent: MusicResource = MusicResource(),
+    )
 }

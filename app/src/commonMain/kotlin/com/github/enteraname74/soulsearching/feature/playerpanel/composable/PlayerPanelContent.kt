@@ -9,6 +9,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,9 @@ fun PlayerPanelContent(
     onMoreClickedOnMusic: (musicId: UUID) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
     onActivateRemoteLyrics: () -> Unit,
+    onSwiped: ((Music) -> Unit)?,
+    onClickOnMusic: ((Music) -> Unit)?,
+    onAddFromUrl: (() -> Unit)?,
     multiSelectionState: MultiSelectionState,
     contentColor: Color,
     subTextColor: Color,
@@ -51,7 +55,7 @@ fun PlayerPanelContent(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val pages = listOf(
+    val pages = listOfNotNull(
         TabData(
             title = strings.playedList,
             screen = {
@@ -66,6 +70,11 @@ fun PlayerPanelContent(
                     onLongSelectOnMusic = onLongSelectOnMusic,
                     multiSelectionState = multiSelectionState,
                     selectedIconColors = selectedIconColors,
+                    playedListScope = playerState.playedListScope,
+                    onSwiped = onSwiped,
+                    onClickOnMusic = onClickOnMusic,
+                    getUserTag = playerState::getUserTag,
+                    onAddFromUrl = onAddFromUrl,
                 )
             }
         ),
@@ -81,7 +90,21 @@ fun PlayerPanelContent(
                     onActivateRemoteLyrics = onActivateRemoteLyrics,
                 )
             }
-        )
+        ),
+        playerState.sharedListState?.let {
+            TabData(
+                title = strings.sharedListTitle,
+                screen = {
+                    SharedPlayedListView(
+                        state = it,
+                        contentColor = contentColor,
+                        containerColor = containerColor,
+                        secondaryContainerColor = buttonColors.containerColor,
+                        secondaryContentColor = buttonColors.contentColor,
+                    )
+                }
+            )
+        }
     )
 
     val pagerState = rememberPagerState(
@@ -96,7 +119,7 @@ fun PlayerPanelContent(
                 .fillMaxWidth()
                 .padding(
                     bottom = UiConstants.Spacing.small +
-                            getNavigationBarPadding().toDp()
+                        getNavigationBarPadding().toDp()
                 ),
         ) {
             pages.forEachIndexed { index, page ->
@@ -133,7 +156,8 @@ fun PlayerPanelContent(
         }
         HorizontalPager(
             state = pagerState,
-            userScrollEnabled = false
+            userScrollEnabled = false,
+            verticalAlignment = Alignment.Top,
         ) { pagePosition ->
             pages[pagePosition].screen()
         }

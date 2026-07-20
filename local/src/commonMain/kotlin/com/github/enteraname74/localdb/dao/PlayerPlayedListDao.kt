@@ -3,6 +3,7 @@ package com.github.enteraname74.localdb.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
+import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.localdb.model.player.RoomPlayerPlayedList
@@ -54,6 +55,15 @@ interface PlayerPlayedListDao {
 
     @Query(
         """
+            SELECT scope FROM RoomPlayerPlayedList 
+            WHERE state != "Cached"
+            LIMIT 1
+        """
+    )
+    fun getCurrentScope(): Flow<PlayedListScope?>
+
+    @Query(
+        """
             UPDATE RoomPlayerPlayedList 
             SET state = "Cached"
         """
@@ -77,6 +87,15 @@ interface PlayerPlayedListDao {
         """
     )
     suspend fun setState(state: PlayedListState)
+
+    @Query(
+        """
+            UPDATE RoomPlayerPlayedList 
+            SET scope = :scope 
+            WHERE state != "Cached"
+        """
+    )
+    suspend fun setScope(scope: PlayedListScope)
 
     @Query(
         """

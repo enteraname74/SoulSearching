@@ -161,7 +161,7 @@ internal class RoomArtistDataSourceImpl(
         )?.toArtistWithMusics()
 
     override fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>> =
-        appDatabase.artistDao.getArtistsWistMostMusics().map { list ->
+        appDatabase.artistDao.getArtistsWithMostMusics().map { list ->
             list.map { it.toArtistPreview() }
         }
 

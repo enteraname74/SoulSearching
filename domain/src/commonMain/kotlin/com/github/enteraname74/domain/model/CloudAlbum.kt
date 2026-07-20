@@ -17,6 +17,7 @@ data class CloudAlbum(
 ) {
     fun toNewAlbum(
         artist: Artist,
+        scope: Scope,
     ): Album =
         Album(
             albumId = UUID.randomUUID(),
@@ -28,5 +29,6 @@ data class CloudAlbum(
             nbPlayed = nbPlayed,
             isInQuickAccess = isInQuickAccess,
             lastUpdateMillis = lastUpdateAtMillis,
+            scope = scope,
         )
 }

@@ -20,6 +20,7 @@ data class Album(
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,
     val lastUpdateMillis: Long? = DateUtils.now(),
+    val scope: Scope = Scope.User,
 ) {
     override fun toString(): String =
         "Album(name: $albumName, id: $albumId, artist: $artist)"
@@ -27,15 +28,24 @@ data class Album(
     fun merge(
         cloudAlbum: CloudAlbum,
         artist: Artist,
+        mergeMode: MergeMode,
+        scope: Scope,
     ): Album =
-        copy(
-            remoteId = cloudAlbum.id,
-            albumName = cloudAlbum.name,
-            artist = artist,
-            // Prioritize local cover if possible.
-            cover = cover?.takeIf { !it.isEmpty() } ?: cloudAlbum.coverPath?.let { Cover.Url(it) },
-            nbPlayed = max(nbPlayed, cloudAlbum.nbPlayed),
-            isInQuickAccess = cloudAlbum.isInQuickAccess,
-            lastUpdateMillis = cloudAlbum.lastUpdateAtMillis,
-        )
+        when (mergeMode) {
+            MergeMode.LocalFirst ->
+                copy(
+                    remoteId = cloudAlbum.id,
+                )
+            MergeMode.RemoteFirst -> copy(
+                remoteId = cloudAlbum.id,
+                albumName = cloudAlbum.name,
+                artist = artist,
+                // Prioritize local cover if possible.
+                cover = cover?.takeIf { !it.isEmpty() } ?: cloudAlbum.coverPath?.let { Cover.Url(it) },
+                nbPlayed = max(nbPlayed, cloudAlbum.nbPlayed),
+                isInQuickAccess = cloudAlbum.isInQuickAccess,
+                lastUpdateMillis = cloudAlbum.lastUpdateAtMillis,
+                scope = scope,
+            )
+        }
 }

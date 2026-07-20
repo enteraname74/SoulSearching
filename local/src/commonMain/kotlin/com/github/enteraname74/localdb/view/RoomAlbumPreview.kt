@@ -20,7 +20,7 @@ import java.util.UUID
             CASE WHEN album.coverId IS NULL THEN 
                 (
                     SELECT music.coverId FROM RoomMusic AS music 
-                    WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+                    WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY 
                     CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
                     music.albumPosition, 
                     CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
@@ -30,7 +30,7 @@ import java.util.UUID
         ) AS coverId,
         (
             SELECT music.localPath FROM RoomMusic AS music 
-            WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+            WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY 
             CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
             music.albumPosition, 
             music.name 
@@ -38,7 +38,7 @@ import java.util.UUID
         ) AS musicCoverPath,
         (
             SELECT music.coverUrl FROM RoomMusic AS music 
-            WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
+            WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY 
             CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
             music.albumPosition, 
             music.name 
@@ -46,6 +46,7 @@ import java.util.UUID
         ) AS musicCoverUrl,
         album.isInQuickAccess 
         FROM RoomAlbum AS album 
+        WHERE album.scope != 'SharedPlayedList'
     """
 )
 data class RoomAlbumPreview(

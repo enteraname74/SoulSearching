@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Scope
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -41,7 +42,8 @@ data class RoomMusic(
     var isHidden: Boolean = false,
     var albumPosition: Int?,
     @ColumnInfo(index = true)
-    val albumId: UUID
+    val albumId: UUID,
+    val scope: Scope,
 )
 
 /**
@@ -65,4 +67,5 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     remotePath = remotePath,
     path = path,
     coverUrl = (cover as? Cover.Url)?.url,
+    scope = scope,
 )

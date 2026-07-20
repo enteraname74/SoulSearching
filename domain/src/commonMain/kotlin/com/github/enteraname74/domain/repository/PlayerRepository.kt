@@ -2,15 +2,11 @@ package com.github.enteraname74.domain.repository
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.player.AddMusicMode
-import com.github.enteraname74.domain.model.player.PlayedListSetup
-import com.github.enteraname74.domain.model.player.PlayedListState
-import com.github.enteraname74.domain.model.player.PlayedListToContinue
-import com.github.enteraname74.domain.model.player.PlayerMode
-import com.github.enteraname74.domain.model.player.PlayerMusic
-import com.github.enteraname74.domain.model.player.PlayerPlayedList
+import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.model.player.*
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import java.util.*
+import kotlin.uuid.Uuid
 
 interface PlayerRepository {
     fun getAllPaginated(): Flow<PagingData<Music>>
@@ -25,6 +21,7 @@ interface PlayerRepository {
     fun getCachedPlayedList(playlistId: String): Flow<PlayedListToContinue?>
     fun getCurrentPosition(): Flow<Int?>
     fun getCurrentProgress(): Flow<Int>
+    fun getCurrentScope(): Flow<PlayedListScope?>
 
     suspend fun deleteAll(musicIds: List<UUID>)
 
@@ -32,7 +29,18 @@ interface PlayerRepository {
 
     suspend fun deletePlayedList(playedListId: UUID)
 
-    suspend fun setup(playedListSetup: PlayedListSetup)
+    suspend fun deleteSharedListAndSync(listId: Uuid): SoulResult<Unit>
+
+    /**
+     * Setups a played list.
+     * Returns true if the played list was set up, false if the setup was skipped.
+     */
+    suspend fun setup(playedListSetup: PlayedListSetup): Boolean
+
+    suspend fun setupFromShared(
+        sharedPlayedList: SharedPlayedList,
+        playerMusics: List<PlayerMusic>,
+    )
 
     suspend fun moveMusic(
         fromMusicId: UUID,
@@ -42,6 +50,7 @@ interface PlayerRepository {
     suspend fun setCurrent(
         musicId: UUID,
     )
+
     suspend fun setProgress(progress: Int)
 
     suspend fun playNext()
@@ -50,6 +59,11 @@ interface PlayerRepository {
     suspend fun addAll(
         musics: List<Music>,
         mode: AddMusicMode,
+    )
+
+    suspend fun updatesMusics(
+        musicIdsToRemove: List<UUID>,
+        playerMusicsToAdd: List<PlayerMusic>,
     )
 
     suspend fun continuePlayedList(
@@ -63,4 +77,69 @@ interface PlayerRepository {
     suspend fun setPlayedListState(playedListState: PlayedListState)
 
     suspend fun togglePlayPause()
+
+    suspend fun createSharedPlayedList(
+        musicRemoteIds: List<String>
+    ): SharedPlayedList
+
+    suspend fun fetchPlayedListMusics(
+        playedListId: Uuid
+    ): List<SharedPlayerMusic>
+
+    suspend fun getDeletedRemoteMusicIds(
+        playedListId: Uuid,
+    ): List<UUID>
+
+    suspend fun addToSharedPlayedList(
+        musicRemoteIds: List<String>
+    )
+
+    suspend fun addMusicFromURL(url: String)
+
+    suspend fun removeFromSharedPlayedList(
+        musicRemoteIds: List<String>
+    )
+
+    suspend fun updateCurrentRemoteMusic(musicRemoteId: String)
+
+    suspend fun syncSharedPlayedList()
+
+    suspend fun joinSharedList(
+        code: String,
+    ): SharedPlayedList
+
+    suspend fun removeUser(
+        userId: Uuid,
+        deviceId: String,
+    )
+
+    fun observeCurrentSharedUsers(): Flow<List<SharedPlayedListUser>>
+
+    suspend fun registerSharedPlayedListEventsListener(
+        listener: SharedPlayedListListener
+    )
+
+    suspend fun removeSharedPlayedListEventsListener()
+
+    suspend fun setPlayerMusicUsers(playerMusicUsers: List<PlayerMusicUser>)
+
+    /**
+     * Observe the current list FullPlayerMusicUser if the list is a shared one (remote)
+     */
+    fun observeFullPlayerMusicUsers(): Flow<List<FullPlayerMusicUser>>
+
+    suspend fun getDeviceId(): String
+
+    suspend fun fetchUserListWhereIsIn(): SoulResult<Unit>
+
+    fun observeAllSharedPlayedListPreview(): Flow<List<SharedPlayedListPreview>>
+
+    suspend fun deleteAllSharedPlayedListPreviews()
+}
+
+interface SharedPlayedListListener {
+    suspend fun onConnected()
+    suspend fun onClose()
+    suspend fun onSyncPlayedList()
+    suspend fun onSyncMusics()
 }
