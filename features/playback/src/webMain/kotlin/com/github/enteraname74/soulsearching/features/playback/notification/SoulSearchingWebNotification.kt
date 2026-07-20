@@ -12,7 +12,6 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import kotlinx.browser.document
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.await
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -22,9 +21,6 @@ import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import kotlin.js.JsAny
 import kotlin.js.JsName
-import kotlin.js.JsString
-import kotlin.js.Promise
-import kotlin.js.definedExternally
 import kotlin.js.js
 import kotlin.js.unsafeCast
 import kotlin.uuid.ExperimentalUuidApi
@@ -37,9 +33,6 @@ class SoulSearchingWebNotification(
     private val playbackManager: PlaybackManager by inject()
     private val workScope = CoroutineScope(workDispatcher.dispatcher)
 
-    private var notification: BrowserNotification? = null
-    private var currentMusicId: String? = null
-
     override suspend fun update(updateData: UpdateData) {
         val artworkUrl = updateData.toArtworkUrl()
 
@@ -48,61 +41,11 @@ class SoulSearchingWebNotification(
             artworkUrl = artworkUrl,
         )
         updateMediaSessionActionHandlers(canControl = updateData.playedListScope.isAdmin)
-
-        val updatedMusicId = updateData.music.musicId.toString()
-        if (currentMusicId == updatedMusicId) return
-
-        currentMusicId = updatedMusicId
-        showNotification(
-            updateData = updateData,
-            artworkUrl = artworkUrl,
-        )
     }
 
     override fun dismiss() {
-        closeNotification()
         clearMediaSession()
         updateMediaSessionActionHandlers(canControl = false)
-        currentMusicId = null
-    }
-
-    private suspend fun showNotification(
-        updateData: UpdateData,
-        artworkUrl: String?,
-    ) {
-        if (!areNotificationsSupported()) return
-
-        val permission: String = when (BrowserNotification.permission) {
-            NOTIFICATION_PERMISSION_GRANTED -> {
-                NOTIFICATION_PERMISSION_GRANTED
-            }
-
-            NOTIFICATION_PERMISSION_DEFAULT -> {
-                val jsPermission: JsString =
-                    BrowserNotification.requestPermission().await()
-
-                jsPermission.toString()
-            }
-
-            else -> return
-        }
-
-        if (permission != NOTIFICATION_PERMISSION_GRANTED) return
-
-        closeNotification()
-
-        notification = BrowserNotification(
-            title = updateData.music.name,
-            options = notificationOptions(
-                body = updateData.music.artistsNames,
-                artworkUrl = artworkUrl,
-            ),
-        )
-    }
-
-    private fun closeNotification() {
-        notification?.close()
-        notification = null
     }
 
     private fun updateMediaSession(
@@ -168,21 +111,6 @@ class SoulSearchingWebNotification(
             webNavigator.mediaSession?.setActionHandler(MEDIA_ACTION_SEEK_TO, null)
         }
     }
-
-    private fun notificationOptions(
-        body: String,
-        artworkUrl: String?,
-    ): BrowserNotificationOptions =
-        newJsObject()
-            .unsafeCast<BrowserNotificationOptions>()
-            .apply {
-                this.body = body
-                tag = NOTIFICATION_TAG
-                renotify = false
-                silent = true
-                icon = artworkUrl
-                image = artworkUrl.takeIf { areNotificationImagesSupported() }
-            }
 
     private fun mediaMetadataOptions(
         title: String,
@@ -286,10 +214,6 @@ class SoulSearchingWebNotification(
         }.getOrNull()
 
     private companion object {
-        private const val NOTIFICATION_PERMISSION_GRANTED: String = "granted"
-        private const val NOTIFICATION_PERMISSION_DEFAULT: String = "default"
-        private const val NOTIFICATION_TAG: String = "soul-searching-current-music"
-
         private const val MEDIA_SESSION_NONE: String = "none"
         private const val MEDIA_SESSION_PAUSED: String = "paused"
         private const val MEDIA_SESSION_PLAYING: String = "playing"
@@ -322,12 +246,6 @@ private fun buildAbsoluteArtworkUrl(
 ): String =
     js("new URL(path, baseUrl.endsWith('/') ? baseUrl : baseUrl + '/').toString()")
 
-private fun areNotificationsSupported(): Boolean =
-    js("typeof Notification !== 'undefined'")
-
-private fun areNotificationImagesSupported(): Boolean =
-    js("typeof Notification !== 'undefined' && 'image' in Notification.prototype && !navigator.userAgent.includes('Firefox')")
-
 private fun isMediaSessionSupported(): Boolean =
     js("typeof navigator !== 'undefined' && 'mediaSession' in navigator && typeof MediaMetadata !== 'undefined'")
 
@@ -340,28 +258,6 @@ private fun setClampedArrayValue(
     value: Int,
 ) {
     js("array[index] = value")
-}
-
-@JsName("Notification")
-private external class BrowserNotification(
-    title: String,
-    options: BrowserNotificationOptions = definedExternally,
-) {
-    fun close()
-
-    companion object {
-        val permission: String
-        fun requestPermission(): Promise<JsString>
-    }
-}
-
-private external interface BrowserNotificationOptions : JsAny {
-    var body: String?
-    var icon: String?
-    var image: String?
-    var tag: String?
-    var renotify: Boolean?
-    var silent: Boolean?
 }
 
 @JsName("navigator")
