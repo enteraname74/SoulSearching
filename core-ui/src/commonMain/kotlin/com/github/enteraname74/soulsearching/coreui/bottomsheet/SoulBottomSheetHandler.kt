@@ -5,6 +5,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 fun SoulBottomSheetHandler(
     onClose: () -> Unit,
     colors: SoulBottomSheetColors = SoulBottomSheetDefaults.colors(),
+    onRemoveRequest: (suspend () -> Unit) -> Unit = {},
     content: @Composable (closeWithAnim: (callback: () -> Unit) -> Unit) -> Unit,
 ) {
     val windowSize = rememberWindowSize()
@@ -27,6 +29,7 @@ fun SoulBottomSheetHandler(
             SoulDrawer(
                 onClose = onClose,
                 colors = colors,
+                onRemoveRequest = onRemoveRequest,
                 content = content,
             )
         }
@@ -34,6 +37,7 @@ fun SoulBottomSheetHandler(
             BottomSheet(
                 onClose = onClose,
                 colors = colors,
+                onRemoveRequest = onRemoveRequest,
                 content = content,
             )
         }
@@ -45,10 +49,17 @@ fun SoulBottomSheetHandler(
 private fun BottomSheet(
     onClose: () -> Unit,
     colors: SoulBottomSheetColors = SoulBottomSheetDefaults.colors(),
+    onRemoveRequest: (suspend () -> Unit) -> Unit = {},
     content: @Composable (closeWithAnim: (callback: () -> Unit) -> Unit) -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(bottomSheetState) {
+        onRemoveRequest {
+            bottomSheetState.hide()
+        }
+    }
 
     val closeWithAnim: (callback: () -> Unit) -> Unit = { callback ->
         coroutineScope.launch {

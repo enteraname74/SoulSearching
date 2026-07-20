@@ -26,7 +26,7 @@ interface PlaylistDao {
     @Query("DELETE FROM RoomPlaylist WHERE playlistId IN (:ids) AND isFavorite = 0")
     suspend fun deleteAll(ids: List<Uuid>)
 
-    @Query("DELETE FROM RoomPlaylist WHERE remoteId IN (:ids) AND isFavorite = 0")
+    @Query("DELETE FROM RoomPlaylist WHERE remoteId IN (:remoteIds) AND isFavorite = 0")
     suspend fun deleteAllFromRemote(remoteIds: List<Uuid>)
 
     @Transaction
