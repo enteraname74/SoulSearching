@@ -399,8 +399,8 @@ object EnStrings : Strings {
             SyncDataWithCloudUseCase.State.Idle -> "Waiting"
             SyncDataWithCloudUseCase.State.NoMusicsToSend -> "No songs to send"
             SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Checking"
-            SyncDataWithCloudUseCase.State.Cleaning -> "Cleaning"
-            SyncDataWithCloudUseCase.State.ClearingRemoteIds -> "Cleaning"
+            SyncDataWithCloudUseCase.State.Cleaning -> "Cleaning songs"
+            SyncDataWithCloudUseCase.State.ClearingRemoteMusicIds -> "Cleaning songs"
             SyncDataWithCloudUseCase.State.FetchingFromRemote -> "Fetching songs"
             is SyncDataWithCloudUseCase.State.SavingRemote -> "Saving songs"
             is SyncDataWithCloudUseCase.State.UpdateMusics -> "Updating songs"
@@ -409,6 +409,7 @@ object EnStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Uploading playlists"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists"
             SyncDataWithCloudUseCase.State.Finish -> "Finish"
+            SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Cleaning playlists"
         }
 
     override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
@@ -418,8 +419,8 @@ object EnStrings : Strings {
             SyncDataWithCloudUseCase.State.Idle -> "Waiting for syncing to start"
             SyncDataWithCloudUseCase.State.NoMusicsToSend -> "No local songs to send to cloud"
             SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Checking for songs to send to cloud"
-            SyncDataWithCloudUseCase.State.Cleaning -> "Cleaning legacy local data after sync"
-            SyncDataWithCloudUseCase.State.ClearingRemoteIds -> "Cleaning legacy local data before sync"
+            SyncDataWithCloudUseCase.State.Cleaning -> "Cleaning legacy local songs after sync"
+            SyncDataWithCloudUseCase.State.ClearingRemoteMusicIds -> "Cleaning deleted remote songs before sync"
             SyncDataWithCloudUseCase.State.FetchingFromRemote -> "Fetching songs from cloud"
             is SyncDataWithCloudUseCase.State.SavingRemote -> "Saving fetched information from cloud"
             is SyncDataWithCloudUseCase.State.UpdateMusics -> "Updating existing remote musics to cloud"
@@ -427,6 +428,7 @@ object EnStrings : Strings {
             SyncDataWithCloudUseCase.State.FetchingRemotePlaylists -> "Fetching playlists from cloud"
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Uploading playlists to cloud"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists from cloud"
+            SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Cleaning deleted remote playlists"
         }
 
     override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =

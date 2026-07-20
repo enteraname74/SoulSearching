@@ -6,6 +6,9 @@ import com.github.enteraname74.domain.model.SoulResult
 import kotlin.uuid.Uuid
 
 interface PlaylistRemoteDataSource {
+
+    suspend fun getDeletedRemotePlaylistIds(idsToCheck: List<Uuid>): List<Uuid>
+
     suspend fun getOfUser(
         lastUpdateAt: Long?,
         maxPerPage: Int?,

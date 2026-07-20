@@ -22,6 +22,8 @@ interface PlaylistRepository {
      */
     suspend fun deleteAll(playlistIds: List<Uuid>): SoulResult<Unit>
 
+    suspend fun deleteAllFromRemote(remoteIds: List<Uuid>)
+
     /**
      * Retrieves a flow of all PlaylistWithMusics, sorted by name asc.
      */
@@ -60,4 +62,6 @@ interface PlaylistRepository {
     suspend fun fetchUpdatedPlaylistsFromCloud(lastSyncMillis: Long?): List<CloudPlaylist>
 
     suspend fun uploadToCloud(playlistWithMusics: PlaylistWithMusics): CloudPlaylist
+
+    suspend fun getDeletedRemotePlaylistIds(): List<Uuid>
 }

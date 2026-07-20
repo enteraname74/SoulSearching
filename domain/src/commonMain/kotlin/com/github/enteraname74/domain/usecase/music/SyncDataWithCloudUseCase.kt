@@ -18,6 +18,7 @@ import com.github.enteraname74.domain.util.DateUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlin.uuid.Uuid
 
 /**
  * Sync local songs with remote one.
@@ -41,7 +42,7 @@ class SyncDataWithCloudUseCase(
 
     suspend operator fun invoke(): SoulResult<Unit> {
         val result: SoulResult<Unit> = SoulResult.runCatching {
-            _state.value = State.ClearingRemoteIds
+            _state.value = State.ClearingRemoteMusicIds
             val idsNoLongerOnCloud: List<String> = musicRepository.getDeletedRemoteMusicIds()
             musicRepository.clearRemoteIds(idsNoLongerOnCloud)
 
@@ -168,6 +169,11 @@ class SyncDataWithCloudUseCase(
         lastSyncMillis: Long?,
         mergeMode: MergeMode,
     ) {
+        _state.value = State.ClearingRemotePlaylistIds
+        // For playlists, if synced playlists are no longer on the cloud, we will delete them
+        val idsNoLongerOnCloud: List<Uuid> = playlistRepository.getDeletedRemotePlaylistIds()
+        playlistRepository.deleteAllFromRemote(remoteIds = idsNoLongerOnCloud)
+
         _state.value = State.FetchingRemotePlaylists
         val updatedFromCloud: List<CloudPlaylist> = playlistRepository.fetchUpdatedPlaylistsFromCloud(
             lastSyncMillis = lastSyncMillis,
@@ -213,7 +219,7 @@ class SyncDataWithCloudUseCase(
         sealed interface EndState : State
 
         data object Idle : EndState
-        data object ClearingRemoteIds : WorkingState
+        data object ClearingRemoteMusicIds : WorkingState
         data object CheckingMusicsToSend : WorkingState
 
         data object NoMusicsToSend : EndState
@@ -231,6 +237,8 @@ class SyncDataWithCloudUseCase(
         data object FetchingRemotePlaylists : WorkingState
 
         data object SavingRemotePlaylists : WorkingState
+
+        data object ClearingRemotePlaylistIds : WorkingState
 
         data class UploadingPlaylists(override val progress: Float) : ProgressState
 

@@ -54,6 +54,12 @@ internal class RoomPlaylistLocalDataSourceImpl(
         )
     }
 
+    override suspend fun deleteAllFromRemote(remoteIds: List<Uuid>) {
+        appDatabase.playlistDao.deleteAllFromRemote(
+            remoteIds = remoteIds,
+        )
+    }
+
     override fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>> {
         return appDatabase.playlistDao.getAllPlaylistWithMusics().map { list ->
             list.map { it.toPlaylistWithMusics() }
@@ -146,4 +152,10 @@ internal class RoomPlaylistLocalDataSourceImpl(
         appDatabase.playlistDao.getAllToSendToCloud().map {
             it.toPlaylistWithMusics()
         }
+
+    override suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<Uuid> =
+        appDatabase.playlistDao.getRemoteIdsFromIds(ids = ids)
+
+    override suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid> =
+        appDatabase.playlistDao.getAllRemoteIdsPossessedByUser()
 }

@@ -23,6 +23,8 @@ interface PlaylistLocalDataSource {
      */
     suspend fun deleteAll(playlistIds: List<Uuid>)
 
+    suspend fun deleteAllFromRemote(remoteIds: List<Uuid>)
+
     /**
      * Retrieves a flow of all PlaylistWithMusics, sorted by name asc.
      */
@@ -57,4 +59,8 @@ interface PlaylistLocalDataSource {
     fun searchAll(search: String): Flow<List<PlaylistPreview>>
 
     suspend fun getAllToSendToCloud(): List<PlaylistWithMusics>
+
+    suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<Uuid>
+
+    suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid>
 }
