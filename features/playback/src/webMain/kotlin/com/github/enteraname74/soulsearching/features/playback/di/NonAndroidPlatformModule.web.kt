@@ -9,7 +9,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-internal actual val playbackPlatformModule: Module = module {
+internal actual val nonAndroidPlatformModule: Module = module {
     singleOf(::SoulSearchingWebNotification) bind SoulSearchingNotification::class
     singleOf(::SoulSearchingWebPlayerImpl) bind SoulSearchingPlayer::class
 }

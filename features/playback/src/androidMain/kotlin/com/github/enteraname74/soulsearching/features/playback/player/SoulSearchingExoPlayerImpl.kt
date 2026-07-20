@@ -203,19 +203,6 @@ class SoulSearchingExoPlayerImpl(
         }
     }
 
-    override suspend fun onlyLoadMusic(seekTo: Int) {
-        onPlayerThread {
-            player.prepare()
-            player.seekTo(seekTo.toLong())
-        }
-    }
-
-    override suspend fun launchMusic() {
-        onPlayerThread {
-            player.play()
-        }
-    }
-
     override suspend fun play() {
         onPlayerThread {
             player.play()

@@ -1,68 +1,66 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.base.State
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
+import java.io.File
 import kotlin.time.Duration.Companion.milliseconds
 
-class SoulSearchingDesktopPlayerImpl :
+class SoulSearchingDesktopPlayerImpl(
+    workDispatcher: WorkDispatcher,
+    private val signedPlaybackUrlProvider: SignedPlaybackUrlProvider,
+) :
     SoulSearchingPlayer,
     MediaPlayerEventAdapter() {
+    private val workScope = CoroutineScope(workDispatcher.dispatcher)
 
     private var player: MediaPlayer = AudioPlayerComponent().mediaPlayer()
-    private var isOnlyLoadingMusic: Boolean = false
-    private var positionToReachWhenLoadingMusic: Int = 0
-
     override var listener: SoulSearchingPlayer.Listener? = null
 
     init {
         init()
     }
 
-    override suspend fun registerListener(listener: SoulSearchingPlayer.Listener) {
-        this.listener = listener
-    }
-
     override fun finished(mediaPlayer: MediaPlayer?) {
         super.finished(mediaPlayer)
-        CoroutineScope(Dispatchers.IO).launch {
+        workScope.launch {
             listener?.onCompletion()
         }
     }
 
     override fun playing(mediaPlayer: MediaPlayer?) {
         super.playing(mediaPlayer)
+        workScope.launch {
+            listener?.onPlay()
+        }
     }
 
     override fun paused(mediaPlayer: MediaPlayer?) {
         super.paused(mediaPlayer)
+        workScope.launch {
+            listener?.onPause()
+        }
     }
 
     override fun stopped(mediaPlayer: MediaPlayer?) {
         super.stopped(mediaPlayer)
-    }
-
-    override fun mediaPlayerReady(mediaPlayer: MediaPlayer?) {
-        super.mediaPlayerReady(mediaPlayer)
+        workScope.launch {
+            listener?.onPause()
+        }
     }
 
     override fun error(mediaPlayer: MediaPlayer?) {
         super.error(mediaPlayer)
-        runBlocking {
+        workScope.launch {
             listener?.onError()
         }
-    }
-
-    override fun opening(mediaPlayer: MediaPlayer?) {
-        super.opening(mediaPlayer)
     }
 
     private fun init() {
@@ -78,31 +76,35 @@ class SoulSearchingDesktopPlayerImpl :
             }
             // Necessary to avoid blocking the app.
             delay(500.milliseconds)
-            // TODO CLOUD: Add remote player capability
-            player.media().prepare(music.path)
+            when {
+                music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
+                    player.media().prepare(music.path)
+                }
+                music.remotePath != null -> {
+                    setFromRemote(music = music)
+                }
+                else -> {
+                    listener?.onError()
+                }
+            }
+
         } catch (e: Exception) {
             println("SET MUSIC EXC: ${e.message}")
         }
     }
 
-    override suspend fun onlyLoadMusic(seekTo: Int) {
-        isOnlyLoadingMusic = true
-        positionToReachWhenLoadingMusic = seekTo
-        launchMusic()
-    }
+    private suspend fun setFromRemote(music: Music) {
+        val token = signedPlaybackUrlProvider.getUpdatedToken()
 
-    override suspend fun launchMusic() {
-        if (isOnlyLoadingMusic) {
-            /*
-             * When only loading the music, we try to seek to the last music position
-             * (when loading a previous song which was at a given position)
-             */
-            seekToPosition(positionToReachWhenLoadingMusic)
-            isOnlyLoadingMusic = false
-            positionToReachWhenLoadingMusic = 0
-        } else {
-            player.controls().play()
+        if (token == null || music.remoteId == null) {
+            listener?.onError()
+            return
         }
+        val musicUrl = signedPlaybackUrlProvider.getMusicUrl(
+            token = token,
+            remoteId = music.remoteId.orEmpty(),
+        )
+        player.media().prepare(musicUrl)
     }
 
     override suspend fun play() {

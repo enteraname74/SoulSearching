@@ -33,8 +33,12 @@ kotlin {
     sourceSets {
         val jsMain by getting
         val wasmJsMain by getting
-        val webMain = maybeCreate("webMain").apply {
+        val nonAndroidMain by creating {
             dependsOn(commonMain.get())
+        }
+
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(nonAndroidMain)
         }
 
         jsMain.dependsOn(webMain)
@@ -42,11 +46,14 @@ kotlin {
 
         val desktopMain by getting {
             dependencies {
-//                implementation(libs.jlibnotify)
+                //                implementation(libs.jlibnotify)
                 implementation(libs.coroutines.core.swing)
                 implementation(libs.vlcj)
             }
         }
+
+        desktopMain.dependsOn(nonAndroidMain)
+
         commonMain.dependencies {
             implementation(libs.compose.ui)
             implementation(libs.koin.core)
@@ -64,7 +71,7 @@ kotlin {
             implementation(libs.androidx.media3.datasource)
             implementation(libs.androidx.media3.session)
             implementation(libs.koin.androidx.compose)
-//            implementation(libs.ffmpeg)
+            //            implementation(libs.ffmpeg)
         }
     }
 }

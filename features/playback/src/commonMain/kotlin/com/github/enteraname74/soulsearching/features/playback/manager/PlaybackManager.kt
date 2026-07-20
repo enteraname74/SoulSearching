@@ -318,7 +318,7 @@ class PlaybackManager(
                     when (currentState) {
                         PlayedListState.Playing if playerScope?.isAdmin == true -> {
                             player.setMusic(currentMusic)
-                            player.launchMusic()
+                            player.play()
                         }
 
                         // We lost the admin status, and we were playing a song, we must stop the playback
@@ -329,9 +329,7 @@ class PlaybackManager(
                         PlayedListState.Paused, PlayedListState.Loading -> {
                             if (playerScope?.isAdmin == true) {
                                 player.setMusic(currentMusic)
-                                player.onlyLoadMusic(
-                                    seekTo = startSeek ?: 0,
-                                )
+                                player.seekToPosition(startSeek ?: 0)
                                 startSeek = 0
                                 playbackProgressJob.launchDurationJobIfNecessary()
                             }
@@ -551,7 +549,7 @@ class PlaybackManager(
                 playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
 
             player.setMusic(currentMusic)
-            player.launchMusic()
+            player.play()
             playerRepository.setPlayedListState(PlayedListState.Playing)
             launchMusicCount(currentMusic.musicId)
         } else {
