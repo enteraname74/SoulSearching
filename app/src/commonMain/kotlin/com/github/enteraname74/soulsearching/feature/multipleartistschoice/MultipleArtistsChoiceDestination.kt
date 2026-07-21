@@ -20,7 +20,7 @@ data class MultipleArtistsChoiceDestination(
             navigator: Navigator,
         ) {
             entryProviderScope.entry<MultipleArtistsChoiceDestination>(
-                metadata = NavigationAnimations.horizontal,
+                metadata = NavigationAnimations.horizontalMetadata,
             ) { key ->
                 MultipleArtistsChoiceRoute(
                     viewModel = koinViewModel {

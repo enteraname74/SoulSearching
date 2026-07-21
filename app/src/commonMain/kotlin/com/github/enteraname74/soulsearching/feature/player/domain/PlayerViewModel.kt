@@ -29,11 +29,7 @@ import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelecti
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
-import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
-import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
-import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
-import com.github.enteraname74.soulsearching.feature.player.domain.state.SharedListState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.*
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.dialog.AddUrlToSharedPlayedListDialog
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.dialog.RemoveUserFromPlayedListDialog
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -41,15 +37,7 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
 
@@ -225,44 +213,59 @@ class PlayerViewModel(
 
     init {
         viewModelScope.launch {
-            playbackManager.state.collectLatest { playbackState ->
-                val isCollapsed = playerViewManager.currentValue == BottomSheetStates.COLLAPSED
-                val hasRestoredPlayerView = savedStateHandle.get<Boolean>(PlayerViewInitKey) ?: false
-                when (playbackState) {
-                    /*
-                    If playback is stopped, we must ensure that the view is collapsed.
-                     */
-                    PlaybackManagerState.Stopped -> {
-                        playerViewManager.animateTo(BottomSheetStates.COLLAPSED)
+            playbackManager.state
+                .map { (it as? PlaybackManagerState.Data) != null }
+                .distinctUntilChanged()
+                .distinctUntilChanged()
+                .collectLatest { isData ->
+
+                    val isCollapsed = playerViewManager.currentValue == BottomSheetStates.COLLAPSED
+                    val hasRestoredPlayerView = savedStateHandle.get<Boolean>(PlayerViewInitKey) ?: false
+
+                    val isLoading =
+                        (playbackManager.state.firstOrNull() as? PlaybackManagerState.Data)?.currentState == PlayedListState.Loading
+
+                    when {
+                        /*
+                        If playback is stopped, we must ensure that the view is collapsed.
+                         */
+                        !isData -> {
+                            println("CLUELESS -- 1")
+                            playerViewManager.animateTo(BottomSheetStates.COLLAPSED)
+                        }
+                        /*
+                        On first app launch, if we had a played list,
+                        we need to move to minimized mode.
+                         */
+                        isData && !hasRestoredPlayerView && isCollapsed -> {
+                            println("CLUELESS -- 2")
+                            playerViewManager.animateTo(BottomSheetStates.MINIMISED)
+                        }
+                        /*
+                        If we have a played list,
+                        and we are in a loading state,
+                        we should animate to minimized mode if the view is collapsed.
+                         */
+                        isData && isCollapsed && isLoading -> {
+                            println("CLUELESS -- 3")
+                            playerViewManager.animateTo(BottomSheetStates.MINIMISED)
+                        }
+                        /*
+                        Finally, for other cases were the view is collapsed, and we have a played list,
+                        animate to expanded.
+                         */
+                        isData && isCollapsed -> {
+                            println("CLUELESS -- 4")
+                            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+                        }
+
+                        else -> {
+                            println("CLUELESS -- 5")
+                            // no-op
+                        }
                     }
-                    /*
-                    On first app launch, if we had a played list,
-                    we need to move to minimized mode.
-                     */
-                    is PlaybackManagerState.Data if !hasRestoredPlayerView && isCollapsed -> {
-                        playerViewManager.animateTo(BottomSheetStates.MINIMISED)
-                    }
-                    /*
-                    If we have a played list,
-                    and we are in a loading state,
-                    we should animate to minimized mode if the view is collapsed.
-                     */
-                    is PlaybackManagerState.Data if isCollapsed && playbackState.currentState == PlayedListState.Loading -> {
-                        playerViewManager.animateTo(BottomSheetStates.MINIMISED)
-                    }
-                    /*
-                    Finally, for other cases were the view is collapsed and we have a played list,
-                    animate to expanded.
-                     */
-                    is PlaybackManagerState.Data if isCollapsed -> {
-                        playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-                    }
-                    else -> {
-                        // no-op
-                    }
+                    savedStateHandle[PlayerViewInitKey] = true
                 }
-                savedStateHandle[PlayerViewInitKey] = true
-            }
         }
         viewModelScope.launch {
             playbackManager.currentCover.collectLatest { cover ->
@@ -319,7 +322,7 @@ class PlayerViewModel(
                     appearance = index,
                     status = owner.status,
                     isCurrentUser = owner.id == currentUser?.id
-                        && owner.deviceId == deviceId,
+                            && owner.deviceId == deviceId,
                     onRemove = null,
                 )
             }
@@ -330,7 +333,7 @@ class PlayerViewModel(
                 .flatMap { (_, duplicates) ->
                     duplicates.mapIndexedNotNull { index, user ->
                         val isCurrentUser = user.id == currentUser?.id
-                            && user.deviceId == deviceId
+                                && user.deviceId == deviceId
 
                         SharedListState.User(
                             id = user.id,

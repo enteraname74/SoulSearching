@@ -22,69 +22,72 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.KoinApplication
+import org.koin.dsl.koinConfiguration
 import java.awt.Frame
 import java.awt.Toolkit
 
 fun main() = application {
     FileKit.init(appId = "io.github.enteraname74.soulsearching")
     KoinApplication(
-        application = {
-            modules(appModule)
-        }
-    ) {
-        val settings: SoulSearchingSettings = injectElement()
-        val playbackManager: PlaybackManager = injectElement()
-        val windowState = rememberWindowState(
-            size = DpSize(
-                width = settings.get(SoulSearchingSettingsKeys.Desktop.WINDOW_WIDTH).dp,
-                height = settings.get(SoulSearchingSettingsKeys.Desktop.WINDOW_HEIGHT).dp
-                        + Toolkit.getDefaultToolkit().getScreenInsets(Frame().graphicsConfiguration).top.dp,
-            ),
-            placement = if (settings.get(SoulSearchingSettingsKeys.Desktop.IS_FULLSCREEN)) {
-                WindowPlacement.Fullscreen
-            } else {
-                WindowPlacement.Floating
-            },
-        )
-        Window(
-            state = windowState,
-            onCloseRequest = ::exitApplication,
-            title = strings.appName,
-            icon = painterResource(Res.drawable.app_icon),
-            onPreviewKeyEvent = {
-                playbackManager.handleKeyEvent(event = it)
-                false
+        configuration = koinConfiguration(
+            declaration = {
+                modules(appModule)
             }
-        ) {
-            MaterialTheme {
-                val windowHeight: Dp = windowState.size.height
-                val windowWidth = windowState.size.width
-
-                LaunchedEffect(windowHeight) {
-                    settings.set(
-                        key = SoulSearchingSettingsKeys.Desktop.WINDOW_HEIGHT.key,
-                        value = windowHeight.value,
-                    )
+        ),
+        content = {
+            val settings: SoulSearchingSettings = injectElement()
+            val playbackManager: PlaybackManager = injectElement()
+            val windowState = rememberWindowState(
+                size = DpSize(
+                    width = settings.get(SoulSearchingSettingsKeys.Desktop.WINDOW_WIDTH).dp,
+                    height = settings.get(SoulSearchingSettingsKeys.Desktop.WINDOW_HEIGHT).dp
+                            + Toolkit.getDefaultToolkit().getScreenInsets(Frame().graphicsConfiguration).top.dp,
+                ),
+                placement = if (settings.get(SoulSearchingSettingsKeys.Desktop.IS_FULLSCREEN)) {
+                    WindowPlacement.Fullscreen
+                } else {
+                    WindowPlacement.Floating
+                },
+            )
+            Window(
+                state = windowState,
+                onCloseRequest = ::exitApplication,
+                title = strings.appName,
+                icon = painterResource(Res.drawable.app_icon),
+                onPreviewKeyEvent = {
+                    playbackManager.handleKeyEvent(event = it)
+                    false
                 }
+            ) {
+                MaterialTheme {
+                    val windowHeight: Dp = windowState.size.height
+                    val windowWidth = windowState.size.width
 
-                LaunchedEffect(windowWidth) {
-                    settings.set(
-                        key = SoulSearchingSettingsKeys.Desktop.WINDOW_WIDTH.key,
-                        value = windowWidth.value,
-                    )
+                    LaunchedEffect(windowHeight) {
+                        settings.set(
+                            key = SoulSearchingSettingsKeys.Desktop.WINDOW_HEIGHT.key,
+                            value = windowHeight.value,
+                        )
+                    }
+
+                    LaunchedEffect(windowWidth) {
+                        settings.set(
+                            key = SoulSearchingSettingsKeys.Desktop.WINDOW_WIDTH.key,
+                            value = windowWidth.value,
+                        )
+                    }
+
+                    LaunchedEffect(windowState.placement) {
+                        settings.set(
+                            key = SoulSearchingSettingsKeys.Desktop.IS_FULLSCREEN.key,
+                            value = windowState.placement == WindowPlacement.Fullscreen,
+                        )
+                    }
+
+                    SoulSearchingDesktop()
                 }
-
-                LaunchedEffect(windowState.placement) {
-                    settings.set(
-                        key = SoulSearchingSettingsKeys.Desktop.IS_FULLSCREEN.key,
-                        value = windowState.placement == WindowPlacement.Fullscreen,
-                    )
-                }
-
-                SoulSearchingDesktop()
             }
-        }
-    }
+        })
 }
 
 @Composable

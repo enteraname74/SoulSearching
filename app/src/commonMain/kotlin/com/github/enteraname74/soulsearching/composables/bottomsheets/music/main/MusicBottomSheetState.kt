@@ -7,7 +7,7 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 
 data class MusicBottomSheetState(
     val musics: List<Music> = emptyList(),
-    val bottomSheetTopInformation: BottomSheetTopInformation = BottomSheetTopInformation(),
+    val bottomSheetTopInformation: BottomSheetTopInformation? = null,
     val rowSpecs: List<BottomSheetRowSpec> = emptyList(),
     val dialogState: SoulDialog? = null,
 )
