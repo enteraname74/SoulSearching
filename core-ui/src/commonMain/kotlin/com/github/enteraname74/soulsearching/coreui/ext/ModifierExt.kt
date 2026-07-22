@@ -66,9 +66,10 @@ fun Modifier.optionalClickable(onClick: (() -> Unit)?, onLongClick: (() -> Unit)
         )
     }
 
+@Composable
 fun Modifier.chainIf(
     condition: Boolean,
-    modifier: () -> Modifier,
+    modifier:  @Composable () -> Modifier,
 ): Modifier {
     val addedModifier = if (condition) modifier() else Modifier
     return this.then(addedModifier)
@@ -85,7 +86,10 @@ fun Modifier.disableFocus(): Modifier = this
     }
     .onKeyEvent { true }
 
+@Composable
 expect fun Modifier.combinedClickableWithRightClick(
+    enabled: Boolean = true,
+    withIndication: Boolean = true,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
 ): Modifier

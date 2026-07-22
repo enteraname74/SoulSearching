@@ -37,7 +37,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.blend
-import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.animated
@@ -98,14 +98,18 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 color = animatedBackgroundColor
             )
             .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
-            .clickableWithHandCursor(
+            .combinedClickableWithRightClick(
                 enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED,
                 withIndication = false,
-            ) {
-                playerViewManager.animateTo(
-                    newState = BottomSheetStates.EXPANDED,
-                )
-            }
+                onClick = {
+                    playerViewManager.animateTo(
+                        newState = BottomSheetStates.EXPANDED,
+                    )
+                },
+                onLongClick = showMusicBottomSheet.let {
+                    { it(state.currentMusic.musicId) }
+                }
+            )
             .align(Alignment.TopStart)
     ) {
 
