@@ -308,7 +308,7 @@ private class SoulSearchingSessionPlayer(
     override fun seekTo(positionMs: Long) {
         if (canControl()) {
             coroutineScope.launch {
-                playbackManager.seekToPosition(positionMs.toInt())
+                playbackManager.seekTo(positionMs.toInt())
             }
         }
     }

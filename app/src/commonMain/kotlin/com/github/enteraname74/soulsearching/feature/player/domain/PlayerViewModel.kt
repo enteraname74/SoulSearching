@@ -365,7 +365,7 @@ class PlayerViewModel(
      */
     fun seekTo(position: Int) {
         viewModelScope.launch {
-            playbackManager.seekToPosition(position = position)
+            playbackManager.seekTo(millis = position)
         }
     }
 

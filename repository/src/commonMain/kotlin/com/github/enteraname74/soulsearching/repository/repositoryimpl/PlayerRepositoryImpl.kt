@@ -88,6 +88,9 @@ class PlayerRepositoryImpl(
     override fun getCurrentScope(): Flow<PlayedListScope?> =
         playerLocalDataSource.getCurrentScope()
 
+    override suspend fun isAdminOfPlayedList(): Boolean =
+        playerLocalDataSource.getCurrentScope().firstOrNull()?.isAdmin == true
+
     override suspend fun setProgress(progress: Int) {
         playerLocalDataSource.setProgress(progress)
     }

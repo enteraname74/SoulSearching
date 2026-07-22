@@ -99,7 +99,7 @@ class SoulSearchingWebNotification(
             webNavigator.mediaSession?.setActionHandler(MEDIA_ACTION_SEEK_TO) { details ->
                 getSeekTime(details)?.let { seekTime ->
                     workScope.launch {
-                        playbackManager.seekToPosition((seekTime * MILLIS_IN_SECOND).toInt())
+                        playbackManager.seekTo((seekTime * MILLIS_IN_SECOND).toInt())
                     }
                 }
             }

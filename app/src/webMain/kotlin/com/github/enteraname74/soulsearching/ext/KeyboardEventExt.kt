@@ -14,5 +14,23 @@ fun KeyboardEvent.toKeyboardAction(): PlaybackManager.KeyboardAction? =
         shiftKey && code == "ArrowRight" ->
             PlaybackManager.KeyboardAction.Next
 
+        // Seeking
+        code == "ArrowLeft" ->
+            PlaybackManager.KeyboardAction.SeekBackward
+
+        code == "ArrowRight" ->
+            PlaybackManager.KeyboardAction.SeekForward
+
+        // Volume
+        code == "ArrowUp" ->
+            PlaybackManager.KeyboardAction.VolumeUp
+
+        code == "ArrowDown" ->
+            PlaybackManager.KeyboardAction.VolumeDown
+
+        // Favorite
+        code == "KeyF" ->
+            PlaybackManager.KeyboardAction.ToggleFavorite
+
         else -> null
     }
