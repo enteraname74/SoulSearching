@@ -51,7 +51,7 @@ class MusicBottomSheetViewModel(
     private val feedbackPopUpManager: FeedbackPopUpManager,
     hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
     settings: SoulSearchingSettings,
-    params: MusicBottomSheetDestination,
+    params: InnerMusicDestination,
 ) : ViewModel() {
     private val musicIds: List<Uuid> = params.musicIds
     private val playlistId: Uuid? = params.playlistId

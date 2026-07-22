@@ -33,13 +33,14 @@ open class SwipeableViewManager {
     private val _snapState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
     val snapState = _snapState.asStateFlow()
 
+    val isAnimationRunning: Boolean
+        get() = (_state.value != _nextState.value) && (_nextState.value != null)
+
     val currentValue: BottomSheetStates
         get() = draggableState.currentValue
     val targetValue: BottomSheetStates
         get() = draggableState.targetValue
 
-    val isAnimationRunning: Boolean
-        get() = draggableState.isAnimationRunning
     val offset: Float
         get() = draggableState.offset.value
 

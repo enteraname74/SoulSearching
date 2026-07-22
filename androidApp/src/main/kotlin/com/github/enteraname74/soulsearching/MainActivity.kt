@@ -21,7 +21,6 @@ import com.github.enteraname74.soulsearching.feature.appinit.MissingPermissionsC
 import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import com.github.enteraname74.soulsearching.ui.theme.SoulSearchingTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jaudiotagger.tag.TagOptionSingleton
@@ -51,31 +50,28 @@ class MainActivity : AppCompatActivity() {
             applicationViewModel.isPostNotificationGranted =
                 SoulSearchingContext.checkIfPostNotificationGranted()
 
-            SoulSearchingTheme {
-                val readPermissionLauncher = permissionLauncher { isGranted ->
-                    applicationViewModel.isReadPermissionGranted = isGranted
-                }
+            val readPermissionLauncher = permissionLauncher { isGranted ->
+                applicationViewModel.isReadPermissionGranted = isGranted
+            }
 
-                val postNotificationLauncher = permissionLauncher { isGranted ->
-                    applicationViewModel.isPostNotificationGranted = isGranted
-                }
+            val postNotificationLauncher = permissionLauncher { isGranted ->
+                applicationViewModel.isPostNotificationGranted = isGranted
+            }
 
-                if (
-                    !applicationViewModel.isReadPermissionGranted ||
-                    !applicationViewModel.isPostNotificationGranted
-                ) {
-                    MissingPermissionsComposable()
-                    SideEffect {
-                        checkAndAskMissingPermissions(
-                            isReadPermissionGranted = applicationViewModel.isReadPermissionGranted,
-                            isPostNotificationGranted = applicationViewModel.isPostNotificationGranted,
-                            readPermissionLauncher = readPermissionLauncher,
-                            postNotificationLauncher = postNotificationLauncher,
-                        )
-                    }
-                    return@SoulSearchingTheme
+            if (
+                !applicationViewModel.isReadPermissionGranted ||
+                !applicationViewModel.isPostNotificationGranted
+            ) {
+                MissingPermissionsComposable()
+                SideEffect {
+                    checkAndAskMissingPermissions(
+                        isReadPermissionGranted = applicationViewModel.isReadPermissionGranted,
+                        isPostNotificationGranted = applicationViewModel.isPostNotificationGranted,
+                        readPermissionLauncher = readPermissionLauncher,
+                        postNotificationLauncher = postNotificationLauncher,
+                    )
                 }
-
+            } else {
                 SoulSearchingApplication()
             }
         }

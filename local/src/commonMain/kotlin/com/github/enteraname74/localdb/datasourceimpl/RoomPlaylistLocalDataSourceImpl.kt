@@ -48,15 +48,15 @@ internal class RoomPlaylistLocalDataSourceImpl(
         )
     }
 
-    override suspend fun delete(playlist: Playlist) {
-        appDatabase.playlistDao.delete(
-            roomPlaylist = playlist.toRoomPlaylist()
-        )
-    }
-
     override suspend fun deleteAll(playlistIds: List<Uuid>) {
         appDatabase.playlistDao.deleteAll(
             ids = playlistIds,
+        )
+    }
+
+    override suspend fun deleteAllFromRemote(remoteIds: List<Uuid>) {
+        appDatabase.playlistDao.deleteAllFromRemote(
+            remoteIds = remoteIds,
         )
     }
 
@@ -185,6 +185,12 @@ internal class RoomPlaylistLocalDataSourceImpl(
         appDatabase.playlistDao.getAllToSendToCloud().map {
             it.toPlaylistWithMusics()
         }
+
+    override suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<Uuid> =
+        appDatabase.playlistDao.getRemoteIdsFromIds(ids = ids)
+
+    override suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid> =
+        appDatabase.playlistDao.getAllRemoteIdsPossessedByUser()
 }
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

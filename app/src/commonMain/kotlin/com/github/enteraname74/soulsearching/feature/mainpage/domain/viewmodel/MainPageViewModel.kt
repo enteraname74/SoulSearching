@@ -317,12 +317,8 @@ class MainPageViewModel(
             commonCoverUseCase.deleteUnusedFileCovers()
         }
 
-        if (PlatformUtils.platform == Platform.Web) {
-            coroutineScope.launch {
-                cloudBackgroundSyncJob.launchIfPossible()
-            }
-        }
         coroutineScope.launch {
+            cloudBackgroundSyncJob.launchIfPossible()
             hasValidCloudInformationUseCase().distinctUntilChanged().collectLatest { hasInfo ->
                 if (hasInfo) {
                     observeDataChangedForCloudSync()

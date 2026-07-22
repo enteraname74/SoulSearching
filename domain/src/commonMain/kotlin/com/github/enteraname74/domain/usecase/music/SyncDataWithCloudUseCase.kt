@@ -1,11 +1,6 @@
 package com.github.enteraname74.domain.usecase.music
 
-import com.github.enteraname74.domain.model.CloudMusic
-import com.github.enteraname74.domain.model.CloudPlaylist
-import com.github.enteraname74.domain.model.MergeMode
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.CloudPreferencesRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
@@ -13,10 +8,12 @@ import com.github.enteraname74.domain.usecase.DeleteEmptyAlbumsAndArtistsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UploadPlaylistToCloudUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertCloudPlaylistUseCase
 import com.github.enteraname74.domain.util.DateUtils
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlin.time.Duration.Companion.seconds
+import kotlin.uuid.Uuid
 
 /**
  * Sync local songs with remote one.
@@ -27,7 +24,7 @@ import kotlinx.coroutines.flow.first
 class SyncDataWithCloudUseCase(
     private val musicRepository: MusicRepository,
     private val cloudPreferencesRepository: CloudPreferencesRepository,
-    private val upsertCloudMusicUseCase: UpsertCloudMusicUseCase,
+    private val cloudMusicToMusicUseCase: CloudMusicToMusicUseCase,
     private val deleteEmptyAlbumsAndArtistsUseCase: DeleteEmptyAlbumsAndArtistsUseCase,
     private val updateMusicToCloudUseCase: UpdateMusicToCloudUseCase,
     private val uploadMusicToCloudUseCase: UploadMusicToCloudUseCase,
@@ -39,9 +36,8 @@ class SyncDataWithCloudUseCase(
     val state: StateFlow<State> = _state.asStateFlow()
 
     suspend operator fun invoke(): SoulResult<Unit> {
-        println("CLUELESS -- after before sync: ${musicRepository.getAll().first().size}")
         val result: SoulResult<Unit> = SoulResult.runCatching {
-            _state.value = State.ClearingRemoteIds
+            _state.value = State.ClearingRemoteMusicIds
             val idsNoLongerOnCloud: List<String> = musicRepository.getDeletedRemoteMusicIds()
             musicRepository.clearRemoteIds(idsNoLongerOnCloud)
 
@@ -50,12 +46,6 @@ class SyncDataWithCloudUseCase(
             if (musicsToSend.isEmpty()) {
                 _state.value = State.NoMusicsToSend
             }
-
-            val a = musicRepository.getAllFromQuickAccess().first().map { it.lastUpdatedMillis }
-            val pref = cloudPreferencesRepository.getLastSyncMillis()
-            val isAfter = pref?.let { a.firstOrNull()?.let { it > pref } }
-
-            println("CLUELESS -- musics to send: $musicsToSend, ${musicRepository.getAll().first().size}, $a, $pref, $isAfter")
 
             // TODO SYNC: Let user choose its merge mode.
             val mergeMode = MergeMode.LocalFirst
@@ -68,18 +58,33 @@ class SyncDataWithCloudUseCase(
                 music.remoteId != null
             }
 
+            val cachedAlbums: MutableSet<Album> = mutableSetOf()
+            val cachedArtists: MutableSet<Artist> = mutableSetOf()
+            val cachedMusics: MutableSet<Music> = mutableSetOf()
+
             // We keep track of the updated/uploaded songs to avoid re-saving them after the next sync.
-            val savedRemoteIds: List<String> = musicsToUpdate.mapIndexedNotNull { index, music ->
+            val builtMusics: List<Music> = musicsToUpdate.mapIndexedNotNull { index, music ->
                 _state.value = State.UpdateMusics(
                     progress = buildProgress(
                         index = index,
                         size = musicsToUpdate.size,
                     )
                 )
-                updateMusicToCloudUseCase(
+                val music = updateMusicToCloudUseCase(
                     music = music,
                     mergeMode = mergeMode,
-                )?.remoteId
+                    cachedArtists = cachedArtists,
+                    cachedAlbums = cachedAlbums,
+                    cachedMusics = cachedMusics,
+                )
+                music?.let {
+                    cachedAlbums += music.album
+                    cachedArtists += music.artists
+                    cachedArtists += music.album.artist
+                    cachedMusics += music
+                }
+                music
+
             } + musicsToUpload.mapIndexedNotNull { index, music ->
                 _state.value = State.UploadMusics(
                     progress = buildProgress(
@@ -87,11 +92,23 @@ class SyncDataWithCloudUseCase(
                         size = musicsToUpload.size,
                     )
                 )
-                uploadMusicToCloudUseCase(
+                val music = uploadMusicToCloudUseCase(
                     music = music,
                     mergeMode = mergeMode,
-                )?.remoteId
+                    cachedArtists = cachedArtists,
+                    cachedAlbums = cachedAlbums,
+                    cachedMusics = cachedMusics,
+                )
+                music?.let {
+                    cachedAlbums += music.album
+                    cachedArtists += music.artists
+                    cachedArtists += music.album.artist
+                    cachedMusics += music
+                }
+                music
             }
+            musicRepository.upsertAll(builtMusics)
+            val savedRemoteIds = builtMusics.map { it.remoteId }
 
             _state.value = State.FetchingFromRemote
             val lastSyncMillis = cloudPreferencesRepository.getLastSyncMillis()
@@ -105,21 +122,31 @@ class SyncDataWithCloudUseCase(
                 savedRemoteIds.none { it == music.fingerprint }
             }
             // Saving each song, with their album and artist
-            filteredSongsToSave.forEachIndexed { index, music ->
+            val toSave = filteredSongsToSave.mapIndexed { index, music ->
                 _state.value = State.SavingRemote(
                     progress = buildProgress(
                         index = index,
                         size = filteredSongsToSave.size,
                     )
                 )
-                upsertCloudMusicUseCase(
+                val music = cloudMusicToMusicUseCase(
                     cloudMusic = music,
                     mergeMode = mergeMode,
+                    cachedArtists = cachedArtists,
+                    cachedAlbums = cachedAlbums,
+                    cachedMusics = cachedMusics,
                 )
+                cachedAlbums += music.album
+                cachedArtists += music.artists
+                cachedArtists += music.album.artist
+                cachedMusics += music
+
+                music
             }
+            musicRepository.upsertAll(toSave)
             _state.value = State.Cleaning
+
             // Deleting potential empty albums, artists and music (localPath and remoteId null).
-            println("CLUELESS -- after before cleaning: ${musicRepository.getAll().first().size}")
             musicRepository.deleteNotExisting()
             deleteEmptyAlbumsAndArtistsUseCase()
 
@@ -130,10 +157,8 @@ class SyncDataWithCloudUseCase(
 
             // Update the sync date for the next time.
             cloudPreferencesRepository.setLastSyncMillis(DateUtils.now())
-            println("CLUELESS -- after sync: ${musicRepository.getAll().first().size}")
         }
 
-        println("CLUELESS -- result: $result")
         _state.value = if (result.isError()) State.Failure else State.Finish
 
         return result
@@ -143,35 +168,42 @@ class SyncDataWithCloudUseCase(
         lastSyncMillis: Long?,
         mergeMode: MergeMode,
     ) {
-        val playlistsToSend: List<PlaylistWithMusics> = playlistRepository.getAllToSendToCloud()
-        var updatedFromCloud: List<CloudPlaylist> = playlistRepository.fetchUpdatedPlaylistsFromCloud(
+        // For playlists, if synced playlists are no longer on the cloud, we will delete them
+        _state.value = State.ClearingRemotePlaylistIds
+        val idsNoLongerOnCloud: List<Uuid> = playlistRepository.getDeletedRemotePlaylistIds()
+        playlistRepository.deleteAllFromRemote(remoteIds = idsNoLongerOnCloud)
+
+        /*
+        We retrieve playlists from the cloud.
+        If there is already an already existing playlist, we will merge them.
+        No songs should be deleted from playlists.
+         */
+        _state.value = State.FetchingRemotePlaylists
+        val updatedFromCloud: List<CloudPlaylist> = playlistRepository.fetchUpdatedPlaylistsFromCloud(
             lastSyncMillis = lastSyncMillis,
         )
-        println("CLUELESS -- playlists: ${updatedFromCloud.size}")
-        if (updatedFromCloud.isNotEmpty()) {
-            val names: List<String> = playlistsToSend.map { it.playlist.name }
-            val favoriteChanged = playlistsToSend.any { it.playlist.isFavorite }
-
-            updatedFromCloud = updatedFromCloud.filter {
-                (it.playlist.name !in names) || if (favoriteChanged) {
-                    !it.playlist.isFavorite
-                } else {
-                    true
-                }
-            }
-        }
-        println("CLUELESS -- playlists to send: ${playlistsToSend.size}")
-        playlistsToSend.forEach {
-            val result = uploadPlaylistToCloudUseCase(
-                playlistWithMusics = it,
-                mergeMode = mergeMode,
-            )
-            println("CLUELESS -- result: $result")
-        }
+        _state.value = State.SavingRemotePlaylists
         upsertCloudPlaylistUseCase(
             cloudPlaylists = updatedFromCloud,
             mergeMode = mergeMode,
         )
+
+        /*
+        We then retrieve all playlists to send to cloud (old timestamp, no remote ids)
+         */
+        val playlistsToSend: List<PlaylistWithMusics> = playlistRepository.getAllToSendToCloud()
+        playlistsToSend.forEachIndexed { index, playlist ->
+            _state.value = State.UploadingPlaylists(
+                progress = buildProgress(
+                    index = index,
+                    size = playlistsToSend.size,
+                )
+            )
+            uploadPlaylistToCloudUseCase(
+                playlistWithMusics = playlist,
+                mergeMode = mergeMode,
+            )
+        }
     }
 
     private fun buildProgress(
@@ -194,7 +226,7 @@ class SyncDataWithCloudUseCase(
         sealed interface EndState : State
 
         data object Idle : EndState
-        data object ClearingRemoteIds : WorkingState
+        data object ClearingRemoteMusicIds : WorkingState
         data object CheckingMusicsToSend : WorkingState
 
         data object NoMusicsToSend : EndState
@@ -208,6 +240,14 @@ class SyncDataWithCloudUseCase(
         data class SavingRemote(override val progress: Float) : ProgressState
 
         data object Cleaning : WorkingState
+
+        data object FetchingRemotePlaylists : WorkingState
+
+        data object SavingRemotePlaylists : WorkingState
+
+        data object ClearingRemotePlaylistIds : WorkingState
+
+        data class UploadingPlaylists(override val progress: Float) : ProgressState
 
         data object Failure : EndState
 

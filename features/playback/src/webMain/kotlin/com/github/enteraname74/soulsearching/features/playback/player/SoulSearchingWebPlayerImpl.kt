@@ -1,32 +1,26 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.player.PlayerToken
-import com.github.enteraname74.domain.repository.CloudPreferencesRepository
-import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.browser.document
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.w3c.dom.HTMLAudioElement
 import kotlin.js.unsafeCast
-import kotlin.time.Clock
-import kotlin.time.Duration.Companion.minutes
 
 @OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
 class SoulSearchingWebPlayerImpl(
-    private val playerRepository: PlayerRepository,
-    private val cloudPreferencesRepository: CloudPreferencesRepository,
     workDispatcher: WorkDispatcher,
+    private val signedPlaybackUrlProvider: SignedPlaybackUrlProvider,
 ) : SoulSearchingPlayer {
     private val audio: HTMLAudioElement = document
         .createElement("audio")
         .unsafeCast<HTMLAudioElement>()
     private val workScope = CoroutineScope(workDispatcher.dispatcher)
 
-    private var playerToken: PlayerToken? = null
     private var currentSource: String? = null
+    private var sourceVersion: Int = 0
+    private var suppressedPauseEvents: Int = 0
 
     override var listener: SoulSearchingPlayer.Listener? = null
 
@@ -43,6 +37,11 @@ class SoulSearchingWebPlayerImpl(
             }
         }
         audio.addEventListener("pause") {
+            if (audio.ended || suppressedPauseEvents > 0) {
+                suppressedPauseEvents = (suppressedPauseEvents - 1).coerceAtLeast(0)
+                return@addEventListener
+            }
+
             workScope.launch {
                 listener?.onPause()
             }
@@ -54,52 +53,30 @@ class SoulSearchingWebPlayerImpl(
         }
     }
 
-    private suspend fun getUpdatedToken(): PlayerToken? {
-        val nearFuture = Clock.System.now().plus(2.minutes)
-
-        val isTokenValid = playerToken?.expireAt?.let { expireAt ->
-            expireAt < nearFuture
-        } ?: false
-
-        if (isTokenValid) return playerToken
-
-        playerToken = playerRepository.getPlayerToken().getOrNull()
-        return playerToken
-    }
-
-    private suspend fun getMusicUrl(
-        token: PlayerToken,
-        remoteId: String,
-    ): String =
-        "${cloudPreferencesRepository.observeUrl().firstOrNull().orEmpty()}/music/token?token=${token.token}&musicId=$remoteId"
-
     override suspend fun setMusic(music: Music) {
-        val token = getUpdatedToken()
+        val version = ++sourceVersion
+        val token = signedPlaybackUrlProvider.getUpdatedToken()
+
+        if (version != sourceVersion) return
 
         if (token == null || music.remoteId == null) {
             listener?.onError()
             return
         }
 
-        val musicUrl = getMusicUrl(
+        val musicUrl = signedPlaybackUrlProvider.getMusicUrl(
             token = token,
             remoteId = music.remoteId.orEmpty(),
         )
 
+        if (version != sourceVersion) return
         if (currentSource == musicUrl) return
 
-        audio.pause()
+        pauseSilently()
+        audio.currentTime = 0.0
         currentSource = musicUrl
         audio.src = musicUrl
         audio.load()
-    }
-
-    override suspend fun onlyLoadMusic(seekTo: Int) {
-        audio.currentTime = seekTo / MILLIS_IN_SECOND
-    }
-
-    override suspend fun launchMusic() {
-        play()
     }
 
     override suspend fun play() {
@@ -124,7 +101,8 @@ class SoulSearchingWebPlayerImpl(
         !audio.paused
 
     override suspend fun dismiss() {
-        audio.pause()
+        sourceVersion++
+        pauseSilently()
         audio.removeAttribute("src")
         currentSource = null
         audio.load()
@@ -146,6 +124,13 @@ class SoulSearchingWebPlayerImpl(
         audio.volume = volume
             .coerceIn(0f, 1f)
             .toDouble()
+    }
+
+    private fun pauseSilently() {
+        if (!audio.paused) {
+            suppressedPauseEvents++
+            audio.pause()
+        }
     }
 
     private companion object {

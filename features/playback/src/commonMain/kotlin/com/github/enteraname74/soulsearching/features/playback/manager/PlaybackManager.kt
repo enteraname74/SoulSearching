@@ -1,13 +1,8 @@
 package com.github.enteraname74.soulsearching.features.playback.manager
 
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEvent
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.isCtrlPressed
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.type
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.AddMusicMode
 import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
@@ -27,6 +22,7 @@ import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
+import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
 import com.github.enteraname74.domain.usecase.player.CreateSharedPlayedListUseCase
 import com.github.enteraname74.domain.usecase.player.RegisterSharedPlayedListEventsListenerUseCase
@@ -61,6 +57,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -81,6 +79,7 @@ class PlaybackManager(
     private val syncPlayedListInformationUseCase: SyncPlayedListInformationUseCase,
     private val syncPlayedListMusicsUseCase: SyncPlayedListMusicsUseCase,
     private val playbackEnvironment: SoulSearchingPlaybackEnvironment,
+    private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     workDispatcher: WorkDispatcher,
 ) : KoinComponent, SoulSearchingPlayer.Listener {
     private val notification: SoulSearchingNotification by inject()
@@ -323,7 +322,7 @@ class PlaybackManager(
                     when (currentState) {
                         PlayedListState.Playing if playerScope?.isAdmin == true -> {
                             player.setMusic(currentMusic)
-                            player.launchMusic()
+                            player.play()
                         }
 
                         // We lost the admin status, and we were playing a song, we must stop the playback
@@ -334,9 +333,7 @@ class PlaybackManager(
                         PlayedListState.Paused, PlayedListState.Loading -> {
                             if (playerScope?.isAdmin == true) {
                                 player.setMusic(currentMusic)
-                                player.onlyLoadMusic(
-                                    seekTo = startSeek ?: 0,
-                                )
+                                player.seekToPosition(startSeek ?: 0)
                                 startSeek = 0
                                 playbackProgressJob.launchDurationJobIfNecessary()
                             }
@@ -435,7 +432,7 @@ class PlaybackManager(
                                 playerRepository.getCurrentProgress().firstOrNull() ?: 0
 
                             player.setMusic(currentMusic)
-                            player.onlyLoadMusic(seekTo = currentProgress)
+                            player.seekToPosition(millis = currentProgress)
                             player.play()
                         }
                         playbackProgressJob.launchDurationJobIfNecessary()
@@ -502,63 +499,129 @@ class PlaybackManager(
      * Play or pause the player, depending on its current state.
      */
     suspend fun togglePlayPause() {
-        val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return
-        if (!playerScope.isAdmin) return
-
-        ensureReadyForPlayback()
-        playerRepository.togglePlayPause()
+        withAdminRight {
+            ensureReadyForPlayback()
+            playerRepository.togglePlayPause()
+        }
     }
 
     fun play() {
         workScope.launch {
-            val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return@launch
-            if (!playerScope.isAdmin) return@launch
-            if (playerRepository.getCurrentState().firstOrNull() == PlayedListState.Playing) return@launch
-
-            ensureReadyForPlayback()
-            playerRepository.setPlayedListState(PlayedListState.Playing)
+            withAdminRight {
+                if (playerRepository.getCurrentState().firstOrNull() == PlayedListState.Playing) return@withAdminRight
+                ensureReadyForPlayback()
+                playerRepository.setPlayedListState(PlayedListState.Playing)
+            }
         }
     }
 
     fun pause() {
         workScope.launch {
-            val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return@launch
-            if (!playerScope.isAdmin) return@launch
-            if (playerRepository.getCurrentState().firstOrNull() == PlayedListState.Paused) return@launch
-
-            playerRepository.setPlayedListState(PlayedListState.Paused)
+            withAdminRight {
+                if (playerRepository.getCurrentState().firstOrNull() == PlayedListState.Paused) return@withAdminRight
+                playerRepository.setPlayedListState(PlayedListState.Paused)
+            }
         }
     }
 
     /**
      * Seek to a given position in the current played music.
      */
-    suspend fun seekToPosition(position: Int) {
-        val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return
-        if (!playerScope.isAdmin) return
-
-        player.seekToPosition(position)
-        updateNotification()
-        playbackProgressJob.launchDurationJobIfNecessary()
+    suspend fun seekTo(millis: Int) {
+        withAdminRight {
+            player.seekToPosition(millis)
+            updateNotification()
+            playbackProgressJob.launchDurationJobIfNecessary()
+        }
     }
 
-    fun handleKeyEvent(event: KeyEvent) {
+    /**
+     * Seek forward in the current song.
+     * If the seek will go out of the bound of the current song, skip to the next one.
+     */
+    suspend fun seekForward() {
+        withAdminRight {
+            val currentPosMillis = player.getProgress()
+            val currentMusicDuration = player.getMusicDuration().takeIf { it > 0 } ?: return@withAdminRight
+            val newPosMillis = currentPosMillis + INNER_SEEK_MILLIS
+
+            if (newPosMillis >= currentMusicDuration) {
+                next()
+            } else {
+                player.seekToPosition(newPosMillis)
+            }
+        }
+    }
+
+    /**
+     * Seek backward in the current song.
+     * If the seek will go out of the bound of the song, play the previous one.
+     */
+    suspend fun seekBackward() {
+        withAdminRight {
+            val currentPosMillis = player.getProgress()
+            val newPosMillis = currentPosMillis - INNER_SEEK_MILLIS
+
+            if (newPosMillis < 0) {
+                previous()
+            } else {
+                player.seekToPosition(newPosMillis)
+            }
+        }
+    }
+
+    /**
+     * Up the volume by a step (0.1) if possible
+     */
+    fun volumeUp() {
+        val currentVolume = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME)
+        val newVolume = min(currentVolume + 0.1f, 1f)
+        settings.set(
+            key = SoulSearchingSettingsKeys.Player.PLAYER_VOLUME.key,
+            value = newVolume,
+        )
+    }
+
+    /**
+     * Lower the volume by a step (0.1) if possible
+     */
+    fun volumeDown() {
+        val currentVolume = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME)
+        val newVolume = max(currentVolume - 0.1f, 0f)
+        settings.set(
+            key = SoulSearchingSettingsKeys.Player.PLAYER_VOLUME.key,
+            value = newVolume,
+        )
+    }
+
+    suspend fun toggleFavorite() {
+        val currentMusic: Music = currentSong.value?.takeIf { it.scope != Scope.SharedPlayedList } ?: return
+        toggleMusicFavoriteStatusUseCase(musicId = currentMusic.musicId)
+    }
+
+    fun handleKeyboardAction(action: KeyboardAction) {
         workScope.launch {
-            val currentState: PlayedListState = playerRepository
+            // Block if no played list is available
+            playerRepository
                 .getCurrentState()
-                .firstOrNull() ?: return@launch
+                .firstOrNull()
+                ?.takeIf { it != PlayedListState.Cached } ?: return@launch
 
-            if (event.isCtrlPressed && event.type == KeyEventType.KeyUp) {
-                // If no music is being played, we do nothing
-                if (currentState == PlayedListState.Cached) return@launch
+            // Block if we cannot control the played list
+            playerRepository
+                .getCurrentScope()
+                .firstOrNull()
+                ?.takeIf { it.isAdmin } ?: return@launch
 
-                when (event.key) {
-                    Key.P -> togglePlayPause()
-                    Key.B, Key.DirectionLeft -> previous()
-                    Key.N, Key.DirectionRight -> next()
-                    else -> { /*no-op*/
-                    }
-                }
+            when (action) {
+                KeyboardAction.TogglePlayPause -> togglePlayPause()
+                KeyboardAction.Previous -> previous()
+                KeyboardAction.Next -> next()
+                KeyboardAction.SeekForward -> seekForward()
+                KeyboardAction.SeekBackward -> seekBackward()
+                KeyboardAction.VolumeUp -> volumeUp()
+                KeyboardAction.VolumeDown -> volumeDown()
+                KeyboardAction.ToggleFavorite -> toggleFavorite()
             }
         }
     }
@@ -567,23 +630,22 @@ class PlaybackManager(
      * Play the next song in queue.
      */
     suspend fun next() {
-        val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
-        val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return
-        if (!playerScope.isAdmin) return
+        withAdminRight {
+            val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return@withAdminRight
+            val size: Int = playerRepository.getSize().firstOrNull() ?: return@withAdminRight
 
-        val size: Int = playerRepository.getSize().firstOrNull() ?: return
+            if (playerMode == PlayerMode.Loop || size == 1) {
+                val currentMusic: Music =
+                    playerRepository.getCurrentMusic().firstOrNull()?.music ?: return@withAdminRight
 
-        if (playerMode == PlayerMode.Loop || size == 1) {
-            val currentMusic: Music =
-                playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
-
-            ensureReadyForPlayback()
-            player.setMusic(currentMusic)
-            player.launchMusic()
-            playerRepository.setPlayedListState(PlayedListState.Playing)
-            launchMusicCount(currentMusic.musicId)
-        } else {
-            playerRepository.playNext()
+                ensureReadyForPlayback()
+                player.setMusic(currentMusic)
+                player.play()
+                playerRepository.setPlayedListState(PlayedListState.Playing)
+                launchMusicCount(currentMusic.musicId)
+            } else {
+                playerRepository.playNext()
+            }
         }
     }
 
@@ -591,25 +653,24 @@ class PlaybackManager(
      * Play the previous song in queue.
      */
     suspend fun previous(skipRewind: Boolean = false) {
-        val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return
-        val playerScope: PlayedListScope = playerRepository.getCurrentScope().firstOrNull() ?: return
-        if (!playerScope.isAdmin) return
+        withAdminRight {
+            val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return@withAdminRight
+            val size: Int = playerRepository.getSize().firstOrNull() ?: return@withAdminRight
+            val shouldRewind =
+                settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD && !skipRewind
 
-        val size: Int = playerRepository.getSize().firstOrNull() ?: return
-        val shouldRewind =
-            settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD && !skipRewind
+            if (shouldRewind || playerMode == PlayerMode.Loop || size == 1) {
+                val currentMusicId: Uuid =
+                    playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return@withAdminRight
 
-        if (shouldRewind || playerMode == PlayerMode.Loop || size == 1) {
-            val currentMusicId: Uuid =
-                playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return
-
-            ensureReadyForPlayback()
-            player.seekToPosition(0)
-            updateNotification()
-            playerRepository.setPlayedListState(PlayedListState.Playing)
-            launchMusicCount(currentMusicId)
-        } else {
-            playerRepository.playPrevious()
+                ensureReadyForPlayback()
+                player.seekToPosition(0)
+                updateNotification()
+                playerRepository.setPlayedListState(PlayedListState.Playing)
+                launchMusicCount(currentMusicId)
+            } else {
+                playerRepository.playPrevious()
+            }
         }
     }
 
@@ -785,6 +846,14 @@ class PlaybackManager(
     suspend fun getDeviceId(): String =
         playerRepository.getDeviceId()
 
+    private suspend fun withAdminRight(
+        block: suspend () -> Unit
+    ) {
+        if (playerRepository.isAdminOfPlayedList()) {
+            block()
+        }
+    }
+
     /**************** PLAYER LISTENER ******************/
 
     override suspend fun onCompletion() {
@@ -806,5 +875,18 @@ class PlaybackManager(
     companion object {
         private const val REWIND_THRESHOLD: Long = 5_000
         private const val WAIT_TIME_BEFORE_UPDATE_NB_PLAYED: Long = 3_000
+
+        private const val INNER_SEEK_MILLIS: Int = 5_000
+    }
+
+    enum class KeyboardAction {
+        TogglePlayPause,
+        Previous,
+        Next,
+        SeekForward,
+        SeekBackward,
+        VolumeUp,
+        VolumeDown,
+        ToggleFavorite,
     }
 }

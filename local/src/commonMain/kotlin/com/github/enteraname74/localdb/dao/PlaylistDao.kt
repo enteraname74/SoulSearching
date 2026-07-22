@@ -2,15 +2,12 @@ package com.github.enteraname74.localdb.dao
 
 import androidx.paging.PagingSource
 import androidx.room3.Dao
-import androidx.room3.Delete
 import androidx.room3.Query
 import androidx.room3.Transaction
 import androidx.room3.Upsert
-import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.localdb.model.RoomFolder
 import com.github.enteraname74.localdb.model.RoomPlaylist
-import com.github.enteraname74.localdb.view.RoomPlaylistPreview
 import com.github.enteraname74.localdb.model.RoomPlaylistWithMusics
+import com.github.enteraname74.localdb.view.RoomPlaylistPreview
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
@@ -26,11 +23,11 @@ interface PlaylistDao {
     @Upsert
     suspend fun upsertAll(roomPlaylists: List<RoomPlaylist>)
 
-    @Delete
-    suspend fun delete(roomPlaylist: RoomPlaylist)
-
     @Query("DELETE FROM RoomPlaylist WHERE playlistId IN (:ids) AND isFavorite = 0")
     suspend fun deleteAll(ids: List<Uuid>)
+
+    @Query("DELETE FROM RoomPlaylist WHERE remoteId IN (:remoteIds) AND isFavorite = 0")
+    suspend fun deleteAllFromRemote(remoteIds: List<Uuid>)
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
@@ -233,4 +230,15 @@ interface PlaylistDao {
         """
     )
     suspend fun getAllToSendToCloud(): List<RoomPlaylistWithMusics>
+
+    @Query("SELECT remoteId FROM RoomPlaylist WHERE playlistId IN (:ids) AND remoteId IS NOT NULL")
+    suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<Uuid>
+
+    @Query(
+        """
+            SELECT remoteId FROM RoomPlaylist 
+            WHERE remoteId IS NOT NULL
+        """
+    )
+    suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid>
 }

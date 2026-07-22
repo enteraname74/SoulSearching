@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -19,13 +20,8 @@ class CommonPlaylistUseCase(
     fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
         playlistRepository.getFromIds(playlistIds)
 
-    suspend fun deleteAll(playlistIds: List<Uuid>) {
+    suspend fun deleteAll(playlistIds: List<Uuid>): SoulResult<Unit> =
         playlistRepository.deleteAll(playlistIds)
-    }
-
-    suspend fun delete(playlist: Playlist) {
-        playlistRepository.delete(playlist = playlist)
-    }
 
     suspend fun getFavorite(): Playlist? =
         playlistRepository.getFavorite()

@@ -55,6 +55,8 @@ fun ExpandedPlayerControlsComposable(
 
         playbackCommandsState.seekTo?.let { seekTo ->
             SoulSlider(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 maxValue = state.currentMusic.duration.toFloat(),
                 value = currentMusicProgression.toFloat(),
                 onValueChanged = { seekTo(it.toInt()) },

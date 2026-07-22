@@ -1,28 +1,34 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_volume_down
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_volume_up
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_volume_mute
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.MinimisedPlayerControlsComposable
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -33,6 +39,7 @@ fun PlayerMinimisedMainInfo(
     currentMusic: Music,
     alphaTransition: Float,
     playbackCommandsState: PlaybackCommandsState,
+    state: PlayerViewState.Data,
 ) {
     Row(
         modifier = Modifier
@@ -50,7 +57,7 @@ fun PlayerMinimisedMainInfo(
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .weight(1f, fill = false),
+                .weight(1f, fill = PlayerUiUtils.canShowSidePanel()),
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
@@ -72,8 +79,21 @@ fun PlayerMinimisedMainInfo(
             )
         }
         MinimisedPlayerControlsComposable(
+            modifier = Modifier
+                .weight(1f, fill = PlayerUiUtils.canShowSidePanel()),
             playerViewState = playerViewManager.draggableState.currentValue,
             playbackCommandsState = playbackCommandsState,
+            state = state,
         )
+        if (PlayerUiUtils.canShowSidePanel()) {
+            PlayerVolume(
+                modifier = Modifier
+                    .weight(1f, fill = true)
+                    .padding(
+                        end = UiConstants.Spacing.medium,
+                    ),
+                playbackCommandsState = playbackCommandsState,
+            )
+        }
     }
 }

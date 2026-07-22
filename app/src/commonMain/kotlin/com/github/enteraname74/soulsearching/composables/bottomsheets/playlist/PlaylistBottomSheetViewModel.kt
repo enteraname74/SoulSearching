@@ -200,7 +200,10 @@ class PlaylistBottomSheetViewModel(
     private fun deletePlaylists() {
         viewModelScope.launch {
             dialogState.value = null
-            loadingManager.withLoading { commonPlaylistUseCase.deleteAll(playlistIds) }
+            loadingManager.withLoading {
+                val result = commonPlaylistUseCase.deleteAll(playlistIds)
+                feedbackPopUpManager.showErrorIfAny(result)
+            }
             multiSelectionManager.clearMultiSelection()
             navScope.navigateBack()
         }

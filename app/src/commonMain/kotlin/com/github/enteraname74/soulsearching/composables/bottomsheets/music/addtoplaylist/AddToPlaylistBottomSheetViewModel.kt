@@ -10,14 +10,7 @@ import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
 
@@ -68,16 +61,17 @@ class AddToPlaylistBottomSheetViewModel(
             onDismiss = { _dialogState.value = null },
             onConfirm = { playlistName ->
                 viewModelScope.launch {
-                    if (playlistName.isNotBlank()) {
-                        val newPlaylist = Playlist(name = playlistName)
-                        commonPlaylistUseCase.upsert(playlist = newPlaylist)
-                        addMusicsToPlaylist(
-                            playlistIds = listOf(newPlaylist.playlistId),
-                        )
+                    loadingManager.withLoading {
+                        if (playlistName.isNotBlank()) {
+                            val newPlaylist = Playlist(name = playlistName)
+                            commonPlaylistUseCase.upsert(playlist = newPlaylist)
+                            addMusicsToPlaylist(
+                                playlistIds = listOf(newPlaylist.playlistId),
+                            )
+                        }
                     }
-
                     _dialogState.value = null
-                    navScope.close()
+                    navScope.onSave()
                 }
             }
         )
@@ -86,16 +80,14 @@ class AddToPlaylistBottomSheetViewModel(
     private suspend fun addMusicsToPlaylist(
         playlistIds: List<Uuid>
     ) {
-        loadingManager.withLoading {
-            params.selectedMusicIds.forEach { musicId ->
-                playlistIds.forEach { playlistId ->
-                    commonMusicPlaylistUseCase.upsert(
-                        MusicPlaylist(
-                            musicId = musicId,
-                            playlistId = playlistId,
-                        )
+        params.selectedMusicIds.forEach { musicId ->
+            playlistIds.forEach { playlistId ->
+                commonMusicPlaylistUseCase.upsert(
+                    MusicPlaylist(
+                        musicId = musicId,
+                        playlistId = playlistId,
                     )
-                }
+                )
             }
         }
     }
@@ -110,12 +102,14 @@ class AddToPlaylistBottomSheetViewModel(
 
     fun confirm() {
         viewModelScope.launch {
-            addMusicsToPlaylist(selectedPlaylistIds.value.toList())
-            navScope.close()
+            loadingManager.withLoading {
+                addMusicsToPlaylist(selectedPlaylistIds.value.toList())
+            }
+            navScope.onSave()
         }
     }
 
-    fun close() {
-        navScope.close()
+    fun navigateBack() {
+        navScope.navigateBack()
     }
 }

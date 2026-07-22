@@ -149,13 +149,14 @@ private fun SettingsPlayerPersonalisationScreenView(
                         style = UiConstants.Typography.body,
                     )
                     SoulSlider(
-                        minValue = 1f,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        minValue = 0f,
                         maxValue = 10f,
-                        steps = 8,
                         value = uiVolume,
                         onThumbDragged = { playerVolume ->
                             playerVolume?.let {
-                                val fixedVolume = (it / 10).coerceIn(0.1f, 1f)
+                                val fixedVolume = (it / 10).coerceIn(0f, 1f)
                                 setVolumePlayer(fixedVolume)
                             }
                         },

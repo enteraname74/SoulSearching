@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Artist
@@ -35,7 +37,8 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.blend
-import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.animated
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -88,14 +91,17 @@ fun BoxScope.PlayerSwipeableDataScreen(
             SoulSearchingColorTheme.colorScheme.secondary
         }.animated(label = PlayerUiUtils.PLAYER_BACKGROUND_COLOR_LABEL)
 
-    Box(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 color = animatedBackgroundColor
             )
             .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
-            .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED) {
+            .clickableWithHandCursor(
+                enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED,
+                withIndication = false,
+            ) {
                 playerViewManager.animateTo(
                     newState = BottomSheetStates.EXPANDED,
                 )
@@ -115,7 +121,12 @@ fun BoxScope.PlayerSwipeableDataScreen(
                     .fillMaxWidth()
                     .alpha(1f - alphaTransition)
                     .height(SONG_PROGRESSION_HEIGHT),
-                progress = { (currentMusicProgression.toFloat() / state.currentMusic.duration.toFloat()).coerceIn(0f, 1f) },
+                progress = {
+                    (currentMusicProgression.toFloat() / state.currentMusic.duration.toFloat()).coerceIn(
+                        0f,
+                        1f
+                    )
+                },
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 trackColor = SoulSearchingColorTheme.colorScheme.subSecondaryText.blend(
                     other = SoulSearchingColorTheme.colorScheme.primary,
@@ -154,17 +165,38 @@ fun BoxScope.PlayerSwipeableDataScreen(
             }
         )
 
-        val playerControlsWidth: Dp = PlayerUiUtils.getPlayerControlsWidth(
+        var panelWidth: Int by rememberSaveable {
+            mutableIntStateOf(0)
+        }
+        val imageHorizontalPadding = PlayerUiUtils.getImageHorizontalPadding(
             imageSize = imageSize,
+            maxWidth = if (PlayerUiUtils.canShowSidePanel()) {
+                maxWidth - panelWidth.toDp()
+            } else {
+                maxWidth
+            },
         )
-        val imageHorizontalPadding = PlayerUiUtils.getImageHorizontalPadding(imageSize)
         val imageTopPadding = PlayerUiUtils.getImageTopPadding(
             expandedMainInformationHeight = playerTopInformationHeight,
             imageSize = imageSize,
         )
         val fullImageSize = imageSize + (imageHorizontalPadding * 2)
-        Column {
-            val controlsBoxWidth = playerControlsWidth + (imageHorizontalPadding * 2)
+        Column(
+            modifier = Modifier
+                .fillMaxHeight(),
+            verticalArrangement = if (PlayerUiUtils.canShowSidePanel()) {
+                Arrangement.SpaceBetween
+            } else {
+                Arrangement.Top
+            },
+        ) {
+            val controlsBoxWidth = if (PlayerUiUtils.canShowSidePanel()) {
+                this@BoxWithConstraints.maxWidth - panelWidth.toDp()
+            } else {
+                PlayerUiUtils.getPlayerControlsWidth(
+                    imageSize = imageSize,
+                ) + (imageHorizontalPadding * 2)
+            }
 
             PlayerMusicCover(
                 modifier = Modifier
@@ -185,13 +217,21 @@ fun BoxScope.PlayerSwipeableDataScreen(
                     modifier = Modifier
                         .padding(
                             top = PlayerUiUtils.getTopInformationBottomPadding(),
+                            bottom = if (PlayerUiUtils.canShowSidePanel()) {
+                                UiConstants.Spacing.large
+                            } else {
+                                0.dp
+                            }
                         )
                         .width(controlsBoxWidth),
                     contentAlignment = Alignment.Center,
                 ) {
                     ExpandedPlayerControlsComposable(
                         modifier = Modifier
-                            .width(playerControlsWidth)
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal = UiConstants.Spacing.veryLarge,
+                            )
                             .alpha(alphaTransition),
                         playbackCommandsState = playbackCommandsState,
                         state = state,
@@ -258,7 +298,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
             }
         }
 
-
         if (!PlayerUiUtils.canShowSidePanel()) {
             PlayerPanelDraggableView(
                 maxHeight = maxHeight,
@@ -299,8 +338,15 @@ fun BoxScope.PlayerSwipeableDataScreen(
                     modifier = Modifier
                         .alpha(alphaTransition)
                         .width(
-                            this.getSidePanelWidth(playerControlsWidth = playerControlsWidth)
-                        ),
+                            this.getSidePanelWidth(
+                                playerControlsWidth = PlayerUiUtils.getPlayerControlsWidth(
+                                    imageSize = imageSize,
+                                )
+                            )
+                        )
+                        .onGloballyPositioned { layoutCoordinates ->
+                            panelWidth = layoutCoordinates.size.width
+                        },
                     onLongSelectOnMusic = onLongSelectOnMusic,
                     multiSelectionState = multiSelectionState,
                     onActivateRemoteLyrics = onActivateRemoteLyrics,
@@ -316,6 +362,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
             currentMusic = state.currentMusic,
             alphaTransition = 1f - alphaTransition,
             playbackCommandsState = playbackCommandsState,
+            state = state,
         )
     }
 }

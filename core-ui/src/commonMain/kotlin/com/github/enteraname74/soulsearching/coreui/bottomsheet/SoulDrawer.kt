@@ -44,6 +44,7 @@ import kotlin.time.Duration.Companion.milliseconds
 internal fun SoulDrawer(
     onClose: () -> Unit,
     colors: SoulBottomSheetColors = SoulBottomSheetDefaults.colors(),
+    onRemoveRequest: (suspend () -> Unit) -> Unit = {},
     content: @Composable (closeWithAnim: (callback: () -> Unit) -> Unit) -> Unit,
 ) {
     var isShown: SoulDrawerState by rememberSaveable {
@@ -55,6 +56,13 @@ internal fun SoulDrawer(
 
     LaunchedEffect(Unit) {
         isShown = SoulDrawerState.Open
+    }
+
+    LaunchedEffect(Unit) {
+        onRemoveRequest {
+            isShown = SoulDrawerState.Closed
+            delay(UiConstants.AnimationDuration.normal.toLong().milliseconds)
+        }
     }
 
     val closeWithAnim: (callback: () -> Unit) -> Unit = { callback ->

@@ -7,14 +7,16 @@ import com.github.enteraname74.domain.model.player.PlayerMusicUser
 import com.github.enteraname74.domain.model.player.SharedPlayerMusic
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerRepository
-import com.github.enteraname74.domain.usecase.music.UpsertCloudMusicUseCase
+import com.github.enteraname74.domain.usecase.music.CloudMusicToMusicUseCase
 import com.github.enteraname74.domain.util.DateUtils
 import kotlin.uuid.Uuid
 
 class FetchPlayedListMusicsUseCase(
     private val playerRepository: PlayerRepository,
-    private val upsertCloudMusicUseCase: UpsertCloudMusicUseCase,
+    private val musicRepository: MusicRepository,
+    private val cloudMusicToMusicUseCase: CloudMusicToMusicUseCase,
     private val settings: SoulSearchingSettings,
 ) {
     suspend operator fun invoke(playedListId: Uuid): Pair<List<PlayerMusic>, List<PlayerMusicUser>> {
@@ -24,10 +26,15 @@ class FetchPlayedListMusicsUseCase(
         val musics: MutableList<PlayerMusic> = mutableListOf()
 
         sharedPlayerMusics.forEach { sharedPlayerMusic ->
-            val music: Music = upsertCloudMusicUseCase(
+            val music: Music = cloudMusicToMusicUseCase(
                 cloudMusic = sharedPlayerMusic.music,
                 mergeMode = MergeMode.LocalFirst,
+                cachedArtists = emptySet(),
+                cachedAlbums = emptySet(),
+                cachedMusics = emptySet(),
             )
+            musicRepository.upsert(music)
+
             val playerMusicUser = PlayerMusicUser(
                 playedListId = sharedPlayerMusic.playedListId,
                 userId = sharedPlayerMusic.music.userId,

@@ -83,8 +83,14 @@ object PlayerUiUtils {
         val maxHeight: Dp = rememberWindowHeightDp()
         val ratio = getTransitionRatio()
 
+        val maxImageSizeRatio = if (canShowSidePanel()) {
+            2f
+        } else {
+            2.45f
+        }
+
         val maxImageSize = max(
-            maxHeight / 2.45f,
+            maxHeight / maxImageSizeRatio,
             MinImageSize,
         )
 
@@ -101,13 +107,10 @@ object PlayerUiUtils {
     }
 
     @Composable
-    fun getImageHorizontalPadding(imageSize: Dp): Dp {
-        val windowSize = rememberWindowSize()
-        if (windowSize != WindowSize.Small) {
-            return MinImagePaddingStart
-        }
-
-        val maxWidth = rememberWindowWidthDp()
+    fun getImageHorizontalPadding(
+        imageSize: Dp,
+        maxWidth: Dp,
+    ): Dp {
         val ratio = getTransitionRatio()
         val alpha = 1f - ratio
 
@@ -135,7 +138,7 @@ object PlayerUiUtils {
         expandedMainInformationHeight: Int,
         imageSize: Dp
     ): Dp =
-        if (PlayerUiUtils.canShowRowControlPanel()) {
+        if (canShowRowControlPanel()) {
             getImageTopPaddingForRowView(imageSize)
         } else {
             getImageTopPaddingForColumnView(expandedMainInformationHeight)
@@ -192,5 +195,5 @@ object PlayerUiUtils {
     val MinPlayerSidePanelWidth: Dp = 50.dp
     val MaxPlayerSidePanelWidth: Dp = 600.dp
 
-    val PLAYER_BACKGROUND_COLOR_LABEL = "PLAYER_BACKGROUND_COLOR_LABEL"
+    const val PLAYER_BACKGROUND_COLOR_LABEL: String = "PLAYER_BACKGROUND_COLOR_LABEL"
 }

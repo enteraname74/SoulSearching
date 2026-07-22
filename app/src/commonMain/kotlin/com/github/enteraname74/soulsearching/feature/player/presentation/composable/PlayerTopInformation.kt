@@ -26,7 +26,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_keyboard_arrow_down
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_menu
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_more_vertical
-import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
@@ -156,8 +155,10 @@ fun PlayerTopInformation(
                 icon = CoreRes.drawable.ic_menu,
                 modifier = Modifier
                     .padding(top = UiConstants.Spacing.medium)
-                    .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                        onShowPanel()
+                    .clickableWithHandCursor {
+                        if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+                            onShowPanel()
+                        }
                     },
                 size = UiConstants.ImageSize.medium,
             )

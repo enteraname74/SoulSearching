@@ -13,21 +13,13 @@ import kotlin.uuid.Uuid
 @Serializable
 data class AddToPlaylistBottomSheetDestination(
     val selectedMusicIds: List<Uuid>,
-): BottomSheetDestination {
+): NavKey {
     companion object {
         fun register(
             entryProviderScope: EntryProviderScope<NavKey>,
+            navScope: AddToPlaylistBottomSheetNavScope,
         ) {
-            entryProviderScope.entry<AddToPlaylistBottomSheetDestination>(
-                metadata = BottomSheetSceneStrategy.bottomSheet()
-            ) { params ->
-                val closeWithAnim = LocalBottomSheetCloseWithAnimAction.current
-                val navScope = object : AddToPlaylistBottomSheetNavScope {
-                    override val close: () -> Unit = {
-                        closeWithAnim { }
-                    }
-                }
-
+            entryProviderScope.entry<AddToPlaylistBottomSheetDestination> { params ->
                 val viewModel: AddToPlaylistBottomSheetViewModel = koinViewModel {
                     parametersOf(navScope, params)
                 }

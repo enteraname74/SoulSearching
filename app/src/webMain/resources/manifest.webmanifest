@@ -1,0 +1,20 @@
+{
+  "name": "Soul Searching",
+  "short_name": "Soul Searching",
+  "display": "standalone",
+  "start_url": ".",
+  "icons": [
+    {
+      "src": "app_icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "app_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

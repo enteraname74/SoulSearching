@@ -10,7 +10,7 @@ kotlin {
     android.androidResources.enable = true
     sourceSets {
         desktopMain.dependencies {
-//            implementation(libs.jlibnotify)
+            //            implementation(libs.jlibnotify)
             implementation(libs.coroutines.core.swing)
             implementation(libs.vlcj)
         }
@@ -32,7 +32,7 @@ kotlin {
             implementation(libs.androidx.media3.session)
             implementation(libs.koin.androidx.compose)
             implementation(libs.coroutines.guava)
-//            implementation(libs.ffmpeg)
+            //            implementation(libs.ffmpeg)
 
             implementation(project(":core-ui"))
         }

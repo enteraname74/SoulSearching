@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.map
 import androidx.room3.useWriterConnection
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicFolderPreview
@@ -40,7 +41,9 @@ internal class RoomMusicLocalDataSourceImpl(
 ) : MusicLocalDataSource {
     override suspend fun upsert(music: Music) {
         appDatabase.useWriterConnection {
-            appDatabase.artistDao.upsertAll(music.artists.map { it.toRoomArtist() })
+            val allArtist: Set<Artist> = (music.artists + music.album.artist).toSet()
+
+            appDatabase.artistDao.upsertAll(allArtist.map { it.toRoomArtist() })
             appDatabase.albumDao.upsert(music.album.toRoomAlbum())
             appDatabase.musicDao.upsert(
                 music.copy(
@@ -58,10 +61,14 @@ internal class RoomMusicLocalDataSourceImpl(
 
     override suspend fun upsertAll(musics: List<Music>) {
         appDatabase.useWriterConnection {
+            val musicArtists: Set<Artist> = musics.flatMap { music ->
+                music.artists
+            }.toSet()
+            val albumArtists: Set<Artist> = musics.map { music -> music.album.artist }.toSet()
+            val allArtists: Set<Artist> = musicArtists + albumArtists
+
             appDatabase.artistDao.upsertAll(
-                roomArtists = musics.flatMap { music ->
-                    music.artists.map { it.toRoomArtist() }
-                }
+                roomArtists = allArtists.map { it.toRoomArtist() }
             )
 
             appDatabase.albumDao.upsertAll(

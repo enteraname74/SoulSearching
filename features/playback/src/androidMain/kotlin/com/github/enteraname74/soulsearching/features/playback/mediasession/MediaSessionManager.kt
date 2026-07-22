@@ -593,7 +593,7 @@ private class SoulSearchingSessionPlayer(
     override fun seekTo(positionMs: Long) {
         if (canControl()) {
             coroutineScope.launch {
-                playbackManager().seekToPosition(positionMs.toInt())
+                playbackManager().seekTo(positionMs.toInt())
             }
         }
     }
@@ -606,7 +606,7 @@ private class SoulSearchingSessionPlayer(
         if (!canControl()) return
 
         coroutineScope.launch {
-            playbackManager().seekToPosition(0)
+            playbackManager().seekTo(0)
         }
     }
 
@@ -635,7 +635,7 @@ private class SoulSearchingSessionPlayer(
 
             playbackManager().setAndPlayMusicFromCurrentPlayedList(music)
             if (positionMs > 0) {
-                playbackManager().seekToPosition(positionMs.toInt())
+                playbackManager().seekTo(positionMs.toInt())
             }
         }
     }

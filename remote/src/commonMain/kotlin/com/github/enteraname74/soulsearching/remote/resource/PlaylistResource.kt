@@ -12,4 +12,9 @@ class PlaylistResource {
         val maxPerPage: Int? = null,
         val page: Int? = null,
     )
+
+    @Resource("check")
+    data class Check(
+        val parent: PlaylistResource = PlaylistResource()
+    )
 }

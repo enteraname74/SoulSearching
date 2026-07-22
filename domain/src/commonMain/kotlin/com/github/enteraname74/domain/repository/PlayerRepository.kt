@@ -22,6 +22,8 @@ interface PlayerRepository {
     fun getCurrentProgress(): Flow<Int>
     fun getCurrentScope(): Flow<PlayedListScope?>
 
+    suspend fun isAdminOfPlayedList(): Boolean
+
     suspend fun deleteAll(musicIds: List<Uuid>)
 
     suspend fun deleteCurrentPlayedList()

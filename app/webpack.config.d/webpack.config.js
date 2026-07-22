@@ -1,6 +1,6 @@
-;(function(config) {
-  config.devServer.headers = [
-      { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
-      { key: 'Cross-Origin-Embedder-Policy', value: 'require-corp' }
-  ]
-})(config);
+if (config.devServer) {
+    config.devServer.headers = {
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp"
+    };
+}

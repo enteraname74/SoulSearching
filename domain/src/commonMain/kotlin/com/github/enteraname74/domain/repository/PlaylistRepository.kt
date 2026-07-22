@@ -5,6 +5,7 @@ import com.github.enteraname74.domain.model.CloudPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.SoulResult
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
@@ -17,14 +18,11 @@ interface PlaylistRepository {
     suspend fun upsertAll(playlists: List<Playlist>)
 
     /**
-     * Deletes a Playlist.
-     */
-    suspend fun delete(playlist: Playlist)
-
-    /**
      * Deletes the playlists identified in the given list of ids.
      */
-    suspend fun deleteAll(playlistIds: List<Uuid>)
+    suspend fun deleteAll(playlistIds: List<Uuid>): SoulResult<Unit>
+
+    suspend fun deleteAllFromRemote(remoteIds: List<Uuid>)
 
     /**
      * Retrieves a flow of all PlaylistWithMusics, sorted by name asc.
@@ -66,4 +64,6 @@ interface PlaylistRepository {
     suspend fun fetchUpdatedPlaylistsFromCloud(lastSyncMillis: Long?): List<CloudPlaylist>
 
     suspend fun uploadToCloud(playlistWithMusics: PlaylistWithMusics): CloudPlaylist
+
+    suspend fun getDeletedRemotePlaylistIds(): List<Uuid>
 }

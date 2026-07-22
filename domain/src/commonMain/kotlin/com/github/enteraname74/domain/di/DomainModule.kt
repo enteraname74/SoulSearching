@@ -5,10 +5,10 @@ import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.UpsertCloudAlbumUseCase
+import com.github.enteraname74.domain.usecase.album.CloudAlbumToAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.UpsertCloudArtistUseCase
+import com.github.enteraname74.domain.usecase.artist.CloudArtistToArtistUseCase
 import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
@@ -24,7 +24,7 @@ import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateMusicToCloudUseCase
 import com.github.enteraname74.domain.usecase.music.UploadMusicToCloudUseCase
-import com.github.enteraname74.domain.usecase.music.UpsertCloudMusicUseCase
+import com.github.enteraname74.domain.usecase.music.CloudMusicToMusicUseCase
 import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
 import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
@@ -55,12 +55,12 @@ val domainModule: Module = module {
     factoryOf(::DeleteAlbumIfEmptyUseCase)
     factoryOf(::DeleteAlbumUseCase)
     factoryOf(::GetCorrespondingAlbumUseCase)
-    factoryOf(::UpsertCloudAlbumUseCase)
+    factoryOf(::CloudAlbumToAlbumUseCase)
 
     // Artist
     factoryOf(::CommonArtistUseCase)
     factoryOf(::DeleteArtistUseCase)
-    factoryOf(::UpsertCloudArtistUseCase)
+    factoryOf(::CloudArtistToArtistUseCase)
 
     // Folder
     factoryOf(::CommonFolderUseCase)
@@ -79,7 +79,7 @@ val domainModule: Module = module {
     factoryOf(::IsMusicInFavoritePlaylistUseCase)
     factoryOf(::ObserveDataChangedForCloudSync)
     factoryOf(::ToggleMusicFavoriteStatusUseCase)
-    factoryOf(::UpsertCloudMusicUseCase)
+    factoryOf(::CloudMusicToMusicUseCase)
     factoryOf(::UploadMusicToCloudUseCase)
     factoryOf(::UpdateMusicToCloudUseCase)
     singleOf(::SyncDataWithCloudUseCase)
