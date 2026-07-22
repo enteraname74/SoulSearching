@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -23,6 +24,7 @@ fun NavigationPanel(
 ) {
     Column(
         modifier = Modifier
+            .zIndex(1f)
             .background(color = SoulSearchingColorTheme.colorScheme.secondary)
             .fillMaxHeight()
             .statusBarsPadding()
