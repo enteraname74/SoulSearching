@@ -24,17 +24,19 @@ android {
             applicationIdSuffix = ".dev.release"
             signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                project(":app").file("android-proguard-rules.pro")
+                "proguard-rules.pro"
             )
         }
         release {
             manifestPlaceholders["appName"] = "Soul Searching"
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                project(":app").file("android-proguard-rules.pro")
+                "proguard-rules.pro"
             )
         }
     }
