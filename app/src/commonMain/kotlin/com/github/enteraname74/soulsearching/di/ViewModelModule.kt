@@ -45,6 +45,7 @@ import com.github.enteraname74.soulsearching.feature.settings.managemusics.manag
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreenViewModel
+import com.github.enteraname74.soulsearching.feature.settings.shortcuts.SettingsShortcutsViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsViewModel
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import org.koin.core.module.Module
@@ -78,6 +79,7 @@ internal val viewModelModule: Module = module {
     viewModelOf(::SettingsCloudSharedListJoinViewHolder)
     viewModelOf(::SettingsCloudFetchMusicViewHolder)
     viewModelOf(::SettingsCloudExplanationsViewHolder)
+    viewModelOf(::SettingsShortcutsViewHolder)
 
     // Main page
     viewModelOf(::MainPageViewModel)

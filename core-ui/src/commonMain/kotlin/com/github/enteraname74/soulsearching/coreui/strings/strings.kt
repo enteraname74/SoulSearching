@@ -2,9 +2,9 @@ package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
 import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
-import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 import com.github.enteraname74.domain.model.user.UserType
 import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 import kotlin.time.Duration
 
 val strings = when (Locale.current.language) {
@@ -397,6 +397,28 @@ interface Strings {
     val musicRemoteOnly: String
     val musicLocalOnly: String
 
+    val shortcutsTitle: String
+    val shortcutsText: String
+
+    val shortcutPlayerCategory: String
+
+    val shortcutTogglePlayPauseDescription: String
+    val shortcutPreviousDescription: String
+    val shortcutNextDescription: String
+    val shortcutSeekForwardDescription: String
+    val shortcutSeekBackwardDescription: String
+    val shortcutVolumeUpDescription: String
+    val shortcutVolumeDownDescription: String
+    val shortcutToggleFavoriteDescription: String
+
+    val shortcutTogglePlayPauseCommands: List<String>
+    val shortcutPreviousCommands: List<String>
+    val shortcutNextCommands: List<String>
+    val shortcutSeekForwardCommands: List<String>
+    val shortcutSeekBackwardCommands: List<String>
+    val shortcutVolumeUpCommands: List<String>
+    val shortcutVolumeDownCommands: List<String>
+    val shortcutToggleFavoriteCommands: List<String>
     fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
     fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String
 

@@ -395,6 +395,47 @@ object FrStrings : Strings {
     override val musicRemoteOnly: String = "Musique provenant du cloud"
     override val musicLocalOnly: String = "Musique non téléversée sur le cloud"
 
+    override val shortcutsTitle: String = "Raccourcis"
+    override val shortcutsText: String = "Voir les raccourcis de l'application"
+
+    override val shortcutPlayerCategory: String = "Raccourcis du lecteur"
+
+    override val shortcutTogglePlayPauseDescription: String = "Basculer entre lecture et pause"
+    override val shortcutPreviousDescription: String = "Précédent"
+    override val shortcutNextDescription: String = "Suivant"
+    override val shortcutSeekForwardDescription: String = "Avancer"
+    override val shortcutSeekBackwardDescription: String = "Reculer"
+    override val shortcutVolumeUpDescription: String = "Augmenter le volume"
+    override val shortcutVolumeDownDescription: String = "Baisser le volume"
+    override val shortcutToggleFavoriteDescription: String = "Basculer le statut de favori de la musique courante"
+
+    override val shortcutTogglePlayPauseCommands: List<String> = listOf(
+        "Espace",
+    )
+    override val shortcutPreviousCommands: List<String> = listOf(
+        "Maj",
+        "Flèche gauche",
+    )
+    override val shortcutNextCommands: List<String> = listOf(
+        "Maj",
+        "Flèche droite",
+    )
+    override val shortcutSeekForwardCommands: List<String> = listOf(
+        "Flèche droite"
+    )
+    override val shortcutSeekBackwardCommands: List<String> = listOf(
+        "Flèche gauche"
+    )
+    override val shortcutVolumeUpCommands: List<String> = listOf(
+        "Flèche haute"
+    )
+    override val shortcutVolumeDownCommands: List<String> = listOf(
+        "Flèche basse"
+    )
+    override val shortcutToggleFavoriteCommands: List<String> = listOf(
+        "F"
+    )
+
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
             SyncDataWithCloudUseCase.State.Failure -> "Erreur"

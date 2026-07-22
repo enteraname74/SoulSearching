@@ -393,6 +393,47 @@ object EnStrings : Strings {
     override val musicRemoteOnly: String = "Song coming from the cloud"
     override val musicLocalOnly: String = "Song not uploaded on the cloud"
 
+    override val shortcutsTitle: String = "Shortcuts"
+    override val shortcutsText: String = "See shortcuts of the app"
+
+    override val shortcutPlayerCategory: String = "Player shortcuts"
+
+    override val shortcutTogglePlayPauseDescription: String = "Toggle play/pause"
+    override val shortcutPreviousDescription: String = "Previous"
+    override val shortcutNextDescription: String = "Next"
+    override val shortcutSeekForwardDescription: String = "Seek forward"
+    override val shortcutSeekBackwardDescription: String = "Seek backward"
+    override val shortcutVolumeUpDescription: String = "Volume up"
+    override val shortcutVolumeDownDescription: String = "Volume down"
+    override val shortcutToggleFavoriteDescription: String = "Toggle favorite of playing song"
+
+    override val shortcutTogglePlayPauseCommands: List<String> = listOf(
+        "Space",
+    )
+    override val shortcutPreviousCommands: List<String> = listOf(
+        "Shift",
+        "Left arrow",
+    )
+    override val shortcutNextCommands: List<String> = listOf(
+        "Shift",
+        "Right arrow",
+    )
+    override val shortcutSeekForwardCommands: List<String> = listOf(
+        "Right arrow"
+    )
+    override val shortcutSeekBackwardCommands: List<String> = listOf(
+        "Left arrow"
+    )
+    override val shortcutVolumeUpCommands: List<String> = listOf(
+        "Up arrow"
+    )
+    override val shortcutVolumeDownCommands: List<String> = listOf(
+        "Down arrow"
+    )
+    override val shortcutToggleFavoriteCommands: List<String> = listOf(
+        "F"
+    )
+
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
             SyncDataWithCloudUseCase.State.Failure -> "Failure"

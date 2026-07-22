@@ -30,6 +30,7 @@ import com.github.enteraname74.soulsearching.feature.settings.personalisation.ma
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.music.SettingsMusicViewPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.presentation.SettingsPlayerPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsDestination
+import com.github.enteraname74.soulsearching.feature.settings.shortcuts.SettingsShortcutsDestination
 import com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.SettingsStatisticsDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
@@ -172,6 +173,10 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+        SettingsShortcutsDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
     }
 
     fun serializerModule(
@@ -206,6 +211,7 @@ object SettingsNavigationHandler {
             subclass(SettingsCloudUsersDestination::class, SettingsCloudUsersDestination.serializer())
             subclass(SettingsCloudExplanationsDestination::class, SettingsCloudExplanationsDestination.serializer())
             subclass(SettingsCloudSharedListDestination::class, SettingsCloudSharedListDestination.serializer())
+            subclass(SettingsShortcutsDestination::class, SettingsShortcutsDestination.serializer())
         }
     }
 }

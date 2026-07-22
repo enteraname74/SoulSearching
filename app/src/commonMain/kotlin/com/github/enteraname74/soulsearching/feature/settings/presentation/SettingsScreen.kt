@@ -3,19 +3,21 @@ package com.github.enteraname74.soulsearching.feature.settings.presentation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.github.enteraname74.domain.model.Platform
+import com.github.enteraname74.domain.util.PlatformUtils
+import com.github.enteraname74.domain.util.isNonAndroid
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_bar_chart
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cloud_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_handyman_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_info_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_keyboard
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_palette_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.domain.model.Platform
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import com.github.enteraname74.domain.util.PlatformUtils
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -28,6 +30,7 @@ fun SettingsRoute(
     toStatistics: () -> Unit,
     toAdvancedSettings: () -> Unit,
     toCloudSettings: () -> Unit,
+    toShortcuts: () -> Unit,
 ) {
     val viewModel: SettingsScreenViewModel = koinViewModel()
 
@@ -78,6 +81,16 @@ fun SettingsRoute(
                 leadIcon = CoreRes.drawable.ic_handyman_filled,
                 onClick = toAdvancedSettings,
             )
+        }
+        if (PlatformUtils.isNonAndroid) {
+            item {
+                SoulMenuElement(
+                    title = strings.shortcutsTitle,
+                    subTitle = strings.shortcutsText,
+                    leadIcon = CoreRes.drawable.ic_keyboard,
+                    onClick = toShortcuts,
+                )
+            }
         }
         item {
             SoulMenuElement(
