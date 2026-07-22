@@ -1,12 +1,6 @@
 package com.github.enteraname74.soulsearching.features.playback.manager
 
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEvent
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.isCtrlPressed
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.type
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.AddMusicMode
@@ -60,9 +54,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.uuid.Uuid
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 // TODO SHARED PLAYED LIST: How to properly indicate the current music progression if we are a guest?
 @OptIn(ExperimentalUuidApi::class)
@@ -513,23 +507,24 @@ class PlaybackManager(
         playbackProgressJob.launchDurationJobIfNecessary()
     }
 
-    fun handleKeyEvent(event: KeyEvent) {
+    fun handleKeyboardAction(action: KeyboardAction) {
         workScope.launch {
-            val currentState: PlayedListState = playerRepository
+            // Block if no played list is available
+            playerRepository
                 .getCurrentState()
-                .firstOrNull() ?: return@launch
+                .firstOrNull()
+                ?.takeIf { it != PlayedListState.Cached } ?: return@launch
 
-            if (event.isCtrlPressed && event.type == KeyEventType.KeyUp) {
-                // If no music is being played, we do nothing
-                if (currentState == PlayedListState.Cached) return@launch
+            // Block if we cannot control the played list
+            playerRepository
+                .getCurrentScope()
+                .firstOrNull()
+                ?.takeIf { it.isAdmin } ?: return@launch
 
-                when (event.key) {
-                    Key.P -> togglePlayPause()
-                    Key.B, Key.DirectionLeft -> previous()
-                    Key.N, Key.DirectionRight -> next()
-                    else -> { /*no-op*/
-                    }
-                }
+            when (action) {
+                KeyboardAction.TogglePlayPause -> togglePlayPause()
+                KeyboardAction.Previous -> previous()
+                KeyboardAction.Next -> next()
             }
         }
     }
@@ -765,5 +760,11 @@ class PlaybackManager(
     companion object {
         private const val REWIND_THRESHOLD: Long = 5_000
         private const val WAIT_TIME_BEFORE_UPDATE_NB_PLAYED: Long = 3_000
+    }
+
+    enum class KeyboardAction {
+        TogglePlayPause,
+        Previous,
+        Next
     }
 }

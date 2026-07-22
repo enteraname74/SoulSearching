@@ -168,11 +168,16 @@ class SyncDataWithCloudUseCase(
         lastSyncMillis: Long?,
         mergeMode: MergeMode,
     ) {
-        _state.value = State.ClearingRemotePlaylistIds
         // For playlists, if synced playlists are no longer on the cloud, we will delete them
+        _state.value = State.ClearingRemotePlaylistIds
         val idsNoLongerOnCloud: List<Uuid> = playlistRepository.getDeletedRemotePlaylistIds()
         playlistRepository.deleteAllFromRemote(remoteIds = idsNoLongerOnCloud)
 
+        /*
+        We retrieve playlists from the cloud.
+        If there is already an already existing playlist, we will merge them.
+        No songs should be deleted from playlists.
+         */
         _state.value = State.FetchingRemotePlaylists
         val updatedFromCloud: List<CloudPlaylist> = playlistRepository.fetchUpdatedPlaylistsFromCloud(
             lastSyncMillis = lastSyncMillis,
@@ -183,6 +188,9 @@ class SyncDataWithCloudUseCase(
             mergeMode = mergeMode,
         )
 
+        /*
+        We then retrieve all playlists to send to cloud (old timestamp, no remote ids)
+         */
         val playlistsToSend: List<PlaylistWithMusics> = playlistRepository.getAllToSendToCloud()
         playlistsToSend.forEachIndexed { index, playlist ->
             _state.value = State.UploadingPlaylists(
