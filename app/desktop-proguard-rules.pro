@@ -11,8 +11,17 @@
 # Jaudiotagger
 -keep class org.jaudiotagger.** { *; }
 
-# Room
--keep class * extends androidx.room.RoomDatabase { <init>(); }
+# Coil 3
+-keep class coil3.network.ktor3.internal.KtorNetworkFetcherServiceLoaderTarget { *; }
+-keep class okio.** { *; }
+
+# Ktor engines
+-keep class * implements io.ktor.client.HttpClientEngineContainer { *; }
+
+# Room 3
+-keep class * extends androidx.room3.RoomDatabase { *; }
+-keep class **_Impl { *; }
+-keep class androidx.room3.** { *; }
 -keep class androidx.sqlite.** { *; }
 
 -keepattributes Annotation, InnerClasses
