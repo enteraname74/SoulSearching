@@ -185,4 +185,7 @@ class CommonMusicUseCase(
 
     suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music> =
         musicRepository.getSoulMixMusics(totalPerFolder)
+
+    suspend fun getFromPath(path: String): Music? =
+        musicRepository.getFromPath(path)
 }

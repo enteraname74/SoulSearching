@@ -560,4 +560,8 @@ interface MusicDao {
         totalPerFolder: Int,
         folder: String,
     ): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE path = :path")
+    suspend fun getFromPath(path: String): RoomCompleteMusic?
 }

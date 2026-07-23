@@ -48,6 +48,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.UUID
+import kotlin.time.Duration.Companion.milliseconds
 
 class PlaybackManager(
     private val playerRepository: PlayerRepository,
@@ -65,10 +66,10 @@ class PlaybackManager(
     private val playbackProgressJob: PlaybackProgressJob = PlaybackProgressJob(
         playerRepository = playerRepository,
         callback = object : PlaybackProgressJobCallbacks {
-            override fun isPlaying(): Boolean =
+            override suspend fun isPlaying(): Boolean =
                 player.isPlaying() == true
 
-            override fun getMusicPosition(): Int =
+            override suspend fun getMusicPosition(): Int =
                 this@PlaybackManager.getMusicPosition()
         },
     )
@@ -86,10 +87,10 @@ class PlaybackManager(
         playerRepository.getCurrentMusic().map {
             it?.music
         }.stateIn(
-                scope = workScope,
-                started = SharingStarted.Eagerly,
-                initialValue = null,
-            )
+            scope = workScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
 
     val currentSongProgressionState: Flow<Int> = playbackProgressJob.state
 
@@ -165,7 +166,9 @@ class PlaybackManager(
     private var startSeek: Int? = null
 
     init {
-        player.registerListener(this)
+        workScope.launch {
+            player.registerListener(this@PlaybackManager)
+        }
         init()
 
         listenPlayerVolume()
@@ -244,6 +247,7 @@ class PlaybackManager(
                     } else {
                         val currentState: PlayedListState? =
                             playerRepository.getCurrentState().firstOrNull()
+
                         when (currentState) {
                             PlayedListState.Playing -> {
                                 player.setMusic(currentMusic)
@@ -335,7 +339,7 @@ class PlaybackManager(
     /**
      * Retrieves the current position in the current played song in milliseconds.
      */
-    fun getMusicPosition(): Int =
+    suspend fun getMusicPosition(): Int =
         player.getProgress()
 
     /**
@@ -359,7 +363,6 @@ class PlaybackManager(
         playerRepository.togglePlayPause()
     }
 
-
     fun play() {
         workScope.launch {
             playerRepository.setPlayedListState(PlayedListState.Playing)
@@ -375,7 +378,7 @@ class PlaybackManager(
     /**
      * Seek to a given position in the current played music.
      */
-    fun seekToPosition(position: Int) {
+    suspend fun seekToPosition(position: Int) {
         player.seekToPosition(position)
         updateNotification()
         playbackProgressJob.launchDurationJobIfNecessary()
@@ -456,7 +459,7 @@ class PlaybackManager(
     private fun launchMusicCount(musicId: UUID) {
         updateMusicNbPlayedJob?.cancel()
         updateMusicNbPlayedJob = CoroutineScope(Dispatchers.IO).launch {
-            delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
+            delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED.milliseconds)
             commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }
     }
@@ -500,10 +503,8 @@ class PlaybackManager(
         musicList: List<Music>,
         playlistId: String?,
         isMain: Boolean,
-    ) {
-        if (musicList.isEmpty()) return
-
-        playerRepository.setup(
+    ): Boolean {
+        return playerRepository.setup(
             playedListSetup = PlayedListSetup.fromSelection(
                 musics = musicList.shuffled(),
                 state = PlayedListState.Playing,
@@ -513,15 +514,13 @@ class PlaybackManager(
         )
     }
 
-    suspend fun playSoulMix() {
+    suspend fun playSoulMix(): Boolean {
         val totalByFolder: Int =
             settings.get(SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST)
 
         val musicList: List<Music> = commonMusicUseCase.getSoulMixMusics(totalByFolder)
 
-        if (musicList.isEmpty()) return
-
-        playerRepository.setup(
+        return playerRepository.setup(
             playedListSetup = PlayedListSetup.fromSelection(
                 musics = musicList,
                 state = PlayedListState.Playing,
@@ -537,7 +536,7 @@ class PlaybackManager(
         playlistId: String?,
         isMainPlaylist: Boolean = false,
         isForcingNewPlaylist: Boolean = false
-    ) {
+    ): Boolean =
         playerRepository.setup(
             playedListSetup = PlayedListSetup(
                 musics = musicList,
@@ -548,7 +547,6 @@ class PlaybackManager(
                 forceOverride = isForcingNewPlaylist
             )
         )
-    }
 
     /**************** PLAYER LISTENER ******************/
 

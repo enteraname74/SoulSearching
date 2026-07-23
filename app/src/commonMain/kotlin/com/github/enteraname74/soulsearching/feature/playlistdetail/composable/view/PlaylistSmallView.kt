@@ -99,7 +99,6 @@ fun PlaylistSmallView(
                 .coerceIn(0.dp, topBarHeightDp)
         }
 
-
     val backgroundColor: @Composable () -> Color =
         if (lazyListState.firstVisibleItemIndex >= 1) {
             { SoulSearchingColorTheme.colorScheme.primary }
@@ -128,7 +127,7 @@ fun PlaylistSmallView(
                 },
             title = topBarTitle,
             leftAction = TopBarNavigationAction(onClick = navigateBack),
-            rightAction = object: TopBarActionSpec {
+            rightAction = object : TopBarActionSpec {
                 override val icon: DrawableResource = CoreRes.drawable.ic_search
                 override val onClick: () -> Unit = searchAction
             },
@@ -162,10 +161,7 @@ fun PlaylistSmallView(
                         ),
                     containerColor = backgroundColor(),
                     editAction = playlistDetailListener.onEdit,
-                    shuffleAction = {
-                        playlistDetailListener.onUpdateNbPlayed()
-                        playlistDetailListener.onShuffleClicked()
-                    },
+                    shuffleAction = playlistDetailListener::onShuffleClicked,
                     playAction = playlistDetailListener::onPlayClicked,
                 )
             }

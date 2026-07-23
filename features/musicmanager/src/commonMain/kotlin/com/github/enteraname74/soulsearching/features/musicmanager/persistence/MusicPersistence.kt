@@ -12,7 +12,7 @@ import org.koin.core.component.inject
 /**
  * Saves the collected data of music, album and artists.
  */
-class MusicPersistence: KoinComponent {
+class MusicPersistence : KoinComponent {
     private val commonMusicsUseCase: CommonMusicUseCase by inject()
     private val commonFolderUseCase: CommonFolderUseCase by inject()
     private val settings: SoulSearchingSettings by inject()
@@ -20,7 +20,7 @@ class MusicPersistence: KoinComponent {
     suspend fun saveAll(musics: List<Music>) {
         commonMusicsUseCase.upsertAll(musics)
         commonFolderUseCase.upsertAll(
-        musics.map {
+            allFolders = musics.map {
                 Folder(
                     folderPath = it.folder,
                     isSelected = true,

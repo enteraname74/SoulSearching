@@ -3,6 +3,7 @@ package com.github.enteraname74.domain.model.settings
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.model.player.PlayerMode
+import com.github.enteraname74.domain.util.LocalDatabaseVersion
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -205,7 +206,7 @@ object SoulSearchingSettingsKeys {
     object System {
         val CURRENT_DB_VERSION = settingElementOf(
             key = "CURRENT_DB_VERSION",
-            defaultValue = 0,
+            defaultValue = LocalDatabaseVersion.VERSION,
         )
     }
 

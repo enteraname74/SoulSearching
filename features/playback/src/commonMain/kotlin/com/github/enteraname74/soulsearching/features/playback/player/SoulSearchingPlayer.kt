@@ -1,21 +1,16 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
-import kotlinx.coroutines.flow.Flow
 
 /**
  * Represent the player used by the service.
  */
 interface SoulSearchingPlayer {
-    val state: Flow<Boolean>
     var listener: Listener?
 
-    /**
-     * Initialize the player.
-     */
-    fun init()
-
-    fun registerListener(listener: Listener)
+    suspend fun registerListener(listener: Listener) {
+        this.listener = listener
+    }
 
     /**
      * Set a song to the player.
@@ -26,17 +21,17 @@ interface SoulSearchingPlayer {
      * Load the current music without playing it.
      * @param seekTo the initial position to go when loading a song.
      */
-    fun onlyLoadMusic(seekTo: Int)
+    suspend fun onlyLoadMusic(seekTo: Int)
 
     /**
      * Launch the loaded music of the player.
      */
-    fun launchMusic()
+    suspend fun launchMusic()
 
     /**
      * Play or pause the current music.
      */
-    fun togglePlayPause() {
+    suspend fun togglePlayPause() {
         try {
             when (isPlaying()) {
                 true -> pause()
@@ -45,49 +40,50 @@ interface SoulSearchingPlayer {
                     // no-op
                 }
             }
-        } catch (_: Exception) {}
+        } catch (_: Exception) {
+        }
     }
 
     /**
      * Play the loaded music.
      */
-    fun play()
+    suspend fun play()
 
     /**
      * Pause the current music.
      */
-    fun pause()
+    suspend fun pause()
 
     /**
      * Seek to a given position in the current played music.
      */
-    fun seekToPosition(millis: Int)
+    suspend fun seekToPosition(millis: Int)
 
     /**
      * Check if the player is playing.
      */
-    fun isPlaying(): Boolean?
+    suspend fun isPlaying(): Boolean?
 
     /**
      * Dismiss the player.
      */
-    fun dismiss()
+    suspend fun dismiss()
 
     /**
      * Retrieve the progress in the current played song in milliseconds.
      */
-    fun getProgress(): Int
+    suspend fun getProgress(): Int
 
     /**
      * Retrieve the current music duration.
      * Returns 0 if no song is being played.
      */
-    fun getMusicDuration(): Int
+    suspend fun getMusicDuration(): Int
 
     /**
      * Set the volume of the player between 0.1 and 1.0.
      */
-    fun setPlayerVolume(volume: Float)
+    suspend fun setPlayerVolume(volume: Float)
 
     interface Listener {
         /**

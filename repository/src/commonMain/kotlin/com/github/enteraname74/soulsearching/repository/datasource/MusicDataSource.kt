@@ -123,4 +123,6 @@ interface MusicDataSource {
     fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?>
 
     suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music>
+
+    suspend fun getFromPath(path: String): Music?
 }

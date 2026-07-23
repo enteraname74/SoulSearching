@@ -57,6 +57,7 @@ data class RoomArtistPreview(
         ArtistPreview(
             id = id,
             name = name,
+            nbPlayed = nbPlayed,
             totalMusics = totalMusics,
             cover = Cover.CoverFile(
                 initialCoverPath = musicCoverPath,

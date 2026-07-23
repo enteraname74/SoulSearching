@@ -42,7 +42,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.bundles.androidx)
-//            implementation(libs.androidx.media3.exoplayer)
+            implementation(libs.androidx.media3.exoplayer)
             implementation(libs.koin.androidx.compose)
 //            implementation(libs.ffmpeg)
         }
