@@ -30,7 +30,7 @@ class SoulSearchingDesktopNotification(
         )
     }
 
-    override fun dismiss() {
+    override fun dismiss(forceStop: Boolean) {
         mprisMediaSession.dismiss()
     }
 

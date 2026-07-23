@@ -1,9 +1,5 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-
 plugins {
-    id("com.android.library")
-    alias(libs.plugins.kotlinMultiplatform)
+    id("soulsearching.kmp.base")
     alias(libs.plugins.kotlinSerialization)
 }
 
@@ -11,45 +7,13 @@ group = "com.github.enteraname74.soulsearching.remote"
 description = "Remote data access"
 
 kotlin {
-    jvmToolchain(17)
-    androidTarget()
-    jvm("desktop")
-    js {
-        browser()
-    }
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-    }
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    compilerOptions {
-        // Common compiler options applied to all Kotlin source sets for expect / actual implementations
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-        optIn.add("kotlin.uuid.ExperimentalUuidApi")
-    }
-
+    android.namespace = "com.github.enteraname74.soulsearching.remote"
     sourceSets {
-        val commonMain by getting
-        val androidMain by getting
-        val desktopMain by getting
-        val jsMain by getting
-        val wasmJsMain by getting
-        val jvmMain = maybeCreate("jvmMain").apply {
-            dependsOn(commonMain)
-
+        val jvmMain by getting {
             dependencies {
                 implementation(libs.ktor.client.cio)
             }
         }
-        val webMain = maybeCreate("webMain").apply {
-            dependsOn(commonMain)
-        }
-
-        androidMain.dependsOn(jvmMain)
-        desktopMain.dependsOn(jvmMain)
-        jsMain.dependsOn(webMain)
-        wasmJsMain.dependsOn(webMain)
 
         commonMain.dependencies {
             implementation(project(":domain"))
@@ -64,27 +28,5 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.kotlinx.serialization.json)
         }
-    }
-}
-
-android {
-    namespace = "com.github.enteraname74.soulsearching.remote"
-    compileSdk = libs.versions.android.compile.sdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.min.sdk.get().toInt()
-    }
-
-    buildTypes {
-        create("dev-release")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        jvmToolchain(17)
     }
 }

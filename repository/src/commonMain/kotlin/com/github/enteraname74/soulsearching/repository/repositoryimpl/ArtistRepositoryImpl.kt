@@ -71,6 +71,9 @@ class ArtistRepositoryImpl(
     override fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
         artistDataSource.getAllPaged()
 
+    override suspend fun getAll(page: Int, pageSize: Int): List<ArtistPreview> =
+        artistDataSource.getAll(page = page, pageSize = pageSize)
+
     /**
      * Retrieves a flow of an ArtistWithMusics.
      */

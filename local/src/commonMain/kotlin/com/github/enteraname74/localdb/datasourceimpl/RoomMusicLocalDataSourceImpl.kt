@@ -175,6 +175,38 @@ internal class RoomMusicLocalDataSourceImpl(
         }.map { it.toMusic() }
     }
 
+    override suspend fun getAllSorted(page: Int, pageSize: Int): List<Music> {
+        val direction: SortDirection = SortDirection
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY))
+            ?: SortDirection.DEFAULT
+
+        val type: SortType = SortType
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY))
+            ?: SortType.DEFAULT
+
+        val (limit, offset) = androidAutoLimitAndOffset(page = page, pageSize = pageSize)
+
+        return with(appDatabase.musicDao) {
+            when (direction) {
+                SortDirection.ASC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameAsc(limit = limit, offset = offset)
+                        SortType.ADDED_DATE -> getAllByDateAsc(limit = limit, offset = offset)
+                        SortType.NB_PLAYED -> getAllByNbPlayedAsc(limit = limit, offset = offset)
+                    }
+                }
+
+                SortDirection.DESC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameDesc(limit = limit, offset = offset)
+                        SortType.ADDED_DATE -> getAllByDateDesc(limit = limit, offset = offset)
+                        SortType.NB_PLAYED -> getAllByNbPlayedDesc(limit = limit, offset = offset)
+                    }
+                }
+            }
+        }.map { it.toMusic() }
+    }
+
     override fun getAllFromQuickAccess(): Flow<List<Music>> =
         appDatabase.musicDao.getAllFromQuickAccess().map { list ->
             list.map { it.toMusic() }
@@ -245,6 +277,20 @@ internal class RoomMusicLocalDataSourceImpl(
             albumId = albumId
         ).map { it.toMusic() }
 
+    override suspend fun getAllMusicFromAlbum(
+        albumId: Uuid,
+        page: Int,
+        pageSize: Int,
+    ): List<Music> {
+        val (limit, offset) = androidAutoLimitAndOffset(page = page, pageSize = pageSize)
+
+        return appDatabase.musicDao.getAllMusicFromAlbum(
+            albumId = albumId,
+            limit = limit,
+            offset = offset,
+        ).map { it.toMusic() }
+    }
+
     override fun searchFromAlbum(
         albumId: Uuid,
         search: String
@@ -308,14 +354,56 @@ internal class RoomMusicLocalDataSourceImpl(
     override suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music> =
         appDatabase.musicDao.getAllMusicFromArtist(artistId).map { it.toMusic() }
 
+    override suspend fun getAllMusicFromArtist(
+        artistId: Uuid,
+        page: Int,
+        pageSize: Int,
+    ): List<Music> {
+        val (limit, offset) = androidAutoLimitAndOffset(page = page, pageSize = pageSize)
+
+        return appDatabase.musicDao.getAllMusicFromArtist(
+            artistId = artistId,
+            limit = limit,
+            offset = offset,
+        ).map { it.toMusic() }
+    }
+
     override suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music> =
         appDatabase.musicDao.getAllMusicFromPlaylist(playlistId).map { it.toMusic() }
+
+    override suspend fun getAllMusicFromPlaylist(
+        playlistId: Uuid,
+        page: Int,
+        pageSize: Int,
+    ): List<Music> {
+        val (limit, offset) = androidAutoLimitAndOffset(page = page, pageSize = pageSize)
+
+        return appDatabase.musicDao.getAllMusicFromPlaylist(
+            playlistId = playlistId,
+            limit = limit,
+            offset = offset,
+        ).map { it.toMusic() }
+    }
 
     override suspend fun getAllMusicFromMonth(month: String): List<Music> =
         appDatabase.musicDao.getAllMusicFromMonth(month).map { it.toMusic() }
 
     override suspend fun getAllMusicFromFolder(folder: String): List<Music> =
         appDatabase.musicDao.getAllMusicFromFolder(folder).map { it.toMusic() }
+
+    override suspend fun getAllMusicFromFolder(
+        folder: String,
+        page: Int,
+        pageSize: Int,
+    ): List<Music> {
+        val (limit, offset) = androidAutoLimitAndOffset(page = page, pageSize = pageSize)
+
+        return appDatabase.musicDao.getAllMusicFromFolder(
+            folder = folder,
+            limit = limit,
+            offset = offset,
+        ).map { it.toMusic() }
+    }
 
     override fun getAlbumDuration(albumId: Uuid): Flow<Duration> =
         appDatabase.musicDao.getAlbumDuration(albumId).map { it.milliseconds }
@@ -360,6 +448,15 @@ internal class RoomMusicLocalDataSourceImpl(
         appDatabase.musicDao.getAllMusicFoldersPreview().map { list ->
             list.map { it.toMusicFolderPreview() }
         }
+
+    override suspend fun getAllMusicFolders(page: Int, pageSize: Int): List<MusicFolderPreview> {
+        val (limit, offset) = androidAutoLimitAndOffset(page = page, pageSize = pageSize)
+
+        return appDatabase.musicDao.getAllMusicFoldersPreview(
+            limit = limit,
+            offset = offset,
+        ).map { it.toMusicFolderPreview() }
+    }
 
     override fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?> =
         appDatabase.musicDao.getMusicFolderPreview(folder).map { it?.toMusicFolderPreview() }
@@ -434,4 +531,13 @@ internal class RoomMusicLocalDataSourceImpl(
         ).flow.map { pagingData ->
             pagingData.map { it.toMusic() }
         }
+
+    private fun androidAutoLimitAndOffset(page: Int, pageSize: Int): Pair<Int, Int> {
+        val limit = pageSize.takeIf { it > 0 } ?: DEFAULT_ANDROID_AUTO_PAGE_SIZE
+        val offset = page.coerceAtLeast(0) * limit
+
+        return limit to offset
+    }
 }
+
+private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

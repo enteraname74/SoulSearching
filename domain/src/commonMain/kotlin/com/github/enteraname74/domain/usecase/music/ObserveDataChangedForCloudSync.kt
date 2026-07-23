@@ -66,9 +66,12 @@ class ObserveDataChangedForCloudSync(
                 }
             }
         }
-
     }
 
+    fun cancel() {
+        job?.cancel()
+        job = null
+    }
 
     enum class Buffer {
         Waiting,

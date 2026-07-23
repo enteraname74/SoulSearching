@@ -66,10 +66,30 @@ interface PlaylistDao {
     @Query(
         """
             SELECT * FROM RoomPlaylistPreview 
+            ORDER BY name ASC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByNameAsc(limit: Int, offset: Int): List<RoomPlaylistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomPlaylistPreview 
             ORDER BY name DESC
         """
     )
     fun getAllPagedByNameDesc(): PagingSource<Int, RoomPlaylistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomPlaylistPreview 
+            ORDER BY name DESC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByNameDesc(limit: Int, offset: Int): List<RoomPlaylistPreview>
 
     @Transaction
     @Query(
@@ -84,10 +104,30 @@ interface PlaylistDao {
     @Query(
         """
             SELECT * FROM RoomPlaylistPreview 
+            ORDER BY addedDate ASC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByDateAsc(limit: Int, offset: Int): List<RoomPlaylistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomPlaylistPreview 
             ORDER BY addedDate DESC
         """
     )
     fun getAllPagedByDateDesc(): PagingSource<Int, RoomPlaylistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomPlaylistPreview 
+            ORDER BY addedDate DESC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByDateDesc(limit: Int, offset: Int): List<RoomPlaylistPreview>
 
     @Transaction
     @Query(
@@ -102,10 +142,30 @@ interface PlaylistDao {
     @Query(
         """
             SELECT * FROM RoomPlaylistPreview 
+            ORDER BY nbPlayed ASC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByNbPlayedAsc(limit: Int, offset: Int): List<RoomPlaylistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomPlaylistPreview 
             ORDER BY nbPlayed DESC
         """
     )
     fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomPlaylistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomPlaylistPreview 
+            ORDER BY nbPlayed DESC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByNbPlayedDesc(limit: Int, offset: Int): List<RoomPlaylistPreview>
 
     @Transaction
     @Query(

@@ -73,6 +73,9 @@ class PlaylistRepositoryImpl(
     override fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
         playlistLocalDataSource.getAllPaged()
 
+    override suspend fun getAll(page: Int, pageSize: Int): List<PlaylistPreview> =
+        playlistLocalDataSource.getAll(page = page, pageSize = pageSize)
+
     override suspend fun cleanAllCovers() {
         playlistLocalDataSource.cleanAllCovers()
     }

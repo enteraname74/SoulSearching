@@ -316,7 +316,7 @@ class PlayerViewModel(
                     appearance = index,
                     status = owner.status,
                     isCurrentUser = owner.id == currentUser?.id
-                            && owner.deviceId == deviceId,
+                        && owner.deviceId == deviceId,
                     onRemove = null,
                 )
             }
@@ -327,7 +327,7 @@ class PlayerViewModel(
                 .flatMap { (_, duplicates) ->
                     duplicates.mapIndexedNotNull { index, user ->
                         val isCurrentUser = user.id == currentUser?.id
-                                && user.deviceId == deviceId
+                            && user.deviceId == deviceId
 
                         SharedListState.User(
                             id = user.id,

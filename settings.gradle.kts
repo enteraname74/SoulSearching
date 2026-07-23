@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google()
         mavenCentral()
@@ -19,6 +20,7 @@ rootProject.name = "SoulSearching"
 include(":domain")
 include(":local")
 include(":app")
+include(":androidApp")
 include("core-ui")
 include("repository")
 include("shared-di")

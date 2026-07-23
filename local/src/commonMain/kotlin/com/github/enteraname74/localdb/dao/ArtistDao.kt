@@ -69,11 +69,31 @@ interface ArtistDao {
     @Transaction
     @Query(
         """
+            SELECT * FROM RoomArtistPreview
+            ORDER BY name ASC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByNameAsc(limit: Int, offset: Int): List<RoomArtistPreview>
+
+    @Transaction
+    @Query(
+        """
             SELECT * FROM RoomArtistPreview 
             ORDER BY name DESC
         """
     )
     fun getAllPagedByNameDesc(): PagingSource<Int, RoomArtistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomArtistPreview 
+            ORDER BY name DESC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByNameDesc(limit: Int, offset: Int): List<RoomArtistPreview>
 
     @Transaction
     @Query(
@@ -88,10 +108,30 @@ interface ArtistDao {
     @Query(
         """
             SELECT * FROM RoomArtistPreview 
+            ORDER BY addedDate ASC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByDateAsc(limit: Int, offset: Int): List<RoomArtistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomArtistPreview 
             ORDER BY addedDate DESC
         """
     )
     fun getAllPagedByDateDesc(): PagingSource<Int, RoomArtistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomArtistPreview 
+            ORDER BY addedDate DESC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByDateDesc(limit: Int, offset: Int): List<RoomArtistPreview>
 
     @Transaction
     @Query(
@@ -106,10 +146,30 @@ interface ArtistDao {
     @Query(
         """
             SELECT * FROM RoomArtistPreview 
+            ORDER BY nbPlayed ASC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByNbPlayedAsc(limit: Int, offset: Int): List<RoomArtistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomArtistPreview 
             ORDER BY nbPlayed DESC
         """
     )
     fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomArtistPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomArtistPreview 
+            ORDER BY nbPlayed DESC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByNbPlayedDesc(limit: Int, offset: Int): List<RoomArtistPreview>
 
     @Query("SELECT * FROM RoomArtist WHERE artistName = :artistName LIMIT 1")
     suspend fun getFromName(artistName: String): RoomArtist?

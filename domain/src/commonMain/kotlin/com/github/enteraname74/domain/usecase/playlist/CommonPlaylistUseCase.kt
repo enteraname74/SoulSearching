@@ -47,6 +47,9 @@ class CommonPlaylistUseCase(
     fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
         playlistRepository.getAllPaged()
 
+    suspend fun getAll(page: Int, pageSize: Int): List<PlaylistPreview> =
+        playlistRepository.getAll(page = page, pageSize = pageSize)
+
     suspend fun incrementNbPlayed(playlistId: Uuid) {
         val playlist: Playlist = playlistRepository.getFromId(playlistId).first() ?: return
         playlistRepository.upsert(

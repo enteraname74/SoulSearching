@@ -22,6 +22,7 @@ import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaMetadataUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,52 +31,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.CoroutineContext
+import kotlin.uuid.Uuid
 
 @UnstableApi
 class SoulSearchingExoPlayerImpl(
     context: Context,
     commonCloudPreferencesUseCase: CommonCloudPreferencesUseCase,
     commonUserUseCase: CommonUserUseCase,
+    private val mediaMetadataUtils: MediaMetadataUtils,
 ) : SoulSearchingPlayer {
-    private val httpFactory = DefaultHttpDataSource.Factory()
-        .setUserAgent("Soul Searching")
-
-    private val resolvingDataSourceFactory: DataSource.Factory =
-        ResolvingDataSource.Factory(
-            DefaultDataSource.Factory(context, httpFactory)
-        ) { dataSpec: DataSpec -> resolveDataSpec(dataSpec) }
-
-    private val mediaSourceFactory = DefaultMediaSourceFactory(context)
-        .setDataSourceFactory(resolvingDataSourceFactory)
-    private val player = ExoPlayer
-        .Builder(context)
-        .setMediaSourceFactory(mediaSourceFactory)
-        .build()
-    internal val media3Player: Player
-        get() = player
-    private val playerDispatcher = PlayerDispatcher(player.applicationLooper)
-    private val playerCoroutineScope = CoroutineScope(playerDispatcher)
-    private val workScope = CoroutineScope(Dispatchers.IO)
-
-    private var accessToken: StateFlow<String?> = commonUserUseCase
-        .observeUser()
-        .map { it?.accessToken }
-        .stateIn(
-            scope = workScope,
-            started = SharingStarted.Eagerly,
-            initialValue = null,
-        )
-    private var baseUrl: StateFlow<String?> = commonCloudPreferencesUseCase
-        .observeUrl()
-        .stateIn(
-            scope = workScope,
-            started = SharingStarted.Eagerly,
-            initialValue = null,
-        )
+    private var lastReportedIsPlaying: Boolean? = null
 
     private val playerListener = object : Player.Listener {
         override fun onPlayerError(error: PlaybackException) {
@@ -99,23 +67,74 @@ class SoulSearchingExoPlayerImpl(
                 !events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)
             ) return
 
+            val isPlayingState = when {
+                player.isPlaying -> true
+
+                !player.playWhenReady &&
+                    player.playbackState != Player.STATE_ENDED -> false
+
+                else -> null
+            }
+
+            if (isPlayingState == null || isPlayingState == lastReportedIsPlaying) return
+
+            lastReportedIsPlaying = isPlayingState
             playerCoroutineScope.launch {
-                when {
-                    player.isPlaying -> listener?.onPlay()
-
-                    !player.playWhenReady &&
-                        player.playbackState != Player.STATE_ENDED -> {
-                        listener?.onPause()
-                    }
-
-                    else -> {
-                        // isPlaying=false but playWhenReady=true:
-                        // seeking, buffering, waiting, preparing. Not a real pause.
-                    }
+                if (isPlayingState) {
+                    listener?.onPlay()
+                } else {
+                    listener?.onPause()
                 }
             }
         }
     }
+
+    private val httpFactory = DefaultHttpDataSource.Factory()
+        .setUserAgent("Soul Searching")
+
+    private val resolvingDataSourceFactory: DataSource.Factory =
+        ResolvingDataSource.Factory(
+            DefaultDataSource.Factory(context, httpFactory)
+        ) { dataSpec: DataSpec -> resolveDataSpec(dataSpec) }
+
+    private val mediaSourceFactory = DefaultMediaSourceFactory(context)
+        .setDataSourceFactory(resolvingDataSourceFactory)
+
+    val player: ExoPlayer = ExoPlayer
+        .Builder(context)
+        .setMediaSourceFactory(mediaSourceFactory)
+        .build()
+        .apply {
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                    .build(),
+                true
+            )
+            addListener(playerListener)
+        }
+    val playerDispatcher: PlayerDispatcher = PlayerDispatcher(player.applicationLooper)
+    private val playerCoroutineScope = CoroutineScope(playerDispatcher)
+    private val workScope = CoroutineScope(Dispatchers.IO)
+    private var lastSyncedTimelineMusicIds: List<Uuid> = emptyList()
+
+    private var accessToken: StateFlow<String?> = commonUserUseCase
+        .observeUser()
+        .map { it?.accessToken }
+        .stateIn(
+            scope = workScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
+    private var baseUrl: StateFlow<String?> = commonCloudPreferencesUseCase
+        .observeUrl()
+        .stateIn(
+            scope = workScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
+
     override var listener: SoulSearchingPlayer.Listener? = null
 
     private suspend fun <T> onPlayerThread(block: suspend () -> T): Result<T> =
@@ -126,23 +145,6 @@ class SoulSearchingExoPlayerImpl(
                 Log.e("PLAYER", "got player error: $it")
             }
         }
-
-    init {
-        runBlocking { init() }
-    }
-
-    suspend fun init() {
-        onPlayerThread {
-            player.setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(C.USAGE_MEDIA)
-                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-                    .build(),
-                true
-            )
-            player.addListener(playerListener)
-        }
-    }
 
     private fun resolveDataSpec(original: DataSpec): DataSpec {
         val originalUri = original.uri
@@ -184,24 +186,127 @@ class SoulSearchingExoPlayerImpl(
 
     override suspend fun setMusic(music: Music) {
         onPlayerThread {
-            when {
-                music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
-                    val file = File(music.localPath.orEmpty())
-                    val mediaItem = MediaItem.fromUri(Uri.fromFile(file))
-                    player.setMediaItem(mediaItem)
+            if (player.currentMediaItem?.musicId() == music.musicId) {
+                if (player.playbackState == Player.STATE_IDLE) {
                     player.prepare()
                 }
-                music.remotePath != null -> {
-                    val mediaItem = MediaItem.fromUri(music.remotePath.orEmpty())
-                    player.setMediaItem(mediaItem)
+                return@onPlayerThread
+            }
+
+            val timelineIndex = player.timelineIndexOf(music.musicId)
+            if (timelineIndex != C.INDEX_UNSET) {
+                player.seekTo(timelineIndex, 0L)
+                player.prepare()
+                return@onPlayerThread
+            }
+
+            player.setMediaItem(music.toPlayableMediaItem())
+            lastSyncedTimelineMusicIds = emptyList()
+            player.prepare()
+        }
+    }
+
+    suspend fun syncPlayedListTimeline(
+        musics: List<Music>,
+        musicIds: List<Uuid>,
+        currentMusicId: Uuid?,
+    ) {
+
+        if (musics.isEmpty() || currentMusicId == null) {
+            onPlayerThread {
+                if (player.mediaItemCount > 0) {
+                    player.clearMediaItems()
+                }
+                lastSyncedTimelineMusicIds = emptyList()
+            }
+            return
+        }
+
+        val targetIndex = musicIds.indexOf(currentMusicId)
+            .takeIf { it != -1 }
+            ?: C.INDEX_UNSET
+
+        onPlayerThread {
+            val currentTimelineMusicId = player.currentMediaItem?.musicId()
+            val shouldPrepareAfterTimelineUpdate =
+                player.playWhenReady || player.playbackState != Player.STATE_IDLE
+
+            if (lastSyncedTimelineMusicIds != musicIds || player.mediaItemCount != musicIds.size) {
+                val mediaItems = musics.mapIndexed { index, music ->
+                    music.toPlayableMediaItem(
+                        trackNumber = index + 1,
+                        totalTrackCount = musics.size,
+                    )
+                }
+
+                player.setMediaItems(
+                    mediaItems,
+                    targetIndex.takeIf { it != C.INDEX_UNSET } ?: 0,
+                    if (currentTimelineMusicId == currentMusicId) {
+                        player.currentPosition.coerceAtLeast(0L)
+                    } else {
+                        0L
+                    },
+                )
+
+                if (shouldPrepareAfterTimelineUpdate) {
                     player.prepare()
                 }
-                else -> {
-                    listener?.onError()
-                }
+                lastSyncedTimelineMusicIds = musicIds
+                return@onPlayerThread
+            }
+
+            if (
+                targetIndex != C.INDEX_UNSET &&
+                player.currentMediaItemIndex != targetIndex
+            ) {
+                player.seekTo(targetIndex, 0L)
             }
         }
     }
+
+    private fun Music.toPlayableMediaItem(
+        trackNumber: Int? = null,
+        totalTrackCount: Int? = null,
+    ): MediaItem =
+        MediaItem.Builder()
+            .setMediaId(musicId.toString())
+            .setUriFromMusic(this)
+            .setMediaMetadata(
+                mediaMetadataUtils
+                    .fromMusic(
+                        music = this,
+                        // Will be set later, on notification callbacks from PlaybackManager
+                        cover = null,
+                    )
+                    .apply {
+                        trackNumber?.let(::setTrackNumber)
+                        totalTrackCount?.let(::setTotalTrackCount)
+                    }
+                    .build()
+            )
+            .build()
+
+    private fun ExoPlayer.timelineIndexOf(musicId: Uuid): Int =
+        (0 until mediaItemCount)
+            .firstOrNull { index ->
+                getMediaItemAt(index).musicId() == musicId
+            } ?: C.INDEX_UNSET
+
+    private fun MediaItem.musicId(): Uuid? =
+        runCatching { Uuid.parse(mediaId) }.getOrNull()
+
+    private fun MediaItem.Builder.setUriFromMusic(
+        music: Music
+    ): MediaItem.Builder =
+        when {
+            music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
+                val file = File(music.localPath.orEmpty())
+                setUri(Uri.fromFile(file))
+            }
+            music.remotePath != null -> setUri(music.remotePath.orEmpty())
+            else -> this
+        }
 
     override suspend fun play() {
         onPlayerThread {
@@ -228,8 +333,9 @@ class SoulSearchingExoPlayerImpl(
 
     override suspend fun dismiss() {
         onPlayerThread {
-            // TODO PLAYER: Really dismiss player?
-            player.pause()
+            player.stop()
+            player.clearMediaItems()
+            lastSyncedTimelineMusicIds = emptyList()
         }
     }
 
@@ -250,12 +356,19 @@ class SoulSearchingExoPlayerImpl(
     }
 }
 
-private class PlayerDispatcher(
-    looper: Looper
+class PlayerDispatcher(
+    private val looper: Looper
 ) : CoroutineDispatcher() {
-    private val handler = Handler(looper)
+    val handler: Handler = Handler(looper)
+
+    override fun isDispatchNeeded(context: CoroutineContext): Boolean =
+        Looper.myLooper() != looper
 
     override fun dispatch(context: CoroutineContext, block: Runnable) {
-        handler.post(block)
+        if (Looper.myLooper() == looper) {
+            block.run()
+        } else {
+            handler.post(block)
+        }
     }
 }

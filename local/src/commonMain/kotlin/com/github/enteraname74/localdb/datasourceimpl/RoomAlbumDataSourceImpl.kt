@@ -135,6 +135,39 @@ internal class RoomAlbumDataSourceImpl(
             }
         }
 
+    override suspend fun getAll(page: Int, pageSize: Int): List<AlbumPreview> {
+        val direction: SortDirection = SortDirection
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_ALBUMS_DIRECTION_KEY))
+            ?: SortDirection.DEFAULT
+
+        val type: SortType = SortType
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_ALBUMS_TYPE_KEY))
+            ?: SortType.DEFAULT
+
+        val limit = pageSize.takeIf { it > 0 } ?: DEFAULT_ANDROID_AUTO_PAGE_SIZE
+        val offset = page.coerceAtLeast(0) * limit
+
+        return with(appDatabase.albumDao) {
+            when (direction) {
+                SortDirection.ASC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameAsc(limit = limit, offset = offset)
+                        SortType.ADDED_DATE -> getAllByDateAsc(limit = limit, offset = offset)
+                        SortType.NB_PLAYED -> getAllByNbPlayedAsc(limit = limit, offset = offset)
+                    }
+                }
+
+                SortDirection.DESC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameDesc(limit = limit, offset = offset)
+                        SortType.ADDED_DATE -> getAllByDateDesc(limit = limit, offset = offset)
+                        SortType.NB_PLAYED -> getAllByNbPlayedDesc(limit = limit, offset = offset)
+                    }
+                }
+            }
+        }.map { it.toAlbumPreview() }
+    }
+
     override fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
         appDatabase.albumDao.getAllFromQuickAccess().map { list ->
             list.map { it.toAlbumPreview() }
@@ -189,3 +222,5 @@ internal class RoomAlbumDataSourceImpl(
     override suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics> =
         appDatabase.albumDao.getAlbumsOfArtistName(artistName).map { it.toAlbumWithMusics() }
 }
+
+private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

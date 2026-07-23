@@ -75,6 +75,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -318,7 +319,13 @@ class MainPageViewModel(
 
         coroutineScope.launch {
             cloudBackgroundSyncJob.launchIfPossible()
-            observeDataChangedForCloudSync()
+            hasValidCloudInformationUseCase().distinctUntilChanged().collectLatest { hasInfo ->
+                if (hasInfo) {
+                    observeDataChangedForCloudSync()
+                } else {
+                    observeDataChangedForCloudSync.cancel()
+                }
+            }
         }
 
         coroutineScope.launch {

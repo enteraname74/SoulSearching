@@ -39,7 +39,7 @@ class CoverRepositoryImpl(
         coverLocalDataSource.isCoverUsed(coverId)
 
     override suspend fun getCoverImageBitmap(cover: Cover): ImageBitmap? =
-        when(cover) {
+        when (cover) {
             is Cover.CoverFile -> {
                 when {
                     cover.fileCoverId != null -> {

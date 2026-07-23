@@ -102,7 +102,7 @@ fun PlayerTopInformation(
 
             val canClickOnArtistsAndAlbum =
                 playerViewManager.currentValue == BottomSheetStates.EXPANDED
-                        && state.currentMusic.scope == Scope.User
+                    && state.currentMusic.scope == Scope.User
 
             FlowRow(
                 horizontalArrangement = Arrangement.Center,
