@@ -425,18 +425,9 @@ class PlaybackManager(
                     PlayedListState.Playing if scope?.isAdmin == true -> {
                         ensureReadyForPlayback()
                         if (player.isPlaying() == false) {
-                            val currentMusic: Music =
-                                playerRepository.getCurrentMusic().firstOrNull()?.music
-                                    ?: return@collectLatest
-                            val currentProgress: Int =
-                                playerRepository.getCurrentProgress().firstOrNull() ?: 0
-
-                            player.setMusic(currentMusic)
-                            player.seekToPosition(millis = currentProgress)
                             player.play()
                         }
                         playbackProgressJob.launchDurationJobIfNecessary()
-                        updateNotification()
                     }
 
                     PlayedListState.Paused if scope?.isAdmin == true -> {
