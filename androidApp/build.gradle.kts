@@ -6,8 +6,8 @@ android {
     namespace = "com.github.soulsearching"
     defaultConfig {
         applicationId = "com.github.enteraname74.soulsearching"
-        versionCode = 36
-        versionName = libs.versions.application.version.name.get()
+        versionCode = 38
+        versionName = "0.16.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

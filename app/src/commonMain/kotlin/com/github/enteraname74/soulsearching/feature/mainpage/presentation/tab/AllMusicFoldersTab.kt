@@ -19,17 +19,22 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Eleme
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicFoldersState
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
+import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import kotlinx.coroutines.flow.StateFlow
 
 fun allMusicFoldersTab(
     state: StateFlow<AllMusicFoldersState>,
+    multiSelectionState: StateFlow<MultiSelectionState>,
     navigateToFolder: (folderPath: String) -> Unit,
+    toggleFolderSelection: (folderPath: String, mode: SelectionMode) -> Unit,
     showSoulMixDialog: () -> Unit,
     onSoulMixClicked: () -> Unit,
 ): PagerScreen = PagerScreen(
     type = ElementEnum.FOLDERS,
     screen = {
         val folderState: AllMusicFoldersState by state.collectAsState()
+        val selectionState: MultiSelectionState by multiSelectionState.collectAsState()
 
         MainPageList(
             list = folderState.allMusicFolders,
@@ -55,7 +60,11 @@ fun allMusicFoldersTab(
                 onClick = {
                     navigateToFolder(element.folder)
                 },
-                onLongClick = { }
+                onLongClick = {
+                    toggleFolderSelection(element.folder, SelectionMode.Folder)
+                },
+                isSelected = selectionState.selectedIds.contains(element.folder),
+                isSelectionModeOn = selectionState.totalSelected > 0,
             )
         }
     }

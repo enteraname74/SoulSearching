@@ -78,8 +78,8 @@ fun ArtistAlbums(
                             UiConstants.ImageSize.veryLarge
                         },
                         onLongClick = { onAlbumLongClick(element) },
-                        isSelected = multiSelectionState.selectedIds.contains(element.album.albumId),
-                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                        isSelected = multiSelectionState.selectedIds.contains(element.album.albumId.toString()),
+                        isSelectionModeOn = multiSelectionState.totalSelected > 0,
                     )
                 }
             }

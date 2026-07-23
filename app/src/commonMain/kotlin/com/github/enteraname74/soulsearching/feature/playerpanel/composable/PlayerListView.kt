@@ -229,8 +229,8 @@ fun PlayerListView(
                                 onLongClick = { onLongSelectOnMusic(elt) },
                                 textColor = contentColor,
                                 isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
-                                isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
-                                isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                                isSelected = multiSelectionState.selectedIds.contains(elt.musicId.toString()),
+                                isSelectionModeOn = multiSelectionState.totalSelected > 0,
                                 selectedIconColors = selectedIconColors,
                                 userTag = getUserTag(elt.musicId)
                             )

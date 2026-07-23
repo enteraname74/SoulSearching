@@ -23,6 +23,12 @@ fun allMusicsTab(
         AllMusicsComposable(
             musicState = musicState,
             navigateToMonth = navigateToMonth,
+            toggleMonthSelection = {
+                mainPageViewModel.toggleElementInSelection(
+                    id = it,
+                    mode = SelectionMode.Month,
+                )
+            },
             setSortType = mainPageViewModel::setMusicSortType,
             toggleSortDirection = {
                 val newDirection =
@@ -40,7 +46,7 @@ fun allMusicsTab(
             },
             onLongClick = { selectedMusic ->
                 mainPageViewModel.toggleElementInSelection(
-                    id = selectedMusic.musicId,
+                    id = selectedMusic.musicId.toString(),
                     mode = SelectionMode.Music,
                 )
             },

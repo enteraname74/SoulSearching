@@ -118,6 +118,16 @@ object EnStrings : Strings {
 
     override val deleteSelectedMusicsDialogTitle = "Are you sure to delete the selected songs?"
     override val deleteSelectedMusicsDialogText = "They will be removed from the application."
+    override val deleteFolderMusicsDialogTitle = "Are you sure to delete this folder?"
+    override val deleteFolderMusicsDialogText =
+        "All songs from this folder will be removed from the application. The folder will also be disabled for future fetching."
+    override val deleteSelectedFoldersMusicsDialogTitle = "Are you sure to delete the selected folders?"
+    override val deleteSelectedFoldersMusicsDialogText =
+        "All songs from these folders will be removed from the application. These folders will also be disabled for future fetching."
+    override val deleteMonthMusicsDialogTitle = "Are you sure to delete this month selection?"
+    override val deleteMonthMusicsDialogText = "All songs from this month will be removed from the application."
+    override val deleteSelectedMonthsMusicsDialogTitle = "Are you sure to delete the selected month selections?"
+    override val deleteSelectedMonthsMusicsDialogText = "All songs from these months will be removed from the application."
     override val deleteSelectedAlbumsDialogTitle = "Are you sure to delete the selected albums?"
     override val deleteSelectedArtistsDialogTitle = "Are you sure to delete the selected artists?"
     override val deleteSelectedPlaylistsDialogTitle = "Are you sure to delete the selected playlists?"
@@ -146,6 +156,10 @@ object EnStrings : Strings {
     override val deleteSelectedArtists = "Delete selected artists"
     override val deleteSelectedPlaylists = "Delete selected playlists"
     override val deleteSelectedMusics = "Delete selected songs"
+    override val deleteFolderMusics = "Delete folder"
+    override val deleteSelectedFoldersMusics = "Delete selected folders"
+    override val deleteMonthMusics = "Delete month selection"
+    override val deleteSelectedMonthsMusics = "Delete selected month selections"
 
     override val playNext = "Play next"
     override val addToQueue = "Add to queue"
@@ -392,6 +406,47 @@ object EnStrings : Strings {
     override val musicSyncedOnCloud: String = "Song synced on the cloud"
     override val musicRemoteOnly: String = "Song coming from the cloud"
     override val musicLocalOnly: String = "Song not uploaded on the cloud"
+
+    override val shortcutsTitle: String = "Shortcuts"
+    override val shortcutsText: String = "See shortcuts of the app"
+
+    override val shortcutPlayerCategory: String = "Player shortcuts"
+
+    override val shortcutTogglePlayPauseDescription: String = "Toggle play/pause"
+    override val shortcutPreviousDescription: String = "Previous"
+    override val shortcutNextDescription: String = "Next"
+    override val shortcutSeekForwardDescription: String = "Seek forward"
+    override val shortcutSeekBackwardDescription: String = "Seek backward"
+    override val shortcutVolumeUpDescription: String = "Volume up"
+    override val shortcutVolumeDownDescription: String = "Volume down"
+    override val shortcutToggleFavoriteDescription: String = "Toggle favorite of playing song"
+
+    override val shortcutTogglePlayPauseCommands: List<String> = listOf(
+        "Space",
+    )
+    override val shortcutPreviousCommands: List<String> = listOf(
+        "Shift",
+        "Left arrow",
+    )
+    override val shortcutNextCommands: List<String> = listOf(
+        "Shift",
+        "Right arrow",
+    )
+    override val shortcutSeekForwardCommands: List<String> = listOf(
+        "Right arrow"
+    )
+    override val shortcutSeekBackwardCommands: List<String> = listOf(
+        "Left arrow"
+    )
+    override val shortcutVolumeUpCommands: List<String> = listOf(
+        "Up arrow"
+    )
+    override val shortcutVolumeDownCommands: List<String> = listOf(
+        "Down arrow"
+    )
+    override val shortcutToggleFavoriteCommands: List<String> = listOf(
+        "F"
+    )
 
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {

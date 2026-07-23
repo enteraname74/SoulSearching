@@ -2,8 +2,10 @@ package com.github.enteraname74.soulsearching.di
 
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.folder.FolderBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingViewModel
@@ -45,6 +47,7 @@ import com.github.enteraname74.soulsearching.feature.settings.managemusics.manag
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreenViewModel
+import com.github.enteraname74.soulsearching.feature.settings.shortcuts.SettingsShortcutsViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsViewModel
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import org.koin.core.module.Module
@@ -78,6 +81,7 @@ internal val viewModelModule: Module = module {
     viewModelOf(::SettingsCloudSharedListJoinViewHolder)
     viewModelOf(::SettingsCloudFetchMusicViewHolder)
     viewModelOf(::SettingsCloudExplanationsViewHolder)
+    viewModelOf(::SettingsShortcutsViewHolder)
 
     // Main page
     viewModelOf(::MainPageViewModel)
@@ -116,4 +120,6 @@ internal val viewModelModule: Module = module {
     viewModelOf(::PlaylistBottomSheetViewModel)
     viewModelOf(::ArtistBottomSheetViewModel)
     viewModelOf(::AlbumBottomSheetViewModel)
+    viewModelOf(::FolderBottomSheetViewModel)
+    viewModelOf(::MonthBottomSheetViewModel)
 }

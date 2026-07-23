@@ -69,13 +69,13 @@ fun allPlaylistsTab(
                     },
                     onLongClick = {
                         mainPageViewModel.toggleElementInSelection(
-                            id = element.id,
+                            id = element.id.toString(),
                             mode = SelectionMode.Playlist,
                         )
                     },
                     isFavoritePlaylist = element.isFavorite,
-                    isSelected = multiSelectionState.selectedIds.contains(element.id),
-                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                    isSelected = multiSelectionState.selectedIds.contains(element.id.toString()),
+                    isSelectionModeOn = multiSelectionState.totalSelected > 0,
                 )
             }
         }

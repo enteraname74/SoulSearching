@@ -12,7 +12,7 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_arrow_back
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_arrow_forward
-import com.github.enteraname74.soulsearching.coreui.ext.suspectMouseOnly
+import com.github.enteraname74.soulsearching.coreui.ext.isMouseAndKeyboardOnly
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulPageIndicator
 
 @Composable
@@ -26,7 +26,7 @@ fun SettingsStatisticsSectionIndicatorList(
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
-        if (PlatformUtils.suspectMouseOnly()) {
+        if (PlatformUtils.isMouseAndKeyboardOnly()) {
             SoulIconButton(
                 icon = CoreRes.drawable.ic_arrow_back,
                 onClick = {
@@ -53,7 +53,7 @@ fun SettingsStatisticsSectionIndicatorList(
             )
         }
 
-        if (PlatformUtils.suspectMouseOnly()) {
+        if (PlatformUtils.isMouseAndKeyboardOnly()) {
             SoulIconButton(
                 icon = CoreRes.drawable.ic_arrow_forward,
                 onClick = {

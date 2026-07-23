@@ -53,7 +53,7 @@ fun MultiSelectionScaffold(
 
     val isMultiSelectionActive by remember {
         derivedStateOf {
-            state.selectedIds.isNotEmpty()
+            state.totalSelected > 0
         }
     }
     LaunchedEffect(navigationState) {
@@ -90,7 +90,7 @@ fun MultiSelectionScaffold(
                 exit = shrinkVertically()
             ) {
                 MultiSelectionTopBar(
-                    total = state.selectedIds.size,
+                    total = state.totalSelected,
                     topBarColors = if (
                         !PlayerUiUtils.canShowSidePanel()
                         && playerViewManager.currentValue == BottomSheetStates.EXPANDED

@@ -4,4 +4,4 @@ import androidx.compose.runtime.Composable
 import com.github.enteraname74.domain.util.PlatformUtils
 
 @Composable
-actual fun PlatformUtils.suspectMouseOnly(): Boolean = false
+actual fun PlatformUtils.isMouseAndKeyboardOnly(): Boolean = false

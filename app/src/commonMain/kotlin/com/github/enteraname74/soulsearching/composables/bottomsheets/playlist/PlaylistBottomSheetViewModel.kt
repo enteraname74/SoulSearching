@@ -127,6 +127,10 @@ class PlaylistBottomSheetViewModel(
             )
         }
 
+        if (hasUserMusics) {
+            add(BottomSheetRowSpec.addToPlaylist(::addToPlaylists))
+        }
+
         if (playedListScope?.isRemote != true) {
             add(BottomSheetRowSpec.playNext(::playNext))
         }
@@ -261,6 +265,16 @@ class PlaylistBottomSheetViewModel(
                 navScope.navigateBack()
             }
         }
+    }
+
+    private fun addToPlaylists() {
+        val musicIds: List<Uuid> =
+            state.value.playlists
+                .flatMap { it.musics }
+                .distinctBy { it.musicId }
+                .map { it.musicId }
+
+        navScope.toAddToPlaylists(musicIds)
     }
 
     private fun removeFromPlayedList() {

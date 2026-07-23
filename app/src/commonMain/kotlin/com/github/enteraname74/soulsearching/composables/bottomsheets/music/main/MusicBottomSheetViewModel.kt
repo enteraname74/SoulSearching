@@ -14,8 +14,7 @@ import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
-import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiMusicDialog
-import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicDialog
+import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicsDialog
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMultiMusicFromPlaylistDialog
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMusicFromPlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
@@ -313,14 +312,18 @@ class MusicBottomSheetViewModel(
 
     private fun showDeleteDialog() {
         dialogState.value = if (state.value.musics.size == 1) {
-            DeleteMusicDialog(
+            DeleteMusicsDialog(
                 onDelete = { deleteMusics() },
-                onClose = { dialogState.value = null }
+                onClose = { dialogState.value = null },
+                title = strings.deleteMusicDialogTitle,
+                text = strings.deleteMusicDialogText,
             )
         } else {
-            DeleteMultiMusicDialog(
+            DeleteMusicsDialog(
                 onDelete = { deleteMusics() },
-                onClose = { dialogState.value = null }
+                onClose = { dialogState.value = null },
+                title = strings.deleteSelectedMusicsDialogTitle,
+                text = strings.deleteSelectedMusicsDialogText,
             )
         }
     }

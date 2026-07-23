@@ -10,6 +10,7 @@ import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
@@ -20,6 +21,7 @@ class AddToPlaylistBottomSheetViewModel(
     private val loadingManager: LoadingManager,
     private val params: AddToPlaylistBottomSheetDestination,
     private val navScope: AddToPlaylistBottomSheetNavScope,
+    private val multiSelectionManager: MultiSelectionManager,
 ) : ViewModel() {
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
     val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
@@ -71,6 +73,7 @@ class AddToPlaylistBottomSheetViewModel(
                         }
                     }
                     _dialogState.value = null
+                    multiSelectionManager.clearMultiSelection()
                     navScope.onSave()
                 }
             }
@@ -105,6 +108,7 @@ class AddToPlaylistBottomSheetViewModel(
             loadingManager.withLoading {
                 addMusicsToPlaylist(selectedPlaylistIds.value.toList())
             }
+            multiSelectionManager.clearMultiSelection()
             navScope.onSave()
         }
     }

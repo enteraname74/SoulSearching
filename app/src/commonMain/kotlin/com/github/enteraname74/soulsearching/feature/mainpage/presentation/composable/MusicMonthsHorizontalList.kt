@@ -16,6 +16,8 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun MusicMonthsHorizontalList(
     months: List<MonthMusicsPreview>,
+    selectedMonths: List<String> = emptyList(),
+    isSelectionModeOn: Boolean = false,
     onMonthClicked: (month: String) -> Unit = {},
     onMonthLongClicked: (month: String) -> Unit = {},
 ) {
@@ -58,7 +60,9 @@ fun MusicMonthsHorizontalList(
                             onClick = {
                                 onMonthClicked(element.month)
                             },
-                            onLongClick = { onMonthLongClicked(element.month) }
+                            onLongClick = { onMonthLongClicked(element.month) },
+                            isSelected = selectedMonths.contains(element.month),
+                            isSelectionModeOn = isSelectionModeOn,
                         )
                     }
                 }
