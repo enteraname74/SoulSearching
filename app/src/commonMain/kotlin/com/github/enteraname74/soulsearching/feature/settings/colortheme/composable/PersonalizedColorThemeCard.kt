@@ -1,9 +1,11 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme.composable
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -19,8 +21,10 @@ fun PersonalizedColorThemeCard(
     togglePersonalizedDynamicPlayerTheme: () -> Unit,
     togglePersonalizedDynamicPlaylistTheme: () -> Unit,
     togglePersonalizedDynamicOtherViewsTheme: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     ColorCard(
+        modifier = modifier,
         title = strings.personalizedThemeTitle,
         text = strings.personalizedThemeText,
         onClick = onClick,
@@ -28,8 +32,7 @@ fun PersonalizedColorThemeCard(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = UiConstants.Spacing.medium),
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
         ) {
             SoulMenuSwitch(
@@ -38,7 +41,10 @@ fun PersonalizedColorThemeCard(
                 isChecked = hasPlayerTheme,
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-                padding = PaddingValues(all = 0.dp),
+                padding = PaddingValues(
+                    horizontal = UiConstants.Spacing.large,
+                    vertical = UiConstants.Spacing.small,
+                ),
             )
             SoulMenuSwitch(
                 title = strings.dynamicPlaylistView,
@@ -46,7 +52,10 @@ fun PersonalizedColorThemeCard(
                 isChecked = hasPlaylistTheme,
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-                padding = PaddingValues(all = 0.dp),
+                padding = PaddingValues(
+                    horizontal = UiConstants.Spacing.large,
+                    vertical = UiConstants.Spacing.small,
+                ),
             )
             SoulMenuSwitch(
                 title = strings.dynamicOtherView,
@@ -54,7 +63,10 @@ fun PersonalizedColorThemeCard(
                 isChecked = hasOtherViewsTheme,
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-                padding = PaddingValues(all = 0.dp),
+                padding = PaddingValues(
+                    horizontal = UiConstants.Spacing.large,
+                    vertical = UiConstants.Spacing.small,
+                ),
             )
         }
     }

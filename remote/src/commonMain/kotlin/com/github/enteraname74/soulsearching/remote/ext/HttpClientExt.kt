@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.remote.ext
 
 import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.soulsearching.remote.di.currentLanguage
+import com.github.enteraname74.domain.util.LocaleUtils
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.DefaultRequest
@@ -17,7 +17,7 @@ fun HttpClient.withUrl(url: String): HttpClient =
     config {
         installOrReplace(DefaultRequest) {
             url(url)
-            header(HttpHeaders.AcceptLanguage, currentLanguage())
+            header(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
         }
     }
 

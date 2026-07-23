@@ -12,6 +12,7 @@ import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Platform
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.QuickAccessible
@@ -19,15 +20,19 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.music.ObserveDataChangedForCloudSync
 import com.github.enteraname74.domain.usecase.music.RemoveLocallyOrDeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.domain.util.PlatformUtils
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
@@ -60,8 +65,8 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
 import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import com.github.enteraname74.soulsearching.util.pathExists
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -81,8 +86,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.io.File
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Suppress("Deprecation")
 class MainPageViewModel(
@@ -94,6 +98,9 @@ class MainPageViewModel(
     private val tabManager: TabManager,
     private val commonUserUseCase: CommonUserUseCase,
     private val hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
+    private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
+    private val observeDataChangedForCloudSync: ObserveDataChangedForCloudSync,
+    workDispatcher: WorkDispatcher,
 ) : ViewModel(), KoinComponent,
     SortingInformationDelegate by sortingInformationDelegateImpl {
 
@@ -110,11 +117,11 @@ class MainPageViewModel(
     private val commonReleaseUseCase: CommonReleaseUseCase by inject()
     private val shouldInformOfNewReleaseUseCase: ShouldInformOfNewReleaseUseCase by inject()
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope = CoroutineScope(workDispatcher.dispatcher)
 
     val shouldShowNewVersionPin: StateFlow<Boolean> = shouldInformOfNewReleaseUseCase()
         .stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
             started = SharingStarted.Lazily,
             initialValue = false
         )
@@ -146,7 +153,7 @@ class MainPageViewModel(
     val isUsingVerticalAccessBar: StateFlow<Boolean> = settings.getFlowOn(
         SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR,
     ).stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Lazily,
         initialValue = true,
     )
@@ -225,7 +232,7 @@ class MainPageViewModel(
             monthMusicPreviews = allMonthMusics,
         )
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Lazily,
         initialValue = AllMusicsState(),
     )
@@ -236,7 +243,7 @@ class MainPageViewModel(
                 allMusicFolders = allMusicFolders,
             )
         }.stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
             started = SharingStarted.Lazily,
             initialValue = AllMusicFoldersState()
         )
@@ -249,7 +256,7 @@ class MainPageViewModel(
                 sortDirection = sortingInformation.direction,
             )
         }.stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
             started = SharingStarted.Lazily,
             initialValue = AllArtistsState()
         )
@@ -262,7 +269,7 @@ class MainPageViewModel(
                 sortDirection = sortingInformation.direction,
             )
         }.stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
             started = SharingStarted.Lazily,
             initialValue = AllAlbumsState()
         )
@@ -275,7 +282,7 @@ class MainPageViewModel(
                 sortDirection = sortingInformation.direction,
             )
         }.stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
             started = SharingStarted.Lazily,
             initialValue = AllPlaylistsState()
         )
@@ -310,6 +317,11 @@ class MainPageViewModel(
         }
 
         coroutineScope.launch {
+            cloudBackgroundSyncJob.launchIfPossible()
+            observeDataChangedForCloudSync()
+        }
+
+        coroutineScope.launch {
             val canAccessCloud = hasValidCloudInformationUseCase().firstOrNull() == true
             if (canAccessCloud) {
                 commonUserUseCase.fetchAll()
@@ -318,7 +330,7 @@ class MainPageViewModel(
 
         coroutineScope.launch {
             val allFolders = commonFolderUseCase.getAll().first()
-            val foldersToDelete = allFolders.filter { !File(it.folderPath).exists() }
+            val foldersToDelete = allFolders.filter { !pathExists(it.folderPath) }
             commonFolderUseCase.deleteAll(foldersToDelete)
         }
 
@@ -334,7 +346,7 @@ class MainPageViewModel(
         coroutineScope.launch {
             settings.getFlowOn(SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT)
                 .collectLatest { shouldShow ->
-                    if (shouldShow) {
+                    if (shouldShow && PlatformUtils.platform != Platform.Web) {
                         _bottomSheetState.value = GitHubReleaseBottomSheet(
                             onClose = {
                                 _bottomSheetState.value = null
@@ -371,7 +383,7 @@ class MainPageViewModel(
             val all = commonMusicUseCase.getAllLocalMusic()
             for (music in all) {
                 music.localPath?.let {
-                    if (!File(it).exists()) {
+                    if (!pathExists(it)) {
                         playbackManager.removeSongsFromPlayedList(
                             musicIds = listOf(music.musicId)
                         )
@@ -523,6 +535,7 @@ class MainPageViewModel(
                 ElementEnum.FOLDERS -> add(
                     allMusicFoldersTab(
                         state = allMusicFoldersState,
+                        multiSelectionState = multiSelectionState,
                         navigateToFolder = { folderPath ->
                             navigateAndClearSelection(
                                 MainPageNavigationState.ToFolder(
@@ -530,6 +543,7 @@ class MainPageViewModel(
                                 )
                             )
                         },
+                        toggleFolderSelection = ::toggleElementInSelection,
                         showSoulMixDialog = ::showSoulMixDialog,
                         onSoulMixClicked = ::onSoulMixClicked
                     )
@@ -543,7 +557,7 @@ class MainPageViewModel(
         multiSelectionManager.clearMultiSelection()
     }
 
-    fun toPlaylist(playlistId: UUID) {
+    fun toPlaylist(playlistId: Uuid) {
         navigateAndClearSelection(
             MainPageNavigationState.ToPlaylist(
                 playlistId = playlistId,
@@ -551,7 +565,7 @@ class MainPageViewModel(
         )
     }
 
-    fun toAlbum(albumId: UUID) {
+    fun toAlbum(albumId: Uuid) {
         navigateAndClearSelection(
             MainPageNavigationState.ToAlbum(
                 albumId = albumId,
@@ -559,7 +573,7 @@ class MainPageViewModel(
         )
     }
 
-    fun toArtist(artistId: UUID) {
+    fun toArtist(artistId: Uuid) {
         navigateAndClearSelection(
             MainPageNavigationState.ToArtist(
                 artistId = artistId,
@@ -613,25 +627,37 @@ class MainPageViewModel(
         _search.value = search
     }
 
-    fun showMusicBottomSheet(musicIds: List<UUID>) {
+    fun showMusicBottomSheet(musicIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToMusicBottomSheet(musicIds = musicIds)
     }
 
-    fun showPlaylistBottomSheet(playlistIds: List<UUID>) {
+    fun showPlaylistBottomSheet(playlistIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToPlaylistBottomSheet(
             playlistIds = playlistIds,
         )
     }
 
-    fun showArtistBottomSheet(artistIds: List<UUID>) {
+    fun showArtistBottomSheet(artistIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToArtistBottomSheet(
             artistIds = artistIds,
         )
     }
 
-    fun showAlbumBottomSheet(albumIds: List<UUID>) {
+    fun showAlbumBottomSheet(albumIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToAlbumBottomSheet(
             albumIds = albumIds,
+        )
+    }
+
+    fun showFolderBottomSheet(folderPaths: List<String>) {
+        _navigationState.value = MainPageNavigationState.ToFolderBottomSheet(
+            folderPaths = folderPaths,
+        )
+    }
+
+    fun showMonthBottomSheet(months: List<String>) {
+        _navigationState.value = MainPageNavigationState.ToMonthBottomSheet(
+            months = months,
         )
     }
 
@@ -640,7 +666,7 @@ class MainPageViewModel(
     }
 
     fun toggleElementInSelection(
-        id: UUID,
+        id: String,
         mode: SelectionMode,
     ) {
         multiSelectionManager.toggleElementInSelection(

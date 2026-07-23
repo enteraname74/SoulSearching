@@ -3,7 +3,7 @@ package com.github.enteraname74.domain.usecase.album
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.repository.AlbumRepository
 import kotlinx.coroutines.flow.first
-import java.util.*
+import kotlin.uuid.Uuid
 
 /**
  * Check if an album can be deleted automatically (no songs on the album).
@@ -12,7 +12,7 @@ import java.util.*
 class DeleteAlbumIfEmptyUseCase(
     private val albumRepository: AlbumRepository,
 ) {
-    suspend operator fun invoke(albumId: UUID) {
+    suspend operator fun invoke(albumId: Uuid) {
         val albumWithMusics: AlbumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first() ?: return
 
         if (albumWithMusics.musics.isEmpty()) {

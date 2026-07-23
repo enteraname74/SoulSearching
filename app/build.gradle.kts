@@ -1,5 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("com.android.application")
@@ -13,9 +14,19 @@ group = "com.github.enteraname74.soulsearching"
 description = "Application's elements"
 
 kotlin {
-
     androidTarget()
     jvm("desktop")
+
+    js {
+        browser()
+        binaries.executable()
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        binaries.executable()
+    }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
@@ -25,65 +36,90 @@ kotlin {
     }
 
     sourceSets {
-        val desktopMain by getting {
-            dependencies {
-                implementation(compose.desktop.currentOs)
-                implementation(libs.coroutines.core.swing)
-                implementation(libs.vlcj)
-            }
+        val jsMain by getting
+        val wasmJsMain by getting
+        val commonMain by getting
+        val desktopMain by getting
+        val androidMain by getting
+
+        val nonAndroidMain by creating {
+            dependsOn(commonMain)
         }
-        commonMain {
+
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain)
+            dependsOn(nonAndroidMain)
+        }
+
+        val jvmMain by creating {
+            dependsOn(commonMain)
+
             dependencies {
-                implementation(project(":domain"))
-                implementation(project(":core-ui"))
-                implementation(project(":shared-di"))
-                implementation(project(":playback"))
-                implementation(project(":filemanager"))
-                implementation(project(":musicmanager"))
-                implementation(project(":serialization"))
-
-                implementation(libs.bundles.koin)
-
-                implementation(libs.kotlinx.serialization)
-                implementation(libs.kotlinx.serialization.json)
-
-                implementation(libs.kmpalette)
-                implementation(libs.multiplatform.settings)
-
-                implementation(libs.compose.foundation)
-                implementation(libs.compose.material)
-                implementation(libs.compose.material3)
-                implementation(libs.compose.resources)
-                implementation(libs.compose.ui)
-
                 implementation(libs.jaudiotagger)
-                implementation(libs.androidx.annotation)
-
-                implementation(libs.coroutines.core)
-
-                implementation(libs.file.kit)
-
-                implementation(libs.bundles.coil)
-
-                implementation(libs.reorderable)
-
-                implementation(libs.androidx.paging.compose)
-                implementation(libs.androidx.paging.common)
-
-                implementation(libs.navigation3.ui)
-                implementation(libs.navigation3.viewmodel)
             }
         }
-        androidMain {
-            dependencies {
-                implementation(libs.koin.androidx.compose)
-                implementation(libs.koin.androidx.workmanager)
-                implementation(libs.bundles.androidx)
 
-                implementation(libs.bundles.accompanist)
-                // https://mvnrepository.com/artifact/androidx.documentfile/documentfile
-                implementation(libs.androidx.documentfile)
-            }
+        jsMain.dependsOn(webMain)
+        wasmJsMain.dependsOn(webMain)
+
+        desktopMain.dependsOn(nonAndroidMain)
+
+        desktopMain.dependsOn(jvmMain)
+        androidMain.dependsOn(jvmMain)
+
+        desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.coroutines.core.swing)
+            implementation(libs.vlcj)
+        }
+        commonMain.dependencies {
+            implementation(project(":domain"))
+            implementation(project(":core-ui"))
+            implementation(project(":shared-di"))
+            implementation(project(":playback"))
+            implementation(project(":filemanager"))
+            implementation(project(":musicmanager"))
+            implementation(project(":serialization"))
+
+            implementation(libs.bundles.koin)
+
+            implementation(libs.kotlinx.serialization)
+            implementation(libs.kotlinx.serialization.json)
+
+            implementation(libs.kmpalette)
+            implementation(libs.multiplatform.settings)
+
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.material)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.resources)
+            implementation(libs.compose.ui)
+
+            implementation(libs.jaudiotagger)
+            implementation(libs.androidx.annotation)
+
+            implementation(libs.coroutines.core)
+
+            implementation(libs.file.kit)
+
+            implementation(libs.bundles.coil)
+
+            implementation(libs.reorderable)
+
+            implementation(libs.androidx.paging.compose)
+            implementation(libs.androidx.paging.common)
+
+            implementation(libs.navigation3.ui)
+            implementation(libs.navigation3.viewmodel)
+        }
+        androidMain.dependencies {
+            implementation(libs.koin.androidx.compose)
+            implementation(libs.koin.androidx.workmanager)
+            implementation(libs.bundles.androidx)
+
+            implementation(libs.bundles.accompanist)
+            // https://mvnrepository.com/artifact/androidx.documentfile/documentfile
+            implementation(libs.androidx.documentfile)
         }
     }
 }

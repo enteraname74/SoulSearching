@@ -10,6 +10,7 @@ import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -18,7 +19,6 @@ import com.github.enteraname74.soulsearching.feature.settings.advanced.state.Set
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedPermissionState
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -36,6 +36,7 @@ class SettingsAdvancedViewModel(
     private val commonReleaseUseCase: CommonReleaseUseCase,
     private val loadingManager: LoadingManager,
     private val settings: SoulSearchingSettings,
+    private val workDispatcher: WorkDispatcher,
     destination: SettingsAdvancedDestination
 ) : ViewModel() {
     private val focusedElement = destination.focusedElement
@@ -55,7 +56,7 @@ class SettingsAdvancedViewModel(
             isGitHubReleaseFetchPermissionEnabled = githubPermission,
         )
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = SettingsAdvancedPermissionState(
             isLyricsPermissionEnabled = settings.get(SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED),
@@ -139,7 +140,7 @@ class SettingsAdvancedViewModel(
     }
 
     private fun toggleGitHubReleasePermission() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             val newState = !settings.get(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED)
             settings.set(
                 key = SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED.key,
@@ -202,7 +203,7 @@ class SettingsAdvancedViewModel(
     }
 
     private fun reloadImages() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             loadingManager.withLoading {
                 checkAndReloadSongs()
                 checkAndReloadArtists()

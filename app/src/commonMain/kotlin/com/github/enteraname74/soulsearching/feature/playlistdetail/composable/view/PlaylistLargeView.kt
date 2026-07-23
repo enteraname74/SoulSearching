@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -71,7 +72,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 import com.github.enteraname74.soulsearching.feature.playlistdetail.ext.title
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import org.jetbrains.compose.resources.DrawableResource
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.time.Duration
 
 @Composable
@@ -126,6 +127,8 @@ fun PlaylistLargeView(
             ) {
                 PlaylistContinueCard(
                     modifier = Modifier
+                        .widthIn(max = 500.dp)
+                        .fillMaxWidth()
                         .padding(
                             start = UiConstants.Spacing.medium,
                             end = UiConstants.Spacing.medium,
@@ -144,12 +147,14 @@ fun PlaylistLargeView(
         item {
             optionalContent()
         }
-        item {
-            PlaylistPartTitle(title = strings.elementDetailTitles)
+        if (musics.itemCount > 0) {
+            item {
+                PlaylistPartTitle(title = strings.elementDetailTitles)
+            }
         }
         items(
             count = musics.itemCount,
-            key = { musics[it]?.musicId ?: UUID.randomUUID() },
+            key = { musics[it]?.musicId ?: Uuid.random() },
             contentType = { PLAYLIST_MUSIC_CONTENT_TYPE }
         ) { pos ->
 
@@ -167,8 +172,8 @@ fun PlaylistLargeView(
                     },
                     textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                     isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
-                    isSelected = multiSelectionState.selectedIds.contains(music.musicId),
-                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                    isSelected = multiSelectionState.selectedIds.contains(music.musicId.toString()),
+                    isSelectionModeOn = multiSelectionState.totalSelected > 0,
                     padding = PaddingValues(
                         vertical = UiConstants.Spacing.medium,
                     ),

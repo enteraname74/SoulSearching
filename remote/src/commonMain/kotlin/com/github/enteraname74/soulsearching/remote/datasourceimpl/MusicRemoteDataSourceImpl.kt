@@ -3,10 +3,8 @@ package com.github.enteraname74.soulsearching.remote.datasourceimpl
 import com.github.enteraname74.domain.model.CloudMusic
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.soulsearching.remote.ext.appendFile
-import com.github.enteraname74.soulsearching.remote.ext.appendJson
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
-import com.github.enteraname74.soulsearching.remote.ext.contentType
 import com.github.enteraname74.soulsearching.remote.ext.safeRequest
 import com.github.enteraname74.soulsearching.remote.ext.safeUnitRequest
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
@@ -14,26 +12,19 @@ import com.github.enteraname74.soulsearching.remote.model.FetchFromUrlBody
 import com.github.enteraname74.soulsearching.remote.model.MusicIdsBody
 import com.github.enteraname74.soulsearching.remote.model.update.MusicUpdate
 import com.github.enteraname74.soulsearching.remote.model.update.toMusicUpdate
-import com.github.enteraname74.soulsearching.remote.model.upload.toMusicUpload
 import com.github.enteraname74.soulsearching.remote.resource.MusicResource
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.plugins.resources.delete
-import io.ktor.client.plugins.resources.get
-import io.ktor.client.plugins.resources.post
-import io.ktor.client.plugins.resources.put
-import io.ktor.client.request.forms.formData
-import io.ktor.client.request.forms.submitFormWithBinaryData
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import java.io.File
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.resources.*
+import io.ktor.client.request.*
+import io.ktor.http.*
 
 class MusicRemoteDataSourceImpl(
     private val client: HttpClient,
     private val cloudPreferencesDataSource: CloudPreferencesDataSource,
+    private val workDispatcher: WorkDispatcher,
 ) : MusicRemoteDataSource {
     override suspend fun getDeletedRemoteMusicIds(idsToCheck: List<String>): List<String> =
         client
@@ -56,32 +47,13 @@ class MusicRemoteDataSourceImpl(
             }
     }
 
-
     override suspend fun uploadMusicToCloud(music: Music): SoulResult<CloudMusic> {
-        val file: File = music.localPath
-            ?.let { File(it) }
-            ?.takeIf { it.exists() } ?: return SoulResult.Error()
-        val contentType = file.contentType()
-
-        return client
-            .safeRequest {
-                submitFormWithBinaryData(
-                    url = "${
-                        cloudPreferencesDataSource.getUrl()
-                    }/music/upload",
-                    formData = formData {
-                        appendFile(
-                            key = "file",
-                            file = file,
-                            contentType = contentType,
-                        )
-                        appendJson(
-                            key = "metadata",
-                            value = music.toMusicUpload(),
-                        )
-                    }
-                )
-            }
+        return uploadMusicFile(
+            client = client,
+            baseUrl = cloudPreferencesDataSource.getUrl(),
+            music = music,
+            workDispatcher = workDispatcher,
+        )
     }
 
     override suspend fun delete(remoteIds: List<String>): SoulResult<Unit> =
@@ -107,7 +79,7 @@ class MusicRemoteDataSourceImpl(
                     maxPerPage = maxPerPage,
                     page = page,
                 )
-            ).body()
+            ).bodyOrThrow()
 
     override suspend fun fetch(url: String): CloudMusic =
         client

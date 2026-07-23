@@ -32,15 +32,21 @@ object SoulButtonDefaults {
     )
 
     @Composable
-    fun primaryColors(): SoulButtonColors = SoulButtonColors(
-        contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-        containerColor = SoulSearchingColorTheme.colorScheme.primary
+    fun primaryColors(
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+    ): SoulButtonColors = SoulButtonColors(
+        contentColor = contentColor,
+        containerColor = containerColor,
     )
 
     @Composable
-    fun secondaryColors(): SoulButtonColors = SoulButtonColors(
-        contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-        containerColor = SoulSearchingColorTheme.colorScheme.secondary,
+    fun secondaryColors(
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+    ): SoulButtonColors = SoulButtonColors(
+        contentColor = contentColor,
+        containerColor = containerColor,
     )
 }
 

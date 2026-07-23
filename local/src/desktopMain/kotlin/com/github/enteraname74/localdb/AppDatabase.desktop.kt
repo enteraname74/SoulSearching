@@ -1,7 +1,7 @@
 package com.github.enteraname74.localdb
 
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room3.Room
+import androidx.room3.RoomDatabase
 import com.github.enteraname74.domain.util.AppEnvironment
 import java.io.File
 

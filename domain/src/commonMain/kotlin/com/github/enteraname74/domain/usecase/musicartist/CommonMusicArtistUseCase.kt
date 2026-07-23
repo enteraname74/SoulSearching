@@ -2,7 +2,7 @@ package com.github.enteraname74.domain.usecase.musicartist
 
 import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.domain.repository.MusicArtistRepository
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class CommonMusicArtistUseCase(
     private val musicArtistRepository: MusicArtistRepository,
@@ -11,13 +11,13 @@ class CommonMusicArtistUseCase(
         musicArtistRepository.upsertAll(allMusicArtists)
     }
 
-    suspend fun deleteOfArtist(artistId: UUID) {
+    suspend fun deleteOfArtist(artistId: Uuid) {
         musicArtistRepository.deleteOfArtist(artistId)
     }
 
     suspend fun setArtistsOfMusic(
-        musicId: UUID,
-        artistIds: List<UUID>
+        musicId: Uuid,
+        artistIds: List<Uuid>
     ) {
         musicArtistRepository.deleteOfMusic(musicId)
         musicArtistRepository.upsertAll(

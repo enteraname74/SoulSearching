@@ -1,7 +1,8 @@
 package com.github.enteraname74.soulsearching.remote.utils
 
 import com.github.enteraname74.domain.repository.SharedPlayedListListener
-import com.github.enteraname74.soulsearching.remote.di.currentLanguage
+import com.github.enteraname74.domain.util.LocaleUtils
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
@@ -9,7 +10,6 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -19,7 +19,9 @@ import kotlin.uuid.Uuid
 class PlayerUserCommunication(
     private val client: HttpClient,
     private val cloudPreferencesDataSource: CloudPreferencesDataSource,
+    workDispatcher: WorkDispatcher,
 ) {
+    private val workScope = CoroutineScope(workDispatcher.dispatcher)
     private var webSocketJob: Job? = null
     private var session: DefaultClientWebSocketSession? = null
     private var listener: SharedPlayedListListener? = null
@@ -32,11 +34,11 @@ class PlayerUserCommunication(
     ) {
         unregister()
         listener = newListener
-        webSocketJob = CoroutineScope(Dispatchers.IO).launch {
+        webSocketJob = workScope.launch {
             runCatching {
                 client.webSocket(
                     request = {
-                        header(HttpHeaders.AcceptLanguage, currentLanguage())
+                        header(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
                     },
                     urlString = buildUrl(
                         listId = listId,

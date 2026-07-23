@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.usecase.player.JoinSharedPlayedListUseCase
-import com.github.enteraname74.domain.util.DateUtils
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
@@ -14,6 +13,7 @@ import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopU
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.domain.utils.DateUiUtils
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolder
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -48,7 +48,7 @@ class SettingsCloudSharedListViewHolder(
                             previews = previews.map { preview ->
                                 UiListPreview(
                                     id = preview.id,
-                                    date = DateUtils.formatToReadableDate(preview.createdAtMillis),
+                                    date = DateUiUtils.formatToReadableDate(preview.createdAtMillis),
                                     allUsers = strings.sharedListPreviewUsers(preview),
                                     connectedUsers = strings.sharedListPreviewConnectedUsers(preview),
                                     onDelete = { showDeleteDialog(preview.id) }.takeIf { preview.isOwner },

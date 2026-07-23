@@ -1,9 +1,9 @@
 package com.github.enteraname74.localdb.view
 
-import androidx.room.DatabaseView
+import androidx.room3.DatabaseView
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.MusicFolderPreview
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @DatabaseView(
     """
@@ -45,7 +45,7 @@ import java.util.UUID
 )
 data class RoomMusicFolderPreview(
     val folder: String,
-    val coverId: UUID?,
+    val coverId: Uuid?,
     val musicCoverPath: String?,
     val musicCoverUrl: String?,
     val totalMusics: Int,

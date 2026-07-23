@@ -7,13 +7,13 @@ import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.state.SettingsAddMusicsNavigationState
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.SelectableMusicItem
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.AddNewSongsMultipleArtistManagerImpl
 import com.github.enteraname74.soulsearching.features.musicmanager.persistence.MusicPersistence
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class SettingsAddMusicsViewModel(
     private val musicFetcher: MusicFetcher,
@@ -29,8 +29,9 @@ class SettingsAddMusicsViewModel(
     private val commonMusicUseCase: CommonMusicUseCase,
     private val addNewsSongsStepManager: AddNewsSongsStepManager,
     private val loadingManager: LoadingManager,
+    workDispatcher: WorkDispatcher,
 ) : ViewModel() {
-    private val workScope = viewModelScope.plus(Dispatchers.IO)
+    private val workScope = viewModelScope.plus(workDispatcher.dispatcher)
 
     val state: StateFlow<AddNewsSongsStepState> = addNewsSongsStepManager.state
         .stateIn(
@@ -47,7 +48,7 @@ class SettingsAddMusicsViewModel(
     val navigationState: StateFlow<SettingsAddMusicsNavigationState> =
         _navigationState.asStateFlow()
 
-    fun toggleMusicSelectedState(musicId: UUID) {
+    fun toggleMusicSelectedState(musicId: Uuid) {
         (state.value as? AddNewsSongsStepState.Data)?.fetchedMusics?.let { songs ->
             addNewsSongsStepManager.toStep(
                 AddNewsSongsStepState.Data(

@@ -1,13 +1,13 @@
 package com.github.enteraname74.localdb.model.player
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
+import androidx.room3.Index
+import androidx.room3.PrimaryKey
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.localdb.model.RoomMusic
-import java.util.*
+import kotlin.uuid.Uuid
 
 /**
  * Room representation of a PlayerMusic.
@@ -32,8 +32,8 @@ import java.util.*
 data class RoomPlayerMusic(
     @PrimaryKey
     val id: String,
-    val musicId: UUID,
-    val playedListId: UUID,
+    val musicId: Uuid,
+    val playedListId: Uuid,
     val order: Double,
     val shuffledOrder: Double,
     val lastPlayedMillis: Long?,

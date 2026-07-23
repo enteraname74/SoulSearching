@@ -19,8 +19,8 @@ class CloudPreferencesRepositoryImpl(
         dataSource.setLastSyncMillis(millis)
     }
 
-    override fun observePreferences(): Flow<CloudPreferences?> =
-        dataSource.observePreferences()
+    override suspend fun getLastSyncMillis(): Long? =
+        dataSource.getLastSyncMillis()
 
     override suspend fun clearLastSyncMillis() {
         dataSource.clearLastSyncMillis()

@@ -5,7 +5,7 @@ import com.github.enteraname74.domain.model.player.SharedPlayedList
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerRepository
-import java.util.*
+import kotlin.uuid.Uuid
 
 class CreateSharedPlayedListUseCase(
     private val syncMusicForPlayerIfNeededUseCase: SyncMusicForPlayerIfNeededUseCase,
@@ -14,7 +14,7 @@ class CreateSharedPlayedListUseCase(
     private val settings: SoulSearchingSettings,
     private val registerSharedPlayedListEventsListenerUseCase: RegisterSharedPlayedListEventsListenerUseCase,
 ) {
-    suspend operator fun invoke(musicIds: List<UUID>): SoulResult<Unit> = SoulResult.runCatching {
+    suspend operator fun invoke(musicIds: List<Uuid>): SoulResult<Unit> = SoulResult.runCatching {
         // Remove previous socket connection if there was one.
         playerRepository.removeSharedPlayedListEventsListener()
 

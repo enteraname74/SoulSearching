@@ -9,12 +9,13 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsClou
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeDestination
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.SettingsManageMusicsDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.SettingsPersonalisationDestination
+import com.github.enteraname74.soulsearching.feature.settings.shortcuts.SettingsShortcutsDestination
 import com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.SettingsStatisticsDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object SettingsDestination: SettingPage {
+data object SettingsDestination : SettingPage {
     fun register(
         entryProviderScope: EntryProviderScope<NavKey>,
         navigator: Navigator,
@@ -44,6 +45,9 @@ data object SettingsDestination: SettingPage {
                 },
                 toCloudSettings = {
                     navigator.push(SettingsCloudDestination)
+                },
+                toShortcuts = {
+                    navigator.push(SettingsShortcutsDestination)
                 }
             )
         }

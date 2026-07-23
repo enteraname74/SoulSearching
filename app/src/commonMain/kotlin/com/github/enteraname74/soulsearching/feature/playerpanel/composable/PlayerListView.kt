@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.player.PlayedListScope
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
@@ -70,11 +71,10 @@ import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiS
 import com.github.enteraname74.soulsearching.feature.player.domain.state.UserTag
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -85,7 +85,7 @@ fun PlayerListView(
     currentMusicIndex: Int,
     playedList: List<Music>,
     onLongSelectOnMusic: (Music) -> Unit,
-    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
+    onMoreClickedOnMusic: (musicId: Uuid) -> Unit,
     onClickOnMusic: ((Music) -> Unit)?,
     onSwiped: ((Music) -> Unit)?,
     containerColor: Color,
@@ -94,8 +94,9 @@ fun PlayerListView(
     multiSelectionState: MultiSelectionState,
     selectedIconColors: SoulSelectedIconColors,
     playedListScope: PlayedListScope,
-    getUserTag: (musicId: UUID) -> UserTag?,
+    getUserTag: (musicId: Uuid) -> UserTag?,
     onAddFromUrl: (() -> Unit)?,
+    workDispatcher: WorkDispatcher = injectElement(),
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -208,12 +209,13 @@ fun PlayerListView(
                                 reorderableModifier = Modifier
                                     .draggableHandle(
                                         onDragStopped = {
-                                            CoroutineScope(Dispatchers.IO).launch {
-                                                if (fromMusicId == null || afterMusicId == null) return@launch
+                                            CoroutineScope(workDispatcher.dispatcher).launch {
+                                                val fromMusicIdValue = fromMusicId ?: return@launch
+                                                val afterMusicIdValue = afterMusicId ?: return@launch
 
                                                 playbackManager.moveMusic(
-                                                    fromMusicId = UUID.fromString(fromMusicId),
-                                                    afterMusicId = UUID.fromString(afterMusicId),
+                                                    fromMusicId = Uuid.parse(fromMusicIdValue),
+                                                    afterMusicId = Uuid.parse(afterMusicIdValue),
                                                 )
                                             }
                                         }
@@ -227,8 +229,8 @@ fun PlayerListView(
                                 onLongClick = { onLongSelectOnMusic(elt) },
                                 textColor = contentColor,
                                 isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
-                                isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
-                                isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                                isSelected = multiSelectionState.selectedIds.contains(elt.musicId.toString()),
+                                isSelectionModeOn = multiSelectionState.totalSelected > 0,
                                 selectedIconColors = selectedIconColors,
                                 userTag = getUserTag(elt.musicId)
                             )

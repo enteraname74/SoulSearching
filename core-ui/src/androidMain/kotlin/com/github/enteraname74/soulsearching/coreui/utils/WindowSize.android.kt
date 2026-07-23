@@ -11,7 +11,6 @@ internal actual val MediumThreshold: Dp = 1200.dp
 
 @Composable
 actual fun rememberWindowSize(): WindowSize {
-    LocalContext.current
     val windowWidth: Dp = LocalConfiguration.current.screenWidthDp.dp
     return WindowSize.getCorrespondingWindowSize(windowWidth)
 }

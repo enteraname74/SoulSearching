@@ -18,13 +18,13 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPartTitle
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistViewUiUtils
-import java.util.*
+import kotlin.uuid.Uuid
 
 @Composable
 fun ArtistAlbums(
     albums: List<AlbumWithMusics>,
     multiSelectionState: MultiSelectionState,
-    onAlbumClick: (albumId: UUID) -> Unit = {},
+    onAlbumClick: (albumId: Uuid) -> Unit = {},
     onAlbumLongClick: (AlbumWithMusics) -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()
@@ -37,9 +37,9 @@ fun ArtistAlbums(
             .padding(bottom = UiConstants.Spacing.veryLarge),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
     ) {
-        PlaylistPartTitle(title = strings.albums)
-
         if (albums.isNotEmpty()) {
+            PlaylistPartTitle(title = strings.albums)
+
             LazyRowCompat(
                 state = lazyListState,
                 modifier = Modifier
@@ -78,8 +78,8 @@ fun ArtistAlbums(
                             UiConstants.ImageSize.veryLarge
                         },
                         onLongClick = { onAlbumLongClick(element) },
-                        isSelected = multiSelectionState.selectedIds.contains(element.album.albumId),
-                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                        isSelected = multiSelectionState.selectedIds.contains(element.album.albumId.toString()),
+                        isSelectionModeOn = multiSelectionState.totalSelected > 0,
                     )
                 }
             }

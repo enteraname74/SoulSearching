@@ -13,10 +13,10 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -133,6 +133,7 @@ class SoulDropdownTextFieldHolderImpl(
     private val leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
     private val modifier: Modifier = Modifier,
     private val updateProposedValues: suspend (fieldValue: String) -> List<String>,
+    private val workDispatcher: WorkDispatcher,
     private val style: SoulTextFieldStyle = SoulTextFieldStyle.Unique,
     private val keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Text,
@@ -156,7 +157,7 @@ class SoulDropdownTextFieldHolderImpl(
         if (updateJob?.isActive == true) {
             updateJob?.cancel()
         }
-        updateJob = CoroutineScope(Dispatchers.IO).launch {
+        updateJob = CoroutineScope(workDispatcher.dispatcher).launch {
             values = updateProposedValues(newValue)
         }
     }

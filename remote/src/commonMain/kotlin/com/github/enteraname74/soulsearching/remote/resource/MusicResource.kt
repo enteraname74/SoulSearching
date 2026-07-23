@@ -22,4 +22,10 @@ class MusicResource {
     data class FetchFromUrl(
         val parent: MusicResource = MusicResource(),
     )
+
+    @Resource("url")
+    data class Url(
+        val parent: MusicResource = MusicResource(),
+        val path: String,
+    )
 }

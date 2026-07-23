@@ -5,7 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.CloudSyncWorker
-import com.github.enteraname74.soulsearching.features.playback.notification.impl.SoulSearchingAndroidNotification
+import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingAndroidNotification
 import com.github.enteraname74.soulsearching.model.utils.StringsUtils
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory

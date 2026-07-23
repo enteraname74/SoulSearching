@@ -18,17 +18,6 @@ interface SoulSearchingPlayer {
     suspend fun setMusic(music: Music)
 
     /**
-     * Load the current music without playing it.
-     * @param seekTo the initial position to go when loading a song.
-     */
-    suspend fun onlyLoadMusic(seekTo: Int)
-
-    /**
-     * Launch the loaded music of the player.
-     */
-    suspend fun launchMusic()
-
-    /**
      * Play or pause the current music.
      */
     suspend fun togglePlayPause() {

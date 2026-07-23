@@ -1,11 +1,11 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room3.ColumnInfo
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
+import androidx.room3.PrimaryKey
 import com.github.enteraname74.domain.model.MusicPlaylist
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Room representation of a MusicPlaylist.
@@ -28,8 +28,8 @@ import java.util.UUID
 )
 data class RoomMusicPlaylist(
     @PrimaryKey val id: String,
-    @ColumnInfo(index = true) val musicId: UUID = UUID.randomUUID(),
-    @ColumnInfo(index = true) val playlistId: UUID = UUID.randomUUID()
+    @ColumnInfo(index = true) val musicId: Uuid = Uuid.random(),
+    @ColumnInfo(index = true) val playlistId: Uuid = Uuid.random()
 )
 
 /**

@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class SelectedArtistViewModel(
     commonAlbumUseCase: CommonAlbumUseCase,
@@ -49,7 +49,7 @@ class SelectedArtistViewModel(
             initialValue = MultiSelectionState(emptyList()),
         )
 
-    private val artistId: UUID = destination.selectedArtistId
+    private val artistId: Uuid = destination.selectedArtistId
 
     private val musics: Flow<PagingData<Music>> = commonMusicUseCase
         .getAllPagedByNameAscOfArtist(artistId)
@@ -110,7 +110,7 @@ class SelectedArtistViewModel(
         _navigationState.value = SelectedArtistNavigationState.Idle
     }
 
-    fun toAlbum(albumId: UUID) {
+    fun toAlbum(albumId: Uuid) {
         _navigationState.value = SelectedArtistNavigationState.ToAlbum(albumId = albumId)
     }
 
@@ -120,7 +120,7 @@ class SelectedArtistViewModel(
 
     private fun onUpdateNbPlayed() {
         viewModelScope.launch {
-            val artistId: UUID = (state.value as? SelectedArtistState.Data)?.playlistDetail?.id ?: return@launch
+            val artistId: Uuid = (state.value as? SelectedArtistState.Data)?.playlistDetail?.id ?: return@launch
             commonArtistUseCase.incrementArtistNbPlayed(artistId = artistId)
         }
     }
@@ -129,16 +129,16 @@ class SelectedArtistViewModel(
         multiSelectionManager.clearMultiSelection()
     }
 
-    override fun onLongClickOnMusic(musicId: UUID) {
+    override fun onLongClickOnMusic(musicId: Uuid) {
         multiSelectionManager.toggleElementInSelection(
-            id = musicId,
+            id = musicId.toString(),
             mode = SelectionMode.Music,
         )
     }
 
-    fun onLongClickOnAlbum(albumId: UUID) {
+    fun onLongClickOnAlbum(albumId: Uuid) {
         multiSelectionManager.toggleElementInSelection(
-            id = albumId,
+            id = albumId.toString(),
             mode = SelectionMode.Album,
         )
     }
@@ -184,18 +184,18 @@ class SelectedArtistViewModel(
         _searchQuery.value = search
     }
 
-    override fun showMusicBottomSheet(musicIds: List<UUID>) {
+    override fun showMusicBottomSheet(musicIds: List<Uuid>) {
         _navigationState.value = SelectedArtistNavigationState.ToMusicBottomSheet(musicIds)
     }
 
-    override fun continuePlayedList(playedListId: UUID) {
+    override fun continuePlayedList(playedListId: Uuid) {
         viewModelScope.launch {
             playbackManager.continuePlayedList(playedListId)
             playerViewManager.animateTo(BottomSheetStates.EXPANDED)
         }
     }
 
-    override fun deletePlayedList(playedListId: UUID) {
+    override fun deletePlayedList(playedListId: Uuid) {
         viewModelScope.launch {
             playbackManager.deletePlayedList(playedListId)
         }

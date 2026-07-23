@@ -45,15 +45,15 @@ fun MainPageVerticalShortcut(
 
             Row(
                 modifier = Modifier
+                    .clickableWithHandCursor {
+                        switchPageAction(pos)
+                    }
                     .padding(
                         top = UiConstants.Spacing.large,
                         bottom = UiConstants.Spacing.large,
                         start = UiConstants.Spacing.medium,
-                        end = UiConstants.Spacing.large
-                    )
-                    .clickableWithHandCursor {
-                        switchPageAction(pos)
-                    },
+                        end = UiConstants.Spacing.large,
+                    ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 SoulIcon(

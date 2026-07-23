@@ -1,14 +1,15 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room3.ColumnInfo
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
+import androidx.room3.PrimaryKey
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Scope
-import java.time.LocalDateTime
-import java.util.UUID
+import kotlin.time.Clock
+import kotlin.time.Instant
+import kotlin.uuid.Uuid
 
 /**
  * Room representation of a song.
@@ -25,24 +26,24 @@ import java.util.UUID
 )
 data class RoomMusic(
     @PrimaryKey
-    val musicId: UUID = UUID.randomUUID(),
+    val musicId: Uuid = Uuid.random(),
     val remoteId: String?,
     val lastUpdateMillis: Long?,
     var name: String = "",
-    var coverId: UUID? = null,
+    var coverId: Uuid? = null,
     val coverUrl: String?,
     var duration: Long = 0L,
     val path: String?,
     var localPath: String?,
     val remotePath: String?,
     var folder: String = "",
-    var addedDate: LocalDateTime = LocalDateTime.now(),
+    var addedDate: Instant = Clock.System.now(),
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false,
     var isHidden: Boolean = false,
     var albumPosition: Int?,
     @ColumnInfo(index = true)
-    val albumId: UUID,
+    val albumId: Uuid,
     val scope: Scope,
 )
 

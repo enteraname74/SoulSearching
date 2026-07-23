@@ -1,9 +1,8 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
 import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
-import com.github.enteraname74.domain.model.user.User
 import com.github.enteraname74.domain.model.user.UserType
-import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
+import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 
 /**
@@ -118,6 +117,16 @@ object FrStrings : Strings {
 
     override val deleteSelectedMusicsDialogTitle = "Voulez-vous vraiment supprimer ces musiques ?"
     override val deleteSelectedMusicsDialogText = "Elles seront supprimées de l'application."
+    override val deleteFolderMusicsDialogTitle = "Voulez-vous vraiment supprimer ce dossier ?"
+    override val deleteFolderMusicsDialogText =
+        "Toutes les musiques de ce dossier seront supprimées de l'application. Le dossier sera aussi désactivé pour les prochains imports."
+    override val deleteSelectedFoldersMusicsDialogTitle = "Voulez-vous vraiment supprimer les dossiers sélectionnés ?"
+    override val deleteSelectedFoldersMusicsDialogText =
+        "Toutes les musiques de ces dossiers seront supprimées de l'application. Ces dossiers seront aussi désactivés pour les prochains imports."
+    override val deleteMonthMusicsDialogTitle = "Voulez-vous vraiment supprimer cette sélection du mois ?"
+    override val deleteMonthMusicsDialogText = "Toutes les musiques de ce mois seront supprimées de l'application."
+    override val deleteSelectedMonthsMusicsDialogTitle = "Voulez-vous vraiment supprimer les sélections de mois ?"
+    override val deleteSelectedMonthsMusicsDialogText = "Toutes les musiques de ces mois seront supprimées de l'application."
     override val deleteSelectedAlbumsDialogTitle = "Voulez-vous vraiment supprimer ces albums ?"
     override val deleteSelectedArtistsDialogTitle = "Voulez-vous vraiment supprimer ces artistes ?"
     override val deleteSelectedPlaylistsDialogTitle = "Voulez-vous vraiment supprimer ces playlists ?"
@@ -148,6 +157,10 @@ object FrStrings : Strings {
     override val deleteSelectedArtists = "Supprimer les artistes sélectionnés"
     override val deleteSelectedPlaylists = "Supprimer les playlists sélectionnées"
     override val deleteSelectedMusics = "Supprimer les musiques sélectionnées"
+    override val deleteFolderMusics = "Supprimer le dossier"
+    override val deleteSelectedFoldersMusics = "Supprimer les dossiers sélectionnés"
+    override val deleteMonthMusics = "Supprimer la sélection du mois"
+    override val deleteSelectedMonthsMusics = "Supprimer les sélections de mois"
 
     override val playNext = "Jouer ensuite"
     override val addToQueue = "Ajouter à la file d'attente"
@@ -339,7 +352,7 @@ object FrStrings : Strings {
     override val generatedCode: String = "Code généré"
     override val cloudSyncTitle: String = "Synchronisation"
     override val cloudSyncText: String = "Gérer la synchronisation entre l'application et Cloudy"
-    override val cloudSyncButton: String = "Synchroniser les musiques"
+    override val cloudSyncButton: String = "synchroniser avec le cloud"
     override val musicChannelNotificationDescription: String = "Utilisé pour contrôler la musique couramment jouée."
     override val cloudSyncChannelNotificationDescription: String = "Utilisé pour synchroniser les données de l'application avec Cloudy"
     override val musicChannelNotificationName: String = "Notification de la musique en cours de lecture"
@@ -396,34 +409,83 @@ object FrStrings : Strings {
     override val musicRemoteOnly: String = "Musique provenant du cloud"
     override val musicLocalOnly: String = "Musique non téléversée sur le cloud"
 
-    override fun cloudSyncNotificationTitle(state: SyncMusicWithCloudUseCase.State): String =
+    override val shortcutsTitle: String = "Raccourcis"
+    override val shortcutsText: String = "Voir les raccourcis de l'application"
+
+    override val shortcutPlayerCategory: String = "Raccourcis du lecteur"
+
+    override val shortcutTogglePlayPauseDescription: String = "Basculer entre lecture et pause"
+    override val shortcutPreviousDescription: String = "Précédent"
+    override val shortcutNextDescription: String = "Suivant"
+    override val shortcutSeekForwardDescription: String = "Avancer"
+    override val shortcutSeekBackwardDescription: String = "Reculer"
+    override val shortcutVolumeUpDescription: String = "Augmenter le volume"
+    override val shortcutVolumeDownDescription: String = "Baisser le volume"
+    override val shortcutToggleFavoriteDescription: String = "Basculer le statut de favori de la musique courante"
+
+    override val shortcutTogglePlayPauseCommands: List<String> = listOf(
+        "Espace",
+    )
+    override val shortcutPreviousCommands: List<String> = listOf(
+        "Maj",
+        "Flèche gauche",
+    )
+    override val shortcutNextCommands: List<String> = listOf(
+        "Maj",
+        "Flèche droite",
+    )
+    override val shortcutSeekForwardCommands: List<String> = listOf(
+        "Flèche droite"
+    )
+    override val shortcutSeekBackwardCommands: List<String> = listOf(
+        "Flèche gauche"
+    )
+    override val shortcutVolumeUpCommands: List<String> = listOf(
+        "Flèche haute"
+    )
+    override val shortcutVolumeDownCommands: List<String> = listOf(
+        "Flèche basse"
+    )
+    override val shortcutToggleFavoriteCommands: List<String> = listOf(
+        "F"
+    )
+
+    override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncMusicWithCloudUseCase.State.Failure -> "Erreur"
-            SyncMusicWithCloudUseCase.State.Finish -> "Fin"
-            SyncMusicWithCloudUseCase.State.Idle -> "En attente"
-            SyncMusicWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique à envoyer"
-            SyncMusicWithCloudUseCase.State.CheckingMusicsToSend -> "Recherche"
-            SyncMusicWithCloudUseCase.State.Cleaning -> "Nettoyage"
-            SyncMusicWithCloudUseCase.State.ClearingRemoteIds -> "Nettoyage"
-            SyncMusicWithCloudUseCase.State.FetchingFromRemote -> "Téléchargement"
-            is SyncMusicWithCloudUseCase.State.SavingRemote -> "Sauvegarde"
-            is SyncMusicWithCloudUseCase.State.UpdateMusics -> "Mise à jour"
-            is SyncMusicWithCloudUseCase.State.UploadMusics -> "Téléversement"
+            SyncDataWithCloudUseCase.State.Failure -> "Erreur"
+            SyncDataWithCloudUseCase.State.Finish -> "Fin"
+            SyncDataWithCloudUseCase.State.Idle -> "En attente"
+            SyncDataWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique à envoyer"
+            SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Recherche"
+            SyncDataWithCloudUseCase.State.Cleaning -> "Nettoyage des musiques"
+            SyncDataWithCloudUseCase.State.ClearingRemoteMusicIds -> "Nettoyage des musiques"
+            SyncDataWithCloudUseCase.State.FetchingFromRemote -> "Téléchargement des musiques"
+            is SyncDataWithCloudUseCase.State.SavingRemote -> "Sauvegarde des musiques"
+            is SyncDataWithCloudUseCase.State.UpdateMusics -> "Mise à jour"
+            is SyncDataWithCloudUseCase.State.UploadMusics -> "Téléversement"
+            SyncDataWithCloudUseCase.State.FetchingRemotePlaylists -> "Téléchargement des playlists"
+            is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Téléversement des playlists"
+            SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Sauvegarde des playlists"
+            SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Nettoyage des playlists"
         }
 
-    override fun cloudSyncNotificationText(state: SyncMusicWithCloudUseCase.State): String =
+    override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncMusicWithCloudUseCase.State.Failure -> "Une erreur est survenue durant la synchronisation"
-            SyncMusicWithCloudUseCase.State.Finish -> "La synchronisation est terminée"
-            SyncMusicWithCloudUseCase.State.Idle -> "En attente de synchronisation"
-            SyncMusicWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique locale à envoyer au cloud"
-            SyncMusicWithCloudUseCase.State.CheckingMusicsToSend -> "Recherche de musiques à envoyer au cloud"
-            SyncMusicWithCloudUseCase.State.Cleaning -> "Nettoyage des anciennes data locales après la synchronisation"
-            SyncMusicWithCloudUseCase.State.ClearingRemoteIds -> "Nettoyage des anciennes data locales avant la synchronisation"
-            SyncMusicWithCloudUseCase.State.FetchingFromRemote -> "Téléchargement des musiques du cloud"
-            is SyncMusicWithCloudUseCase.State.SavingRemote -> "Sauvegarde des informations téléchargées du cloud"
-            is SyncMusicWithCloudUseCase.State.UpdateMusics -> "Mise à jour des musiques déjà existantes sur le cloud"
-            is SyncMusicWithCloudUseCase.State.UploadMusics -> "Téléversement de musiques vers le cloud"
+            SyncDataWithCloudUseCase.State.Failure -> "Une erreur est survenue durant la synchronisation"
+            SyncDataWithCloudUseCase.State.Finish -> "La synchronisation est terminée"
+            SyncDataWithCloudUseCase.State.Idle -> "En attente de synchronisation"
+            SyncDataWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique locale à envoyer au cloud"
+            SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Recherche de musiques à envoyer au cloud"
+            SyncDataWithCloudUseCase.State.Cleaning -> "Nettoyage des anciennes data locales après la synchronisation"
+            SyncDataWithCloudUseCase.State.ClearingRemoteMusicIds -> "Nettoyage des musiques supprimées du cloud avant la synchronisation"
+            SyncDataWithCloudUseCase.State.FetchingFromRemote -> "Téléchargement des musiques du cloud"
+            is SyncDataWithCloudUseCase.State.SavingRemote -> "Sauvegarde des musiques téléchargées du cloud"
+            is SyncDataWithCloudUseCase.State.UpdateMusics -> "Mise à jour des musiques déjà existantes sur le cloud"
+            is SyncDataWithCloudUseCase.State.UploadMusics -> "Téléversement de musiques vers le cloud"
+            SyncDataWithCloudUseCase.State.FetchingRemotePlaylists -> "Téléchargement des playlists du cloud"
+            is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Téléversement des playlists vers le cloud"
+            SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Sauvegarde des playlists téléchargées du cloud"
+            SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Nettoyage des playlists supprimées du cloud"
         }
 
     override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =

@@ -1,21 +1,16 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextFieldHolderImpl
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldLeadingIconSpec
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
-import java.util.UUID
+import com.github.enteraname74.soulsearching.coreui.textfield.*
+import kotlin.uuid.Uuid
 
 sealed interface ModifyMusicFormState {
     data object NoData : ModifyMusicFormState
@@ -24,15 +19,14 @@ sealed interface ModifyMusicFormState {
         private val artistsOfMusic: List<Artist>,
         private val updateFoundAlbums: suspend (name: String) -> List<String>,
         private val updateFoundArtists: suspend (name: String) -> List<String>,
-        private val onDeleteArtist: (artistId: UUID) -> Unit,
+        private val onDeleteArtist: (artistId: Uuid) -> Unit,
         private val savedData: Map<String, String>,
         private val onFieldChange: (id: String, value: String) -> Unit,
+        private val workDispatcher: WorkDispatcher,
     ) : ModifyMusicFormState {
         val textFields: List<SoulTextFieldHolder> = buildList {
             add(
                 SoulTextFieldHolderImpl(
-                    modifier = Modifier
-                        .fillMaxWidth(),
                     id = MUSIC_NAME,
                     initialValue = savedData[MUSIC_NAME] ?: initialMusic.name,
                     isValid = { it.isNotBlank() },
@@ -50,12 +44,11 @@ sealed interface ModifyMusicFormState {
             )
             add(
                 SoulDropdownTextFieldHolderImpl(
-                    modifier = Modifier
-                        .fillMaxWidth(),
                     id = ALBUM_NAME,
                     isValid = { it.isNotBlank() },
                     initialValue = savedData[ALBUM_NAME] ?: initialMusic.album.albumName,
                     updateProposedValues = updateFoundAlbums,
+                    workDispatcher = workDispatcher,
                     getLabel = { strings.albumName },
                     style = SoulTextFieldStyle.Body,
                     getError = { strings.fieldCannotBeEmpty },
@@ -70,8 +63,6 @@ sealed interface ModifyMusicFormState {
             )
             add(
                 SoulTextFieldHolderImpl(
-                    modifier = Modifier
-                        .fillMaxWidth(),
                     id = POSITION_IN_ALBUM,
                     isValid = { it.toIntOrNull() != null || it.isBlank() },
                     initialValue = savedData[POSITION_IN_ALBUM] ?: initialMusic.albumPosition?.toString().orEmpty(),
@@ -89,8 +80,6 @@ sealed interface ModifyMusicFormState {
             )
             add(
                 SoulDropdownTextFieldHolderImpl(
-                    modifier = Modifier
-                        .fillMaxWidth(),
                     id = ALBUM_ARTIST,
                     initialValue = savedData[ALBUM_ARTIST] ?: initialMusic.album.artist.artistName,
                     getLabel = { strings.albumArtistName },
@@ -100,6 +89,7 @@ sealed interface ModifyMusicFormState {
                         onFieldChange(ALBUM_ARTIST, it)
                     },
                     updateProposedValues = updateFoundArtists,
+                    workDispatcher = workDispatcher,
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
                         keyboardType = KeyboardType.Text,
@@ -112,12 +102,11 @@ sealed interface ModifyMusicFormState {
 
                 add(
                     SoulDropdownTextFieldHolderImpl(
-                        modifier = Modifier
-                            .fillMaxWidth(),
                         id = artistId,
                         isValid = { it.isNotBlank() },
                         initialValue = savedData[artistId] ?: artist.artistName,
                         updateProposedValues = updateFoundArtists,
+                        workDispatcher = workDispatcher,
                         getLabel = { strings.artistName },
                         style = if (index == artistsOfMusic.lastIndex) {
                             SoulTextFieldStyle.Bottom

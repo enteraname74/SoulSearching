@@ -1,14 +1,15 @@
 package com.github.enteraname74.soulsearching.repository.di
 
 import com.github.enteraname74.domain.repository.*
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.repository.datasource.lyrics.LyricsLocalDataSource
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.*
-import kotlinx.coroutines.Dispatchers
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val repositoryModule = module {
+val repositoryModule: Module = module {
     singleOf(::AlbumRepositoryImpl) bind AlbumRepository::class
     singleOf(::ArtistRepositoryImpl) bind ArtistRepository::class
     singleOf(::FolderRepositoryImpl) bind FolderRepository::class
@@ -20,7 +21,7 @@ val repositoryModule = module {
     single<PlayerRepository> {
         PlayerRepositoryImpl(
             playerLocalDataSource = get(),
-            workScope = Dispatchers.IO,
+            workScope = get<WorkDispatcher>().dispatcher,
             playerRemoteDataSource = get(),
             deviceLocalDataSource = get(),
             userLocalDataSource = get(),

@@ -13,11 +13,11 @@ import com.github.enteraname74.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.time.Duration
 
 data class PlaylistDetail(
-    val id: UUID?,
+    val id: Uuid?,
     val cachedPlaylist: PlayedListToContinue?,
     val type: PlaylistDetailType,
     val title: String,

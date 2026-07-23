@@ -34,27 +34,6 @@
             android:foregroundServiceType="mediaPlayback"
             />
 
-        <receiver
-            android:name="com.github.enteraname74.soulsearching.features.playback.notification.receivers.ToggleFavoriteNotificationReceiver"
-            android:enabled="true"
-            android:exported="false" />
-        <receiver
-            android:name="com.github.enteraname74.soulsearching.features.playback.notification.receivers.DeletedNotificationIntentReceiver"
-            android:enabled="true"
-            android:exported="false" />
-        <receiver
-            android:name="com.github.enteraname74.soulsearching.features.playback.notification.receivers.NextMusicNotificationReceiver"
-            android:enabled="true"
-            android:exported="false" />
-        <receiver
-            android:name="com.github.enteraname74.soulsearching.features.playback.notification.receivers.PausePlayNotificationReceiver"
-            android:enabled="true"
-            android:exported="false" />
-        <receiver
-            android:name="com.github.enteraname74.soulsearching.features.playback.notification.receivers.PreviousMusicNotificationReceiver"
-            android:enabled="true"
-            android:exported="false" />
-
         <service
             android:name="androidx.work.impl.background.systemjob.SystemJobService"
             tools:node="merge"

@@ -8,7 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class GetCorrespondingAlbumUseCase(
     private val albumRepository: AlbumRepository,
@@ -20,7 +20,7 @@ class GetCorrespondingAlbumUseCase(
      */
     suspend operator fun invoke(
         albumName: String,
-        artistId: UUID
+        artistId: Uuid
     ): Album? =
         albumRepository.getFromArtistId(
             albumName = albumName,
@@ -41,7 +41,7 @@ class GetCorrespondingAlbumUseCase(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun withMusics(
-        musicId: UUID
+        musicId: Uuid
     ): Flow<AlbumWithMusics?> =
         musicRepository.getFromId(musicId).flatMapLatest { music ->
             music?.let {

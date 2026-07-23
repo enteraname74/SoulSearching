@@ -39,7 +39,7 @@ fun MainAppNavigationHandler(
         modifier = Modifier
             .fillMaxSize(),
         backStack = backStack,
-        sceneStrategy = bottomSheetStrategy,
+        sceneStrategies = listOf(bottomSheetStrategy),
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()

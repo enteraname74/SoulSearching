@@ -7,19 +7,19 @@ import com.github.enteraname74.domain.model.MusicFolderPreview
 import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import java.util.*
 import kotlin.time.Duration
+import kotlin.uuid.Uuid
 
 class CommonMusicUseCase(
     private val musicRepository: MusicRepository,
 ) {
-    suspend fun deleteAll(ids: List<UUID>) {
+    suspend fun deleteAll(ids: List<Uuid>) {
         musicRepository.deleteAll(
             ids = ids,
         )
     }
 
-    suspend fun getAllIdsFromUnselectedFolders(): List<UUID> =
+    suspend fun getAllIdsFromUnselectedFolders(): List<Uuid> =
         musicRepository.getAllIdsFromUnselectedFolders()
 
     fun getAllFromQuickAccess(): Flow<List<Music>> =
@@ -38,7 +38,7 @@ class CommonMusicUseCase(
     fun getAllPaged(): Flow<PagingData<Music>> =
         musicRepository.getAllPaged()
 
-    fun getAllPagedOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
+    fun getAllPagedOfAlbum(albumId: Uuid): Flow<PagingData<Music>> =
         musicRepository.getAllPagedOfAlbum(albumId)
 
     fun getAllPagedByNameAscOfFolder(folder: String): Flow<PagingData<Music>> =
@@ -47,35 +47,35 @@ class CommonMusicUseCase(
     fun getAllPagedByNameAscOfMonth(month: String): Flow<PagingData<Music>> =
         musicRepository.getAllPagedByNameAscOfMonth(month)
 
-    fun getAllPagedByNameAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>> =
+    fun getAllPagedByNameAscOfPlaylist(playlistId: Uuid): Flow<PagingData<Music>> =
         musicRepository.getAllPagedByNameAscOfPlaylist(playlistId)
 
-    fun getAllPagedByNameAscOfArtist(artistId: UUID): Flow<PagingData<Music>> =
+    fun getAllPagedByNameAscOfArtist(artistId: Uuid): Flow<PagingData<Music>> =
         musicRepository.getAllPagedByNameAscOfArtist(artistId)
 
-    fun getFromId(musicId: UUID): Flow<Music?> =
+    fun getFromId(musicId: Uuid): Flow<Music?> =
         musicRepository.getFromId(musicId = musicId)
 
-    fun getFromIds(ids: List<UUID>): Flow<List<Music>> =
+    fun getFromIds(ids: List<Uuid>): Flow<List<Music>> =
         musicRepository.getFromIds(ids)
 
-    suspend fun getAllMusicFromMonth(month: String) : List<Music> =
+    suspend fun getAllMusicFromMonth(month: String): List<Music> =
         musicRepository.getAllMusicFromMonth(month)
 
-    suspend fun getAllMusicFromFolder(folder: String) : List<Music> =
+    suspend fun getAllMusicFromFolder(folder: String): List<Music> =
         musicRepository.getAllMusicFromFolder(folder)
 
-    suspend fun getAllMusicFromArtist(artistId: UUID) : List<Music> =
+    suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music> =
         musicRepository.getAllMusicFromArtist(artistId)
 
-    suspend fun getAllMusicFromPlaylist(playlistId: UUID) : List<Music> =
+    suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music> =
         musicRepository.getAllMusicFromPlaylist(playlistId)
 
-    suspend fun getAllMusicFromAlbum(albumId: UUID) : List<Music> =
+    suspend fun getAllMusicFromAlbum(albumId: Uuid): List<Music> =
         musicRepository.getAllMusicFromAlbum(albumId)
 
     fun searchFromAlbum(
-        albumId: UUID,
+        albumId: Uuid,
         search: String,
     ): Flow<List<Music>> =
         musicRepository.searchFromAlbum(
@@ -84,7 +84,7 @@ class CommonMusicUseCase(
         )
 
     fun searchFromPlaylist(
-        playlistId: UUID,
+        playlistId: Uuid,
         search: String
     ): Flow<List<Music>> =
         musicRepository.searchFromPlaylist(
@@ -93,7 +93,7 @@ class CommonMusicUseCase(
         )
 
     fun searchFromArtist(
-        artistId: UUID,
+        artistId: Uuid,
         search: String
     ): Flow<List<Music>> =
         musicRepository.searchFromArtist(
@@ -123,14 +123,14 @@ class CommonMusicUseCase(
         search: String,
     ): Flow<List<Music>> =
         musicRepository.searchAll(search)
-    
-    fun getAlbumDuration(albumId: UUID): Flow<Duration> =
+
+    fun getAlbumDuration(albumId: Uuid): Flow<Duration> =
         musicRepository.getAlbumDuration(albumId)
 
-    fun getArtistDuration(artistId: UUID): Flow<Duration> =
+    fun getArtistDuration(artistId: Uuid): Flow<Duration> =
         musicRepository.getArtistDuration(artistId)
 
-    fun getPlaylistDuration(playlistId: UUID): Flow<Duration> =
+    fun getPlaylistDuration(playlistId: Uuid): Flow<Duration> =
         musicRepository.getPlaylistDuration(playlistId)
 
     fun getMonthMusicsDuration(month: String): Flow<Duration> =
@@ -139,7 +139,7 @@ class CommonMusicUseCase(
     fun getFolderMusicsDuration(folder: String): Flow<Duration> =
         musicRepository.getFolderMusicsDuration(folder)
 
-    suspend fun incrementNbPlayed(musicId: UUID) {
+    suspend fun incrementNbPlayed(musicId: Uuid) {
         val music: Music = musicRepository.getFromId(musicId).first() ?: return
         musicRepository.upsert(
             music = music.copy(
@@ -156,7 +156,7 @@ class CommonMusicUseCase(
         musicRepository.upsert(music = music)
     }
 
-    suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
+    suspend fun updateMusicsAlbum(newAlbumId: Uuid, legacyAlbumId: Uuid) {
         musicRepository.updateMusicsAlbum(newAlbumId, legacyAlbumId)
     }
 
@@ -187,4 +187,20 @@ class CommonMusicUseCase(
 
     suspend fun getFromPath(path: String): Music? =
         musicRepository.getFromPath(path)
+
+
+    suspend fun getFromInformation(
+        musicName: String,
+        albumId: Uuid,
+    ): Music? =
+        musicRepository.getFromInformation(
+            musicName = musicName,
+            albumId = albumId,
+        )
+
+    suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<Uuid> =
+        musicRepository.getIdsFromRemoteIds(remoteIds)
+
+    fun observeDataChanged(): Flow<Unit> =
+        musicRepository.observeDataChanged()
 }

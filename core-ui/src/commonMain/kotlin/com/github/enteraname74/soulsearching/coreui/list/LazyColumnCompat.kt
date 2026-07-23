@@ -41,6 +41,8 @@ fun LazyColumnCompat(
         ) {
             content()
         }
-        SoulVerticalScrollBar(lazyListState = state)
+        if (state.canScrollForward || state.canScrollBackward) {
+            SoulVerticalScrollBar(lazyListState = state)
+        }
     }
 }

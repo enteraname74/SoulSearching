@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,7 @@ fun SettingPage(
     contentPadding: PaddingValues = PaddingValues(
         all = 0.dp
     ),
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     content: LazyListScope.() -> Unit
 ) {
     SoulScreen(
@@ -41,6 +43,7 @@ fun SettingPage(
             LazyColumnCompat(
                 contentPadding = contentPadding,
                 verticalArrangement = Arrangement.spacedBy(verticalPadding),
+                horizontalAlignment = horizontalAlignment,
             ) {
                 content()
                 item {

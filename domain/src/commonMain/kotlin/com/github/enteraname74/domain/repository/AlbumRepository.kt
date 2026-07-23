@@ -5,7 +5,6 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
 import kotlin.uuid.Uuid
 
 /**
@@ -14,7 +13,7 @@ import kotlin.uuid.Uuid
 interface AlbumRepository {
     suspend fun delete(album: Album)
 
-    suspend fun deleteAll(ids: List<UUID>)
+    suspend fun deleteAll(ids: List<Uuid>)
 
     suspend fun deleteAllEmpty()
 
@@ -30,23 +29,23 @@ interface AlbumRepository {
     /**
      * Retrieves all Albums from an Artist as a flow.
      */
-    fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>>
+    fun getAlbumsOfArtist(artistId: Uuid): Flow<List<Album>>
 
-    fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>>
+    fun getAlbumsWithMusicsOfArtist(artistId: Uuid): Flow<List<AlbumWithMusics>>
 
     /**
      * Retrieves an Album from its id.
      */
-    fun getFromId(albumId: UUID): Flow<Album?>
+    fun getFromId(albumId: Uuid): Flow<Album?>
 
     suspend fun getFromRemoteId(remoteId: Uuid): Album?
 
-    fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>>
+    fun getFromIds(albumIds: List<Uuid>): Flow<List<AlbumWithMusics>>
 
     /**
      * Retrieves a flow of an AlbumWithMusics from an album's id.
      */
-    fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?>
+    fun getAlbumWithMusics(albumId: Uuid): Flow<AlbumWithMusics?>
 
     fun getAllPaged(): Flow<PagingData<AlbumPreview>>
 
@@ -55,9 +54,9 @@ interface AlbumRepository {
     suspend fun cleanAllCovers()
 
     suspend fun getDuplicatedAlbum(
-        albumId: UUID,
+        albumId: Uuid,
         albumName: String,
-        artistId: UUID
+        artistId: Uuid
     ): Album?
 
     suspend fun getFromInformation(
@@ -67,12 +66,12 @@ interface AlbumRepository {
 
     suspend fun getFromArtistId(
         albumName: String,
-        artistId: UUID,
+        artistId: Uuid,
     ): Album?
 
     fun getMostListened(): Flow<List<AlbumPreview>>
 
-    fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?>
+    fun getAlbumPreview(albumId: Uuid): Flow<AlbumPreview?>
 
     fun searchAll(search: String): Flow<List<AlbumPreview>>
 

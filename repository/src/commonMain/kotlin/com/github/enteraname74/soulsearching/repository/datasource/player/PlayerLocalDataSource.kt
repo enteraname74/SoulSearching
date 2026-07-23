@@ -13,7 +13,7 @@ import com.github.enteraname74.domain.model.player.PlayerPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
 import com.github.enteraname74.domain.model.player.SharedPlayedListUser
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Data source of a PlayerMusic.
@@ -24,7 +24,7 @@ interface PlayerLocalDataSource {
     fun getSize(): Flow<Int>
     fun getCurrentMusic(): Flow<PlayerMusic?>
     fun getNextMusic(
-        musicIdsToSkip: List<UUID> = emptyList()
+        musicIdsToSkip: List<Uuid> = emptyList()
     ): Flow<PlayerMusic?>
 
     fun getLastMusic(): Flow<PlayerMusic?>
@@ -39,8 +39,8 @@ interface PlayerLocalDataSource {
     fun getCurrentScope(): Flow<PlayedListScope?>
     suspend fun upsertAllMusics(playerMusics: List<PlayerMusic>)
     suspend fun moveMusic(
-        fromMusicId: UUID,
-        toMusicId: UUID,
+        fromMusicId: Uuid,
+        toMusicId: Uuid,
     )
 
     suspend fun upsertPlayedList(
@@ -48,8 +48,8 @@ interface PlayerLocalDataSource {
         playerMusics: List<PlayerMusic>,
     )
 
-    suspend fun deleteAll(musicIds: List<UUID>)
-    suspend fun deletePlayedList(playedListId: UUID)
+    suspend fun deleteAll(musicIds: List<Uuid>)
+    suspend fun deletePlayedList(playedListId: Uuid)
 
     suspend fun deleteCurrentPlayedList()
 
@@ -61,24 +61,24 @@ interface PlayerLocalDataSource {
      * @param musicIdsToKeep: the list of music ids to keep when switching form loop to shuffle,
      * as we will delete all songs except these in this case.
      */
-    suspend fun handleListChange(musicIdsToKeep: List<UUID>)
+    suspend fun handleListChange(musicIdsToKeep: List<Uuid>)
 
     suspend fun setState(state: PlayedListState)
 
     suspend fun setScope(scope: PlayedListScope)
 
     suspend fun continuePlayedList(
-        playedListId: UUID,
+        playedListId: Uuid,
     )
 
-    suspend fun setCurrent(musicId: UUID)
+    suspend fun setCurrent(musicId: Uuid)
     suspend fun setProgress(progress: Int)
 
     suspend fun switchPlayerMode()
 
     suspend fun removeCurrentAndPlayNext()
     suspend fun updatesMusics(
-        musicIdsToRemove: List<UUID>,
+        musicIdsToRemove: List<Uuid>,
         playerMusicsToAdd: List<PlayerMusic>,
     )
 

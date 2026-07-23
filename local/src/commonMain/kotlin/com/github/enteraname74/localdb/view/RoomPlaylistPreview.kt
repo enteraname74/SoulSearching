@@ -1,10 +1,10 @@
 package com.github.enteraname74.localdb.view
 
-import androidx.room.DatabaseView
+import androidx.room3.DatabaseView
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.PlaylistPreview
-import java.time.LocalDateTime
-import java.util.UUID
+import kotlin.time.Instant
+import kotlin.uuid.Uuid
 
 @DatabaseView(
     """
@@ -56,13 +56,13 @@ import java.util.UUID
     """
 )
 data class RoomPlaylistPreview(
-    val id: UUID,
+    val id: Uuid,
     val isFavorite: Boolean,
-    val addedDate: LocalDateTime,
+    val addedDate: Instant,
     val name: String,
-    val totalMusics : Int,
+    val totalMusics: Int,
     val nbPlayed: Int,
-    val coverId: UUID?,
+    val coverId: Uuid?,
     val coverUrl: String?,
     val musicCoverUrl: String?,
     val musicCoverPath: String?,

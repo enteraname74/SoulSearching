@@ -1,14 +1,14 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TransactionScope
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
+import androidx.room3.TransactionScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Cover.CoverFile.DevicePathSpec
 import com.github.enteraname74.domain.model.Scope
-import java.time.LocalDateTime
-import java.util.*
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 /**
@@ -17,13 +17,13 @@ import kotlin.uuid.Uuid
 @Entity
 data class RoomArtist(
     @PrimaryKey
-    val artistId: UUID = UUID.randomUUID(),
+    val artistId: Uuid = Uuid.random(),
     val remoteId: Uuid?,
     val artistName: String,
-    val coverId: UUID? = null,
+    val coverId: Uuid? = null,
     val coverFolderKey: String? = null,
     val coverUrl: String?,
-    val addedDate: LocalDateTime = LocalDateTime.now(),
+    val addedDate: Instant = Clock.System.now(),
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,
     val lastUpdatedMillis: Long?,

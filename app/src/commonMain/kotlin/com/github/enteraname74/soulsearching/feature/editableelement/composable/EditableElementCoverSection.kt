@@ -7,6 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.github.enteraname74.domain.model.Platform
+import com.github.enteraname74.domain.util.PlatformUtils
 import com.github.enteraname74.soulsearching.composables.image.SoulByteArrayImage
 import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -32,17 +34,26 @@ fun EditableElementCoverSection(
             color = SoulSearchingColorTheme.colorScheme.onPrimary
         )
 
+        // TODO WEB: Add support for cover update
         if (editableElement.newCover == null) {
             SoulImage(
                 cover = editableElement.initialCover,
                 size = UiConstants.CoverSize.huge,
-                modifier = Modifier.clickableWithHandCursor { onSelectImage() }
+                modifier = Modifier.clickableWithHandCursor(
+                    enabled = PlatformUtils.platform != Platform.Web
+                ) {
+                    onSelectImage()
+                }
             )
         } else {
             SoulByteArrayImage(
                 data = editableElement.newCover,
                 size = UiConstants.CoverSize.huge,
-                modifier = Modifier.clickableWithHandCursor { onSelectImage() }
+                modifier = Modifier.clickableWithHandCursor(
+                    enabled = PlatformUtils.platform != Platform.Web
+                ) {
+                    onSelectImage()
+                }
             )
         }
     }

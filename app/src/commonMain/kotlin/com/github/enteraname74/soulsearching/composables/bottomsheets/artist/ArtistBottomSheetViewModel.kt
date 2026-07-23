@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class ArtistBottomSheetViewModel(
     private val commonArtistUseCase: CommonArtistUseCase,
@@ -43,9 +43,9 @@ class ArtistBottomSheetViewModel(
     private val feedbackPopUpManager: FeedbackPopUpManager,
     hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
     settings: SoulSearchingSettings,
-    params:  ArtistBottomSheetDestination,
+    params: ArtistBottomSheetDestination,
 ) : ViewModel() {
-    private val artistIds: List<UUID> = params.artistIds
+    private val artistIds: List<Uuid> = params.artistIds
 
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
@@ -91,7 +91,7 @@ class ArtistBottomSheetViewModel(
         isQuickAccessShown: Boolean,
         hasValidCloudInformation: Boolean,
         playedListScope: PlayedListScope?,
-    ) : List<BottomSheetRowSpec> = buildList {
+    ): List<BottomSheetRowSpec> = buildList {
         if (artists.isEmpty()) return@buildList
 
         val editEnabled: Boolean = artists.size == 1
@@ -124,13 +124,17 @@ class ArtistBottomSheetViewModel(
             )
         }
 
+        if (hasUserMusics) {
+            add(BottomSheetRowSpec.addToPlaylist(::addToPlaylists))
+        }
+
         if (playedListScope?.isRemote != true) {
             add(BottomSheetRowSpec.playNext(::playNext))
         }
 
         add(BottomSheetRowSpec.addToQueue(::addToQueue))
 
-        if (hasValidCloudInformation && hasUserMusics) {
+        if (hasValidCloudInformation && hasUserMusics && playedListScope?.isRemote != true) {
             add(BottomSheetRowSpec.startSharedPlayedList(::startSharedPlayedList))
         }
 
@@ -257,9 +261,19 @@ class ArtistBottomSheetViewModel(
         }
     }
 
+    private fun addToPlaylists() {
+        val musicIds: List<Uuid> =
+            state.value.artists
+                .flatMap { it.musics }
+                .distinctBy { it.musicId }
+                .map { it.musicId }
+
+        navScope.toAddToPlaylists(musicIds)
+    }
+
     private fun removeFromPlayedList() {
         loadingManager.withLoadingOnScope(viewModelScope) {
-            val musicIds: List<UUID> =
+            val musicIds: List<Uuid> =
                 state.value.artists
                     .flatMap { it.musics }
                     .distinctBy { it.musicId }
@@ -279,7 +293,7 @@ class ArtistBottomSheetViewModel(
 
     private fun startSharedPlayedList() {
         loadingManager.withLoadingOnScope(viewModelScope) {
-            val musicIds: List<UUID> =
+            val musicIds: List<Uuid> =
                 state.value.artists
                     .flatMap { it.musics }
                     .filter { it.scope != Scope.SharedPlayedList }

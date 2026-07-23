@@ -1,15 +1,15 @@
 package com.github.enteraname74.localdb.converters
 
-import androidx.room.TypeConverter
+import androidx.room3.ColumnTypeConverter
 import kotlin.uuid.Uuid
 
 object UuidTypeConverters {
 
-    @TypeConverter
+    @ColumnTypeConverter
     fun uuidToString(uuid: Uuid): String =
         uuid.toString()
 
-    @TypeConverter
+    @ColumnTypeConverter
     fun stringToUuid(serialized: String): Uuid =
         Uuid.parse(serialized)
 }

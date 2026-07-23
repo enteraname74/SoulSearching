@@ -7,6 +7,7 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -21,7 +22,6 @@ import com.github.enteraname74.soulsearching.features.filemanager.usecase.Update
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class ModifyAlbumViewModel(
     private val commonAlbumUseCase: CommonAlbumUseCase,
@@ -41,6 +41,7 @@ class ModifyAlbumViewModel(
     private val commonCoverUseCase: CommonCoverUseCase,
     private val updateAlbumUseCase: UpdateAlbumUseCase,
     private val loadingManager: LoadingManager,
+    private val workDispatcher: WorkDispatcher,
     destination: ModifyAlbumDestination,
 ) : ViewModel() {
     private val albumId = destination.selectedAlbumId
@@ -71,7 +72,7 @@ class ModifyAlbumViewModel(
             )
         }
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = ModifyAlbumState.Loading,
     )
@@ -85,10 +86,11 @@ class ModifyAlbumViewModel(
                 initialAlbum = album,
                 updateFoundAlbums = { commonAlbumUseCase.getAlbumsNameFromSearch(it) },
                 updateFoundArtists = { commonArtistUseCase.getArtistsNameFromSearch(it) },
+                workDispatcher = workDispatcher,
             )
         }
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = ModifyAlbumFormState.NoData,
     )
@@ -105,7 +107,7 @@ class ModifyAlbumViewModel(
             ModifyAlbumState.Loading -> CoverListState.Loading
         }
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = CoverListState.Loading,
     )
@@ -143,14 +145,14 @@ class ModifyAlbumViewModel(
      * Update the information of the selected album.
      */
     fun updateAlbum() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             val state = (state.value as? ModifyAlbumState.Data) ?: return@launch
             val form = (formState.value as? ModifyAlbumFormState.Data)?.takeIf { it.isFormValid() } ?: return@launch
 
             loadingManager.withLoading {
                 // If the image has changed, we need to save it and retrieve its id.
-                val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
-                    val newCoverId: UUID = UUID.randomUUID()
+                val coverFile: Uuid? = state.editableElement.newCover?.let { coverData ->
+                    val newCoverId: Uuid = Uuid.random()
 
                     commonCoverUseCase.upsert(
                         id = newCoverId,

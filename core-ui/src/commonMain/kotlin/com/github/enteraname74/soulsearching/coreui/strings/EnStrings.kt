@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.coreui.strings
 
 import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
 import com.github.enteraname74.domain.model.user.UserType
-import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
+import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 
 /**
@@ -118,6 +118,16 @@ object EnStrings : Strings {
 
     override val deleteSelectedMusicsDialogTitle = "Are you sure to delete the selected songs?"
     override val deleteSelectedMusicsDialogText = "They will be removed from the application."
+    override val deleteFolderMusicsDialogTitle = "Are you sure to delete this folder?"
+    override val deleteFolderMusicsDialogText =
+        "All songs from this folder will be removed from the application. The folder will also be disabled for future fetching."
+    override val deleteSelectedFoldersMusicsDialogTitle = "Are you sure to delete the selected folders?"
+    override val deleteSelectedFoldersMusicsDialogText =
+        "All songs from these folders will be removed from the application. These folders will also be disabled for future fetching."
+    override val deleteMonthMusicsDialogTitle = "Are you sure to delete this month selection?"
+    override val deleteMonthMusicsDialogText = "All songs from this month will be removed from the application."
+    override val deleteSelectedMonthsMusicsDialogTitle = "Are you sure to delete the selected month selections?"
+    override val deleteSelectedMonthsMusicsDialogText = "All songs from these months will be removed from the application."
     override val deleteSelectedAlbumsDialogTitle = "Are you sure to delete the selected albums?"
     override val deleteSelectedArtistsDialogTitle = "Are you sure to delete the selected artists?"
     override val deleteSelectedPlaylistsDialogTitle = "Are you sure to delete the selected playlists?"
@@ -146,6 +156,10 @@ object EnStrings : Strings {
     override val deleteSelectedArtists = "Delete selected artists"
     override val deleteSelectedPlaylists = "Delete selected playlists"
     override val deleteSelectedMusics = "Delete selected songs"
+    override val deleteFolderMusics = "Delete folder"
+    override val deleteSelectedFoldersMusics = "Delete selected folders"
+    override val deleteMonthMusics = "Delete month selection"
+    override val deleteSelectedMonthsMusics = "Delete selected month selections"
 
     override val playNext = "Play next"
     override val addToQueue = "Add to queue"
@@ -337,7 +351,7 @@ object EnStrings : Strings {
     override val generatedCode: String = "Generated code"
     override val cloudSyncTitle: String = "Synchronization"
     override val cloudSyncText: String = "Manage synchronization between the app and Cloudy"
-    override val cloudSyncButton: String = "Synchronize songs"
+    override val cloudSyncButton: String = "Synchronize with cloud"
     override val musicChannelNotificationDescription: String = "Used for controlling the song that is currently playing"
     override val cloudSyncChannelNotificationDescription: String = "used for syncing data between the app and Cloudy"
     override val musicChannelNotificationName: String = "Currently played music notification"
@@ -393,34 +407,83 @@ object EnStrings : Strings {
     override val musicRemoteOnly: String = "Song coming from the cloud"
     override val musicLocalOnly: String = "Song not uploaded on the cloud"
 
-    override fun cloudSyncNotificationTitle(state: SyncMusicWithCloudUseCase.State): String =
+    override val shortcutsTitle: String = "Shortcuts"
+    override val shortcutsText: String = "See shortcuts of the app"
+
+    override val shortcutPlayerCategory: String = "Player shortcuts"
+
+    override val shortcutTogglePlayPauseDescription: String = "Toggle play/pause"
+    override val shortcutPreviousDescription: String = "Previous"
+    override val shortcutNextDescription: String = "Next"
+    override val shortcutSeekForwardDescription: String = "Seek forward"
+    override val shortcutSeekBackwardDescription: String = "Seek backward"
+    override val shortcutVolumeUpDescription: String = "Volume up"
+    override val shortcutVolumeDownDescription: String = "Volume down"
+    override val shortcutToggleFavoriteDescription: String = "Toggle favorite of playing song"
+
+    override val shortcutTogglePlayPauseCommands: List<String> = listOf(
+        "Space",
+    )
+    override val shortcutPreviousCommands: List<String> = listOf(
+        "Shift",
+        "Left arrow",
+    )
+    override val shortcutNextCommands: List<String> = listOf(
+        "Shift",
+        "Right arrow",
+    )
+    override val shortcutSeekForwardCommands: List<String> = listOf(
+        "Right arrow"
+    )
+    override val shortcutSeekBackwardCommands: List<String> = listOf(
+        "Left arrow"
+    )
+    override val shortcutVolumeUpCommands: List<String> = listOf(
+        "Up arrow"
+    )
+    override val shortcutVolumeDownCommands: List<String> = listOf(
+        "Down arrow"
+    )
+    override val shortcutToggleFavoriteCommands: List<String> = listOf(
+        "F"
+    )
+
+    override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncMusicWithCloudUseCase.State.Failure -> "Failure"
-            SyncMusicWithCloudUseCase.State.Idle -> "Waiting"
-            SyncMusicWithCloudUseCase.State.NoMusicsToSend -> "No songs to send"
-            SyncMusicWithCloudUseCase.State.CheckingMusicsToSend -> "Checking"
-            SyncMusicWithCloudUseCase.State.Cleaning -> "Cleaning"
-            SyncMusicWithCloudUseCase.State.ClearingRemoteIds -> "Cleaning"
-            SyncMusicWithCloudUseCase.State.FetchingFromRemote -> "Fetching"
-            is SyncMusicWithCloudUseCase.State.SavingRemote -> "Saving"
-            is SyncMusicWithCloudUseCase.State.UpdateMusics -> "Update"
-            is SyncMusicWithCloudUseCase.State.UploadMusics -> "Upload"
-            SyncMusicWithCloudUseCase.State.Finish -> "Finish"
+            SyncDataWithCloudUseCase.State.Failure -> "Failure"
+            SyncDataWithCloudUseCase.State.Idle -> "Waiting"
+            SyncDataWithCloudUseCase.State.NoMusicsToSend -> "No songs to send"
+            SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Checking"
+            SyncDataWithCloudUseCase.State.Cleaning -> "Cleaning songs"
+            SyncDataWithCloudUseCase.State.ClearingRemoteMusicIds -> "Cleaning songs"
+            SyncDataWithCloudUseCase.State.FetchingFromRemote -> "Fetching songs"
+            is SyncDataWithCloudUseCase.State.SavingRemote -> "Saving songs"
+            is SyncDataWithCloudUseCase.State.UpdateMusics -> "Updating songs"
+            is SyncDataWithCloudUseCase.State.UploadMusics -> "Uploading songs"
+            SyncDataWithCloudUseCase.State.FetchingRemotePlaylists -> "Fetching playlists"
+            is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Uploading playlists"
+            SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists"
+            SyncDataWithCloudUseCase.State.Finish -> "Finish"
+            SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Cleaning playlists"
         }
 
-    override fun cloudSyncNotificationText(state: SyncMusicWithCloudUseCase.State): String =
+    override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncMusicWithCloudUseCase.State.Failure -> "A failure occurred during the syncing process"
-            SyncMusicWithCloudUseCase.State.Finish -> "Syncing process has finished"
-            SyncMusicWithCloudUseCase.State.Idle -> "Waiting for syncing to start"
-            SyncMusicWithCloudUseCase.State.NoMusicsToSend -> "No local songs to send to cloud"
-            SyncMusicWithCloudUseCase.State.CheckingMusicsToSend -> "Checking for songs to send to cloud"
-            SyncMusicWithCloudUseCase.State.Cleaning -> "Cleaning legacy local data after sync"
-            SyncMusicWithCloudUseCase.State.ClearingRemoteIds -> "Cleaning legacy local data before sync"
-            SyncMusicWithCloudUseCase.State.FetchingFromRemote -> "Fetching songs from cloud"
-            is SyncMusicWithCloudUseCase.State.SavingRemote -> "Saving fetched information from cloud"
-            is SyncMusicWithCloudUseCase.State.UpdateMusics -> "Updating existing remote musics to cloud"
-            is SyncMusicWithCloudUseCase.State.UploadMusics -> "Uploading musics to cloud"
+            SyncDataWithCloudUseCase.State.Failure -> "A failure occurred during the syncing process"
+            SyncDataWithCloudUseCase.State.Finish -> "Syncing process has finished"
+            SyncDataWithCloudUseCase.State.Idle -> "Waiting for syncing to start"
+            SyncDataWithCloudUseCase.State.NoMusicsToSend -> "No local songs to send to cloud"
+            SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Checking for songs to send to cloud"
+            SyncDataWithCloudUseCase.State.Cleaning -> "Cleaning legacy local songs after sync"
+            SyncDataWithCloudUseCase.State.ClearingRemoteMusicIds -> "Cleaning deleted remote songs before sync"
+            SyncDataWithCloudUseCase.State.FetchingFromRemote -> "Fetching songs from cloud"
+            is SyncDataWithCloudUseCase.State.SavingRemote -> "Saving fetched information from cloud"
+            is SyncDataWithCloudUseCase.State.UpdateMusics -> "Updating existing remote musics to cloud"
+            is SyncDataWithCloudUseCase.State.UploadMusics -> "Uploading musics to cloud"
+            SyncDataWithCloudUseCase.State.FetchingRemotePlaylists -> "Fetching playlists from cloud"
+            is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Uploading playlists to cloud"
+            SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists from cloud"
+            SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Cleaning deleted remote playlists"
         }
 
     override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =

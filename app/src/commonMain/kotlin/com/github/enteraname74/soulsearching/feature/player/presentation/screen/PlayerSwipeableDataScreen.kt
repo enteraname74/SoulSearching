@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Artist
@@ -35,7 +37,8 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.blend
-import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
+import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.animated
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -47,6 +50,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMinimisedMainInfo
@@ -55,29 +59,24 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.composa
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.ExpandedPlayerControlsComposable
 import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelDraggableView
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Composable
 fun BoxScope.PlayerSwipeableDataScreen(
     maxHeight: Float,
     state: PlayerViewState.Data,
+    playbackCommandsState: PlaybackCommandsState,
     lyricsState: LyricsFetchState,
     settingsState: PlayerViewSettingsState,
     currentMusicProgression: Int,
     onArtistClicked: ((selectedArtist: Artist) -> Unit)?,
     onAlbumClicked: (() -> Unit)?,
     closeSelection: () -> Unit,
-    showMusicBottomSheet: (musicId: UUID) -> Unit,
+    showMusicBottomSheet: (musicId: Uuid) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
     onSwiped: ((Music) -> Unit)?,
     onClickOnMusic: ((Music) -> Unit)?,
     multiSelectionState: MultiSelectionState,
-    toggleFavoriteState: (() -> Unit)?,
-    seekTo: ((newPosition: Int) -> Unit)?,
-    changePlayerMode: (() -> Unit)?,
-    previous: (() -> Unit)?,
-    togglePlayPause: (() -> Unit)?,
-    next: (() -> Unit)?,
     onActivateRemoteLyrics: () -> Unit,
     onAddFromUrl: (() -> Unit)?,
     playerViewManager: PlayerViewManager = injectElement(),
@@ -92,18 +91,25 @@ fun BoxScope.PlayerSwipeableDataScreen(
             SoulSearchingColorTheme.colorScheme.secondary
         }.animated(label = PlayerUiUtils.PLAYER_BACKGROUND_COLOR_LABEL)
 
-    Box(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 color = animatedBackgroundColor
             )
             .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
-            .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED) {
-                playerViewManager.animateTo(
-                    newState = BottomSheetStates.EXPANDED,
-                )
-            }
+            .combinedClickableWithRightClick(
+                enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED,
+                withIndication = false,
+                onClick = {
+                    playerViewManager.animateTo(
+                        newState = BottomSheetStates.EXPANDED,
+                    )
+                },
+                onLongClick = showMusicBottomSheet.let {
+                    { it(state.currentMusic.musicId) }
+                }
+            )
             .align(Alignment.TopStart)
     ) {
 
@@ -112,14 +118,19 @@ fun BoxScope.PlayerSwipeableDataScreen(
 
 
         AnimatedVisibility(
-            visible = settingsState.isMinimisedSongProgressionShown && seekTo != null
+            visible = settingsState.isMinimisedSongProgressionShown && playbackCommandsState.seekTo != null
         ) {
             LinearProgressIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(1f - alphaTransition)
                     .height(SONG_PROGRESSION_HEIGHT),
-                progress = { (currentMusicProgression.toFloat() / state.currentMusic.duration.toFloat()).coerceIn(0f,1f) },
+                progress = {
+                    (currentMusicProgression.toFloat() / state.currentMusic.duration.toFloat()).coerceIn(
+                        0f,
+                        1f
+                    )
+                },
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 trackColor = SoulSearchingColorTheme.colorScheme.subSecondaryText.blend(
                     other = SoulSearchingColorTheme.colorScheme.primary,
@@ -158,17 +169,38 @@ fun BoxScope.PlayerSwipeableDataScreen(
             }
         )
 
-        val playerControlsWidth: Dp = PlayerUiUtils.getPlayerControlsWidth(
+        var panelWidth: Int by rememberSaveable {
+            mutableIntStateOf(0)
+        }
+        val imageHorizontalPadding = PlayerUiUtils.getImageHorizontalPadding(
             imageSize = imageSize,
+            maxWidth = if (PlayerUiUtils.canShowSidePanel()) {
+                maxWidth - panelWidth.toDp()
+            } else {
+                maxWidth
+            },
         )
-        val imageHorizontalPadding = PlayerUiUtils.getImageHorizontalPadding(imageSize)
         val imageTopPadding = PlayerUiUtils.getImageTopPadding(
             expandedMainInformationHeight = playerTopInformationHeight,
             imageSize = imageSize,
         )
         val fullImageSize = imageSize + (imageHorizontalPadding * 2)
-        Column {
-            val controlsBoxWidth = playerControlsWidth + (imageHorizontalPadding * 2)
+        Column(
+            modifier = Modifier
+                .fillMaxHeight(),
+            verticalArrangement = if (PlayerUiUtils.canShowSidePanel()) {
+                Arrangement.SpaceBetween
+            } else {
+                Arrangement.Top
+            },
+        ) {
+            val controlsBoxWidth = if (PlayerUiUtils.canShowSidePanel()) {
+                this@BoxWithConstraints.maxWidth - panelWidth.toDp()
+            } else {
+                PlayerUiUtils.getPlayerControlsWidth(
+                    imageSize = imageSize,
+                ) + (imageHorizontalPadding * 2)
+            }
 
             PlayerMusicCover(
                 modifier = Modifier
@@ -189,21 +221,24 @@ fun BoxScope.PlayerSwipeableDataScreen(
                     modifier = Modifier
                         .padding(
                             top = PlayerUiUtils.getTopInformationBottomPadding(),
+                            bottom = if (PlayerUiUtils.canShowSidePanel()) {
+                                UiConstants.Spacing.large
+                            } else {
+                                0.dp
+                            }
                         )
                         .width(controlsBoxWidth),
                     contentAlignment = Alignment.Center,
                 ) {
                     ExpandedPlayerControlsComposable(
                         modifier = Modifier
-                            .width(playerControlsWidth)
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal = UiConstants.Spacing.veryLarge,
+                            )
                             .alpha(alphaTransition),
-                        toggleFavoriteState = toggleFavoriteState,
+                        playbackCommandsState = playbackCommandsState,
                         state = state,
-                        next = next,
-                        previous = previous,
-                        changePlayerMode = changePlayerMode,
-                        seekTo = seekTo,
-                        togglePlayPause = togglePlayPause,
                         currentMusicProgression = currentMusicProgression,
                     )
                 }
@@ -230,13 +265,8 @@ fun BoxScope.PlayerSwipeableDataScreen(
                         .padding(
                             horizontal = UiConstants.Spacing.medium,
                         ),
-                    toggleFavoriteState = toggleFavoriteState,
                     state = state,
-                    next = next,
-                    previous = previous,
-                    changePlayerMode = changePlayerMode,
-                    seekTo = seekTo,
-                    togglePlayPause = togglePlayPause,
+                    playbackCommandsState = playbackCommandsState,
                     currentMusicProgression = currentMusicProgression,
                 )
 
@@ -271,7 +301,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 }
             }
         }
-
 
         if (!PlayerUiUtils.canShowSidePanel()) {
             PlayerPanelDraggableView(
@@ -313,8 +342,15 @@ fun BoxScope.PlayerSwipeableDataScreen(
                     modifier = Modifier
                         .alpha(alphaTransition)
                         .width(
-                            this.getSidePanelWidth(playerControlsWidth = playerControlsWidth)
-                        ),
+                            this.getSidePanelWidth(
+                                playerControlsWidth = PlayerUiUtils.getPlayerControlsWidth(
+                                    imageSize = imageSize,
+                                )
+                            )
+                        )
+                        .onGloballyPositioned { layoutCoordinates ->
+                            panelWidth = layoutCoordinates.size.width
+                        },
                     onLongSelectOnMusic = onLongSelectOnMusic,
                     multiSelectionState = multiSelectionState,
                     onActivateRemoteLyrics = onActivateRemoteLyrics,
@@ -328,11 +364,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
         PlayerMinimisedMainInfo(
             imageSize = imageSize,
             currentMusic = state.currentMusic,
-            isPlaying = state.isPlaying,
             alphaTransition = 1f - alphaTransition,
-            previous = previous,
-            next = next,
-            togglePlayPause = togglePlayPause,
+            playbackCommandsState = playbackCommandsState,
+            state = state,
         )
     }
 }

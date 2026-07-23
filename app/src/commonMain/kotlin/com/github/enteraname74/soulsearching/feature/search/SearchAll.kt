@@ -25,20 +25,20 @@ import com.github.enteraname74.soulsearching.feature.search.composable.LinearPre
 import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchAll(
     lazyListState: LazyListState,
     searchAllState: SearchAllState,
-    onSelectedMusicForBottomSheet: (musicId: UUID) -> Unit,
+    onSelectedMusicForBottomSheet: (musicId: Uuid) -> Unit,
     onSelectedAlbumForBottomSheet: (AlbumPreview) -> Unit,
     onSelectedPlaylistForBottomSheet: (PlaylistPreview) -> Unit,
     onSelectedArtistForBottomSheet: (ArtistPreview) -> Unit,
-    navigateToPlaylist: (UUID) -> Unit,
-    navigateToArtist: (UUID) -> Unit,
-    navigateToAlbum: (UUID) -> Unit,
+    navigateToPlaylist: (Uuid) -> Unit,
+    navigateToArtist: (Uuid) -> Unit,
+    navigateToAlbum: (Uuid) -> Unit,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
     playbackManager: PlaybackManager = injectElement(),

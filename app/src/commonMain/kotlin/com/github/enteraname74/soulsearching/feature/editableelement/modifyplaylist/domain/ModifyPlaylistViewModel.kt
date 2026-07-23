@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -19,7 +20,6 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyplayl
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,15 +31,16 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class ModifyPlaylistViewModel(
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonCoverUseCase: CommonCoverUseCase,
     private val loadingManager: LoadingManager,
+    private val workDispatcher: WorkDispatcher,
     destination: ModifyPlaylistDestination,
 ) : ViewModel() {
-    private val playlistId: UUID = destination.selectedPlaylistId
+    private val playlistId: Uuid = destination.selectedPlaylistId
     private val _navigationState: MutableStateFlow<ModifyPlaylistNavigationState> = MutableStateFlow(
         ModifyPlaylistNavigationState.Idle
     )
@@ -69,7 +70,7 @@ class ModifyPlaylistViewModel(
             )
         }
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = ModifyPlaylistState.Loading,
     )
@@ -82,7 +83,7 @@ class ModifyPlaylistViewModel(
             ModifyPlaylistFormState.Data(initialPlaylist = playlistWithMusics.playlist)
         }
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = ModifyPlaylistFormState.NoData,
     )
@@ -99,7 +100,7 @@ class ModifyPlaylistViewModel(
             ModifyPlaylistState.Loading -> CoverListState.Loading
         }
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = CoverListState.Loading,
     )
@@ -124,7 +125,7 @@ class ModifyPlaylistViewModel(
      * Update selected playlist information.
      */
     fun updatePlaylist() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             val state = (state.value as? ModifyPlaylistState.Data) ?: return@launch
             val form = (formState.value as? ModifyPlaylistFormState.Data) ?: return@launch
 
@@ -132,8 +133,8 @@ class ModifyPlaylistViewModel(
 
             loadingManager.startLoading()
 
-            val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
-                val newCoverId: UUID = UUID.randomUUID()
+            val coverFile: Uuid? = state.editableElement.newCover?.let { coverData ->
+                val newCoverId: Uuid = Uuid.random()
                 commonCoverUseCase.upsert(
                     id = newCoverId,
                     data = coverData,

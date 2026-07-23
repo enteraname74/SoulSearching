@@ -3,7 +3,7 @@ package com.github.enteraname74.domain.usecase.player
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class AddMusicsToSharedPlayedListUseCase(
     private val playerRepository: PlayerRepository,
@@ -11,7 +11,7 @@ class AddMusicsToSharedPlayedListUseCase(
     private val syncPlayedListMusicsUseCase: SyncPlayedListMusicsUseCase,
     private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
 ) {
-    suspend fun local(musicIds: List<UUID>): SoulResult<Unit> = SoulResult.runCatching {
+    suspend fun local(musicIds: List<Uuid>): SoulResult<Unit> = SoulResult.runCatching {
         val musicRemoteIds: List<String> = syncMusicForPlayerIfNeededUseCase(musicIds)
             .mapNotNull { it.remoteId }
 

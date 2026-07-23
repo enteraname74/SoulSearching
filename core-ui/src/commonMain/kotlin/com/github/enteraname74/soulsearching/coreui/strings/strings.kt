@@ -2,9 +2,9 @@ package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
 import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
-import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 import com.github.enteraname74.domain.model.user.UserType
-import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
+import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 import kotlin.time.Duration
 
 val strings = when (Locale.current.language) {
@@ -128,6 +128,14 @@ interface Strings {
 
     val deleteSelectedMusicsDialogTitle: String
     val deleteSelectedMusicsDialogText: String
+    val deleteFolderMusicsDialogTitle: String
+    val deleteFolderMusicsDialogText: String
+    val deleteSelectedFoldersMusicsDialogTitle: String
+    val deleteSelectedFoldersMusicsDialogText: String
+    val deleteMonthMusicsDialogTitle: String
+    val deleteMonthMusicsDialogText: String
+    val deleteSelectedMonthsMusicsDialogTitle: String
+    val deleteSelectedMonthsMusicsDialogText: String
     val deleteSelectedAlbumsDialogTitle: String
     val deleteSelectedArtistsDialogTitle: String
     val deleteSelectedPlaylistsDialogTitle: String
@@ -155,6 +163,10 @@ interface Strings {
     val deleteSelectedArtists: String
     val deleteSelectedPlaylists: String
     val deleteSelectedMusics: String
+    val deleteFolderMusics: String
+    val deleteSelectedFoldersMusics: String
+    val deleteMonthMusics: String
+    val deleteSelectedMonthsMusics: String
 
     val playNext: String
     val addToQueue: String
@@ -397,13 +409,35 @@ interface Strings {
     val musicRemoteOnly: String
     val musicLocalOnly: String
 
+    val shortcutsTitle: String
+    val shortcutsText: String
+
+    val shortcutPlayerCategory: String
+
+    val shortcutTogglePlayPauseDescription: String
+    val shortcutPreviousDescription: String
+    val shortcutNextDescription: String
+    val shortcutSeekForwardDescription: String
+    val shortcutSeekBackwardDescription: String
+    val shortcutVolumeUpDescription: String
+    val shortcutVolumeDownDescription: String
+    val shortcutToggleFavoriteDescription: String
+
+    val shortcutTogglePlayPauseCommands: List<String>
+    val shortcutPreviousCommands: List<String>
+    val shortcutNextCommands: List<String>
+    val shortcutSeekForwardCommands: List<String>
+    val shortcutSeekBackwardCommands: List<String>
+    val shortcutVolumeUpCommands: List<String>
+    val shortcutVolumeDownCommands: List<String>
+    val shortcutToggleFavoriteCommands: List<String>
     fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
     fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String
 
     fun userType(type: UserType): String
 
-    fun cloudSyncNotificationTitle(state: SyncMusicWithCloudUseCase.State): String
-    fun cloudSyncNotificationText(state: SyncMusicWithCloudUseCase.State): String
+    fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String
+    fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String
 
     /**
      * Shows a text indicating the number of musics.

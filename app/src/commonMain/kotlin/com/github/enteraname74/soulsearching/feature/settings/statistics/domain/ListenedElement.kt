@@ -7,10 +7,10 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 data class ListenedElement(
-    val id: UUID,
+    val id: Uuid,
     val title: String,
     val text: @Composable () -> String,
     val cover: Cover?,

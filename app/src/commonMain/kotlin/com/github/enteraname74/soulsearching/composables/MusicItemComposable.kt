@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -112,7 +111,7 @@ fun MusicItemComposable(
                         is MusicItemLeadingSpec.Position -> {
                             Box(
                                 modifier = Modifier
-                                    .size( UiConstants.CoverSize.small),
+                                    .size(UiConstants.CoverSize.small),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(

@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -51,7 +54,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import org.jetbrains.compose.resources.DrawableResource
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.time.Duration
 
 @Composable
@@ -154,6 +157,8 @@ private fun Content(
                     ) {
                         PlaylistContinueCard(
                             modifier = Modifier
+                                .widthIn(max = 500.dp)
+                                .fillMaxWidth()
                                 .padding(
                                     start = UiConstants.Spacing.medium,
                                     end = UiConstants.Spacing.medium,
@@ -176,7 +181,7 @@ private fun Content(
 
                 items(
                     count = musics.itemCount,
-                    key = { musics[it]?.musicId ?: UUID.randomUUID() },
+                    key = { musics[it]?.musicId ?: Uuid.random() },
                     contentType = { PLAYLIST_MUSICS_CONTENT_TYPE }
                 ) { pos ->
                     val music = musics[pos]
@@ -191,8 +196,8 @@ private fun Content(
                                 playlistDetailListener.showMusicBottomSheet(listOf(music.musicId))
                             },
                             isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
-                            isSelected = multiSelectionState.selectedIds.contains(music.musicId),
-                            isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                            isSelected = multiSelectionState.selectedIds.contains(music.musicId.toString()),
+                            isSelectionModeOn = multiSelectionState.totalSelected > 0,
                             leadingSpec = playlistDetail.musicItemLeadingSpec(pos)
                         )
                     }

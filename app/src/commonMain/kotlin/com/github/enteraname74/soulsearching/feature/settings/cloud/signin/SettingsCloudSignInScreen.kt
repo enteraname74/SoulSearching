@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.signin
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,55 +35,50 @@ fun SettingsCloudSignInScreen(
         navigateBack = actions::navigateBack,
         contentPadding = PaddingValues(all = UiConstants.Spacing.large),
         title = strings.cloudConnection,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
             state.nameField.TextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .widthIn(max = UiConstants.Size.textFieldMaxWidth)
+                    .fillMaxWidth(),
                 focusManager = focusManager,
             )
         }
         item {
             state.passwordField.TextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .widthIn(max = UiConstants.Size.textFieldMaxWidth)
+                    .fillMaxWidth(),
                 focusManager = focusManager,
             )
         }
         item {
-            Box(
+            SoulFilledButton(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .padding(
                         top = UiConstants.Spacing.mediumPlus,
                     ),
-                contentAlignment = Alignment.Center,
-            ) {
-                SoulFilledButton(
-                    text = strings.cloudSignIn,
-                    enabled = state.isValid(),
-                    onClick = {
-                        focusManager.clearFocus()
-                        actions.signIn()
-                    },
-                )
-            }
+                text = strings.cloudSignIn,
+                enabled = state.isValid(),
+                onClick = {
+                    focusManager.clearFocus()
+                    actions.signIn()
+                },
+            )
         }
         item {
-            Box(
+            SoulTextButton(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .padding(
-                        top = UiConstants.Spacing.mediumPlus,
+                        top = UiConstants.Spacing.medium,
                     ),
-                contentAlignment = Alignment.Center,
-            ) {
-                SoulTextButton(
-                    text = strings.cloudNoAccount,
-                    onClick = {
-                        focusManager.clearFocus()
-                        actions.toSignUp()
-                    },
-                )
-            }
+                text = strings.cloudNoAccount,
+                onClick = {
+                    focusManager.clearFocus()
+                    actions.toSignUp()
+                },
+            )
         }
 
     }

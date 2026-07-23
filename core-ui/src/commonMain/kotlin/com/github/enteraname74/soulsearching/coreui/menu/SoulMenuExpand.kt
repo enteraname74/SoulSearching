@@ -2,13 +2,12 @@ package com.github.enteraname74.soulsearching.coreui.menu
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -32,8 +31,10 @@ fun SoulMenuExpand(
     modifier: Modifier = Modifier,
     clickEnabled: Boolean = true,
     isExpanded: Boolean,
-    padding: Dp = UiConstants.Spacing.veryLarge,
-    containerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+    padding: PaddingValues = PaddingValues(
+        horizontal = UiConstants.Spacing.large,
+        vertical = UiConstants.Spacing.veryLarge,
+    ),
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     subTextColor: Color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
     content: @Composable () -> Unit,
@@ -41,11 +42,7 @@ fun SoulMenuExpand(
     val rotation by animateFloatAsState(targetValue = if (isExpanded) 180f else 0f)
 
     Column(
-        modifier = modifier
-            .background(
-                color = containerColor,
-                shape = RoundedCornerShape(size = RoundedCornerShapeValue)
-            )
+        modifier = modifier,
     ) {
         Row(
             modifier = Modifier
@@ -85,5 +82,3 @@ fun SoulMenuExpand(
         }
     }
 }
-
-private val RoundedCornerShapeValue: Dp = 10.dp

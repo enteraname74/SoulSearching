@@ -14,7 +14,7 @@ import kotlin.uuid.Uuid
 
 class RoomUserLocalDataSourceImpl(
     private val appDatabase: AppDatabase,
-): UserLocalDataSource {
+) : UserLocalDataSource {
     override suspend fun upsert(user: User) {
         val existingUser: RoomUser? = appDatabase.userDao.observe().firstOrNull()
 

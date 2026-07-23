@@ -1,13 +1,13 @@
 package com.github.enteraname74.domain.model
 
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Used to link a song to a playlist.
  */
 data class MusicPlaylist(
-    val musicId: UUID = UUID.randomUUID(),
-    val playlistId: UUID = UUID.randomUUID()
+    val musicId: Uuid = Uuid.random(),
+    val playlistId: Uuid = Uuid.random()
 ) {
     val id: String
         get() = "$musicId$playlistId"

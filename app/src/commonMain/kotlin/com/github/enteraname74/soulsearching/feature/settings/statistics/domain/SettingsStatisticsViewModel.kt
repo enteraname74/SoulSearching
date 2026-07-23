@@ -6,7 +6,7 @@ import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
-import kotlinx.coroutines.Dispatchers
+import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -18,6 +18,7 @@ class SettingsStatisticsViewModel(
     commonMusicUseCase: CommonMusicUseCase,
     commonAlbumUseCase: CommonAlbumUseCase,
     commonPlaylistUseCase: CommonPlaylistUseCase,
+    workDispatcher: WorkDispatcher,
 ) : ViewModel() {
     val state: StateFlow<SettingsStatisticsState> = combine(
         commonMusicUseCase.getMostListened(),
@@ -34,7 +35,7 @@ class SettingsStatisticsViewModel(
             artistsWithMostSongs = artistsWithMostSongs.map { it.toMostSongsListenedElement() },
         )
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = SettingsStatisticsState(),
     )

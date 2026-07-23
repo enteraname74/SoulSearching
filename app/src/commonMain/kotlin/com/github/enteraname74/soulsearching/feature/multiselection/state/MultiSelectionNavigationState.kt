@@ -1,24 +1,32 @@
 package com.github.enteraname74.soulsearching.feature.multiselection.state
 
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 sealed interface MultiSelectionNavigationState {
     data object Idle : MultiSelectionNavigationState
 
     data class ToMusicBottomSheet(
-        val musicIds: List<UUID>,
-        val playlistId: UUID?,
+        val musicIds: List<Uuid>,
+        val playlistId: Uuid?,
     ) : MultiSelectionNavigationState
 
     data class ToPlaylistBottomSheet(
-        val playlistIds: List<UUID>,
+        val playlistIds: List<Uuid>,
     ) : MultiSelectionNavigationState
 
     data class ToArtistBottomSheet(
-        val artistIds: List<UUID>,
+        val artistIds: List<Uuid>,
     ) : MultiSelectionNavigationState
 
     data class ToAlbumBottomSheet(
-        val albumIds: List<UUID>,
+        val albumIds: List<Uuid>,
+    ) : MultiSelectionNavigationState
+
+    data class ToFolderBottomSheet(
+        val folderPaths: List<String>,
+    ) : MultiSelectionNavigationState
+
+    data class ToMonthBottomSheet(
+        val months: List<String>,
     ) : MultiSelectionNavigationState
 }

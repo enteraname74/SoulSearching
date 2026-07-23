@@ -1,14 +1,14 @@
 package com.github.enteraname74.localdb.dao
 
-import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.Upsert
+import androidx.room3.Dao
+import androidx.room3.Query
+import androidx.room3.Upsert
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.localdb.model.player.RoomPlayerPlayedList
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Dao
 interface PlayerPlayedListDao {
@@ -16,7 +16,7 @@ interface PlayerPlayedListDao {
     @Query(
         """
             SELECT * FROM RoomPlayerPlayedList 
-            WHERE state != "Cached"
+            WHERE state != 'Cached'
             LIMIT 1
         """
     )
@@ -25,7 +25,7 @@ interface PlayerPlayedListDao {
     @Query(
         """
             SELECT * FROM RoomPlayerPlayedList 
-            WHERE state = "Cached" 
+            WHERE state = 'Cached' 
             AND playlistId = :playlistId
             LIMIT 1
         """
@@ -38,7 +38,7 @@ interface PlayerPlayedListDao {
     @Query(
         """
             SELECT mode FROM RoomPlayerPlayedList 
-            WHERE state != "Cached"
+            WHERE state != 'Cached'
             LIMIT 1
         """
     )
@@ -47,7 +47,7 @@ interface PlayerPlayedListDao {
     @Query(
         """
             SELECT state FROM RoomPlayerPlayedList 
-            WHERE state != "Cached"
+            WHERE state != 'Cached'
             LIMIT 1
         """
     )
@@ -56,7 +56,7 @@ interface PlayerPlayedListDao {
     @Query(
         """
             SELECT scope FROM RoomPlayerPlayedList 
-            WHERE state != "Cached"
+            WHERE state != 'Cached'
             LIMIT 1
         """
     )
@@ -65,7 +65,7 @@ interface PlayerPlayedListDao {
     @Query(
         """
             UPDATE RoomPlayerPlayedList 
-            SET state = "Cached"
+            SET state = 'Cached'
         """
     )
     suspend fun cacheAll()
@@ -74,7 +74,7 @@ interface PlayerPlayedListDao {
         """
             UPDATE RoomPlayerPlayedList 
             SET mode = :mode 
-            WHERE state != "Cached"
+            WHERE state != 'Cached'
         """
     )
     suspend fun setMode(mode: PlayerMode)
@@ -83,7 +83,7 @@ interface PlayerPlayedListDao {
         """
             UPDATE RoomPlayerPlayedList 
             SET state = :state 
-            WHERE state != "Cached"
+            WHERE state != 'Cached'
         """
     )
     suspend fun setState(state: PlayedListState)
@@ -92,7 +92,7 @@ interface PlayerPlayedListDao {
         """
             UPDATE RoomPlayerPlayedList 
             SET scope = :scope 
-            WHERE state != "Cached"
+            WHERE state != 'Cached'
         """
     )
     suspend fun setScope(scope: PlayedListScope)
@@ -106,19 +106,19 @@ interface PlayerPlayedListDao {
     )
     suspend fun setStateOfId(
         state: PlayedListState,
-        playedListId: UUID,
+        playedListId: Uuid,
     )
 
     @Upsert
     suspend fun upsert(playedList: RoomPlayerPlayedList)
 
     @Query("DELETE FROM RoomPlayerPlayedList WHERE id = :playedListId")
-    suspend fun delete(playedListId: UUID)
+    suspend fun delete(playedListId: Uuid)
 
     @Query(
         """
             DELETE FROM RoomPlayerPlayedList 
-            WHERE state != "Cached"
+            WHERE state != 'Cached'
         """
     )
     suspend fun deleteCurrent()

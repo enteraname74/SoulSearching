@@ -1,7 +1,7 @@
 package com.github.enteraname74.domain.model
 
 import com.github.enteraname74.domain.ext.coverFromSongs
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Represent a list of music from a given month

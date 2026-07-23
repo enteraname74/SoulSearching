@@ -1,15 +1,15 @@
 package com.github.enteraname74.localdb.dao
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Update
-import androidx.room.Upsert
+import androidx.room3.Dao
+import androidx.room3.Query
+import androidx.room3.Transaction
+import androidx.room3.Update
+import androidx.room3.Upsert
 import com.github.enteraname74.localdb.model.player.RoomCompletePlayerMusic
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * DAO of a PlayerMusic
@@ -60,7 +60,7 @@ interface PlayerMusicDao {
             LIMIT 1
         """
     )
-    suspend fun getOfCurrentList(musicId: UUID): RoomPlayerMusic?
+    suspend fun getOfCurrentList(musicId: Uuid): RoomPlayerMusic?
 
     @Transaction
     @Query(
@@ -72,7 +72,7 @@ interface PlayerMusicDao {
         """
     )
     fun getCurrentOfPlayedList(
-        playedListId: UUID,
+        playedListId: Uuid,
     ): Flow<RoomCompletePlayerMusic?>
 
     @Transaction
@@ -96,7 +96,7 @@ interface PlayerMusicDao {
     )
     fun getNextMusic(
         order: Double,
-        musicIdsToSkip: List<UUID>,
+        musicIdsToSkip: List<Uuid>,
     ): Flow<RoomCompletePlayerMusic?>
 
     @Transaction
@@ -129,7 +129,7 @@ interface PlayerMusicDao {
         """
     )
     fun getFirst(
-        musicIdsToSkip: List<UUID>
+        musicIdsToSkip: List<Uuid>
     ): Flow<RoomCompletePlayerMusic?>
 
     @Upsert
@@ -145,7 +145,7 @@ interface PlayerMusicDao {
             AND playedListId IN (SELECT playedListId FROM CurrentPlayerMusicsView LIMIT 1)
         """
     )
-    suspend fun delete(musicId: UUID)
+    suspend fun delete(musicId: Uuid)
 
     @Query(
         """
@@ -154,7 +154,7 @@ interface PlayerMusicDao {
             AND playedListId IN (SELECT playedListId FROM CurrentPlayerMusicsView LIMIT 1)
         """
     )
-    suspend fun deleteAll(musicIds: List<UUID>)
+    suspend fun deleteAll(musicIds: List<Uuid>)
 
     @Query(
         """
@@ -163,7 +163,7 @@ interface PlayerMusicDao {
             AND playedListId IN (SELECT playedListId FROM CurrentPlayerMusicsView LIMIT 1)
         """
     )
-    suspend fun deleteAllExpect(musicIds: List<UUID>)
+    suspend fun deleteAllExpect(musicIds: List<Uuid>)
 
     @Query(
         """
@@ -183,7 +183,7 @@ interface PlayerMusicDao {
         """
     )
     suspend fun setCurrent(
-        musicId: UUID,
+        musicId: Uuid,
         lastPlayedMillis: Long,
     )
 
@@ -198,5 +198,5 @@ interface PlayerMusicDao {
             )
         """
     )
-    fun getPositionInList(musicId: UUID): Flow<Int>
+    fun getPositionInList(musicId: Uuid): Flow<Int>
 }

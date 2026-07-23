@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import coil3.BitmapImage
 import coil3.Image
@@ -40,7 +39,7 @@ internal fun SoulDataImage(
             if (result.result.image != previousSavedImage) {
                 previousSavedImage = result.result.image
                 onSuccess?.let {
-                    it((result.result.image as? BitmapImage)?.bitmap?.asImageBitmap())
+                    it((result.result.image as? BitmapImage)?.bitmap?.toImageBitmap())
                 }
             }
         },

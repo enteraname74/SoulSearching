@@ -4,8 +4,7 @@ import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.PlayerMusic
 import com.github.enteraname74.domain.repository.PlayerRepository
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.UUID
-import kotlin.uuid.toKotlinUuid
+import kotlin.uuid.Uuid
 
 class SyncPlayedListMusicsUseCase(
     private val fetchPlayedListMusicsUseCase: FetchPlayedListMusicsUseCase,
@@ -17,8 +16,8 @@ class SyncPlayedListMusicsUseCase(
             .firstOrNull()
             ?.takeIf { it.scope.isRemote } ?: return@runCatching
 
-        val playedListId = playedList.id.toKotlinUuid()
-        val toDelete: List<UUID> = playerRepository.getDeletedRemoteMusicIds(
+        val playedListId = playedList.id
+        val toDelete: List<Uuid> = playerRepository.getDeletedRemoteMusicIds(
             playedListId = playedListId,
         )
         val data = fetchPlayedListMusicsUseCase(

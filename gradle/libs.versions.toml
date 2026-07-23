@@ -3,41 +3,43 @@ accompanist = "0.36.0"
 accompanist-system-ui-controller = "0.36.0"
 agp = "8.13.2"
 android-target-sdk = "36"
-android-compile-sdk = "36"
+android-compile-sdk = "37"
 android-min-sdk = "26"
-androidx-activity-compose = "1.12.4"
-androidx-core = "1.17.0"
+androidx-activity-compose = "1.13.0"
+androidx-core = "1.18.0"
 androidx-lifecycle = "2.10.0"
-annotation = "1.9.1"
+annotation = "1.10.0"
 appcompat = "1.7.1"
 application-version-name = "0.16.0"
-cloudy = "0.5.0"
-coil = "3.4.0"
-compose = "1.11.0-alpha03"
-coroutines-core = "1.10.2"
+cloudy = "0.6.1"
+coil = "3.5.0"
+compose = "1.11.1"
+coroutines-core = "1.11.0"
 dbus = "3.3.2"
 documentfile = "1.1.0"
 ffmpeg = "6.0-2"
-file-kit = "0.12.0"
+file-kit = "0.14.2"
 jaudiotagger = "3.0.1"
-jlibnotify = "1.2.3"
-kmpalette = "3.1.0"
-kotlin = "2.3.10"
-kotlinx-serialization = "1.10.0"
-koin = "4.1.1"
-ksp = "2.3.3"
+jlibnotify = "1.3.0"
+kmpalette = "4.0.0-beta02"
+kotlin = "2.4.0"
+kotlinx-serialization = "1.11.0"
+kotlinx-browser = "0.5.0"
+koin = "4.2.2"
+ksp = "2.3.9"
 markdown-renderer = "0.37.0"
-ktor = "3.4.1"
-media = "1.7.1"
+material3 = "1.11.0-alpha07"
+ktor = "3.5.1"
 multiplatform-settings = "1.3.0"
-nav3-core = "1.1.0-alpha03"
-nav3-lifecycle = "2.10.0-alpha08"
-reorderable = "3.0.0"
-room = "2.8.4"
-sqlite = "2.6.2"
+nav3-core = "1.1.1"
+nav3-lifecycle = "2.10.0"
+reorderable = "3.1.0"
+room = "3.0.0"
+sqlite = "2.7.0"
 vlcj = "4.12.1"
-media3 = "1.10.0"
-paging = "3.4.1"
+media3 = "1.10.1"
+paging = "3.5.0"
+compose-navigation-event = "1.1.0"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
@@ -51,7 +53,6 @@ androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resource
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "documentfile" }
 androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
-androidx-media = { module = "androidx.media:media", version.ref = "media" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
 
@@ -61,13 +62,14 @@ coil-network = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "
 
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
 compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "compose" }
-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
 compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose" }
 compose-cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
+compose-navigationevent = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version.ref = "compose-navigation-event" }
+
 
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-core" }
-coroutines-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines-core" }
 coroutines-core-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines-core" }
 
 dbus = { module = "com.github.hypfvieh:dbus-java", version.ref = "dbus" }
@@ -77,7 +79,7 @@ file-kit = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref 
 gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 jaudiotagger = { module = "net.jthink:jaudiotagger", version.ref = "jaudiotagger" }
 jlibnotify = { module = "es.blackleg:jlibnotify", version.ref = "jlibnotify" }
-kmpalette = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }
+kmpalette = { module = "com.materialkolor.palette:core", version.ref = "kmpalette" }
 
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
@@ -90,6 +92,7 @@ kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotl
 
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-browser = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kotlinx-browser" }
 
 ktor-client-auth = {  module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
@@ -112,13 +115,16 @@ reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reo
 
 vlcj = { module  = "uk.co.caprica:vlcj", version.ref = "vlcj"}
 
+androidx-sqlite-async = { module = "androidx.sqlite:sqlite-async", version.ref = "sqlite" }
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
-androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
-androidx-room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
+androidx-sqlite-web = { module = "androidx.sqlite:sqlite-web", version.ref = "sqlite" }
+androidx-room-runtime = { module = "androidx.room3:room3-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room" }
+androidx-room-paging = { module = "androidx.room3:room3-paging", version.ref = "room" }
+androidx-room-sqlite-wrapper = { module = "androidx.room3:room3-sqlite-wrapper", version.ref = "room" }
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
 androidx-media3-datasource = { group = "androidx.media3", name = "media3-datasource", version.ref = "media3" }
+androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -130,11 +136,10 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-androidx-room = { id = "androidx.room", version.ref = "room" }
+androidx-room = { id = "androidx.room3", version.ref = "room" }
 
 [bundles]
 coil = ["coil", "coil-compose", "coil-network"]
 koin = ["koin-compose", "koin-core", "koin-compose-viewmodel", "koin-compose-viewmodel-navigation"]
 accompanist = ["accompanist-pager","accompanist-system-ui-controller", "accompanist-pager-indicators"]
-androidx = ["androidx-activity-compose", "androidx-lifecycle", "androidx-core", "androidx-annotation", "androidx-appcompat", "androidx-appcompat-resources", "androidx-media"]
-ktor = ["ktor-client-cio", "ktor-client-content-negoctiation", "ktor-client-core", "ktor-client-resources", "ktor-serialization-kotlinx-json", "ktor-client-auth", "ktor-client-websockets", "ktor-serialization-logging"]
+androidx = ["androidx-activity-compose", "androidx-lifecycle", "androidx-core", "androidx-annotation", "androidx-appcompat", "androidx-appcompat-resources"]

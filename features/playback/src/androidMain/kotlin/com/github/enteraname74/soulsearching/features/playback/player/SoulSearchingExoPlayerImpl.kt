@@ -55,6 +55,8 @@ class SoulSearchingExoPlayerImpl(
         .Builder(context)
         .setMediaSourceFactory(mediaSourceFactory)
         .build()
+    internal val media3Player: Player
+        get() = player
     private val playerDispatcher = PlayerDispatcher(player.applicationLooper)
     private val playerCoroutineScope = CoroutineScope(playerDispatcher)
     private val workScope = CoroutineScope(Dispatchers.IO)
@@ -198,19 +200,6 @@ class SoulSearchingExoPlayerImpl(
                     listener?.onError()
                 }
             }
-        }
-    }
-
-    override suspend fun onlyLoadMusic(seekTo: Int) {
-        onPlayerThread {
-            player.prepare()
-            player.seekTo(seekTo.toLong())
-        }
-    }
-
-    override suspend fun launchMusic() {
-        onPlayerThread {
-            player.play()
         }
     }
 

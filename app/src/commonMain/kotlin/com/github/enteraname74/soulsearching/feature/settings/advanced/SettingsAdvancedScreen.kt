@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,9 +21,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.enteraname74.domain.model.Platform
+import com.github.enteraname74.domain.util.PlatformUtils
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
@@ -45,6 +49,7 @@ import com.github.enteraname74.soulsearching.feature.settings.advanced.state.Set
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
+import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
 enum class SettingsAdvancedScreenFocusedElement {
@@ -97,7 +102,7 @@ private fun SettingsAdvancedComposable(
     )
 
     LaunchInit {
-        delay(UiConstants.AnimationDuration.short.toLong())
+        delay(UiConstants.AnimationDuration.short.toLong().milliseconds)
         shouldAnimate = true
     }
 
@@ -112,7 +117,9 @@ private fun SettingsAdvancedComposable(
                 modifier = Modifier
                     .padding(
                         horizontal = UiConstants.Spacing.large,
-                    ),
+                    )
+                    .clip(RoundedCornerShape(size = 10.dp))
+                    .background(color = SoulSearchingColorTheme.colorScheme.secondary),
                 title = strings.reloadCoversTitle,
                 subTitle = strings.reloadCoversText,
                 clickAction = { onAction(SettingsAdvancedAction.ToggleExpandReloadImage) },
@@ -132,13 +139,15 @@ private fun SettingsAdvancedComposable(
                 onClick = { onAction(SettingsAdvancedAction.ToMultipleArtists) },
             )
         }
-        item {
-            SoulMenuElement(
-                title = strings.artistCoverMethodTitle,
-                subTitle = strings.artistCoverMethodText,
-                leadIcon = CoreRes.drawable.ic_image_filled,
-                onClick = { onAction(SettingsAdvancedAction.ToArtistCoverMethod) },
-            )
+        if (PlatformUtils.platform != Platform.Web) {
+            item {
+                SoulMenuElement(
+                    title = strings.artistCoverMethodTitle,
+                    subTitle = strings.artistCoverMethodText,
+                    leadIcon = CoreRes.drawable.ic_image_filled,
+                    onClick = { onAction(SettingsAdvancedAction.ToArtistCoverMethod) },
+                )
+            }
         }
         item {
             Box(
@@ -156,7 +165,7 @@ private fun SettingsAdvancedComposable(
                     isChecked = permissionState.isLyricsPermissionEnabled,
                     maxLines = Int.MAX_VALUE,
                     trailingIcon = SoulMenuLeadingIconSpec(
-                        icon =  CoreRes.drawable.ic_info_filled,
+                        icon = CoreRes.drawable.ic_info_filled,
                         onClick = { onAction(SettingsAdvancedAction.ShowLyricsPermissionDialog) },
                     )
                 )
@@ -178,7 +187,7 @@ private fun SettingsAdvancedComposable(
                     isChecked = permissionState.isGitHubReleaseFetchPermissionEnabled,
                     maxLines = Int.MAX_VALUE,
                     trailingIcon = SoulMenuLeadingIconSpec(
-                        icon =  CoreRes.drawable.ic_info_filled,
+                        icon = CoreRes.drawable.ic_info_filled,
                         onClick = { onAction(SettingsAdvancedAction.ShowGitHubReleasePermissionDialog) },
                     )
                 )
@@ -195,8 +204,6 @@ private fun ReloadImagesContent(
     Column(
         modifier = Modifier
             .padding(
-                start = UiConstants.Spacing.large,
-                end = UiConstants.Spacing.large,
                 bottom = UiConstants.Spacing.medium,
             )
     ) {
@@ -207,6 +214,8 @@ private fun ReloadImagesContent(
             toggleAction = { onAction(SettingsAdvancedAction.ToggleMusicsCover) },
             isChecked = state.shouldReloadSongsCovers,
             padding = PaddingValues(
+                start = UiConstants.Spacing.large,
+                end = UiConstants.Spacing.large,
                 bottom = UiConstants.Spacing.small,
             ),
         )
@@ -217,6 +226,8 @@ private fun ReloadImagesContent(
             toggleAction = { onAction(SettingsAdvancedAction.TogglePlaylistsCovers) },
             isChecked = state.shouldDeletePlaylistsCovers,
             padding = PaddingValues(
+                start = UiConstants.Spacing.large,
+                end = UiConstants.Spacing.large,
                 bottom = UiConstants.Spacing.small,
             ),
         )
@@ -227,6 +238,8 @@ private fun ReloadImagesContent(
             toggleAction = { onAction(SettingsAdvancedAction.ToggleAlbumsCovers) },
             isChecked = state.shouldReloadAlbumsCovers,
             padding = PaddingValues(
+                start = UiConstants.Spacing.large,
+                end = UiConstants.Spacing.large,
                 bottom = UiConstants.Spacing.small,
             ),
         )
@@ -236,7 +249,11 @@ private fun ReloadImagesContent(
             title = strings.reloadArtistsCovers,
             toggleAction = { onAction(SettingsAdvancedAction.ToggleArtistsCovers) },
             isChecked = state.shouldReloadArtistsCovers,
-            padding = PaddingValues(all = 0.dp),
+            padding = PaddingValues(
+                start = UiConstants.Spacing.large,
+                end = UiConstants.Spacing.large,
+                bottom = UiConstants.Spacing.small,
+            ),
         )
         Box(
             modifier = Modifier

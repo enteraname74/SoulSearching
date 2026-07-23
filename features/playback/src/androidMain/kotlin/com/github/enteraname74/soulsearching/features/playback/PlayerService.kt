@@ -8,7 +8,7 @@ import android.content.pm.ServiceInfo
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.ServiceCompat
-import com.github.enteraname74.soulsearching.features.playback.notification.impl.SoulSearchingAndroidNotification
+import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingAndroidNotification
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

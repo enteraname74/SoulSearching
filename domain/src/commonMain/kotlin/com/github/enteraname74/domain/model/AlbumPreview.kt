@@ -1,9 +1,9 @@
 package com.github.enteraname74.domain.model
 
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 data class AlbumPreview(
-    val id: UUID,
+    val id: Uuid,
     val nbPlayed: Int,
     val name: String,
     val artist: String,

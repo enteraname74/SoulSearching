@@ -1,10 +1,10 @@
 package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.model.MusicArtist
-import java.util.*
+import kotlin.uuid.Uuid
 
 interface MusicArtistRepository {
-    suspend fun get(artistId: UUID, musicId: UUID): MusicArtist?
+    suspend fun get(artistId: Uuid, musicId: Uuid): MusicArtist?
 
     /**
      * Inserts or updates a MusicArtist.
@@ -16,6 +16,6 @@ interface MusicArtistRepository {
 
     suspend fun deleteMusicArtist(musicArtist: MusicArtist)
 
-    suspend fun deleteOfArtist(artistId: UUID)
-    suspend fun deleteOfMusic(musicId: UUID)
+    suspend fun deleteOfArtist(artistId: Uuid)
+    suspend fun deleteOfMusic(musicId: Uuid)
 }

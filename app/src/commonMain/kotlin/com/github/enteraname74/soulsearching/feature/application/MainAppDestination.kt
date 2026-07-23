@@ -12,17 +12,23 @@ import androidx.savedstate.serialization.SavedStateConfiguration
 import com.github.enteraname74.soulsearching.PlayerViewScaffold
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.folder.FolderBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
+import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.ext.isComingFromPlaylistDetails
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionScaffold
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionNavigationState
+import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsDestination
 import com.github.enteraname74.soulsearching.navigation.MainAppNavigationHandler
 import com.github.enteraname74.soulsearching.navigation.MainAppSerializerModule
 import com.github.enteraname74.soulsearching.navigation.Navigator
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -39,7 +45,9 @@ data object MainAppDestination : NavKey {
 }
 
 @Composable
-private fun MainAppRoute() {
+private fun MainAppRoute(
+    colorThemeManager: ColorThemeManager = injectElement(),
+) {
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration { serializersModule = MainAppSerializerModule },
         MainPageDestination,
@@ -47,7 +55,24 @@ private fun MainAppRoute() {
     val navigator = remember { Navigator(backStack) }
 
     val viewModel: MainAppViewModel = koinViewModel {
-        parametersOf(navigator)
+        parametersOf(
+            object : MainAppNavScope {
+                override val toSettings: () -> Unit = {
+                    if (navigator.isComingFromPlaylistDetails()) {
+                        colorThemeManager.removePlaylistTheme()
+                    }
+                    navigator.push(SettingsDestination)
+                }
+                override val toMainPageDestinationIfNeeded: () -> Unit = {
+                    if (navigator.isComingFromPlaylistDetails()) {
+                        colorThemeManager.removePlaylistTheme()
+                    }
+                    if (navigator.currentRoute != MainPageDestination) {
+                        navigator.push(MainPageDestination)
+                    }
+                }
+            }
+        )
     }
     val state: MainAppState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -55,7 +80,10 @@ private fun MainAppRoute() {
         val windowSize = rememberWindowSize()
 
         if (windowSize == WindowSize.Large) {
-            NavigationPanel(rows = state.navigationRows)
+            NavigationPanel(
+                rows = state.navigationRows,
+                currentRoute = navigator.currentRoute,
+            )
         }
 
         MultiSelectionScaffold(
@@ -92,6 +120,22 @@ private fun MainAppRoute() {
                         navigator.push(
                             ArtistBottomSheetDestination(
                                 artistIds = navigationState.artistIds,
+                            )
+                        )
+                    }
+
+                    is MultiSelectionNavigationState.ToFolderBottomSheet -> {
+                        navigator.push(
+                            FolderBottomSheetDestination(
+                                folderPaths = navigationState.folderPaths,
+                            )
+                        )
+                    }
+
+                    is MultiSelectionNavigationState.ToMonthBottomSheet -> {
+                        navigator.push(
+                            MonthBottomSheetDestination(
+                                months = navigationState.months,
                             )
                         )
                     }

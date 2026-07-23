@@ -2,11 +2,11 @@ package com.github.enteraname74.localdb.datasourceimpl
 
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.soulsearching.repository.datasource.cover.CoverLocalDataSource
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class RoomCoverLocalDataSourceImpl(
     private val appDatabase: AppDatabase,
 ): CoverLocalDataSource {
-    override suspend fun isCoverUsed(coverId: UUID): Boolean =
+    override suspend fun isCoverUsed(coverId: Uuid): Boolean =
         appDatabase.coverDao.isCoverUsed(coverId = coverId)
 }

@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.navigation3.scene.Scene
 import androidx.navigation3.ui.NavDisplay
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import io.ktor.http.ContentType
 
 object NavigationAnimations {
     private val tweenSpec = tween<IntOffset>(
@@ -33,7 +34,7 @@ object NavigationAnimations {
                 )
     }
 
-    val horizontal =
+    val horizontalMetadata =
         NavDisplay.transitionSpec { horizontalTransitionSpec() } +
                 NavDisplay.popTransitionSpec { horizontalPopTransitionSpec() } +
                 NavDisplay.predictivePopTransitionSpec { horizontalPopTransitionSpec() }
@@ -43,4 +44,13 @@ object NavigationAnimations {
     ) togetherWith fadeOut(
         tween(UiConstants.AnimationDuration.normal)
     )
+
+    val horizontal: ContentTransform = slideInHorizontally(
+        initialOffsetX = { it },
+        animationSpec = tweenSpec,
+    ) togetherWith
+            slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tweenSpec,
+            )
 }

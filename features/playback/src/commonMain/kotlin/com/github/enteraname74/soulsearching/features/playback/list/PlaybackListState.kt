@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.features.playback.list
 
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.player.PlayerMode
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 sealed interface PlaybackListState {
     data object NoData: PlaybackListState
@@ -12,7 +12,7 @@ sealed interface PlaybackListState {
         val currentMusic: Music,
         val playerMode: PlayerMode,
         val isMainPlaylist: Boolean = false,
-        val playlistId: UUID? = null,
+        val playlistId: Uuid? = null,
         val minimisePlayer: Boolean = false,
     ): PlaybackListState {
         /**

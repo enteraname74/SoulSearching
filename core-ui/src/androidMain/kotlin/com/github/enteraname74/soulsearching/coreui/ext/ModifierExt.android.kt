@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.coreui.ext
 
 import android.os.Build
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,19 +10,24 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.skydoves.cloudy.cloudy
 
+@Composable
 @OptIn(ExperimentalFoundationApi::class)
 actual fun Modifier.combinedClickableWithRightClick(
+    enabled: Boolean,
+    withIndication: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ): Modifier =
     this
         .pointerHoverIcon(PointerIcon.Hand)
         .combinedClickable(
+            enabled = enabled,
             onClick = onClick,
-            onLongClick = onLongClick
+            onLongClick = onLongClick,
+            indication = if (withIndication) LocalIndication.current else null,
+            interactionSource = null,
         )
 
 @Composable

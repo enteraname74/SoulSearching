@@ -1,11 +1,11 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Playlist
-import java.time.LocalDateTime
-import java.util.UUID
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 /**
@@ -14,13 +14,13 @@ import kotlin.uuid.Uuid
 @Entity
 data class RoomPlaylist(
     @PrimaryKey
-    val playlistId: UUID = UUID.randomUUID(),
+    val playlistId: Uuid = Uuid.random(),
     val remoteId: Uuid?,
     var name: String = "",
-    var coverId: UUID? = null,
+    var coverId: Uuid? = null,
     val coverUrl: String?,
     val isFavorite: Boolean = false,
-    var addedDate: LocalDateTime = LocalDateTime.now(),
+    var addedDate: Instant = Clock.System.now(),
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false,
     val lastUpdatedMillis: Long?,

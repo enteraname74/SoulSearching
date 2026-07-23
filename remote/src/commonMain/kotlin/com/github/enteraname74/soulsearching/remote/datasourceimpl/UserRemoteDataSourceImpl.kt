@@ -4,6 +4,7 @@ import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.user.SimpleUser
 import com.github.enteraname74.domain.model.user.User
 import com.github.enteraname74.domain.model.user.UserTokens
+import com.github.enteraname74.domain.util.LocaleUtils
 import com.github.enteraname74.soulsearching.remote.di.HttpClientNames
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.clearToken
@@ -29,7 +30,6 @@ import io.ktor.http.contentType
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
-import java.util.Locale
 import kotlin.uuid.Uuid
 
 class UserRemoteDataSourceImpl(
@@ -46,7 +46,7 @@ class UserRemoteDataSourceImpl(
             .withUrl(url = cloudPreferencesDataSource.getUrl())
             .post(AuthResource.LogIn()) {
                 contentType(ContentType.Application.Json)
-                header(HttpHeaders.AcceptLanguage, Locale.getDefault().language)
+                header(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
                 setBody(
                     UserLogin(
                         username = username,
@@ -65,7 +65,7 @@ class UserRemoteDataSourceImpl(
             .withUrl(url = cloudPreferencesDataSource.getUrl())
             .post(AuthResource.SignIn()) {
                 contentType(ContentType.Application.Json)
-                header(HttpHeaders.AcceptLanguage, Locale.getDefault().language)
+                header(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
                 setBody(
                     UserSignIn(
                         username = username,

@@ -1,7 +1,8 @@
 package com.github.enteraname74.domain.model
 
-import java.time.LocalDateTime
-import java.util.*
+import kotlin.time.Clock
+import kotlin.time.Instant
+import kotlin.uuid.Uuid
 import kotlin.math.max
 
 /**
@@ -9,7 +10,7 @@ import kotlin.math.max
  * It does not possess its cover directly.
  */
 data class Music(
-    val musicId: UUID = UUID.randomUUID(),
+    val musicId: Uuid = Uuid.random(),
     val remoteId: String?,
     val name: String,
     val album: Album,
@@ -20,7 +21,7 @@ data class Music(
     val remotePath: String?,
     val folder: String,
     val duration: Long = 0L,
-    val addedDate: LocalDateTime = LocalDateTime.now(),
+    val addedDate: Instant = Clock.System.now(),
     val nbPlayed: Int = 0,
     override val isInQuickAccess: Boolean = false,
     val isHidden: Boolean = false,

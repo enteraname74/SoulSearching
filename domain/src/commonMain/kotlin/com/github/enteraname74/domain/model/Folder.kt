@@ -1,6 +1,6 @@
 package com.github.enteraname74.domain.model
 
-import java.io.File
+import com.github.enteraname74.domain.ext.filenameFromPath
 
 /**
  * Represent a Folder.
@@ -10,5 +10,5 @@ data class Folder(
     val folderPath: String,
     val isSelected: Boolean,
 ) {
-    val name: String = File(folderPath).name
+    val name: String = folderPath.filenameFromPath()
 }

@@ -1,20 +1,21 @@
 package com.github.enteraname74.soulsearching.feature.appinit.songfetching
 
 import androidx.lifecycle.ViewModel
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingNavigationState
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingState
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.FetchAllMultipleArtistManagerImpl
 import com.github.enteraname74.soulsearching.features.musicmanager.persistence.MusicPersistence
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AppInitSongFetchingViewModel(
-    private val musicFetcher: MusicFetcher
+    private val musicFetcher: MusicFetcher,
+    private val workDispatcher: WorkDispatcher,
 ) : ViewModel() {
     private val _state: MutableStateFlow<AppInitSongFetchingState> = MutableStateFlow(
         AppInitSongFetchingState(
@@ -30,7 +31,7 @@ class AppInitSongFetchingViewModel(
     val navigationState: StateFlow<AppInitSongFetchingNavigationState> = _navigationState.asStateFlow()
 
     fun fetchSongs() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             musicFetcher.fetchMusics(
                 updateProgress = { progression, folder ->
                     _state.value = AppInitSongFetchingState(

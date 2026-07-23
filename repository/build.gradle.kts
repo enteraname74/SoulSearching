@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     id("com.android.library")
     alias(libs.plugins.kotlinMultiplatform)
@@ -9,15 +12,47 @@ description = "Repository layer of the app"
 kotlin {
     androidTarget()
     jvm("desktop")
+    js {
+        browser()
+    }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+    }
     jvmToolchain(17)
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
         optIn.add(
             "kotlin.uuid.ExperimentalUuidApi"
         )
     }
 
     sourceSets {
+        val commonMain by getting
+        val desktopMain by getting
+        val androidMain by getting
+        val jsMain by getting
+        val wasmJsMain by getting
+
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain)
+        }
+
+        val jvmMain by creating {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(libs.jaudiotagger)
+            }
+        }
+
+        jsMain.dependsOn(webMain)
+        wasmJsMain.dependsOn(webMain)
+
+        desktopMain.dependsOn(jvmMain)
+        androidMain.dependsOn(jvmMain)
+
         commonMain {
             dependencies {
                 implementation(libs.compose.ui)
@@ -25,9 +60,6 @@ kotlin {
                 implementation(libs.koin.core)
 
                 implementation(libs.coroutines.core)
-                implementation(libs.coroutines.core.jvm)
-
-                implementation(libs.jaudiotagger)
 
                 implementation(project(":domain"))
                 implementation(project(":filemanager"))

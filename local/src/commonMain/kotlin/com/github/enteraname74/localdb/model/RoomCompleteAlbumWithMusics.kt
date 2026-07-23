@@ -1,20 +1,20 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room.Embedded
-import androidx.room.Relation
+import androidx.room3.Embedded
+import androidx.room3.Relation
 import com.github.enteraname74.domain.model.AlbumWithMusics
 
 data class RoomCompleteAlbumWithMusics(
     @Embedded val roomAlbum: RoomAlbum,
     @Relation(
-        parentColumn = "albumId",
-        entityColumn = "albumId",
+        parentColumns = ["albumId"],
+        entityColumns = ["albumId"],
         entity = RoomMusic::class,
     )
     val roomMusics : List<RoomCompleteMusic>,
     @Relation(
-        parentColumn = "albumId",
-        entityColumn = "albumId",
+        parentColumns = ["albumId"],
+        entityColumns = ["albumId"],
         entity = RoomAlbum::class,
     )
     val completeAlbum: RoomCompleteAlbum,

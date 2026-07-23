@@ -1,16 +1,15 @@
 package com.github.enteraname74.localdb.dao
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Upsert
+import androidx.room3.Dao
+import androidx.room3.Delete
+import androidx.room3.Query
+import androidx.room3.Transaction
+import androidx.room3.Upsert
 import com.github.enteraname74.localdb.model.RoomArtist
 import com.github.enteraname74.localdb.view.RoomArtistPreview
 import com.github.enteraname74.localdb.model.RoomArtistWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
 import kotlin.uuid.Uuid
 
 /**
@@ -29,7 +28,7 @@ interface ArtistDao {
     suspend fun delete(roomArtist: RoomArtist)
 
     @Query("DELETE FROM RoomArtist WHERE artistId IN (:ids)")
-    suspend fun deleteAll(ids: List<UUID>)
+    suspend fun deleteAll(ids: List<Uuid>)
 
     @Query(
         """
@@ -49,14 +48,14 @@ interface ArtistDao {
     suspend fun getArtistNamesContainingSearch(search: String): List<String>
 
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId LIMIT 1")
-    fun getFromId(artistId: UUID): Flow<RoomArtist?>
+    fun getFromId(artistId: Uuid): Flow<RoomArtist?>
 
     @Query("SELECT * FROM RoomArtist WHERE remoteId = :remoteId LIMIT 1")
     suspend fun getFromRemoteId(remoteId: Uuid): RoomArtist?
 
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE artistId IN (:artistIds)")
-    fun getFromIds(artistIds: List<UUID>): Flow<List<RoomArtistWithMusics>>
+    fun getFromIds(artistIds: List<Uuid>): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
     @Query(
@@ -120,7 +119,7 @@ interface ArtistDao {
 
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
-    fun getArtistWithMusics(artistId: UUID): Flow<RoomArtistWithMusics?>
+    fun getArtistWithMusics(artistId: Uuid): Flow<RoomArtistWithMusics?>
 
     @Query(
         """
@@ -129,7 +128,7 @@ interface ArtistDao {
             AND RoomMusicArtist.musicId = :musicId
         """
     )
-    fun getArtistsOfMusic(musicId: UUID): Flow<List<RoomArtist>>
+    fun getArtistsOfMusic(musicId: Uuid): Flow<List<RoomArtist>>
 
     @Transaction
     @Query(
@@ -150,7 +149,7 @@ interface ArtistDao {
         """
     )
     suspend fun getDuplicatedArtist(
-        artistId: UUID,
+        artistId: Uuid,
         artistName: String
     ): RoomArtistWithMusics?
 
@@ -185,7 +184,7 @@ interface ArtistDao {
             LIMIT 1
         """
     )
-    fun getArtistPreview(artistId: UUID): Flow<RoomArtistPreview?>
+    fun getArtistPreview(artistId: Uuid): Flow<RoomArtistPreview?>
 
     // TODO: Normalise with accents.
     @Transaction

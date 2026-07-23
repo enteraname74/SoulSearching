@@ -19,29 +19,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import coil3.annotation.ExperimentalCoilApi
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
-import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.feature.appinit.MissingPermissionsComposable
 import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import com.github.enteraname74.soulsearching.ui.theme.SoulSearchingTheme
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.jaudiotagger.tag.TagOptionSingleton
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.context.loadKoinModules
-import org.koin.core.context.unloadKoinModules
 
 class MainActivity : AppCompatActivity() {
     // Main page view models
     private val mainPageViewModel: MainPageViewModel by viewModel()
     private val applicationViewModel: ApplicationViewModel by viewModel()
     private val playbackManager: PlaybackManager by inject()
+    private val workDispatcher: WorkDispatcher by inject()
 
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -88,31 +83,28 @@ class MainActivity : AppCompatActivity() {
             applicationViewModel.isPostNotificationGranted =
                 SoulSearchingContext.checkIfPostNotificationGranted()
 
-            SoulSearchingTheme {
-                val readPermissionLauncher = permissionLauncher { isGranted ->
-                    applicationViewModel.isReadPermissionGranted = isGranted
-                }
+            val readPermissionLauncher = permissionLauncher { isGranted ->
+                applicationViewModel.isReadPermissionGranted = isGranted
+            }
 
-                val postNotificationLauncher = permissionLauncher { isGranted ->
-                    applicationViewModel.isPostNotificationGranted = isGranted
-                }
+            val postNotificationLauncher = permissionLauncher { isGranted ->
+                applicationViewModel.isPostNotificationGranted = isGranted
+            }
 
-                if (
-                    !applicationViewModel.isReadPermissionGranted ||
-                    !applicationViewModel.isPostNotificationGranted
-                ) {
-                    MissingPermissionsComposable()
-                    SideEffect {
-                        checkAndAskMissingPermissions(
-                            isReadPermissionGranted = applicationViewModel.isReadPermissionGranted,
-                            isPostNotificationGranted = applicationViewModel.isPostNotificationGranted,
-                            readPermissionLauncher = readPermissionLauncher,
-                            postNotificationLauncher = postNotificationLauncher,
-                        )
-                    }
-                    return@SoulSearchingTheme
+            if (
+                !applicationViewModel.isReadPermissionGranted ||
+                !applicationViewModel.isPostNotificationGranted
+            ) {
+                MissingPermissionsComposable()
+                SideEffect {
+                    checkAndAskMissingPermissions(
+                        isReadPermissionGranted = applicationViewModel.isReadPermissionGranted,
+                        isPostNotificationGranted = applicationViewModel.isPostNotificationGranted,
+                        readPermissionLauncher = readPermissionLauncher,
+                        postNotificationLauncher = postNotificationLauncher,
+                    )
                 }
-
+            } else {
                 SoulSearchingApplication()
             }
         }
@@ -172,7 +164,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(workDispatcher.dispatcher).launch {
                 playbackManager.stopPlayback(resetPlayedList = false)
             }
         }

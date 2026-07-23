@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     id("com.android.library")
     alias(libs.plugins.kotlinMultiplatform)
@@ -9,9 +12,18 @@ plugins {
 kotlin {
     androidTarget()
     jvm("desktop")
+    js {
+        browser()
+    }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+    }
     jvmToolchain(17)
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
         optIn.addAll(
             "kotlin.time.ExperimentalTime",
             "kotlin.uuid.ExperimentalUuidApi"
@@ -19,16 +31,23 @@ kotlin {
     }
 
     sourceSets {
-        commonMain {
-            dependencies {
-                implementation(libs.compose.ui)
-                implementation(libs.androidx.paging.common)
-                implementation(libs.koin.core)
-                implementation(libs.coroutines.core)
-                implementation(libs.coroutines.core.jvm)
-                implementation(libs.jaudiotagger)
-                implementation(libs.kotlinx.serialization.json)
-            }
+        val commonMain by getting
+        val jsMain by getting
+        val wasmJsMain by getting
+
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain)
+        }
+
+        jsMain.dependsOn(webMain)
+        wasmJsMain.dependsOn(webMain)
+
+        commonMain.dependencies {
+            implementation(libs.compose.ui)
+            implementation(libs.androidx.paging.common)
+            implementation(libs.koin.core)
+            implementation(libs.coroutines.core)
+            implementation(libs.kotlinx.serialization.json)
         }
 
         commonTest.dependencies {

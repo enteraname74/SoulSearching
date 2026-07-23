@@ -14,11 +14,11 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Pager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageListPaged
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 fun allAlbumsTab(
     mainPageViewModel: MainPageViewModel,
-    navigateToAlbum: (albumId: UUID) -> Unit,
+    navigateToAlbum: (albumId: Uuid) -> Unit,
 ): PagerScreen = PagerScreen(
     type = ElementEnum.ALBUMS,
     screen = {
@@ -58,12 +58,12 @@ fun allAlbumsTab(
                 imageSize = null,
                 onLongClick = {
                     mainPageViewModel.toggleElementInSelection(
-                        id = element.id,
+                        id = element.id.toString(),
                         mode = SelectionMode.Album,
                     )
                 },
-                isSelected = multiSelectionState.selectedIds.contains(element.id),
-                isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                isSelected = multiSelectionState.selectedIds.contains(element.id.toString()),
+                isSelectionModeOn = multiSelectionState.totalSelected > 0,
             )
         }
     }

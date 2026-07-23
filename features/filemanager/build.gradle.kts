@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("com.android.library")
@@ -14,6 +15,13 @@ kotlin {
     jvmToolchain(17)
     androidTarget()
     jvm("desktop")
+    js {
+        browser()
+    }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+    }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
@@ -26,21 +34,38 @@ kotlin {
     }
 
     sourceSets {
+        val commonMain by getting
+        val androidMain by getting
         val desktopMain by getting {
             dependencies {
                 implementation(libs.coroutines.core.swing)
             }
         }
+        val jsMain by getting
+        val wasmJsMain by getting
+        val jvmMain by creating {
+            dependsOn(commonMain)
+
+            dependencies {
+                implementation(libs.jaudiotagger)
+            }
+        }
+        val webMain = maybeCreate("webMain").apply {
+            dependsOn(commonMain)
+        }
+
+        androidMain.dependsOn(jvmMain)
+        desktopMain.dependsOn(jvmMain)
+        jsMain.dependsOn(webMain)
+        wasmJsMain.dependsOn(webMain)
+
         commonMain.dependencies {
             implementation(libs.compose.ui)
             implementation(libs.compose.resources)
             implementation(libs.koin.core)
-            implementation(libs.jaudiotagger)
 
             implementation(libs.coroutines.core)
-            implementation(libs.coroutines.core.jvm)
 
-            implementation(project(":core-ui"))
             implementation(project(":domain"))
         }
 

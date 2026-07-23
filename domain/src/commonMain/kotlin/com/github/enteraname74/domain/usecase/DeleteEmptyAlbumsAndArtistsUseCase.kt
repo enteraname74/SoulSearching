@@ -8,7 +8,7 @@ class DeleteEmptyAlbumsAndArtistsUseCase(
     private val artistRepository: ArtistRepository,
 ) {
     suspend operator fun invoke() {
-//        albumRepository.deleteAllEmpty()
+        albumRepository.deleteAllEmpty()
         artistRepository.deleteAllEmpty()
     }
 }

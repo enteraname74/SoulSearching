@@ -27,7 +27,7 @@ fun SoulSearchingApplication(
             .build()
     }
 
-    SoulSearchingAppTheme {
+    SoulSearchingTheme {
         FeedbackPopUpScaffold(
             feedbackPopUpManager = feedbackPopUpManager,
         ) {

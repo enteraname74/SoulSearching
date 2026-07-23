@@ -45,7 +45,9 @@ fun SettingsCloudSharedListJoinScreen(
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.mediumPlus)
             ) {
                 state.codeField.TextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .widthIn(max = UiConstants.Size.textFieldMaxWidth)
+                        .fillMaxWidth(),
                     focusManager = focusManager,
                 )
                 SoulFilledButton(

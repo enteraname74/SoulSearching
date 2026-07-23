@@ -1,11 +1,10 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
@@ -17,15 +16,15 @@ sealed interface ModifyAlbumFormState {
         private val initialAlbum: AlbumWithMusics,
         private val updateFoundAlbums: suspend (name: String) -> List<String>,
         private val updateFoundArtists: suspend (name: String) -> List<String>,
+        private val workDispatcher: WorkDispatcher,
     ) : ModifyAlbumFormState {
         val textFields: List<SoulTextFieldHolder> = listOf(
             SoulDropdownTextFieldHolderImpl(
-                modifier = Modifier
-                    .fillMaxWidth(),
                 id = ALBUM_NAME,
                 isValid = { it.isNotBlank() },
                 initialValue = initialAlbum.album.albumName,
                 updateProposedValues = updateFoundAlbums,
+                workDispatcher = workDispatcher,
                 getLabel = { strings.albumName },
                 style = SoulTextFieldStyle.Top,
                 getError = { strings.fieldCannotBeEmpty },
@@ -35,12 +34,11 @@ sealed interface ModifyAlbumFormState {
                 ),
             ),
             SoulDropdownTextFieldHolderImpl(
-                modifier = Modifier
-                    .fillMaxWidth(),
                 id = ARTIST_NAME,
                 isValid = { it.isNotBlank() },
                 initialValue = initialAlbum.album.artist.artistName,
                 updateProposedValues = updateFoundArtists,
+                workDispatcher = workDispatcher,
                 getLabel = { strings.artistName },
                 style = SoulTextFieldStyle.Bottom,
                 getError = { strings.fieldCannotBeEmpty },

@@ -1,22 +1,21 @@
 package com.github.enteraname74.localdb.model.player
 
-import androidx.room.Embedded
-import androidx.room.Relation
+import androidx.room3.Embedded
+import androidx.room3.Relation
 import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
-import kotlin.uuid.toKotlinUuid
 
 data class RoomCompletePlayerMusicUser(
     @Embedded val playerMusicUser: RoomPlayerMusicUser,
     @Relation(
-        parentColumn = "userId",
-        entityColumn = "userId",
+        parentColumns = ["userId"],
+        entityColumns = ["userId"],
         entity = RoomSharedPlayedListUser::class,
     )
     val user: RoomSharedPlayedListUser?
 ) {
     fun toFullPlayerMusicUser(): FullPlayerMusicUser =
         FullPlayerMusicUser(
-            playedListId = playerMusicUser.playedListId.toKotlinUuid(),
+            playedListId = playerMusicUser.playedListId,
             user = user?.toSharedPlayedListUser(),
             musicId = playerMusicUser.musicId,
         )

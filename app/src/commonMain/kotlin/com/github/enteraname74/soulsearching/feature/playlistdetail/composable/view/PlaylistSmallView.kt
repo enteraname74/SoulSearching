@@ -51,7 +51,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import org.jetbrains.compose.resources.DrawableResource
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.math.max
 import kotlin.time.Duration
 
@@ -192,7 +192,7 @@ fun PlaylistSmallView(
             }
             items(
                 count = musics.itemCount,
-                key = { musics[it]?.musicId ?: UUID.randomUUID() },
+                key = { musics[it]?.musicId ?: Uuid.random() },
                 contentType = { PLAYLIST_MUSIC_CONTENT_TYPE }
             ) { pos ->
                 val music = musics[pos]
@@ -211,8 +211,8 @@ fun PlaylistSmallView(
                         },
                         textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                         isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
-                        isSelected = multiSelectionState.selectedIds.contains(music.musicId),
-                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                        isSelected = multiSelectionState.selectedIds.contains(music.musicId.toString()),
+                        isSelectionModeOn = multiSelectionState.totalSelected > 0,
                         leadingSpec = playlistDetail.musicItemLeadingSpec(pos)
                     )
                 }

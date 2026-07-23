@@ -13,8 +13,10 @@ fun MusicBottomSheetScreen(
     val state: MusicBottomSheetState by viewModel.state.collectAsStateWithLifecycle()
     state.dialogState?.Dialog()
 
-    MultipleChoiceBottomSheetView(
-        topInformation = state.bottomSheetTopInformation,
-        choices = state.rowSpecs,
-    )
+    if (state.bottomSheetTopInformation != null && state.rowSpecs.isNotEmpty()) {
+        MultipleChoiceBottomSheetView(
+            topInformation = state.bottomSheetTopInformation!!,
+            choices = state.rowSpecs,
+        )
+    }
 }

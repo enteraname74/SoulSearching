@@ -1,8 +1,10 @@
 package com.github.enteraname74.localdb.migration
 
-import androidx.room.migration.Migration
+import androidx.room3.migration.Migration
 import androidx.sqlite.SQLiteConnection
-import androidx.sqlite.execSQL
+import androidx.sqlite.async.executeSQL
+import androidx.sqlite.async.prepare
+import androidx.sqlite.async.step
 import com.github.enteraname74.localdb.migration.ext.getId
 import com.github.enteraname74.localdb.migration.ext.getString
 import com.github.enteraname74.localdb.migration.ext.toSQLId
@@ -15,7 +17,7 @@ private typealias SqlUuid = ByteArray
 class Migration18To19(
     private val musicMetadataHelper: MusicMetadataHelper,
 ) : Migration(18, 19) {
-    private fun mxnTableMigration(
+    private suspend fun mxnTableMigration(
         tableName: String,
         mColumnName: String,
         mTableName: String,
@@ -23,7 +25,7 @@ class Migration18To19(
         nTableName: String,
         connection: SQLiteConnection,
     ) {
-        connection.execSQL(
+        connection.executeSQL(
             """
             CREATE TABLE ${tableName}_new (
                 id TEXT PRIMARY KEY NOT NULL,
@@ -35,21 +37,21 @@ class Migration18To19(
         """
         )
 
-        connection.execSQL(
+        connection.executeSQL(
             """
             INSERT INTO ${tableName}_new (id, ${mColumnName}, ${nColumnName})
             SELECT hex(${mColumnName}) || hex(${nColumnName}), ${mColumnName}, $nColumnName FROM $tableName
         """
         )
 
-        connection.execSQL("DROP TABLE $tableName")
-        connection.execSQL("ALTER TABLE ${tableName}_new RENAME TO $tableName")
+        connection.executeSQL("DROP TABLE $tableName")
+        connection.executeSQL("ALTER TABLE ${tableName}_new RENAME TO $tableName")
 
-        connection.execSQL("CREATE INDEX index_${tableName}_${mColumnName} ON ${tableName}(${mColumnName})")
-        connection.execSQL("CREATE INDEX index_${tableName}_${nColumnName} ON ${tableName}(${nColumnName})")
+        connection.executeSQL("CREATE INDEX index_${tableName}_${mColumnName} ON ${tableName}(${mColumnName})")
+        connection.executeSQL("CREATE INDEX index_${tableName}_${nColumnName} ON ${tableName}(${nColumnName})")
     }
 
-    private fun musicArtistMigration(connection: SQLiteConnection) {
+    private suspend fun musicArtistMigration(connection: SQLiteConnection) {
         mxnTableMigration(
             tableName = "RoomMusicArtist",
             mColumnName = "musicId",
@@ -60,7 +62,7 @@ class Migration18To19(
         )
     }
 
-    private fun musicPlaylistMigration(connection: SQLiteConnection) {
+    private suspend fun musicPlaylistMigration(connection: SQLiteConnection) {
         mxnTableMigration(
             tableName = "RoomMusicPlaylist",
             mColumnName = "musicId",
@@ -71,16 +73,16 @@ class Migration18To19(
         )
     }
 
-    private fun artistMigration(connection: SQLiteConnection) {
-        connection.execSQL("ALTER TABLE RoomArtist ADD COLUMN coverFolderKey TEXT")
+    private suspend fun artistMigration(connection: SQLiteConnection) {
+        connection.executeSQL("ALTER TABLE RoomArtist ADD COLUMN coverFolderKey TEXT")
     }
 
     /**
      * Migrates musics and returns the list of [CachedMusicUpdate] that possess an album artist.
      */
-    private fun musicMigration(connection: SQLiteConnection) {
+    private suspend fun musicMigration(connection: SQLiteConnection) {
         // We will add the album id to the music directly.
-        connection.execSQL(
+        connection.executeSQL(
             """
             CREATE TABLE RoomMusic_new (
                 musicId BLOB PRIMARY KEY NOT NULL,
@@ -99,7 +101,7 @@ class Migration18To19(
         """
         )
 
-        connection.execSQL(
+        connection.executeSQL(
             """
             INSERT INTO RoomMusic_new (
                 musicId, name, coverId, duration, path, folder, addedDate, nbPlayed, isInQuickAccess, isHidden, albumId
@@ -113,12 +115,12 @@ class Migration18To19(
         """
         )
 
-        connection.execSQL("DROP TABLE RoomMusic")
-        connection.execSQL("ALTER TABLE RoomMusic_new RENAME TO RoomMusic")
-        connection.execSQL("CREATE INDEX index_RoomMusic_albumId ON RoomMusic(albumId)")
-        connection.execSQL("DROP TABLE RoomMusicAlbum")
+        connection.executeSQL("DROP TABLE RoomMusic")
+        connection.executeSQL("ALTER TABLE RoomMusic_new RENAME TO RoomMusic")
+        connection.executeSQL("CREATE INDEX index_RoomMusic_albumId ON RoomMusic(albumId)")
+        connection.executeSQL("DROP TABLE RoomMusicAlbum")
 
-        connection.execSQL("ALTER TABLE RoomMusic ADD COLUMN albumPosition INTEGER")
+        connection.executeSQL("ALTER TABLE RoomMusic ADD COLUMN albumPosition INTEGER")
 
         val cursor = connection.prepare("SELECT musicId, albumId, path FROM RoomMusic")
 
@@ -170,12 +172,12 @@ class Migration18To19(
             val musicIds = chunk.joinToString { it.musicIdAsBlob.toSQLId() }
             stringBuilder.append("WHERE musicId IN ($musicIds)")
 
-            connection.execSQL(stringBuilder.toString())
+            connection.executeSQL(stringBuilder.toString())
         }
     }
 
-    private fun albumMigration(connection: SQLiteConnection) {
-        connection.execSQL(
+    private suspend fun albumMigration(connection: SQLiteConnection) {
+        connection.executeSQL(
             """
             CREATE TABLE RoomAlbum_new (
                 albumId BLOB PRIMARY KEY NOT NULL,
@@ -190,7 +192,7 @@ class Migration18To19(
         """
         )
 
-        connection.execSQL(
+        connection.executeSQL(
             """
             INSERT INTO RoomAlbum_new (
                 albumId, albumName, coverId, addedDate, nbPlayed, isInQuickAccess, artistId
@@ -203,13 +205,13 @@ class Migration18To19(
         """
         )
 
-        connection.execSQL("DROP TABLE RoomAlbum")
-        connection.execSQL("ALTER TABLE RoomAlbum_new RENAME TO RoomAlbum")
-        connection.execSQL("CREATE INDEX index_RoomAlbum_artistId ON RoomAlbum(artistId)")
-        connection.execSQL("DROP TABLE RoomAlbumArtist")
+        connection.executeSQL("DROP TABLE RoomAlbum")
+        connection.executeSQL("ALTER TABLE RoomAlbum_new RENAME TO RoomAlbum")
+        connection.executeSQL("CREATE INDEX index_RoomAlbum_artistId ON RoomAlbum(artistId)")
+        connection.executeSQL("DROP TABLE RoomAlbumArtist")
     }
 
-    override fun migrate(connection: SQLiteConnection) {
+    override suspend fun migrate(connection: SQLiteConnection) {
         artistMigration(connection)
         musicArtistMigration(connection)
         musicPlaylistMigration(connection)
@@ -224,9 +226,7 @@ class Migration18To19(
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as SQLMusicArtist
+            if (other !is SQLMusicArtist) return false
 
             if (!musicId.contentEquals(other.musicId)) return false
             if (!artistId.contentEquals(other.artistId)) return false
@@ -247,9 +247,7 @@ class Migration18To19(
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as MusicInformation
+            if (other !is MusicInformation) return false
 
             if (!musicId.contentEquals(other.musicId)) return false
             if (!albumId.contentEquals(other.albumId)) return false
@@ -272,9 +270,7 @@ class Migration18To19(
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as CachedMusicUpdate
+            if (other !is CachedMusicUpdate) return false
 
             if (!musicIdAsBlob.contentEquals(other.musicIdAsBlob)) return false
             if (albumPosition != other.albumPosition) return false

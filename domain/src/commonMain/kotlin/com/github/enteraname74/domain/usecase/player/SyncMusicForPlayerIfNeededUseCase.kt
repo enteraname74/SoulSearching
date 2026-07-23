@@ -1,17 +1,19 @@
 package com.github.enteraname74.domain.usecase.player
 
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.MergeMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.music.UploadMusicToCloudUseCase
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class SyncMusicForPlayerIfNeededUseCase(
     private val musicRepository: MusicRepository,
     private val uploadMusicToCloudUseCase: UploadMusicToCloudUseCase,
 ) {
-    suspend operator fun invoke(musicIds: List<UUID>): List<Music> {
+    suspend operator fun invoke(musicIds: List<Uuid>): List<Music> {
         val idsNoLongerOnCloud: List<String> = musicRepository.getDeletedRemoteMusicIds()
         musicRepository.clearRemoteIds(idsNoLongerOnCloud)
 
@@ -22,12 +24,26 @@ class SyncMusicForPlayerIfNeededUseCase(
             it.remoteId == null
         }
 
+        val cachedAlbums: MutableSet<Album> = mutableSetOf()
+        val cachedArtists: MutableSet<Artist> = mutableSetOf()
+        val cachedMusics: MutableSet<Music> = mutableSetOf()
+
         val updatedMusics = musicsToSend.mapNotNull {
-            uploadMusicToCloudUseCase(
+            val music = uploadMusicToCloudUseCase(
                 music = it,
                 mergeMode = MergeMode.LocalFirst,
+                cachedArtists = cachedArtists,
+                cachedAlbums = cachedAlbums,
+                cachedMusics = cachedMusics,
             )
+            music?.let {
+                cachedAlbums += music.album
+                cachedArtists += music.artists
+                cachedMusics += music
+            }
+            music
         }
+        musicRepository.upsertAll(updatedMusics)
 
         return (updatedMusics + alreadySyncMusics).distinctBy { it.musicId }
     }

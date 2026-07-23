@@ -1,6 +1,6 @@
 package com.github.enteraname74.localdb.migration.ext
 
-import androidx.room.util.getColumnIndex
+import androidx.room3.util.getColumnIndex
 import androidx.sqlite.SQLiteStatement
 
 

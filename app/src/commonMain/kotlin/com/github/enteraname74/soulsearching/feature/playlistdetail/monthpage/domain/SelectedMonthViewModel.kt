@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class SelectedMonthViewModel(
     private val commonMusicUseCase: CommonMusicUseCase,
@@ -111,9 +111,9 @@ class SelectedMonthViewModel(
         multiSelectionManager.clearMultiSelection()
     }
 
-    override fun onLongClickOnMusic(musicId: UUID) {
+    override fun onLongClickOnMusic(musicId: Uuid) {
         multiSelectionManager.toggleElementInSelection(
-            id = musicId,
+            id = musicId.toString(),
             mode = SelectionMode.Music,
         )
     }
@@ -157,18 +157,18 @@ class SelectedMonthViewModel(
         _searchQuery.value = search
     }
 
-    override fun showMusicBottomSheet(musicIds: List<UUID>) {
+    override fun showMusicBottomSheet(musicIds: List<Uuid>) {
         _navigationState.value = SelectedMonthNavigationState.ToMusicBottomSheet(musicIds)
     }
 
-    override fun continuePlayedList(playedListId: UUID) {
+    override fun continuePlayedList(playedListId: Uuid) {
         viewModelScope.launch {
             playbackManager.continuePlayedList(playedListId)
             playerViewManager.animateTo(BottomSheetStates.EXPANDED)
         }
     }
 
-    override fun deletePlayedList(playedListId: UUID) {
+    override fun deletePlayedList(playedListId: Uuid) {
         viewModelScope.launch {
             playbackManager.deletePlayedList(playedListId)
         }

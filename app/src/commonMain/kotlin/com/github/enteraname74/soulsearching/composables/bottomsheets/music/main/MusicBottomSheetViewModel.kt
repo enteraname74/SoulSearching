@@ -14,8 +14,7 @@ import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
-import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiMusicDialog
-import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicDialog
+import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicsDialog
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMultiMusicFromPlaylistDialog
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMusicFromPlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
@@ -36,7 +35,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class MusicBottomSheetViewModel(
     private val playerMusicListViewManager: PlayerMusicListViewManager,
@@ -51,10 +50,10 @@ class MusicBottomSheetViewModel(
     private val feedbackPopUpManager: FeedbackPopUpManager,
     hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
     settings: SoulSearchingSettings,
-    params: MusicBottomSheetDestination,
+    params: InnerMusicDestination,
 ) : ViewModel() {
-    private val musicIds: List<UUID> = params.musicIds
-    private val playlistId: UUID? = params.playlistId
+    private val musicIds: List<Uuid> = params.musicIds
+    private val playlistId: Uuid? = params.playlistId
 
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
@@ -195,7 +194,7 @@ class MusicBottomSheetViewModel(
             add(BottomSheetRowSpec.addToQueue(::addToQueue))
         }
 
-        if (hasValidCloudInformation && possessMusics) {
+        if (hasValidCloudInformation && possessMusics && playedListScope?.isRemote != true) {
             add(BottomSheetRowSpec.startSharedPlayedList(::startSharedPlayedList))
         }
 
@@ -313,14 +312,18 @@ class MusicBottomSheetViewModel(
 
     private fun showDeleteDialog() {
         dialogState.value = if (state.value.musics.size == 1) {
-            DeleteMusicDialog(
+            DeleteMusicsDialog(
                 onDelete = { deleteMusics() },
-                onClose = { dialogState.value = null }
+                onClose = { dialogState.value = null },
+                title = strings.deleteMusicDialogTitle,
+                text = strings.deleteMusicDialogText,
             )
         } else {
-            DeleteMultiMusicDialog(
+            DeleteMusicsDialog(
                 onDelete = { deleteMusics() },
-                onClose = { dialogState.value = null }
+                onClose = { dialogState.value = null },
+                title = strings.deleteSelectedMusicsDialogTitle,
+                text = strings.deleteSelectedMusicsDialogText,
             )
         }
     }

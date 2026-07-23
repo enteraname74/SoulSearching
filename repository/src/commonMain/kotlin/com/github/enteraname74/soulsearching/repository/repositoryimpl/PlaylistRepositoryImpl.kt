@@ -1,74 +1,127 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
+import com.github.enteraname74.domain.model.CloudPlaylist
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
+import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistRemoteDataSource
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import kotlin.uuid.Uuid
 
 /**
  * Repository of a Playlist.
  */
 class PlaylistRepositoryImpl(
-    private val playlistDataSource: PlaylistDataSource
-): PlaylistRepository {
-    override suspend fun upsert(playlist: Playlist) = playlistDataSource.upsert(
-        playlist = playlist
-    )
-
-    override suspend fun upsertAll(playlists: List<Playlist>) {
-        playlistDataSource.upsertAll(playlists)
+    private val playlistLocalDataSource: PlaylistLocalDataSource,
+    private val playlistRemoteDataSource: PlaylistRemoteDataSource,
+    private val coverFileManager: CoverFileManager,
+) : PlaylistRepository {
+    override suspend fun upsert(playlist: Playlist) {
+        playlistLocalDataSource.upsert(
+            playlist = playlist
+        )
     }
 
-    override suspend fun delete(playlist: Playlist) = playlistDataSource.delete(
-        playlist = playlist
-    )
+    override suspend fun upsertAll(playlists: List<Playlist>) {
+        playlistLocalDataSource.upsertAll(playlists)
+    }
 
-    override suspend fun deleteAll(playlistIds: List<UUID>) {
-        playlistDataSource.deleteAll(playlistIds)
+    override suspend fun deleteAll(playlistIds: List<Uuid>): SoulResult<Unit> = SoulResult.runCatching {
+        val remoteIds: List<Uuid> = playlistLocalDataSource.getRemoteIdsFromIds(ids = playlistIds)
+        playlistLocalDataSource.deleteAll(playlistIds)
+        playlistRemoteDataSource.deleteAll(remoteIds)
+    }
+
+    override suspend fun deleteAllFromRemote(remoteIds: List<Uuid>) {
+        playlistLocalDataSource.deleteAllFromRemote(remoteIds = remoteIds)
     }
 
     override fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>> =
-        playlistDataSource.getAllPlaylistWithMusics()
+        playlistLocalDataSource.getAllPlaylistWithMusics()
 
     /**
      * Retrieves a Playlist from its id.
      */
-    override fun getFromId(playlistId: UUID): Flow<Playlist?> =
-        playlistDataSource.getFromId(
+    override fun getFromId(playlistId: Uuid): Flow<Playlist?> =
+        playlistLocalDataSource.getFromId(
             playlistId = playlistId
         )
 
-    override fun getFromIds(playlistIds: List<UUID>): Flow<List<PlaylistWithMusics>> =
-        playlistDataSource.getFromIds(playlistIds)
+    override fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
+        playlistLocalDataSource.getFromIds(playlistIds)
+
+    override suspend fun getFavorite(): Playlist? =
+        playlistLocalDataSource.getFavorite()
+
+    override suspend fun getFromName(name: String): Playlist? =
+        playlistLocalDataSource.getFromName(name = name)
 
     /**
      * Retrieves a flow of a PlaylistWithMusics.
      */
-    override fun getPlaylistWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?> =
-        playlistDataSource.getPlaylistWithMusics(
+    override fun getPlaylistWithMusics(playlistId: Uuid): Flow<PlaylistWithMusics?> =
+        playlistLocalDataSource.getPlaylistWithMusics(
             playlistId = playlistId
         )
 
     override fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
-        playlistDataSource.getAllPaged()
+        playlistLocalDataSource.getAllPaged()
 
     override suspend fun cleanAllCovers() {
-        playlistDataSource.cleanAllCovers()
+        playlistLocalDataSource.cleanAllCovers()
     }
 
     override fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>> =
-        playlistDataSource.getAllFromQuickAccess()
+        playlistLocalDataSource.getAllFromQuickAccess()
 
     override fun getMostListened(): Flow<List<PlaylistPreview>> =
-        playlistDataSource.getMostListened()
+        playlistLocalDataSource.getMostListened()
 
-    override fun getPlaylistPreview(playlistId: UUID): Flow<PlaylistPreview?> =
-        playlistDataSource.getPlaylistPreview(playlistId)
+    override fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?> =
+        playlistLocalDataSource.getPlaylistPreview(playlistId)
 
     override fun searchAll(search: String): Flow<List<PlaylistPreview>> =
-        playlistDataSource.searchAll(search)
+        playlistLocalDataSource.searchAll(search)
+
+    override suspend fun getAllToSendToCloud(): List<PlaylistWithMusics> =
+        playlistLocalDataSource.getAllToSendToCloud()
+
+    override suspend fun fetchUpdatedPlaylistsFromCloud(lastSyncMillis: Long?): List<CloudPlaylist> {
+        var page = 0
+
+        val fetchedPlaylists: MutableList<CloudPlaylist> = mutableListOf()
+        while (true) {
+            val fetchedData = playlistRemoteDataSource.getOfUser(
+                lastUpdateAt = lastSyncMillis,
+                maxPerPage = 1,
+                page = page
+            )
+
+            fetchedPlaylists += fetchedData
+            if (fetchedData.isEmpty()) break
+
+            page += 1
+        }
+
+        return fetchedPlaylists
+    }
+
+    override suspend fun uploadToCloud(playlistWithMusics: PlaylistWithMusics): CloudPlaylist =
+        playlistRemoteDataSource.upload(
+            playlist = playlistWithMusics,
+            coverPath = (playlistWithMusics.playlist.cover as? Cover.CoverFile)?.fileCoverId?.let { coverId ->
+                coverFileManager.getCoverPath(coverId)
+            },
+        )
+
+    override suspend fun getDeletedRemotePlaylistIds(): List<Uuid> {
+        val allRemoteIds: List<Uuid> = playlistLocalDataSource.getAllRemoteIdsPossessedByUser()
+        return playlistRemoteDataSource.getDeletedRemotePlaylistIds(allRemoteIds)
+    }
 }

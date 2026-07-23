@@ -10,16 +10,10 @@ import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class AddToPlaylistBottomSheetViewModel(
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
@@ -27,11 +21,12 @@ class AddToPlaylistBottomSheetViewModel(
     private val loadingManager: LoadingManager,
     private val params: AddToPlaylistBottomSheetDestination,
     private val navScope: AddToPlaylistBottomSheetNavScope,
+    private val multiSelectionManager: MultiSelectionManager,
 ) : ViewModel() {
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
     val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
 
-    private val selectedPlaylistIds: MutableStateFlow<Set<UUID>> = MutableStateFlow(emptySet())
+    private val selectedPlaylistIds: MutableStateFlow<Set<Uuid>> = MutableStateFlow(emptySet())
 
     private val playlistsWithMusics: Flow<List<PlaylistWithMusics>> =
         commonPlaylistUseCase.getAllWithMusics().map { playlist ->
@@ -68,39 +63,39 @@ class AddToPlaylistBottomSheetViewModel(
             onDismiss = { _dialogState.value = null },
             onConfirm = { playlistName ->
                 viewModelScope.launch {
-                    if (playlistName.isNotBlank()) {
-                        val newPlaylist = Playlist(name = playlistName)
-                        commonPlaylistUseCase.upsert(playlist = newPlaylist)
-                        addMusicsToPlaylist(
-                            playlistIds = listOf(newPlaylist.playlistId),
-                        )
+                    loadingManager.withLoading {
+                        if (playlistName.isNotBlank()) {
+                            val newPlaylist = Playlist(name = playlistName)
+                            commonPlaylistUseCase.upsert(playlist = newPlaylist)
+                            addMusicsToPlaylist(
+                                playlistIds = listOf(newPlaylist.playlistId),
+                            )
+                        }
                     }
-
                     _dialogState.value = null
-                    navScope.close()
+                    multiSelectionManager.clearMultiSelection()
+                    navScope.onSave()
                 }
             }
         )
     }
 
     private suspend fun addMusicsToPlaylist(
-        playlistIds: List<UUID>
+        playlistIds: List<Uuid>
     ) {
-        loadingManager.withLoading {
-            params.selectedMusicIds.forEach { musicId ->
-                playlistIds.forEach { playlistId ->
-                    commonMusicPlaylistUseCase.upsert(
-                        MusicPlaylist(
-                            musicId = musicId,
-                            playlistId = playlistId,
-                        )
+        params.selectedMusicIds.forEach { musicId ->
+            playlistIds.forEach { playlistId ->
+                commonMusicPlaylistUseCase.upsert(
+                    MusicPlaylist(
+                        musicId = musicId,
+                        playlistId = playlistId,
                     )
-                }
+                )
             }
         }
     }
 
-    fun toggleSelection(playlistId: UUID) {
+    fun toggleSelection(playlistId: Uuid) {
         selectedPlaylistIds.value = if (selectedPlaylistIds.value.contains(playlistId)) {
             selectedPlaylistIds.value - playlistId
         } else {
@@ -110,12 +105,15 @@ class AddToPlaylistBottomSheetViewModel(
 
     fun confirm() {
         viewModelScope.launch {
-            addMusicsToPlaylist(selectedPlaylistIds.value.toList())
-            navScope.close()
+            loadingManager.withLoading {
+                addMusicsToPlaylist(selectedPlaylistIds.value.toList())
+            }
+            multiSelectionManager.clearMultiSelection()
+            navScope.onSave()
         }
     }
 
-    fun close() {
-        navScope.close()
+    fun navigateBack() {
+        navScope.navigateBack()
     }
 }

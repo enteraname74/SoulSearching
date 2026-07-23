@@ -9,7 +9,6 @@ import com.github.enteraname74.domain.model.player.PlayerUserStatus
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingDarkLightThemes
-import java.util.*
 import kotlin.uuid.Uuid
 
 sealed interface PlayerViewState {
@@ -20,7 +19,7 @@ sealed interface PlayerViewState {
         val isCurrentMusicInFavorite: Boolean,
         val playedList: List<Music>,
         val playerMode: PlayerMode,
-        val isPlaying: Boolean,
+        val playbackCommandsState: PlaybackCommandsState,
         val aroundSongs: List<Music>,
         val playerMusicUsers: List<FullPlayerMusicUser>,
         val playedListScope: PlayedListScope,
@@ -29,7 +28,7 @@ sealed interface PlayerViewState {
     ) : PlayerViewState {
 
         fun getUserTag(
-            musicId: UUID,
+            musicId: Uuid,
         ): UserTag? {
             val correspondingUser = playerMusicUsers.find { it.musicId == musicId }?.user ?: return null
             val index: Int = sharedListState?.let { state ->
@@ -52,6 +51,18 @@ sealed interface PlayerViewState {
         }
     }
 }
+
+data class PlaybackCommandsState(
+    val isPlaying: Boolean,
+    val playerVolume: Float,
+    val previous: (() -> Unit)?,
+    val next: (() -> Unit)?,
+    val togglePlayPause: (() -> Unit)?,
+    val changePlayerMode: (() -> Unit)?,
+    val toggleFavoriteState: (() -> Unit)?,
+    val seekTo: ((newPosition: Int) -> Unit)?,
+    val setPlayerVolume: (Float) -> Unit,
+)
 
 data class SharedListState(
     val code: String,

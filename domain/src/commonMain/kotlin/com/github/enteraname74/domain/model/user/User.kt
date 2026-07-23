@@ -1,7 +1,9 @@
 package com.github.enteraname74.domain.model.user
 
+import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
+@Serializable
 data class User(
     val id: Uuid,
     val username: String,
@@ -9,7 +11,7 @@ data class User(
     val refreshToken: String,
     val type: UserType,
 ) {
-    val isAdmin = type == UserType.Admin
+    val isAdmin: Boolean = type == UserType.Admin
     fun hasCredentials(): Boolean =
         accessToken.isNotBlank() && refreshToken.isNotBlank()
 }

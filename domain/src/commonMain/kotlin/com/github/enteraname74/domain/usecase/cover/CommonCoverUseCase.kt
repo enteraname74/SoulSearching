@@ -3,13 +3,13 @@ package com.github.enteraname74.domain.usecase.cover
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.repository.CoverRepository
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class CommonCoverUseCase(
     private val coverRepository: CoverRepository,
 ) {
     suspend fun upsert(
-        id: UUID,
+        id: Uuid,
         data: ByteArray,
     ) {
         coverRepository.upsert(
@@ -18,14 +18,14 @@ class CommonCoverUseCase(
         )
     }
 
-    suspend fun delete(coverId: UUID) {
+    suspend fun delete(coverId: Uuid) {
         coverRepository.delete(
             coverId = coverId,
         )
     }
 
     suspend fun deleteUnusedFileCovers() {
-        val allCoverIds: List<UUID> = coverRepository.getAllCoverIds()
+        val allCoverIds: List<Uuid> = coverRepository.getAllCoverIds()
         allCoverIds.forEach { coverId ->
             if (!coverRepository.isCoverUsed(coverId = coverId)) {
                 coverRepository.delete(coverId = coverId)

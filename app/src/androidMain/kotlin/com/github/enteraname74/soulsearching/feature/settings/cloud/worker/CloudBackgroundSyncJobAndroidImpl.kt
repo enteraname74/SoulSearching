@@ -8,16 +8,16 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
-import com.github.enteraname74.domain.usecase.music.SyncMusicWithCloudUseCase
+import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 
 class CloudBackgroundSyncJobAndroidImpl(
     private val context: Context,
     private val hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
-    syncMusicWithCloudUseCase: SyncMusicWithCloudUseCase,
+    syncDataWithCloudUseCase: SyncDataWithCloudUseCase,
 ) : CloudBackgroundSyncJob {
-    override val state: StateFlow<SyncMusicWithCloudUseCase.State> = syncMusicWithCloudUseCase.state
+    override val state: StateFlow<SyncDataWithCloudUseCase.State> = syncDataWithCloudUseCase.state
 
     override suspend fun launchIfPossible() {
         val hasValidCloudInformation: Boolean? = hasValidCloudInformationUseCase().firstOrNull()

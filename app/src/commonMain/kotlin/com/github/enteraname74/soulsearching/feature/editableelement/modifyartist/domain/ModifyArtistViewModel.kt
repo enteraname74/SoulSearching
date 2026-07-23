@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -20,7 +21,6 @@ import com.github.enteraname74.soulsearching.features.filemanager.usecase.Update
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,16 +32,17 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class ModifyArtistViewModel(
     private val commonArtistUseCase: CommonArtistUseCase,
     private val commonCoverUseCase: CommonCoverUseCase,
     private val updateArtistUseCase: UpdateArtistUseCase,
     private val loadingManager: LoadingManager,
+    private val workDispatcher: WorkDispatcher,
     destination: ModifyArtistDestination,
 ) : ViewModel() {
-    private val artistId: UUID = destination.selectedArtistId
+    private val artistId: Uuid = destination.selectedArtistId
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
     private val _navigationState: MutableStateFlow<ModifyArtistNavigationState> = MutableStateFlow(
         ModifyArtistNavigationState.Idle,
@@ -70,7 +71,7 @@ class ModifyArtistViewModel(
             )
         }
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = ModifyArtistState.Loading,
     )
@@ -82,11 +83,12 @@ class ModifyArtistViewModel(
         } else {
             ModifyArtistFormState.Data(
                 initialArtist = artistWithMusics.artist,
-                updateFoundArtists = { commonArtistUseCase.getArtistsNameFromSearch(it) }
+                updateFoundArtists = { commonArtistUseCase.getArtistsNameFromSearch(it) },
+                workDispatcher = workDispatcher,
             )
         }
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = ModifyArtistFormState.NoData,
     )
@@ -103,7 +105,7 @@ class ModifyArtistViewModel(
             ModifyArtistState.Loading -> CoverListState.Loading
         }
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = CoverListState.Loading,
     )
@@ -138,15 +140,15 @@ class ModifyArtistViewModel(
      * Update the artist information.
      */
     fun updateArtist() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
 
             val state = (state.value as? ModifyArtistState.Data) ?: return@launch
             val form = (formState.value as? ModifyArtistFormState.Data)?.takeIf { it.isFormValid() } ?: return@launch
 
             loadingManager.withLoading {
-                val coverFile: UUID? =
+                val coverFile: Uuid? =
                     state.editableElement.newCover?.let { coverData ->
-                        val newCoverId: UUID = UUID.randomUUID()
+                        val newCoverId: Uuid = Uuid.random()
                         commonCoverUseCase.upsert(
                             id = newCoverId,
                             data = coverData,

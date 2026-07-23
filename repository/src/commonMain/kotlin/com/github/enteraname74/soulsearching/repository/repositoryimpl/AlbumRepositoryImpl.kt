@@ -7,7 +7,6 @@ import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 import kotlin.uuid.Uuid
 
 /**
@@ -21,7 +20,7 @@ class AlbumRepositoryImpl(
         albumDataSource.delete(album = album)
     }
 
-    override suspend fun deleteAll(ids: List<UUID>) {
+    override suspend fun deleteAll(ids: List<Uuid>) {
         albumDataSource.deleteAll(ids = ids)
     }
 
@@ -40,24 +39,24 @@ class AlbumRepositoryImpl(
         album = album
     )
 
-    override fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> = albumDataSource.getAlbumsOfArtist(
+    override fun getAlbumsOfArtist(artistId: Uuid): Flow<List<Album>> = albumDataSource.getAlbumsOfArtist(
         artistId = artistId
     )
 
-    override fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>> =
+    override fun getAlbumsWithMusicsOfArtist(artistId: Uuid): Flow<List<AlbumWithMusics>> =
         albumDataSource.getAlbumsWithMusicsOfArtist(artistId)
 
-    override fun getFromId(albumId: UUID): Flow<Album?> = albumDataSource.getFromId(
+    override fun getFromId(albumId: Uuid): Flow<Album?> = albumDataSource.getFromId(
         albumId = albumId
     )
 
     override suspend fun getFromRemoteId(remoteId: Uuid): Album? =
         albumDataSource.getFromRemoteId(remoteId)
 
-    override fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>> =
+    override fun getFromIds(albumIds: List<Uuid>): Flow<List<AlbumWithMusics>> =
         albumDataSource.getFromIds(albumIds)
 
-    override fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?> =
+    override fun getAlbumWithMusics(albumId: Uuid): Flow<AlbumWithMusics?> =
         albumDataSource.getAlbumWithMusics(
             albumId = albumId
         )
@@ -73,9 +72,9 @@ class AlbumRepositoryImpl(
     }
 
     override suspend fun getDuplicatedAlbum(
-        albumId: UUID,
+        albumId: Uuid,
         albumName: String,
-        artistId: UUID
+        artistId: Uuid
     ): Album? =
         albumDataSource.getDuplicatedAlbum(
             albumId = albumId,
@@ -94,7 +93,7 @@ class AlbumRepositoryImpl(
 
     override suspend fun getFromArtistId(
         albumName: String,
-        artistId: UUID
+        artistId: Uuid
     ): Album? =
         albumDataSource.getFromArtistId(
             albumName = albumName,
@@ -104,7 +103,7 @@ class AlbumRepositoryImpl(
     override fun getMostListened(): Flow<List<AlbumPreview>> =
         albumDataSource.getMostListened()
 
-    override fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?> =
+    override fun getAlbumPreview(albumId: Uuid): Flow<AlbumPreview?> =
         albumDataSource.getAlbumPreview(albumId)
 
     override fun searchAll(search: String): Flow<List<AlbumPreview>> =

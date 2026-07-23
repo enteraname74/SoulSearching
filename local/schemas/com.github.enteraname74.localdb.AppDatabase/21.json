@@ -1,0 +1,1096 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 21,
+    "identityHash": "4da65149aff5d7144ef9787a428a9131",
+    "entities": [
+      {
+        "tableName": "RoomMusic",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`musicId` TEXT NOT NULL, `remoteId` TEXT, `lastUpdateMillis` INTEGER, `name` TEXT NOT NULL, `coverId` TEXT, `coverUrl` TEXT, `duration` INTEGER NOT NULL, `path` TEXT, `localPath` TEXT, `remotePath` TEXT, `folder` TEXT NOT NULL, `addedDate` INTEGER NOT NULL, `nbPlayed` INTEGER NOT NULL, `isInQuickAccess` INTEGER NOT NULL, `isHidden` INTEGER NOT NULL, `albumPosition` INTEGER, `albumId` TEXT NOT NULL, `scope` TEXT NOT NULL, PRIMARY KEY(`musicId`), FOREIGN KEY(`albumId`) REFERENCES `RoomAlbum`(`albumId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "musicId",
+            "columnName": "musicId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remoteId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastUpdateMillis",
+            "columnName": "lastUpdateMillis",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coverId",
+            "columnName": "coverId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "coverUrl",
+            "columnName": "coverUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "path",
+            "columnName": "path",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "localPath",
+            "columnName": "localPath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "remotePath",
+            "columnName": "remotePath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "folder",
+            "columnName": "folder",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "addedDate",
+            "columnName": "addedDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nbPlayed",
+            "columnName": "nbPlayed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isInQuickAccess",
+            "columnName": "isInQuickAccess",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isHidden",
+            "columnName": "isHidden",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "albumPosition",
+            "columnName": "albumPosition",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "albumId",
+            "columnName": "albumId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scope",
+            "columnName": "scope",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "musicId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_RoomMusic_albumId",
+            "unique": false,
+            "columnNames": [
+              "albumId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomMusic_albumId` ON `${TABLE_NAME}` (`albumId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "RoomAlbum",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "albumId"
+            ],
+            "referencedColumns": [
+              "albumId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "RoomAlbum",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`albumId` TEXT NOT NULL, `remoteId` TEXT, `albumName` TEXT NOT NULL, `coverId` TEXT, `coverUrl` TEXT, `addedDate` INTEGER NOT NULL, `nbPlayed` INTEGER NOT NULL, `isInQuickAccess` INTEGER NOT NULL, `artistId` TEXT NOT NULL, `lastUpdatedMillis` INTEGER, `scope` TEXT NOT NULL, PRIMARY KEY(`albumId`), FOREIGN KEY(`artistId`) REFERENCES `RoomArtist`(`artistId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "albumId",
+            "columnName": "albumId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remoteId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "albumName",
+            "columnName": "albumName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coverId",
+            "columnName": "coverId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "coverUrl",
+            "columnName": "coverUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "addedDate",
+            "columnName": "addedDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nbPlayed",
+            "columnName": "nbPlayed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isInQuickAccess",
+            "columnName": "isInQuickAccess",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "artistId",
+            "columnName": "artistId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastUpdatedMillis",
+            "columnName": "lastUpdatedMillis",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "scope",
+            "columnName": "scope",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "albumId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_RoomAlbum_artistId",
+            "unique": false,
+            "columnNames": [
+              "artistId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomAlbum_artistId` ON `${TABLE_NAME}` (`artistId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "RoomArtist",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "artistId"
+            ],
+            "referencedColumns": [
+              "artistId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "RoomArtist",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artistId` TEXT NOT NULL, `remoteId` TEXT, `artistName` TEXT NOT NULL, `coverId` TEXT, `coverFolderKey` TEXT, `coverUrl` TEXT, `addedDate` INTEGER NOT NULL, `nbPlayed` INTEGER NOT NULL, `isInQuickAccess` INTEGER NOT NULL, `lastUpdatedMillis` INTEGER, `scope` TEXT NOT NULL, PRIMARY KEY(`artistId`))",
+        "fields": [
+          {
+            "fieldPath": "artistId",
+            "columnName": "artistId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remoteId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "artistName",
+            "columnName": "artistName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coverId",
+            "columnName": "coverId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "coverFolderKey",
+            "columnName": "coverFolderKey",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "coverUrl",
+            "columnName": "coverUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "addedDate",
+            "columnName": "addedDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nbPlayed",
+            "columnName": "nbPlayed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isInQuickAccess",
+            "columnName": "isInQuickAccess",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastUpdatedMillis",
+            "columnName": "lastUpdatedMillis",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "scope",
+            "columnName": "scope",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "artistId"
+          ]
+        }
+      },
+      {
+        "tableName": "RoomPlaylist",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playlistId` TEXT NOT NULL, `remoteId` TEXT, `name` TEXT NOT NULL, `coverId` TEXT, `coverUrl` TEXT, `isFavorite` INTEGER NOT NULL, `addedDate` INTEGER NOT NULL, `nbPlayed` INTEGER NOT NULL, `isInQuickAccess` INTEGER NOT NULL, `lastUpdatedMillis` INTEGER, PRIMARY KEY(`playlistId`))",
+        "fields": [
+          {
+            "fieldPath": "playlistId",
+            "columnName": "playlistId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remoteId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coverId",
+            "columnName": "coverId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "coverUrl",
+            "columnName": "coverUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isFavorite",
+            "columnName": "isFavorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "addedDate",
+            "columnName": "addedDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nbPlayed",
+            "columnName": "nbPlayed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isInQuickAccess",
+            "columnName": "isInQuickAccess",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastUpdatedMillis",
+            "columnName": "lastUpdatedMillis",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "playlistId"
+          ]
+        }
+      },
+      {
+        "tableName": "RoomMusicPlaylist",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `musicId` TEXT NOT NULL, `playlistId` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`musicId`) REFERENCES `RoomMusic`(`musicId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playlistId`) REFERENCES `RoomPlaylist`(`playlistId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "musicId",
+            "columnName": "musicId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playlistId",
+            "columnName": "playlistId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_RoomMusicPlaylist_musicId",
+            "unique": false,
+            "columnNames": [
+              "musicId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomMusicPlaylist_musicId` ON `${TABLE_NAME}` (`musicId`)"
+          },
+          {
+            "name": "index_RoomMusicPlaylist_playlistId",
+            "unique": false,
+            "columnNames": [
+              "playlistId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomMusicPlaylist_playlistId` ON `${TABLE_NAME}` (`playlistId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "RoomMusic",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "musicId"
+            ],
+            "referencedColumns": [
+              "musicId"
+            ]
+          },
+          {
+            "table": "RoomPlaylist",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "playlistId"
+            ],
+            "referencedColumns": [
+              "playlistId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "RoomMusicArtist",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `musicId` TEXT NOT NULL, `artistId` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`musicId`) REFERENCES `RoomMusic`(`musicId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`artistId`) REFERENCES `RoomArtist`(`artistId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "musicId",
+            "columnName": "musicId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "artistId",
+            "columnName": "artistId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_RoomMusicArtist_musicId",
+            "unique": false,
+            "columnNames": [
+              "musicId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomMusicArtist_musicId` ON `${TABLE_NAME}` (`musicId`)"
+          },
+          {
+            "name": "index_RoomMusicArtist_artistId",
+            "unique": false,
+            "columnNames": [
+              "artistId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomMusicArtist_artistId` ON `${TABLE_NAME}` (`artistId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "RoomMusic",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "musicId"
+            ],
+            "referencedColumns": [
+              "musicId"
+            ]
+          },
+          {
+            "table": "RoomArtist",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "artistId"
+            ],
+            "referencedColumns": [
+              "artistId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "RoomPlayerMusic",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `musicId` TEXT NOT NULL, `playedListId` TEXT NOT NULL, `order` REAL NOT NULL, `shuffledOrder` REAL NOT NULL, `lastPlayedMillis` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`musicId`) REFERENCES `RoomMusic`(`musicId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playedListId`) REFERENCES `RoomPlayerPlayedList`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "musicId",
+            "columnName": "musicId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playedListId",
+            "columnName": "playedListId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shuffledOrder",
+            "columnName": "shuffledOrder",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastPlayedMillis",
+            "columnName": "lastPlayedMillis",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_RoomPlayerMusic_playedListId",
+            "unique": false,
+            "columnNames": [
+              "playedListId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomPlayerMusic_playedListId` ON `${TABLE_NAME}` (`playedListId`)"
+          },
+          {
+            "name": "index_RoomPlayerMusic_musicId",
+            "unique": false,
+            "columnNames": [
+              "musicId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomPlayerMusic_musicId` ON `${TABLE_NAME}` (`musicId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "RoomMusic",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "musicId"
+            ],
+            "referencedColumns": [
+              "musicId"
+            ]
+          },
+          {
+            "table": "RoomPlayerPlayedList",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "playedListId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "RoomPlayerMusicProgress",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `playedListId` TEXT NOT NULL, `playerMusicId` TEXT NOT NULL, `progress` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playedListId",
+            "columnName": "playedListId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playerMusicId",
+            "columnName": "playerMusicId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "progress",
+            "columnName": "progress",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "RoomPlayerPlayedList",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `playlistId` TEXT, `isMainPlaylist` INTEGER NOT NULL, `mode` TEXT NOT NULL, `state` TEXT NOT NULL, `invitationCode` TEXT, `scope` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playlistId",
+            "columnName": "playlistId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isMainPlaylist",
+            "columnName": "isMainPlaylist",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mode",
+            "columnName": "mode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "state",
+            "columnName": "state",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "invitationCode",
+            "columnName": "invitationCode",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "scope",
+            "columnName": "scope",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "RoomFolder",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`folderPath` TEXT NOT NULL, `isSelected` INTEGER NOT NULL, PRIMARY KEY(`folderPath`))",
+        "fields": [
+          {
+            "fieldPath": "folderPath",
+            "columnName": "folderPath",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isSelected",
+            "columnName": "isSelected",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "folderPath"
+          ]
+        }
+      },
+      {
+        "tableName": "RoomUser",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `username` TEXT NOT NULL, `accessToken` TEXT NOT NULL, `refreshToken` TEXT NOT NULL, `type` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accessToken",
+            "columnName": "accessToken",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "refreshToken",
+            "columnName": "refreshToken",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "RoomCloudPreferences",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `url` TEXT NOT NULL, `lastSyncMillis` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSyncMillis",
+            "columnName": "lastSyncMillis",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "RoomDeviceId",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `deviceId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deviceId",
+            "columnName": "deviceId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "RoomSharedPlayedListUser",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `playedListId` TEXT NOT NULL, `userId` TEXT NOT NULL, `deviceId` TEXT NOT NULL, `username` TEXT NOT NULL, `joinedAt` INTEGER NOT NULL, `isOwner` INTEGER NOT NULL, `status` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`playedListId`) REFERENCES `RoomPlayerPlayedList`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playedListId",
+            "columnName": "playedListId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deviceId",
+            "columnName": "deviceId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "joinedAt",
+            "columnName": "joinedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isOwner",
+            "columnName": "isOwner",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_RoomSharedPlayedListUser_playedListId",
+            "unique": false,
+            "columnNames": [
+              "playedListId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomSharedPlayedListUser_playedListId` ON `${TABLE_NAME}` (`playedListId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "RoomPlayerPlayedList",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "playedListId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "RoomUserInscriptionCode",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, PRIMARY KEY(`code`))",
+        "fields": [
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "code"
+          ]
+        }
+      },
+      {
+        "tableName": "RoomSimpleUser",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `username` TEXT NOT NULL, `type` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "RoomPlayerMusicUser",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playedListId` TEXT NOT NULL, `userId` TEXT NOT NULL, `musicId` TEXT NOT NULL, PRIMARY KEY(`playedListId`, `userId`, `musicId`), FOREIGN KEY(`playedListId`) REFERENCES `RoomPlayerPlayedList`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`musicId`) REFERENCES `RoomMusic`(`musicId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "playedListId",
+            "columnName": "playedListId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "musicId",
+            "columnName": "musicId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "playedListId",
+            "userId",
+            "musicId"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "RoomPlayerPlayedList",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "playedListId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "RoomMusic",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "musicId"
+            ],
+            "referencedColumns": [
+              "musicId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "RoomSharedPlayedListPreview",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `code` TEXT NOT NULL, `totalUsers` INTEGER NOT NULL, `connectedUsers` INTEGER NOT NULL, `createdAtMillis` INTEGER NOT NULL, `isOwner` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalUsers",
+            "columnName": "totalUsers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "connectedUsers",
+            "columnName": "connectedUsers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAtMillis",
+            "columnName": "createdAtMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isOwner",
+            "columnName": "isOwner",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "views": [
+      {
+        "viewName": "CurrentPlayerMusicsView",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS WITH currentPlayedList AS (\n        SELECT * FROM RoomPlayerPlayedList  \n        WHERE state != 'Cached'\n        LIMIT 1\n    )\n    SELECT \n        m.*,\n        CASE\n            WHEN c.mode = 'Shuffle'\n            THEN m.shuffledOrder\n            ELSE m.`order`\n        END AS currentOrder,\n        c.mode \n    FROM RoomPlayerMusic m\n    INNER JOIN currentPlayedList c ON m.playedListId = c.id\n    ORDER BY currentOrder"
+      },
+      {
+        "viewName": "RoomMusicFolderPreview",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n                folderMusic.folder,\n                COUNT(*) AS totalMusics, \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND scope != 'SharedPlayedList' \n                    AND music.coverId IS NOT NULL \n                    AND music.folder = folderMusic.folder \n                    ORDER BY\n                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, \n                    name \n                    LIMIT 1\n                ) AS coverId,\n                (\n                    SELECT music.localPath FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND scope != 'SharedPlayedList' \n                    AND music.folder = folderMusic.folder \n                    ORDER BY name \n                    LIMIT 1 \n                ) AS musicCoverPath, \n                (\n                    SELECT music.coverUrl FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND scope != 'SharedPlayedList' \n                    AND music.folder = folderMusic.folder \n                    ORDER BY name \n                    LIMIT 1 \n                ) AS musicCoverUrl \n            FROM RoomMusic As folderMusic\n            WHERE isHidden = 0 \n            AND scope != 'SharedPlayedList' \n            GROUP BY folderMusic.folder"
+      },
+      {
+        "viewName": "RoomMonthMusicPreview",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n                strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch') AS month,\n                COUNT(*) AS totalMusics, \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND scope != 'SharedPlayedList' \n                    AND music.coverId IS NOT NULL \n                    AND strftime('%m/%Y', music.addedDate / 1000, 'unixepoch') = strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch')\n                    ORDER BY\n                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, \n                    name \n                    LIMIT 1\n                ) AS coverId,\n                (\n                    SELECT music.localPath FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND scope != 'SharedPlayedList' \n                    AND strftime('%m/%Y', music.addedDate / 1000, 'unixepoch') = strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch') \n                    ORDER BY name \n                    LIMIT 1 \n                ) AS musicCoverPath, \n                (\n                    SELECT music.coverUrl FROM RoomMusic AS music \n                    WHERE music.isHidden = 0 \n                    AND scope != 'SharedPlayedList' \n                    AND strftime('%m/%Y', music.addedDate / 1000, 'unixepoch') = strftime('%m/%Y', monthMusic.addedDate / 1000, 'unixepoch') \n                    ORDER BY name \n                    LIMIT 1 \n                ) AS musicCoverUrl \n            FROM RoomMusic AS monthMusic\n            WHERE isHidden = 0 \n            AND scope != 'SharedPlayedList' \n            GROUP BY strftime('%Y-%m', addedDate / 1000, 'unixepoch') \n            ORDER BY strftime('%Y-%m', addedDate / 1000, 'unixepoch') DESC"
+      },
+      {
+        "viewName": "RoomAlbumPreview",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        album.albumId AS id, \n        album.albumName AS name, \n        album.nbPlayed, \n        album.addedDate, \n        album.artistId,\n        album.coverUrl, \n        (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, \n        (\n            CASE WHEN album.coverId IS NULL THEN \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY \n                    CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, \n                    music.albumPosition, \n                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, \n                    music.name \n                )\n            ELSE album.coverId END\n        ) AS coverId,\n        (\n            SELECT music.localPath FROM RoomMusic AS music \n            WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY \n            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, \n            music.albumPosition, \n            music.name \n            LIMIT 1 \n        ) AS musicCoverPath,\n        (\n            SELECT music.coverUrl FROM RoomMusic AS music \n            WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY \n            CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, \n            music.albumPosition, \n            music.name \n            LIMIT 1 \n        ) AS musicCoverUrl,\n        album.isInQuickAccess \n        FROM RoomAlbum AS album \n        WHERE album.scope != 'SharedPlayedList'"
+      },
+      {
+        "viewName": "RoomArtistPreview",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT \n        artist.artistId AS id, \n        artist.artistName AS name, \n        artist.coverFolderKey,\n        artist.addedDate, \n        artist.nbPlayed, \n        artist.coverUrl, \n        (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, \n        (\n            CASE WHEN artist.coverId IS NULL THEN \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    INNER JOIN RoomMusicArtist AS musicArtist \n                    ON music.musicId = musicArtist.musicId \n                    AND artist.artistId = musicArtist.artistId \n                    AND music.isHidden = 0 \n                    AND scope != 'SharedPlayedList' \n                    AND music.coverId IS NOT NULL \n                    ORDER BY name ASC \n                    LIMIT 1\n                )\n            ELSE artist.coverId END\n        ) AS coverId,\n        (\n            SELECT music.localPath FROM RoomMusic AS music \n            INNER JOIN RoomMusicArtist AS musicArtist \n            ON music.musicId = musicArtist.musicId \n            AND artist.artistId = musicArtist.artistId \n            AND music.isHidden = 0 \n            AND scope != 'SharedPlayedList' \n            ORDER BY name ASC \n            LIMIT 1\n        ) AS musicCoverPath,\n        (\n            SELECT music.coverUrl FROM RoomMusic AS music \n            INNER JOIN RoomMusicArtist AS musicArtist \n            ON music.musicId = musicArtist.musicId \n            AND artist.artistId = musicArtist.artistId \n            AND music.isHidden = 0 \n            AND scope != 'SharedPlayedList' \n            ORDER BY name ASC \n            LIMIT 1\n        ) AS musicCoverUrl,\n        artist.isInQuickAccess \n        FROM RoomArtist AS artist \n        WHERE artist.scope != 'SharedPlayedList'"
+      },
+      {
+        "viewName": "RoomPlaylistPreview",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT playlist.playlistId AS id, \n        playlist.name, \n        playlist.isFavorite, \n        playlist.addedDate, \n        playlist.coverUrl, \n        (\n            SELECT COUNT(*) \n            FROM RoomMusicPlaylist AS musicPlaylist \n            WHERE musicPlaylist.playlistId = playlist.playlistId\n        ) AS totalMusics, \n        (\n            CASE WHEN playlist.coverId IS NULL THEN \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    INNER JOIN RoomMusicPlaylist AS musicPlaylist \n                    ON music.musicId = musicPlaylist.musicId \n                    AND playlist.playlistId = musicPlaylist.playlistId \n                    AND music.isHidden = 0 \n                    AND scope != 'SharedPlayedList' \n                    AND music.coverId IS NOT NULL \n                    LIMIT 1\n                )\n            ELSE playlist.coverId END\n        ) AS coverId,\n        (\n            SELECT music.localPath FROM RoomMusic AS music \n            INNER JOIN RoomMusicPlaylist AS musicPlaylist \n            ON music.musicId = musicPlaylist.musicId \n            AND playlist.playlistId = musicPlaylist.playlistId \n            AND music.isHidden = 0 \n            AND scope != 'SharedPlayedList' \n            LIMIT 1\n        ) AS musicCoverPath,\n        (\n            SELECT music.coverUrl FROM RoomMusic AS music \n            INNER JOIN RoomMusicPlaylist AS musicPlaylist \n            ON music.musicId = musicPlaylist.musicId \n            AND playlist.playlistId = musicPlaylist.playlistId \n            AND music.isHidden = 0 \n            AND scope != 'SharedPlayedList' \n            LIMIT 1\n        ) AS musicCoverUrl,\n        playlist.isInQuickAccess, \n        playlist.nbPlayed \n        FROM RoomPlaylist AS playlist"
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4da65149aff5d7144ef9787a428a9131')"
+    ]
+  }
+}

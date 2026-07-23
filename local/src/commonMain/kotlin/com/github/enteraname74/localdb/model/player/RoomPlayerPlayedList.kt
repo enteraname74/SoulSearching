@@ -1,18 +1,18 @@
 package com.github.enteraname74.localdb.model.player
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListState
 import com.github.enteraname74.domain.model.player.PlayedListType
 import com.github.enteraname74.domain.model.player.PlayerMode
 import com.github.enteraname74.domain.model.player.PlayerPlayedList
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Entity
 data class RoomPlayerPlayedList(
     @PrimaryKey
-    val id: UUID,
+    val id: Uuid,
     val playlistId: String?,
     val isMainPlaylist: Boolean,
     val mode: PlayerMode,

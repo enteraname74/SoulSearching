@@ -1,18 +1,20 @@
 package com.github.enteraname74.soulsearching.features.playback.progressJob
 
 import com.github.enteraname74.domain.repository.PlayerRepository
+import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 internal class PlaybackProgressJob(
     private val playerRepository: PlayerRepository,
     private val callback: PlaybackProgressJobCallbacks,
+    private val workDispatcher: WorkDispatcher,
 ) {
     /**
      * Used to update frequently the current position in the duration
@@ -30,9 +32,9 @@ internal class PlaybackProgressJob(
     suspend fun launchDurationJobIfNecessary() {
         setPosition(pos = callback.getMusicPosition())
         if (durationJob != null) return
-        durationJob = CoroutineScope(Dispatchers.IO).launch {
+        durationJob = CoroutineScope(workDispatcher.dispatcher).launch {
             while (true) {
-                delay(DELAY_BEFORE_SENDING_VALUE)
+                delay(DELAY_BEFORE_SENDING_VALUE.milliseconds)
                 val position = callback.getMusicPosition()
                 _state.value = position
                 playerRepository.setProgress(position)

@@ -2,10 +2,8 @@ package com.github.enteraname74.soulsearching.navigation
 
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetsNavigationHandler
-import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.ModifyElementNavigationHandler
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
-import com.github.enteraname74.soulsearching.feature.migration.MigrationDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceMode
 import com.github.enteraname74.soulsearching.feature.playlistdetail.PlaylistDetailNavigationHandler

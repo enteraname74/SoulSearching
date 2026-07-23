@@ -8,7 +8,7 @@ import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCo
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.repository.datasource.cover.CoverLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.cover.CoverRemoteDataSource
-import java.util.*
+import kotlin.uuid.Uuid
 
 /**
  * Repository of an ImageCover.
@@ -19,23 +19,23 @@ class CoverRepositoryImpl(
     private val coverLocalDataSource: CoverLocalDataSource,
     private val coverRemoteDataSource: CoverRemoteDataSource,
 ): CoverRepository {
-    override suspend fun upsert(id: UUID, data: ByteArray) {
+    override suspend fun upsert(id: Uuid, data: ByteArray) {
         coverFileManager.saveCover(
             id = id,
             data = data,
         )
     }
 
-    override suspend fun getAllCoverIds(): List<UUID> =
+    override suspend fun getAllCoverIds(): List<Uuid> =
         coverFileManager.getAllCoverIds()
 
-    override suspend fun delete(coverId: UUID) {
+    override suspend fun delete(coverId: Uuid) {
         coverFileManager.deleteFromId(
             id = coverId,
         )
     }
 
-    override suspend fun isCoverUsed(coverId: UUID): Boolean =
+    override suspend fun isCoverUsed(coverId: Uuid): Boolean =
         coverLocalDataSource.isCoverUsed(coverId)
 
     override suspend fun getCoverImageBitmap(cover: Cover): ImageBitmap? =

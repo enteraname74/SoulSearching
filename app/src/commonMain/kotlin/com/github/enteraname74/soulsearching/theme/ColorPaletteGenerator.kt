@@ -2,17 +2,18 @@ package com.github.enteraname74.soulsearching.theme
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 import com.github.enteraname74.soulsearching.ext.COLOR_PALETTE_SEED_SETTINGS_ELEMENT
 import com.kmpalette.PaletteState
 import com.kmpalette.loader.ImageBitmapLoader
 import com.kmpalette.palette.graphics.Palette
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
 class ColorPaletteGenerator(
     settings: SoulSearchingSettings,
+    workDispatcher: WorkDispatcher,
 ) {
     private val cover: MutableStateFlow<ImageBitmap?> = MutableStateFlow(null)
     private val colorPaletteSeed: Flow<ColorPaletteSeed> =
@@ -28,7 +29,7 @@ class ColorPaletteGenerator(
             seed = seed,
         )
     }.stateIn(
-        scope = CoroutineScope(Dispatchers.IO),
+        scope = CoroutineScope(workDispatcher.dispatcher),
         started = SharingStarted.Lazily,
         initialValue = null,
     )

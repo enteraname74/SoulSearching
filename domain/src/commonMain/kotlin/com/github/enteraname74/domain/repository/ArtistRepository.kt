@@ -5,7 +5,6 @@ import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 import kotlin.uuid.Uuid
 
 interface ArtistRepository {
@@ -19,7 +18,7 @@ interface ArtistRepository {
 
     suspend fun delete(artist: Artist)
 
-    suspend fun deleteAll(artistsIds: List<UUID>)
+    suspend fun deleteAll(artistsIds: List<Uuid>)
 
     suspend fun deleteAllEmpty()
 
@@ -28,11 +27,11 @@ interface ArtistRepository {
     /**
      * Retrieves an Artist from its id.
      */
-    fun getFromId(artistId: UUID): Flow<Artist?>
+    fun getFromId(artistId: Uuid): Flow<Artist?>
 
     suspend fun getFromRemoteId(remoteId: Uuid): Artist?
 
-    fun getFromIds(artistIds: List<UUID>) : Flow<List<ArtistWithMusics>>
+    fun getFromIds(artistIds: List<Uuid>) : Flow<List<ArtistWithMusics>>
 
     /**
      * Retrieves an Artist from its name.
@@ -48,17 +47,17 @@ interface ArtistRepository {
     /**
      * Retrieves a flow of an ArtistWithMusics.
      */
-    fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics?>
+    fun getArtistWithMusics(artistId: Uuid): Flow<ArtistWithMusics?>
 
     /**
      * Retrieves all artists linked to a music.
      */
-    fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>>
+    fun getArtistsOfMusic(musicId: Uuid): Flow<List<Artist>>
 
     fun getAllFromQuickAccess(): Flow<List<ArtistPreview>>
 
     suspend fun getDuplicatedArtist(
-        artistId: UUID,
+        artistId: Uuid,
         artistName: String
     ): ArtistWithMusics?
 
@@ -68,7 +67,7 @@ interface ArtistRepository {
 
     fun getMostListened(): Flow<List<ArtistPreview>>
 
-    fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?>
+    fun getArtistPreview(artistId: Uuid): Flow<ArtistPreview?>
 
     fun searchAll(search: String): Flow<List<ArtistPreview>>
 
