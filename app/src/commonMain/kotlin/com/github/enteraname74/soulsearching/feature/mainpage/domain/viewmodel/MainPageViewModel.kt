@@ -346,7 +346,7 @@ class MainPageViewModel(
         coroutineScope.launch {
             settings.getFlowOn(SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT)
                 .collectLatest { shouldShow ->
-                    if (shouldShow) {
+                    if (shouldShow && PlatformUtils.platform != Platform.Web) {
                         _bottomSheetState.value = GitHubReleaseBottomSheet(
                             onClose = {
                                 _bottomSheetState.value = null
