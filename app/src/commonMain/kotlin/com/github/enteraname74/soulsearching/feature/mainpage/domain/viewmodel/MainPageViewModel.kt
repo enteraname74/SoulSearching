@@ -535,6 +535,7 @@ class MainPageViewModel(
                 ElementEnum.FOLDERS -> add(
                     allMusicFoldersTab(
                         state = allMusicFoldersState,
+                        multiSelectionState = multiSelectionState,
                         navigateToFolder = { folderPath ->
                             navigateAndClearSelection(
                                 MainPageNavigationState.ToFolder(
@@ -542,9 +543,7 @@ class MainPageViewModel(
                                 )
                             )
                         },
-                        showFolderBottomSheet = {
-                            showFolderBottomSheet(listOf(it))
-                        },
+                        toggleFolderSelection = ::toggleElementInSelection,
                         showSoulMixDialog = ::showSoulMixDialog,
                         onSoulMixClicked = ::onSoulMixClicked
                     )
@@ -667,7 +666,7 @@ class MainPageViewModel(
     }
 
     fun toggleElementInSelection(
-        id: Uuid,
+        id: String,
         mode: SelectionMode,
     ) {
         multiSelectionManager.toggleElementInSelection(

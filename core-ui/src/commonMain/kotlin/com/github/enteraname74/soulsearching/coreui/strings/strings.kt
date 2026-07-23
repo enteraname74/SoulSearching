@@ -130,8 +130,12 @@ interface Strings {
     val deleteSelectedMusicsDialogText: String
     val deleteFolderMusicsDialogTitle: String
     val deleteFolderMusicsDialogText: String
+    val deleteSelectedFoldersMusicsDialogTitle: String
+    val deleteSelectedFoldersMusicsDialogText: String
     val deleteMonthMusicsDialogTitle: String
     val deleteMonthMusicsDialogText: String
+    val deleteSelectedMonthsMusicsDialogTitle: String
+    val deleteSelectedMonthsMusicsDialogText: String
     val deleteSelectedAlbumsDialogTitle: String
     val deleteSelectedArtistsDialogTitle: String
     val deleteSelectedPlaylistsDialogTitle: String
@@ -160,7 +164,9 @@ interface Strings {
     val deleteSelectedPlaylists: String
     val deleteSelectedMusics: String
     val deleteFolderMusics: String
+    val deleteSelectedFoldersMusics: String
     val deleteMonthMusics: String
+    val deleteSelectedMonthsMusics: String
 
     val playNext: String
     val addToQueue: String

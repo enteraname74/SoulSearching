@@ -211,8 +211,8 @@ fun PlaylistSmallView(
                         },
                         textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                         isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
-                        isSelected = multiSelectionState.selectedIds.contains(music.musicId),
-                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                        isSelected = multiSelectionState.selectedIds.contains(music.musicId.toString()),
+                        isSelectionModeOn = multiSelectionState.totalSelected > 0,
                         leadingSpec = playlistDetail.musicItemLeadingSpec(pos)
                     )
                 }

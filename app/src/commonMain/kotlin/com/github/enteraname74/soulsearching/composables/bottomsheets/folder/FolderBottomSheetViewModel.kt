@@ -143,7 +143,11 @@ class FolderBottomSheetViewModel(
             add(
                 BottomSheetRowSpec(
                     icon = CoreRes.drawable.ic_delete_filled,
-                    title = strings.deleteFolderMusics,
+                    title = if (folders.size == 1) {
+                        strings.deleteFolderMusics
+                    } else {
+                        strings.deleteSelectedFoldersMusics
+                    },
                     onClick = ::showDeleteDialog,
                 )
             )
@@ -235,11 +239,20 @@ class FolderBottomSheetViewModel(
     }
 
     private fun showDeleteDialog() {
+        val isSingleFolderSelection: Boolean = state.value.folders.size == 1
         dialogState.value = DeleteMusicsDialog(
             onDelete = ::deleteMusics,
             onClose = { dialogState.value = null },
-            title = strings.deleteFolderMusicsDialogTitle,
-            text = strings.deleteFolderMusicsDialogText,
+            title = if (isSingleFolderSelection) {
+                strings.deleteFolderMusicsDialogTitle
+            } else {
+                strings.deleteSelectedFoldersMusicsDialogTitle
+            },
+            text = if (isSingleFolderSelection) {
+                strings.deleteFolderMusicsDialogText
+            } else {
+                strings.deleteSelectedFoldersMusicsDialogText
+            },
         )
     }
 

@@ -31,7 +31,7 @@ fun AllMusicsComposable(
     musicState: AllMusicsState,
     multiSelectionState: MultiSelectionState,
     navigateToMonth: (month: String) -> Unit,
-    showMonthBottomSheet: (month: String) -> Unit,
+    toggleMonthSelection: (month: String) -> Unit,
     setSortType: (SortType) -> Unit,
     toggleSortDirection: () -> Unit = {},
     isUsingSort: Boolean = true,
@@ -58,8 +58,10 @@ fun AllMusicsComposable(
             ) {
                 MusicMonthsHorizontalList(
                     months = musicState.monthMusicPreviews,
+                    selectedMonths = multiSelectionState.selectedIds,
+                    isSelectionModeOn = multiSelectionState.totalSelected > 0,
                     onMonthClicked = navigateToMonth,
-                    onMonthLongClicked = showMonthBottomSheet,
+                    onMonthLongClicked = toggleMonthSelection,
                 )
             }
         }
@@ -107,8 +109,8 @@ fun AllMusicsComposable(
                         },
                         onLongClick = { onLongClick(elt) },
                         isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
-                        isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
-                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                        isSelected = multiSelectionState.selectedIds.contains(elt.musicId.toString()),
+                        isSelectionModeOn = multiSelectionState.totalSelected > 0,
                     )
                 }
             }

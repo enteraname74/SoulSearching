@@ -86,6 +86,7 @@ class MonthBottomSheetViewModel(
             musics = musics,
             bottomSheetTopInformation = buildTopInformation(months),
             rowSpecs = buildRowSpecs(
+                months = months,
                 musics = musics,
                 playedList = playedList,
                 hasValidCloudInformation = hasValidCloudInformation,
@@ -105,6 +106,7 @@ class MonthBottomSheetViewModel(
             .distinctBy { it.musicId }
 
     private fun buildRowSpecs(
+        months: List<MonthMusicsPreview>,
         musics: List<Music>,
         playedList: List<Music>,
         hasValidCloudInformation: Boolean,
@@ -136,7 +138,11 @@ class MonthBottomSheetViewModel(
             add(
                 BottomSheetRowSpec(
                     icon = CoreRes.drawable.ic_delete_filled,
-                    title = strings.deleteMonthMusics,
+                    title = if (months.size == 1) {
+                        strings.deleteMonthMusics
+                    } else {
+                        strings.deleteSelectedMonthsMusics
+                    },
                     onClick = ::showDeleteDialog,
                 )
             )
@@ -228,11 +234,20 @@ class MonthBottomSheetViewModel(
     }
 
     private fun showDeleteDialog() {
+        val isSingleMonthSelection: Boolean = state.value.months.size == 1
         dialogState.value = DeleteMusicsDialog(
             onDelete = ::deleteMusics,
             onClose = { dialogState.value = null },
-            title = strings.deleteMonthMusicsDialogTitle,
-            text = strings.deleteMonthMusicsDialogText,
+            title = if (isSingleMonthSelection) {
+                strings.deleteMonthMusicsDialogTitle
+            } else {
+                strings.deleteSelectedMonthsMusicsDialogTitle
+            },
+            text = if (isSingleMonthSelection) {
+                strings.deleteMonthMusicsDialogText
+            } else {
+                strings.deleteSelectedMonthsMusicsDialogText
+            },
         )
     }
 

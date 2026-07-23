@@ -205,7 +205,7 @@ fun PlayerDraggableView(
                         settingsState = settingsState,
                         onLongSelectOnMusic = {
                             playerViewModel.multiSelectionManager.toggleElementInSelection(
-                                id = it.musicId,
+                                id = it.musicId.toString(),
                                 mode = SelectionMode.Music,
                             )
                         },
@@ -260,4 +260,3 @@ private fun <T> ifOwnedByUser(state: PlayerViewState.Data, scope: () -> T): T? =
     } else {
         null
     }
-
