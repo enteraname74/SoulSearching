@@ -1,5 +1,8 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.gradle.api.tasks.Exec
+import org.gradle.api.tasks.bundling.Compression
+import org.gradle.api.tasks.bundling.Tar
 
 plugins {
     id("soulsearching.kmp.compose")
@@ -126,60 +129,144 @@ compose.desktop {
     }
 }
 
-tasks {
-    register<Tar>("packageTarReleaseDistributable") {
+val appId = "io.github.enteraname74.soulsearching"
+val appVersion = libs.versions.application.version.name.get()
+
+val manifestFile = layout.projectDirectory.file("$appId.yml")
+
+val flatpakRootDirectory = layout.buildDirectory.dir("flatpak")
+val flatpakBuildDirectory = layout.buildDirectory.dir("flatpak/build-dir")
+val flatpakRepositoryDirectory = layout.buildDirectory.dir("flatpak/repo")
+val flatpakBundleFile = flatpakRootDirectory.map {
+    it.file("$appId-$appVersion.flatpak")
+}
+
+val packageTarReleaseDistributable =
+    tasks.register<Tar>("packageTarReleaseDistributable") {
         group = "compose desktop"
-        from(named("createReleaseDistributable"))
-        archiveBaseName = "soulsearching"
-        archiveClassifier = "linux"
+        description = "Creates the Linux release distributable archive."
+
+        dependsOn("createReleaseDistributable")
+
+        from(
+            providers.provider {
+                tasks.getByName("createReleaseDistributable").outputs.files
+            }
+        )
+
+        // Gradle 9 normalizes archive file permissions to 0644.
+        filesMatching(
+            listOf(
+                "**/bin/**",
+                "**/lib/jspawnhelper",
+            )
+        ) {
+            permissions {
+                unix("755")
+            }
+        }
+
+        archiveBaseName.set("soulsearching")
+        archiveClassifier.set("linux")
+        archiveExtension.set("tar.gz")
+        archiveVersion.set("")
         compression = Compression.GZIP
-        archiveExtension = "tar.gz"
 
-        val version = libs.versions.application.version.name.get()
-
-        archiveFileName = "soulsearching-$version-linux.tar.gz"
+        destinationDirectory.set(layout.buildDirectory.dir("distributions"))
+        archiveFileName.set("soulsearching-$appVersion-linux.tar.gz")
     }
 
-    register("packageFlatpakReleaseDistributable") {
+val buildFlatpak =
+    tasks.register<Exec>("buildFlatpak") {
         group = "compose desktop"
-        description = "Builds a flatpak and stores it in the build/flatpak folder."
-        dependsOn("packageTarReleaseDistributable")
+        description = "Builds the Flatpak application directory."
 
-        val appId = "io.github.enteraname74.soulsearching"
-        val appVersion = libs.versions.application.version.name.get()
+        dependsOn(packageTarReleaseDistributable)
 
-        doLast {
-            println("packageFlatpakReleaseDistributable -- INFO -- Building manifest")
-            providers.exec {
-                commandLine(
-                    "flatpak-builder",
-                    "--user",
-                    "--force-clean",
-                    "build-dir",
-                    "$appId.yml"
-                )
-            }.result.get()
-            println("packageFlatpakReleaseDistributable -- INFO -- Creating flatpak executable")
-            providers.exec {
-                commandLine(
-                    "flatpak",
-                    "build-export",
-                    "repo",
-                    "build-dir"
-                )
-            }.result.get()
-            val outputDir = file("${layout.buildDirectory.get().asFile.absolutePath}/flatpak")
-            outputDir.mkdirs()
-            println("packageFlatpakReleaseDistributable -- Will install flatpak in: $outputDir")
-            providers.exec {
-                commandLine(
-                    "flatpak",
-                    "build-bundle",
-                    "repo",
-                    "${outputDir.absolutePath}/$appId-$appVersion.flatpak",
-                    appId
-                )
-            }.result.get()
+        inputs.file(manifestFile)
+        inputs.file(packageTarReleaseDistributable.flatMap { it.archiveFile })
+
+        workingDir(layout.projectDirectory.asFile)
+
+        doFirst {
+            val buildDirectory = flatpakBuildDirectory.get().asFile
+
+            logger.lifecycle("Building Flatpak from: ${manifestFile.asFile}")
+            logger.lifecycle("Flatpak build directory: $buildDirectory")
+
+            commandLine(
+                "flatpak-builder",
+                "--user",
+                "--force-clean",
+                buildDirectory.absolutePath,
+                manifestFile.asFile.absolutePath,
+            )
         }
+    }
+
+val exportFlatpakRepository =
+    tasks.register<Exec>("exportFlatpakRepository") {
+        group = "compose desktop"
+        description = "Exports the Flatpak build into an OSTree repository."
+
+        dependsOn(buildFlatpak)
+
+        workingDir(layout.projectDirectory.asFile)
+
+        doFirst {
+            val repositoryDirectory =
+                flatpakRepositoryDirectory.get().asFile
+
+            val buildDirectory =
+                flatpakBuildDirectory.get().asFile
+
+            repositoryDirectory.mkdirs()
+
+            logger.lifecycle(
+                "Exporting Flatpak repository to: $repositoryDirectory"
+            )
+
+            commandLine(
+                "flatpak",
+                "build-export",
+                repositoryDirectory.absolutePath,
+                buildDirectory.absolutePath,
+            )
+        }
+    }
+
+tasks.register<Exec>("packageFlatpakReleaseDistributable") {
+    group = "compose desktop"
+    description =
+        "Builds a Flatpak bundle and stores it in build/flatpak."
+
+    dependsOn(exportFlatpakRepository)
+
+    workingDir(layout.projectDirectory.asFile)
+
+    outputs.file(flatpakBundleFile)
+
+    doFirst {
+        val repositoryDirectory =
+            flatpakRepositoryDirectory.get().asFile
+
+        val bundleFile = flatpakBundleFile.get().asFile
+
+        bundleFile.parentFile.mkdirs()
+
+        // build-bundle may refuse to overwrite an existing bundle.
+        if (bundleFile.exists() && !bundleFile.delete()) {
+            error("Unable to replace existing bundle: $bundleFile")
+        }
+
+        logger.lifecycle("Creating Flatpak bundle: $bundleFile")
+
+        commandLine(
+            "flatpak",
+            "build-bundle",
+            repositoryDirectory.absolutePath,
+            bundleFile.absolutePath,
+            appId,
+        )
     }
 }
