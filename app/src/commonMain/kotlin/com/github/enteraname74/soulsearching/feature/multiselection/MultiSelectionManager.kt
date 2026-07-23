@@ -25,7 +25,7 @@ class MultiSelectionManager {
      * Add or remove an element to the selection.
      */
     fun toggleElementInSelection(
-        id: Uuid,
+        id: String,
         mode: SelectionMode,
         playlistId: Uuid? = null,
     ) {
@@ -51,7 +51,7 @@ class MultiSelectionManager {
         }
     }
 
-    fun isActive(): Boolean = _state.value.selectedIds.isNotEmpty()
+    fun isActive(): Boolean = _state.value.totalSelected > 0
 
     fun clearMultiSelection() {
         _state.value = MultiSelectionState()
@@ -64,20 +64,29 @@ class MultiSelectionManager {
     fun showBottomSheet() {
         _navigationState.value = when (_selectionMode) {
             SelectionMode.Music -> MultiSelectionNavigationState.ToMusicBottomSheet(
-                musicIds = _state.value.selectedIds,
+                musicIds = _state.value.selectedUuids(),
                 playlistId = _state.value.playlistId,
             )
             SelectionMode.Playlist -> MultiSelectionNavigationState.ToPlaylistBottomSheet(
-                playlistIds = _state.value.selectedIds,
+                playlistIds = _state.value.selectedUuids(),
             )
             SelectionMode.Album -> MultiSelectionNavigationState.ToAlbumBottomSheet(
-                albumIds = _state.value.selectedIds,
+                albumIds = _state.value.selectedUuids(),
             )
             SelectionMode.Artist -> MultiSelectionNavigationState.ToArtistBottomSheet(
-                artistIds = _state.value.selectedIds,
+                artistIds = _state.value.selectedUuids(),
+            )
+            SelectionMode.Folder -> MultiSelectionNavigationState.ToFolderBottomSheet(
+                folderPaths = _state.value.selectedIds,
+            )
+            SelectionMode.Month -> MultiSelectionNavigationState.ToMonthBottomSheet(
+                months = _state.value.selectedIds,
             )
         }
     }
+
+    private fun MultiSelectionState.selectedUuids(): List<Uuid> =
+        selectedIds.mapNotNull { Uuid.parseOrNull(it) }
 }
 
 enum class SelectionMode {
@@ -85,4 +94,6 @@ enum class SelectionMode {
     Playlist,
     Album,
     Artist,
+    Folder,
+    Month,
 }

@@ -4,7 +4,9 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.folder.FolderBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistDestination
@@ -136,6 +138,18 @@ data object MainPageDestination : NavKey {
                         is MainPageNavigationState.ToArtistBottomSheet -> {
                             navigator.push(
                                 ArtistBottomSheetDestination(it.artistIds)
+                            )
+                        }
+
+                        is MainPageNavigationState.ToFolderBottomSheet -> {
+                            navigator.push(
+                                FolderBottomSheetDestination(it.folderPaths)
+                            )
+                        }
+
+                        is MainPageNavigationState.ToMonthBottomSheet -> {
+                            navigator.push(
+                                MonthBottomSheetDestination(it.months)
                             )
                         }
                     }

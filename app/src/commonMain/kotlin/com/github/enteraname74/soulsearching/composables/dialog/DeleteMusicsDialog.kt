@@ -8,16 +8,18 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 
-class DeleteMusicDialog(
+class DeleteMusicsDialog(
     private val onDelete: () -> Unit,
     private val onClose: () -> Unit,
-): SoulDialog {
+    private val title: String,
+    private val text: String,
+) : SoulDialog {
 
     @Composable
     override fun Dialog() {
         SoulAlertDialog(
-            title = strings.deleteMusicDialogTitle,
-            text = strings.deleteMusicDialogText,
+            title = title,
+            text = text,
             confirmAction = onDelete,
             dismissAction = onClose,
             confirmText = strings.delete,

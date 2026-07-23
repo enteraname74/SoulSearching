@@ -12,7 +12,9 @@ import androidx.savedstate.serialization.SavedStateConfiguration
 import com.github.enteraname74.soulsearching.PlayerViewScaffold
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.folder.FolderBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
@@ -118,6 +120,22 @@ private fun MainAppRoute(
                         navigator.push(
                             ArtistBottomSheetDestination(
                                 artistIds = navigationState.artistIds,
+                            )
+                        )
+                    }
+
+                    is MultiSelectionNavigationState.ToFolderBottomSheet -> {
+                        navigator.push(
+                            FolderBottomSheetDestination(
+                                folderPaths = navigationState.folderPaths,
+                            )
+                        )
+                    }
+
+                    is MultiSelectionNavigationState.ToMonthBottomSheet -> {
+                        navigator.push(
+                            MonthBottomSheetDestination(
+                                months = navigationState.months,
                             )
                         )
                     }

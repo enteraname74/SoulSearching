@@ -8,8 +8,9 @@ import kotlinx.coroutines.flow.first
 class CommonFolderUseCase(
     private val folderRepository: FolderRepository,
 ) {
-    suspend fun deleteAll(folders: List<Folder>) =
+    suspend fun deleteAll(folders: List<Folder>) {
         folderRepository.deleteAll(folders = folders)
+    }
 
     fun getAll(): Flow<List<Folder>> =
         folderRepository.getAll()

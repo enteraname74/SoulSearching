@@ -142,7 +142,7 @@ class SelectedAlbumViewModel(
 
     override fun onLongClickOnMusic(musicId: Uuid) {
         multiSelectionManager.toggleElementInSelection(
-            id = musicId,
+            id = musicId.toString(),
             mode = SelectionMode.Music,
         )
     }

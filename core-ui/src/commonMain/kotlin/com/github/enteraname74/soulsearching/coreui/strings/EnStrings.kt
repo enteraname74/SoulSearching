@@ -118,6 +118,16 @@ object EnStrings : Strings {
 
     override val deleteSelectedMusicsDialogTitle = "Are you sure to delete the selected songs?"
     override val deleteSelectedMusicsDialogText = "They will be removed from the application."
+    override val deleteFolderMusicsDialogTitle = "Are you sure to delete this folder?"
+    override val deleteFolderMusicsDialogText =
+        "All songs from this folder will be removed from the application. The folder will also be disabled for future fetching."
+    override val deleteSelectedFoldersMusicsDialogTitle = "Are you sure to delete the selected folders?"
+    override val deleteSelectedFoldersMusicsDialogText =
+        "All songs from these folders will be removed from the application. These folders will also be disabled for future fetching."
+    override val deleteMonthMusicsDialogTitle = "Are you sure to delete this month selection?"
+    override val deleteMonthMusicsDialogText = "All songs from this month will be removed from the application."
+    override val deleteSelectedMonthsMusicsDialogTitle = "Are you sure to delete the selected month selections?"
+    override val deleteSelectedMonthsMusicsDialogText = "All songs from these months will be removed from the application."
     override val deleteSelectedAlbumsDialogTitle = "Are you sure to delete the selected albums?"
     override val deleteSelectedArtistsDialogTitle = "Are you sure to delete the selected artists?"
     override val deleteSelectedPlaylistsDialogTitle = "Are you sure to delete the selected playlists?"
@@ -146,6 +156,10 @@ object EnStrings : Strings {
     override val deleteSelectedArtists = "Delete selected artists"
     override val deleteSelectedPlaylists = "Delete selected playlists"
     override val deleteSelectedMusics = "Delete selected songs"
+    override val deleteFolderMusics = "Delete folder"
+    override val deleteSelectedFoldersMusics = "Delete selected folders"
+    override val deleteMonthMusics = "Delete month selection"
+    override val deleteSelectedMonthsMusics = "Delete selected month selections"
 
     override val playNext = "Play next"
     override val addToQueue = "Add to queue"

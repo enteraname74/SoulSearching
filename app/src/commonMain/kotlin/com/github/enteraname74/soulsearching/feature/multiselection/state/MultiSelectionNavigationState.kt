@@ -21,4 +21,12 @@ sealed interface MultiSelectionNavigationState {
     data class ToAlbumBottomSheet(
         val albumIds: List<Uuid>,
     ) : MultiSelectionNavigationState
+
+    data class ToFolderBottomSheet(
+        val folderPaths: List<String>,
+    ) : MultiSelectionNavigationState
+
+    data class ToMonthBottomSheet(
+        val months: List<String>,
+    ) : MultiSelectionNavigationState
 }
