@@ -13,6 +13,7 @@ finish-args:
   - --filesystem=home
   - --device=dri
   - --socket=x11
+  - --own-name=org.mpris.MediaPlayer2.SoulSearching
 modules:
   - name: vlc
     buildsystem: autotools

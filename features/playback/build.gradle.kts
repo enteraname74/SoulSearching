@@ -47,6 +47,8 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 //                implementation(libs.jlibnotify)
+                implementation(libs.dbus)
+                implementation(libs.dbus.transport.native.unixsocket)
                 implementation(libs.coroutines.core.swing)
                 implementation(libs.vlcj)
             }
