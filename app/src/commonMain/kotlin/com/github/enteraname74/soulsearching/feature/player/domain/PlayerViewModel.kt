@@ -230,7 +230,6 @@ class PlayerViewModel(
                         If playback is stopped, we must ensure that the view is collapsed.
                          */
                         !isData -> {
-                            println("CLUELESS -- 1")
                             playerViewManager.animateTo(BottomSheetStates.COLLAPSED)
                         }
                         /*
@@ -238,7 +237,6 @@ class PlayerViewModel(
                         we need to move to minimized mode.
                          */
                         isData && !hasRestoredPlayerView && isCollapsed -> {
-                            println("CLUELESS -- 2")
                             playerViewManager.animateTo(BottomSheetStates.MINIMISED)
                         }
                         /*
@@ -247,7 +245,6 @@ class PlayerViewModel(
                         we should animate to minimized mode if the view is collapsed.
                          */
                         isData && isCollapsed && isLoading -> {
-                            println("CLUELESS -- 3")
                             playerViewManager.animateTo(BottomSheetStates.MINIMISED)
                         }
                         /*
@@ -255,12 +252,10 @@ class PlayerViewModel(
                         animate to expanded.
                          */
                         isData && isCollapsed -> {
-                            println("CLUELESS -- 4")
                             playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                         }
 
                         else -> {
-                            println("CLUELESS -- 5")
                             // no-op
                         }
                     }
