@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
 fun allMusicFoldersTab(
     state: StateFlow<AllMusicFoldersState>,
     navigateToFolder: (folderPath: String) -> Unit,
+    showFolderBottomSheet: (folderPath: String) -> Unit,
     showSoulMixDialog: () -> Unit,
     onSoulMixClicked: () -> Unit,
 ): PagerScreen = PagerScreen(
@@ -55,7 +56,9 @@ fun allMusicFoldersTab(
                 onClick = {
                     navigateToFolder(element.folder)
                 },
-                onLongClick = { }
+                onLongClick = {
+                    showFolderBottomSheet(element.folder)
+                }
             )
         }
     }

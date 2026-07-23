@@ -20,6 +20,8 @@ sealed interface MainPageNavigationState {
     data class ToPlaylistBottomSheet(val playlistIds: List<Uuid>) : MainPageNavigationState
     data class ToArtistBottomSheet(val artistIds: List<Uuid>) : MainPageNavigationState
     data class ToAlbumBottomSheet(val albumIds: List<Uuid>) : MainPageNavigationState
+    data class ToFolderBottomSheet(val folderPaths: List<String>) : MainPageNavigationState
+    data class ToMonthBottomSheet(val months: List<String>) : MainPageNavigationState
 
     data class ToAdvancedSettings(
         val focusedElement: SettingsAdvancedScreenFocusedElement?,

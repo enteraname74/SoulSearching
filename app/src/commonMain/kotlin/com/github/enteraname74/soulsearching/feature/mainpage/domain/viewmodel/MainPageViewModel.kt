@@ -542,6 +542,9 @@ class MainPageViewModel(
                                 )
                             )
                         },
+                        showFolderBottomSheet = {
+                            showFolderBottomSheet(listOf(it))
+                        },
                         showSoulMixDialog = ::showSoulMixDialog,
                         onSoulMixClicked = ::onSoulMixClicked
                     )
@@ -644,6 +647,18 @@ class MainPageViewModel(
     fun showAlbumBottomSheet(albumIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToAlbumBottomSheet(
             albumIds = albumIds,
+        )
+    }
+
+    fun showFolderBottomSheet(folderPaths: List<String>) {
+        _navigationState.value = MainPageNavigationState.ToFolderBottomSheet(
+            folderPaths = folderPaths,
+        )
+    }
+
+    fun showMonthBottomSheet(months: List<String>) {
+        _navigationState.value = MainPageNavigationState.ToMonthBottomSheet(
+            months = months,
         )
     }
 

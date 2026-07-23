@@ -117,6 +117,11 @@ object FrStrings : Strings {
 
     override val deleteSelectedMusicsDialogTitle = "Voulez-vous vraiment supprimer ces musiques ?"
     override val deleteSelectedMusicsDialogText = "Elles seront supprimées de l'application."
+    override val deleteFolderMusicsDialogTitle = "Voulez-vous vraiment supprimer ce dossier ?"
+    override val deleteFolderMusicsDialogText =
+        "Toutes les musiques de ce dossier seront supprimées de l'application. Le dossier sera aussi désactivé pour les prochains imports."
+    override val deleteMonthMusicsDialogTitle = "Voulez-vous vraiment supprimer cette sélection du mois ?"
+    override val deleteMonthMusicsDialogText = "Toutes les musiques de ce mois seront supprimées de l'application."
     override val deleteSelectedAlbumsDialogTitle = "Voulez-vous vraiment supprimer ces albums ?"
     override val deleteSelectedArtistsDialogTitle = "Voulez-vous vraiment supprimer ces artistes ?"
     override val deleteSelectedPlaylistsDialogTitle = "Voulez-vous vraiment supprimer ces playlists ?"
@@ -147,6 +152,8 @@ object FrStrings : Strings {
     override val deleteSelectedArtists = "Supprimer les artistes sélectionnés"
     override val deleteSelectedPlaylists = "Supprimer les playlists sélectionnées"
     override val deleteSelectedMusics = "Supprimer les musiques sélectionnées"
+    override val deleteFolderMusics = "Supprimer le dossier"
+    override val deleteMonthMusics = "Supprimer la sélection du mois"
 
     override val playNext = "Jouer ensuite"
     override val addToQueue = "Ajouter à la file d'attente"

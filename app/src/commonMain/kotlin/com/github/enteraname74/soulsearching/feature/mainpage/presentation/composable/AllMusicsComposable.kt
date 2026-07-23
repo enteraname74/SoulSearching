@@ -31,6 +31,7 @@ fun AllMusicsComposable(
     musicState: AllMusicsState,
     multiSelectionState: MultiSelectionState,
     navigateToMonth: (month: String) -> Unit,
+    showMonthBottomSheet: (month: String) -> Unit,
     setSortType: (SortType) -> Unit,
     toggleSortDirection: () -> Unit = {},
     isUsingSort: Boolean = true,
@@ -58,7 +59,7 @@ fun AllMusicsComposable(
                 MusicMonthsHorizontalList(
                     months = musicState.monthMusicPreviews,
                     onMonthClicked = navigateToMonth,
-                    onMonthLongClicked = {}
+                    onMonthLongClicked = showMonthBottomSheet,
                 )
             }
         }

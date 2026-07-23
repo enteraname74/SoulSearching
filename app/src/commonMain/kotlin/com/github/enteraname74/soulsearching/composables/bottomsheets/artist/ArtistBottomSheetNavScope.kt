@@ -5,4 +5,5 @@ import kotlin.uuid.Uuid
 interface ArtistBottomSheetNavScope {
     val navigateBack: () -> Unit
     val toModifyArtist: (artistId: Uuid) -> Unit
+    val toAddToPlaylists: (musicIds: List<Uuid>) -> Unit
 }

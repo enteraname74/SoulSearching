@@ -23,6 +23,9 @@ fun allMusicsTab(
         AllMusicsComposable(
             musicState = musicState,
             navigateToMonth = navigateToMonth,
+            showMonthBottomSheet = {
+                mainPageViewModel.showMonthBottomSheet(listOf(it))
+            },
             setSortType = mainPageViewModel::setMusicSortType,
             toggleSortDirection = {
                 val newDirection =

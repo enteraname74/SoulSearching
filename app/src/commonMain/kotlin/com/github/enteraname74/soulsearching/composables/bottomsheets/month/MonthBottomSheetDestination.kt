@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
+package com.github.enteraname74.soulsearching.composables.bottomsheets.month
 
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
@@ -20,7 +20,6 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addt
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistDestination
 import com.github.enteraname74.soulsearching.navigation.BottomSheetSceneStrategy
 import com.github.enteraname74.soulsearching.navigation.LocalBottomSheetCloseWithAnimAction
 import com.github.enteraname74.soulsearching.navigation.NavigationAnimations
@@ -33,20 +32,19 @@ import org.koin.core.parameter.parametersOf
 import kotlin.uuid.Uuid
 
 @Serializable
-data class PlaylistBottomSheetDestination(
-    val playlistIds: List<Uuid>,
+data class MonthBottomSheetDestination(
+    val months: List<String>,
 ) : BottomSheetDestination {
     companion object {
         fun register(
             entryProviderScope: EntryProviderScope<NavKey>,
             navigator: Navigator,
         ) {
-            entryProviderScope.entry<PlaylistBottomSheetDestination>(
+            entryProviderScope.entry<MonthBottomSheetDestination>(
                 metadata = BottomSheetSceneStrategy.bottomSheet()
             ) { params ->
                 NavHost(
-                    initialRoute = InnerPlaylistDestination(params.playlistIds),
-                    parentNavigator = navigator,
+                    initialRoute = InnerMonthDestination(params.months),
                 )
             }
         }
@@ -54,19 +52,19 @@ data class PlaylistBottomSheetDestination(
 }
 
 @Serializable
-data class InnerPlaylistDestination(
-    val playlistIds: List<Uuid>,
+data class InnerMonthDestination(
+    val months: List<String>,
 ) : NavKey {
     companion object {
         fun register(
             entryProviderScope: EntryProviderScope<NavKey>,
-            navScope: PlaylistBottomSheetNavScope,
+            navScope: MonthBottomSheetNavScope,
         ) {
-            entryProviderScope.entry<InnerPlaylistDestination> { params ->
-                val viewModel: PlaylistBottomSheetViewModel = koinViewModel {
-                    parametersOf(navScope, PlaylistBottomSheetDestination(params.playlistIds))
+            entryProviderScope.entry<InnerMonthDestination> { params ->
+                val viewModel: MonthBottomSheetViewModel = koinViewModel {
+                    parametersOf(navScope, MonthBottomSheetDestination(params.months))
                 }
-                PlaylistBottomSheetScreen(
+                MonthBottomSheetScreen(
                     viewModel = viewModel,
                 )
             }
@@ -77,7 +75,6 @@ data class InnerPlaylistDestination(
 @Composable
 private fun NavHost(
     initialRoute: NavKey,
-    parentNavigator: Navigator,
     loadingManager: LoadingManager = injectElement(),
 ) {
     val isLoading: Boolean by loadingManager.state.collectAsStateWithLifecycle()
@@ -112,16 +109,11 @@ private fun NavHost(
         transitionSpec = { NavigationAnimations.default },
         popTransitionSpec = { NavigationAnimations.default },
         entryProvider = entryProvider {
-            InnerPlaylistDestination.register(
+            InnerMonthDestination.register(
                 entryProviderScope = this,
-                navScope = object : PlaylistBottomSheetNavScope {
+                navScope = object : MonthBottomSheetNavScope {
                     override val navigateBack: () -> Unit = {
                         closeWithAnim { }
-                    }
-                    override val toModifyPlaylist: (playlistId: Uuid) -> Unit = { playlistId ->
-                        closeWithAnim {
-                            parentNavigator.push(ModifyPlaylistDestination(playlistId))
-                        }
                     }
                     override val toAddToPlaylists: (musicIds: List<Uuid>) -> Unit = {
                         navigator.push(
@@ -149,7 +141,7 @@ private fun NavHost(
 
 private val SerializerModule = SerializersModule {
     polymorphic(NavKey::class) {
-        subclass(InnerPlaylistDestination::class, InnerPlaylistDestination.serializer())
+        subclass(InnerMonthDestination::class, InnerMonthDestination.serializer())
         subclass(AddToPlaylistBottomSheetDestination::class, AddToPlaylistBottomSheetDestination.serializer())
     }
 }
