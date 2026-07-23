@@ -5,7 +5,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.enteraname74.domain.model.Platform
 import com.github.enteraname74.domain.util.PlatformUtils
-import com.github.enteraname74.domain.util.isNonAndroid
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_bar_chart
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cloud_filled
@@ -15,6 +14,7 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_keyboard
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_palette_filled
+import com.github.enteraname74.soulsearching.coreui.ext.isMouseAndKeyboardOnly
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -35,6 +35,7 @@ fun SettingsRoute(
     val viewModel: SettingsScreenViewModel = koinViewModel()
 
     val shouldShowNewVersionPin: Boolean by viewModel.shouldShowNewVersionPin.collectAsState()
+    val isMouseAndKeyboardOnly = PlatformUtils.isMouseAndKeyboardOnly()
 
     SettingPage(
         navigateBack = navigateBack,
@@ -82,7 +83,7 @@ fun SettingsRoute(
                 onClick = toAdvancedSettings,
             )
         }
-        if (PlatformUtils.isNonAndroid) {
+        if (isMouseAndKeyboardOnly) {
             item {
                 SoulMenuElement(
                     title = strings.shortcutsTitle,
