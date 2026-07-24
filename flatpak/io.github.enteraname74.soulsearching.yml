@@ -1,0 +1,74 @@
+app-id: io.github.enteraname74.soulsearching
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk21
+command: SoulSearching
+
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=pulseaudio
+  - --filesystem=xdg-music
+  - --device=dri
+  - --socket=x11
+  - --own-name=org.mpris.MediaPlayer2.SoulSearching
+
+build-options:
+  append-path: /usr/lib/sdk/openjdk21/bin
+  env:
+    JAVA_HOME: /usr/lib/sdk/openjdk21
+    GRADLE_USER_HOME: /run/build/SoulSearching/.gradle
+
+modules:
+  - name: vlc
+    buildsystem: autotools
+    rm-configure: true
+    config-opts:
+      - BUILDCC=/usr/bin/gcc -std=gnu99
+      - --disable-a52
+      - --disable-lua
+      - --disable-qt
+      - --disable-skins2
+      - --disable-nls
+    post-install:
+      - rm -f /app/lib/vlc/plugins/plugins.dat
+      - /app/lib/vlc/vlc-cache-gen /app/lib/vlc/plugins
+    sources:
+      - type: archive
+        url: https://download.videolan.org/videolan/vlc/3.0.23/vlc-3.0.23.tar.xz
+        sha256: e891cae6aa3ccda69bf94173d5105cbc55c7a7d9b1d21b9b21666e69eff3e7e0
+
+  - name: SoulSearching
+    buildsystem: simple
+    build-commands:
+      - gradle-dist/gradle-9.5.1/bin/gradle
+        --offline
+        --no-daemon
+        --stacktrace
+        :app:createReleaseDistributable
+      - cp -a app/build/compose/binaries/main-release/app/SoulSearching /app/SoulSearching
+      - install -d /app/bin
+      - ln -s /app/SoulSearching/bin/SoulSearching /app/bin/SoulSearching
+      - install -Dm644 app/io.github.enteraname74.soulsearching.desktop
+        /app/share/applications/io.github.enteraname74.soulsearching.desktop
+      - install -Dm644 app/src/commonMain/composeResources/drawable/app_icon.png
+        /app/share/icons/hicolor/512x512/apps/io.github.enteraname74.soulsearching.png
+      - install -Dm644 io.github.enteraname74.soulsearching.metainfo.xml
+        /app/share/metainfo/io.github.enteraname74.soulsearching.metainfo.xml
+    sources:
+      - type: git
+        url: https://github.com/enteraname74/SoulSearching.git
+        # Uncomment once tag is created
+        # tag: v0.16.0
+        commit: 021df61f4bf9a124056dc7bc3b3af06c0f51f8cb
+      - type: archive
+        url: https://services.gradle.org/distributions/gradle-9.5.1-bin.zip
+        sha256: 265bafc141b619ad6350fd975fc903156dd5c151998cc8b058e8c1044ab5f7b031f
+        dest: gradle-dist
+      - flatpak-sources-x86_64.json
+      - flatpak-sources-aarch64.json
+      - type: file
+        path: io.github.enteraname74.soulsearching.metainfo.xml
+

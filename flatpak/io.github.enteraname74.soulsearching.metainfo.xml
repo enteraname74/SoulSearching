@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.enteraname74.soulsearching</id>
+  <name>Soul Searching</name>
+  <summary>Listen to and manage your local music collection</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <description>
+    <p>
+      Soul Searching is a customizable music player for listening to and
+      managing a local music collection.
+    </p>
+    <p>
+      It supports playlists, multiple artists, synchronized lyrics, listening
+      statistics, metadata editing, search, sorting, and dynamic themes based
+      on album artwork.
+    </p>
+  </description>
+  <launchable type="desktop-id">io.github.enteraname74.soulsearching.desktop</launchable>
+  <url type="homepage">https://github.com/enteraname74/SoulSearching</url>
+  <url type="bugtracker">https://github.com/enteraname74/SoulSearching/issues</url>
+  <url type="vcs-browser">https://github.com/enteraname74/SoulSearching</url>
+  <developer id="io.github.enteraname74">
+    <name>enteraname74</name>
+  </developer>
+  <provides>
+    <binary>SoulSearching</binary>
+  </provides>
+  <categories>
+    <category>Audio</category>
+    <category>Music</category>
+  </categories>
+  <releases>
+    <release version="0.16.0" date="2026-07-24"/>
+  </releases>
+  <content_rating type="oars-1.1"/>
+</component>
+

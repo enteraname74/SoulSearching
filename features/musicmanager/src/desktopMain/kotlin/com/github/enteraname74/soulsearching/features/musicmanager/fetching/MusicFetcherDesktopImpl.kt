@@ -7,6 +7,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Scope
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.domain.util.AppDirectories
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.flow.firstOrNull
 import org.jaudiotagger.audio.AudioFile
@@ -130,7 +131,7 @@ internal class MusicFetcherDesktopImpl(
     override suspend fun fetchMusics(
         updateProgress: (Float, String?) -> Unit,
     ) {
-        val root = File(System.getProperty("user.home"))
+        val root = AppDirectories.music.toFile()
         extractMusicsFromCurrentDirectory(
             directory = root,
             updateProgress = updateProgress,
@@ -144,7 +145,7 @@ internal class MusicFetcherDesktopImpl(
         hiddenFoldersPaths: List<String>
     ): List<SelectableMusicItem> {
         val newMusics = ArrayList<SelectableMusicItem>()
-        val root = File(System.getProperty("user.home"))
+        val root = AppDirectories.music.toFile()
 
         extractMusicsFromCurrentDirectory(
             directory = root,
