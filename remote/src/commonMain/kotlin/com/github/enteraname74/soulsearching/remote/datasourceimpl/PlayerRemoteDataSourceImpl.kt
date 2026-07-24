@@ -147,7 +147,6 @@ class PlayerRemoteDataSourceImpl(
             }.successOrThrow()
     }
 
-
     override suspend fun addMusicFromURL(deviceId: String, listId: Uuid, url: String) {
         client.withUrl(cloudPreferencesDataSource.getUrl())
             .post(PlayerResource.Url()) {
@@ -251,7 +250,6 @@ class PlayerRemoteDataSourceImpl(
             .withUrl(cloudPreferencesDataSource.getUrl())
             .get(PlayerResource())
             .bodyOrThrow()
-
 
     override suspend fun getPlayerToken(): PlayerToken =
         client

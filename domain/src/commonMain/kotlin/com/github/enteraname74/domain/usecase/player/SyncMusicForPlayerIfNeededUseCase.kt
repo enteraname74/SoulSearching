@@ -45,6 +45,10 @@ class SyncMusicForPlayerIfNeededUseCase(
         }
         musicRepository.upsertAll(updatedMusics)
 
-        return (updatedMusics + alreadySyncMusics).distinctBy { it.musicId }
+        // We want to keep the order of the musics that the user selected.
+        val finalList: List<Music> = (updatedMusics + alreadySyncMusics).distinctBy { it.musicId }
+        val byIds = finalList.associateBy { it.musicId }
+
+        return musicIds.mapNotNull { byIds[it] }
     }
 }
