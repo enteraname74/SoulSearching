@@ -19,6 +19,8 @@ class SoulSearchingDesktopPlayerImpl(
 ) :
     SoulSearchingPlayer,
     MediaPlayerEventAdapter() {
+    private var startPlayBuffered: Boolean = false
+    private var startPauseBuffered: Boolean = false
     private val workScope = CoroutineScope(workDispatcher.dispatcher)
 
     private var player: MediaPlayer = AudioPlayerComponent().mediaPlayer()
@@ -36,6 +38,10 @@ class SoulSearchingDesktopPlayerImpl(
     }
 
     override fun playing(mediaPlayer: MediaPlayer?) {
+        if (startPlayBuffered) {
+            startPlayBuffered = false
+            return
+        }
         super.playing(mediaPlayer)
         workScope.launch {
             listener?.onPlay()
@@ -43,6 +49,10 @@ class SoulSearchingDesktopPlayerImpl(
     }
 
     override fun paused(mediaPlayer: MediaPlayer?) {
+        if (startPauseBuffered) {
+            startPauseBuffered = false
+            return
+        }
         super.paused(mediaPlayer)
         workScope.launch {
             listener?.onPause()
@@ -72,13 +82,13 @@ class SoulSearchingDesktopPlayerImpl(
     override suspend fun setMusic(music: Music) {
         try {
             if (player.status().state() == State.PLAYING) {
-                player.controls().pause()
+                player.controls().stop()
             }
             // Necessary to avoid blocking the app.
             delay(500.milliseconds)
             when {
                 music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
-                    player.media().prepare(music.path)
+                    safeStartPaused(music.localPath!!)
                 }
                 music.remotePath != null -> {
                     setFromRemote(music = music)
@@ -93,6 +103,16 @@ class SoulSearchingDesktopPlayerImpl(
         }
     }
 
+    /**
+     * Because player startPaused method quickly start playing the song then pauses it,
+     * we need to avoid emitting events.
+     */
+    private fun safeStartPaused(path: String) {
+        startPlayBuffered = true
+        startPauseBuffered = true
+        player.media().startPaused(path)
+    }
+
     private suspend fun setFromRemote(music: Music) {
         val token = signedPlaybackUrlProvider.getUpdatedToken()
 
@@ -104,7 +124,7 @@ class SoulSearchingDesktopPlayerImpl(
             token = token,
             remoteId = music.remoteId.orEmpty(),
         )
-        player.media().prepare(musicUrl)
+        safeStartPaused(musicUrl)
     }
 
     override suspend fun play() {

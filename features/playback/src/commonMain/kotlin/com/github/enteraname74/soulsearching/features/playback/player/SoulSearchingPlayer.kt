@@ -18,22 +18,6 @@ interface SoulSearchingPlayer {
     suspend fun setMusic(music: Music)
 
     /**
-     * Play or pause the current music.
-     */
-    suspend fun togglePlayPause() {
-        try {
-            when (isPlaying()) {
-                true -> pause()
-                false -> play()
-                null -> {
-                    // no-op
-                }
-            }
-        } catch (_: Exception) {
-        }
-    }
-
-    /**
      * Play the loaded music.
      */
     suspend fun play()
