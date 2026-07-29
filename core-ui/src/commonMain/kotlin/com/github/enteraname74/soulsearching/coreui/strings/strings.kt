@@ -380,12 +380,6 @@ interface Strings {
     val cloudSharedListJoinTitle: String
     val cloudSharedlistJoinText: String
     val joinSharedListButton: String
-
-    val cloudFetchMusicTitle: String
-    val cloudFetchMusicText: String
-    val cloudFetchMusicFieldLabel: String
-    val cloudFetchMusicButton: String
-
     val cloudUsersTitle: String
     val cloudUsersText: String
     val cloudUsersDeleteDialogTitle: String

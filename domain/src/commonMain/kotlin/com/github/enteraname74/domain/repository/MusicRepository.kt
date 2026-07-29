@@ -102,9 +102,9 @@ interface MusicRepository {
     suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music>
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music>
 
-    suspend fun getAllMusicFromMonth(month: String) : List<Music>
+    suspend fun getAllMusicFromMonth(month: String): List<Music>
 
-    suspend fun getAllMusicFromFolder(folder: String) : List<Music>
+    suspend fun getAllMusicFromFolder(folder: String): List<Music>
 
     fun getAlbumDuration(albumId: Uuid): Flow<Duration>
     fun getArtistDuration(artistId: Uuid): Flow<Duration>
@@ -149,7 +149,6 @@ interface MusicRepository {
 
     suspend fun deleteSharedPlayedListMusics()
 
-    suspend fun fetch(url: String): CloudMusic
     suspend fun getFromPath(path: String): Music?
 
     /**

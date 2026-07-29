@@ -373,12 +373,6 @@ object EnStrings : Strings {
     override val cloudSharedListJoinTitle: String = "Join a played list"
     override val cloudSharedlistJoinText: String = "Join a shared played list with a code"
     override val joinSharedListButton: String = "Join"
-
-    override val cloudFetchMusicTitle: String = "Upload song from URL"
-    override val cloudFetchMusicText: String = "Upload a song on Cloudy from a URL"
-    override val cloudFetchMusicFieldLabel: String = "Song's URL"
-    override val cloudFetchMusicButton: String = "Upload"
-
     override val cloudUsersTitle: String = "Cloudy users"
     override val cloudUsersText: String = "See all users on the Cloudy instance"
     override val cloudUsersDeleteDialogTitle: String = "Delete the user"

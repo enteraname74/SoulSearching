@@ -8,7 +8,6 @@ import com.github.enteraname74.domain.repository.SharedPlayedListListener
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.successOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
-import com.github.enteraname74.soulsearching.remote.model.player.AddMusicUrlToPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.CheckPlayerMusicIdsBody
 import com.github.enteraname74.soulsearching.remote.model.player.JoinPlayedListBody
 import com.github.enteraname74.soulsearching.remote.model.player.MusicsOperationOnPlayedListBody
@@ -142,20 +141,6 @@ class PlayerRemoteDataSourceImpl(
                         deviceId = deviceId,
                         listId = listId,
                         musicIds = musicIds,
-                    )
-                )
-            }.successOrThrow()
-    }
-
-    override suspend fun addMusicFromURL(deviceId: String, listId: Uuid, url: String) {
-        client.withUrl(cloudPreferencesDataSource.getUrl())
-            .post(PlayerResource.Url()) {
-                contentType(ContentType.Application.Json)
-                setBody(
-                    AddMusicUrlToPlayedListBody(
-                        deviceId = deviceId,
-                        listId = listId,
-                        url = url,
                     )
                 )
             }.successOrThrow()

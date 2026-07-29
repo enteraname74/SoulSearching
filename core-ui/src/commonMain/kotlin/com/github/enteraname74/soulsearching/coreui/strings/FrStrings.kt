@@ -377,11 +377,6 @@ object FrStrings : Strings {
 
     override val joinSharedListButton: String = "Rejoindre"
 
-    override val cloudFetchMusicTitle: String = "Téléverser une musique depuis une URL"
-    override val cloudFetchMusicText: String = "Téléverser une musique sur Cloudy depuis une URL"
-    override val cloudFetchMusicFieldLabel: String = "URL de la musique"
-    override val cloudFetchMusicButton: String = "Téléverser"
-
     override val cloudUsersTitle: String = "Utilisateurs de Cloudy"
     override val cloudUsersText: String = "Voir tous les utilisateurs de l'instance de Cloudy"
     override val cloudUsersDeleteDialogTitle: String = " Supprimer cet utilisateur"

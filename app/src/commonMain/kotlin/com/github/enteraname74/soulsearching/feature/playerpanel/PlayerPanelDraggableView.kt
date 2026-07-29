@@ -46,7 +46,6 @@ fun PlayerPanelDraggableView(
     onActivateRemoteLyrics: () -> Unit,
     onSwiped: ((Music) -> Unit)?,
     onClickOnMusic: ((Music) -> Unit)?,
-    onAddFromUrl: (() -> Unit)?,
     containerColor: Color,
     textColor: Color,
     subTextColor: Color,
@@ -125,7 +124,6 @@ fun PlayerPanelDraggableView(
                 onActivateRemoteLyrics = onActivateRemoteLyrics,
                 onSwiped = onSwiped,
                 onClickOnMusic = onClickOnMusic,
-                onAddFromUrl = onAddFromUrl,
             )
         }
     }

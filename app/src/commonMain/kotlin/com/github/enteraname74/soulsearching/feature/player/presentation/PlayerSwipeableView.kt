@@ -220,9 +220,6 @@ fun PlayerDraggableView(
                         onClickOnMusic = ifAdmin(dataState) {
                             { playerViewModel.onClickOnMusic(it) }
                         },
-                        onAddFromUrl = ifRemote(dataState) {
-                            { playerViewModel.onAddFromUrlClicked() }
-                        },
                     )
 
                     /*

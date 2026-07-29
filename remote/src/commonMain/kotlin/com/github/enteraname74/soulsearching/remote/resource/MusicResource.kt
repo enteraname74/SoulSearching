@@ -18,11 +18,6 @@ class MusicResource {
         val page: Int? = null,
     )
 
-    @Resource("fetch")
-    data class FetchFromUrl(
-        val parent: MusicResource = MusicResource(),
-    )
-
     @Resource("url")
     data class Url(
         val parent: MusicResource = MusicResource(),

@@ -95,8 +95,6 @@ interface PlayerRepository {
         musicRemoteIds: List<String>
     )
 
-    suspend fun addMusicFromURL(url: String)
-
     suspend fun removeFromSharedPlayedList(
         musicRemoteIds: List<String>
     )

@@ -64,10 +64,6 @@ class SettingsCloudViewHolder(
         navigate { toSharedList() }
     }
 
-    override fun toFetchMusic() {
-        navigate { toFetchMusic() }
-    }
-
     override fun toUsers() {
         navigate { toUsers() }
     }

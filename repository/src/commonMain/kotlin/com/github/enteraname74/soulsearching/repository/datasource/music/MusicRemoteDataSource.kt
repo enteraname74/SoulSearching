@@ -15,6 +15,4 @@ interface MusicRemoteDataSource {
         maxPerPage: Int?,
         page: Int?,
     ): List<CloudMusic>
-
-    suspend fun fetch(url: String): CloudMusic
 }
