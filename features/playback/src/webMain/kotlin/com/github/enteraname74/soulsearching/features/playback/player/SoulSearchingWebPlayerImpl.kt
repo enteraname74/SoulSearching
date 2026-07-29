@@ -100,6 +100,13 @@ class SoulSearchingWebPlayerImpl(
     override suspend fun isPlaying(): Boolean =
         !audio.paused
 
+    override suspend fun getState(): SoulSearchingPlayer.State =
+        when {
+            currentSource == null -> SoulSearchingPlayer.State.Idle
+            isPlaying() -> SoulSearchingPlayer.State.Playing
+            else -> SoulSearchingPlayer.State.Paused
+        }
+
     override suspend fun dismiss() {
         sourceVersion++
         pauseSilently()

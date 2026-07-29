@@ -331,6 +331,19 @@ class SoulSearchingExoPlayerImpl(
             player.isPlaying
         }.getOrNull()
 
+    override suspend fun getState(): SoulSearchingPlayer.State =
+        onPlayerThread {
+            val state = player.playbackState
+            when (state) {
+                Player.STATE_READY -> if (player.isPlaying) {
+                    SoulSearchingPlayer.State.Playing
+                } else {
+                    SoulSearchingPlayer.State.Paused
+                }
+                else -> SoulSearchingPlayer.State.Idle
+            }
+        }.getOrNull() ?: SoulSearchingPlayer.State.Idle
+
     override suspend fun dismiss() {
         onPlayerThread {
             player.stop()

@@ -147,6 +147,16 @@ class SoulSearchingDesktopPlayerImpl(
         return player.status().isPlaying
     }
 
+    override suspend fun getState(): SoulSearchingPlayer.State {
+        val state = player.status().state()
+
+        return when (state) {
+            State.PLAYING -> SoulSearchingPlayer.State.Playing
+            State.PAUSED -> SoulSearchingPlayer.State.Paused
+            else -> SoulSearchingPlayer.State.Idle
+        }
+    }
+
     override suspend fun dismiss() {
         try {
             player.controls().stop()

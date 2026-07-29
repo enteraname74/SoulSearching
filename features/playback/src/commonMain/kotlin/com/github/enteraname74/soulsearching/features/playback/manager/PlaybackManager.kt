@@ -352,7 +352,6 @@ class PlaybackManager(
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun notificationListener() {
         launchWithInit {
             notificationDataFlow.collectLatest { data ->
@@ -424,8 +423,12 @@ class PlaybackManager(
                 when (state) {
                     PlayedListState.Playing if scope?.isAdmin == true -> {
                         ensureReadyForPlayback()
-                        if (player.isPlaying() == false) {
-                            player.play()
+                        when (player.getState()) {
+                            SoulSearchingPlayer.State.Playing -> {
+                                // no-op
+                            }
+                            SoulSearchingPlayer.State.Paused -> player.play()
+                            SoulSearchingPlayer.State.Idle -> restoreAndPlay()
                         }
                         playbackProgressJob.launchDurationJobIfNecessary()
                     }
@@ -446,6 +449,15 @@ class PlaybackManager(
                 }
             }
         }
+    }
+
+    private suspend fun restoreAndPlay() {
+        val currentMusic = playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
+        val currentProgress = playerRepository.getCurrentProgress().firstOrNull() ?: 0
+
+        player.setMusic(currentMusic)
+        player.seekToPosition(currentProgress)
+        player.play()
     }
 
     fun getCachedPlaylist(playlistId: String): Flow<PlayedListToContinue?> =

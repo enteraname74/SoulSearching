@@ -37,6 +37,8 @@ interface SoulSearchingPlayer {
      */
     suspend fun isPlaying(): Boolean?
 
+    suspend fun getState(): State
+
     /**
      * Dismiss the player.
      */
@@ -57,6 +59,12 @@ interface SoulSearchingPlayer {
      * Set the volume of the player between 0.1 and 1.0.
      */
     suspend fun setPlayerVolume(volume: Float)
+
+    enum class State {
+        Playing,
+        Paused,
+        Idle,
+    }
 
     interface Listener {
         /**
