@@ -200,7 +200,7 @@ class SoulSearchingExoPlayerImpl(
                 return@onPlayerThread
             }
 
-            player.setMediaItem(music.toPlayableMediaItem())
+            player.setMediaItem(music.toPlayableMediaItem(), 0L)
             lastSyncedTimelineMusicIds = emptyList()
             player.prepare()
         }
