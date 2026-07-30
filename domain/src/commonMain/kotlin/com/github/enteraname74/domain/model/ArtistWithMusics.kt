@@ -20,7 +20,7 @@ data class ArtistWithMusics(
                     }
                 )
             )
-        }
+        } ?: artist.cover.copyIfUrl { it.copy(fallback = musics.coverFromSongs()) }
     } else {
         musics.coverFromSongs()
     }

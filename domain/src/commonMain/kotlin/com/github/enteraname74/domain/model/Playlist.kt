@@ -27,12 +27,12 @@ data class Playlist(
         when (mergeMode) {
             MergeMode.LocalFirst -> copy(
                 remoteId = cloudPlaylistInfo.id,
-                cover = cover.takeIf { it?.isEmpty() == false } ?: cloudPlaylistInfo.coverPath?.let(Cover::Url),
+                cover = cover.takeIf { it?.isEmpty() == false } ?: cloudPlaylistInfo.coverPath?.let { Cover.Url(it, null) },
             )
             MergeMode.RemoteFirst -> copy(
                 remoteId = cloudPlaylistInfo.id,
                 name = cloudPlaylistInfo.name,
-                cover = cover.takeIf { it?.isEmpty() == false } ?: cloudPlaylistInfo.coverPath?.let(Cover::Url),
+                cover = cover.takeIf { it?.isEmpty() == false } ?: cloudPlaylistInfo.coverPath?.let { Cover.Url(it, null) },
                 isFavorite = cloudPlaylistInfo.isFavorite,
                 nbPlayed = cloudPlaylistInfo.nbPlayed,
                 isInQuickAccess = cloudPlaylistInfo.isInQuickAccess,

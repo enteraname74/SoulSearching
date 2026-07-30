@@ -31,7 +31,7 @@ data class CloudMusic(
             name = name,
             album = album,
             artists = artists,
-            cover = Cover.Url(coverPath),
+            cover = Cover.Url(coverPath, null),
             albumPosition = albumPosition,
             localPath = null,
             remotePath = path,

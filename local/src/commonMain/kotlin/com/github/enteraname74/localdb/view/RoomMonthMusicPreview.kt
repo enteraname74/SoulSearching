@@ -60,7 +60,7 @@ data class RoomMonthMusicPreview(
         val usedCover: Cover? = when {
             coverId != null -> localCover
             musicCoverPath != null -> localCover
-            musicCoverUrl != null -> Cover.Url(musicCoverUrl)
+            musicCoverUrl != null -> Cover.Url(musicCoverUrl, localCover)
             else -> null
         }
 

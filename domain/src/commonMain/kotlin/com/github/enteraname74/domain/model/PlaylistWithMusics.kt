@@ -10,7 +10,7 @@ data class PlaylistWithMusics(
     val musics: List<Music>,
 ) {
     val cover: Cover? = if (playlist.cover?.isEmpty() == false) {
-        playlist.cover
+        playlist.cover.copyIfUrl { it.copy(fallback = musics.coverFromSongs()) }
     } else {
         musics.coverFromSongs()
     }

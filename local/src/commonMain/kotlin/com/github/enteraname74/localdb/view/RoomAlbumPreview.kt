@@ -70,9 +70,17 @@ data class RoomAlbumPreview(
 
         val usedCover: Cover? = when {
             coverId != null -> localCover
-            coverUrl != null -> Cover.Url(coverUrl)
+            coverUrl != null -> {
+                val fallback = if (localCover.isEmpty() && musicCoverUrl != null) {
+                    Cover.Url(musicCoverUrl, localCover)
+                } else {
+                    localCover
+                }
+
+                Cover.Url(coverUrl, fallback)
+            }
             musicCoverPath != null -> localCover
-            musicCoverUrl != null -> Cover.Url(musicCoverUrl)
+            musicCoverUrl != null -> Cover.Url(musicCoverUrl, localCover)
             else -> null
         }
 
