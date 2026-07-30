@@ -650,6 +650,7 @@ object Migration20To21 : Migration(20, 21) {
                 "                    AND music.isHidden = 0 \n" +
                 "                    AND scope != 'SharedPlayedList' \n" +
                 "                    AND music.coverId IS NOT NULL \n" +
+                "                    ORDER BY name ASC \n" +
                 "                    LIMIT 1\n" +
                 "                )\n" +
                 "            ELSE playlist.coverId END\n" +
@@ -661,6 +662,7 @@ object Migration20To21 : Migration(20, 21) {
                 "            AND playlist.playlistId = musicPlaylist.playlistId \n" +
                 "            AND music.isHidden = 0 \n" +
                 "            AND scope != 'SharedPlayedList' \n" +
+                "            ORDER BY name ASC \n" +
                 "            LIMIT 1\n" +
                 "        ) AS musicCoverPath,\n" +
                 "        (\n" +
@@ -670,6 +672,7 @@ object Migration20To21 : Migration(20, 21) {
                 "            AND playlist.playlistId = musicPlaylist.playlistId \n" +
                 "            AND music.isHidden = 0 \n" +
                 "            AND scope != 'SharedPlayedList' \n" +
+                "            ORDER BY name ASC \n" +
                 "            LIMIT 1\n" +
                 "        ) AS musicCoverUrl,\n" +
                 "        playlist.isInQuickAccess, \n" +

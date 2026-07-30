@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 21,
-    "identityHash": "4da65149aff5d7144ef9787a428a9131",
+    "identityHash": "dea0664cb21e8e00a1065b094b4a2749",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -1085,12 +1085,12 @@
       },
       {
         "viewName": "RoomPlaylistPreview",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT playlist.playlistId AS id, \n        playlist.name, \n        playlist.isFavorite, \n        playlist.addedDate, \n        playlist.coverUrl, \n        (\n            SELECT COUNT(*) \n            FROM RoomMusicPlaylist AS musicPlaylist \n            WHERE musicPlaylist.playlistId = playlist.playlistId\n        ) AS totalMusics, \n        (\n            CASE WHEN playlist.coverId IS NULL THEN \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    INNER JOIN RoomMusicPlaylist AS musicPlaylist \n                    ON music.musicId = musicPlaylist.musicId \n                    AND playlist.playlistId = musicPlaylist.playlistId \n                    AND music.isHidden = 0 \n                    AND scope != 'SharedPlayedList' \n                    AND music.coverId IS NOT NULL \n                    LIMIT 1\n                )\n            ELSE playlist.coverId END\n        ) AS coverId,\n        (\n            SELECT music.localPath FROM RoomMusic AS music \n            INNER JOIN RoomMusicPlaylist AS musicPlaylist \n            ON music.musicId = musicPlaylist.musicId \n            AND playlist.playlistId = musicPlaylist.playlistId \n            AND music.isHidden = 0 \n            AND scope != 'SharedPlayedList' \n            LIMIT 1\n        ) AS musicCoverPath,\n        (\n            SELECT music.coverUrl FROM RoomMusic AS music \n            INNER JOIN RoomMusicPlaylist AS musicPlaylist \n            ON music.musicId = musicPlaylist.musicId \n            AND playlist.playlistId = musicPlaylist.playlistId \n            AND music.isHidden = 0 \n            AND scope != 'SharedPlayedList' \n            LIMIT 1\n        ) AS musicCoverUrl,\n        playlist.isInQuickAccess, \n        playlist.nbPlayed \n        FROM RoomPlaylist AS playlist"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT playlist.playlistId AS id, \n        playlist.name, \n        playlist.isFavorite, \n        playlist.addedDate, \n        playlist.coverUrl, \n        (\n            SELECT COUNT(*) \n            FROM RoomMusicPlaylist AS musicPlaylist \n            WHERE musicPlaylist.playlistId = playlist.playlistId\n        ) AS totalMusics, \n        (\n            CASE WHEN playlist.coverId IS NULL THEN \n                (\n                    SELECT music.coverId FROM RoomMusic AS music \n                    INNER JOIN RoomMusicPlaylist AS musicPlaylist \n                    ON music.musicId = musicPlaylist.musicId \n                    AND playlist.playlistId = musicPlaylist.playlistId \n                    AND music.isHidden = 0 \n                    AND scope != 'SharedPlayedList' \n                    AND music.coverId IS NOT NULL \n                    ORDER BY name ASC\n                    LIMIT 1\n                )\n            ELSE playlist.coverId END\n        ) AS coverId,\n        (\n            SELECT music.localPath FROM RoomMusic AS music \n            INNER JOIN RoomMusicPlaylist AS musicPlaylist \n            ON music.musicId = musicPlaylist.musicId \n            AND playlist.playlistId = musicPlaylist.playlistId \n            AND music.isHidden = 0 \n            AND scope != 'SharedPlayedList' \n            ORDER BY name ASC\n            LIMIT 1\n        ) AS musicCoverPath,\n        (\n            SELECT music.coverUrl FROM RoomMusic AS music \n            INNER JOIN RoomMusicPlaylist AS musicPlaylist \n            ON music.musicId = musicPlaylist.musicId \n            AND playlist.playlistId = musicPlaylist.playlistId \n            AND music.isHidden = 0 \n            AND scope != 'SharedPlayedList' \n            ORDER BY name ASC\n            LIMIT 1\n        ) AS musicCoverUrl,\n        playlist.isInQuickAccess, \n        playlist.nbPlayed \n        FROM RoomPlaylist AS playlist"
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4da65149aff5d7144ef9787a428a9131')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dea0664cb21e8e00a1065b094b4a2749')"
     ]
   }
 }

@@ -28,6 +28,7 @@ import kotlin.uuid.Uuid
                     AND music.isHidden = 0 
                     AND scope != 'SharedPlayedList' 
                     AND music.coverId IS NOT NULL 
+                    ORDER BY name ASC
                     LIMIT 1
                 )
             ELSE playlist.coverId END
@@ -39,6 +40,7 @@ import kotlin.uuid.Uuid
             AND playlist.playlistId = musicPlaylist.playlistId 
             AND music.isHidden = 0 
             AND scope != 'SharedPlayedList' 
+            ORDER BY name ASC
             LIMIT 1
         ) AS musicCoverPath,
         (
@@ -48,6 +50,7 @@ import kotlin.uuid.Uuid
             AND playlist.playlistId = musicPlaylist.playlistId 
             AND music.isHidden = 0 
             AND scope != 'SharedPlayedList' 
+            ORDER BY name ASC
             LIMIT 1
         ) AS musicCoverUrl,
         playlist.isInQuickAccess, 
