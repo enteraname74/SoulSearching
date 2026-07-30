@@ -186,13 +186,6 @@ class SoulSearchingExoPlayerImpl(
 
     override suspend fun setMusic(music: Music) {
         onPlayerThread {
-            if (player.currentMediaItem?.musicId() == music.musicId) {
-                if (player.playbackState == Player.STATE_IDLE) {
-                    player.prepare()
-                }
-                return@onPlayerThread
-            }
-
             val timelineIndex = player.timelineIndexOf(music.musicId)
             if (timelineIndex != C.INDEX_UNSET) {
                 player.seekTo(timelineIndex, 0L)
