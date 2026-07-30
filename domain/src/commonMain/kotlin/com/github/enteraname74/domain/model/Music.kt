@@ -57,6 +57,7 @@ data class Music(
         when (mergeMode) {
             MergeMode.LocalFirst -> copy(
                 remoteId = cloudMusic.fingerprint,
+                cover = cover.takeIf { !it.isEmpty() } ?: Cover.Url(cloudMusic.coverPath),
             )
             MergeMode.RemoteFirst -> copy(
                 remoteId = cloudMusic.fingerprint,

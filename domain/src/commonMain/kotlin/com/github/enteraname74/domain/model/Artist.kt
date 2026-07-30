@@ -42,6 +42,7 @@ data class Artist(
         when (mergeMode) {
             MergeMode.LocalFirst -> copy(
                 remoteId = cloudArtist.id,
+                cover = cover?.takeIf { !it.isEmpty() } ?: cloudArtist.coverPath?.let { Cover.Url(it) },
             )
             MergeMode.RemoteFirst -> copy(
                 remoteId = cloudArtist.id,

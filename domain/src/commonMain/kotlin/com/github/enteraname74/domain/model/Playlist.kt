@@ -27,6 +27,7 @@ data class Playlist(
         when (mergeMode) {
             MergeMode.LocalFirst -> copy(
                 remoteId = cloudPlaylistInfo.id,
+                cover = cover.takeIf { it?.isEmpty() == false } ?: cloudPlaylistInfo.coverPath?.let(Cover::Url),
             )
             MergeMode.RemoteFirst -> copy(
                 remoteId = cloudPlaylistInfo.id,

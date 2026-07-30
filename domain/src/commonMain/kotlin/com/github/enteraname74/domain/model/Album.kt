@@ -35,6 +35,7 @@ data class Album(
             MergeMode.LocalFirst ->
                 copy(
                     remoteId = cloudAlbum.id,
+                    cover = cover?.takeIf { !it.isEmpty() } ?: cloudAlbum.coverPath?.let { Cover.Url(it) },
                 )
             MergeMode.RemoteFirst -> copy(
                 remoteId = cloudAlbum.id,
