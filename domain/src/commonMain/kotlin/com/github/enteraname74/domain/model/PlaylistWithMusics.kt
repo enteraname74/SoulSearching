@@ -14,19 +14,4 @@ data class PlaylistWithMusics(
     } else {
         musics.coverFromSongs()
     }
-
-    /**
-     * Convert a [PlaylistWithMusics] to a [PlaylistPreview].
-     */
-    fun toPlaylistPreview(): PlaylistPreview {
-        return PlaylistPreview(
-            id = playlist.playlistId,
-            isFavorite = playlist.isFavorite,
-            name = playlist.name,
-            totalMusics = musics.filter { !it.isHidden }.size,
-            cover = cover,
-            isInQuickAccess = playlist.isInQuickAccess,
-            nbPlayed = playlist.nbPlayed,
-        )
-    }
 }
