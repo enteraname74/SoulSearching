@@ -1,43 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <!-- TODO CLOUD: Remove usesCleartextTraffic for prod-->
     <application
-        android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true"
         android:name="com.github.enteraname74.soulsearching.App"
         android:allowBackup="true"
-        android:enableOnBackInvokedCallback="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="false"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="${appName}"
         android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.SoulSearching"
+        android:usesCleartextTraffic="true"
         tools:targetApi="33">
-        <service
-            android:name="com.github.enteraname74.soulsearching.features.playback.PlayerService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="mediaPlayback"
-            />
 
         <service
             android:name="androidx.work.impl.background.systemjob.SystemJobService"
-            tools:node="merge"
-            android:foregroundServiceType="dataSync"/>
+            android:foregroundServiceType="dataSync"
+            tools:node="merge" />
 
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"
@@ -57,8 +50,8 @@
 
         <activity
             android:name="com.github.enteraname74.soulsearching.MainActivity"
-            android:exported="true"
             android:enableOnBackInvokedCallback="false"
+            android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.SoulSearching">
             <intent-filter>

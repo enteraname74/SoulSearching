@@ -15,7 +15,7 @@ class SyncMusicForPlayerIfNeededUseCase(
 ) {
     suspend operator fun invoke(musicIds: List<Uuid>): List<Music> {
         val idsNoLongerOnCloud: List<String> = musicRepository.getDeletedRemoteMusicIds()
-        musicRepository.clearRemoteIds(idsNoLongerOnCloud)
+        musicRepository.deleteAllRemoteFieldsOfIds(idsNoLongerOnCloud)
 
         val musics = musicRepository.getFromIds(musicIds).firstOrNull() ?: return emptyList()
         val alreadySyncMusics = musics.filter { it.remoteId != null }

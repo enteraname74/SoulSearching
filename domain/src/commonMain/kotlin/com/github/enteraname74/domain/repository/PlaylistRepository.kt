@@ -15,7 +15,7 @@ interface PlaylistRepository {
      */
     suspend fun upsert(playlist: Playlist)
 
-    suspend fun upsertAll(playlists: List<Playlist>)
+    suspend fun upsertAll(playlists: List<Playlist>, keepUpdatedAt: Boolean)
 
     /**
      * Deletes the playlists identified in the given list of ids.
@@ -34,6 +34,8 @@ interface PlaylistRepository {
      */
     fun getFromId(playlistId: Uuid): Flow<Playlist?>
 
+    suspend fun getFromRemoteId(remoteId: Uuid): Playlist?
+
     fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>>
 
     suspend fun getFavorite(): Playlist?
@@ -46,6 +48,8 @@ interface PlaylistRepository {
     fun getPlaylistWithMusics(playlistId: Uuid): Flow<PlaylistWithMusics?>
 
     fun getAllPaged(): Flow<PagingData<PlaylistPreview>>
+
+    suspend fun getAll(page: Int, pageSize: Int): List<PlaylistPreview>
 
     suspend fun cleanAllCovers()
 
@@ -64,4 +68,15 @@ interface PlaylistRepository {
     suspend fun uploadToCloud(playlistWithMusics: PlaylistWithMusics): CloudPlaylist
 
     suspend fun getDeletedRemotePlaylistIds(): List<Uuid>
+
+    /**
+     * Delete all remote fields of all playlist like:
+     * - remote id
+     * - cover url
+     */
+    suspend fun deleteAllRemoteFields()
+
+    suspend fun deleteAllEmptyExceptFavorite()
+
+    suspend fun getLatestUpdatedAt(): Long?
 }

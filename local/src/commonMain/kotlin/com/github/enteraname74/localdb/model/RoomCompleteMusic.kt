@@ -26,7 +26,7 @@ data class RoomCompleteMusic(
             initialCoverPath = music.localPath,
             fileCoverId = music.coverId,
         )
-        val remoteCover = music.coverUrl?.let { Cover.Url(it) }
+        val remoteCover = music.coverUrl?.let { Cover.Url(it, localCover) }
 
         val usedCover = if (remoteCover == null) {
             localCover

@@ -8,11 +8,10 @@ import com.github.enteraname74.domain.usecase.DeleteEmptyAlbumsAndArtistsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UploadPlaylistToCloudUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertCloudPlaylistUseCase
 import com.github.enteraname74.domain.util.DateUtils
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlin.time.Duration.Companion.seconds
+import kotlin.math.max
 import kotlin.uuid.Uuid
 
 /**
@@ -39,7 +38,7 @@ class SyncDataWithCloudUseCase(
         val result: SoulResult<Unit> = SoulResult.runCatching {
             _state.value = State.ClearingRemoteMusicIds
             val idsNoLongerOnCloud: List<String> = musicRepository.getDeletedRemoteMusicIds()
-            musicRepository.clearRemoteIds(idsNoLongerOnCloud)
+            musicRepository.deleteAllRemoteFieldsOfIds(idsNoLongerOnCloud)
 
             _state.value = State.CheckingMusicsToSend
             val musicsToSend: List<Music> = musicRepository.getAllToSendToCloud()
@@ -48,7 +47,7 @@ class SyncDataWithCloudUseCase(
             }
 
             // TODO SYNC: Let user choose its merge mode.
-            val mergeMode = MergeMode.LocalFirst
+            val mergeMode = MergeMode.RemoteFirst
 
             /*
             We need to differentiate the songs to update (already on the cloud) from the one to sent to
@@ -150,13 +149,21 @@ class SyncDataWithCloudUseCase(
             musicRepository.deleteNotExisting()
             deleteEmptyAlbumsAndArtistsUseCase()
 
+            /*
+            Choice has been made to consider playlists to always be remote first,
+            to ensure maximum sync between them.
+             */
             handlePlaylists(
                 lastSyncMillis = lastSyncMillis,
-                mergeMode = mergeMode,
+                mergeMode = MergeMode.RemoteFirst,
             )
 
-            // Update the sync date for the next time.
-            cloudPreferencesRepository.setLastSyncMillis(DateUtils.now())
+            /*
+            playlists updated on backend can have a more recent updatedAt field than what we can have here,
+            so will we check also against it.
+             */
+            val latestFromPlaylists = playlistRepository.getLatestUpdatedAt() ?: 0L
+            cloudPreferencesRepository.setLastSyncMillis(max(DateUtils.now(), latestFromPlaylists))
         }
 
         _state.value = if (result.isError()) State.Failure else State.Finish
@@ -204,6 +211,7 @@ class SyncDataWithCloudUseCase(
                 mergeMode = mergeMode,
             )
         }
+        playlistRepository.deleteAllEmptyExceptFavorite()
     }
 
     private fun buildProgress(

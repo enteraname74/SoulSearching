@@ -1,12 +1,11 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.gradle.api.tasks.Exec
+import org.gradle.api.tasks.bundling.Compression
+import org.gradle.api.tasks.bundling.Tar
 
 plugins {
-    id("com.android.application")
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
+    id("soulsearching.kmp.compose")
     alias(libs.plugins.kotlinSerialization)
 }
 
@@ -14,58 +13,24 @@ group = "com.github.enteraname74.soulsearching"
 description = "Application's elements"
 
 kotlin {
-    androidTarget()
-    jvm("desktop")
+    android.namespace = "com.github.enteraname74.soulsearching.sharedapp"
+    android.androidResources.enable = true
 
     js {
-        browser()
         binaries.executable()
     }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
         binaries.executable()
     }
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    compilerOptions {
-        // Common compiler options applied to all Kotlin source sets for expect / actual implementations
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-        optIn.add("kotlin.uuid.ExperimentalUuidApi")
-    }
-
     sourceSets {
-        val jsMain by getting
-        val wasmJsMain by getting
-        val commonMain by getting
-        val desktopMain by getting
-        val androidMain by getting
-
-        val nonAndroidMain by creating {
-            dependsOn(commonMain)
-        }
-
-        val webMain = maybeCreate("webMain").apply {
-            dependsOn(commonMain)
-            dependsOn(nonAndroidMain)
-        }
-
-        val jvmMain by creating {
-            dependsOn(commonMain)
-
+        val jvmMain by getting {
             dependencies {
                 implementation(libs.jaudiotagger)
             }
         }
-
-        jsMain.dependsOn(webMain)
-        wasmJsMain.dependsOn(webMain)
-
-        desktopMain.dependsOn(nonAndroidMain)
-
-        desktopMain.dependsOn(jvmMain)
-        androidMain.dependsOn(jvmMain)
 
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -124,94 +89,6 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.github.soulsearching"
-    compileSdk = libs.versions.android.compile.sdk.get().toInt()
-
-    defaultConfig {
-        applicationId = "com.github.enteraname74.soulsearching"
-        minSdk = libs.versions.android.min.sdk.get().toInt()
-        targetSdk = libs.versions.android.target.sdk.get().toInt()
-        versionCode = 38
-        versionName = "0.16.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true
-    }
-
-    this.buildOutputs.all {
-        val variantOutputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
-        val name = "com.github.enteraname74.soulsearching_${libs.versions.application.version.name.get()}.apk"
-        variantOutputImpl.outputFileName = name
-    }
-
-    buildTypes {
-        debug {
-            buildConfigField(
-                "String",
-                "VERSION_NAME",
-                "\"" + libs.versions.application.version.name.get() + "-dev" + "\""
-            )
-            manifestPlaceholders["appName"] = "SSDDebug"
-            versionNameSuffix = "-dev"
-            applicationIdSuffix = ".dev"
-        }
-        create("dev-release") {
-            buildConfigField(
-                "String",
-                "VERSION_NAME",
-                "\"" + libs.versions.application.version.name.get() + "-dev.release" + "\""
-            )
-            manifestPlaceholders["appName"] = "SSDRelease"
-            versionNameSuffix = "-dev.release"
-            applicationIdSuffix = ".dev.release"
-            signingConfig = signingConfigs.getByName("debug")
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "android-proguard-rules.pro"
-            )
-        }
-
-        release {
-            buildConfigField(
-                "String",
-                "VERSION_NAME",
-                "\"" + libs.versions.application.version.name.get() + "\""
-            )
-            manifestPlaceholders["appName"] = "Soul Searching"
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "android-proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlin {
-        jvmToolchain(17)
-    }
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    // For F-Droid
-    dependenciesInfo {
-        // Disables dependency metadata when building APKs.
-        includeInApk = false
-        // Disables dependency metadata when building Android App Bundles.
-        includeInBundle = false
-    }
-}
-
 compose.desktop {
     application {
         mainClass = "com.github.enteraname74.soulsearching.MainKt"
@@ -252,60 +129,144 @@ compose.desktop {
     }
 }
 
-tasks {
-    register<Tar>("packageTarReleaseDistributable") {
+val appId = "io.github.enteraname74.soulsearching"
+val appVersion = libs.versions.application.version.name.get()
+
+val manifestFile = layout.projectDirectory.file("$appId.yml")
+
+val flatpakRootDirectory = layout.buildDirectory.dir("flatpak")
+val flatpakBuildDirectory = layout.buildDirectory.dir("flatpak/build-dir")
+val flatpakRepositoryDirectory = layout.buildDirectory.dir("flatpak/repo")
+val flatpakBundleFile = flatpakRootDirectory.map {
+    it.file("$appId-$appVersion.flatpak")
+}
+
+val packageTarReleaseDistributable =
+    tasks.register<Tar>("packageTarReleaseDistributable") {
         group = "compose desktop"
-        from(named("createReleaseDistributable"))
-        archiveBaseName = "soulsearching"
-        archiveClassifier = "linux"
-        compression = Compression.GZIP
-        archiveExtension = "tar.gz"
+        description = "Creates the Linux release distributable archive."
 
-        val version = libs.versions.application.version.name.get()
+        dependsOn("createReleaseDistributable")
 
-        archiveFileName = "soulsearching-$version-linux.tar.gz"
-    }
-
-    register("packageFlatpakReleaseDistributable") {
-        group = "compose desktop"
-        description = "Builds a flatpak and stores it in the build/flatpak folder."
-        dependsOn("packageTarReleaseDistributable")
-
-        val appId = "io.github.enteraname74.soulsearching"
-        val appVersion = libs.versions.application.version.name.get()
-
-        doLast {
-            println("packageFlatpakReleaseDistributable -- INFO -- Building manifest")
-            exec {
-                commandLine(
-                    "flatpak-builder",
-                    "--user",
-                    "--force-clean",
-                    "build-dir",
-                    "$appId.yml"
-                )
+        from(
+            providers.provider {
+                tasks.getByName("createReleaseDistributable").outputs.files
             }
-            println("packageFlatpakReleaseDistributable -- INFO -- Creating flatpak executable")
-            exec {
-                commandLine(
-                    "flatpak",
-                    "build-export",
-                    "repo",
-                    "build-dir"
-                )
-            }
-            val outputDir = file("${layout.buildDirectory.get().asFile.absolutePath}/flatpak")
-            outputDir.mkdirs()
-            println("packageFlatpakReleaseDistributable -- Will install flatpak in: $outputDir")
-            exec {
-                commandLine(
-                    "flatpak",
-                    "build-bundle",
-                    "repo",
-                    "${outputDir.absolutePath}/$appId-$appVersion.flatpak",
-                    appId
-                )
+        )
+
+        // Gradle 9 normalizes archive file permissions to 0644.
+        filesMatching(
+            listOf(
+                "**/bin/**",
+                "**/lib/jspawnhelper",
+            )
+        ) {
+            permissions {
+                unix("755")
             }
         }
+
+        archiveBaseName.set("soulsearching")
+        archiveClassifier.set("linux")
+        archiveExtension.set("tar.gz")
+        archiveVersion.set("")
+        compression = Compression.GZIP
+
+        destinationDirectory.set(layout.buildDirectory.dir("distributions"))
+        archiveFileName.set("soulsearching-$appVersion-linux.tar.gz")
+    }
+
+val buildFlatpak =
+    tasks.register<Exec>("buildFlatpak") {
+        group = "compose desktop"
+        description = "Builds the Flatpak application directory."
+
+        dependsOn(packageTarReleaseDistributable)
+
+        inputs.file(manifestFile)
+        inputs.file(packageTarReleaseDistributable.flatMap { it.archiveFile })
+
+        workingDir(layout.projectDirectory.asFile)
+
+        doFirst {
+            val buildDirectory = flatpakBuildDirectory.get().asFile
+
+            logger.lifecycle("Building Flatpak from: ${manifestFile.asFile}")
+            logger.lifecycle("Flatpak build directory: $buildDirectory")
+
+            commandLine(
+                "flatpak-builder",
+                "--user",
+                "--force-clean",
+                buildDirectory.absolutePath,
+                manifestFile.asFile.absolutePath,
+            )
+        }
+    }
+
+val exportFlatpakRepository =
+    tasks.register<Exec>("exportFlatpakRepository") {
+        group = "compose desktop"
+        description = "Exports the Flatpak build into an OSTree repository."
+
+        dependsOn(buildFlatpak)
+
+        workingDir(layout.projectDirectory.asFile)
+
+        doFirst {
+            val repositoryDirectory =
+                flatpakRepositoryDirectory.get().asFile
+
+            val buildDirectory =
+                flatpakBuildDirectory.get().asFile
+
+            repositoryDirectory.mkdirs()
+
+            logger.lifecycle(
+                "Exporting Flatpak repository to: $repositoryDirectory"
+            )
+
+            commandLine(
+                "flatpak",
+                "build-export",
+                repositoryDirectory.absolutePath,
+                buildDirectory.absolutePath,
+            )
+        }
+    }
+
+tasks.register<Exec>("packageFlatpakReleaseDistributable") {
+    group = "compose desktop"
+    description =
+        "Builds a Flatpak bundle and stores it in build/flatpak."
+
+    dependsOn(exportFlatpakRepository)
+
+    workingDir(layout.projectDirectory.asFile)
+
+    outputs.file(flatpakBundleFile)
+
+    doFirst {
+        val repositoryDirectory =
+            flatpakRepositoryDirectory.get().asFile
+
+        val bundleFile = flatpakBundleFile.get().asFile
+
+        bundleFile.parentFile.mkdirs()
+
+        // build-bundle may refuse to overwrite an existing bundle.
+        if (bundleFile.exists() && !bundleFile.delete()) {
+            error("Unable to replace existing bundle: $bundleFile")
+        }
+
+        logger.lifecycle("Creating Flatpak bundle: $bundleFile")
+
+        commandLine(
+            "flatpak",
+            "build-bundle",
+            repositoryDirectory.absolutePath,
+            bundleFile.absolutePath,
+            appId,
+        )
     }
 }

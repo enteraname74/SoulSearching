@@ -51,6 +51,8 @@ interface MusicLocalDataSource {
 
     suspend fun getAllSorted(): List<Music>
 
+    suspend fun getAllSorted(page: Int, pageSize: Int): List<Music>
+
     fun getAllFromQuickAccess(): Flow<List<Music>>
 
     fun getAllPaged(): Flow<PagingData<Music>>
@@ -75,6 +77,8 @@ interface MusicLocalDataSource {
      * Retrieves all musics of an Album.
      */
     suspend fun getAllMusicFromAlbum(albumId: Uuid): List<Music>
+
+    suspend fun getAllMusicFromAlbum(albumId: Uuid, page: Int, pageSize: Int): List<Music>
 
     fun searchFromAlbum(
         albumId: Uuid,
@@ -107,11 +111,17 @@ interface MusicLocalDataSource {
 
     suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music>
 
+    suspend fun getAllMusicFromArtist(artistId: Uuid, page: Int, pageSize: Int): List<Music>
+
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music>
+
+    suspend fun getAllMusicFromPlaylist(playlistId: Uuid, page: Int, pageSize: Int): List<Music>
 
     suspend fun getAllMusicFromMonth(month: String) : List<Music>
 
     suspend fun getAllMusicFromFolder(folder: String) : List<Music>
+
+    suspend fun getAllMusicFromFolder(folder: String, page: Int, pageSize: Int) : List<Music>
 
     fun getAlbumDuration(albumId: Uuid): Flow<Duration>
     fun getArtistDuration(artistId: Uuid): Flow<Duration>
@@ -133,6 +143,8 @@ interface MusicLocalDataSource {
 
     fun getAllMusicFolders(): Flow<List<MusicFolderPreview>>
 
+    suspend fun getAllMusicFolders(page: Int, pageSize: Int): List<MusicFolderPreview>
+
     fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?>
 
     suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music>
@@ -142,9 +154,9 @@ interface MusicLocalDataSource {
         albumId: Uuid,
     ): Music?
 
-    suspend fun clearRemoteIds(remoteIds: List<String>)
+    suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>)
 
-    suspend fun deleteAllRemoteIds()
+    suspend fun deleteAllRemoteFields()
     suspend fun deleteNotExisting()
     suspend fun deleteSharedPlayedListMusics()
     suspend fun getFromPath(path: String): Music?

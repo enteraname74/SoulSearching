@@ -42,12 +42,13 @@ data class Artist(
         when (mergeMode) {
             MergeMode.LocalFirst -> copy(
                 remoteId = cloudArtist.id,
+                cover = cover?.takeIf { !it.isEmpty() } ?: cloudArtist.coverPath?.let { Cover.Url(it, null) },
             )
             MergeMode.RemoteFirst -> copy(
                 remoteId = cloudArtist.id,
                 artistName = cloudArtist.name,
                 // Prioritize local cover if possible.
-                cover = cover?.takeIf { !it.isEmpty() } ?: cloudArtist.coverPath?.let { Cover.Url(it) },
+                cover = cover?.takeIf { !it.isEmpty() } ?: cloudArtist.coverPath?.let { Cover.Url(it, null) },
                 nbPlayed = max(nbPlayed, cloudArtist.nbPlayed),
                 isInQuickAccess = cloudArtist.isInQuickAccess,
                 lastUpdatedMillis = cloudArtist.lastUpdateAtMillis,

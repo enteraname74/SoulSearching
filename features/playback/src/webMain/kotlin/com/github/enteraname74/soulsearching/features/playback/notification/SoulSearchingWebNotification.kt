@@ -43,7 +43,7 @@ class SoulSearchingWebNotification(
         updateMediaSessionActionHandlers(canControl = updateData.playedListScope.isAdmin)
     }
 
-    override fun dismiss() {
+    override fun dismiss(forceStop: Boolean) {
         clearMediaSession()
         updateMediaSessionActionHandlers(canControl = false)
     }
@@ -171,7 +171,7 @@ class SoulSearchingWebNotification(
 
             val context = canvas
                 .getContext("2d")
-                    as CanvasRenderingContext2D
+                as CanvasRenderingContext2D
             val imageData = context.createImageData(
                 sw = width.toDouble(),
                 sh = height.toDouble(),

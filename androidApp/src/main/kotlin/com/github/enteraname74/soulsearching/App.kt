@@ -5,8 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.CloudSyncWorker
-import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingAndroidNotification
-import com.github.enteraname74.soulsearching.model.utils.StringsUtils
+import com.github.enteraname74.soulsearching.coreui.strings.StringsUtils
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
@@ -28,22 +27,15 @@ class App : Application() {
     private fun createNotificationChannel() {
         val strings = StringsUtils.getStrings(applicationContext)
 
-        val musicNotificationChannel = NotificationChannel(
-            SoulSearchingAndroidNotification.MUSIC_NOTIFICATION_CHANNEL_ID,
-            strings.musicChannelNotificationName,
-            NotificationManager.IMPORTANCE_LOW
-        )
         val syncChannel = NotificationChannel(
             CloudSyncWorker.CHANNEL_ID,
             strings.cloudSyncChannelNotificationName,
             NotificationManager.IMPORTANCE_LOW
         )
-        musicNotificationChannel.description = strings.musicChannelNotificationDescription
         syncChannel.description = strings.cloudSyncChannelNotificationDescription
 
         val notificationManager =
             getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(musicNotificationChannel)
         notificationManager.createNotificationChannel(syncChannel)
     }
 }

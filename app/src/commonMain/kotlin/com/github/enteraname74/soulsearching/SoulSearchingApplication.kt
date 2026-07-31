@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.request.CachePolicy
-import coil3.util.DebugLogger
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpScaffold
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -23,7 +22,7 @@ fun SoulSearchingApplication(
             .networkCachePolicy(CachePolicy.ENABLED)
             .memoryCachePolicy(CachePolicy.ENABLED)
             .diskCachePolicy(CachePolicy.ENABLED)
-            .logger(DebugLogger())
+//            .logger(DebugLogger())
             .build()
     }
 

@@ -14,14 +14,16 @@ import kotlin.uuid.Uuid
  */
 class ArtistRepositoryImpl(
     private val artistDataSource: ArtistDataSource,
-): ArtistRepository {
+) : ArtistRepository {
 
     /**
      * Inserts or updates an artist.
      */
-    override suspend fun upsert(artist: Artist) = artistDataSource.upsert(
-        artist = artist
-    )
+    override suspend fun upsert(artist: Artist) {
+        artistDataSource.upsert(
+            artist = artist
+        )
+    }
 
     override suspend fun upsertAll(artists: List<Artist>) {
         artistDataSource.upsertAll(artists)
@@ -30,9 +32,11 @@ class ArtistRepositoryImpl(
     /**
      * Deletes an Artist.
      */
-    override suspend fun delete(artist: Artist) = artistDataSource.deleteAll(
-        artist = artist
-    )
+    override suspend fun delete(artist: Artist) {
+        artistDataSource.delete(
+            artist = artist
+        )
+    }
 
     override suspend fun deleteAll(artistsIds: List<Uuid>) {
         artistDataSource.deleteAll(artistsIds)
@@ -71,6 +75,9 @@ class ArtistRepositoryImpl(
     override fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
         artistDataSource.getAllPaged()
 
+    override suspend fun getAll(page: Int, pageSize: Int): List<ArtistPreview> =
+        artistDataSource.getAll(page = page, pageSize = pageSize)
+
     /**
      * Retrieves a flow of an ArtistWithMusics.
      */
@@ -94,8 +101,8 @@ class ArtistRepositoryImpl(
             artistName = artistName,
         )
 
-    override fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>> =
-        artistDataSource.getArtistsWistMostMusics()
+    override fun getArtistsWithMostMusics(): Flow<List<ArtistPreview>> =
+        artistDataSource.getArtistsWithMostMusics()
 
     override suspend fun cleanAllCovers() {
         artistDataSource.cleanAllCovers()

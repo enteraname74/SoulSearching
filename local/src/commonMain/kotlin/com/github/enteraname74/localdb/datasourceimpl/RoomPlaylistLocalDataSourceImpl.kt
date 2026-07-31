@@ -22,6 +22,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlin.math.max
 import kotlin.uuid.Uuid
 
 internal class RoomPlaylistLocalDataSourceImpl(
@@ -32,18 +33,22 @@ internal class RoomPlaylistLocalDataSourceImpl(
         appDatabase.playlistDao.upsert(
             roomPlaylist = playlist
                 .copy(
-                    lastUpdatedMillis = DateUtils.now(),
+                    lastUpdatedMillis = max(DateUtils.now(), playlist.lastUpdatedMillis ?: 0L),
                 )
                 .toRoomPlaylist()
         )
     }
 
-    override suspend fun upsertAll(playlists: List<Playlist>) {
+    override suspend fun upsertAll(playlists: List<Playlist>, keepUpdatedAt: Boolean) {
         appDatabase.playlistDao.upsertAll(
             roomPlaylists = playlists.map {
-                it.copy(
-                    lastUpdatedMillis = DateUtils.now(),
-                ).toRoomPlaylist()
+                if (keepUpdatedAt) {
+                    it
+                } else {
+                    it.copy(
+                        lastUpdatedMillis = max(DateUtils.now(), it.lastUpdatedMillis ?: 0L),
+                    )
+                }.toRoomPlaylist()
             }
         )
     }
@@ -71,6 +76,9 @@ internal class RoomPlaylistLocalDataSourceImpl(
             playlistId = playlistId
         ).map { it?.toPlaylist() }
     }
+
+    override suspend fun getFromRemoteId(remoteId: Uuid): Playlist? =
+        appDatabase.playlistDao.getFromRemoteId(remoteId = remoteId)?.toPlaylist()
 
     override fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
         appDatabase.playlistDao.getFromIds(playlistIds).map { list ->
@@ -126,6 +134,39 @@ internal class RoomPlaylistLocalDataSourceImpl(
             }
         }
 
+    override suspend fun getAll(page: Int, pageSize: Int): List<PlaylistPreview> {
+        val direction: SortDirection = SortDirection
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_DIRECTION_KEY))
+            ?: SortDirection.DEFAULT
+
+        val type: SortType = SortType
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_TYPE_KEY))
+            ?: SortType.DEFAULT
+
+        val limit = pageSize.takeIf { it > 0 } ?: DEFAULT_ANDROID_AUTO_PAGE_SIZE
+        val offset = page.coerceAtLeast(0) * limit
+
+        return with(appDatabase.playlistDao) {
+            when (direction) {
+                SortDirection.ASC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameAsc(limit = limit, offset = offset)
+                        SortType.ADDED_DATE -> getAllByDateAsc(limit = limit, offset = offset)
+                        SortType.NB_PLAYED -> getAllByNbPlayedAsc(limit = limit, offset = offset)
+                    }
+                }
+
+                SortDirection.DESC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameDesc(limit = limit, offset = offset)
+                        SortType.ADDED_DATE -> getAllByDateDesc(limit = limit, offset = offset)
+                        SortType.NB_PLAYED -> getAllByNbPlayedDesc(limit = limit, offset = offset)
+                    }
+                }
+            }
+        }.map { it.toPlaylistPreview() }
+    }
+
     override suspend fun cleanAllCovers() {
         appDatabase.playlistDao.cleanAllCovers()
     }
@@ -158,4 +199,17 @@ internal class RoomPlaylistLocalDataSourceImpl(
 
     override suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid> =
         appDatabase.playlistDao.getAllRemoteIdsPossessedByUser()
+
+    override suspend fun deleteAllRemoteFields() {
+        appDatabase.playlistDao.deleteAllRemoteFields()
+    }
+
+    override suspend fun deleteAllEmptyExceptFavorite() {
+        appDatabase.playlistDao.deleteAllEmptyExceptFavorite()
+    }
+
+    override suspend fun getLatestUpdatedAt(): Long? =
+        appDatabase.playlistDao.getLatestUpdatedAt()
 }
+
+private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

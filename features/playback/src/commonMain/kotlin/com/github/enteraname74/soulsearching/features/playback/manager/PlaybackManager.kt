@@ -30,6 +30,7 @@ import com.github.enteraname74.domain.usecase.player.RemoveMusicsFromSharedPlaye
 import com.github.enteraname74.domain.usecase.player.SyncPlayedListInformationUseCase
 import com.github.enteraname74.domain.usecase.player.SyncPlayedListMusicsUseCase
 import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.features.playback.environment.SoulSearchingPlaybackEnvironment
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
@@ -77,6 +78,7 @@ class PlaybackManager(
     private val registerSharedPlayedListEventsListenerUseCase: RegisterSharedPlayedListEventsListenerUseCase,
     private val syncPlayedListInformationUseCase: SyncPlayedListInformationUseCase,
     private val syncPlayedListMusicsUseCase: SyncPlayedListMusicsUseCase,
+    private val playbackEnvironment: SoulSearchingPlaybackEnvironment,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     workDispatcher: WorkDispatcher,
 ) : KoinComponent, SoulSearchingPlayer.Listener {
@@ -123,9 +125,13 @@ class PlaybackManager(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentCover: Flow<ImageBitmap?> =
-        playerRepository.getCurrentMusic().map { currentMusic ->
-            currentMusic?.music?.cover?.let { commonCoverUseCase.getCoverImageBitmap(it) }
-        }
+        playerRepository
+            .getCurrentMusic()
+            .map { currentMusic -> currentMusic?.music?.cover }
+            .distinctUntilChanged()
+            .map { cover ->
+                cover?.let { commonCoverUseCase.getCoverImageBitmap(it) }
+            }
 
     // TODO PLAYER: Find a way to make drag and drop and paging list work together
     val playedList: Flow<List<Music>> = playerRepository.getAll()
@@ -197,15 +203,14 @@ class PlaybackManager(
                     playedListScope = playedListScope,
                 )
             }
-        }.distinctUntilChanged()
+        }
 
     private var isInit: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private var startSeek: Int? = null
 
     init {
-        workScope.launch {
-            player.registerListener(this@PlaybackManager)
-        }
+        player.registerListener(this@PlaybackManager)
+
         init()
 
         listenPlayerVolume()
@@ -347,12 +352,12 @@ class PlaybackManager(
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun notificationListener() {
         launchWithInit {
             notificationDataFlow.collectLatest { data ->
                 if (data == null) {
-                    notification.dismiss()
+                    // For media3, notification dismiss should be handled automatically
+                    notification.dismiss(forceStop = false)
                 } else {
                     notification.update(updateData = data)
                 }
@@ -417,10 +422,15 @@ class PlaybackManager(
 
                 when (state) {
                     PlayedListState.Playing if scope?.isAdmin == true -> {
-                        playbackProgressJob.launchDurationJobIfNecessary()
-                        if (player.isPlaying() == false) {
-                            player.play()
+                        ensureReadyForPlayback()
+                        when (player.getState()) {
+                            SoulSearchingPlayer.State.Playing -> {
+                                // no-op
+                            }
+                            SoulSearchingPlayer.State.Paused -> player.play()
+                            SoulSearchingPlayer.State.Idle -> restoreAndPlay()
                         }
+                        playbackProgressJob.launchDurationJobIfNecessary()
                     }
 
                     PlayedListState.Paused if scope?.isAdmin == true -> {
@@ -439,6 +449,15 @@ class PlaybackManager(
                 }
             }
         }
+    }
+
+    private suspend fun restoreAndPlay() {
+        val currentMusic = playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
+        val currentProgress = playerRepository.getCurrentProgress().firstOrNull() ?: 0
+
+        player.setMusic(currentMusic)
+        player.seekToPosition(currentProgress)
+        player.play()
     }
 
     fun getCachedPlaylist(playlistId: String): Flow<PlayedListToContinue?> =
@@ -466,10 +485,17 @@ class PlaybackManager(
         playbackProgressJob.releaseDurationJob()
         if (resetPlayedList) {
             playerRepository.deleteCurrentPlayedList()
+        } else {
+            playerRepository.setPlayedListState(PlayedListState.Paused)
         }
 
         player.dismiss()
-        notification.dismiss()
+        notification.dismiss(forceStop = true)
+        playbackEnvironment.release()
+    }
+
+    private suspend fun ensureReadyForPlayback() {
+        playbackEnvironment.ensureReadyForPlayback()
     }
 
     /**
@@ -477,6 +503,7 @@ class PlaybackManager(
      */
     suspend fun togglePlayPause() {
         withAdminRight {
+            ensureReadyForPlayback()
             playerRepository.togglePlayPause()
         }
     }
@@ -484,6 +511,8 @@ class PlaybackManager(
     fun play() {
         workScope.launch {
             withAdminRight {
+                if (playerRepository.getCurrentState().firstOrNull() == PlayedListState.Playing) return@withAdminRight
+                ensureReadyForPlayback()
                 playerRepository.setPlayedListState(PlayedListState.Playing)
             }
         }
@@ -492,6 +521,7 @@ class PlaybackManager(
     fun pause() {
         workScope.launch {
             withAdminRight {
+                if (playerRepository.getCurrentState().firstOrNull() == PlayedListState.Paused) return@withAdminRight
                 playerRepository.setPlayedListState(PlayedListState.Paused)
             }
         }
@@ -611,6 +641,7 @@ class PlaybackManager(
                 val currentMusic: Music =
                     playerRepository.getCurrentMusic().firstOrNull()?.music ?: return@withAdminRight
 
+                ensureReadyForPlayback()
                 player.setMusic(currentMusic)
                 player.play()
                 playerRepository.setPlayedListState(PlayedListState.Playing)
@@ -635,6 +666,7 @@ class PlaybackManager(
                 val currentMusicId: Uuid =
                     playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId ?: return@withAdminRight
 
+                ensureReadyForPlayback()
                 player.seekToPosition(0)
                 updateNotification()
                 playerRepository.setPlayedListState(PlayedListState.Playing)
@@ -662,6 +694,7 @@ class PlaybackManager(
     }
 
     suspend fun setAndPlayMusicFromCurrentPlayedList(music: Music) {
+        ensureReadyForPlayback()
         playerRepository.setCurrent(music.musicId)
         playerRepository.setPlayedListState(PlayedListState.Playing)
     }
@@ -736,7 +769,7 @@ class PlaybackManager(
         playlistId: String?,
         isMain: Boolean,
     ): SoulResult<Boolean> = SoulResult.runCatching {
-        playerRepository.setup(
+        setupAndPlay(
             playedListSetup = PlayedListSetup.fromSelection(
                 musics = musicList.shuffled(),
                 state = PlayedListState.Playing,
@@ -754,7 +787,7 @@ class PlaybackManager(
 
         val musicList: List<Music> = commonMusicUseCase.getSoulMixMusics(totalByFolder)
 
-        playerRepository.setup(
+        setupAndPlay(
             playedListSetup = PlayedListSetup.fromSelection(
                 musics = musicList,
                 state = PlayedListState.Playing,
@@ -773,7 +806,7 @@ class PlaybackManager(
         isMainPlaylist: Boolean = false,
         isForcingNewPlaylist: Boolean = false
     ): SoulResult<Boolean> = SoulResult.runCatching {
-        playerRepository.setup(
+        setupAndPlay(
             playedListSetup = PlayedListSetup(
                 musics = musicList,
                 selectedMusic = music,
@@ -789,10 +822,19 @@ class PlaybackManager(
 
     suspend fun startSharedList(
         musicIds: List<Uuid>
-    ): SoulResult<Unit> =
-        createSharedPlayedListUseCase(
+    ): SoulResult<Unit> {
+        ensureReadyForPlayback()
+        return createSharedPlayedListUseCase(
             musicIds = musicIds,
         )
+    }
+
+    private suspend fun setupAndPlay(
+        playedListSetup: PlayedListSetup,
+    ): Boolean {
+        ensureReadyForPlayback()
+        return playerRepository.setup(playedListSetup = playedListSetup)
+    }
 
     suspend fun removeUserFromSharedList(
         userId: Uuid,

@@ -86,12 +86,20 @@ interface MusicDao {
     suspend fun getAllByNameAsc(): List<RoomCompleteMusic>
 
     @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY name ASC LIMIT :limit OFFSET :offset")
+    suspend fun getAllByNameAsc(limit: Int, offset: Int): List<RoomCompleteMusic>
+
+    @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY name DESC")
     fun getAllPagedByNameDesc(): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY name DESC")
     suspend fun getAllByNameDesc(): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY name DESC LIMIT :limit OFFSET :offset")
+    suspend fun getAllByNameDesc(limit: Int, offset: Int): List<RoomCompleteMusic>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY addedDate ASC")
@@ -102,12 +110,20 @@ interface MusicDao {
     suspend fun getAllByDateAsc(): List<RoomCompleteMusic>
 
     @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY addedDate ASC LIMIT :limit OFFSET :offset")
+    suspend fun getAllByDateAsc(limit: Int, offset: Int): List<RoomCompleteMusic>
+
+    @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY addedDate DESC")
     fun getAllPagedByDateDesc(): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY addedDate DESC")
     suspend fun getAllByDateDesc(): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY addedDate DESC LIMIT :limit OFFSET :offset")
+    suspend fun getAllByDateDesc(limit: Int, offset: Int): List<RoomCompleteMusic>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY nbPlayed ASC")
@@ -118,12 +134,20 @@ interface MusicDao {
     suspend fun getAllByNbPlayedAsc(): List<RoomCompleteMusic>
 
     @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY nbPlayed ASC LIMIT :limit OFFSET :offset")
+    suspend fun getAllByNbPlayedAsc(limit: Int, offset: Int): List<RoomCompleteMusic>
+
+    @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY nbPlayed DESC")
     fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY nbPlayed DESC")
     suspend fun getAllByNbPlayedDesc(): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY nbPlayed DESC LIMIT :limit OFFSET :offset")
+    suspend fun getAllByNbPlayedDesc(limit: Int, offset: Int): List<RoomCompleteMusic>
 
     @Transaction
     @Query(
@@ -211,6 +235,26 @@ interface MusicDao {
     )
     suspend fun getAllMusicFromAlbum(albumId: Uuid): List<RoomCompleteMusic>
 
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND albumId = :albumId 
+            AND scope != 'SharedPlayedList' 
+            ORDER BY 
+            CASE WHEN albumPosition IS NULL THEN 1 ELSE 0 END, 
+            albumPosition,
+            name
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllMusicFromAlbum(
+        albumId: Uuid,
+        limit: Int,
+        offset: Int,
+    ): List<RoomCompleteMusic>
+
     // TODO: Normalise with accents.
     @Transaction
     @Query(
@@ -271,6 +315,25 @@ interface MusicDao {
         """
     )
     suspend fun getAllMusicFromArtist(artistId: Uuid): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            INNER JOIN RoomMusicArtist as musicArtist
+            ON music.musicId = musicArtist.musicId 
+            AND musicArtist.artistId = :artistId 
+            AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList' 
+            ORDER BY name ASC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllMusicFromArtist(
+        artistId: Uuid,
+        limit: Int,
+        offset: Int,
+    ): List<RoomCompleteMusic>
 
     // TODO: Normalise with accents.
     @Transaction
@@ -333,6 +396,25 @@ interface MusicDao {
         """
     )
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+            SELECT music.* FROM RoomMusic AS music
+            INNER JOIN RoomMusicPlaylist as musicPlaylist
+            ON music.musicId = musicPlaylist.musicId 
+            AND musicPlaylist.playlistId = :playlistId 
+            AND music.isHidden = 0 
+            AND scope != 'SharedPlayedList'
+            ORDER BY name ASC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllMusicFromPlaylist(
+        playlistId: Uuid,
+        limit: Int,
+        offset: Int,
+    ): List<RoomCompleteMusic>
 
     // TODO: Normalise with accents.
     @Transaction
@@ -449,6 +531,23 @@ interface MusicDao {
         """
     )
     suspend fun getAllMusicFromFolder(folder: String): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic 
+            WHERE isHidden = 0 
+            AND scope != 'SharedPlayedList' 
+            AND folder = :folder
+            ORDER BY name ASC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllMusicFromFolder(
+        folder: String,
+        limit: Int,
+        offset: Int,
+    ): List<RoomCompleteMusic>
 
     // TODO: Normalise with accents.
     @Transaction
@@ -577,6 +676,19 @@ interface MusicDao {
     @Query(
         """
             SELECT * FROM RoomMusicFolderPreview 
+            ORDER BY totalMusics DESC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllMusicFoldersPreview(
+        limit: Int,
+        offset: Int,
+    ): List<RoomMusicFolderPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusicFolderPreview 
             WHERE folder = :folder
             LIMIT 1
         """
@@ -626,18 +738,49 @@ interface MusicDao {
         albumId: Uuid,
     ): RoomCompleteMusic?
 
-    @Query("UPDATE RoomMusic SET remoteId = NULL WHERE remoteId IN (:remoteIds)")
-    suspend fun clearRemoteIds(remoteIds: List<String>)
+    @Query("UPDATE RoomMusic SET remoteId = NULL, coverUrl = NULL WHERE remoteId IN (:remoteIds)")
+    suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>)
 
-    @Query("UPDATE RoomMusic SET remoteId = NULL")
-    suspend fun deleteAllRemoteIds()
+    @Query("UPDATE RoomMusic SET remoteId = NULL, coverUrl = NULL")
+    suspend fun deleteAllRemoteFields()
 
     @Query("DELETE FROM RoomMusic WHERE localPath IS NULL AND remoteId IS NULL")
     suspend fun deleteNotExisting()
 
     @Query("DELETE FROM RoomMusic WHERE scope = 'SharedPlayedList'")
     suspend fun deleteSharedPlayedListMusics()
+
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE path = :path")
     suspend fun getFromPath(path: String): RoomCompleteMusic?
+
+    @Query(
+        """
+            UPDATE RoomMusic 
+            SET lastUpdateMillis = :updatedAt 
+            WHERE musicId IN (:musicIds) AND lastUpdateMillis < :updatedAt
+        """
+    )
+    suspend fun updateLastUpdatedAtField(
+        musicIds: List<Uuid>,
+        updatedAt: Long,
+    )
+
+    @Query(
+        """
+            SELECT DISTINCT music.musicId FROM RoomMusic AS music
+            INNER JOIN RoomMusicArtist AS musicArtist 
+            ON music.musicId = musicArtist.musicId 
+            WHERE musicArtist.artistId IN (:artistIds)
+        """
+    )
+    suspend fun getMusicIdsOfArtists(artistIds: List<Uuid>): List<Uuid>
+
+    @Query(
+        """
+            SELECT DISTINCT musicId FROM RoomMusic 
+            WHERE albumId IN (:albumIds)
+        """
+    )
+    suspend fun getMusicIdsOfAlbum(albumIds: List<Uuid>): List<Uuid>
 }

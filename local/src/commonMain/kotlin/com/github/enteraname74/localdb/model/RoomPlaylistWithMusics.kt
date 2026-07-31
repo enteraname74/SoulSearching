@@ -24,5 +24,5 @@ data class RoomPlaylistWithMusics(
  */
 internal fun RoomPlaylistWithMusics.toPlaylistWithMusics(): PlaylistWithMusics = PlaylistWithMusics(
     playlist = roomPlaylist.toPlaylist(),
-    musics = roomMusics.map { it.toMusic() }
+    musics = roomMusics.map { it.toMusic() }.sortedBy { it.name }
 )

@@ -67,12 +67,21 @@ data class RoomAlbumPreview(
             initialCoverPath = musicCoverPath,
             fileCoverId = coverId,
         )
-        val remoteCover = coverUrl?.let { Cover.Url(it) } ?: musicCoverUrl?.let { Cover.Url(it) }
 
-        val usedCover = if (remoteCover == null) {
-            localCover
-        } else {
-            localCover.takeIf { !it.isEmpty() } ?: remoteCover
+        val usedCover: Cover? = when {
+            coverId != null -> localCover
+            coverUrl != null -> {
+                val fallback = if (localCover.isEmpty() && musicCoverUrl != null) {
+                    Cover.Url(musicCoverUrl, localCover)
+                } else {
+                    localCover
+                }
+
+                Cover.Url(coverUrl, fallback)
+            }
+            musicCoverPath != null -> localCover
+            musicCoverUrl != null -> Cover.Url(musicCoverUrl, localCover)
+            else -> null
         }
 
         return AlbumPreview(

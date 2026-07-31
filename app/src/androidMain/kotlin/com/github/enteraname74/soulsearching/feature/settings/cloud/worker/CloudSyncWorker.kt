@@ -10,8 +10,8 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.ext.toWorkerResult
-import com.github.enteraname74.soulsearching.model.utils.StringsUtils
-import com.github.soulsearching.R
+import com.github.enteraname74.soulsearching.coreui.strings.StringsUtils
+import com.github.enteraname74.soulsearching.sharedapp.R
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.drop

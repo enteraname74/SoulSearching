@@ -41,11 +41,13 @@ fun MainPageVerticalShortcut(
         ) {
             val pos = visibleElements.indexOf(it)
             val isCurrentPosition = pos == currentPage ||
-                    ((pos == visibleElements.size - 1) && (currentPage >= pos))
+                ((pos == visibleElements.size - 1) && (currentPage >= pos))
 
             Row(
                 modifier = Modifier
-                    .clickableWithHandCursor {
+                    .clickableWithHandCursor(
+                        withIndication = false,
+                    ) {
                         switchPageAction(pos)
                     }
                     .padding(

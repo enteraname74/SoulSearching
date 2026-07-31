@@ -44,6 +44,8 @@ interface ArtistRepository {
 
     fun getAllPaged(): Flow<PagingData<ArtistPreview>>
 
+    suspend fun getAll(page: Int, pageSize: Int): List<ArtistPreview>
+
     /**
      * Retrieves a flow of an ArtistWithMusics.
      */
@@ -61,7 +63,7 @@ interface ArtistRepository {
         artistName: String
     ): ArtistWithMusics?
 
-    fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>>
+    fun getArtistsWithMostMusics(): Flow<List<ArtistPreview>>
 
     suspend fun cleanAllCovers()
 

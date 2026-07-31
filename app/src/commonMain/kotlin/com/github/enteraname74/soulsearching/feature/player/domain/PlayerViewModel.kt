@@ -227,7 +227,6 @@ class PlayerViewModel(
             playbackManager.state
                 .map { (it as? PlaybackManagerState.Data) != null }
                 .distinctUntilChanged()
-                .distinctUntilChanged()
                 .collectLatest { isData ->
 
                     val isCollapsed = playerViewManager.currentValue == BottomSheetStates.COLLAPSED

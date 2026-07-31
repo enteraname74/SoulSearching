@@ -31,7 +31,7 @@ data class RoomPlaylist(
  */
 internal fun RoomPlaylist.toPlaylist(): Playlist {
     val localCover = Cover.CoverFile(fileCoverId = coverId)
-    val remoteCover = coverUrl?.let { Cover.Url(it) }
+    val remoteCover = coverUrl?.let { Cover.Url(it, localCover) }
 
     val usedCover = if (remoteCover == null) {
         localCover

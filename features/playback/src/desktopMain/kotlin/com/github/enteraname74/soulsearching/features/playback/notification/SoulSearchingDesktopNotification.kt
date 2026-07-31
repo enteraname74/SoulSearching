@@ -1,49 +1,31 @@
 package com.github.enteraname74.soulsearching.features.playback.notification
 
+import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-//import es.blackleg.jlibnotify.JLibnotify
-//import es.blackleg.jlibnotify.JLibnotifyNotification
-//import es.blackleg.jlibnotify.core.DefaultJLibnotifyLoader
-
-class SoulSearchingDesktopNotification : SoulSearchingNotification {
-//    private var libNotify: JLibnotify? = null
-//    private var notification: JLibnotifyNotification? = null
-
-//    init {
-//        libNotify = DefaultJLibnotifyLoader().load()
-//        libNotify?.init("Soul Searching")
-//    }
-
-    //    override suspend fun updateNotification(playbackManagerState: PlaybackManagerState.Data, cover: ImageBitmap?) {
-//        if (libNotify?.isInitted == false) {
-//            libNotify?.init("Soul Searching")
-//        }
-//
-//        if (notification == null) {
-//            notification = libNotify
-//                ?.createNotification(
-//                    playbackManagerState.currentMusic.name,
-//                    playbackManagerState.currentMusic.artist,
-//                    ""
-//                )
-//            notification?.show()
-//        } else {
-//            notification?.update(
-//                playbackManagerState.currentMusic.name,
-//                playbackManagerState.currentMusic.artist,
-//                ""
-//            )
-//            notification?.show()
-//        }
-//  }
-
-    override suspend fun update(updateData: UpdateData) {
-
+class SoulSearchingDesktopNotification(
+    workDispatcher: WorkDispatcher,
+) : SoulSearchingNotification, KoinComponent {
+    private val playbackManager: PlaybackManager by inject()
+    private val mprisMediaSession: MprisMediaSession by lazy {
+        MprisMediaSession(
+            playbackManager = playbackManager,
+            workDispatcher = workDispatcher,
+        )
     }
 
-    override fun dismiss() {
-//        libNotify?.unInit()
-//        notification?.close()
+    override suspend fun update(updateData: UpdateData) {
+        mprisMediaSession.update(
+            updateData = updateData,
+            // TODO DESKTOP: Add support for cover
+            artUrl = null,
+        )
+    }
+
+    override fun dismiss(forceStop: Boolean) {
+        mprisMediaSession.dismiss()
     }
 }

@@ -28,8 +28,8 @@ class PlaylistRepositoryImpl(
         )
     }
 
-    override suspend fun upsertAll(playlists: List<Playlist>) {
-        playlistLocalDataSource.upsertAll(playlists)
+    override suspend fun upsertAll(playlists: List<Playlist>, keepUpdatedAt: Boolean) {
+        playlistLocalDataSource.upsertAll(playlists, keepUpdatedAt)
     }
 
     override suspend fun deleteAll(playlistIds: List<Uuid>): SoulResult<Unit> = SoulResult.runCatching {
@@ -53,6 +53,9 @@ class PlaylistRepositoryImpl(
             playlistId = playlistId
         )
 
+    override suspend fun getFromRemoteId(remoteId: Uuid): Playlist? =
+        playlistLocalDataSource.getFromRemoteId(remoteId = remoteId)
+
     override fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
         playlistLocalDataSource.getFromIds(playlistIds)
 
@@ -72,6 +75,9 @@ class PlaylistRepositoryImpl(
 
     override fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
         playlistLocalDataSource.getAllPaged()
+
+    override suspend fun getAll(page: Int, pageSize: Int): List<PlaylistPreview> =
+        playlistLocalDataSource.getAll(page = page, pageSize = pageSize)
 
     override suspend fun cleanAllCovers() {
         playlistLocalDataSource.cleanAllCovers()
@@ -124,4 +130,15 @@ class PlaylistRepositoryImpl(
         val allRemoteIds: List<Uuid> = playlistLocalDataSource.getAllRemoteIdsPossessedByUser()
         return playlistRemoteDataSource.getDeletedRemotePlaylistIds(allRemoteIds)
     }
+
+    override suspend fun deleteAllRemoteFields() {
+        playlistLocalDataSource.deleteAllRemoteFields()
+    }
+
+    override suspend fun deleteAllEmptyExceptFavorite() {
+        playlistLocalDataSource.deleteAllEmptyExceptFavorite()
+    }
+
+    override suspend fun getLatestUpdatedAt(): Long? =
+        playlistLocalDataSource.getLatestUpdatedAt()
 }

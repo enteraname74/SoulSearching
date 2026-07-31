@@ -51,6 +51,8 @@ interface MusicRepository {
 
     suspend fun getAllSorted(): List<Music>
 
+    suspend fun getAllSorted(page: Int, pageSize: Int): List<Music>
+
     fun getAllFromQuickAccess(): Flow<List<Music>>
 
     fun getAllPaged(): Flow<PagingData<Music>>
@@ -69,6 +71,8 @@ interface MusicRepository {
      * Retrieves all musics of an Album.
      */
     suspend fun getAllMusicFromAlbum(albumId: Uuid): List<Music>
+
+    suspend fun getAllMusicFromAlbum(albumId: Uuid, page: Int, pageSize: Int): List<Music>
 
     fun searchFromAlbum(
         albumId: Uuid,
@@ -100,11 +104,18 @@ interface MusicRepository {
     ): Flow<List<Music>>
 
     suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music>
+
+    suspend fun getAllMusicFromArtist(artistId: Uuid, page: Int, pageSize: Int): List<Music>
+
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music>
+
+    suspend fun getAllMusicFromPlaylist(playlistId: Uuid, page: Int, pageSize: Int): List<Music>
 
     suspend fun getAllMusicFromMonth(month: String): List<Music>
 
     suspend fun getAllMusicFromFolder(folder: String): List<Music>
+
+    suspend fun getAllMusicFromFolder(folder: String, page: Int, pageSize: Int) : List<Music>
 
     fun getAlbumDuration(albumId: Uuid): Flow<Duration>
     fun getArtistDuration(artistId: Uuid): Flow<Duration>
@@ -126,13 +137,27 @@ interface MusicRepository {
 
     fun getAllMusicFolders(): Flow<List<MusicFolderPreview>>
 
+    suspend fun getAllMusicFolders(page: Int, pageSize: Int): List<MusicFolderPreview>
+
     fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?>
 
     suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music>
 
     suspend fun getDeletedRemoteMusicIds(): List<String>
-    suspend fun clearRemoteIds(remoteIds: List<String>)
-    suspend fun deleteAllRemoteIds()
+
+    /**
+     * Will delete all remote fields of all selected musics like:
+     * - remote id
+     * - cover url
+     */
+    suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>)
+
+    /**
+     * Will delete all remote fields of all musics like:
+     * - remote id
+     * - cover url
+     */
+    suspend fun deleteAllRemoteFields()
     suspend fun deleteNotExisting()
     suspend fun getAllToSendToCloud(): List<Music>
     suspend fun updateMusicToCloud(music: Music): CloudMusic?

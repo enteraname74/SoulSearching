@@ -35,6 +35,9 @@ class CommonMusicUseCase(
     suspend fun getAllSorted(): List<Music> =
         musicRepository.getAllSorted()
 
+    suspend fun getAllSorted(page: Int, pageSize: Int): List<Music> =
+        musicRepository.getAllSorted(page = page, pageSize = pageSize)
+
     fun getAllPaged(): Flow<PagingData<Music>> =
         musicRepository.getAllPaged()
 
@@ -65,14 +68,26 @@ class CommonMusicUseCase(
     suspend fun getAllMusicFromFolder(folder: String): List<Music> =
         musicRepository.getAllMusicFromFolder(folder)
 
+    suspend fun getAllMusicFromFolder(folder: String, page: Int, pageSize: Int): List<Music> =
+        musicRepository.getAllMusicFromFolder(folder = folder, page = page, pageSize = pageSize)
+
     suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music> =
         musicRepository.getAllMusicFromArtist(artistId)
+
+    suspend fun getAllMusicFromArtist(artistId: Uuid, page: Int, pageSize: Int): List<Music> =
+        musicRepository.getAllMusicFromArtist(artistId = artistId, page = page, pageSize = pageSize)
 
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music> =
         musicRepository.getAllMusicFromPlaylist(playlistId)
 
+    suspend fun getAllMusicFromPlaylist(playlistId: Uuid, page: Int, pageSize: Int): List<Music> =
+        musicRepository.getAllMusicFromPlaylist(playlistId = playlistId, page = page, pageSize = pageSize)
+
     suspend fun getAllMusicFromAlbum(albumId: Uuid): List<Music> =
         musicRepository.getAllMusicFromAlbum(albumId)
+
+    suspend fun getAllMusicFromAlbum(albumId: Uuid, page: Int, pageSize: Int): List<Music> =
+        musicRepository.getAllMusicFromAlbum(albumId = albumId, page = page, pageSize = pageSize)
 
     fun searchFromAlbum(
         albumId: Uuid,
@@ -179,6 +194,9 @@ class CommonMusicUseCase(
     fun getAllMusicFolders(): Flow<List<MusicFolderPreview>> =
         musicRepository.getAllMusicFolders()
 
+    suspend fun getAllMusicFolders(page: Int, pageSize: Int): List<MusicFolderPreview> =
+        musicRepository.getAllMusicFolders(page = page, pageSize = pageSize)
+
     fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?> =
         musicRepository.getMusicFolderPreview(folder)
 
@@ -187,7 +205,6 @@ class CommonMusicUseCase(
 
     suspend fun getFromPath(path: String): Music? =
         musicRepository.getFromPath(path)
-
 
     suspend fun getFromInformation(
         musicName: String,

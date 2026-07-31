@@ -17,6 +17,9 @@ class CommonPlaylistUseCase(
     fun getFromId(playlistId: Uuid): Flow<Playlist?> =
         playlistRepository.getFromId(playlistId)
 
+    suspend fun getFromRemoteId(remoteId: Uuid): Playlist? =
+        playlistRepository.getFromRemoteId(remoteId = remoteId)
+
     fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
         playlistRepository.getFromIds(playlistIds)
 
@@ -47,6 +50,9 @@ class CommonPlaylistUseCase(
     fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
         playlistRepository.getAllPaged()
 
+    suspend fun getAll(page: Int, pageSize: Int): List<PlaylistPreview> =
+        playlistRepository.getAll(page = page, pageSize = pageSize)
+
     suspend fun incrementNbPlayed(playlistId: Uuid) {
         val playlist: Playlist = playlistRepository.getFromId(playlistId).first() ?: return
         playlistRepository.upsert(
@@ -56,8 +62,8 @@ class CommonPlaylistUseCase(
         )
     }
 
-    suspend fun upsertAll(playlists: List<Playlist>) {
-        playlistRepository.upsertAll(playlists)
+    suspend fun upsertAll(playlists: List<Playlist>, keepUpdatedAt: Boolean = false) {
+        playlistRepository.upsertAll(playlists, keepUpdatedAt)
     }
 
     suspend fun upsert(playlist: Playlist) {

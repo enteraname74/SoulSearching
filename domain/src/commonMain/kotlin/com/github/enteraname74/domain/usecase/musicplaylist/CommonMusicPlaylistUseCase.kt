@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.usecase.musicplaylist
 
 import com.github.enteraname74.domain.model.MusicPlaylist
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import kotlin.uuid.Uuid
 
@@ -13,16 +14,16 @@ class CommonMusicPlaylistUseCase(
         )
     }
 
-    suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>) {
-        musicPlaylistRepository.upsertAll(musicPlaylists)
+    suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>, keepUpdatedAt: Boolean = false) {
+        musicPlaylistRepository.upsertAll(musicPlaylists, keepUpdatedAt)
     }
 
     suspend fun delete(
-        musicId: Uuid,
+        musicIds: List<Uuid>,
         playlistId: Uuid
     ) {
-        musicPlaylistRepository.deleteMusicFromPlaylist(
-            musicId = musicId,
+        musicPlaylistRepository.deleteFromPlaylist(
+            musicIds = musicIds,
             playlistId = playlistId,
         )
     }

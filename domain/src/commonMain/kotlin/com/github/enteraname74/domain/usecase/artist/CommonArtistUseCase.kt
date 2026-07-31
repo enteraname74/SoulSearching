@@ -15,6 +15,9 @@ class CommonArtistUseCase(
     fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
         artistRepository.getAllPaged()
 
+    suspend fun getAll(page: Int, pageSize: Int): List<ArtistPreview> =
+        artistRepository.getAll(page = page, pageSize = pageSize)
+
     fun getAllFromQuickAccess(): Flow<List<ArtistPreview>> =
         artistRepository.getAllFromQuickAccess()
 
@@ -71,8 +74,8 @@ class CommonArtistUseCase(
             artistName = artistName,
         )
 
-    fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>> =
-        artistRepository.getArtistsWistMostMusics()
+    fun getArtistsWithMostMusics(): Flow<List<ArtistPreview>> =
+        artistRepository.getArtistsWithMostMusics()
 
     suspend fun incrementArtistNbPlayed(artistId: Uuid) {
         val artist: Artist = artistRepository.getFromId(artistId).first() ?: return

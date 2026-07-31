@@ -9,7 +9,7 @@ import kotlin.uuid.Uuid
  * Repository of a MusicPlaylist.
  */
 class MusicPlaylistRepositoryImpl(
-    private val musicPlaylistDataSource: MusicPlaylistDataSource
+    private val musicPlaylistDataSource: MusicPlaylistDataSource,
 ) : MusicPlaylistRepository {
     override suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) {
         musicPlaylistDataSource.upsertMusicIntoPlaylist(
@@ -17,13 +17,13 @@ class MusicPlaylistRepositoryImpl(
         )
     }
 
-    override suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>) {
-        musicPlaylistDataSource.upsertAll(musicPlaylists)
+    override suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>, keepUpdatedAt: Boolean) {
+        musicPlaylistDataSource.upsertAll(musicPlaylists, keepUpdatedAt)
     }
 
-    override suspend fun deleteMusicFromPlaylist(musicId: Uuid, playlistId: Uuid) {
-        musicPlaylistDataSource.deleteMusicFromPlaylist(
-            musicId = musicId,
+    override suspend fun deleteFromPlaylist(musicIds: List<Uuid>, playlistId: Uuid) {
+        musicPlaylistDataSource.deleteFromPlaylist(
+            musicIds = musicIds,
             playlistId = playlistId
         )
     }

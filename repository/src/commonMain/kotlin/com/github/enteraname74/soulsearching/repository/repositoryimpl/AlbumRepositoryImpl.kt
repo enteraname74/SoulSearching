@@ -64,6 +64,9 @@ class AlbumRepositoryImpl(
     override fun getAllPaged(): Flow<PagingData<AlbumPreview>> =
         albumDataSource.getAllPaged()
 
+    override suspend fun getAll(page: Int, pageSize: Int): List<AlbumPreview> =
+        albumDataSource.getAll(page = page, pageSize = pageSize)
+
     override fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
         albumDataSource.getAllFromQuickAccess()
 

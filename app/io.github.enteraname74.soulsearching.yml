@@ -1,11 +1,9 @@
 app-id: io.github.enteraname74.soulsearching
 runtime: org.freedesktop.Platform
-runtime-version: '23.08'
+runtime-version: '25.08'
 sdk: org.freedesktop.Sdk
 command: SoulSearching
-build-options:
-  env:
-    BUILDCC: gcc
+
 finish-args:
   - --share=network
   - --share=ipc
@@ -13,29 +11,35 @@ finish-args:
   - --filesystem=home
   - --device=dri
   - --socket=x11
+  - --own-name=org.mpris.MediaPlayer2.SoulSearching
+
 modules:
   - name: vlc
     buildsystem: autotools
+    rm-configure: true
     config-opts:
-      - --disable-lua
+      - BUILDCC=/usr/bin/gcc -std=gnu99
       - --disable-a52
-    build-commands:
-      - export BUILDCC=gcc
-      - ./configure --prefix=/app --disable-lua --disable-a52
-      - make -j$(nproc)
-      - make install
+      - --disable-lua
+      - --disable-qt
+      - --disable-skins2
+      - --disable-nls
+    post-install:
+      - rm -f /app/lib/vlc/plugins/plugins.dat
+      - /app/lib/vlc/vlc-cache-gen /app/lib/vlc/plugins
     sources:
       - type: archive
-        url: https://get.videolan.org/vlc/3.0.20/vlc-3.0.20.tar.xz
-        sha256: adc7285b4d2721cddf40eb5270cada2aaa10a334cb546fd55a06353447ba29b5
-
+        url: https://download.videolan.org/videolan/vlc/3.0.23/vlc-3.0.23.tar.xz
+        sha256: e891cae6aa3ccda69bf94173d5105cbc55c7a7d9b1d21b9b21666e69eff3e7e0
 
   - name: SoulSearching
     buildsystem: simple
     build-commands:
-      - install -Dm 644 -t /app/share/applications io.github.enteraname74.soulsearching.desktop
-      - install -Dm 644 app_icon_bg.png /app/share/icons/hicolor/128x128/apps/io.github.enteraname74.soulsearching.png
-      - cp -ru * /app
+      - install -Dm644 io.github.enteraname74.soulsearching.desktop
+        /app/share/applications/io.github.enteraname74.soulsearching.desktop
+      - install -Dm644 app_icon_bg.png
+        /app/share/icons/hicolor/128x128/apps/io.github.enteraname74.soulsearching.png
+      - cp -ru . /app
     sources:
       - type: archive
         path: build/distributions/soulsearching-0.16.0-linux.tar.gz

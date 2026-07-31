@@ -6,14 +6,17 @@ sealed interface Cover {
 
     fun isEmpty(): Boolean
 
-    fun <T>ifCoverFile(block: (CoverFile) -> T) : T? =
+    fun <T> ifCoverFile(block: (CoverFile) -> T): T? =
         (this as? CoverFile)?.let { block(this) }
+
+    fun copyIfUrl(block: (Url) -> Cover): Cover =
+        (this as? Url)?.let { block(this) } ?: this
 
     data class CoverFile(
         val initialCoverPath: String? = null,
         val fileCoverId: Uuid? = null,
         val devicePathSpec: DevicePathSpec? = null,
-    ): Cover {
+    ) : Cover {
         override fun isEmpty(): Boolean =
             initialCoverPath == null && fileCoverId == null && devicePathSpec == null
 
@@ -26,6 +29,7 @@ sealed interface Cover {
 
     data class Url(
         val url: String,
+        val fallback: Cover?,
     ) : Cover {
         override fun isEmpty(): Boolean = url.isBlank()
     }

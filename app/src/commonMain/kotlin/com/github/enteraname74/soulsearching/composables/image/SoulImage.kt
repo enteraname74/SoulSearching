@@ -107,8 +107,8 @@ fun InnerSoulImage(
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)?,
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder,
 ) {
-    when (cover) {
-        null -> {
+    when {
+        cover == null || cover.isEmpty() -> {
             TemplateImage(
                 modifier = modifier,
                 contentScale = contentScale,
@@ -116,7 +116,7 @@ fun InnerSoulImage(
             )
         }
 
-        is Cover.CoverFile -> {
+        cover is Cover.CoverFile -> {
             FileCover(
                 cover = cover,
                 modifier = modifier,
@@ -126,9 +126,9 @@ fun InnerSoulImage(
                 builderOptions = builderOptions,
             )
         }
-        is Cover.Url -> {
+        cover is Cover.Url -> {
             UrlImage(
-                url = cover.url,
+                urlCover = cover,
                 modifier = modifier,
                 tint = tint,
                 contentScale = contentScale,
