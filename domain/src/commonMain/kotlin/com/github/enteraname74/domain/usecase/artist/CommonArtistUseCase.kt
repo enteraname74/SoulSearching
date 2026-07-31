@@ -74,8 +74,8 @@ class CommonArtistUseCase(
             artistName = artistName,
         )
 
-    fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>> =
-        artistRepository.getArtistsWistMostMusics()
+    fun getArtistsWithMostMusics(): Flow<List<ArtistPreview>> =
+        artistRepository.getArtistsWithMostMusics()
 
     suspend fun incrementArtistNbPlayed(artistId: Uuid) {
         val artist: Artist = artistRepository.getFromId(artistId).first() ?: return

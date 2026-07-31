@@ -154,9 +154,9 @@ interface MusicLocalDataSource {
         albumId: Uuid,
     ): Music?
 
-    suspend fun clearRemoteIds(remoteIds: List<String>)
+    suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>)
 
-    suspend fun deleteAllRemoteIds()
+    suspend fun deleteAllRemoteFields()
     suspend fun deleteNotExisting()
     suspend fun deleteSharedPlayedListMusics()
     suspend fun getFromPath(path: String): Music?

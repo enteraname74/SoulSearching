@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.model
 
 import com.github.enteraname74.domain.util.DateUtils
+import kotlin.math.max
 import kotlin.time.Clock
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
@@ -23,20 +24,31 @@ data class Playlist(
     fun merge(
         cloudPlaylistInfo: CloudPlaylist.Info,
         mergeMode: MergeMode,
-    ): Playlist =
-        when (mergeMode) {
+    ): Playlist {
+        return when (mergeMode) {
             MergeMode.LocalFirst -> copy(
                 remoteId = cloudPlaylistInfo.id,
-                cover = cover.takeIf { it?.isEmpty() == false } ?: cloudPlaylistInfo.coverPath?.let { Cover.Url(it, null) },
+                cover = buildNewCover(cloudCoverPath = cloudPlaylistInfo.coverPath),
             )
             MergeMode.RemoteFirst -> copy(
                 remoteId = cloudPlaylistInfo.id,
                 name = cloudPlaylistInfo.name,
-                cover = cover.takeIf { it?.isEmpty() == false } ?: cloudPlaylistInfo.coverPath?.let { Cover.Url(it, null) },
+                cover = buildNewCover(cloudCoverPath = cloudPlaylistInfo.coverPath),
                 isFavorite = cloudPlaylistInfo.isFavorite,
-                nbPlayed = cloudPlaylistInfo.nbPlayed,
+                nbPlayed = max(nbPlayed, cloudPlaylistInfo.nbPlayed),
                 isInQuickAccess = cloudPlaylistInfo.isInQuickAccess,
-                lastUpdatedMillis = cloudPlaylistInfo.lastUpdateAtMillis
+                lastUpdatedMillis = cloudPlaylistInfo.lastUpdateAtMillis,
             )
+        }
+    }
+
+    private fun buildNewCover(
+        cloudCoverPath: String?
+    ): Cover? =
+        when {
+            // If the saved cover is already an Url, we will always overwrite it with latest cloud info
+            cover is Cover.Url -> cloudCoverPath?.let { Cover.Url(it, null) }
+            cover?.isEmpty() == false -> cover
+            else -> cloudCoverPath?.let { Cover.Url(it, null) }
         }
 }

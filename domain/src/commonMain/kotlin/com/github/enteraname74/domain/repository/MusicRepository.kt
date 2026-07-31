@@ -144,8 +144,20 @@ interface MusicRepository {
     suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music>
 
     suspend fun getDeletedRemoteMusicIds(): List<String>
-    suspend fun clearRemoteIds(remoteIds: List<String>)
-    suspend fun deleteAllRemoteIds()
+
+    /**
+     * Will delete all remote fields of all selected musics like:
+     * - remote id
+     * - cover url
+     */
+    suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>)
+
+    /**
+     * Will delete all remote fields of all musics like:
+     * - remote id
+     * - cover url
+     */
+    suspend fun deleteAllRemoteFields()
     suspend fun deleteNotExisting()
     suspend fun getAllToSendToCloud(): List<Music>
     suspend fun updateMusicToCloud(music: Music): CloudMusic?

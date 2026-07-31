@@ -25,7 +25,7 @@ class SettingsStatisticsViewModel(
         commonAlbumUseCase.getMostListened(),
         commonPlaylistUseCase.getMostListened(),
         commonArtistUseCase.getMostListened(),
-        commonArtistUseCase.getArtistsWistMostMusics(),
+        commonArtistUseCase.getArtistsWithMostMusics(),
     ) { mostListenedMusics, mostListenedAlbums, mostListenedPlaylists, mostListenedArtists, artistsWithMostSongs ->
         SettingsStatisticsState(
             mostListenedMusics = mostListenedMusics.map { it.toListenedElement() },

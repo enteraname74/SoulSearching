@@ -1,5 +1,6 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
+import androidx.room3.withWriteTransaction
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.util.DateUtils
 import com.github.enteraname74.localdb.AppDatabase
@@ -15,34 +16,42 @@ internal class RoomMusicPlaylistDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : MusicPlaylistDataSource {
     override suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) {
-        appDatabase.musicPlaylistDao.upsertMusicIntoPlaylist(
-            roomMusicPlaylist = musicPlaylist.toRoomMusicPlaylist()
-        )
-        appDatabase.playlistDao.updateLastUpdatedAtField(
-            playlistIds = listOf(musicPlaylist.playlistId),
-            updatedAt = DateUtils.now(),
-        )
+        appDatabase.withWriteTransaction {
+            appDatabase.musicPlaylistDao.upsertMusicIntoPlaylist(
+                roomMusicPlaylist = musicPlaylist.toRoomMusicPlaylist()
+            )
+            appDatabase.playlistDao.updateLastUpdatedAtField(
+                playlistIds = listOf(musicPlaylist.playlistId),
+                updatedAt = DateUtils.now(),
+            )
+        }
     }
 
-    override suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>) {
-        appDatabase.musicPlaylistDao.upsertAll(
-            musicPlaylists = musicPlaylists.map { it.toRoomMusicPlaylist() }
-        )
-        appDatabase.playlistDao.updateLastUpdatedAtField(
-            playlistIds = musicPlaylists.map { it.playlistId },
-            updatedAt = DateUtils.now(),
-        )
+    override suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>, keepUpdatedAt: Boolean) {
+        appDatabase.withWriteTransaction {
+            appDatabase.musicPlaylistDao.upsertAll(
+                musicPlaylists = musicPlaylists.map { it.toRoomMusicPlaylist() }
+            )
+            if (!keepUpdatedAt) {
+                appDatabase.playlistDao.updateLastUpdatedAtField(
+                    playlistIds = musicPlaylists.map { it.playlistId },
+                    updatedAt = DateUtils.now(),
+                )
+            }
+        }
     }
 
-    override suspend fun deleteMusicFromPlaylist(musicId: Uuid, playlistId: Uuid) {
-        appDatabase.musicPlaylistDao.deleteMusicFromPlaylist(
-            musicId = musicId,
-            playlistId = playlistId
-        )
-        appDatabase.playlistDao.updateLastUpdatedAtField(
-            playlistIds = listOf(playlistId),
-            updatedAt = DateUtils.now(),
-        )
+    override suspend fun deleteFromPlaylist(musicIds: List<Uuid>, playlistId: Uuid) {
+        appDatabase.withWriteTransaction {
+            appDatabase.musicPlaylistDao.deleteFromPlaylist(
+                musicIds = musicIds,
+                playlistId = playlistId
+            )
+            appDatabase.playlistDao.updateLastUpdatedAtField(
+                playlistIds = listOf(playlistId),
+                updatedAt = DateUtils.now(),
+            )
+        }
     }
 
     override suspend fun getMusicPlaylist(musicId: Uuid, playlistId: Uuid): MusicPlaylist? {
@@ -53,13 +62,15 @@ internal class RoomMusicPlaylistDataSourceImpl(
     }
 
     override suspend fun deleteMusicFromAllPlaylists(musicId: Uuid) {
-        val playlistIds = appDatabase.musicPlaylistDao.getPlaylistIdsOfMusic(musicId)
-        appDatabase.musicPlaylistDao.deleteMusicFromAllPlaylists(
-            musicId = musicId
-        )
-        appDatabase.playlistDao.updateLastUpdatedAtField(
-            playlistIds = playlistIds,
-            updatedAt = DateUtils.now(),
-        )
+        appDatabase.withWriteTransaction {
+            val playlistIds = appDatabase.musicPlaylistDao.getPlaylistIdsOfMusic(musicId)
+            appDatabase.musicPlaylistDao.deleteMusicFromAllPlaylists(
+                musicId = musicId
+            )
+            appDatabase.playlistDao.updateLastUpdatedAtField(
+                playlistIds = playlistIds,
+                updatedAt = DateUtils.now(),
+            )
+        }
     }
 }

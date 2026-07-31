@@ -12,7 +12,6 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.Cloud
 import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.CloudSyncWorker
 import com.github.enteraname74.soulsearching.util.FileOperation
 import com.russhwolf.settings.SharedPreferencesSettings
-import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -23,7 +22,7 @@ actual val platformModule = module {
     single<SoulSearchingSettings> {
         SoulSearchingSettingsImpl(
             settings = SharedPreferencesSettings(
-                delegate = androidApplication().getSharedPreferences(
+                delegate = get<Context>().getSharedPreferences(
                     SoulSearchingSettingsKeys.SHARED_PREF_KEY,
                     Context.MODE_PRIVATE
                 )
@@ -32,7 +31,7 @@ actual val platformModule = module {
     }
     singleOf(::MusicLinkHandler)
     factory {
-        FileOperation(androidApplication())
+        FileOperation(get<Context>())
     }
     workerOf(::CloudSyncWorker)
     singleOf(::CloudBackgroundSyncJobAndroidImpl) bind CloudBackgroundSyncJob::class

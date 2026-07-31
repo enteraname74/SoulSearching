@@ -22,7 +22,7 @@ interface ArtistDataSource {
     /**
      * Deletes an Artist.
      */
-    suspend fun deleteAll(artist: Artist)
+    suspend fun delete(artist: Artist)
 
     suspend fun deleteAll(artistsIds: List<Uuid>)
 
@@ -69,7 +69,7 @@ interface ArtistDataSource {
         artistName: String
     ): ArtistWithMusics?
 
-    fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>>
+    fun getArtistsWithMostMusics(): Flow<List<ArtistPreview>>
 
     suspend fun cleanAllCovers()
 

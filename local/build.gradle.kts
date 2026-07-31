@@ -36,8 +36,6 @@ kotlin {
 
         androidMain {
             dependencies {
-                // Used for injecting app context in database module
-                implementation(libs.koin.androidx.compose)
                 implementation(libs.androidx.room.sqlite.wrapper)
             }
         }

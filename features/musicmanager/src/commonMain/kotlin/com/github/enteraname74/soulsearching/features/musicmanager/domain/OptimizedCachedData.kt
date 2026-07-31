@@ -12,9 +12,6 @@ import org.koin.core.component.inject
 data class OptimizedCachedData(
     var musicsByPath: HashMap<String, Music> = hashMapOf(),
 ) {
-    fun clear() {
-        musicsByPath.clear()
-    }
 
     companion object : KoinComponent {
         private val commonMusicUseCase: CommonMusicUseCase by inject()
@@ -26,7 +23,7 @@ data class OptimizedCachedData(
                 .first()
                 .associateBy { it.localPath }
                 .filterKeys { it != null }
-                    as HashMap<String, Music>,
+                as HashMap<String, Music>,
         )
     }
 }

@@ -485,12 +485,12 @@ internal class RoomMusicLocalDataSourceImpl(
             albumId = albumId,
         )?.toMusic()
 
-    override suspend fun clearRemoteIds(remoteIds: List<String>) {
-        appDatabase.musicDao.clearRemoteIds(remoteIds)
+    override suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>) {
+        appDatabase.musicDao.deleteAllRemoteFieldsOfIds(remoteIds)
     }
 
-    override suspend fun deleteAllRemoteIds() {
-        appDatabase.musicDao.deleteAllRemoteIds()
+    override suspend fun deleteAllRemoteFields() {
+        appDatabase.musicDao.deleteAllRemoteFields()
     }
 
     override suspend fun deleteNotExisting() {

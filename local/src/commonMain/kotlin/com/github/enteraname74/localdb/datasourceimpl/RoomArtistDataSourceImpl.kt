@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import androidx.room3.withWriteTransaction
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
@@ -11,6 +12,7 @@ import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.util.DateUtils
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toArtist
 import com.github.enteraname74.localdb.model.toArtistWithMusics
@@ -21,6 +23,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlin.math.max
 import kotlin.uuid.Uuid
 
 /**
@@ -31,16 +34,35 @@ internal class RoomArtistDataSourceImpl(
     private val settings: SoulSearchingSettings,
 ) : ArtistDataSource {
     override suspend fun upsert(artist: Artist) {
-        appDatabase.artistDao.upsert(
-            roomArtist = artist.toRoomArtist()
-        )
+        appDatabase.withWriteTransaction {
+            val lastUpdatedAt = max(artist.lastUpdatedMillis ?: 0L, DateUtils.now())
+
+            appDatabase.artistDao.upsert(
+                roomArtist = artist.copy(
+                    lastUpdatedMillis = lastUpdatedAt
+                ).toRoomArtist()
+            )
+            appDatabase.musicDao.updateLastUpdatedAtField(
+                musicIds = appDatabase.musicDao.getMusicIdsOfArtists(artistIds = listOf(artist.artistId)),
+                updatedAt = lastUpdatedAt,
+            )
+        }
     }
 
     override suspend fun upsertAll(artists: List<Artist>) {
-        appDatabase.artistDao.upsertAll(artists.map { it.toRoomArtist() })
+        appDatabase.withWriteTransaction {
+            val lastUpdatedAt = max(artists.maxBy { it.lastUpdatedMillis ?: 0L }.lastUpdatedMillis ?: 0L, DateUtils.now())
+            appDatabase.artistDao.upsertAll(
+                artists.map { it.copy(lastUpdatedMillis = lastUpdatedAt).toRoomArtist() }
+            )
+            appDatabase.musicDao.updateLastUpdatedAtField(
+                musicIds = appDatabase.musicDao.getMusicIdsOfArtists(artistIds = artists.map { it.artistId }),
+                updatedAt = lastUpdatedAt,
+            )
+        }
     }
 
-    override suspend fun deleteAll(artist: Artist) {
+    override suspend fun delete(artist: Artist) {
         appDatabase.artistDao.delete(
             roomArtist = artist.toRoomArtist()
         )
@@ -100,7 +122,7 @@ internal class RoomArtistDataSourceImpl(
                         enablePlaceholders = false,
                     ),
                     pagingSourceFactory = {
-                        when(sortDirection) {
+                        when (sortDirection) {
                             SortDirection.ASC -> {
                                 when (sortType) {
                                     SortType.NAME -> appDatabase.artistDao.getAllPagedByNameAsc()
@@ -192,7 +214,7 @@ internal class RoomArtistDataSourceImpl(
             artistName = artistName,
         )?.toArtistWithMusics()
 
-    override fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>> =
+    override fun getArtistsWithMostMusics(): Flow<List<ArtistPreview>> =
         appDatabase.artistDao.getArtistsWithMostMusics().map { list ->
             list.map { it.toArtistPreview() }
         }

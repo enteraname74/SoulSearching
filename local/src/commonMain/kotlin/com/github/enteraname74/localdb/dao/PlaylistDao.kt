@@ -36,6 +36,9 @@ interface PlaylistDao {
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId LIMIT 1")
     fun getFromId(playlistId: Uuid): Flow<RoomPlaylist?>
 
+    @Query("SELECT * FROM RoomPlaylist WHERE remoteId = :remoteId LIMIT 1")
+    suspend fun getFromRemoteId(remoteId: Uuid): RoomPlaylist?
+
     @Transaction
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId IN (:playlistIds)")
     fun getFromIds(playlistIds: List<Uuid>): Flow<List<RoomPlaylistWithMusics>>
@@ -211,7 +214,7 @@ interface PlaylistDao {
         """
             UPDATE RoomPlaylist 
             SET lastUpdatedMillis = :updatedAt 
-            WHERE playlistId IN (:playlistIds)
+            WHERE playlistId IN (:playlistIds) AND lastUpdatedMillis < :updatedAt
         """
     )
     suspend fun updateLastUpdatedAtField(
@@ -241,4 +244,26 @@ interface PlaylistDao {
         """
     )
     suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid>
+
+    @Query("UPDATE RoomPlaylist SET remoteId = NULL, coverUrl = NULL")
+    suspend fun deleteAllRemoteFields()
+
+    @Query(
+        """
+            DELETE FROM RoomPlaylist
+            WHERE (SELECT COUNT(*) FROM RoomMusicPlaylist WHERE RoomMusicPlaylist.playlistId = RoomPlaylist.playlistId) = 0 
+            AND isFavorite = 0
+        """
+    )
+    suspend fun deleteAllEmptyExceptFavorite()
+
+    @Query(
+        """
+            SELECT lastUpdatedMillis FROM RoomPlaylist 
+            WHERE lastUpdatedMillis IS NOT NULL 
+            ORDER BY lastUpdatedMillis DESC 
+            LIMIT 1
+        """
+    )
+    suspend fun getLatestUpdatedAt(): Long?
 }

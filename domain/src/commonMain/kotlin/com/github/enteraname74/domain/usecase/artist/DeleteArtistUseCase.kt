@@ -23,7 +23,6 @@ class DeleteArtistUseCase(
             .filter { it.artistId != artistWithMusics.artist.artistId }
             .distinctBy { it.artistId }
 
-
         // We first delete the songs of the artist.
         commonMusicUseCase.deleteAll(
             ids = artistWithMusics.musics.map { it.musicId }

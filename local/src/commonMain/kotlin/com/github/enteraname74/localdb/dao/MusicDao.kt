@@ -738,18 +738,49 @@ interface MusicDao {
         albumId: Uuid,
     ): RoomCompleteMusic?
 
-    @Query("UPDATE RoomMusic SET remoteId = NULL WHERE remoteId IN (:remoteIds)")
-    suspend fun clearRemoteIds(remoteIds: List<String>)
+    @Query("UPDATE RoomMusic SET remoteId = NULL, coverUrl = NULL WHERE remoteId IN (:remoteIds)")
+    suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>)
 
-    @Query("UPDATE RoomMusic SET remoteId = NULL")
-    suspend fun deleteAllRemoteIds()
+    @Query("UPDATE RoomMusic SET remoteId = NULL, coverUrl = NULL")
+    suspend fun deleteAllRemoteFields()
 
     @Query("DELETE FROM RoomMusic WHERE localPath IS NULL AND remoteId IS NULL")
     suspend fun deleteNotExisting()
 
     @Query("DELETE FROM RoomMusic WHERE scope = 'SharedPlayedList'")
     suspend fun deleteSharedPlayedListMusics()
+
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE path = :path")
     suspend fun getFromPath(path: String): RoomCompleteMusic?
+
+    @Query(
+        """
+            UPDATE RoomMusic 
+            SET lastUpdateMillis = :updatedAt 
+            WHERE musicId IN (:musicIds) AND lastUpdateMillis < :updatedAt
+        """
+    )
+    suspend fun updateLastUpdatedAtField(
+        musicIds: List<Uuid>,
+        updatedAt: Long,
+    )
+
+    @Query(
+        """
+            SELECT DISTINCT music.musicId FROM RoomMusic AS music
+            INNER JOIN RoomMusicArtist AS musicArtist 
+            ON music.musicId = musicArtist.musicId 
+            WHERE musicArtist.artistId IN (:artistIds)
+        """
+    )
+    suspend fun getMusicIdsOfArtists(artistIds: List<Uuid>): List<Uuid>
+
+    @Query(
+        """
+            SELECT DISTINCT musicId FROM RoomMusic 
+            WHERE albumId IN (:albumIds)
+        """
+    )
+    suspend fun getMusicIdsOfAlbum(albumIds: List<Uuid>): List<Uuid>
 }

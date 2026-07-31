@@ -16,7 +16,7 @@ interface PlaylistLocalDataSource {
      */
     suspend fun upsert(playlist: Playlist)
 
-    suspend fun upsertAll(playlists: List<Playlist>)
+    suspend fun upsertAll(playlists: List<Playlist>, keepUpdatedAt: Boolean)
 
     /**
      * Delete the playlists identified in the given list of ids.
@@ -34,6 +34,8 @@ interface PlaylistLocalDataSource {
      * Retrieves a Playlist from its id.
      */
     fun getFromId(playlistId: Uuid): Flow<Playlist?>
+
+    suspend fun getFromRemoteId(remoteId: Uuid): Playlist?
 
     fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>>
 
@@ -65,4 +67,10 @@ interface PlaylistLocalDataSource {
     suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<Uuid>
 
     suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid>
+
+    suspend fun deleteAllRemoteFields()
+
+    suspend fun deleteAllEmptyExceptFavorite()
+
+    suspend fun getLatestUpdatedAt(): Long?
 }

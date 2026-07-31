@@ -275,12 +275,12 @@ class MusicRepositoryImpl(
             albumId = albumId,
         )
 
-    override suspend fun clearRemoteIds(remoteIds: List<String>) {
-        musicLocalDataSource.clearRemoteIds(remoteIds)
+    override suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>) {
+        musicLocalDataSource.deleteAllRemoteFieldsOfIds(remoteIds)
     }
 
-    override suspend fun deleteAllRemoteIds() {
-        musicLocalDataSource.deleteAllRemoteIds()
+    override suspend fun deleteAllRemoteFields() {
+        musicLocalDataSource.deleteAllRemoteFields()
     }
 
     override suspend fun deleteNotExisting() {

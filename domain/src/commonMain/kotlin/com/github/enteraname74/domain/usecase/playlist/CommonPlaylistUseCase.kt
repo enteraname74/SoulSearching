@@ -17,6 +17,9 @@ class CommonPlaylistUseCase(
     fun getFromId(playlistId: Uuid): Flow<Playlist?> =
         playlistRepository.getFromId(playlistId)
 
+    suspend fun getFromRemoteId(remoteId: Uuid): Playlist? =
+        playlistRepository.getFromRemoteId(remoteId = remoteId)
+
     fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
         playlistRepository.getFromIds(playlistIds)
 
@@ -59,8 +62,8 @@ class CommonPlaylistUseCase(
         )
     }
 
-    suspend fun upsertAll(playlists: List<Playlist>) {
-        playlistRepository.upsertAll(playlists)
+    suspend fun upsertAll(playlists: List<Playlist>, keepUpdatedAt: Boolean = false) {
+        playlistRepository.upsertAll(playlists, keepUpdatedAt)
     }
 
     suspend fun upsert(playlist: Playlist) {
