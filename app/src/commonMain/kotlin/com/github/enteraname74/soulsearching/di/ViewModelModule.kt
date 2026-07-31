@@ -30,7 +30,6 @@ import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfold
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodesViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations.SettingsCloudExplanationsViewHolder
-import com.github.enteraname74.soulsearching.feature.settings.cloud.fetchmusic.SettingsCloudFetchMusicViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.join.SettingsCloudSharedListJoinViewHolder
@@ -79,7 +78,6 @@ internal val viewModelModule: Module = module {
     viewModelOf(::SettingsCloudSharedListViewHolder)
     viewModelOf(::SettingsCloudSyncViewHolder)
     viewModelOf(::SettingsCloudSharedListJoinViewHolder)
-    viewModelOf(::SettingsCloudFetchMusicViewHolder)
     viewModelOf(::SettingsCloudExplanationsViewHolder)
     viewModelOf(::SettingsShortcutsViewHolder)
 

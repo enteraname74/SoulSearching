@@ -41,7 +41,6 @@ fun PlayerPanelContent(
     onActivateRemoteLyrics: () -> Unit,
     onSwiped: ((Music) -> Unit)?,
     onClickOnMusic: ((Music) -> Unit)?,
-    onAddFromUrl: (() -> Unit)?,
     multiSelectionState: MultiSelectionState,
     contentColor: Color,
     subTextColor: Color,
@@ -74,7 +73,6 @@ fun PlayerPanelContent(
                     onSwiped = onSwiped,
                     onClickOnMusic = onClickOnMusic,
                     getUserTag = playerState::getUserTag,
-                    onAddFromUrl = onAddFromUrl,
                 )
             }
         ),

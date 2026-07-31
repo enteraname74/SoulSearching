@@ -9,7 +9,6 @@ import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfold
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodesDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations.SettingsCloudExplanationsDestination
-import com.github.enteraname74.soulsearching.feature.settings.cloud.fetchmusic.SettingsCloudFetchMusicDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.join.SettingsCloudSharedListJoinDestination
@@ -133,10 +132,6 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
-        SettingsCloudFetchMusicDestination.register(
-            entryProviderScope = entryProviderScope,
-            navigator = navigator,
-        )
         SettingsCloudSignInDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
@@ -207,7 +202,6 @@ object SettingsNavigationHandler {
             subclass(SettingsCloudCodesDestination::class, SettingsCloudCodesDestination.serializer())
             subclass(SettingsCloudSyncDestination::class, SettingsCloudSyncDestination.serializer())
             subclass(SettingsCloudSharedListJoinDestination::class, SettingsCloudSharedListJoinDestination.serializer())
-            subclass(SettingsCloudFetchMusicDestination::class, SettingsCloudFetchMusicDestination.serializer())
             subclass(SettingsCloudUsersDestination::class, SettingsCloudUsersDestination.serializer())
             subclass(SettingsCloudExplanationsDestination::class, SettingsCloudExplanationsDestination.serializer())
             subclass(SettingsCloudSharedListDestination::class, SettingsCloudSharedListDestination.serializer())

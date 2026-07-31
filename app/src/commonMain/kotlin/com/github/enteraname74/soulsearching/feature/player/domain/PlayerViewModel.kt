@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Scope
-import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.domain.model.player.PlayedListScope
 import com.github.enteraname74.domain.model.player.PlayedListState
@@ -17,7 +16,6 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.model.user.User
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
-import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -29,15 +27,29 @@ import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelecti
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.player.domain.state.*
-import com.github.enteraname74.soulsearching.feature.player.presentation.composable.dialog.AddUrlToSharedPlayedListDialog
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.SharedListState
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.dialog.RemoveUserFromPlayedListDialog
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
 
@@ -54,7 +66,6 @@ class PlayerViewModel(
     val multiSelectionManager: MultiSelectionManager,
     private val loadingManager: LoadingManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
-    private val addMusicsToSharedPlayedListUseCase: AddMusicsToSharedPlayedListUseCase,
     private val savedStateHandle: SavedStateHandle,
     commonUserUseCase: CommonUserUseCase,
     private val workDispatcher: WorkDispatcher,
@@ -438,22 +449,6 @@ class PlayerViewModel(
     fun onClickOnMusic(music: Music) {
         loadingManager.withLoadingOnScope(viewModelScope) {
             playbackManager.setAndPlayMusicFromCurrentPlayedList(music)
-        }
-    }
-
-    fun onAddFromUrlClicked() {
-        _dialogState.value = AddUrlToSharedPlayedListDialog(
-            onConfirm = ::addFromUrl,
-            onDismiss = { _dialogState.value = null }
-        )
-    }
-
-    private fun addFromUrl(url: String) {
-        loadingManager.withLoadingOnScope(viewModelScope) {
-            when (val result = addMusicsToSharedPlayedListUseCase.url(url)) {
-                is SoulResult.Error -> feedbackPopUpManager.showErrorIfAny(result)
-                is SoulResult.Success -> _dialogState.value = null
-            }
         }
     }
 

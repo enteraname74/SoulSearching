@@ -111,9 +111,9 @@ interface MusicRepository {
 
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid, page: Int, pageSize: Int): List<Music>
 
-    suspend fun getAllMusicFromMonth(month: String) : List<Music>
+    suspend fun getAllMusicFromMonth(month: String): List<Music>
 
-    suspend fun getAllMusicFromFolder(folder: String) : List<Music>
+    suspend fun getAllMusicFromFolder(folder: String): List<Music>
 
     suspend fun getAllMusicFromFolder(folder: String, page: Int, pageSize: Int) : List<Music>
 
@@ -174,7 +174,6 @@ interface MusicRepository {
 
     suspend fun deleteSharedPlayedListMusics()
 
-    suspend fun fetch(url: String): CloudMusic
     suspend fun getFromPath(path: String): Music?
 
     /**

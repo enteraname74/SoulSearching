@@ -496,17 +496,6 @@ class PlayerRepositoryImpl(
         }
     }
 
-    override suspend fun addMusicFromURL(url: String) {
-        withContext(workScope) {
-            playerRemoteDataSource.addMusicFromURL(
-                deviceId = deviceLocalDataSource.getDeviceId(),
-                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id
-                    ?: return@withContext,
-                url = url,
-            )
-        }
-    }
-
     override suspend fun removeFromSharedPlayedList(musicRemoteIds: List<String>) {
         withContext(workScope) {
             playerRemoteDataSource.removeMusics(
