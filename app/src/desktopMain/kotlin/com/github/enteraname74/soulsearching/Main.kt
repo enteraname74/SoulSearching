@@ -48,10 +48,8 @@ fun main(): Unit = application {
                 val action = it.toKeyboardAction()
                 if (action != null) {
                     playbackManager.handleKeyboardAction(action = action)
-                    false
-                } else {
-                    true
                 }
+                action != null
             }
         ) {
             ListenToWindowSizeChange(windowState = windowState)
