@@ -1,36 +1,54 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.swipeable
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanelUiUtils
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
-import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
-import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconDefaults
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconDefaults
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
-import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.SwipeableViewManagerHandler
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
 import kotlinx.coroutines.launch
-import kotlin.uuid.Uuid
 import kotlin.math.max
 import kotlin.math.roundToInt
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -102,10 +120,7 @@ fun PlayerPanelDraggableView(
                 .fillMaxSize()
                 .background(
                     color = containerColor,
-                    shape = RoundedCornerShape(
-                        topStartPercent = 4,
-                        topEndPercent = 4
-                    )
+                    shape = panelShape()
                 )
                 .navigationBarsPadding()
         ) {
@@ -130,6 +145,17 @@ fun PlayerPanelDraggableView(
         }
     }
 }
+
+@Composable
+private fun panelShape(): Shape =
+    if (NavigationPanelUiUtils.canShowPanel()) {
+        RectangleShape
+    } else {
+        RoundedCornerShape(
+            topStartPercent = 4,
+            topEndPercent = 4
+        )
+    }
 
 @Composable
 private fun DragHandler(
