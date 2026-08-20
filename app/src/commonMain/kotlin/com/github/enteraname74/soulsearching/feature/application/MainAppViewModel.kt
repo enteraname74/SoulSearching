@@ -46,7 +46,6 @@ class MainAppViewModel(
         add(
             NavigationRowSpec.Settings(
                 onClick = {
-                    searchAllViewManager.closeIfPossible()
                     playerViewManager.minimiseIfPossible()
                     navScope.toSettings()
                 },
