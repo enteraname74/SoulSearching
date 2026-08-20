@@ -92,6 +92,7 @@ object UiConstants {
      */
     object AnimationDuration {
         const val short: Int = 100
+        const val shortPlus: Int = 150
         const val medium: Int = 200
         const val normal: Int = 300
     }

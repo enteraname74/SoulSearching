@@ -1,5 +1,9 @@
 package com.github.enteraname74.soulsearching.coreui.topbar
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -27,6 +31,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 fun SoulTopBar(
     modifier: Modifier = Modifier,
     title: String? = null,
+    showTitle: Boolean = true,
     leftAction: TopBarActionSpec?,
     rightAction: TopBarActionSpec? = null,
     isElevated: Boolean = false,
@@ -59,15 +64,29 @@ fun SoulTopBar(
             Spacer(modifier = Modifier.size(TOP_BAR_BUTTON_SIZE))
         }
         title?.let {
-            Text(
-                modifier = Modifier.weight(1f),
-                text = it,
-                maxLines = 2,
-                style = UiConstants.Typography.bodyMediumTitle,
-                color = colors.contentColorWithElevation(isElevated),
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Center,
-            )
+            AnimatedVisibility(
+                visible = showTitle,
+                enter = fadeIn(
+                    animationSpec = tween(
+                        durationMillis = UiConstants.AnimationDuration.shortPlus
+                    )
+                ),
+                exit = fadeOut(
+                    animationSpec = tween(
+                        durationMillis = UiConstants.AnimationDuration.shortPlus
+                    )
+                ),
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = it,
+                    maxLines = 2,
+                    style = UiConstants.Typography.bodyMediumTitle,
+                    color = colors.contentColorWithElevation(isElevated),
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
 
         if (rightAction != null) {

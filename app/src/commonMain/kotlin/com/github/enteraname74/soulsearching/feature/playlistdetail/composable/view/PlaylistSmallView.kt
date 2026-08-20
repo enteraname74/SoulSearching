@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -106,12 +108,11 @@ fun PlaylistSmallView(
             { Color.Transparent }
         }
 
-    val topBarTitle: String? =
-        if (lazyListState.firstVisibleItemIndex >= 1) {
-            playlistDetail.title
-        } else {
-            null
+    val shouldShowTopBarTitle: Boolean by remember(lazyListState) {
+        derivedStateOf {
+            lazyListState.firstVisibleItemIndex >= 1
         }
+    }
 
     val musics = playlistDetail.musics.collectAsLazyPagingItems()
 
@@ -125,7 +126,8 @@ fun PlaylistSmallView(
                 .onGloballyPositioned { layoutCoordinates ->
                     topBarHeight = layoutCoordinates.size.height
                 },
-            title = topBarTitle,
+            title = playlistDetail.title,
+            showTitle = shouldShowTopBarTitle,
             leftAction = TopBarNavigationAction(onClick = navigateBack),
             rightAction = object : TopBarActionSpec {
                 override val icon: DrawableResource = CoreRes.drawable.ic_search
