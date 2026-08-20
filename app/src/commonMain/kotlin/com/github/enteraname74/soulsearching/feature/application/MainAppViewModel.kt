@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.composables.navigation.NavigationRo
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.search.SearchAllViewManager
 import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +18,7 @@ class MainAppViewModel(
     private val tabManager: TabManager,
     private val playerViewManager: PlayerViewManager,
     private val navScope: MainAppNavScope,
+    private val searchAllViewManager: SearchAllViewManager,
 ) : ViewModel() {
     val state: StateFlow<MainAppState> = combine(
         tabManager.tabs,
@@ -44,6 +46,7 @@ class MainAppViewModel(
         add(
             NavigationRowSpec.Settings(
                 onClick = {
+                    searchAllViewManager.closeIfPossible()
                     playerViewManager.minimiseIfPossible()
                     navScope.toSettings()
                 },
@@ -59,6 +62,7 @@ class MainAppViewModel(
                     element = tab,
                     isCurrentPage = pageCheck,
                     onClick = {
+                        searchAllViewManager.closeIfPossible()
                         playerViewManager.minimiseIfPossible()
                         navScope.toMainPageDestinationIfNeeded()
                         tabManager.setCurrentPage(tab)

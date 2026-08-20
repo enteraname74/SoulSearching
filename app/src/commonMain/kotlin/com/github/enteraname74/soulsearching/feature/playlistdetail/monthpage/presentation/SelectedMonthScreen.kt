@@ -53,6 +53,7 @@ fun SelectedMonthScreenView(
             playlistDetailListener = selectedMonthViewModel,
             navigateBack = navigateBack,
             multiSelectionState = multiSelectionState,
+            playlistSearchViewManager = selectedMonthViewModel.playlistSearchViewManager,
         )
 
         SelectedMonthState.Error -> {

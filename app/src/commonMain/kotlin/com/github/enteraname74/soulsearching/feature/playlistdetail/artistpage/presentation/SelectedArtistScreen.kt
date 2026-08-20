@@ -67,6 +67,7 @@ fun SelectedArtistScreenView(
                     }
                 },
                 multiSelectionState = multiSelectionState,
+                playlistSearchViewManager = selectedArtistViewModel.playlistSearchViewManager,
             )
         }
         SelectedArtistState.Loading -> SoulLoadingScreen(

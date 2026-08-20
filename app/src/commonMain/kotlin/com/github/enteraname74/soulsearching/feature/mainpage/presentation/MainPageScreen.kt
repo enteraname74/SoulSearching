@@ -3,7 +3,6 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation
 
 //noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -24,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -44,6 +41,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.presentation.compo
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageVerticalShortcut
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.SearchAll
+import com.github.enteraname74.soulsearching.feature.search.SearchAllViewManager
 import com.github.enteraname74.soulsearching.feature.search.SearchView
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -62,8 +60,6 @@ fun MainPageRoute(
     val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsStateWithLifecycle()
     val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsStateWithLifecycle()
     val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsStateWithLifecycle()
-
-    val searchDraggableState = mainPageViewModel.searchDraggableState
 
     val bottomSheetState: SoulBottomSheet? by mainPageViewModel.bottomSheetState.collectAsStateWithLifecycle()
     val dialogState: SoulDialog? by mainPageViewModel.dialogState.collectAsStateWithLifecycle()
@@ -84,7 +80,6 @@ fun MainPageRoute(
 
     MainPageScreenView(
         mainPageViewModel = mainPageViewModel,
-        searchDraggableState = searchDraggableState,
         tabs = tabs,
         currentEnumPage = currentPage,
         isUsingVerticalAccessBar = isUsingVerticalAccessBar,
@@ -98,12 +93,12 @@ fun MainPageRoute(
 @Suppress("Deprecation")
 fun MainPageScreenView(
     mainPageViewModel: MainPageViewModel,
-    searchDraggableState: SwipeableState<BottomSheetStates>,
     searchAllState: SearchAllState,
     tabs: List<PagerScreen>,
     shouldShowNewVersionPin: Boolean,
     currentEnumPage: ElementEnum?,
     isUsingVerticalAccessBar: Boolean,
+    searchAllViewManager: SearchAllViewManager = injectElement(),
 ) {
     val pagerState = rememberPagerState(
         pageCount = { tabs.size },
@@ -141,14 +136,12 @@ fun MainPageScreenView(
                 shouldShowNewReleasePin = shouldShowNewVersionPin,
                 settingsAction = mainPageViewModel::toSettings,
                 searchAction = {
-                    coroutineScope.launch {
-                        searchDraggableState.animateTo(
-                            BottomSheetStates.EXPANDED,
-                            tween(UiConstants.AnimationDuration.normal)
-                        )
-                    }.invokeOnCompletion {
-                        searchBarFocusRequester.requestFocus()
-                    }
+                    searchAllViewManager.animateTo(
+                        newState = BottomSheetStates.EXPANDED,
+                        onExpanded = {
+                            searchBarFocusRequester.requestFocus()
+                        }
+                    )
                 }
             )
 
@@ -222,7 +215,7 @@ fun MainPageScreenView(
         }
 
         SearchView(
-            draggableState = searchDraggableState,
+            searchViewManager = searchAllViewManager,
             placeholder = strings.searchAll,
             maxHeight = maxHeight,
             focusRequester = searchBarFocusRequester,

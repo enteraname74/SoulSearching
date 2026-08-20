@@ -1,11 +1,12 @@
 @file:Suppress("Deprecation")
 
-package com.github.enteraname74.soulsearching.feature.player.domain.model
+package com.github.enteraname74.soulsearching.feature.swipeableview
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -25,13 +26,13 @@ open class SwipeableViewManager {
     val targetState = _targetState.asStateFlow()
 
     private val _previousState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
-    val previousState = _previousState.asStateFlow()
+    val previousState: StateFlow<BottomSheetStates?> = _previousState.asStateFlow()
 
     private val _nextState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
-    val nextState = _nextState.asStateFlow()
+    val nextState: StateFlow<BottomSheetStates?> = _nextState.asStateFlow()
 
     private val _snapState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
-    val snapState = _snapState.asStateFlow()
+    val snapState: StateFlow<BottomSheetStates?> = _snapState.asStateFlow()
 
     val isAnimationRunning: Boolean
         get() = (_state.value != _nextState.value) && (_nextState.value != null)
@@ -44,7 +45,13 @@ open class SwipeableViewManager {
     val offset: Float
         get() = draggableState.offset.value
 
-    fun animateTo(newState: BottomSheetStates) {
+    var onExpanded: (() -> Unit)? = null
+
+    fun animateTo(
+        newState: BottomSheetStates,
+        onExpanded: (() -> Unit)? = null,
+    ) {
+        this.onExpanded = onExpanded
         _nextState.value = newState
     }
 
@@ -67,6 +74,7 @@ open class SwipeableViewManager {
     fun updateState(newState: BottomSheetStates) {
         _previousState.value = _state.value
         _state.value = newState
+        onExpanded?.let { it() }
     }
 
     fun updateTargetState(newState: BottomSheetStates) {

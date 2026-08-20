@@ -1,11 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation
 
 //noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +22,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.ext.swipeableView
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
@@ -35,9 +34,9 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.screen.
 import com.github.enteraname74.soulsearching.feature.player.presentation.screen.PlayerSwipeableLoadingScreen
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.orDefault
-import kotlin.uuid.Uuid
 import kotlin.math.max
 import kotlin.math.roundToInt
+import kotlin.uuid.Uuid
 
 @Suppress("Deprecation")
 @OptIn(ExperimentalMaterialApi::class)
@@ -149,9 +148,8 @@ fun PlayerDraggableView(
                         y = max(playerViewManager.offset.roundToInt(), 0)
                     )
                 }
-                .swipeable(
-                    state = playerViewManager.draggableState,
-                    orientation = Orientation.Vertical,
+                .swipeableView(
+                    swipeableViewManager = playerViewManager,
                     anchors = mapOf(
                         (maxHeight - PlayerMinimisedHeight) to BottomSheetStates.MINIMISED,
                         maxHeight to BottomSheetStates.COLLAPSED,
@@ -223,7 +221,7 @@ fun PlayerDraggableView(
                     )
 
                     /*
-                    If the previous state was expanded/minimised and the current one is collapsed,
+                    If the previous state was expanded/minimized and the current one is collapsed,
                     then it indicates that the playback should stop (user action for example).
                      */
                     if ((previousDraggableState != BottomSheetStates.COLLAPSED && previousDraggableState != null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
@@ -239,13 +237,6 @@ fun PlayerDraggableView(
 
 private fun <T> ifAdmin(state: PlayerViewState.Data, scope: () -> T): T? =
     if (state.playedListScope.isAdmin) {
-        scope()
-    } else {
-        null
-    }
-
-private fun <T> ifRemote(state: PlayerViewState.Data, scope: () -> T): T? =
-    if (state.playedListScope.isRemote) {
         scope()
     } else {
         null

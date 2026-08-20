@@ -19,6 +19,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumDestination
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
+import com.github.enteraname74.soulsearching.feature.search.PlaylistSearchViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -40,6 +41,7 @@ class SelectedAlbumViewModel(
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
     private val multiSelectionManager: MultiSelectionManager,
+    val playlistSearchViewManager: PlaylistSearchViewManager,
     settings: SoulSearchingSettings,
     destination: SelectedAlbumDestination,
 ) :

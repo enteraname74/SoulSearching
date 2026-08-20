@@ -1,13 +1,10 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.composable
 
-
 //noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -19,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
-import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
@@ -40,6 +36,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.v
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistViewUiUtils
+import com.github.enteraname74.soulsearching.feature.search.PlaylistSearchViewManager
 import com.github.enteraname74.soulsearching.feature.search.SearchMusics
 import com.github.enteraname74.soulsearching.feature.search.SearchView
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
@@ -53,6 +50,7 @@ import kotlinx.coroutines.launch
 fun PlaylistScreen(
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
+    playlistSearchViewManager: PlaylistSearchViewManager,
     navigateBack: () -> Unit,
     multiSelectionState: MultiSelectionState,
     multiSelectionManager: MultiSelectionManager = injectElement(),
@@ -100,10 +98,6 @@ fun PlaylistScreen(
                 .fillMaxSize()
                 .background(SoulSearchingColorTheme.colorScheme.primary)
         ) {
-            val searchDraggableState = rememberSwipeableState(
-                initialValue = BottomSheetStates.COLLAPSED
-            )
-
             val constraintsScope = this
             val maxHeight = with(LocalDensity.current) {
                 constraintsScope.maxHeight.toPx() + getNavigationBarPadding()
@@ -114,11 +108,12 @@ fun PlaylistScreen(
             val searchAction: () -> Unit = {
                 coroutineScope.launch {
                     playlistDetailListener.onCloseSelection()
-                    searchDraggableState.animateTo(
-                        BottomSheetStates.EXPANDED,
-                        tween(UiConstants.AnimationDuration.normal)
+                    playlistSearchViewManager.animateTo(
+                        newState = BottomSheetStates.EXPANDED,
+                        onExpanded = {
+                            searchBarFocusRequester.requestFocus()
+                        }
                     )
-                    searchBarFocusRequester.requestFocus()
                 }
             }
 
@@ -162,7 +157,7 @@ fun PlaylistScreen(
             }
 
             SearchView(
-                draggableState = searchDraggableState,
+                searchViewManager = playlistSearchViewManager,
                 placeholder = strings.searchForMusics,
                 maxHeight = maxHeight,
                 focusRequester = searchBarFocusRequester,

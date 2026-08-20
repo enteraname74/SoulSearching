@@ -54,6 +54,7 @@ fun SelectedPlaylistScreenView(
             playlistDetailListener = selectedPlaylistViewModel,
             navigateBack = navigateBack,
             multiSelectionState = multiSelectionState,
+            playlistSearchViewManager = selectedPlaylistViewModel.playlistSearchViewManager,
         )
 
         SelectedPlaylistState.Error -> {

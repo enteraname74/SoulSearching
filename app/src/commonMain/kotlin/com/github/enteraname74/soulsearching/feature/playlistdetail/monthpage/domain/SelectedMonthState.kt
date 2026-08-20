@@ -9,6 +9,7 @@ sealed interface SelectedMonthState {
     data object Error : SelectedMonthState
     data class Data(
         val playlistDetail: PlaylistDetail,
-    ): SelectedMonthState
-    data object Loading: SelectedMonthState
+    ) : SelectedMonthState
+
+    data object Loading : SelectedMonthState
 }

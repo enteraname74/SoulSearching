@@ -1,10 +1,6 @@
-@file:Suppress("Deprecation")
-
 package com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel
 
 //noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -158,10 +154,6 @@ class MainPageViewModel(
         started = SharingStarted.Lazily,
         initialValue = true,
     )
-
-    @OptIn(ExperimentalMaterialApi::class)
-    val searchDraggableState: SwipeableState<BottomSheetStates> =
-        SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _musics: Flow<PagingData<Music>> = commonMusicUseCase
@@ -653,18 +645,6 @@ class MainPageViewModel(
     fun showAlbumBottomSheet(albumIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToAlbumBottomSheet(
             albumIds = albumIds,
-        )
-    }
-
-    fun showFolderBottomSheet(folderPaths: List<String>) {
-        _navigationState.value = MainPageNavigationState.ToFolderBottomSheet(
-            folderPaths = folderPaths,
-        )
-    }
-
-    fun showMonthBottomSheet(months: List<String>) {
-        _navigationState.value = MainPageNavigationState.ToMonthBottomSheet(
-            months = months,
         )
     }
 

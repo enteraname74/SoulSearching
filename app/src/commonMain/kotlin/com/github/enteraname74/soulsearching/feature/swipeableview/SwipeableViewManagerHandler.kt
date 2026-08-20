@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.player.domain.model
+package com.github.enteraname74.soulsearching.feature.swipeableview
 
 import androidx.compose.animation.core.tween
 import androidx.compose.material.ExperimentalMaterialApi

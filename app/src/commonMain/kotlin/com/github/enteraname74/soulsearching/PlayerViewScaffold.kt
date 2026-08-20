@@ -13,7 +13,7 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.player.domain.model.SwipeableViewManagerHandler
+import com.github.enteraname74.soulsearching.feature.swipeableview.SwipeableViewManagerHandler
 import com.github.enteraname74.soulsearching.feature.player.presentation.PlayerDraggableView
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumDestination
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistDestination

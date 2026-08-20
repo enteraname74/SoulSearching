@@ -50,6 +50,7 @@ fun SelectedFolderScreenView(
             playlistDetailListener = selectedFolderViewModel,
             navigateBack = navigateBack,
             multiSelectionState = multiSelectionState,
+            playlistSearchViewManager = selectedFolderViewModel.playlistSearchViewManager,
         )
         SelectedFolderState.Loading -> SoulLoadingScreen(
             navigateBack = navigateBack,

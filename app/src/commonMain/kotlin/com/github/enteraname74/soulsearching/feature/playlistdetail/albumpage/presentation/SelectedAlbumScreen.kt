@@ -51,6 +51,7 @@ fun SelectedAlbumScreenView(
             playlistDetailListener = selectedAlbumViewModel,
             navigateBack = navigateBack,
             multiSelectionState = multiSelectionState,
+            playlistSearchViewManager = selectedAlbumViewModel.playlistSearchViewManager,
         )
         SelectedAlbumState.Loading -> SoulLoadingScreen(
             navigateBack = navigateBack,
