@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.MonthMusicsPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicFolderPreview
+import com.github.enteraname74.domain.model.MusicListDetailId
 import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -133,6 +134,55 @@ class CommonMusicUseCase(
             month = month,
             search = search,
         )
+
+    fun searchFromMusicListDetailId(
+        musicListDetailId: MusicListDetailId,
+        search: String,
+    ): Flow<List<Music>> =
+        when (musicListDetailId) {
+            is MusicListDetailId.Album -> musicRepository.searchFromAlbum(
+                albumId = musicListDetailId.albumId,
+                search = search,
+            )
+            is MusicListDetailId.Artist -> musicRepository.searchFromArtist(
+                artistId = musicListDetailId.artistId,
+                search = search,
+            )
+            is MusicListDetailId.Folder -> musicRepository.searchFromFolder(
+                folder = musicListDetailId.folder,
+                search = search,
+            )
+            is MusicListDetailId.Month -> musicRepository.searchFromMonth(
+                month = musicListDetailId.month,
+                search = search,
+            )
+            is MusicListDetailId.Playlist -> musicRepository.searchFromPlaylist(
+                playlistId = musicListDetailId.playlistId,
+                search = search,
+            )
+        }
+
+    fun observeMusicsFromMusicListDetailId(
+        musicListDetailId: MusicListDetailId,
+    ): Flow<PagingData<Music>> =
+        when (musicListDetailId) {
+            is MusicListDetailId.Album -> musicRepository.getAllPagedOfAlbum(musicListDetailId.albumId)
+            is MusicListDetailId.Artist -> musicRepository.getAllPagedByNameAscOfArtist(musicListDetailId.artistId)
+            is MusicListDetailId.Folder -> musicRepository.getAllPagedByNameAscOfFolder(musicListDetailId.folder)
+            is MusicListDetailId.Month -> musicRepository.getAllPagedByNameAscOfMonth(musicListDetailId.month)
+            is MusicListDetailId.Playlist -> musicRepository.getAllPagedByNameAscOfPlaylist(musicListDetailId.playlistId)
+        }
+
+    suspend fun getMusicsFromMusicListDetailId(
+        musicListDetailId: MusicListDetailId,
+    ): List<Music> =
+        when (musicListDetailId) {
+            is MusicListDetailId.Album -> musicRepository.getAllMusicFromAlbum(musicListDetailId.albumId)
+            is MusicListDetailId.Artist -> musicRepository.getAllMusicFromArtist(musicListDetailId.artistId)
+            is MusicListDetailId.Folder -> musicRepository.getAllMusicFromFolder(musicListDetailId.folder)
+            is MusicListDetailId.Month -> musicRepository.getAllMusicFromMonth(musicListDetailId.month)
+            is MusicListDetailId.Playlist -> musicRepository.getAllMusicFromPlaylist(musicListDetailId.playlistId)
+        }
 
     fun searchAll(
         search: String,

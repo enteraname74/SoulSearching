@@ -1,0 +1,92 @@
+package com.github.enteraname74.soulsearching.feature.musiclistdetail.composable
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.list.LazyRowCompat
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailState
+
+@Composable
+fun ArtistAlbums(
+    spec: MusicListDetailState.Data.OptionalContent.Albums,
+    multiSelectionState: MultiSelectionState,
+) {
+    val lazyListState = rememberLazyListState()
+    val windowSize = rememberWindowSize()
+    val canShowColumnLayout = MusicListDetailUiUtils.canShowColumnLayout() && windowSize != WindowSize.Small
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = UiConstants.Spacing.veryLarge),
+        verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
+    ) {
+        if (spec.albums.isNotEmpty()) {
+            PlaylistPartTitle(title = strings.albums)
+
+            LazyRowCompat(
+                state = lazyListState,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(
+                    if (canShowColumnLayout) {
+                        UiConstants.Spacing.large
+                    } else {
+                        UiConstants.Spacing.medium
+                    }
+                ),
+                contentPadding = PaddingValues(
+                    horizontal = if (canShowColumnLayout) {
+                        UiConstants.Spacing.huge
+                    } else {
+                        UiConstants.Spacing.medium
+                    },
+                )
+            ) {
+                items(
+                    items = spec.albums,
+                    key = { it.album.albumId },
+                    contentType = { ARTIST_ALBUM_CONTENT_TYPE },
+                ) { element ->
+                    BigPreviewComposable(
+                        modifier = Modifier
+                            .animateItem(),
+                        cover = element.cover,
+                        title = element.album.albumName,
+                        onClick = {
+                            spec.onClick(element.album.albumId)
+                        },
+                        imageSize = if (canShowColumnLayout) {
+                            LARGE_COVER_SIZE
+                        } else {
+                            UiConstants.ImageSize.veryLarge
+                        },
+                        onLongClick = { spec.onLongClick(element.album.albumId) },
+                        isSelected = multiSelectionState.selectedIds.contains(element.album.albumId.toString()),
+                        isSelectionModeOn = multiSelectionState.totalSelected > 0,
+                    )
+                }
+            }
+        } else {
+            NoElementView()
+        }
+    }
+}
+
+private const val ARTIST_ALBUM_CONTENT_TYPE: String = "ARTIST_ALBUM_CONTENT_TYPE"
+private val LARGE_COVER_SIZE: Dp = 174.dp

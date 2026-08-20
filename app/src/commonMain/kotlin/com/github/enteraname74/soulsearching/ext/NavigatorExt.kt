@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.ext
 
 
-import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistDetailPage
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.PlaylistDetailPage
 import com.github.enteraname74.soulsearching.navigation.Navigator
 
 fun Navigator.isComingFromPlaylistDetails(): Boolean =

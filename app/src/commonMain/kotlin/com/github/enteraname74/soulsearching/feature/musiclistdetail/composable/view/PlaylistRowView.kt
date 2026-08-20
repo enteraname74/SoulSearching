@@ -1,0 +1,238 @@
+package com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.view
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.zIndex
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.composables.MusicItemComposable
+import com.github.enteraname74.soulsearching.composables.image.SoulImage
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_search
+import com.github.enteraname74.soulsearching.coreui.ext.blurCompat
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
+import com.github.enteraname74.soulsearching.coreui.ext.toPx
+import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
+import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailState
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.DurationIndication
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.PageHeader
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.PlaylistContinueCard
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.PlaylistPanel
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.ext.Content
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import org.jetbrains.compose.resources.DrawableResource
+import kotlin.time.Duration
+import kotlin.uuid.Uuid
+
+@Composable
+fun PlaylistRowView(
+    data: MusicListDetailState.Data,
+    openSearchView: () -> Unit,
+    multiSelectionState: MultiSelectionState,
+) {
+    var topBarHeight: Int by rememberSaveable {
+        mutableIntStateOf(0)
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        SoulTopBar(
+            modifier = Modifier
+                .zIndex(1f)
+                .onGloballyPositioned { layoutCoordinates ->
+                    topBarHeight = layoutCoordinates.size.height
+                },
+            leftAction = TopBarNavigationAction(onClick = data.navigateBack),
+            rightAction = object : TopBarActionSpec {
+                override val icon: DrawableResource = CoreRes.drawable.ic_search
+                override val onClick: () -> Unit = openSearchView
+            },
+            colors = SoulTopBarDefaults.primary(
+                containerColor = Color.Transparent,
+            )
+        )
+        Content(
+            modifier = Modifier.fillMaxSize(),
+            data = data,
+            multiSelectionState = multiSelectionState,
+            topBarHeight = topBarHeight.toDp(),
+        )
+    }
+}
+
+@Composable
+private fun Content(
+    topBarHeight: Dp,
+    data: MusicListDetailState.Data,
+    modifier: Modifier = Modifier,
+    multiSelectionState: MultiSelectionState,
+    playbackManager: PlaybackManager = injectElement(),
+) {
+    val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
+
+    val musics = data.musics.collectAsLazyPagingItems()
+
+    Row(
+        modifier = modifier,
+    ) {
+        BlurredBackground(
+            cover = data.cover,
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1f)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = topBarHeight)
+            ) {
+                PageHeader(data = data)
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = topBarHeight)
+        ) {
+            PlaylistPanel(data = data)
+            LazyColumnCompat {
+                data.cachedPlayedListUiSpec?.let {
+                    item(
+                        key = PLAYLIST_CONTINUE_KEY,
+                        contentType = PLAYLIST_CONTINUE_CONTENT_TYPE,
+                    ) {
+                        PlaylistContinueCard(
+                            modifier = Modifier
+                                .widthIn(max = 500.dp)
+                                .fillMaxWidth()
+                                .padding(
+                                    start = UiConstants.Spacing.medium,
+                                    end = UiConstants.Spacing.medium,
+                                    bottom = UiConstants.Spacing.mediumPlus,
+                                )
+                                .animateItem(
+                                    // TODO IMPROVE: improve screen to find a way to use placement anim
+                                    placementSpec = null,
+                                ),
+                            spec = it,
+                        )
+                    }
+                }
+
+                data.optionalContent?.let { optionalContent ->
+                    item {
+                        optionalContent.Content(multiSelectionState)
+                    }
+                }
+
+                items(
+                    count = musics.itemCount,
+                    key = { musics[it]?.musicId ?: Uuid.random() },
+                    contentType = { PLAYLIST_MUSICS_CONTENT_TYPE }
+                ) { pos ->
+                    val music = musics[pos]
+                    music?.let {
+                        MusicItemComposable(
+                            modifier = Modifier
+                                .animateItem(),
+                            music = music,
+                            onClick = data.onPlay,
+                            onLongClick = { data.onLongClickOnMusic(music.musicId) },
+                            onMoreClicked = {
+                                data.showMusicBottomSheet(music.musicId)
+                            },
+                            isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
+                            isSelected = multiSelectionState.selectedIds.contains(music.musicId.toString()),
+                            isSelectionModeOn = multiSelectionState.totalSelected > 0,
+                            leadingSpec = data.musicItemLeadingSpec(pos)
+                        )
+                    }
+                }
+                if (data.duration != Duration.ZERO && musics.itemCount > 0) {
+                    item { DurationIndication(duration = data.duration) }
+                }
+                item {
+                    SoulPlayerSpacer()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BlurredBackground(
+    cover: Cover?,
+    modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit,
+) {
+    BoxWithConstraints(
+        modifier = modifier,
+    ) {
+        val width: Dp = this.maxWidth
+        val height: Dp = this.maxHeight
+
+        SoulImage(
+            roundedPercent = 0,
+            cover = cover,
+            size = max(width, height),
+            modifier = Modifier
+                .blurCompat(),
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            SoulSearchingColorTheme.colorScheme.primary.copy(0.2f),
+                            SoulSearchingColorTheme.colorScheme.primary,
+                        ),
+                        startX = 0f,
+                        endX = width.toPx(),
+                    )
+                ),
+        )
+
+        content()
+    }
+}
+
+private const val PLAYLIST_CONTINUE_KEY = "PLAYLIST_CONTINUE_KEY"
+private const val PLAYLIST_CONTINUE_CONTENT_TYPE = "PLAYLIST_CONTINUE_CONTENT_TYPE"
+private const val PLAYLIST_MUSICS_CONTENT_TYPE: String = "PLAYLIST_MUSICS_CONTENT_TYPE"

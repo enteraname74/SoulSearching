@@ -7,18 +7,18 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import com.github.enteraname74.domain.model.MusicListDetailId
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailDestination
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.swipeableview.SwipeableViewManagerHandler
 import com.github.enteraname74.soulsearching.feature.player.presentation.PlayerDraggableView
-import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumDestination
-import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
+import com.github.enteraname74.soulsearching.feature.swipeableview.SwipeableViewManagerHandler
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -52,12 +52,12 @@ fun PlayerViewScaffold(
             maxHeight = maxHeight,
             navigateToAlbum = { albumId ->
                 navigator.push(
-                    SelectedAlbumDestination(selectedAlbumId = albumId)
+                    MusicListDetailDestination(MusicListDetailId.Album(albumId))
                 )
             },
             navigateToArtist = { artistId ->
                 navigator.push(
-                    SelectedArtistDestination(selectedArtistId = artistId)
+                    MusicListDetailDestination(MusicListDetailId.Artist(artistId))
                 )
             },
             navigateToModifyMusic = { musicId ->

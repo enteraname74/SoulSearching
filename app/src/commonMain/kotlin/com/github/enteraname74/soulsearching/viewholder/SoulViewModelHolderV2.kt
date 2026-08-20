@@ -12,17 +12,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-// TODO VIEW HOLDER 2.0: Remove actions
-@Deprecated("Use SoulViewModelHolderV2")
-abstract class SoulViewModelHolder<Actions, Navigation, State>(
-    initialState: State,
-) : ViewModel() {
-    private val _state = MutableStateFlow(initialState)
-    private val state: StateFlow<State> = _state.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = initialState,
-    )
+abstract class SoulViewModelHolderV2<Navigation, State> : ViewModel() {
+    private val _state: MutableStateFlow<State> by lazy {
+        MutableStateFlow(getInitialState())
+    }
+    private val state: StateFlow<State> by lazy {
+        _state.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = getInitialState(),
+        )
+    }
     protected val currentState: State
         get() = _state.value
 
@@ -34,11 +34,10 @@ abstract class SoulViewModelHolder<Actions, Navigation, State>(
         initialValue = null,
     )
 
-    protected abstract val actions: Actions
+    protected abstract fun getInitialState(): State
 
     @Composable
     protected abstract fun Content(
-        actions: Actions,
         state: State,
     )
 
@@ -67,6 +66,6 @@ abstract class SoulViewModelHolder<Actions, Navigation, State>(
             consumeNavigation()
         }
 
-        Content(actions, uiState)
+        Content(uiState)
     }
 }

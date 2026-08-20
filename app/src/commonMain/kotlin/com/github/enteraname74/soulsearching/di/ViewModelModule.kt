@@ -3,9 +3,9 @@ package com.github.enteraname74.soulsearching.di
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.folder.FolderBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetViewModel
-import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingViewModel
@@ -18,12 +18,8 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyplayl
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.migration.MigrationViewModel
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceViewModel
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailViewHolder
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
-import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.domain.SelectedAlbumViewModel
-import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.domain.SelectedArtistViewModel
-import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.domain.SelectedFolderViewModel
-import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.domain.SelectedMonthViewModel
-import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.domain.SelectedPlaylistViewModel
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
@@ -96,12 +92,7 @@ internal val viewModelModule: Module = module {
     viewModelOf(::ModifyArtistViewModel)
     viewModelOf(::ModifyPlaylistViewModel)
 
-    // Selected elements
-    viewModelOf(::SelectedAlbumViewModel)
-    viewModelOf(::SelectedArtistViewModel)
-    viewModelOf(::SelectedPlaylistViewModel)
-    viewModelOf(::SelectedFolderViewModel)
-    viewModelOf(::SelectedMonthViewModel)
+    viewModelOf(::MusicListDetailViewHolder)
 
     // Player
     viewModelOf(::PlayerViewModel)
