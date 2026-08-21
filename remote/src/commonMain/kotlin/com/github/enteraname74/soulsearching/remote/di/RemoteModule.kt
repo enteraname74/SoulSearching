@@ -17,12 +17,13 @@ import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRe
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserRemoteDataSource
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val remoteModule = module {
+val remoteModule: Module = module {
     factory { provideHttpClient() }
     single(named(HttpClientNames.CLOUD)) {
         provideCloudHttpClient(
@@ -47,6 +48,7 @@ val remoteModule = module {
             client = get(named(HttpClientNames.CLOUD)),
             cloudPreferencesDataSource = get(),
             workDispatcher = get(),
+            coverFileManager = get(),
         )
     }
 
