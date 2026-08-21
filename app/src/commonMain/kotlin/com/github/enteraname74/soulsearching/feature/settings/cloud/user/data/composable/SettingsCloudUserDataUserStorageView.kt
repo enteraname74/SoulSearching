@@ -23,11 +23,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.user.UserStorage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
@@ -160,12 +159,8 @@ private fun Bars(
     BoxWithConstraints(
         modifier = Modifier.fillMaxWidth(),
     ) {
-        ProgressBar(
-            width = maxWidth,
-            color = SoulSearchingColorTheme.colorScheme.secondary,
-        )
         val usedSpaceBarWidth = (maxWidth * userStorage.current.toFloat()) / userStorage.max.total.toFloat()
-        ProgressBar(
+        StorageBar(
             width = usedSpaceBarWidth,
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
         )
@@ -173,17 +168,24 @@ private fun Bars(
 }
 
 @Composable
-private fun ProgressBar(
+private fun StorageBar(
     width: Dp,
     color: Color,
 ) {
     Box(
         modifier = Modifier
-            .width(width)
+            .fillMaxWidth()
             .height(16.dp)
+            .clip(shape = RoundedCornerShape(percent = 50))
             .background(
-                color = color,
-                shape = RoundedCornerShape(percent = 50),
+                color = SoulSearchingColorTheme.colorScheme.secondary,
             )
-    )
+    ) {
+        Box(
+            modifier = Modifier
+                .width(width)
+                .height(16.dp)
+                .background(color = color)
+        )
+    }
 }
