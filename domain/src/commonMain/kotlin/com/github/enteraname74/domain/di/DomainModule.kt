@@ -78,7 +78,7 @@ val domainModule: Module = module {
     factoryOf(::DeleteMusicUseCase)
     factoryOf(::RemoveLocallyOrDeleteMusicUseCase)
     factoryOf(::IsMusicInFavoritePlaylistUseCase)
-    factoryOf(::ObserveDataChangedForCloudSync)
+    singleOf(::ObserveDataChangedForCloudSync)
     factoryOf(::ToggleMusicFavoriteStatusUseCase)
     factoryOf(::CloudMusicToMusicUseCase)
     factoryOf(::UploadMusicToCloudUseCase)

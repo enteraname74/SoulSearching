@@ -48,7 +48,7 @@ class UserRepositoryImpl(
     }
 
     override suspend fun clearRemoteUserData() {
-        val userStorage = remoteDataSource.fetchUserStorage()
+        val userStorage = remoteDataSource.clearUserData()
         localDataSource.saveUserStorage(userStorage)
     }
 
