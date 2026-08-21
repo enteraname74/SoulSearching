@@ -34,6 +34,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.Uuid
 
 @UnstableApi
@@ -345,15 +347,15 @@ class SoulSearchingExoPlayerImpl(
         }
     }
 
-    override suspend fun getProgress(): Int =
+    override suspend fun getProgress(): Duration =
         onPlayerThread {
             player.currentPosition.toInt()
-        }.getOrElse { 0 }
+        }.getOrElse { 0 }.milliseconds
 
-    override suspend fun getMusicDuration(): Int =
+    override suspend fun getMusicDuration(): Duration =
         onPlayerThread {
             player.duration.toInt()
-        }.getOrElse { 0 }
+        }.getOrElse { 0 }.milliseconds
 
     override suspend fun setPlayerVolume(volume: Float) {
         onPlayerThread {

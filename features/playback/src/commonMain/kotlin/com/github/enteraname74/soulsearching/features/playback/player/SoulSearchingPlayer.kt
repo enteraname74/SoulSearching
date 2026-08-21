@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
+import kotlin.time.Duration
 
 /**
  * Represent the player used by the service.
@@ -45,15 +46,15 @@ interface SoulSearchingPlayer {
     suspend fun dismiss()
 
     /**
-     * Retrieve the progress in the current played song in milliseconds.
+     * Retrieve the progress in the current played song.
      */
-    suspend fun getProgress(): Int
+    suspend fun getProgress(): Duration
 
     /**
      * Retrieve the current music duration.
-     * Returns 0 if no song is being played.
+     * Returns a duration of 0 if no song is being played.
      */
-    suspend fun getMusicDuration(): Int
+    suspend fun getMusicDuration(): Duration
 
     /**
      * Set the volume of the player between 0.1 and 1.0.

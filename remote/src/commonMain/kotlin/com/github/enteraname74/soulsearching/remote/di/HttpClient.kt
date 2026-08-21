@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.seconds
 
-
 internal expect fun createPlatformHttpClient(
     block: HttpClientConfig<*>.() -> Unit,
 ): HttpClient
@@ -31,6 +30,7 @@ private fun <T : HttpClientEngineConfig> HttpClientConfig<T>.setLanguage() {
         header(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
     }
 }
+
 fun provideHttpClient(): HttpClient =
     createPlatformHttpClient {
         install(Resources)
@@ -101,5 +101,5 @@ fun provideCloudHttpClient(
     }
 
 object HttpClientNames {
-    val CLOUD: String = "CLOUD"
+    const val CLOUD: String = "CLOUD"
 }

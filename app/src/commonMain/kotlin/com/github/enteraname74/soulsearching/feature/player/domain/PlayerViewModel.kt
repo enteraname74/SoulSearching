@@ -51,6 +51,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.DurationUnit
 import kotlin.uuid.Uuid
 
 /**
@@ -79,6 +80,7 @@ class PlayerViewModel(
         )
 
     val currentSongProgressionState: StateFlow<Int> = playbackManager.currentSongProgressionState
+        .map { it.toInt(DurationUnit.MILLISECONDS) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,

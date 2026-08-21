@@ -1,17 +1,24 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.browser.document
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.w3c.dom.HTMLAudioElement
+import kotlin.js.asJsException
 import kotlin.js.unsafeCast
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
 
 @OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
 class SoulSearchingWebPlayerImpl(
     workDispatcher: WorkDispatcher,
     private val signedPlaybackUrlProvider: SignedPlaybackUrlProvider,
+    private val playerRepository: PlayerRepository,
 ) : SoulSearchingPlayer {
     private val audio: HTMLAudioElement = document
         .createElement("audio")
@@ -55,7 +62,7 @@ class SoulSearchingWebPlayerImpl(
 
     override suspend fun setMusic(music: Music) {
         val version = ++sourceVersion
-        val token = signedPlaybackUrlProvider.getUpdatedToken()
+        val token = signedPlaybackUrlProvider.getUpdatedToken(music)
 
         if (version != sourceVersion) return
 
@@ -81,12 +88,24 @@ class SoulSearchingWebPlayerImpl(
 
     override suspend fun play() {
         try {
+            if (signedPlaybackUrlProvider.shouldReloadMusic()) {
+                reloadCurrentMusic()
+            }
             audio.play().catch {
+                println("PLAYER -- error when trying to play: ${it.asJsException().message}")
                 null
             }
-        } catch (_: Throwable) {
+        } catch (e: Throwable) {
+            println("PLAYER -- error when trying to play: $e")
             listener?.onError()
         }
+    }
+
+    private suspend fun reloadCurrentMusic() {
+        val currentMusic = playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
+        val currentProgress = getProgress()
+        setMusic(music = currentMusic)
+        seekToPosition(currentProgress.toInt(DurationUnit.MILLISECONDS))
     }
 
     override suspend fun pause() {
@@ -115,16 +134,16 @@ class SoulSearchingWebPlayerImpl(
         audio.load()
     }
 
-    override suspend fun getProgress(): Int =
-        (audio.currentTime * MILLIS_IN_SECOND).toInt()
+    override suspend fun getProgress(): Duration =
+        (audio.currentTime * MILLIS_IN_SECOND).toInt().milliseconds
 
-    override suspend fun getMusicDuration(): Int {
+    override suspend fun getMusicDuration(): Duration {
         val duration = audio.duration
         return if (duration.isFinite()) {
             (duration * MILLIS_IN_SECOND).toInt()
         } else {
             0
-        }
+        }.milliseconds
     }
 
     override suspend fun setPlayerVolume(volume: Float) {

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 internal class PlaybackProgressJob(
@@ -22,27 +23,28 @@ internal class PlaybackProgressJob(
      */
     private var durationJob: Job? = null
 
-    private val _state: MutableStateFlow<Int> = MutableStateFlow(0)
-    val state: StateFlow<Int> = _state.asStateFlow()
+    private val _state: MutableStateFlow<Duration> = MutableStateFlow(Duration.ZERO)
+    val state: StateFlow<Duration> = _state.asStateFlow()
 
     /**
      * Launch a duration job, used for updating the UI to indicate the current position
      * in the played music.
      */
     suspend fun launchDurationJobIfNecessary() {
-        setPosition(pos = callback.getMusicPosition())
+        setPosition(pos = callback.getPlayerProgress())
         if (durationJob != null) return
         durationJob = CoroutineScope(workDispatcher.dispatcher).launch {
             while (true) {
                 delay(DELAY_BEFORE_SENDING_VALUE.milliseconds)
-                val position = callback.getMusicPosition()
+                val position = callback.getPlayerProgress()
+
                 _state.value = position
                 playerRepository.setProgress(position)
             }
         }
     }
 
-    fun setPosition(pos: Int) {
+    fun setPosition(pos: Duration) {
         _state.value = pos
     }
 
@@ -61,5 +63,5 @@ internal class PlaybackProgressJob(
 
 interface PlaybackProgressJobCallbacks {
     suspend fun isPlaying(): Boolean
-    suspend fun getMusicPosition(): Int
+    suspend fun getPlayerProgress(): Duration
 }

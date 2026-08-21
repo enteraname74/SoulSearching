@@ -59,7 +59,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -95,8 +97,8 @@ class PlaybackManager(
             override suspend fun isPlaying(): Boolean =
                 player.isPlaying() == true
 
-            override suspend fun getMusicPosition(): Int =
-                this@PlaybackManager.getMusicPosition()
+            override suspend fun getPlayerProgress(): Duration =
+                this@PlaybackManager.getPlayerProgress()
         },
     )
 
@@ -121,7 +123,7 @@ class PlaybackManager(
     val currentScope: Flow<PlayedListScope?> = playerRepository
         .getCurrentScope()
 
-    val currentSongProgressionState: Flow<Int> = playbackProgressJob.state
+    val currentSongProgressionState: Flow<Duration> = playbackProgressJob.state
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentCover: Flow<ImageBitmap?> =
@@ -472,9 +474,9 @@ class PlaybackManager(
     }
 
     /**
-     * Retrieves the current position in the current played song in milliseconds.
+     * Retrieves the current progress of the current played song.
      */
-    suspend fun getMusicPosition(): Int =
+    private suspend fun getPlayerProgress(): Duration =
         player.getProgress()
 
     /**
@@ -545,13 +547,13 @@ class PlaybackManager(
     suspend fun seekForward() {
         withAdminRight {
             val currentPosMillis = player.getProgress()
-            val currentMusicDuration = player.getMusicDuration().takeIf { it > 0 } ?: return@withAdminRight
-            val newPosMillis = currentPosMillis + INNER_SEEK_MILLIS
+            val currentMusicDuration = player.getMusicDuration().takeIf { it > Duration.ZERO } ?: return@withAdminRight
+            val newPos = currentPosMillis + INNER_SEEK_MILLIS
 
-            if (newPosMillis >= currentMusicDuration) {
+            if (newPos >= currentMusicDuration) {
                 next()
             } else {
-                player.seekToPosition(newPosMillis)
+                player.seekToPosition(newPos.toInt(DurationUnit.MILLISECONDS))
             }
         }
     }
@@ -563,12 +565,12 @@ class PlaybackManager(
     suspend fun seekBackward() {
         withAdminRight {
             val currentPosMillis = player.getProgress()
-            val newPosMillis = currentPosMillis - INNER_SEEK_MILLIS
+            val newPos = currentPosMillis - INNER_SEEK_MILLIS
 
-            if (newPosMillis < 0) {
+            if (newPos < Duration.ZERO) {
                 previous()
             } else {
-                player.seekToPosition(newPosMillis)
+                player.seekToPosition(newPos.toInt(DurationUnit.MILLISECONDS))
             }
         }
     }
@@ -660,7 +662,7 @@ class PlaybackManager(
             val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return@withAdminRight
             val size: Int = playerRepository.getSize().firstOrNull() ?: return@withAdminRight
             val shouldRewind =
-                settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD && !skipRewind
+                settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getPlayerProgress() > REWIND_THRESHOLD && !skipRewind
 
             if (shouldRewind || playerMode == PlayerMode.Loop || size == 1) {
                 val currentMusicId: Uuid =
@@ -702,7 +704,7 @@ class PlaybackManager(
     private fun launchMusicCount(musicId: Uuid) {
         updateMusicNbPlayedJob?.cancel()
         updateMusicNbPlayedJob = workScope.launch {
-            delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED.milliseconds)
+            delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
             commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }
     }
@@ -876,10 +878,10 @@ class PlaybackManager(
     }
 
     companion object {
-        private const val REWIND_THRESHOLD: Long = 5_000
-        private const val WAIT_TIME_BEFORE_UPDATE_NB_PLAYED: Long = 3_000
+        private val REWIND_THRESHOLD: Duration = 5.seconds
+        private val WAIT_TIME_BEFORE_UPDATE_NB_PLAYED: Duration = 3.seconds
 
-        private const val INNER_SEEK_MILLIS: Int = 5_000
+        private val INNER_SEEK_MILLIS: Duration = 5.seconds
     }
 
     enum class KeyboardAction {

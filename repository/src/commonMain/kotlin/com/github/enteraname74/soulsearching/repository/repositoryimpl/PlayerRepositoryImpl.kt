@@ -35,6 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.uuid.Uuid
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Repository of a PlayerMusic.
@@ -91,7 +92,7 @@ class PlayerRepositoryImpl(
     override suspend fun isAdminOfPlayedList(): Boolean =
         playerLocalDataSource.getCurrentScope().firstOrNull()?.isAdmin == true
 
-    override suspend fun setProgress(progress: Int) {
+    override suspend fun setProgress(progress: Duration) {
         playerLocalDataSource.setProgress(progress)
     }
 
