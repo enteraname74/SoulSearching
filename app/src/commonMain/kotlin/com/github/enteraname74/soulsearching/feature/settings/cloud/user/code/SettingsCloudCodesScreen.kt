@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.cloud.code
+package com.github.enteraname74.soulsearching.feature.settings.cloud.user.code
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -31,7 +31,7 @@ fun SettingsCloudCodesScreen(
         navigateBack = actions::navigateBack,
         title = strings.inscriptionCodeSettingsTitle,
         verticalPadding = UiConstants.Spacing.small,
-        contentPadding = PaddingValues(all = UiConstants.Spacing.large)
+        contentPadding = PaddingValues(all = UiConstants.Spacing.large),
     ) {
         items(
             count = state.codes.size,

@@ -7,7 +7,7 @@ import com.github.enteraname74.soulsearching.feature.settings.aboutpage.develope
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudDestination
-import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodesDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.user.code.SettingsCloudCodesDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations.SettingsCloudExplanationsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListDestination
@@ -16,6 +16,7 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.Setti
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.user.data.SettingsCloudUserDataDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.users.SettingsCloudUsersDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedDestination
@@ -172,6 +173,10 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+        SettingsCloudUserDataDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
     }
 
     fun serializerModule(
@@ -206,6 +211,7 @@ object SettingsNavigationHandler {
             subclass(SettingsCloudExplanationsDestination::class, SettingsCloudExplanationsDestination.serializer())
             subclass(SettingsCloudSharedListDestination::class, SettingsCloudSharedListDestination.serializer())
             subclass(SettingsShortcutsDestination::class, SettingsShortcutsDestination.serializer())
+            subclass(SettingsCloudUserDataDestination::class, SettingsCloudUserDataDestination.serializer())
         }
     }
 }

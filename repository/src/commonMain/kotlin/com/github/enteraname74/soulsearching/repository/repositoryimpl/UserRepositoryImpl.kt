@@ -3,10 +3,12 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.user.SimpleUser
 import com.github.enteraname74.domain.model.user.User
+import com.github.enteraname74.domain.model.user.UserStorage
 import com.github.enteraname74.domain.repository.UserRepository
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserRemoteDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlin.uuid.Uuid
 
 class UserRepositoryImpl(
@@ -42,11 +44,15 @@ class UserRepositoryImpl(
 
     override suspend fun logout() {
         remoteDataSource.logout()
-        localDataSource.clear()
-        localDataSource.deleteAllSimpleUsers()
+        localDataSource.clearData()
     }
 
-    override suspend fun fetchAll() : SoulResult<Unit> = SoulResult.runCatching {
+    override suspend fun clearRemoteUserData() {
+        val userStorage = remoteDataSource.fetchUserStorage()
+        localDataSource.saveUserStorage(userStorage)
+    }
+
+    override suspend fun fetchAll(): SoulResult<Unit> = SoulResult.runCatching {
         val users: List<SimpleUser> = remoteDataSource.fetchAll()
         localDataSource.setUsers(users)
     }
@@ -58,4 +64,18 @@ class UserRepositoryImpl(
         remoteDataSource.delete(userId = userId)
         localDataSource.delete(userId = userId)
     }
+
+    override suspend fun deleteCurrentUser() {
+        val user = localDataSource.observeUser().firstOrNull() ?: return
+        remoteDataSource.delete(user.id)
+        localDataSource.clearData()
+    }
+
+    override suspend fun fetchUserStorage(): SoulResult<Unit> = SoulResult.runCatching {
+        val userStorage = remoteDataSource.fetchUserStorage()
+        localDataSource.saveUserStorage(userStorage)
+    }
+
+    override fun observeUserStorage(): Flow<UserStorage?> =
+        localDataSource.observeUserStorage()
 }

@@ -4,4 +4,5 @@ interface SettingsCloudUserActions {
     fun navigateBack()
     fun disconnect()
     fun toCode()
+    fun toUserData()
 }

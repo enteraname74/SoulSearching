@@ -1,14 +1,15 @@
 package com.github.enteraname74.localdb
 
-import androidx.room3.ConstructedBy
 import androidx.room3.ColumnTypeConverters
-import androidx.room3.Database
+import androidx.room3.ConstructedBy
 import androidx.room3.DaoReturnTypeConverters
+import androidx.room3.Database
 import androidx.room3.RoomDatabase
 import androidx.room3.RoomDatabaseConstructor
 import androidx.room3.paging.PagingSourceDaoReturnTypeConverter
 import com.github.enteraname74.domain.util.LocalDatabaseVersion
 import com.github.enteraname74.localdb.converters.InstantConverters
+import com.github.enteraname74.localdb.converters.StorageTypeConverters
 import com.github.enteraname74.localdb.converters.UserTypeConverters
 import com.github.enteraname74.localdb.converters.UuidTypeConverters
 import com.github.enteraname74.localdb.dao.AlbumDao
@@ -42,6 +43,7 @@ import com.github.enteraname74.localdb.model.RoomPlaylist
 import com.github.enteraname74.localdb.model.RoomSimpleUser
 import com.github.enteraname74.localdb.model.RoomUser
 import com.github.enteraname74.localdb.model.RoomUserInscriptionCode
+import com.github.enteraname74.localdb.model.RoomUserStorage
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusicUser
@@ -77,6 +79,7 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
         RoomSimpleUser::class,
         RoomPlayerMusicUser::class,
         RoomSharedPlayedListPreview::class,
+        RoomUserStorage::class,
     ],
     views = [
         CurrentPlayerMusicsView::class,
@@ -92,6 +95,7 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
     InstantConverters::class,
     UserTypeConverters::class,
     UuidTypeConverters::class,
+    StorageTypeConverters::class,
 )
 @DaoReturnTypeConverters(PagingSourceDaoReturnTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {

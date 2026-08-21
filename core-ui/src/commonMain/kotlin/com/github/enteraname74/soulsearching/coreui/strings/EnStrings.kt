@@ -442,6 +442,15 @@ object EnStrings : Strings {
         "F"
     )
 
+    override val gigabyteAbbreviation: String = "GB"
+    override val userStorageTitle: String = "User data"
+    override val userStorageText: String = "Manage user data stored on Cloudy"
+    override val userStorageSectionTitle: String = "Storage"
+    override val userStorageAllAvailableInfo: String = "As an admin, your maximum available storage matches the available storage on the Cloudy instance"
+    override val userStorageReducedInfo: String = "As a user, your maximum available storage matches a rule set by the admin of this Cloudy instance. Contact your admin for more information"
+    override val clearUserStorageButton: String = "Clear all my data"
+    override val clearUserStorageDialogText: String = "All your data will be deleted from Cloudy. Your account will not be deleted"
+
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
             SyncDataWithCloudUseCase.State.Failure -> "Failure"

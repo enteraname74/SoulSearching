@@ -40,7 +40,10 @@ import com.github.enteraname74.domain.usecase.playlist.UploadPlaylistToCloudUseC
 import com.github.enteraname74.domain.usecase.playlist.UpsertCloudPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
+import com.github.enteraname74.domain.usecase.user.ClearUserDataUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.domain.usecase.user.DeleteSavedRemoteDataUseCase
+import com.github.enteraname74.domain.usecase.user.DeleteUserUseCase
 import com.github.enteraname74.domain.usecase.user.LogoutFromCloudUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -104,6 +107,9 @@ val domainModule: Module = module {
     // User
     factoryOf(::CommonUserUseCase)
     factoryOf(::LogoutFromCloudUseCase)
+    factoryOf(::ClearUserDataUseCase)
+    factoryOf(::DeleteSavedRemoteDataUseCase)
+    factoryOf(::DeleteUserUseCase)
 
     // CloudPreferences
     factoryOf(::CommonCloudPreferencesUseCase)

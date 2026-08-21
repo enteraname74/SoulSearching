@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.cloud.code
+package com.github.enteraname74.soulsearching.feature.settings.cloud.user.code
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey

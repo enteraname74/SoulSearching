@@ -28,9 +28,9 @@ class ObserveDataChangedForCloudSync(
             launch {
                 commonMusicUseCase.observeDataChanged().collectLatest {
                     if (syncDataWithCloudUseCase.state.value is SyncDataWithCloudUseCase.State.WorkingState) {
-                        buffer.value = Buffer.Waiting
+                        setBufferIfNotBlocked(Buffer.Waiting)
                     } else {
-                        buffer.value = Buffer.Launch
+                        setBufferIfNotBlocked(Buffer.Launch)
                     }
                 }
             }
@@ -43,7 +43,7 @@ class ObserveDataChangedForCloudSync(
             launch {
                 syncDataWithCloudUseCase.state.collectLatest { syncState ->
                     if (syncState is SyncDataWithCloudUseCase.State.EndState && buffer.value == Buffer.Waiting) {
-                        buffer.value = Buffer.Launch
+                        setBufferIfNotBlocked(Buffer.Launch)
                     }
                 }
             }
@@ -55,17 +55,31 @@ class ObserveDataChangedForCloudSync(
             launch {
                 buffer.collectLatest { bufferState ->
                     when (bufferState) {
-                        Buffer.Waiting, Buffer.Idle -> {
+                        Buffer.Waiting, Buffer.Idle, Buffer.Blocked -> {
                             //no-op
                         }
                         Buffer.Launch -> {
                             cloudBackgroundSyncJob.launchIfPossible()
-                            buffer.value = Buffer.Idle
+                            setBufferIfNotBlocked(Buffer.Idle)
                         }
                     }
                 }
             }
         }
+    }
+
+    fun setBufferIfNotBlocked(newValue: Buffer) {
+        if (buffer.value != Buffer.Blocked) {
+            buffer.value = newValue
+        }
+    }
+
+    suspend fun skipUpdate(
+        block: suspend () -> Unit
+    ) {
+        buffer.value = Buffer.Blocked
+        block()
+        buffer.value = Buffer.Idle
     }
 
     fun cancel() {
@@ -75,6 +89,7 @@ class ObserveDataChangedForCloudSync(
 
     enum class Buffer {
         Waiting,
+        Blocked,
         Idle,
         Launch,
     }

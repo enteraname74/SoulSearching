@@ -445,6 +445,15 @@ object FrStrings : Strings {
         "F"
     )
 
+    override val gigabyteAbbreviation: String = "Go"
+    override val userStorageTitle: String = "Données utilisateur"
+    override val userStorageText: String = "Gérer ses données utilisateur sur Cloudy"
+    override val userStorageSectionTitle: String = "Stockage"
+    override val userStorageAllAvailableInfo: String = "En étant administrateur, votre capacité de stockage maximale dépend de la capacité de stockage totale de la machine où est hébergée Cloudy"
+    override val userStorageReducedInfo: String = "En étant simple utilisateur, votre capacité de stockage maximale dépend dépend d'une règle définie par l'administrateur de cette instance de Cloudy. Contactez ce dernier pour plus d'informations"
+    override val clearUserStorageButton: String = "Supprimer mes données"
+    override val clearUserStorageDialogText: String = "Toutes vos données sur Cloudy seront supprimées. Votre profil ne sera pas supprimé"
+
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
             SyncDataWithCloudUseCase.State.Failure -> "Erreur"

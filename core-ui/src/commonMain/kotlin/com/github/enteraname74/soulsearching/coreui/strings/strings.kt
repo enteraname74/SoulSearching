@@ -425,6 +425,16 @@ interface Strings {
     val shortcutVolumeUpCommands: List<String>
     val shortcutVolumeDownCommands: List<String>
     val shortcutToggleFavoriteCommands: List<String>
+
+    val gigabyteAbbreviation: String
+    val userStorageTitle: String
+    val userStorageText: String
+    val userStorageSectionTitle: String
+    val userStorageAllAvailableInfo: String
+    val userStorageReducedInfo: String
+    val clearUserStorageButton: String
+    val clearUserStorageDialogText: String
+
     fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
     fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String
 

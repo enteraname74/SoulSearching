@@ -43,6 +43,7 @@ kotlin {
             implementation(project(":domain"))
             implementation(project(":repository"))
             implementation(project(":filemanager"))
+            implementation(project(":serialization"))
             implementation(libs.koin.core)
 
             implementation(libs.androidx.paging.common)

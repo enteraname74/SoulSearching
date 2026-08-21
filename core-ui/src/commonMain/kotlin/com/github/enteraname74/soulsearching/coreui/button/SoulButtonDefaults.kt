@@ -48,6 +48,12 @@ object SoulButtonDefaults {
         contentColor = contentColor,
         containerColor = containerColor,
     )
+
+    @Composable
+    fun primaryTint(): SoulButtonColors = SoulButtonColors(
+        contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+        containerColor = Color.Transparent,
+    )
 }
 
 data class SoulButtonColors(

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 21,
-    "identityHash": "dea0664cb21e8e00a1065b094b4a2749",
+    "identityHash": "6f3da2bf373da9c95746b15c7d061eaa",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -1060,6 +1060,36 @@
             "id"
           ]
         }
+      },
+      {
+        "tableName": "RoomUserStorage",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `max` TEXT NOT NULL, `current` REAL NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "max",
+            "columnName": "max",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "current",
+            "columnName": "current",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
       }
     ],
     "views": [
@@ -1090,7 +1120,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dea0664cb21e8e00a1065b094b4a2749')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6f3da2bf373da9c95746b15c7d061eaa')"
     ]
   }
 }

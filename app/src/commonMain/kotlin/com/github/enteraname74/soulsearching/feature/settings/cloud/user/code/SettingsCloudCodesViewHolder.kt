@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.cloud.code
+package com.github.enteraname74.soulsearching.feature.settings.cloud.user.code
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
@@ -38,7 +38,7 @@ class SettingsCloudCodesViewHolder(
                 }
         }
 
-        loadingManager.withLoadingOnScope(viewModelScope) {
+        viewModelScope.launch {
             feedbackPopUpManager.showErrorIfAny(userInscriptionCodeRepository.fetchAll())
         }
     }
