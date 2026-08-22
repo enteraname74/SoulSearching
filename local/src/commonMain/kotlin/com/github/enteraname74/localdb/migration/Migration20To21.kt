@@ -303,6 +303,16 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
+        executeSQL(
+            """
+            CREATE TABLE IF NOT EXISTS RoomUserStorage (
+                id TEXT NOT NULL,
+                max TEXT NOT NULL,
+                current REAL NOT NULL,
+                PRIMARY KEY(id)
+            )
+            """.trimIndent()
+        )
     }
 
     private suspend fun SQLiteConnection.restoreExistingData() {
@@ -696,6 +706,13 @@ object Migration20To21 : Migration(20, 21) {
         END
         """.trimIndent()
 
+    /*
+     * Version 20 stored java.time.LocalDateTime.toString(), created from LocalDateTime.now().
+     * Those values represent the device's local wall-clock time and contain no UTC offset.
+     * The `utc` modifier converts that local time to UTC before producing the epoch value.
+     * `%f` preserves the millisecond part that would otherwise be lost by `%s`.
+     */
     private fun localDateTimeToMillis(column: String): String =
-        "CAST(strftime('%s', $column) AS INTEGER) * 1000"
+        "CAST(strftime('%s', $column, 'utc') AS INTEGER) * 1000 + " +
+            "CAST(substr(strftime('%f', $column, 'utc'), 4, 3) AS INTEGER)"
 }
