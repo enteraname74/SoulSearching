@@ -65,7 +65,7 @@ sealed interface ListeningStatistics {
                 album = album,
                 id = Uuid.random(),
                 nbPlayed = 0,
-                localMonthYear = LocalMonthYear(9, 2026),
+                localMonthYear = DateUtils.currentMonthYear(),
             )
         }
     }
