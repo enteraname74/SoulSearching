@@ -35,6 +35,17 @@ fun ListeningStatistics.ArtistStats.toStatisticsUiElement(
         cover = artist.cover,
     )
 
+fun ListeningStatistics.ArtistStats.toStatisticsUiMostSongsElement(
+    onClick: () -> Unit,
+): StatisticsUiElement =
+    StatisticsUiElement(
+        id = id,
+        title = artist.name,
+        text = strings.musics(artist.totalMusics),
+        onClick = onClick,
+        cover = artist.cover,
+    )
+
 fun ListeningStatistics.PlaylistStats.toStatisticsUiElement(
     onClick: () -> Unit,
 ): StatisticsUiElement =

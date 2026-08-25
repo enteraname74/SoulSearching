@@ -32,20 +32,6 @@ object SettingsStatisticsSectionFactory {
         }
     }
 
-    fun LazyListScope.header(
-        element: StatisticsUiElement,
-        modifier: Modifier = Modifier,
-    ) {
-        item(
-            contentType = SECTION_HEADER_CONTENT_TYPE,
-        ) {
-            SettingsStatisticsSectionHeader(
-                element = element,
-                modifier = modifier,
-            )
-        }
-    }
-
     fun LazyListScope.largeList(
         elements: LazyPagingItems<StatisticsUiElement>,
     ) {
@@ -67,7 +53,7 @@ object SettingsStatisticsSectionFactory {
                             title = elt.title,
                             text = elt.text,
                             cover = elt.cover,
-                            onClick = null,
+                            onClick = elt.onClick,
                             onLongClick = null,
                         )
                     }
@@ -106,7 +92,7 @@ object SettingsStatisticsSectionFactory {
                             title = elt.title,
                             text = elt.text,
                             cover = elt.cover,
-                            onClick = null,
+                            onClick = elt.onClick,
                             onLongClick = null,
                         )
                     }

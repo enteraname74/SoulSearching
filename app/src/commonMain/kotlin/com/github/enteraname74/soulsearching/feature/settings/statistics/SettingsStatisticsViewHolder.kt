@@ -11,6 +11,7 @@ import com.github.enteraname74.soulsearching.feature.settings.statistics.model.P
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodUiStatistics
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.toStatisticsUiElement
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.toStatisticsUiListenedElement
+import com.github.enteraname74.soulsearching.feature.settings.statistics.model.toStatisticsUiMostSongsElement
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolderV2
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -120,7 +121,7 @@ class SettingsStatisticsViewHolder(
                         title = strings.artistsWithMostSongs,
                         data = artistsWithMostMusics.map { pagingData ->
                             pagingData.map {
-                                it.toStatisticsUiElement(
+                                it.toStatisticsUiMostSongsElement(
                                     onClick = { navigate { toArtist(it.artist.id) } }
                                 )
                             }
@@ -132,7 +133,7 @@ class SettingsStatisticsViewHolder(
                     data = mostPlayedAlbums.map { pagingData ->
                         pagingData.map {
                             it.toStatisticsUiElement(
-                                onClick = { navigate { toArtist(it.album.id) } }
+                                onClick = { navigate { toAlbum(it.album.id) } }
                             )
                         }
                     },
@@ -142,7 +143,7 @@ class SettingsStatisticsViewHolder(
                     data = mostPlayedPlaylists.map { pagingData ->
                         pagingData.map {
                             it.toStatisticsUiElement(
-                                onClick = { navigate { toArtist(it.playlist.id) } }
+                                onClick = { navigate { toPlaylist(it.playlist.id) } }
                             )
                         }
                     },
