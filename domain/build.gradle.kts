@@ -11,6 +11,7 @@ kotlin {
             implementation(libs.androidx.paging.common)
             implementation(libs.koin.core)
             implementation(libs.coroutines.core)
+            implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
         }
 

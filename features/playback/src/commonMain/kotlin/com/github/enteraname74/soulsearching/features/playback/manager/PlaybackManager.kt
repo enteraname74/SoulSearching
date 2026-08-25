@@ -19,6 +19,8 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementMusicListeningTimeUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementMusicNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
@@ -82,6 +84,8 @@ class PlaybackManager(
     private val syncPlayedListMusicsUseCase: SyncPlayedListMusicsUseCase,
     private val playbackEnvironment: SoulSearchingPlaybackEnvironment,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
+    private val incrementMusicNbPlayedUseCase: IncrementMusicNbPlayedUseCase,
+    private val incrementMusicListeningTimeUseCase: IncrementMusicListeningTimeUseCase,
     workDispatcher: WorkDispatcher,
 ) : KoinComponent, SoulSearchingPlayer.Listener {
     private val notification: SoulSearchingNotification by inject()
@@ -222,6 +226,7 @@ class PlaybackManager(
         notificationListener()
         sharedListCurrentMusicUpdateListener()
         noSharedPlayedListListener()
+        musicListeningTimeJob()
     }
 
     private fun init() {
@@ -275,7 +280,7 @@ class PlaybackManager(
                 /*
                 We drop the first value of the flow to avoid incrementing the music total playing number
                 when we relaunch the app.
-                There could we a case where we quit the app before the increment was done.
+                There could be a case where we quit the app before the increment was done.
                 Thus, relaunching the app would never increment the current music.
                 But this will do for now.
                  */
@@ -287,6 +292,22 @@ class PlaybackManager(
                         updateMusicNbPlayedJob?.cancel()
                     }
                 }
+        }
+    }
+
+    private fun musicListeningTimeJob() {
+        launchWithInit {
+            state.collectLatest { state ->
+                (state as? PlaybackManagerState.Data)?.let { dataState ->
+                    while (dataState.isPlaying) {
+                        delay(1.seconds)
+                        incrementMusicListeningTimeUseCase(
+                            musicId = dataState.currentMusic.musicId,
+                            addedListenedTime = 1.seconds,
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -705,7 +726,7 @@ class PlaybackManager(
         updateMusicNbPlayedJob?.cancel()
         updateMusicNbPlayedJob = workScope.launch {
             delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
-            commonMusicUseCase.incrementNbPlayed(musicId = musicId)
+            incrementMusicNbPlayedUseCase(musicId)
         }
     }
 

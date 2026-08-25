@@ -217,10 +217,9 @@ interface ArtistDao {
         """
             SELECT * FROM RoomArtistPreview 
             ORDER BY totalMusics DESC 
-            LIMIT 11
         """
     )
-    fun getArtistsWithMostMusics(): Flow<List<RoomArtistPreview>>
+    fun getArtistsWithMostMusics(): PagingSource<Int, RoomArtistPreview>
 
     @Query("UPDATE RoomArtist SET coverId = NULL")
     suspend fun cleanAllCovers()
@@ -231,10 +230,9 @@ interface ArtistDao {
             SELECT * FROM RoomArtistPreview 
             WHERE nbPlayed >= 1 
             ORDER BY nbPlayed DESC 
-            LIMIT 11
         """
     )
-    fun getMostListened(): Flow<List<RoomArtistPreview>>
+    fun getMostListened(): PagingSource<Int, RoomArtistPreview>
 
     @Transaction
     @Query(

@@ -24,7 +24,6 @@ import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.S
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudViewHolder
-import com.github.enteraname74.soulsearching.feature.settings.cloud.user.code.SettingsCloudCodesViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations.SettingsCloudExplanationsViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListViewHolder
@@ -33,6 +32,7 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.Setti
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.user.code.SettingsCloudCodesViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.data.SettingsCloudUserDataViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.users.SettingsCloudUsersViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeViewModel
@@ -44,7 +44,7 @@ import com.github.enteraname74.soulsearching.feature.settings.personalisation.ma
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreenViewModel
 import com.github.enteraname74.soulsearching.feature.settings.shortcuts.SettingsShortcutsViewHolder
-import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsViewModel
+import com.github.enteraname74.soulsearching.feature.settings.statistics.SettingsStatisticsViewHolder
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -59,7 +59,7 @@ internal val viewModelModule: Module = module {
     viewModelOf(::SettingsColorThemeViewModel)
     viewModelOf(::SettingsMainPagePersonalisationViewModel)
     viewModelOf(::SettingsPlayerPersonalisationViewModel)
-    viewModelOf(::SettingsStatisticsViewModel)
+    viewModelOf(::SettingsStatisticsViewHolder)
     viewModelOf(::SettingsThemeSelectionViewModel)
     viewModelOf(::SettingsColorSeedViewModel)
     viewModelOf(::SettingsAdvancedViewModel)

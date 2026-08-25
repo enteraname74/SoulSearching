@@ -227,7 +227,8 @@ object FrStrings : Strings {
     override val newReleaseAvailableTitle = "Nouvelle version disponible !"
     override val statisticsTitle = "Statistiques"
     override val statisticsText = "Statistiques sur vos écoutes"
-    override val mostPlayedSongs = "Musiques les plus écoutées"
+    override val mostPlayedSongs = "Musiques les plus écoutées (nombre de lectures)"
+    override val mostListenedSongs: String = "Musiques les plus écoutées (temps de lecture)"
     override val mostPlayedAlbums = "Albums les plus écoutés"
     override val mostPlayedArtists = "Artistes les plus écoutés"
     override val artistsWithMostSongs = "Artistes avec le plus de musiques"
@@ -454,6 +455,10 @@ object FrStrings : Strings {
     override val clearUserStorageButton: String = "Supprimer mes données"
     override val clearUserStorageDialogText: String = "Toutes vos données sur Cloudy seront supprimées. Votre profil ne sera pas supprimé"
 
+    override val statisticsAllPeriodLabel: String = "Toutes périodes"
+    override val statisticsYearPeriodLabel: String = "Par année"
+    override val statisticsMonthPeriodLabel: String = "Par mois"
+
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
             SyncDataWithCloudUseCase.State.Failure -> "Erreur"
@@ -563,5 +568,24 @@ object FrStrings : Strings {
         }
 
     override fun hours(hours: Long): String =
-        if (hours == 1L) "heure" else "heures"
+        if (hours == 1L) "$hours heure" else "$hours heures"
+
+    override fun seconds(seconds: Long): String =
+        if (seconds == 1L) "$seconds seconde" else "$seconds secondes"
+
+    override fun month(monthNumber: Int): String =
+        when (monthNumber) {
+            1 -> "Janvier"
+            2 -> "Février"
+            3 -> "Mars"
+            4 -> "Avril"
+            5 -> "Mai"
+            6 -> "Juin"
+            7 -> "Juillet"
+            8 -> "Août"
+            9 -> "Septembre"
+            10 -> "Octobre"
+            11 -> "Novembre"
+            else -> "Décembre"
+        }
 }

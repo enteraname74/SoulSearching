@@ -3,6 +3,8 @@ package com.github.enteraname74.localdb.view
 import androidx.room3.DatabaseView
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.statistics.ListeningStatistics
+import com.github.enteraname74.domain.util.DateUtils
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
@@ -93,4 +95,13 @@ data class RoomAlbumPreview(
             isInQuickAccess = isInQuickAccess,
         )
     }
+
+    fun toAlbumStats(): ListeningStatistics.AlbumStats =
+        ListeningStatistics.AlbumStats(
+            album = toAlbumPreview(),
+            nbPlayed = nbPlayed,
+            // Dummy values, not used here
+            id = Uuid.random(),
+            localMonthYear = DateUtils.currentMonthYear(),
+        )
 }

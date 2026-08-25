@@ -176,11 +176,6 @@ internal class RoomPlaylistLocalDataSourceImpl(
             list.map { it.toPlaylistPreview() }
         }
 
-    override fun getMostListened(): Flow<List<PlaylistPreview>> =
-        appDatabase.playlistDao.getMostListened().map { list ->
-            list.map { it.toPlaylistPreview() }
-        }
-
     override fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?> =
         appDatabase.playlistDao.getPlaylistPreview(playlistId).map { it?.toPlaylistPreview() }
 

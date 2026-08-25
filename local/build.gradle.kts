@@ -51,6 +51,8 @@ kotlin {
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.room.paging)
             implementation(libs.androidx.sqlite.async)
+
+            implementation(libs.kotlinx.datetime)
         }
     }
 }

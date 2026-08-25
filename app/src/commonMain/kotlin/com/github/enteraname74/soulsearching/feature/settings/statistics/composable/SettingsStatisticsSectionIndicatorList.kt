@@ -1,9 +1,11 @@
-package com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.composable
+package com.github.enteraname74.soulsearching.feature.settings.statistics.composable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.domain.util.PlatformUtils
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -22,7 +24,11 @@ fun SettingsStatisticsSectionIndicatorList(
     onClick: (selectedIndex: Int) -> Unit
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(
+            UiConstants.Spacing.medium,
+            Alignment.CenterHorizontally,
+        ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
@@ -38,9 +44,7 @@ fun SettingsStatisticsSectionIndicatorList(
                         }
                     )
                 },
-                colors = SoulButtonDefaults.primaryColors(
-                    containerColor = Color.Transparent,
-                )
+                colors = SoulButtonDefaults.primaryTint()
             )
         }
 
@@ -59,9 +63,7 @@ fun SettingsStatisticsSectionIndicatorList(
                 onClick = {
                     onClick((selectedIndex + 1).mod(listSize))
                 },
-                colors = SoulButtonDefaults.primaryColors(
-                    containerColor = Color.Transparent,
-                )
+                colors = SoulButtonDefaults.primaryTint()
             )
         }
     }

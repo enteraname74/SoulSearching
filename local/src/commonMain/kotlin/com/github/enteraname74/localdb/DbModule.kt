@@ -7,6 +7,7 @@ import com.github.enteraname74.localdb.datasourceimpl.RoomCloudPreferencesDataSo
 import com.github.enteraname74.localdb.datasourceimpl.RoomCoverLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomDeviceLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomFolderDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomListeningStatisticsDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicArtistDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicPlaylistDataSourceImpl
@@ -25,6 +26,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSou
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DeviceLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.FolderDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.ListeningStatisticsDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.MusicArtistDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.MusicPlaylistDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.code.UserInscriptionCodeLocalDataSource
@@ -91,4 +93,5 @@ val localModule: Module = module {
     singleOf(::RoomCloudPreferencesDataSourceImpl) bind CloudPreferencesDataSource::class
     singleOf(::RoomUserLocalDataSourceImpl) bind UserLocalDataSource::class
     singleOf(::RoomDeviceLocalDataSourceImpl) bind DeviceLocalDataSource::class
+    singleOf(::RoomListeningStatisticsDataSourceImpl) bind ListeningStatisticsDataSource::class
 }

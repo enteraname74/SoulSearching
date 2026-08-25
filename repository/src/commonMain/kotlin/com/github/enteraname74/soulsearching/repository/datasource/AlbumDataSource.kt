@@ -75,8 +75,6 @@ interface AlbumDataSource {
         artistId: Uuid,
     ): Album?
 
-    fun getMostListened(): Flow<List<AlbumPreview>>
-
     fun getAlbumPreview(albumId: Uuid): Flow<AlbumPreview?>
 
     fun searchAll(search: String): Flow<List<AlbumPreview>>

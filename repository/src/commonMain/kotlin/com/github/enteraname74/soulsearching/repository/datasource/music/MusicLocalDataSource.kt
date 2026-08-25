@@ -135,8 +135,6 @@ interface MusicLocalDataSource {
 
     suspend fun getAllMusicLocalPath(): List<String>
 
-    fun getMostListened(): Flow<List<Music>>
-
     fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>>
 
     fun getMonthMusicPreview(month: String): Flow<MonthMusicsPreview?>

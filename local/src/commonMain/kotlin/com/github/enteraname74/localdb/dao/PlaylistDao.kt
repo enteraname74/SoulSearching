@@ -185,10 +185,9 @@ interface PlaylistDao {
             SELECT * FROM RoomPlaylistPreview 
             WHERE nbPlayed >= 1 
             ORDER BY nbPlayed DESC 
-            LIMIT 11
         """
     )
-    fun getMostListened(): Flow<List<RoomPlaylistPreview>>
+    fun getMostListened(): PagingSource<Int, RoomPlaylistPreview>
 
     @Transaction
     @Query(

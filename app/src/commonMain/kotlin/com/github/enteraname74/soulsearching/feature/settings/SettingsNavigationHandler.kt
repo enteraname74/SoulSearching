@@ -7,7 +7,6 @@ import com.github.enteraname74.soulsearching.feature.settings.aboutpage.develope
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudDestination
-import com.github.enteraname74.soulsearching.feature.settings.cloud.user.code.SettingsCloudCodesDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations.SettingsCloudExplanationsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListDestination
@@ -16,6 +15,7 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.Setti
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.user.code.SettingsCloudCodesDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.data.SettingsCloudUserDataDestination
 import com.github.enteraname74.soulsearching.feature.settings.cloud.users.SettingsCloudUsersDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeDestination
@@ -31,7 +31,7 @@ import com.github.enteraname74.soulsearching.feature.settings.personalisation.mu
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.presentation.SettingsPlayerPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsDestination
 import com.github.enteraname74.soulsearching.feature.settings.shortcuts.SettingsShortcutsDestination
-import com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.SettingsStatisticsDestination
+import com.github.enteraname74.soulsearching.feature.settings.statistics.SettingsStatisticsDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 

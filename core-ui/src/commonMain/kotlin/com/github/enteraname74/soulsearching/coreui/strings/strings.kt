@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
 import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
+import com.github.enteraname74.domain.model.statistics.Period
 import com.github.enteraname74.domain.model.user.UserType
 import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
@@ -233,6 +234,7 @@ interface Strings {
     val statisticsTitle: String
     val statisticsText: String
     val mostPlayedSongs: String
+    val mostListenedSongs: String
     val mostPlayedAlbums: String
     val mostPlayedArtists: String
     val artistsWithMostSongs: String
@@ -435,6 +437,10 @@ interface Strings {
     val clearUserStorageButton: String
     val clearUserStorageDialogText: String
 
+    val statisticsAllPeriodLabel: String
+    val statisticsYearPeriodLabel: String
+    val statisticsMonthPeriodLabel: String
+
     fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
     fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String
 
@@ -481,10 +487,12 @@ interface Strings {
 
     fun duration(duration: Duration): String {
         val hours = duration.inWholeHours
-        return if (hours > 0) {
-            "$hours ${hours(hours)} $and ${minutes(duration.inWholeMinutes.mod(60).toLong())}"
-        } else {
-            minutes(duration.inWholeMinutes)
+        val minutes = duration.inWholeMinutes
+
+        return when {
+            hours > 0 -> "${hours(hours)} $and ${minutes(duration.inWholeMinutes.mod(60).toLong())}"
+            minutes > 0 -> "${minutes(minutes)} $and ${seconds(duration.inWholeSeconds.mod(60).toLong())}"
+            else -> seconds(duration.inWholeSeconds)
         }
     }
 
@@ -492,4 +500,15 @@ interface Strings {
 
     fun minutes(minutes: Long): String =
         if (minutes == 1L) "$minutes minute" else "$minutes minutes"
+
+    fun seconds(seconds: Long): String
+
+    fun period(period: Period): String =
+        when (period) {
+            is Period.All -> statisticsAllPeriodLabel
+            is Period.Month -> "${month(period.month)} ${period.year}"
+            is Period.Year -> period.year.toString()
+        }
+
+    fun month(monthNumber: Int): String
 }

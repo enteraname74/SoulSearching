@@ -431,11 +431,6 @@ internal class RoomMusicLocalDataSourceImpl(
     override suspend fun getAllMusicLocalPath(): List<String> =
         appDatabase.musicDao.getAllMusicLocalPath()
 
-    override fun getMostListened(): Flow<List<Music>> =
-        appDatabase.musicDao.getMostListened().map { list ->
-            list.map { it.toMusic() }
-        }
-
     override fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
         appDatabase.musicDao.getAllMonthMusics().map { list ->
             list.map { it.toMonthMusicsPreview() }

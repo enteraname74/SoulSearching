@@ -4,6 +4,8 @@ import androidx.room3.DatabaseView
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Cover.CoverFile.DevicePathSpec
+import com.github.enteraname74.domain.model.statistics.ListeningStatistics
+import com.github.enteraname74.domain.util.DateUtils
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
@@ -108,4 +110,13 @@ data class RoomArtistPreview(
             isInQuickAccess = isInQuickAccess
         )
     }
+
+    fun toArtistStats(): ListeningStatistics.ArtistStats =
+        ListeningStatistics.ArtistStats(
+            artist = toArtistPreview(),
+            nbPlayed = nbPlayed,
+            // Dummy values, not used here
+            id = Uuid.random(),
+            localMonthYear = DateUtils.currentMonthYear(),
+        )
 }

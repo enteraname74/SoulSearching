@@ -37,7 +37,7 @@ fun allMusicsTab(
                     } else {
                         SortDirection.ASC
                     }
-               mainPageViewModel.setMusicSortDirection(newDirection)
+                mainPageViewModel.setMusicSortDirection(newDirection)
             },
             onClick = mainPageViewModel::onMusicClicked,
             onPlayAll = mainPageViewModel::onPlayAll,

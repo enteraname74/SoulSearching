@@ -214,19 +214,9 @@ internal class RoomArtistDataSourceImpl(
             artistName = artistName,
         )?.toArtistWithMusics()
 
-    override fun getArtistsWithMostMusics(): Flow<List<ArtistPreview>> =
-        appDatabase.artistDao.getArtistsWithMostMusics().map { list ->
-            list.map { it.toArtistPreview() }
-        }
-
     override suspend fun cleanAllCovers() {
         appDatabase.artistDao.cleanAllCovers()
     }
-
-    override fun getMostListened(): Flow<List<ArtistPreview>> =
-        appDatabase.artistDao.getMostListened().map { list ->
-            list.map { it.toArtistPreview() }
-        }
 
     override fun getArtistPreview(artistId: Uuid): Flow<ArtistPreview?> =
         appDatabase.artistDao.getArtistPreview(artistId).map { it?.toArtistPreview() }

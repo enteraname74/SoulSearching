@@ -35,11 +35,11 @@ interface ArtistDataSource {
     /**
      * Retrieves an Artist from its id.
      */
-    fun getFromId(artistId: Uuid) : Flow<Artist?>
+    fun getFromId(artistId: Uuid): Flow<Artist?>
 
     suspend fun getFromRemoteId(remoteId: Uuid): Artist?
 
-    fun getFromIds(artistIds: List<Uuid>) : Flow<List<ArtistWithMusics>>
+    fun getFromIds(artistIds: List<Uuid>): Flow<List<ArtistWithMusics>>
 
     fun getAllPaged(): Flow<PagingData<ArtistPreview>>
 
@@ -69,11 +69,7 @@ interface ArtistDataSource {
         artistName: String
     ): ArtistWithMusics?
 
-    fun getArtistsWithMostMusics(): Flow<List<ArtistPreview>>
-
     suspend fun cleanAllCovers()
-
-    fun getMostListened(): Flow<List<ArtistPreview>>
 
     fun getArtistPreview(artistId: Uuid): Flow<ArtistPreview?>
 

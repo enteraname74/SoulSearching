@@ -8,6 +8,7 @@ import androidx.room3.RoomDatabase
 import androidx.room3.RoomDatabaseConstructor
 import androidx.room3.paging.PagingSourceDaoReturnTypeConverter
 import com.github.enteraname74.domain.util.LocalDatabaseVersion
+import com.github.enteraname74.localdb.converters.DurationConverters
 import com.github.enteraname74.localdb.converters.InstantConverters
 import com.github.enteraname74.localdb.converters.StorageTypeConverters
 import com.github.enteraname74.localdb.converters.UserTypeConverters
@@ -18,6 +19,7 @@ import com.github.enteraname74.localdb.dao.CloudPreferencesDao
 import com.github.enteraname74.localdb.dao.CoverDao
 import com.github.enteraname74.localdb.dao.DeviceIdDao
 import com.github.enteraname74.localdb.dao.FolderDao
+import com.github.enteraname74.localdb.dao.ListeningStatisticsDao
 import com.github.enteraname74.localdb.dao.MusicArtistDao
 import com.github.enteraname74.localdb.dao.MusicDao
 import com.github.enteraname74.localdb.dao.MusicPlaylistDao
@@ -44,6 +46,7 @@ import com.github.enteraname74.localdb.model.RoomSimpleUser
 import com.github.enteraname74.localdb.model.RoomUser
 import com.github.enteraname74.localdb.model.RoomUserInscriptionCode
 import com.github.enteraname74.localdb.model.RoomUserStorage
+import com.github.enteraname74.localdb.model.listeningstatistics.RoomListeningStatistics
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusicUser
@@ -80,6 +83,7 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
         RoomPlayerMusicUser::class,
         RoomSharedPlayedListPreview::class,
         RoomUserStorage::class,
+        RoomListeningStatistics::class,
     ],
     views = [
         CurrentPlayerMusicsView::class,
@@ -96,6 +100,7 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
     UserTypeConverters::class,
     UuidTypeConverters::class,
     StorageTypeConverters::class,
+    DurationConverters::class,
 )
 @DaoReturnTypeConverters(PagingSourceDaoReturnTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -118,6 +123,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val simpleUserDao: SimpleUserDao
     abstract val playerMusicUserDao: PlayerMusicUserDao
     abstract val sharedPlayedListPreviewDao: SharedPlayedListPreviewDao
+    abstract val listeningStatisticsDao: ListeningStatisticsDao
 }
 
 // The Room compiler generates the `actual` implementations.

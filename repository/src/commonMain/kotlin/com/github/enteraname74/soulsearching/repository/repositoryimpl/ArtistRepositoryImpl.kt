@@ -101,15 +101,9 @@ class ArtistRepositoryImpl(
             artistName = artistName,
         )
 
-    override fun getArtistsWithMostMusics(): Flow<List<ArtistPreview>> =
-        artistDataSource.getArtistsWithMostMusics()
-
     override suspend fun cleanAllCovers() {
         artistDataSource.cleanAllCovers()
     }
-
-    override fun getMostListened(): Flow<List<ArtistPreview>> =
-        artistDataSource.getMostListened()
 
     override fun getArtistPreview(artistId: Uuid): Flow<ArtistPreview?> =
         artistDataSource.getArtistPreview(artistId)

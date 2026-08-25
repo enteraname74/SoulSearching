@@ -13,6 +13,12 @@ import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCas
 import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.GetPeriodStatisticsUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementAlbumNbPlayedUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementArtistNbPlayedUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementMusicListeningTimeUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementMusicNbPlayedUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementPlaylistNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.music.CloudMusicToMusicUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
@@ -127,4 +133,12 @@ val domainModule: Module = module {
     factoryOf(::AddMusicsToSharedPlayedListUseCase)
     factoryOf(::RemoveMusicsFromSharedPlayedListUseCase)
     factoryOf(::JoinSharedPlayedListUseCase)
+
+    // Statistics
+    factoryOf(::GetPeriodStatisticsUseCase)
+    factoryOf(::IncrementAlbumNbPlayedUseCase)
+    factoryOf(::IncrementArtistNbPlayedUseCase)
+    factoryOf(::IncrementMusicNbPlayedUseCase)
+    factoryOf(::IncrementPlaylistNbPlayedUseCase)
+    factoryOf(::IncrementMusicListeningTimeUseCase)
 }

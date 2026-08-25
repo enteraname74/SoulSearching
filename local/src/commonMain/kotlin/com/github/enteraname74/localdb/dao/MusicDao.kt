@@ -644,10 +644,9 @@ interface MusicDao {
             WHERE nbPlayed >= 1 AND isHidden = 0 
             AND scope != 'SharedPlayedList' 
             ORDER BY nbPlayed DESC 
-            LIMIT 11
         """
     )
-    fun getMostListened(): Flow<List<RoomCompleteMusic>>
+    fun getMostPlayed(): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
     @Query("SELECT * FROM RoomMonthMusicPreview")

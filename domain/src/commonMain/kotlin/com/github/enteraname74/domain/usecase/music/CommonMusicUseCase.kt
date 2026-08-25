@@ -7,7 +7,6 @@ import com.github.enteraname74.domain.model.MusicFolderPreview
 import com.github.enteraname74.domain.model.MusicListDetailId
 import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlin.time.Duration
 import kotlin.uuid.Uuid
 
@@ -204,15 +203,6 @@ class CommonMusicUseCase(
     fun getFolderMusicsDuration(folder: String): Flow<Duration> =
         musicRepository.getFolderMusicsDuration(folder)
 
-    suspend fun incrementNbPlayed(musicId: Uuid) {
-        val music: Music = musicRepository.getFromId(musicId).first() ?: return
-        musicRepository.upsert(
-            music = music.copy(
-                nbPlayed = music.nbPlayed + 1
-            )
-        )
-    }
-
     suspend fun upsertAll(allMusics: List<Music>) {
         musicRepository.upsertAll(allMusics)
     }
@@ -231,9 +221,6 @@ class CommonMusicUseCase(
 
     suspend fun getAllMusicLocalPath(): List<String> =
         musicRepository.getAllMusicLocalPath()
-
-    fun getMostListened(): Flow<List<Music>> =
-        musicRepository.getMostListened()
 
     fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
         musicRepository.getAllMonthMusics()
