@@ -7,13 +7,13 @@ import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.music.SaveMusicsWithFoldersUseCase
 import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.state.SettingsAddMusicsNavigationState
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.SelectableMusicItem
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.AddNewSongsMultipleArtistManagerImpl
-import com.github.enteraname74.soulsearching.features.musicmanager.persistence.MusicPersistence
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +29,7 @@ class SettingsAddMusicsViewModel(
     private val commonMusicUseCase: CommonMusicUseCase,
     private val addNewsSongsStepManager: AddNewsSongsStepManager,
     private val loadingManager: LoadingManager,
+    private val saveMusicsWithFoldersUseCase: SaveMusicsWithFoldersUseCase,
     workDispatcher: WorkDispatcher,
 ) : ViewModel() {
     private val workScope = viewModelScope.plus(workDispatcher.dispatcher)
@@ -136,7 +137,7 @@ class SettingsAddMusicsViewModel(
                     multipleArtists = getMultipleArtists(musicsToSave)
                 )
             } else {
-                MusicPersistence().saveAll(musicsToSave)
+                saveMusicsWithFoldersUseCase(musicsToSave)
                 addNewsSongsStepManager.toStep(AddNewsSongsStepState.SongsSaved)
             }
         }

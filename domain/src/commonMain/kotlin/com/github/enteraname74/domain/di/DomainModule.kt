@@ -20,6 +20,8 @@ import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.ObserveDataChangedForCloudSync
 import com.github.enteraname74.domain.usecase.music.RemoveLocallyOrDeleteMusicUseCase
+import com.github.enteraname74.domain.usecase.music.SaveInitialFetchedMusicsUseCase
+import com.github.enteraname74.domain.usecase.music.SaveMusicsWithFoldersUseCase
 import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateMusicToCloudUseCase
@@ -84,6 +86,8 @@ val domainModule: Module = module {
     factoryOf(::UploadMusicToCloudUseCase)
     factoryOf(::UpdateMusicToCloudUseCase)
     singleOf(::SyncDataWithCloudUseCase)
+    factoryOf(::SaveInitialFetchedMusicsUseCase)
+    factoryOf(::SaveMusicsWithFoldersUseCase)
 
     factoryOf(::DeleteEmptyAlbumsAndArtistsUseCase)
 

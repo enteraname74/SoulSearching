@@ -17,7 +17,7 @@ import androidx.compose.runtime.SideEffect
 import coil3.annotation.ExperimentalCoilApi
 import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
-import com.github.enteraname74.soulsearching.feature.appinit.MissingPermissionsComposable
+import com.github.enteraname74.soulsearching.feature.appinit.composable.MissingPermissionsComposable
 import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager

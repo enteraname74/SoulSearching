@@ -63,8 +63,10 @@ abstract class SoulViewModelHolder<Actions, Navigation, State>(
         val uiNavigationState by navigationState.collectAsStateWithLifecycle()
 
         LaunchedEffect(uiNavigationState) {
-            uiNavigationState?.let { navigation.it() }
-            consumeNavigation()
+            uiNavigationState?.let {
+                navigation.it()
+                consumeNavigation()
+            }
         }
 
         Content(actions, uiState)

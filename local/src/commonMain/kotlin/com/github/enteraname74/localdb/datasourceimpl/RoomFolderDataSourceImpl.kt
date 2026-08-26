@@ -1,9 +1,9 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
+import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toFolder
 import com.github.enteraname74.localdb.model.toRoomFolder
-import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.soulsearching.repository.datasource.FolderDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -40,5 +40,11 @@ internal class RoomFolderDataSourceImpl(
         return appDatabase.folderDao.getAll().map { list ->
             list.map { it.toFolder() }
         }
+    }
+
+    override suspend fun setAll(folders: List<Folder>) {
+        appDatabase.folderDao.setAll(
+            folders = folders.map { it.toRoomFolder() },
+        )
     }
 }

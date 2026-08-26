@@ -32,7 +32,7 @@ abstract class MusicFetcher(
         hiddenFoldersPaths: List<String>
     ): List<SelectableMusicItem>
 
-    var optimizedCachedData = OptimizedCachedData()
+    var optimizedCachedData: OptimizedCachedData = OptimizedCachedData()
         protected set
 
     suspend fun cacheSelectedMusics(

@@ -12,7 +12,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.ArtistChoice
+import com.github.enteraname74.soulsearching.feature.multipleartistschoice.ArtistChoice
 
 @Composable
 fun MultipleArtistsChoiceItem(

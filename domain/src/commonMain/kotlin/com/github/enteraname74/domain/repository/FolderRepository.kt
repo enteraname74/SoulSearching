@@ -22,4 +22,6 @@ interface FolderRepository {
      * Retrieves a flow of all Folder.
      */
     fun getAll(): Flow<List<Folder>>
+
+    suspend fun setAll(folders: List<Folder>)
 }

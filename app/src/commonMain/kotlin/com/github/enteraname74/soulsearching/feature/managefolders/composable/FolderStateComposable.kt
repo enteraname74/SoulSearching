@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.composable
+package com.github.enteraname74.soulsearching.feature.managefolders.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
