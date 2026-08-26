@@ -18,7 +18,7 @@ class MigrationViewModel(
                     if (settings.get(SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY)) {
                         navScope.toMainApp()
                     } else {
-                        navScope.toInitialFetch()
+                        navScope.toOnboarding()
                     }
                 }
             }

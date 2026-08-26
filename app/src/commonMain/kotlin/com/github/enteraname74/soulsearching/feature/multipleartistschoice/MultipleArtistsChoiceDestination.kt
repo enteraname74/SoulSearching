@@ -2,10 +2,7 @@ package com.github.enteraname74.soulsearching.feature.multipleartistschoice
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.enteraname74.soulsearching.feature.application.MainAppDestination
-import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistsChoiceNavigationState
 import com.github.enteraname74.soulsearching.navigation.NavigationAnimations
-import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -17,38 +14,16 @@ data class MultipleArtistsChoiceDestination(
     companion object {
         fun register(
             entryProviderScope: EntryProviderScope<NavKey>,
-            navigator: Navigator,
+            navScope: MultipleArtistsChoiceNavScope,
         ) {
             entryProviderScope.entry<MultipleArtistsChoiceDestination>(
                 metadata = NavigationAnimations.horizontalMetadata,
             ) { key ->
-                MultipleArtistsChoiceRoute(
-                    viewModel = koinViewModel {
-                        parametersOf(key)
-                    },
-                    onNavigationState = {
-                        when (it) {
-                            MultipleArtistsChoiceNavigationState.Idle -> {
-                                /*no-op*/
-                            }
-                            MultipleArtistsChoiceNavigationState.Quit -> {
-                                when (key.mode) {
-                                    MultipleArtistsChoiceMode.InitialFetch -> {
-                                        navigator.push(MainAppDestination) {
-                                            clearBackStack = true
-                                        }
-                                    }
-                                    is MultipleArtistsChoiceMode.NewSongs, is MultipleArtistsChoiceMode.GeneralCheck -> {
-                                        navigator.pop()
-                                    }
-                                }
-                            }
-
-                            MultipleArtistsChoiceNavigationState.NavigateBack -> {
-                                navigator.pop()
-                            }
-                        }
-                    }
+                val holder: MultipleArtistsChoiceViewHolder = koinViewModel {
+                    parametersOf(key)
+                }
+                holder.Screen(
+                    navigation = navScope,
                 )
             }
         }
