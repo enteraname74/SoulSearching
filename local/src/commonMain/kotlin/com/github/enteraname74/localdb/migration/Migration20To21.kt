@@ -313,6 +313,26 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
+        executeSQL(
+            """
+            CREATE TABLE IF NOT EXISTS RoomListeningStatistics (
+                id TEXT NOT NULL,
+                nbPlayed INTEGER NOT NULL,
+                timeListened INTEGER,
+                musicId TEXT,
+                playlistId TEXT,
+                albumId TEXT,
+                artistId TEXT,
+                month INTEGER NOT NULL,
+                year INTEGER NOT NULL,
+                PRIMARY KEY(id),
+                FOREIGN KEY(musicId) REFERENCES RoomMusic(musicId) ON DELETE CASCADE,
+                FOREIGN KEY(playlistId) REFERENCES RoomPlaylist(playlistId) ON DELETE CASCADE,
+                FOREIGN KEY(albumId) REFERENCES RoomAlbum(albumId) ON DELETE CASCADE,
+                FOREIGN KEY(artistId) REFERENCES RoomArtist(artistId) ON DELETE CASCADE
+            )
+            """.trimIndent()
+        )
     }
 
     private suspend fun SQLiteConnection.restoreExistingData() {
@@ -430,6 +450,10 @@ object Migration20To21 : Migration(20, 21) {
         executeSQL("CREATE INDEX IF NOT EXISTS index_RoomPlayerMusic_playedListId ON RoomPlayerMusic(playedListId)")
         executeSQL("CREATE INDEX IF NOT EXISTS index_RoomPlayerMusic_musicId ON RoomPlayerMusic(musicId)")
         executeSQL("CREATE INDEX IF NOT EXISTS index_RoomSharedPlayedListUser_playedListId ON RoomSharedPlayedListUser(playedListId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomListeningStatistics_musicId ON RoomListeningStatistics(musicId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomListeningStatistics_playlistId ON RoomListeningStatistics(playlistId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomListeningStatistics_albumId ON RoomListeningStatistics(albumId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomListeningStatistics_artistId ON RoomListeningStatistics(artistId)")
     }
 
     private suspend fun SQLiteConnection.dropBackupTables() {
