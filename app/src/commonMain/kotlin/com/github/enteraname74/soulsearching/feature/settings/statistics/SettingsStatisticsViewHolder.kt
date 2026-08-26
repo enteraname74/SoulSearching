@@ -102,6 +102,10 @@ class SettingsStatisticsViewHolder(
                 ),
                 PeriodUiStatistics.Stats(
                     title = strings.mostListenedSongs,
+                    optionalContent = PeriodUiStatistics.Stats.OptionalContent(
+                        title = strings.listeningTime,
+                        flow = listeningTime.map { strings.duration(it) },
+                    ),
                     data = mostListenedMusics.map { pagingData ->
                         pagingData.map { it.toStatisticsUiListenedElement() }
                     }

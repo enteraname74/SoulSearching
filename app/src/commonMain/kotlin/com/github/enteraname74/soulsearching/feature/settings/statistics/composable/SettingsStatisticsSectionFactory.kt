@@ -10,6 +10,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
 import com.github.enteraname74.soulsearching.feature.search.composable.LinearPreviewComposable
+import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodUiStatistics
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.StatisticsUiElement
 import kotlin.uuid.Uuid
 
@@ -29,6 +30,20 @@ object SettingsStatisticsSectionFactory {
             contentType = EMPTY_CONTENT_CONTENT_TYPE
         ) {
             NoElementView()
+        }
+    }
+
+    fun LazyListScope.optionalContent(
+        optionalContent: PeriodUiStatistics.Stats.OptionalContent?,
+        modifier: Modifier = Modifier,
+    ) {
+        optionalContent?.let {
+            item {
+                SettingsStatisticsOptionalContent(
+                    optionalContent = optionalContent,
+                    modifier = modifier,
+                )
+            }
         }
     }
 
@@ -104,7 +119,6 @@ object SettingsStatisticsSectionFactory {
     }
 
     private const val SECTION_TITLE_CONTENT_TYPE: String = "SECTION_TITLE_CONTENT_TYPE"
-    private const val SECTION_HEADER_CONTENT_TYPE: String = "SECTION_HEADER_CONTENT_TYPE"
     private const val SECTION_LIST_CONTENT_TYPE: String = "SECTION_LIST_CONTENT_TYPE"
     private const val EMPTY_CONTENT_CONTENT_TYPE: String = "EMPTY_CONTENT_CONTENT_TYPE"
 }

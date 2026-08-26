@@ -9,6 +9,7 @@ import com.github.enteraname74.localdb.model.listeningstatistics.RoomCompleteLis
 import com.github.enteraname74.localdb.model.listeningstatistics.RoomListeningStatistics
 import com.github.enteraname74.localdb.model.listeningstatistics.RoomLocalMonthYear
 import kotlinx.coroutines.flow.Flow
+import kotlin.time.Duration
 import kotlin.uuid.Uuid
 
 @Dao
@@ -108,6 +109,27 @@ interface ListeningStatisticsDao {
         """
     )
     fun observeMostListenedMusics(): PagingSource<Int, RoomCompleteListeningStatistics>
+
+    @Query(
+        """
+            SELECT COALESCE(SUM(timeListened), 0)
+            FROM RoomListeningStatistics
+        """
+    )
+    fun observeListeningTime(): Flow<Duration>
+
+    @Query(
+        """
+            SELECT COALESCE(SUM(timeListened), 0)
+            FROM RoomListeningStatistics 
+            WHERE month IN (:months) 
+            AND year IN (:years) 
+        """
+    )
+    fun observeListeningTimeOnPeriod(
+        months: List<Int>,
+        years: List<Int>,
+    ): Flow<Duration>
 
     @Transaction
     @Query(

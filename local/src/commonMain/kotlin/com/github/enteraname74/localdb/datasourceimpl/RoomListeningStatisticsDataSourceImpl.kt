@@ -12,7 +12,9 @@ import com.github.enteraname74.localdb.ext.years
 import com.github.enteraname74.localdb.model.listeningstatistics.toRoomListeningStatistics
 import com.github.enteraname74.soulsearching.repository.datasource.ListeningStatisticsDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlin.time.Duration
 import kotlin.uuid.Uuid
 
 class RoomListeningStatisticsDataSourceImpl(
@@ -79,42 +81,51 @@ class RoomListeningStatisticsDataSourceImpl(
             mostPlayedAlbums = { appDatabase.albumDao.getMostListened() }.toPagingData { it.toAlbumStats() },
             mostPlayedPlaylists = { appDatabase.playlistDao.getMostListened() }.toPagingData { it.toPlaylistStats() },
             artistsWithMostMusics = { appDatabase.artistDao.getArtistsWithMostMusics() }.toPagingData { it.toArtistStats() },
+            listeningTime = appDatabase.listeningStatisticsDao.observeListeningTime(),
         )
 
-    private fun getSpecificPeriodStatistics(period: Period.Specific): PeriodStatistics =
-        PeriodStatistics.Specific(
+    private fun getSpecificPeriodStatistics(period: Period.Specific): PeriodStatistics {
+        val months = period.months()
+        val years = period.years()
+
+        return PeriodStatistics.Specific(
             period = period,
             mostListenedMusics = {
                 appDatabase.listeningStatisticsDao.observeMostListenedMusicsOnPeriod(
-                    months = period.months(),
-                    years = period.years(),
+                    months = months,
+                    years = years,
                 )
             }.toPagingData { it.toMusicStats() },
             mostPlayedMusics = {
                 appDatabase.listeningStatisticsDao.observeMostPlayedMusicsOnPeriod(
-                    months = period.months(),
-                    years = period.years(),
+                    months = months,
+                    years = years,
                 )
             }.toPagingData { it.toMusicStats() },
             mostPlayedArtists = {
                 appDatabase.listeningStatisticsDao.observeMostPlayedArtistsOnPeriod(
-                    months = period.months(),
-                    years = period.years(),
+                    months = months,
+                    years = years,
                 )
             }.toPagingData { it.toArtistStats() },
             mostPlayedAlbums = {
                 appDatabase.listeningStatisticsDao.observeMostPlayedAlbumsOnPeriod(
-                    months = period.months(),
-                    years = period.years(),
+                    months = months,
+                    years = years,
                 )
             }.toPagingData { it.toAlbumStats() },
             mostPlayedPlaylists = {
                 appDatabase.listeningStatisticsDao.observeMostPlayedPlaylistsOnPeriod(
-                    months = period.months(),
-                    years = period.years(),
+                    months = months,
+                    years = years,
                 )
-            }.toPagingData { it.toPlaylistStats() }
+            }.toPagingData { it.toPlaylistStats() },
+            listeningTime = appDatabase.listeningStatisticsDao.observeListeningTimeOnPeriod(
+                months = months,
+                years = years,
+            ),
         )
+    }
 
     override fun observeAllMonthPeriods(): Flow<List<Period.Month>> =
         appDatabase.listeningStatisticsDao.observeAllLocalYearMonth().map { list ->

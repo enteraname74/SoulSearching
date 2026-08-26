@@ -228,6 +228,7 @@ object EnStrings : Strings {
     override val statisticsText = "Statistics about your plays"
     override val mostPlayedSongs = "Most played songs (number of plays)"
     override val mostListenedSongs: String = "Most played songs (time listened)"
+    override val listeningTime: String = "Total time listened"
     override val mostPlayedAlbums = "Most played albums"
     override val mostPlayedArtists = "Most played artists"
     override val artistsWithMostSongs = "Artists with the most songs"

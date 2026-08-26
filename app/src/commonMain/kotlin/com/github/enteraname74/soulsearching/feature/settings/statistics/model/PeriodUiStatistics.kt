@@ -11,6 +11,12 @@ data class PeriodUiStatistics(
 ) {
     data class Stats(
         val title: String,
+        val optionalContent: OptionalContent? = null,
         val data: Flow<PagingData<StatisticsUiElement>>,
-    )
+    ) {
+        data class OptionalContent(
+            val title: String,
+            val flow: Flow<String>,
+        )
+    }
 }

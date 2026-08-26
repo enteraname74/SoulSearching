@@ -31,6 +31,7 @@ fun SettingsStatisticsSection(
         WindowSize.Small -> {
             SmallScreen(
                 title = stats.title,
+                optionalContent = stats.optionalContent,
                 elements = elements,
             )
         }
@@ -38,6 +39,7 @@ fun SettingsStatisticsSection(
         else -> {
             LargeScreen(
                 title = stats.title,
+                optionalContent = stats.optionalContent,
                 elements = elements,
             )
         }
@@ -47,6 +49,7 @@ fun SettingsStatisticsSection(
 @Composable
 private fun SmallScreen(
     title: String,
+    optionalContent: PeriodUiStatistics.Stats.OptionalContent?,
     elements: LazyPagingItems<StatisticsUiElement>,
 ) {
     LazyColumnCompat(
@@ -59,6 +62,11 @@ private fun SmallScreen(
     ) {
         with(SettingsStatisticsSectionFactory) {
             title(title)
+            optionalContent(
+                modifier = Modifier
+                    .padding(top = UiConstants.Spacing.mediumPlus),
+                optionalContent = optionalContent,
+            )
             smallList(elements = elements)
             item {
                 SoulPlayerSpacer()
@@ -70,6 +78,7 @@ private fun SmallScreen(
 @Composable
 private fun LargeScreen(
     title: String,
+    optionalContent: PeriodUiStatistics.Stats.OptionalContent?,
     elements: LazyPagingItems<StatisticsUiElement>,
 ) {
     Column(
@@ -101,6 +110,11 @@ private fun LargeScreen(
                 ) {
                     LazyColumnCompat {
                         with(SettingsStatisticsSectionFactory) {
+                            optionalContent(
+                                modifier = Modifier
+                                    .padding(vertical = UiConstants.Spacing.mediumPlus),
+                                optionalContent = optionalContent,
+                            )
                             largeList(elements)
                             playerSpacer()
                         }
