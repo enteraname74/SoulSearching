@@ -230,6 +230,7 @@ object FrStrings : Strings {
     override val mostPlayedSongs = "Musiques les plus écoutées (nombre de lectures)"
     override val mostListenedSongs: String = "Musiques les plus écoutées (temps d'écoute)"
     override val listeningTime: String = "Temps d'écoute total"
+    override val noDataOnThisPeriod: String = "Aucune donnée sur cette période"
     override val mostPlayedAlbums = "Albums les plus écoutés"
     override val mostPlayedArtists = "Artistes les plus écoutés"
     override val artistsWithMostSongs = "Artistes avec le plus de musiques"

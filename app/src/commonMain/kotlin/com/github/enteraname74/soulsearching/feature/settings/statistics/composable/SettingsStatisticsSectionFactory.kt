@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
 import com.github.enteraname74.soulsearching.feature.search.composable.LinearPreviewComposable
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodUiStatistics
@@ -29,7 +30,9 @@ object SettingsStatisticsSectionFactory {
         item(
             contentType = EMPTY_CONTENT_CONTENT_TYPE
         ) {
-            NoElementView()
+            NoElementView(
+                text = strings.noDataOnThisPeriod,
+            )
         }
     }
 

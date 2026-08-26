@@ -72,7 +72,7 @@ internal fun SettingsStatisticsPeriodsView(
         // The page width controls the distance between the centers of two
         // periods. Keep it smaller than half the viewport so more of the
         // previous and next buttons is visible around the selected one.
-        val pageWidth = maxWidth * 0.4f
+        val pageWidth = maxWidth * 0.5f
 
         HorizontalPager(
             modifier = Modifier.fillMaxWidth(),

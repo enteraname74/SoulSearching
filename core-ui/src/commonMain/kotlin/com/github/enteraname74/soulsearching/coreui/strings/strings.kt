@@ -236,6 +236,7 @@ interface Strings {
     val mostPlayedSongs: String
     val mostListenedSongs: String
     val listeningTime: String
+    val noDataOnThisPeriod: String
     val mostPlayedAlbums: String
     val mostPlayedArtists: String
     val artistsWithMostSongs: String
