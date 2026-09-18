@@ -211,7 +211,6 @@ class SyncDataWithCloudUseCase(
                 mergeMode = mergeMode,
             )
         }
-        playlistRepository.deleteAllEmptyExceptFavorite()
     }
 
     private fun buildProgress(
