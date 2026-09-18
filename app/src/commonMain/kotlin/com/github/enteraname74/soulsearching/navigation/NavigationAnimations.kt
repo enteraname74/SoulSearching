@@ -18,26 +18,26 @@ object NavigationAnimations {
             initialOffsetX = { it },
             animationSpec = tweenSpec,
         ) togetherWith
-                slideOutHorizontally(
-                    targetOffsetX = { -it },
-                    animationSpec = tweenSpec,
-                )
+            slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tweenSpec,
+            )
     }
     private val horizontalPopTransitionSpec: (AnimatedContentTransitionScope<Scene<*>>.() -> ContentTransform) = {
         slideInHorizontally(
             initialOffsetX = { -it },
             animationSpec = tweenSpec,
         ) togetherWith
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tweenSpec,
-                )
+            slideOutHorizontally(
+                targetOffsetX = { it },
+                animationSpec = tweenSpec,
+            )
     }
 
     val horizontalMetadata =
         NavDisplay.transitionSpec { horizontalTransitionSpec() } +
-                NavDisplay.popTransitionSpec { horizontalPopTransitionSpec() } +
-                NavDisplay.predictivePopTransitionSpec { horizontalPopTransitionSpec() }
+            NavDisplay.popTransitionSpec { horizontalPopTransitionSpec() } +
+            NavDisplay.predictivePopTransitionSpec { horizontalPopTransitionSpec() }
 
     val default: ContentTransform = fadeIn(
         tween(UiConstants.AnimationDuration.normal)
@@ -49,8 +49,8 @@ object NavigationAnimations {
         initialOffsetX = { it },
         animationSpec = tweenSpec,
     ) togetherWith
-            slideOutHorizontally(
-                targetOffsetX = { -it },
-                animationSpec = tweenSpec,
-            )
+        slideOutHorizontally(
+            targetOffsetX = { -it },
+            animationSpec = tweenSpec,
+        )
 }

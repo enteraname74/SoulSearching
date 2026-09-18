@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,46 +28,24 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationActio
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.composable.MultipleArtistsChoiceItem
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.composable.MultipleArtistsWarningCard
-import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.ArtistChoice
-import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistChoiceState
-import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistsChoiceNavigationState
 
 @Composable
-fun MultipleArtistsChoiceRoute(
-    viewModel: MultipleArtistsChoiceViewModel,
-    onNavigationState: (MultipleArtistsChoiceNavigationState) -> Unit,
-) {
-    val state: MultipleArtistChoiceState by viewModel.state.collectAsState()
-    val navigationState: MultipleArtistsChoiceNavigationState by viewModel.navigationState.collectAsState()
-
-    LaunchedEffect(navigationState) {
-        onNavigationState(navigationState)
-        viewModel.consumeNavigation()
-    }
-
-    SoulBackHandler {
-        viewModel.navigateBack()
-    }
-
-    MainComposable(
-        state = state,
-        onToggleArtistChoice = viewModel::toggleSelection,
-        onSaveSelection = viewModel::saveSelection,
-        navigateBack = viewModel::navigateBack,
-        onToggleAll = viewModel::toggleAll,
-        mode = viewModel.mode,
-    )
-}
-
-@Composable
-private fun MainComposable(
+fun MultipleArtistsChoiceScreen(
     state: MultipleArtistChoiceState,
-    mode: MultipleArtistsChoiceMode,
-    onSaveSelection: () -> Unit,
-    navigateBack: () -> Unit,
-    onToggleArtistChoice: (ArtistChoice) -> Unit,
-    onToggleAll: (Boolean) -> Unit,
 ) {
+    SoulBackHandler {
+        when (state) {
+            MultipleArtistChoiceState.Loading -> {
+                // no-op
+            }
+            is MultipleArtistChoiceState.NoMultipleArtists -> {
+                state.navigateBack()
+            }
+            is MultipleArtistChoiceState.UserAction -> {
+                state.navigateBack?.invoke()
+            }
+        }
+    }
     when (state) {
         MultipleArtistChoiceState.Loading -> {
             SoulLoadingScreen(text = null)
@@ -79,18 +54,13 @@ private fun MainComposable(
         is MultipleArtistChoiceState.UserAction -> {
             UserActionScreen(
                 state = state,
-                onSaveSelection = onSaveSelection,
-                onToggleArtistChoice = onToggleArtistChoice,
-                navigateBack = navigateBack,
-                onToggleAll = onToggleAll,
-                mode = mode,
             )
         }
 
-        MultipleArtistChoiceState.NoMultipleArtists -> {
+        is MultipleArtistChoiceState.NoMultipleArtists -> {
             SoulTemplateScreen(
                 leftAction = TopBarNavigationAction(
-                    onClick = navigateBack,
+                    onClick = state.navigateBack,
                 ),
                 icon = CoreRes.drawable.ic_download_done,
                 text = strings.noMultipleArtists,
@@ -103,23 +73,16 @@ private fun MainComposable(
 @Composable
 private fun UserActionScreen(
     state: MultipleArtistChoiceState.UserAction,
-    mode: MultipleArtistsChoiceMode,
-    onSaveSelection: () -> Unit,
-    navigateBack: () -> Unit,
-    onToggleAll: (Boolean) -> Unit,
-    onToggleArtistChoice: (ArtistChoice) -> Unit,
 ) {
     SoulScreen {
         Column {
             SoulTopBar(
                 title = strings.multipleArtistsTitle,
                 rightAction = TopBarValidateAction(
-                    onClick = onSaveSelection,
+                    onClick = state.onSaveSelection,
                 ),
-                leftAction = if (mode == MultipleArtistsChoiceMode.InitialFetch) {
-                    null
-                } else {
-                    TopBarNavigationAction(onClick = navigateBack)
+                leftAction = state.navigateBack?.let {
+                    TopBarNavigationAction(onClick = it)
                 },
             )
             LazyColumnCompat(
@@ -151,7 +114,7 @@ private fun UserActionScreen(
                         )
                         SoulCheckBox(
                             checked = state.toggleAllState,
-                            onCheckedChange = onToggleAll,
+                            onCheckedChange = state.onToggleAll,
                         )
                     }
                 }
@@ -163,7 +126,7 @@ private fun UserActionScreen(
                     MultipleArtistsChoiceItem(
                         artistChoice = artistChoice,
                         onClick = {
-                            onToggleArtistChoice(artistChoice)
+                            state.onToggleArtistChoice(artistChoice)
                         }
                     )
                 }

@@ -65,6 +65,7 @@ fun SoulTopBar(
         }
         title?.let {
             AnimatedVisibility(
+                modifier = Modifier.weight(1f),
                 visible = showTitle,
                 enter = fadeIn(
                     animationSpec = tween(
@@ -78,7 +79,6 @@ fun SoulTopBar(
                 ),
             ) {
                 Text(
-                    modifier = Modifier.weight(1f),
                     text = it,
                     maxLines = 2,
                     style = UiConstants.Typography.bodyMediumTitle,

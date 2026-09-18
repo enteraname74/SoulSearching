@@ -2,14 +2,14 @@ package com.github.enteraname74.soulsearching.feature.settings.managemusics.pres
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.enteraname74.soulsearching.feature.managefolders.ManageFoldersDestination
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.SettingsAddMusicsDestination
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.SettingsUsedFoldersDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object SettingsManageMusicsDestination: SettingPage {
+data object SettingsManageMusicsDestination : SettingPage {
     fun register(
         entryProviderScope: EntryProviderScope<NavKey>,
         navigator: Navigator,
@@ -20,7 +20,7 @@ data object SettingsManageMusicsDestination: SettingPage {
                     navigator.pop()
                 },
                 navigateToFolders = {
-                    navigator.push(SettingsUsedFoldersDestination)
+                    navigator.push(ManageFoldersDestination(ManageFoldersDestination.Mode.Settings))
                 },
                 navigateToAddMusics = {
                     navigator.push(SettingsAddMusicsDestination)

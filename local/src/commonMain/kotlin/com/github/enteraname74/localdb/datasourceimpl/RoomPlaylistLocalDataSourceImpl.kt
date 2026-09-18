@@ -199,10 +199,6 @@ internal class RoomPlaylistLocalDataSourceImpl(
         appDatabase.playlistDao.deleteAllRemoteFields()
     }
 
-    override suspend fun deleteAllEmptyExceptFavorite() {
-        appDatabase.playlistDao.deleteAllEmptyExceptFavorite()
-    }
-
     override suspend fun getLatestUpdatedAt(): Long? =
         appDatabase.playlistDao.getLatestUpdatedAt()
 }

@@ -62,8 +62,10 @@ abstract class SoulViewModelHolderV2<Navigation, State> : ViewModel() {
         val uiNavigationState by navigationState.collectAsStateWithLifecycle()
 
         LaunchedEffect(uiNavigationState) {
-            uiNavigationState?.let { navigation.it() }
-            consumeNavigation()
+            uiNavigationState?.let {
+                navigation.it()
+                consumeNavigation()
+            }
         }
 
         Content(uiState)

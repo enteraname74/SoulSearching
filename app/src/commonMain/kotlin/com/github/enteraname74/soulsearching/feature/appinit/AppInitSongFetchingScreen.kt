@@ -1,11 +1,17 @@
-package com.github.enteraname74.soulsearching.feature.appinit.songfetching
+package com.github.enteraname74.soulsearching.feature.appinit
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,36 +24,12 @@ import com.github.enteraname74.soulsearching.coreui.image.SoulSearchingLogo
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.appinit.composable.FetchingMusicTabLayoutComposable
-import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingNavigationState
-import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingState
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun AppInitSongFetchingRoute(
-    onNavigationState: (AppInitSongFetchingNavigationState) -> Unit,
-) {
-    val viewModel: AppInitSongFetchingViewModel = koinViewModel()
-    val state: AppInitSongFetchingState by viewModel.state.collectAsState()
-    val navigationState: AppInitSongFetchingNavigationState by viewModel.navigationState.collectAsState()
-
-    LaunchInit {
-        viewModel.fetchSongs()
-    }
-
-    LaunchedEffect(navigationState) {
-        onNavigationState(navigationState)
-        viewModel.consumeNavigation()
-    }
-
-    FetchingMusicsComposable(state = state)
-}
-
-@Composable
-private fun FetchingMusicsComposable(
+fun AppInitSongFetchingScreen(
     state: AppInitSongFetchingState,
 ) {
     val animatedProgress by animateFloatAsState(

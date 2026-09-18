@@ -132,10 +132,6 @@ class PlaylistRepositoryImpl(
         playlistLocalDataSource.deleteAllRemoteFields()
     }
 
-    override suspend fun deleteAllEmptyExceptFavorite() {
-        playlistLocalDataSource.deleteAllEmptyExceptFavorite()
-    }
-
     override suspend fun getLatestUpdatedAt(): Long? =
         playlistLocalDataSource.getLatestUpdatedAt()
 }

@@ -118,7 +118,7 @@ class SyncDataWithCloudUseCase(
 
             // Keeping only songs not already handled
             val filteredSongsToSave = updatedRemoteSongs.filter { music ->
-                savedRemoteIds.none { it == music.fingerprint }
+                savedRemoteIds.none { it == music.id }
             }
             // Saving each song, with their album and artist
             val toSave = filteredSongsToSave.mapIndexed { index, music ->
@@ -211,7 +211,6 @@ class SyncDataWithCloudUseCase(
                 mergeMode = mergeMode,
             )
         }
-        playlistRepository.deleteAllEmptyExceptFavorite()
     }
 
     private fun buildProgress(

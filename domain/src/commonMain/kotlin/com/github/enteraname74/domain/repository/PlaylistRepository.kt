@@ -73,8 +73,5 @@ interface PlaylistRepository {
      * - cover url
      */
     suspend fun deleteAllRemoteFields()
-
-    suspend fun deleteAllEmptyExceptFavorite()
-
     suspend fun getLatestUpdatedAt(): Long?
 }

@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.appinit
+package com.github.enteraname74.soulsearching.feature.appinit.composable
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text

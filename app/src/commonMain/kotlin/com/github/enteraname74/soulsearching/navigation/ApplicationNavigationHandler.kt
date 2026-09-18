@@ -15,10 +15,9 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingDestination
 import com.github.enteraname74.soulsearching.feature.application.MainAppDestination
 import com.github.enteraname74.soulsearching.feature.migration.MigrationDestination
-import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceDestination
+import com.github.enteraname74.soulsearching.feature.onboarding.OnboardingDestination
 
 @Composable
 fun ApplicationNavigationHandler(
@@ -61,15 +60,11 @@ private fun buildEntryProvider(
         entryProviderScope = this,
         navigator = navigator,
     )
+    OnboardingDestination.register(
+        entryProviderScope = this,
+        navigator = navigator,
+    )
     MainAppDestination.register(
         entryProviderScope = this,
-    )
-    AppInitSongFetchingDestination.register(
-        entryProviderScope = this,
-        navigator = navigator,
-    )
-    MultipleArtistsChoiceDestination.register(
-        entryProviderScope = this,
-        navigator = navigator,
     )
 }
