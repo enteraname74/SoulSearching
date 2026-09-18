@@ -1,15 +1,15 @@
-package com.github.enteraname74.soulsearching.repository.datasource
+package com.github.enteraname74.soulsearching.repository.datasource.listeningstatistics
 
 import com.github.enteraname74.domain.model.LocalMonthYear
+import com.github.enteraname74.domain.model.statistics.LightListeningStatistics
 import com.github.enteraname74.domain.model.statistics.ListeningStatistics
 import com.github.enteraname74.domain.model.statistics.Period
 import com.github.enteraname74.domain.model.statistics.PeriodStatistics
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
-interface ListeningStatisticsDataSource {
+interface ListeningStatisticsLocalDataSource {
     suspend fun upsert(listeningStatistics: ListeningStatistics)
-
     suspend fun getMusicStatistics(
         musicId: Uuid,
         localMonthYear: LocalMonthYear,
@@ -36,4 +36,9 @@ interface ListeningStatisticsDataSource {
 
     fun observeAllYearPeriods(): Flow<List<Period.Year>>
 
+    suspend fun getAllToSendToCloud(): List<ListeningStatistics>
+
+    suspend fun upsertLightListeningStatistics(listeningStatistics: List<LightListeningStatistics>)
+
+    suspend fun getLastSyncMillis(): Long?
 }

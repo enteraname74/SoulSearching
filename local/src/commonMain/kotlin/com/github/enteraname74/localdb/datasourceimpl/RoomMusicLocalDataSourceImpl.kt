@@ -533,6 +533,9 @@ internal class RoomMusicLocalDataSourceImpl(
 
         return limit to offset
     }
+
+    override suspend fun getAllRemoteToLocalIds(): Map<String, Uuid> =
+        appDatabase.musicDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.musicId) }
 }
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

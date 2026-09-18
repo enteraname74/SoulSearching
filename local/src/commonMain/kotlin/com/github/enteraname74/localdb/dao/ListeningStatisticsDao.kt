@@ -5,6 +5,7 @@ import androidx.room3.Dao
 import androidx.room3.Query
 import androidx.room3.Transaction
 import androidx.room3.Upsert
+import com.github.enteraname74.domain.model.statistics.LightListeningStatistics
 import com.github.enteraname74.localdb.model.listeningstatistics.RoomCompleteListeningStatistics
 import com.github.enteraname74.localdb.model.listeningstatistics.RoomListeningStatistics
 import com.github.enteraname74.localdb.model.listeningstatistics.RoomLocalMonthYear
@@ -13,9 +14,9 @@ import kotlin.time.Duration
 import kotlin.uuid.Uuid
 
 @Dao
-interface ListeningStatisticsDao {
+abstract class ListeningStatisticsDao {
     @Upsert
-    suspend fun upsert(listeningStatistics: RoomListeningStatistics)
+    abstract suspend fun upsert(listeningStatistics: RoomListeningStatistics)
 
     @Transaction
     @Query(
@@ -27,7 +28,7 @@ interface ListeningStatisticsDao {
             LIMIT 1
         """
     )
-    suspend fun getMusicStatistics(
+    abstract suspend fun getMusicStatistics(
         musicId: Uuid,
         month: Int,
         year: Int,
@@ -43,7 +44,7 @@ interface ListeningStatisticsDao {
             LIMIT 1
         """
     )
-    suspend fun getAlbumStatistics(
+    abstract suspend fun getAlbumStatistics(
         albumId: Uuid,
         month: Int,
         year: Int,
@@ -59,7 +60,7 @@ interface ListeningStatisticsDao {
             LIMIT 1
         """
     )
-    suspend fun getArtistStatistics(
+    abstract suspend fun getArtistStatistics(
         artistId: Uuid,
         month: Int,
         year: Int,
@@ -75,7 +76,7 @@ interface ListeningStatisticsDao {
             LIMIT 1
         """
     )
-    suspend fun getPlaylistStatistics(
+    abstract suspend fun getPlaylistStatistics(
         playlistId: Uuid,
         month: Int,
         year: Int,
@@ -93,7 +94,7 @@ interface ListeningStatisticsDao {
             ORDER BY timeListened DESC
         """
     )
-    fun observeMostListenedMusicsOnPeriod(
+    abstract fun observeMostListenedMusicsOnPeriod(
         months: List<Int>,
         years: List<Int>,
     ): PagingSource<Int, RoomCompleteListeningStatistics>
@@ -108,7 +109,7 @@ interface ListeningStatisticsDao {
             ORDER BY timeListened DESC
         """
     )
-    fun observeMostListenedMusics(): PagingSource<Int, RoomCompleteListeningStatistics>
+    abstract fun observeMostListenedMusics(): PagingSource<Int, RoomCompleteListeningStatistics>
 
     @Query(
         """
@@ -116,7 +117,7 @@ interface ListeningStatisticsDao {
             FROM RoomListeningStatistics
         """
     )
-    fun observeListeningTime(): Flow<Duration>
+    abstract fun observeListeningTime(): Flow<Duration>
 
     @Query(
         """
@@ -126,7 +127,7 @@ interface ListeningStatisticsDao {
             AND year IN (:years) 
         """
     )
-    fun observeListeningTimeOnPeriod(
+    abstract fun observeListeningTimeOnPeriod(
         months: List<Int>,
         years: List<Int>,
     ): Flow<Duration>
@@ -141,7 +142,7 @@ interface ListeningStatisticsDao {
             ORDER BY nbPlayed DESC
         """
     )
-    fun observeMostPlayedMusicsOnPeriod(
+    abstract fun observeMostPlayedMusicsOnPeriod(
         months: List<Int>,
         years: List<Int>,
     ): PagingSource<Int, RoomCompleteListeningStatistics>
@@ -156,7 +157,7 @@ interface ListeningStatisticsDao {
             ORDER BY nbPlayed DESC
         """
     )
-    fun observeMostPlayedAlbumsOnPeriod(
+    abstract fun observeMostPlayedAlbumsOnPeriod(
         months: List<Int>,
         years: List<Int>,
     ): PagingSource<Int, RoomCompleteListeningStatistics>
@@ -171,7 +172,7 @@ interface ListeningStatisticsDao {
             ORDER BY nbPlayed DESC
         """
     )
-    fun observeMostPlayedArtistsOnPeriod(
+    abstract fun observeMostPlayedArtistsOnPeriod(
         months: List<Int>,
         years: List<Int>,
     ): PagingSource<Int, RoomCompleteListeningStatistics>
@@ -186,7 +187,7 @@ interface ListeningStatisticsDao {
             ORDER BY nbPlayed DESC
         """
     )
-    fun observeMostPlayedPlaylistsOnPeriod(
+    abstract fun observeMostPlayedPlaylistsOnPeriod(
         months: List<Int>,
         years: List<Int>,
     ): PagingSource<Int, RoomCompleteListeningStatistics>
@@ -198,7 +199,7 @@ interface ListeningStatisticsDao {
             ORDER BY year ASC, month ASC
         """
     )
-    fun observeAllLocalYearMonth(): Flow<List<RoomLocalMonthYear>>
+    abstract fun observeAllLocalYearMonth(): Flow<List<RoomLocalMonthYear>>
 
     @Query(
         """
@@ -206,5 +207,110 @@ interface ListeningStatisticsDao {
             ORDER BY year ASC
         """
     )
-    fun observeAllYears(): Flow<List<Int>>
+    abstract fun observeAllYears(): Flow<List<Int>>
+
+    @Transaction
+    @Query(
+        """
+            SELECT s.* FROM RoomListeningStatistics s 
+            CROSS JOIN RoomCloudPreferences cp
+            WHERE cp.lastStatisticsSyncMillis IS NULL
+               OR s.lastUpdatedMillis > cp.lastStatisticsSyncMillis 
+        """
+    )
+    abstract suspend fun getAllToSendToCloud(): List<RoomCompleteListeningStatistics>
+
+    @Query(
+        """
+    INSERT INTO RoomListeningStatistics (
+        id,
+        lastUpdatedMillis,
+        nbPlayed,
+        timeListened,
+        month,
+        year,
+        musicId,
+        playlistId,
+        albumId,
+        artistId
+    )
+    VALUES (
+        :id,
+        :lastUpdatedMillis,
+        :nbPlayed,
+        :timeListened,
+        :month,
+        :year,
+        :musicId,
+        :playlistId,
+        :albumId,
+        :artistId
+    )
+    ON CONFLICT(id) DO UPDATE SET
+        lastUpdatedMillis = MAX(
+            lastUpdatedMillis,
+            excluded.lastUpdatedMillis
+        ),
+        nbPlayed = MAX(
+            nbPlayed,
+            excluded.nbPlayed
+        ),
+        timeListened = CASE
+            WHEN timeListened IS NULL
+                THEN excluded.timeListened
+            WHEN excluded.timeListened IS NULL
+                THEN timeListened
+            ELSE MAX(timeListened, excluded.timeListened)
+        END
+    """
+    )
+    protected abstract suspend fun upsertLightListeningStatistics(
+        id: String,
+        lastUpdatedMillis: Long,
+        nbPlayed: Int,
+        timeListened: Duration?,
+        month: Int,
+        year: Int,
+        musicId: Uuid?,
+        playlistId: Uuid?,
+        albumId: Uuid?,
+        artistId: Uuid?,
+    )
+
+    private suspend fun upsertLight(
+        listeningStatistics: LightListeningStatistics
+    ) {
+        with(listeningStatistics) {
+            upsertLightListeningStatistics(
+                id = id,
+                lastUpdatedMillis = lastUpdatedMillis,
+                nbPlayed = nbPlayed,
+                timeListened = timeListened,
+                month = localMonthYear.month,
+                year = localMonthYear.year,
+                musicId = musicId,
+                playlistId = playlistId,
+                albumId = albumId,
+                artistId = artistId,
+            )
+        }
+    }
+
+    @Transaction
+    open suspend fun upsertAllLightListeningStatistics(
+        statistics: List<LightListeningStatistics>,
+    ) {
+        statistics.forEach {
+            upsertLight(it)
+        }
+    }
+
+    @Query(
+        """
+            SELECT lastUpdatedMillis FROM RoomListeningStatistics 
+            ORDER BY lastUpdatedMillis 
+            LIMIT 1
+        """
+    )
+    abstract suspend fun getLastSyncMillis(): Long?
 }

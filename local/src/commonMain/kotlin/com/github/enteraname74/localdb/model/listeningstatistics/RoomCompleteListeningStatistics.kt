@@ -50,6 +50,7 @@ data class RoomCompleteListeningStatistics(
                 nbPlayed = listeningStatistics.nbPlayed,
                 timeListened = listeningStatistics.timeListened ?: Duration.ZERO,
                 localMonthYear = listeningStatistics.localMonthYear.toLocalMonthYear(),
+                lastUpdatedMillis = listeningStatistics.lastUpdatedMillis,
             )
         }
 
@@ -60,6 +61,7 @@ data class RoomCompleteListeningStatistics(
                 id = listeningStatistics.id,
                 nbPlayed = listeningStatistics.nbPlayed,
                 localMonthYear = listeningStatistics.localMonthYear.toLocalMonthYear(),
+                lastUpdatedMillis = listeningStatistics.lastUpdatedMillis,
             )
         }
 
@@ -70,6 +72,7 @@ data class RoomCompleteListeningStatistics(
                 id = listeningStatistics.id,
                 nbPlayed = listeningStatistics.nbPlayed,
                 localMonthYear = listeningStatistics.localMonthYear.toLocalMonthYear(),
+                lastUpdatedMillis = listeningStatistics.lastUpdatedMillis,
             )
         }
 
@@ -80,6 +83,7 @@ data class RoomCompleteListeningStatistics(
                 id = listeningStatistics.id,
                 nbPlayed = listeningStatistics.nbPlayed,
                 localMonthYear = listeningStatistics.localMonthYear.toLocalMonthYear(),
+                lastUpdatedMillis = listeningStatistics.lastUpdatedMillis,
             )
         }
 

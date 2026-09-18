@@ -10,6 +10,15 @@ import kotlin.uuid.Uuid
 interface ListeningStatisticsRepository {
     suspend fun upsert(listeningStatistics: ListeningStatistics)
 
+    suspend fun fetchFromFromCloud()
+
+    suspend fun upsertAllToCloud(
+        toSend: List<ListeningStatistics>,
+        onSent: (Int) -> Unit,
+    )
+
+    suspend fun getAllToSendToCloud(): List<ListeningStatistics>
+
     suspend fun getMusicStatistics(
         musicId: Uuid,
         localMonthYear: LocalMonthYear,
@@ -35,4 +44,6 @@ interface ListeningStatisticsRepository {
     fun observeAllMonthPeriods(): Flow<List<Period.Month>>
 
     fun observeAllYearPeriods(): Flow<List<Period.Year>>
+
+    suspend fun getLastSyncMillis(): Long?
 }

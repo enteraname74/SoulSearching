@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
-import com.github.enteraname74.domain.model.CloudPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -10,8 +9,11 @@ interface CloudPreferencesDataSource {
     suspend fun setUrl(url: String)
 
     suspend fun setLastSyncMillis(millis: Long)
+    suspend fun setLastStatsSyncMillis(millis: Long)
 
     suspend fun getLastSyncMillis(): Long?
 
-    suspend fun clearLastSyncMillis()
+    suspend fun getLastStatsSyncMillis(): Long?
+
+    suspend fun clearSyncsMillis()
 }

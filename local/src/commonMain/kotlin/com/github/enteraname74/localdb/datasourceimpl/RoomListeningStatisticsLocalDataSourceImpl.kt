@@ -1,6 +1,7 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
 import com.github.enteraname74.domain.model.LocalMonthYear
+import com.github.enteraname74.domain.model.statistics.LightListeningStatistics
 import com.github.enteraname74.domain.model.statistics.ListeningStatistics
 import com.github.enteraname74.domain.model.statistics.Period
 import com.github.enteraname74.domain.model.statistics.PeriodStatistics
@@ -10,16 +11,14 @@ import com.github.enteraname74.localdb.ext.months
 import com.github.enteraname74.localdb.ext.toPagingData
 import com.github.enteraname74.localdb.ext.years
 import com.github.enteraname74.localdb.model.listeningstatistics.toRoomListeningStatistics
-import com.github.enteraname74.soulsearching.repository.datasource.ListeningStatisticsDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.listeningstatistics.ListeningStatisticsLocalDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlin.time.Duration
 import kotlin.uuid.Uuid
 
-class RoomListeningStatisticsDataSourceImpl(
+class RoomListeningStatisticsLocalDataSourceImpl(
     private val appDatabase: AppDatabase,
-) : ListeningStatisticsDataSource {
+) : ListeningStatisticsLocalDataSource {
     override suspend fun upsert(listeningStatistics: ListeningStatistics) {
         appDatabase.listeningStatisticsDao.upsert(
             listeningStatistics.toRoomListeningStatistics()
@@ -157,4 +156,14 @@ class RoomListeningStatisticsDataSourceImpl(
 
             (mappedList + today).distinct()
         }
+
+    override suspend fun getAllToSendToCloud(): List<ListeningStatistics> =
+        appDatabase.listeningStatisticsDao.getAllToSendToCloud().mapNotNull { it.toListeningStatistics() }
+
+    override suspend fun upsertLightListeningStatistics(listeningStatistics: List<LightListeningStatistics>) {
+        appDatabase.listeningStatisticsDao.upsertAllLightListeningStatistics(listeningStatistics)
+    }
+
+    override suspend fun getLastSyncMillis(): Long? =
+        appDatabase.listeningStatisticsDao.getLastSyncMillis()
 }

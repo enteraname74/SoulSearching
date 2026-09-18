@@ -6,7 +6,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlin.uuid.Uuid
 
 data class StatisticsUiElement(
-    val id: Uuid,
+    val id: String,
     val title: String,
     val text: String,
     val onClick: (() -> Unit)?,

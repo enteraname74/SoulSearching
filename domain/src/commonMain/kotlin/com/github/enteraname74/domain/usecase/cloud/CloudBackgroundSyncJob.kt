@@ -6,7 +6,9 @@ import kotlinx.coroutines.flow.StateFlow
 interface CloudBackgroundSyncJob {
     val state: StateFlow<SyncDataWithCloudUseCase.State>
 
-    suspend fun launchIfPossible()
+    suspend fun launchIfPossible(
+        syncStats: Boolean,
+    )
 
     suspend fun cancelIfNeeded()
 }

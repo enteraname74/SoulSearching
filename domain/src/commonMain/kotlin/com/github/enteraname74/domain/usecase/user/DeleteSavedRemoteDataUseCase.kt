@@ -8,7 +8,6 @@ import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.domain.usecase.DeleteEmptyAlbumsAndArtistsUseCase
 import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 
-// TODO CLOUD: What to do with remote playlist only that are now empty? How can we distinct them from local playlists to delete them?
 class DeleteSavedRemoteDataUseCase(
     private val cloudPreferencesRepository: CloudPreferencesRepository,
     private val deleteEmptyAlbumsAndArtistsUseCase: DeleteEmptyAlbumsAndArtistsUseCase,
@@ -19,7 +18,7 @@ class DeleteSavedRemoteDataUseCase(
 ) {
     suspend operator fun invoke(): SoulResult<Unit> = SoulResult.runCatching {
         cloudBackgroundSyncJob.cancelIfNeeded()
-        cloudPreferencesRepository.clearLastSyncMillis()
+        cloudPreferencesRepository.clearSyncsMillis()
 
         /*
         We need to clear the musics from the cloud.
@@ -31,6 +30,7 @@ class DeleteSavedRemoteDataUseCase(
         musicRepository.deleteNotExisting()
         playlistRepository.deleteAllRemoteFields()
 
+        playlistRepository.deleteAllEmptyExceptFavorite()
         deleteEmptyAlbumsAndArtistsUseCase()
 
         playerRepository.deleteAllSharedPlayedListPreviews()

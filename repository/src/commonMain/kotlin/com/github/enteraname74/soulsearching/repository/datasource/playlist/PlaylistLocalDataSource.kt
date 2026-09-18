@@ -67,5 +67,10 @@ interface PlaylistLocalDataSource {
     suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid>
 
     suspend fun deleteAllRemoteFields()
+
+    suspend fun deleteAllEmptyExceptFavorite()
+
     suspend fun getLatestUpdatedAt(): Long?
+
+    suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid>
 }

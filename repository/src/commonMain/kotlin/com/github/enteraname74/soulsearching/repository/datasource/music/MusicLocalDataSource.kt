@@ -160,4 +160,6 @@ interface MusicLocalDataSource {
     suspend fun getFromPath(path: String): Music?
 
     fun observeDataChanged(): Flow<Unit>
+
+    suspend fun getAllRemoteToLocalIds(): Map<String, Uuid>
 }

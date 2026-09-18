@@ -228,6 +228,9 @@ internal class RoomArtistDataSourceImpl(
 
     override suspend fun getPotentialMultipleArtists(): List<Artist> =
         appDatabase.artistDao.getPotentialMultipleArtists().map { it.toArtist() }
+
+    override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =
+        appDatabase.playlistDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
 }
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

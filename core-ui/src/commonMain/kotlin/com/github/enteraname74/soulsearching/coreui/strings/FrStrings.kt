@@ -463,7 +463,7 @@ object FrStrings : Strings {
 
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncDataWithCloudUseCase.State.Failure -> "Erreur"
+            is SyncDataWithCloudUseCase.State.Failure -> "Erreur"
             SyncDataWithCloudUseCase.State.Finish -> "Fin"
             SyncDataWithCloudUseCase.State.Idle -> "En attente"
             SyncDataWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique à envoyer"
@@ -478,11 +478,13 @@ object FrStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Téléversement des playlists"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Sauvegarde des playlists"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Nettoyage des playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Téléchargement des statistiques d'écoutes"
+            is SyncDataWithCloudUseCase.State.UploadingStats -> "Téléversement des statistiques d'écoutes"
         }
 
     override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncDataWithCloudUseCase.State.Failure -> "Une erreur est survenue durant la synchronisation"
+            is SyncDataWithCloudUseCase.State.Failure -> "Une erreur est survenue durant la synchronisation : ${state.error ?: "Error inconnue"}"
             SyncDataWithCloudUseCase.State.Finish -> "La synchronisation est terminée"
             SyncDataWithCloudUseCase.State.Idle -> "En attente de synchronisation"
             SyncDataWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique locale à envoyer au cloud"
@@ -497,6 +499,8 @@ object FrStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Téléversement des playlists vers le cloud"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Sauvegarde des playlists téléchargées du cloud"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Nettoyage des playlists supprimées du cloud"
+            SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Téléchargement des statistiques d'écoutes du cloud"
+            is SyncDataWithCloudUseCase.State.UploadingStats -> "Téléversement des statistiques d'écoutes vers le cloud"
         }
 
     override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =

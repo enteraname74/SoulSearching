@@ -8,6 +8,7 @@ import androidx.room3.Transaction
 import androidx.room3.Upsert
 import com.github.enteraname74.localdb.model.RoomCompleteMusic
 import com.github.enteraname74.localdb.model.RoomMusic
+import com.github.enteraname74.localdb.model.mapping.MusicIdToRemoteId
 import com.github.enteraname74.localdb.view.RoomMonthMusicPreview
 import com.github.enteraname74.localdb.view.RoomMusicFolderPreview
 import kotlinx.coroutines.flow.Flow
@@ -722,7 +723,7 @@ interface MusicDao {
         """
             SELECT m.* FROM RoomMusic m 
             CROSS JOIN RoomCloudPreferences cp
-            WHERE scope != 'SharedPlayedList' AND m.lastUpdateMillis IS NULL
+            WHERE m.scope != 'SharedPlayedList' AND m.lastUpdateMillis IS NULL
                OR cp.lastSyncMillis IS NULL
                OR m.lastUpdateMillis > cp.lastSyncMillis 
                OR m.remoteId IS NULL
@@ -782,4 +783,7 @@ interface MusicDao {
         """
     )
     suspend fun getMusicIdsOfAlbum(albumIds: List<Uuid>): List<Uuid>
+
+    @Query("SELECT musicId, remoteId FROM RoomMusic WHERE remoteId IS NOT NULL")
+    suspend fun getAllRemoteToLocalIds(): List<MusicIdToRemoteId>
 }

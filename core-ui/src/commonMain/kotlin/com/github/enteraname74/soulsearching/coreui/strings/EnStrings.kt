@@ -460,7 +460,7 @@ object EnStrings : Strings {
 
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncDataWithCloudUseCase.State.Failure -> "Failure"
+            is SyncDataWithCloudUseCase.State.Failure -> "Failure"
             SyncDataWithCloudUseCase.State.Idle -> "Waiting"
             SyncDataWithCloudUseCase.State.NoMusicsToSend -> "No songs to send"
             SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Checking"
@@ -475,11 +475,13 @@ object EnStrings : Strings {
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists"
             SyncDataWithCloudUseCase.State.Finish -> "Finish"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Cleaning playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Fetching listening statistics"
+            is SyncDataWithCloudUseCase.State.UploadingStats -> "Uploading listening statistics"
         }
 
     override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncDataWithCloudUseCase.State.Failure -> "A failure occurred during the syncing process"
+            is SyncDataWithCloudUseCase.State.Failure -> "A failure occurred during the syncing process: ${state.error ?: "Unknown error"}"
             SyncDataWithCloudUseCase.State.Finish -> "Syncing process has finished"
             SyncDataWithCloudUseCase.State.Idle -> "Waiting for syncing to start"
             SyncDataWithCloudUseCase.State.NoMusicsToSend -> "No local songs to send to cloud"
@@ -494,6 +496,8 @@ object EnStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Uploading playlists to cloud"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists from cloud"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Cleaning deleted remote playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Fetching listening statistics from cloud"
+            is SyncDataWithCloudUseCase.State.UploadingStats -> "Uploading listening statistics to cloud"
         }
 
     override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =

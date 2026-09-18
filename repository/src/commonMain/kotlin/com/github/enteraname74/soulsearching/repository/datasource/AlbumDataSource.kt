@@ -80,4 +80,6 @@ interface AlbumDataSource {
     fun searchAll(search: String): Flow<List<AlbumPreview>>
 
     suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics>
+
+    suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid>
 }

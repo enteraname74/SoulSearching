@@ -239,6 +239,9 @@ internal class RoomAlbumDataSourceImpl(
 
     override suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics> =
         appDatabase.albumDao.getAlbumsOfArtistName(artistName).map { it.toAlbumWithMusics() }
+
+    override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =
+        appDatabase.playlistDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
 }
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

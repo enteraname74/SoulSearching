@@ -26,6 +26,7 @@ class IncrementMusicListeningTimeUseCase(
         listeningStatisticsRepository.upsert(
             listeningStatistics = existingStatistics.copy(
                 timeListened = existingStatistics.timeListened + addedListenedTime,
+                lastUpdatedMillis = DateUtils.now(),
             )
         )
     }

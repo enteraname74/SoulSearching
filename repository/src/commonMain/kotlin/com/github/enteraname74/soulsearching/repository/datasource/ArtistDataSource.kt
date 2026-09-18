@@ -76,4 +76,6 @@ interface ArtistDataSource {
     fun searchAll(search: String): Flow<List<ArtistPreview>>
 
     suspend fun getPotentialMultipleArtists(): List<Artist>
+
+    suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid>
 }

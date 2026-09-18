@@ -9,6 +9,7 @@ import androidx.room3.Upsert
 import com.github.enteraname74.localdb.model.RoomArtist
 import com.github.enteraname74.localdb.view.RoomArtistPreview
 import com.github.enteraname74.localdb.model.RoomArtistWithMusics
+import com.github.enteraname74.localdb.model.mapping.GenericLocalIdToRemoteId
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
@@ -264,4 +265,7 @@ interface ArtistDao {
         """
     )
     suspend fun getPotentialMultipleArtists(): List<RoomArtist>
+
+    @Query("SELECT artistId AS localId, remoteId FROM RoomArtist WHERE remoteId IS NOT NULL")
+    suspend fun getAllRemoteToLocalIds(): List<GenericLocalIdToRemoteId>
 }

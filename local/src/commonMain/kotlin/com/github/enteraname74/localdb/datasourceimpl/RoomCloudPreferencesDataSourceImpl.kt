@@ -39,10 +39,26 @@ class RoomCloudPreferencesDataSourceImpl(
         )
     }
 
+    override suspend fun setLastStatsSyncMillis(millis: Long) {
+        val preferences: RoomCloudPreferences = appDatabase
+            .cloudPreferencesDao
+            .observe()
+            .firstOrNull() ?: RoomCloudPreferences()
+
+        appDatabase.cloudPreferencesDao.upsert(
+            preferences = preferences.copy(
+                lastStatisticsSyncMillis = millis,
+            )
+        )
+    }
+
+    override suspend fun getLastStatsSyncMillis(): Long? =
+        appDatabase.cloudPreferencesDao.observe().firstOrNull()?.lastStatisticsSyncMillis
+
     override suspend fun getLastSyncMillis(): Long? =
         appDatabase.cloudPreferencesDao.observe().firstOrNull()?.lastSyncMillis
 
-    override suspend fun clearLastSyncMillis() {
-        appDatabase.cloudPreferencesDao.clearLastSyncMillis()
+    override suspend fun clearSyncsMillis() {
+        appDatabase.cloudPreferencesDao.clearSyncsMillis()
     }
 }

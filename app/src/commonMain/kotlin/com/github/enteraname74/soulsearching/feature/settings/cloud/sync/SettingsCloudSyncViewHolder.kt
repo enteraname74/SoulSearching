@@ -32,7 +32,7 @@ class SettingsCloudSyncViewHolder(
 
     override fun launchSync() {
         viewModelScope.launch {
-            cloudBackgroundSyncJob.launchIfPossible()
+            cloudBackgroundSyncJob.launchIfPossible(syncStats = true)
         }
     }
 

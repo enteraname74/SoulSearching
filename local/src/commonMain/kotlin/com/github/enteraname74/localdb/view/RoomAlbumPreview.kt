@@ -12,6 +12,7 @@ import kotlin.uuid.Uuid
     """
         SELECT 
         album.albumId AS id, 
+        album.remoteId, 
         album.albumName AS name, 
         album.nbPlayed, 
         album.addedDate, 
@@ -53,6 +54,7 @@ import kotlin.uuid.Uuid
 )
 data class RoomAlbumPreview(
     val id: Uuid,
+    val remoteId: Uuid?,
     val nbPlayed: Int,
     val addedDate: Instant,
     val name: String,
@@ -93,15 +95,20 @@ data class RoomAlbumPreview(
             cover = usedCover,
             nbPlayed = nbPlayed,
             isInQuickAccess = isInQuickAccess,
+            remoteId = remoteId,
         )
     }
 
-    fun toAlbumStats(): ListeningStatistics.AlbumStats =
-        ListeningStatistics.AlbumStats(
+    fun toAlbumStats(): ListeningStatistics.AlbumStats {
+        val localMonthYear = DateUtils.currentMonthYear()
+
+        return ListeningStatistics.AlbumStats(
             album = toAlbumPreview(),
             nbPlayed = nbPlayed,
             // Dummy values, not used here
-            id = Uuid.random(),
-            localMonthYear = DateUtils.currentMonthYear(),
+            id = "$localMonthYear-$id",
+            localMonthYear = localMonthYear,
+            lastUpdatedMillis = DateUtils.now(),
         )
+    }
 }

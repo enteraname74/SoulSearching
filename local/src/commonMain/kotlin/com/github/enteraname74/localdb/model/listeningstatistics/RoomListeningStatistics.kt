@@ -49,7 +49,8 @@ import kotlin.uuid.Uuid
 )
 data class RoomListeningStatistics(
     @PrimaryKey
-    val id: Uuid,
+    val id: String,
+    val lastUpdatedMillis: Long,
     val nbPlayed: Int,
     val timeListened: Duration?,
     @Embedded val localMonthYear: RoomLocalMonthYear,
@@ -69,4 +70,5 @@ fun ListeningStatistics.toRoomListeningStatistics(): RoomListeningStatistics =
         playlistId = (this as? ListeningStatistics.PlaylistStats)?.playlist?.id,
         albumId = (this as? ListeningStatistics.AlbumStats)?.album?.id,
         artistId = (this as? ListeningStatistics.ArtistStats)?.artist?.id,
+        lastUpdatedMillis = lastUpdatedMillis,
     )

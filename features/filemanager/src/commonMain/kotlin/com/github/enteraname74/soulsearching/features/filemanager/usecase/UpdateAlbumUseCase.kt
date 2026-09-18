@@ -1,12 +1,15 @@
 package com.github.enteraname74.soulsearching.features.filemanager.usecase
 
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import kotlin.uuid.Uuid
 
 class UpdateAlbumUseCase(
@@ -15,7 +18,6 @@ class UpdateAlbumUseCase(
     private val musicRepository: MusicRepository,
     private val commonArtistUseCase: CommonArtistUseCase,
     private val musicArtistRepository: MusicArtistRepository,
-    private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
 ) {
     suspend operator fun invoke(
         updateInformation: UpdateInformation
@@ -70,7 +72,6 @@ class UpdateAlbumUseCase(
         // We check and delete the initial artist if it no longer possess songs.
         commonArtistUseCase.deleteIfEmpty(artistId = updateInformation.legacyAlbum.artist.artistId)
 
-        cloudBackgroundSyncJob.launchIfPossible()
         return updatedAlbum
     }
 

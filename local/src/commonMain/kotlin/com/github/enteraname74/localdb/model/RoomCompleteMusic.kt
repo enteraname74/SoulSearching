@@ -8,7 +8,6 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.statistics.ListeningStatistics
 import com.github.enteraname74.domain.util.DateUtils
 import kotlin.time.Duration
-import kotlin.uuid.Uuid
 
 data class RoomCompleteMusic(
     @Embedded val music: RoomMusic,
@@ -59,13 +58,17 @@ data class RoomCompleteMusic(
         )
     }
 
-    fun toMusicStats(): ListeningStatistics.MusicStats =
-        ListeningStatistics.MusicStats(
+    fun toMusicStats(): ListeningStatistics.MusicStats {
+        val localMonthYear = DateUtils.currentMonthYear()
+
+        return ListeningStatistics.MusicStats(
             music = toMusic(),
             nbPlayed = music.nbPlayed,
             // Dummy values, not used here
             timeListened = Duration.ZERO,
-            id = Uuid.random(),
-            localMonthYear = DateUtils.currentMonthYear(),
+            id = "$localMonthYear-${music.musicId}",
+            localMonthYear = localMonthYear,
+            lastUpdatedMillis = DateUtils.now(),
         )
+    }
 }

@@ -2,6 +2,7 @@ package com.github.enteraname74.domain.usecase.music
 
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.CloudPreferencesRepository
+import com.github.enteraname74.domain.repository.ListeningStatisticsRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.domain.usecase.DeleteEmptyAlbumsAndArtistsUseCase
@@ -30,11 +31,14 @@ class SyncDataWithCloudUseCase(
     private val uploadPlaylistToCloudUseCase: UploadPlaylistToCloudUseCase,
     private val upsertCloudPlaylistUseCase: UpsertCloudPlaylistUseCase,
     private val playlistRepository: PlaylistRepository,
+    private val listeningStatisticsRepository: ListeningStatisticsRepository,
 ) {
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Idle)
     val state: StateFlow<State> = _state.asStateFlow()
 
-    suspend operator fun invoke(): SoulResult<Unit> {
+    suspend operator fun invoke(
+        syncStats: Boolean,
+    ): SoulResult<Unit> {
         val result: SoulResult<Unit> = SoulResult.runCatching {
             _state.value = State.ClearingRemoteMusicIds
             val idsNoLongerOnCloud: List<String> = musicRepository.getDeletedRemoteMusicIds()
@@ -153,7 +157,7 @@ class SyncDataWithCloudUseCase(
             Choice has been made to consider playlists to always be remote first,
             to ensure maximum sync between them.
              */
-            handlePlaylists(
+            syncPlaylists(
                 lastSyncMillis = lastSyncMillis,
                 mergeMode = MergeMode.RemoteFirst,
             )
@@ -164,14 +168,20 @@ class SyncDataWithCloudUseCase(
              */
             val latestFromPlaylists = playlistRepository.getLatestUpdatedAt() ?: 0L
             cloudPreferencesRepository.setLastSyncMillis(max(DateUtils.now(), latestFromPlaylists))
-        }
 
-        _state.value = if (result.isError()) State.Failure else State.Finish
+            if (syncStats) {
+                syncStats()
+            }
+        }
+        _state.value = when (result) {
+            is SoulResult.Error -> State.Failure(result.error)
+            is SoulResult.Success -> State.Finish
+        }
 
         return result
     }
 
-    private suspend fun handlePlaylists(
+    private suspend fun syncPlaylists(
         lastSyncMillis: Long?,
         mergeMode: MergeMode,
     ) {
@@ -211,6 +221,38 @@ class SyncDataWithCloudUseCase(
                 mergeMode = mergeMode,
             )
         }
+    }
+
+    private suspend fun syncStats() {
+        /*
+        Retrieves stats to send, before fetching one from backend (to avoid sending them back).
+        Sending legacy stats is not an issue because backend will keep the highest values anyway.
+         */
+        val toSend = listeningStatisticsRepository.getAllToSendToCloud()
+
+        _state.value = State.FetchingRemoteStats
+        listeningStatisticsRepository.fetchFromFromCloud()
+
+        if (toSend.isNotEmpty()) {
+            listeningStatisticsRepository.upsertAllToCloud(
+                toSend = toSend,
+                onSent = {
+                    _state.value = State.UploadingStats(
+                        progress = buildProgress(
+                            index = it,
+                            size = toSend.size,
+                        )
+                    )
+                }
+            )
+        }
+
+        cloudPreferencesRepository.setLastStatsSyncMillis(
+            max(
+                DateUtils.now(),
+                listeningStatisticsRepository.getLastSyncMillis() ?: 0L,
+            ),
+        )
     }
 
     private fun buildProgress(
@@ -256,7 +298,11 @@ class SyncDataWithCloudUseCase(
 
         data class UploadingPlaylists(override val progress: Float) : ProgressState
 
-        data object Failure : EndState
+        data object FetchingRemoteStats : WorkingState
+
+        data class UploadingStats(override val progress: Float) : ProgressState
+
+        data class Failure(val error: String?) : EndState
 
         data object Finish : EndState
     }

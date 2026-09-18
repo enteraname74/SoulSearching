@@ -11,6 +11,7 @@ import kotlin.uuid.Uuid
 @DatabaseView(
     """
         SELECT playlist.playlistId AS id, 
+        playlist.remoteId,
         playlist.name, 
         playlist.isFavorite, 
         playlist.addedDate, 
@@ -62,6 +63,7 @@ import kotlin.uuid.Uuid
 )
 data class RoomPlaylistPreview(
     val id: Uuid,
+    val remoteId: Uuid?,
     val isFavorite: Boolean,
     val addedDate: Instant,
     val name: String,
@@ -103,15 +105,20 @@ data class RoomPlaylistPreview(
             cover = usedCover,
             isInQuickAccess = isInQuickAccess,
             nbPlayed = nbPlayed,
+            remoteId = remoteId,
         )
     }
 
-    fun toPlaylistStats(): ListeningStatistics.PlaylistStats =
-        ListeningStatistics.PlaylistStats(
+    fun toPlaylistStats(): ListeningStatistics.PlaylistStats {
+        val localMonthYear = DateUtils.currentMonthYear()
+
+        return ListeningStatistics.PlaylistStats(
             playlist = toPlaylistPreview(),
             nbPlayed = nbPlayed,
-            id = Uuid.random(),
             // Dummy values, not used here
-            localMonthYear = DateUtils.currentMonthYear(),
+            id = "$localMonthYear-$id",
+            localMonthYear = localMonthYear,
+            lastUpdatedMillis = DateUtils.now(),
         )
+    }
 }
