@@ -250,15 +250,6 @@ interface PlaylistDao {
 
     @Query(
         """
-            DELETE FROM RoomPlaylist
-            WHERE (SELECT COUNT(*) FROM RoomMusicPlaylist WHERE RoomMusicPlaylist.playlistId = RoomPlaylist.playlistId) = 0 
-            AND isFavorite = 0
-        """
-    )
-    suspend fun deleteAllEmptyExceptFavorite()
-
-    @Query(
-        """
             SELECT lastUpdatedMillis FROM RoomPlaylist 
             WHERE lastUpdatedMillis IS NOT NULL 
             ORDER BY lastUpdatedMillis DESC 
