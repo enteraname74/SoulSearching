@@ -8,7 +8,7 @@ finish-args:
   - --share=network
   - --share=ipc
   - --socket=pulseaudio
-  - --filesystem=home
+  - --filesystem=xdg-music
   - --device=dri
   - --socket=x11
   - --own-name=org.mpris.MediaPlayer2.SoulSearching
@@ -37,13 +37,17 @@ modules:
     build-commands:
       - install -Dm644 io.github.enteraname74.soulsearching.desktop
         /app/share/applications/io.github.enteraname74.soulsearching.desktop
-      - install -Dm644 app_icon_bg.png
-        /app/share/icons/hicolor/128x128/apps/io.github.enteraname74.soulsearching.png
+      - install -Dm644 app_icon.png
+        /app/share/icons/hicolor/512x512/apps/io.github.enteraname74.soulsearching.png
+      - install -Dm644 io.github.enteraname74.soulsearching.metainfo.xml
+        /app/share/metainfo/io.github.enteraname74.soulsearching.metainfo.xml
       - cp -ru . /app
     sources:
       - type: archive
         path: build/distributions/soulsearching-0.16.0-linux.tar.gz
       - type: file
-        path: src/commonMain/composeResources/drawable/app_icon_bg.png
+        path: src/commonMain/composeResources/drawable/app_icon.png
       - type: file
         path: io.github.enteraname74.soulsearching.desktop
+      - type: file
+        path: io.github.enteraname74.soulsearching.metainfo.xml

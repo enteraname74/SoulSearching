@@ -70,5 +70,4 @@ modules:
       - flatpak-sources-x86_64.json
       - flatpak-sources-aarch64.json
       - type: file
-        path: io.github.enteraname74.soulsearching.metainfo.xml
-
+        path: ../app/io.github.enteraname74.soulsearching.metainfo.xml
