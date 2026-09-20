@@ -231,6 +231,7 @@ object Migration20To21 : Migration(20, 21) {
                 id TEXT NOT NULL,
                 url TEXT NOT NULL,
                 lastSyncMillis INTEGER,
+                lastStatisticsSyncMillis INTEGER,
                 PRIMARY KEY(id)
             )
             """.trimIndent()
@@ -317,6 +318,7 @@ object Migration20To21 : Migration(20, 21) {
             """
             CREATE TABLE IF NOT EXISTS RoomListeningStatistics (
                 id TEXT NOT NULL,
+                lastUpdatedMillis INTEGER NOT NULL,
                 nbPlayed INTEGER NOT NULL,
                 timeListened INTEGER,
                 musicId TEXT,
@@ -577,6 +579,7 @@ object Migration20To21 : Migration(20, 21) {
         executeSQL(
             "CREATE VIEW `RoomAlbumPreview` AS SELECT \n" +
                 "        album.albumId AS id, \n" +
+                "        album.remoteId, \n" +
                 "        album.albumName AS name, \n" +
                 "        album.nbPlayed, \n" +
                 "        album.addedDate, \n" +
@@ -618,6 +621,7 @@ object Migration20To21 : Migration(20, 21) {
         executeSQL(
             "CREATE VIEW `RoomArtistPreview` AS SELECT \n" +
                 "        artist.artistId AS id, \n" +
+                "        artist.remoteId,\n" +
                 "        artist.artistName AS name, \n" +
                 "        artist.coverFolderKey,\n" +
                 "        artist.addedDate, \n" +
@@ -665,6 +669,7 @@ object Migration20To21 : Migration(20, 21) {
         )
         executeSQL(
             "CREATE VIEW `RoomPlaylistPreview` AS SELECT playlist.playlistId AS id, \n" +
+                "        playlist.remoteId,\n" +
                 "        playlist.name, \n" +
                 "        playlist.isFavorite, \n" +
                 "        playlist.addedDate, \n" +
