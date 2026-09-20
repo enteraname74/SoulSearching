@@ -665,7 +665,7 @@ class PlaybackManager(
                     playerRepository.getCurrentMusic().firstOrNull()?.music ?: return@withAdminRight
 
                 ensureReadyForPlayback()
-                player.setMusic(currentMusic)
+                player.seekToPosition(0)
                 player.play()
                 playerRepository.setPlayedListState(PlayedListState.Playing)
                 launchMusicCount(currentMusic.musicId)
