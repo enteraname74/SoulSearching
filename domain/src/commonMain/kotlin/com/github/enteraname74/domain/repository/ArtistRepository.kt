@@ -63,11 +63,7 @@ interface ArtistRepository {
         artistName: String
     ): ArtistWithMusics?
 
-    fun getArtistsWithMostMusics(): Flow<List<ArtistPreview>>
-
     suspend fun cleanAllCovers()
-
-    fun getMostListened(): Flow<List<ArtistPreview>>
 
     fun getArtistPreview(artistId: Uuid): Flow<ArtistPreview?>
 

@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.remote.di
 
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.CoverRemoteDataSourceImpl
+import com.github.enteraname74.soulsearching.remote.datasourceimpl.ListeningStatisticsRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.LyricsRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.MusicRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.PlayerRemoteDataSourceImpl
@@ -12,6 +13,7 @@ import com.github.enteraname74.soulsearching.remote.utils.PlayerUserCommunicatio
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.code.UserInscriptionCodeRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.cover.CoverRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.listeningstatistics.ListeningStatisticsRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.lyrics.LyricsRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerRemoteDataSource
@@ -69,6 +71,13 @@ val remoteModule: Module = module {
 
     factory<UserInscriptionCodeRemoteDataSource> {
         UserInscriptionCodeRemoteDataSourceImpl(
+            client = get(named(HttpClientNames.CLOUD)),
+            cloudPreferencesDataSource = get()
+        )
+    }
+
+    factory<ListeningStatisticsRemoteDataSource> {
+        ListeningStatisticsRemoteDataSourceImpl(
             client = get(named(HttpClientNames.CLOUD)),
             cloudPreferencesDataSource = get()
         )

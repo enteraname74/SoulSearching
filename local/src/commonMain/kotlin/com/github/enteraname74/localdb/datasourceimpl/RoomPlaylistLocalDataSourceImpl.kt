@@ -176,11 +176,6 @@ internal class RoomPlaylistLocalDataSourceImpl(
             list.map { it.toPlaylistPreview() }
         }
 
-    override fun getMostListened(): Flow<List<PlaylistPreview>> =
-        appDatabase.playlistDao.getMostListened().map { list ->
-            list.map { it.toPlaylistPreview() }
-        }
-
     override fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?> =
         appDatabase.playlistDao.getPlaylistPreview(playlistId).map { it?.toPlaylistPreview() }
 
@@ -204,8 +199,15 @@ internal class RoomPlaylistLocalDataSourceImpl(
         appDatabase.playlistDao.deleteAllRemoteFields()
     }
 
+    override suspend fun deleteAllEmptyExceptFavorite() {
+        appDatabase.playlistDao.deleteAllEmptyExceptFavorite()
+    }
+
     override suspend fun getLatestUpdatedAt(): Long? =
         appDatabase.playlistDao.getLatestUpdatedAt()
+
+    override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =
+        appDatabase.playlistDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
 }
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

@@ -55,8 +55,6 @@ interface PlaylistRepository {
 
     fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>>
 
-    fun getMostListened(): Flow<List<PlaylistPreview>>
-
     fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?>
 
     fun searchAll(search: String): Flow<List<PlaylistPreview>>
@@ -75,5 +73,8 @@ interface PlaylistRepository {
      * - cover url
      */
     suspend fun deleteAllRemoteFields()
+
+    suspend fun deleteAllEmptyExceptFavorite()
+
     suspend fun getLatestUpdatedAt(): Long?
 }

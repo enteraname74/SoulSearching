@@ -74,19 +74,7 @@ class CommonArtistUseCase(
             artistName = artistName,
         )
 
-    fun getArtistsWithMostMusics(): Flow<List<ArtistPreview>> =
-        artistRepository.getArtistsWithMostMusics()
-
-    suspend fun incrementArtistNbPlayed(artistId: Uuid) {
-        val artist: Artist = artistRepository.getFromId(artistId).first() ?: return
-        artistRepository.upsert(
-            artist = artist.copy(
-                nbPlayed = artist.nbPlayed + 1,
-            )
-        )
-    }
-
-    fun getFromIds(artistIds: List<Uuid>) : Flow<List<ArtistWithMusics>> =
+    fun getFromIds(artistIds: List<Uuid>): Flow<List<ArtistWithMusics>> =
         artistRepository.getFromIds(artistIds)
 
     suspend fun upsertAll(allArtists: List<Artist>) {
@@ -104,9 +92,6 @@ class CommonArtistUseCase(
     suspend fun cleanAllCovers() {
         artistRepository.cleanAllCovers()
     }
-
-    fun getMostListened(): Flow<List<ArtistPreview>> =
-        artistRepository.getMostListened()
 
     fun getArtistPreview(artistId: Uuid): Flow<ArtistPreview?> =
         artistRepository.getArtistPreview(artistId)

@@ -5,6 +5,9 @@ import androidx.room3.Junction
 import androidx.room3.Relation
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.statistics.ListeningStatistics
+import com.github.enteraname74.domain.util.DateUtils
+import kotlin.time.Duration
 
 data class RoomCompleteMusic(
     @Embedded val music: RoomMusic,
@@ -52,6 +55,20 @@ data class RoomCompleteMusic(
             remotePath = music.remotePath,
             lastUpdatedMillis = music.lastUpdateMillis,
             scope = music.scope,
+        )
+    }
+
+    fun toMusicStats(): ListeningStatistics.MusicStats {
+        val localMonthYear = DateUtils.currentMonthYear()
+
+        return ListeningStatistics.MusicStats(
+            music = toMusic(),
+            nbPlayed = music.nbPlayed,
+            // Dummy values, not used here
+            timeListened = Duration.ZERO,
+            id = "$localMonthYear-${music.musicId}",
+            localMonthYear = localMonthYear,
+            lastUpdatedMillis = DateUtils.now(),
         )
     }
 }

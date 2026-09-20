@@ -311,7 +311,7 @@ class MainPageViewModel(
         }
 
         coroutineScope.launch {
-            cloudBackgroundSyncJob.launchIfPossible()
+            cloudBackgroundSyncJob.launchIfPossible(syncStats = true)
             hasValidCloudInformationUseCase().distinctUntilChanged().collectLatest { hasInfo ->
                 if (hasInfo) {
                     observeDataChangedForCloudSync()

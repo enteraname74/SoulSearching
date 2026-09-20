@@ -86,9 +86,6 @@ class PlaylistRepositoryImpl(
     override fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>> =
         playlistLocalDataSource.getAllFromQuickAccess()
 
-    override fun getMostListened(): Flow<List<PlaylistPreview>> =
-        playlistLocalDataSource.getMostListened()
-
     override fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?> =
         playlistLocalDataSource.getPlaylistPreview(playlistId)
 
@@ -133,6 +130,10 @@ class PlaylistRepositoryImpl(
 
     override suspend fun deleteAllRemoteFields() {
         playlistLocalDataSource.deleteAllRemoteFields()
+    }
+
+    override suspend fun deleteAllEmptyExceptFavorite() {
+        playlistLocalDataSource.deleteAllEmptyExceptFavorite()
     }
 
     override suspend fun getLatestUpdatedAt(): Long? =

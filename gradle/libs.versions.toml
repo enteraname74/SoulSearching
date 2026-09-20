@@ -12,6 +12,7 @@ cloudy = "0.7.1"
 coil = "3.5.0"
 compose-multiplatform = "1.11.1"
 coroutines-core = "1.11.0"
+datetime = "0.8.0"
 dbus = "5.2.0"
 documentfile = "1.1.0"
 ffmpeg = "6.0-2"
@@ -88,6 +89,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-browser = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kotlinx-browser" }

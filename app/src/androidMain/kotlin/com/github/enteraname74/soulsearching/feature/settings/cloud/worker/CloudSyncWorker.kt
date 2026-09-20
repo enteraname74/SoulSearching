@@ -34,7 +34,12 @@ class CloudSyncWorker(
         }
 
         val result = try {
-            syncDataWithCloudUseCase()
+            syncDataWithCloudUseCase(
+                syncStats = inputData.getBoolean(
+                    SYNC_STATS_INPUT_KEY,
+                    false,
+                )
+            )
         } finally {
             foregroundUpdateJob.cancelAndJoin()
         }
@@ -89,6 +94,7 @@ class CloudSyncWorker(
 
     companion object {
         const val CHANNEL_ID = "CloudSyncWorkerChannel"
+        internal const val SYNC_STATS_INPUT_KEY = "SYNC_STATS_INPUT_KEY"
         private const val NOTIFICATION_ID = 145
     }
 }

@@ -56,8 +56,6 @@ interface PlaylistLocalDataSource {
 
     fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>>
 
-    fun getMostListened(): Flow<List<PlaylistPreview>>
-
     fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?>
 
     fun searchAll(search: String): Flow<List<PlaylistPreview>>
@@ -69,5 +67,10 @@ interface PlaylistLocalDataSource {
     suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid>
 
     suspend fun deleteAllRemoteFields()
+
+    suspend fun deleteAllEmptyExceptFavorite()
+
     suspend fun getLatestUpdatedAt(): Long?
+
+    suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid>
 }

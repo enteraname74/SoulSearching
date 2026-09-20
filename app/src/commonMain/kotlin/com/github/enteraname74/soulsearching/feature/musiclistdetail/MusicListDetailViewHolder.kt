@@ -12,6 +12,9 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementAlbumNbPlayedUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementArtistNbPlayedUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementPlaylistNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
@@ -57,6 +60,9 @@ class MusicListDetailViewHolder(
     private val settings: SoulSearchingSettings,
     private val detailId: MusicListDetailId,
     private val colorThemeManager: ColorThemeManager,
+    private val incrementAlbumNbPlayedUseCase: IncrementAlbumNbPlayedUseCase,
+    private val incrementPlaylistNbPlayedUseCase: IncrementPlaylistNbPlayedUseCase,
+    private val incrementArtistNbPlayedUseCase: IncrementArtistNbPlayedUseCase,
 ) : SoulViewModelHolderV2<MusicListDetailNavScope, MusicListDetailState>() {
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
         .stateIn(
@@ -393,6 +399,7 @@ class MusicListDetailViewHolder(
             val musics: List<Music> = commonMusicUseCase.getMusicsFromMusicListDetailId(detailId)
 
             if (musics.isNotEmpty()) {
+                incrementNbPlayed()
                 playbackManager.playShuffle(
                     musicList = musics,
                     playlistId = detailId.id,
@@ -408,6 +415,7 @@ class MusicListDetailViewHolder(
             val musics: List<Music> = commonMusicUseCase.getMusicsFromMusicListDetailId(detailId)
 
             if (musics.isNotEmpty()) {
+                incrementNbPlayed()
                 playbackManager.setCurrentPlaylistAndMusic(
                     music = music ?: musics.first(),
                     musicList = musics,
@@ -424,6 +432,15 @@ class MusicListDetailViewHolder(
             colorThemeManager.setNewPlaylistCover(
                 playlistDetailCover = PlaylistDetailCover.fromImageBitmap(bitmap)
             )
+        }
+    }
+
+    private suspend fun incrementNbPlayed() {
+        when (detailId) {
+            is MusicListDetailId.Album -> incrementAlbumNbPlayedUseCase(detailId.albumId)
+            is MusicListDetailId.Artist -> incrementArtistNbPlayedUseCase(detailId.artistId)
+            is MusicListDetailId.Folder, is MusicListDetailId.Month -> TODO()
+            is MusicListDetailId.Playlist -> incrementPlaylistNbPlayedUseCase(detailId.playlistId)
         }
     }
 

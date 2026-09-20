@@ -9,6 +9,7 @@ import androidx.room3.Upsert
 import com.github.enteraname74.localdb.model.RoomArtist
 import com.github.enteraname74.localdb.view.RoomArtistPreview
 import com.github.enteraname74.localdb.model.RoomArtistWithMusics
+import com.github.enteraname74.localdb.model.mapping.GenericLocalIdToRemoteId
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
@@ -217,10 +218,9 @@ interface ArtistDao {
         """
             SELECT * FROM RoomArtistPreview 
             ORDER BY totalMusics DESC 
-            LIMIT 11
         """
     )
-    fun getArtistsWithMostMusics(): Flow<List<RoomArtistPreview>>
+    fun getArtistsWithMostMusics(): PagingSource<Int, RoomArtistPreview>
 
     @Query("UPDATE RoomArtist SET coverId = NULL")
     suspend fun cleanAllCovers()
@@ -231,10 +231,9 @@ interface ArtistDao {
             SELECT * FROM RoomArtistPreview 
             WHERE nbPlayed >= 1 
             ORDER BY nbPlayed DESC 
-            LIMIT 11
         """
     )
-    fun getMostListened(): Flow<List<RoomArtistPreview>>
+    fun getMostListened(): PagingSource<Int, RoomArtistPreview>
 
     @Transaction
     @Query(
@@ -266,4 +265,7 @@ interface ArtistDao {
         """
     )
     suspend fun getPotentialMultipleArtists(): List<RoomArtist>
+
+    @Query("SELECT artistId AS localId, remoteId FROM RoomArtist WHERE remoteId IS NOT NULL")
+    suspend fun getAllRemoteToLocalIds(): List<GenericLocalIdToRemoteId>
 }

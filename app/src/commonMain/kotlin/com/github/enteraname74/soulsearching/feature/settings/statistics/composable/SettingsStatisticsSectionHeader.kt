@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.composable
+package com.github.enteraname74.soulsearching.feature.settings.statistics.composable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,15 +16,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
-import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.ListenedElement
+import com.github.enteraname74.soulsearching.feature.settings.statistics.model.StatisticsUiElement
 import com.github.enteraname74.soulsearching.util.CoverUtils
 
 @Composable
 fun SettingsStatisticsSectionHeader(
-    element: ListenedElement,
+    element: StatisticsUiElement,
     modifier: Modifier = Modifier,
 ) {
 
@@ -32,7 +33,8 @@ fun SettingsStatisticsSectionHeader(
 
     Box(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .optionalClickable(element.onClick),
         contentAlignment = Alignment.Center
     ) {
         Row(
@@ -67,7 +69,7 @@ fun SettingsStatisticsSectionHeader(
                 )
                 Text(
                     color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                    text = element.text(),
+                    text = element.text,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.ExtraBold,

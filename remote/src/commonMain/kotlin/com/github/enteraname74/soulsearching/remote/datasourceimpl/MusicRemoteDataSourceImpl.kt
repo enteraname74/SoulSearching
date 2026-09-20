@@ -9,6 +9,7 @@ import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFil
 import com.github.enteraname74.soulsearching.remote.ext.appendCoverFile
 import com.github.enteraname74.soulsearching.remote.ext.appendJson
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
+import com.github.enteraname74.soulsearching.remote.ext.safeRequest
 import com.github.enteraname74.soulsearching.remote.ext.safeUnitRequest
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
 import com.github.enteraname74.soulsearching.remote.model.MusicIdsBody
@@ -50,24 +51,26 @@ class MusicRemoteDataSourceImpl(
         }
 
         return client
-            .submitFormWithBinaryData(
-                url = "${cloudPreferencesDataSource.getUrl()}/music",
-                formData = formData {
-                    appendJson(
-                        key = "metadata",
-                        value = musicUpdate,
-                    )
-                    coverPath?.let {
-                        appendCoverFile(
-                            key = "cover",
-                            path = it,
-                            workDispatcher = workDispatcher,
+            .safeRequest {
+                submitFormWithBinaryData(
+                    url = "${cloudPreferencesDataSource.getUrl()}/music",
+                    formData = formData {
+                        appendJson(
+                            key = "metadata",
+                            value = musicUpdate,
                         )
-                    }
-                },
-            ) {
-                this.method = HttpMethod.Put
-            }.bodyOrThrow()
+                        coverPath?.let {
+                            appendCoverFile(
+                                key = "cover",
+                                path = it,
+                                workDispatcher = workDispatcher,
+                            )
+                        }
+                    },
+                ) {
+                    this.method = HttpMethod.Put
+                }
+            }
     }
 
     override suspend fun uploadMusicToCloud(music: Music): SoulResult<CloudMusic> =

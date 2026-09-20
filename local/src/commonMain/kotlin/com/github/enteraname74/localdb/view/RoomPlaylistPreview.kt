@@ -3,12 +3,15 @@ package com.github.enteraname74.localdb.view
 import androidx.room3.DatabaseView
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.PlaylistPreview
+import com.github.enteraname74.domain.model.statistics.ListeningStatistics
+import com.github.enteraname74.domain.util.DateUtils
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 @DatabaseView(
     """
         SELECT playlist.playlistId AS id, 
+        playlist.remoteId,
         playlist.name, 
         playlist.isFavorite, 
         playlist.addedDate, 
@@ -60,6 +63,7 @@ import kotlin.uuid.Uuid
 )
 data class RoomPlaylistPreview(
     val id: Uuid,
+    val remoteId: Uuid?,
     val isFavorite: Boolean,
     val addedDate: Instant,
     val name: String,
@@ -101,7 +105,20 @@ data class RoomPlaylistPreview(
             cover = usedCover,
             isInQuickAccess = isInQuickAccess,
             nbPlayed = nbPlayed,
+            remoteId = remoteId,
         )
     }
 
+    fun toPlaylistStats(): ListeningStatistics.PlaylistStats {
+        val localMonthYear = DateUtils.currentMonthYear()
+
+        return ListeningStatistics.PlaylistStats(
+            playlist = toPlaylistPreview(),
+            nbPlayed = nbPlayed,
+            // Dummy values, not used here
+            id = "$localMonthYear-$id",
+            localMonthYear = localMonthYear,
+            lastUpdatedMillis = DateUtils.now(),
+        )
+    }
 }

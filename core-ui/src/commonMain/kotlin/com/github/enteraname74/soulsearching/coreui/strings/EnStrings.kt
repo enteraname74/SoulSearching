@@ -226,7 +226,10 @@ object EnStrings : Strings {
     override val newReleaseAvailableTitle = "New release available!"
     override val statisticsTitle = "Statistics"
     override val statisticsText = "Statistics about your plays"
-    override val mostPlayedSongs = "Most played songs"
+    override val mostPlayedSongs = "Most played songs (number of plays)"
+    override val mostListenedSongs: String = "Most played songs (time listened)"
+    override val listeningTime: String = "Total time listened"
+    override val noDataOnThisPeriod: String = "No data on this period"
     override val mostPlayedAlbums = "Most played albums"
     override val mostPlayedArtists = "Most played artists"
     override val artistsWithMostSongs = "Artists with the most songs"
@@ -335,6 +338,9 @@ object EnStrings : Strings {
     override val cloudText: String = "Synchronize your songs with Cloudy"
     override val cloudSettingsTitle: String = "Settings"
     override val cloudSettingsText: String = "Host URL"
+    override val cloudSettingsLastGeneralSync: String = "Last general sync"
+    override val cloudSettingsLastStatisticsSync: String = "Last statistics sync"
+    override val cloudSettingsNoSync: String = "No sync"
     override val cloudUrlFieldLabel: String = "Host URL"
     override val cloudNameFieldLabel: String = "Username"
     override val cloudPasswordFieldLabel: String = "Password"
@@ -451,9 +457,13 @@ object EnStrings : Strings {
     override val clearUserStorageButton: String = "Clear all my data"
     override val clearUserStorageDialogText: String = "All your data will be deleted from Cloudy. Your account will not be deleted"
 
+    override val statisticsAllPeriodLabel: String = "All periods"
+    override val statisticsYearPeriodLabel: String = "By year"
+    override val statisticsMonthPeriodLabel: String = "By month"
+
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncDataWithCloudUseCase.State.Failure -> "Failure"
+            is SyncDataWithCloudUseCase.State.Failure -> "Failure"
             SyncDataWithCloudUseCase.State.Idle -> "Waiting"
             SyncDataWithCloudUseCase.State.NoMusicsToSend -> "No songs to send"
             SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Checking"
@@ -468,11 +478,13 @@ object EnStrings : Strings {
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists"
             SyncDataWithCloudUseCase.State.Finish -> "Finish"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Cleaning playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Fetching listening statistics"
+            is SyncDataWithCloudUseCase.State.UploadingStats -> "Uploading listening statistics"
         }
 
     override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncDataWithCloudUseCase.State.Failure -> "A failure occurred during the syncing process"
+            is SyncDataWithCloudUseCase.State.Failure -> "A failure occurred during the syncing process: ${state.error ?: "Unknown error"}"
             SyncDataWithCloudUseCase.State.Finish -> "Syncing process has finished"
             SyncDataWithCloudUseCase.State.Idle -> "Waiting for syncing to start"
             SyncDataWithCloudUseCase.State.NoMusicsToSend -> "No local songs to send to cloud"
@@ -487,6 +499,8 @@ object EnStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Uploading playlists to cloud"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists from cloud"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Cleaning deleted remote playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Fetching listening statistics from cloud"
+            is SyncDataWithCloudUseCase.State.UploadingStats -> "Uploading listening statistics to cloud"
         }
 
     override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =
@@ -560,5 +574,24 @@ object EnStrings : Strings {
         }
 
     override fun hours(hours: Long): String =
-        if (hours == 1L) "hour" else "hours"
+        if (hours == 1L) "$hours hour" else "$hours hours"
+
+    override fun seconds(seconds: Long): String =
+        if (seconds == 1L) "$seconds second" else "$seconds seconds"
+
+    override fun month(monthNumber: Int): String =
+        when (monthNumber) {
+            1 -> "January"
+            2 -> "February"
+            3 -> "March"
+            4 -> "April"
+            5 -> "May"
+            6 -> "June"
+            7 -> "July"
+            8 -> "August"
+            9 -> "September"
+            10 -> "October"
+            11 -> "November"
+            else -> "December"
+        }
 }

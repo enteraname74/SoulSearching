@@ -6,4 +6,5 @@ import kotlinx.serialization.Serializable
 data class CloudPreferences(
     val url: String?,
     val lastSyncMillis: Long?,
+    val lastStatisticsSyncMillis: Long?,
 )

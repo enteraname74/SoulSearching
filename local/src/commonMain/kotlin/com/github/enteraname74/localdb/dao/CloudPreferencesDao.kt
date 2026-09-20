@@ -14,6 +14,12 @@ interface CloudPreferencesDao {
     @Upsert
     suspend fun upsert(preferences: RoomCloudPreferences)
 
-    @Query("UPDATE RoomCloudPreferences SET lastSyncMillis = NULL")
-    suspend fun clearLastSyncMillis()
+    @Query(
+        """
+            UPDATE RoomCloudPreferences 
+            SET lastSyncMillis = NULL, 
+            lastStatisticsSyncMillis = NULL
+        """
+    )
+    suspend fun clearSyncsMillis()
 }

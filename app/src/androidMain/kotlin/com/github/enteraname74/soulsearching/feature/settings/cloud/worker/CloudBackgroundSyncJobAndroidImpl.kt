@@ -6,6 +6,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
@@ -19,13 +20,18 @@ class CloudBackgroundSyncJobAndroidImpl(
 ) : CloudBackgroundSyncJob {
     override val state: StateFlow<SyncDataWithCloudUseCase.State> = syncDataWithCloudUseCase.state
 
-    override suspend fun launchIfPossible() {
+    override suspend fun launchIfPossible(
+        syncStats: Boolean,
+    ) {
         val hasValidCloudInformation: Boolean? = hasValidCloudInformationUseCase().firstOrNull()
 
         // No-op if no valid cloud information
         if (hasValidCloudInformation != true) return
 
         val workRequest = OneTimeWorkRequestBuilder<CloudSyncWorker>()
+            .setInputData(
+                workDataOf(CloudSyncWorker.SYNC_STATS_INPUT_KEY to syncStats)
+            )
             .setConstraints(
                 Constraints
                     .Builder()

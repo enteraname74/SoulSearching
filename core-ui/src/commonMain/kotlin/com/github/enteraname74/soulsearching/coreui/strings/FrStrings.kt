@@ -227,7 +227,10 @@ object FrStrings : Strings {
     override val newReleaseAvailableTitle = "Nouvelle version disponible !"
     override val statisticsTitle = "Statistiques"
     override val statisticsText = "Statistiques sur vos écoutes"
-    override val mostPlayedSongs = "Musiques les plus écoutées"
+    override val mostPlayedSongs = "Musiques les plus écoutées (nombre de lectures)"
+    override val mostListenedSongs: String = "Musiques les plus écoutées (temps d'écoute)"
+    override val listeningTime: String = "Temps d'écoute total"
+    override val noDataOnThisPeriod: String = "Aucune donnée sur cette période"
     override val mostPlayedAlbums = "Albums les plus écoutés"
     override val mostPlayedArtists = "Artistes les plus écoutés"
     override val artistsWithMostSongs = "Artistes avec le plus de musiques"
@@ -335,6 +338,9 @@ object FrStrings : Strings {
     override val cloudText: String = "Synchroniser vos musiques avec Cloudy"
     override val cloudSettingsTitle: String = "Paramètres"
     override val cloudSettingsText: String = "URL du service"
+    override val cloudSettingsLastGeneralSync: String = "Dernière synchronisation globale"
+    override val cloudSettingsLastStatisticsSync: String = "Dernière synchronisation des statistiques"
+    override val cloudSettingsNoSync: String = "Aucune synchronisation"
     override val cloudUrlFieldLabel: String = "URL du service"
 
     override val cloudNameFieldLabel: String = "Pseudo"
@@ -454,9 +460,13 @@ object FrStrings : Strings {
     override val clearUserStorageButton: String = "Supprimer mes données"
     override val clearUserStorageDialogText: String = "Toutes vos données sur Cloudy seront supprimées. Votre profil ne sera pas supprimé"
 
+    override val statisticsAllPeriodLabel: String = "Toutes périodes"
+    override val statisticsYearPeriodLabel: String = "Par année"
+    override val statisticsMonthPeriodLabel: String = "Par mois"
+
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncDataWithCloudUseCase.State.Failure -> "Erreur"
+            is SyncDataWithCloudUseCase.State.Failure -> "Erreur"
             SyncDataWithCloudUseCase.State.Finish -> "Fin"
             SyncDataWithCloudUseCase.State.Idle -> "En attente"
             SyncDataWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique à envoyer"
@@ -471,11 +481,13 @@ object FrStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Téléversement des playlists"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Sauvegarde des playlists"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Nettoyage des playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Téléchargement des statistiques d'écoutes"
+            is SyncDataWithCloudUseCase.State.UploadingStats -> "Téléversement des statistiques d'écoutes"
         }
 
     override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
-            SyncDataWithCloudUseCase.State.Failure -> "Une erreur est survenue durant la synchronisation"
+            is SyncDataWithCloudUseCase.State.Failure -> "Une erreur est survenue durant la synchronisation : ${state.error ?: "Error inconnue"}"
             SyncDataWithCloudUseCase.State.Finish -> "La synchronisation est terminée"
             SyncDataWithCloudUseCase.State.Idle -> "En attente de synchronisation"
             SyncDataWithCloudUseCase.State.NoMusicsToSend -> "Aucune musique locale à envoyer au cloud"
@@ -490,6 +502,8 @@ object FrStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Téléversement des playlists vers le cloud"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Sauvegarde des playlists téléchargées du cloud"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Nettoyage des playlists supprimées du cloud"
+            SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Téléchargement des statistiques d'écoutes du cloud"
+            is SyncDataWithCloudUseCase.State.UploadingStats -> "Téléversement des statistiques d'écoutes vers le cloud"
         }
 
     override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =
@@ -563,5 +577,24 @@ object FrStrings : Strings {
         }
 
     override fun hours(hours: Long): String =
-        if (hours == 1L) "heure" else "heures"
+        if (hours == 1L) "$hours heure" else "$hours heures"
+
+    override fun seconds(seconds: Long): String =
+        if (seconds == 1L) "$seconds seconde" else "$seconds secondes"
+
+    override fun month(monthNumber: Int): String =
+        when (monthNumber) {
+            1 -> "Janvier"
+            2 -> "Février"
+            3 -> "Mars"
+            4 -> "Avril"
+            5 -> "Mai"
+            6 -> "Juin"
+            7 -> "Juillet"
+            8 -> "Août"
+            9 -> "Septembre"
+            10 -> "Octobre"
+            11 -> "Novembre"
+            else -> "Décembre"
+        }
 }

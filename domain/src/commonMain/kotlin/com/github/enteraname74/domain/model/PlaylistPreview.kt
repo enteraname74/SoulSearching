@@ -7,10 +7,11 @@ import kotlin.uuid.Uuid
  */
 data class PlaylistPreview(
     val id: Uuid,
+    val remoteId: Uuid?,
     val isFavorite: Boolean,
     val name: String,
-    val totalMusics : Int,
+    val totalMusics: Int,
     val nbPlayed: Int,
     val cover: Cover?,
     override val isInQuickAccess: Boolean,
-): QuickAccessible
+) : QuickAccessible

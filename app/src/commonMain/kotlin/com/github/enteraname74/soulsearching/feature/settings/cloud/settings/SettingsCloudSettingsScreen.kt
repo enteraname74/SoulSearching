@@ -14,14 +14,13 @@ import com.github.enteraname74.soulsearching.feature.settings.presentation.compo
 
 @Composable
 fun SettingsCloudSettingsScreen(
-    actions: SettingsCloudSettingsActions,
     state: SettingsCloudSettingsState,
 ) {
     SettingPage(
         title = strings.cloudSettingsTitle,
-        navigateBack = actions::navigateBack,
+        navigateBack = state.navigateBack,
         rightAction = TopBarValidateAction(
-            onClick = actions::saveChanges,
+            onClick = state.saveChanges,
         ),
         contentPadding = PaddingValues(all = UiConstants.Spacing.large),
         horizontalAlignment = Alignment.CenterHorizontally,

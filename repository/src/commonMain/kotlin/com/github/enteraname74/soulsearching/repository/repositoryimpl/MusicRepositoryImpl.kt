@@ -215,9 +215,6 @@ class MusicRepositoryImpl(
     override suspend fun getAllMusicLocalPath(): List<String> =
         musicLocalDataSource.getAllMusicLocalPath()
 
-    override fun getMostListened(): Flow<List<Music>> =
-        musicLocalDataSource.getMostListened()
-
     override fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
         musicLocalDataSource.getAllMonthMusics()
 

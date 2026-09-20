@@ -214,19 +214,9 @@ internal class RoomArtistDataSourceImpl(
             artistName = artistName,
         )?.toArtistWithMusics()
 
-    override fun getArtistsWithMostMusics(): Flow<List<ArtistPreview>> =
-        appDatabase.artistDao.getArtistsWithMostMusics().map { list ->
-            list.map { it.toArtistPreview() }
-        }
-
     override suspend fun cleanAllCovers() {
         appDatabase.artistDao.cleanAllCovers()
     }
-
-    override fun getMostListened(): Flow<List<ArtistPreview>> =
-        appDatabase.artistDao.getMostListened().map { list ->
-            list.map { it.toArtistPreview() }
-        }
 
     override fun getArtistPreview(artistId: Uuid): Flow<ArtistPreview?> =
         appDatabase.artistDao.getArtistPreview(artistId).map { it?.toArtistPreview() }
@@ -238,6 +228,9 @@ internal class RoomArtistDataSourceImpl(
 
     override suspend fun getPotentialMultipleArtists(): List<Artist> =
         appDatabase.artistDao.getPotentialMultipleArtists().map { it.toArtist() }
+
+    override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =
+        appDatabase.playlistDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
 }
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

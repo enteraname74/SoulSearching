@@ -1,10 +1,14 @@
 package com.github.enteraname74.soulsearching
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.keyboard.GlobalKeyboardShortcutState
+import com.github.enteraname74.soulsearching.coreui.keyboard.LocalGlobalKeyboardShortcutState
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.toKeyboardAction
@@ -39,8 +43,15 @@ fun main() {
                 isReadPermissionGranted = SoulSearchingContext.checkIfReadPermissionGranted()
                 isPostNotificationGranted = SoulSearchingContext.checkIfPostNotificationGranted()
             }
-            GlobalPlaybackKeyboardListener()
-            SoulSearchingApplication()
+            val keyboardShortcutState = remember { GlobalKeyboardShortcutState() }
+            GlobalPlaybackKeyboardListener(
+                keyboardShortcutState = keyboardShortcutState,
+            )
+            CompositionLocalProvider(
+                LocalGlobalKeyboardShortcutState provides keyboardShortcutState,
+            ) {
+                SoulSearchingApplication()
+            }
         }
     }
 }
@@ -48,8 +59,9 @@ fun main() {
 @Composable
 fun GlobalPlaybackKeyboardListener(
     playbackManager: PlaybackManager = injectElement(),
+    keyboardShortcutState: GlobalKeyboardShortcutState,
 ) {
-    DisposableEffect(playbackManager) {
+    DisposableEffect(playbackManager, keyboardShortcutState) {
 
         val listener: (Event) -> Unit = listener@{ event ->
             val keyboardEvent = event as? KeyboardEvent
@@ -64,6 +76,7 @@ fun GlobalPlaybackKeyboardListener(
             val target = keyboardEvent.target
 
             if (
+                keyboardShortcutState.isBlocked ||
                 target is HTMLInputElement ||
                 target is HTMLTextAreaElement ||
                 target is HTMLSelectElement

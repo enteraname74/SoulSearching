@@ -114,7 +114,7 @@ private fun MoreInfoButton(
     val coroutineScope = rememberCoroutineScope()
     TooltipBox(
         positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
-            positioning = TooltipAnchorPosition.Above,
+            positioning = TooltipAnchorPosition.Below,
             spacingBetweenTooltipAndAnchor = 0.dp,
         ),
         state = tooltipState,

@@ -7,6 +7,7 @@ import androidx.room3.Transaction
 import androidx.room3.Upsert
 import com.github.enteraname74.localdb.model.RoomPlaylist
 import com.github.enteraname74.localdb.model.RoomPlaylistWithMusics
+import com.github.enteraname74.localdb.model.mapping.GenericLocalIdToRemoteId
 import com.github.enteraname74.localdb.view.RoomPlaylistPreview
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
@@ -185,10 +186,9 @@ interface PlaylistDao {
             SELECT * FROM RoomPlaylistPreview 
             WHERE nbPlayed >= 1 
             ORDER BY nbPlayed DESC 
-            LIMIT 11
         """
     )
-    fun getMostListened(): Flow<List<RoomPlaylistPreview>>
+    fun getMostListened(): PagingSource<Int, RoomPlaylistPreview>
 
     @Transaction
     @Query(
@@ -250,6 +250,15 @@ interface PlaylistDao {
 
     @Query(
         """
+            DELETE FROM RoomPlaylist
+            WHERE (SELECT COUNT(*) FROM RoomMusicPlaylist WHERE RoomMusicPlaylist.playlistId = RoomPlaylist.playlistId) = 0 
+            AND isFavorite = 0
+        """
+    )
+    suspend fun deleteAllEmptyExceptFavorite()
+
+    @Query(
+        """
             SELECT lastUpdatedMillis FROM RoomPlaylist 
             WHERE lastUpdatedMillis IS NOT NULL 
             ORDER BY lastUpdatedMillis DESC 
@@ -257,4 +266,7 @@ interface PlaylistDao {
         """
     )
     suspend fun getLatestUpdatedAt(): Long?
+
+    @Query("SELECT playlistId AS localId, remoteId FROM RoomPlaylist WHERE remoteId IS NOT NULL")
+    suspend fun getAllRemoteToLocalIds(): List<GenericLocalIdToRemoteId>
 }

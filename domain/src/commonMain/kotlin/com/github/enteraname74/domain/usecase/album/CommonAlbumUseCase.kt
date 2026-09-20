@@ -6,7 +6,6 @@ import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.repository.AlbumRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlin.uuid.Uuid
 
 class CommonAlbumUseCase(
@@ -32,9 +31,6 @@ class CommonAlbumUseCase(
 
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
         albumRepository.getAllFromQuickAccess()
-
-    fun getMostListened(): Flow<List<AlbumPreview>> =
-        albumRepository.getMostListened()
 
     fun getAlbumPreview(albumId: Uuid): Flow<AlbumPreview?> =
         albumRepository.getAlbumPreview(albumId)
@@ -67,15 +63,6 @@ class CommonAlbumUseCase(
         albumRepository.getAlbumsWithMusicsOfArtist(
             artistId = artistId,
         )
-
-    suspend fun incrementAlbumNbPlayed(albumId: Uuid) {
-        val album: Album = albumRepository.getFromId(albumId = albumId).first() ?: return
-        albumRepository.upsert(
-            album = album.copy(
-                nbPlayed = album.nbPlayed + 1,
-            )
-        )
-    }
 
     suspend fun upsert(album: Album) {
         albumRepository.upsert(

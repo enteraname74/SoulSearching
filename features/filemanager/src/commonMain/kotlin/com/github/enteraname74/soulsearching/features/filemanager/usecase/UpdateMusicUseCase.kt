@@ -11,7 +11,6 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.soulsearching.features.filemanager.util.MusicFileUpdater
 
 class UpdateMusicUseCase(
@@ -22,7 +21,6 @@ class UpdateMusicUseCase(
     private val deleteAlbumIfEmptyUseCase: DeleteAlbumIfEmptyUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
     private val musicFileUpdater: MusicFileUpdater,
-    private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
 ) {
     private suspend fun getOrCreateAlbum(
         artist: Artist,
@@ -161,7 +159,6 @@ class UpdateMusicUseCase(
             )
         }
         musicFileUpdater.updateMusic(music = updatedMusic)
-        cloudBackgroundSyncJob.launchIfPossible()
         return updatedMusic
     }
 

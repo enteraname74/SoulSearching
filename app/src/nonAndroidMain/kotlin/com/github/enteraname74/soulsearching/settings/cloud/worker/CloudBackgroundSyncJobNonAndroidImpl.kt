@@ -19,7 +19,9 @@ class CloudBackgroundSyncJobNonAndroidImpl(
     override val state: StateFlow<SyncDataWithCloudUseCase.State> = syncDataWithCloudUseCase.state
     private var job: Job? = null
 
-    override suspend fun launchIfPossible() {
+    override suspend fun launchIfPossible(
+        syncStats: Boolean,
+    ) {
         val hasValidCloudInformation: Boolean? = hasValidCloudInformationUseCase().firstOrNull()
 
         // No-op if no valid cloud information
@@ -27,7 +29,7 @@ class CloudBackgroundSyncJobNonAndroidImpl(
 
         if (job?.isActive != true) {
             job = CoroutineScope(workDispatcher.dispatcher).launch {
-                syncDataWithCloudUseCase()
+                syncDataWithCloudUseCase(syncStats = syncStats)
             }
         }
     }
