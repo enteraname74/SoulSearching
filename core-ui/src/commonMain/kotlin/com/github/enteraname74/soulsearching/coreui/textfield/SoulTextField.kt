@@ -37,6 +37,7 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_visibility_off
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.keyboard.blockGlobalKeyboardShortcutsWhileFocused
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,7 +104,8 @@ fun SoulTextField(
             isFocused = isFocused,
         ) {
             BasicTextField(
-                modifier = modifier,
+                modifier = modifier
+                    .blockGlobalKeyboardShortcutsWhileFocused(),
                 readOnly = isReadOnly,
                 enabled = !isReadOnly,
                 value = value,
