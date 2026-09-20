@@ -48,6 +48,7 @@ kotlin {
 
             implementation(libs.bundles.koin)
 
+            implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization)
             implementation(libs.kotlinx.serialization.json)
 

@@ -1,8 +1,11 @@
 package com.github.enteraname74.domain.repository
 
+import com.github.enteraname74.domain.model.CloudPreferences
 import kotlinx.coroutines.flow.Flow
 
 interface CloudPreferencesRepository {
+    fun observePreferences(): Flow<CloudPreferences>
+
     fun observeUrl(): Flow<String?>
 
     suspend fun setUrl(url: String)

@@ -343,6 +343,9 @@ interface Strings {
     val cloudText: String
     val cloudSettingsTitle: String
     val cloudSettingsText: String
+    val cloudSettingsLastGeneralSync: String
+    val cloudSettingsLastStatisticsSync: String
+    val cloudSettingsNoSync: String
     val cloudUrlFieldLabel: String
     val cloudNameFieldLabel: String
     val cloudPasswordFieldLabel: String

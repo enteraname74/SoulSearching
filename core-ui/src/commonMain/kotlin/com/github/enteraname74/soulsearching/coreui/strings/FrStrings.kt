@@ -338,6 +338,9 @@ object FrStrings : Strings {
     override val cloudText: String = "Synchroniser vos musiques avec Cloudy"
     override val cloudSettingsTitle: String = "Paramètres"
     override val cloudSettingsText: String = "URL du service"
+    override val cloudSettingsLastGeneralSync: String = "Dernière synchronisation globale"
+    override val cloudSettingsLastStatisticsSync: String = "Dernière synchronisation des statistiques"
+    override val cloudSettingsNoSync: String = "Aucune synchronisation"
     override val cloudUrlFieldLabel: String = "URL du service"
 
     override val cloudNameFieldLabel: String = "Pseudo"
