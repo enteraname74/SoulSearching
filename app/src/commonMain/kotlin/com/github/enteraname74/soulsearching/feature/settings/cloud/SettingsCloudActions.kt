@@ -6,7 +6,6 @@ interface SettingsCloudActions {
     fun toSync()
     fun toSharedList()
     fun navigateBack()
-    fun toFetchMusic()
     fun toExplanations()
     fun toUsers()
 }

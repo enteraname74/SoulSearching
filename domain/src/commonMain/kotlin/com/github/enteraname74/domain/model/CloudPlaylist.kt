@@ -28,7 +28,7 @@ data class CloudPlaylist(
                 playlistId = Uuid.random(),
                 remoteId = id,
                 name = name,
-                cover = coverPath?.let(Cover::Url),
+                cover = coverPath?.let { Cover.Url(it, null) },
                 isFavorite = isFavorite,
                 addedDate = Instant.fromEpochMilliseconds(addedDateMillis),
                 nbPlayed = nbPlayed,

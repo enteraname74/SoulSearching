@@ -34,6 +34,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.Uuid
 
 @UnstableApi
@@ -186,13 +188,6 @@ class SoulSearchingExoPlayerImpl(
 
     override suspend fun setMusic(music: Music) {
         onPlayerThread {
-            if (player.currentMediaItem?.musicId() == music.musicId) {
-                if (player.playbackState == Player.STATE_IDLE) {
-                    player.prepare()
-                }
-                return@onPlayerThread
-            }
-
             val timelineIndex = player.timelineIndexOf(music.musicId)
             if (timelineIndex != C.INDEX_UNSET) {
                 player.seekTo(timelineIndex, 0L)
@@ -200,7 +195,7 @@ class SoulSearchingExoPlayerImpl(
                 return@onPlayerThread
             }
 
-            player.setMediaItem(music.toPlayableMediaItem())
+            player.setMediaItem(music.toPlayableMediaItem(), 0L)
             lastSyncedTimelineMusicIds = emptyList()
             player.prepare()
         }
@@ -331,6 +326,20 @@ class SoulSearchingExoPlayerImpl(
             player.isPlaying
         }.getOrNull()
 
+    override suspend fun getState(): SoulSearchingPlayer.State =
+        onPlayerThread {
+            when {
+                player.playbackState == Player.STATE_IDLE ->
+                    SoulSearchingPlayer.State.Idle
+
+                player.playWhenReady ->
+                    SoulSearchingPlayer.State.Playing
+
+                else ->
+                    SoulSearchingPlayer.State.Paused
+            }
+        }.getOrNull() ?: SoulSearchingPlayer.State.Idle
+
     override suspend fun dismiss() {
         onPlayerThread {
             player.stop()
@@ -339,15 +348,15 @@ class SoulSearchingExoPlayerImpl(
         }
     }
 
-    override suspend fun getProgress(): Int =
+    override suspend fun getProgress(): Duration =
         onPlayerThread {
             player.currentPosition.toInt()
-        }.getOrElse { 0 }
+        }.getOrElse { 0 }.milliseconds
 
-    override suspend fun getMusicDuration(): Int =
+    override suspend fun getMusicDuration(): Duration =
         onPlayerThread {
             player.duration.toInt()
-        }.getOrElse { 0 }
+        }.getOrElse { 0 }.milliseconds
 
     override suspend fun setPlayerVolume(volume: Float) {
         onPlayerThread {

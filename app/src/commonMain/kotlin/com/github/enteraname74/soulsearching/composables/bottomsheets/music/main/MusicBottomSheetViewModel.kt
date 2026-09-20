@@ -271,12 +271,10 @@ class MusicBottomSheetViewModel(
 
         viewModelScope.launch {
             loadingManager.withLoading {
-                musicIds.forEach { musicId ->
-                    commonMusicPlaylistUseCase.delete(
-                        musicId = musicId,
-                        playlistId = playlistId,
-                    )
-                }
+                commonMusicPlaylistUseCase.delete(
+                    musicIds = musicIds,
+                    playlistId = playlistId,
+                )
             }
             dialogState.value = null
             multiSelectionManager.clearMultiSelection()

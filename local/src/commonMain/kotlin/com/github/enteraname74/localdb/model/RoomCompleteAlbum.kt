@@ -15,7 +15,7 @@ data class RoomCompleteAlbum(
 ) {
     fun toAlbum(): Album {
         val localCover = Cover.CoverFile(fileCoverId = roomAlbum.coverId)
-        val remoteCover = roomAlbum.coverUrl?.let { Cover.Url(it) }
+        val remoteCover = roomAlbum.coverUrl?.let { Cover.Url(it, localCover) }
 
         val usedCover = if (remoteCover == null) {
             localCover

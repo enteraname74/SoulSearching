@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.usecase.cloud
 
+import com.github.enteraname74.domain.model.CloudPreferences
 import com.github.enteraname74.domain.repository.CloudPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 
@@ -8,6 +9,9 @@ class CommonCloudPreferencesUseCase(
 ) {
     fun observeUrl(): Flow<String?> =
         cloudPreferencesRepository.observeUrl()
+
+    fun observe(): Flow<CloudPreferences> =
+        cloudPreferencesRepository.observePreferences()
 
     suspend fun setUrl(url: String) {
         cloudPreferencesRepository.setUrl(url)

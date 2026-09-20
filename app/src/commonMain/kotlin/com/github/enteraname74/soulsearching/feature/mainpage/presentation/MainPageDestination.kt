@@ -4,20 +4,14 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
-import com.github.enteraname74.soulsearching.composables.bottomsheets.folder.FolderBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
-import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistDestination
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageNavigationState
-import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumDestination
-import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistDestination
-import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.presentation.SelectedFolderDestination
-import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.presentation.SelectedMonthDestination
-import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.presentation.SelectedPlaylistDestination
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
@@ -41,30 +35,6 @@ data object MainPageDestination : NavKey {
                             navigator.push(
                                 SettingsAdvancedDestination(
                                     focusedElement = it.focusedElement,
-                                )
-                            )
-                        }
-
-                        is MainPageNavigationState.ToAlbum -> {
-                            navigator.push(
-                                SelectedAlbumDestination(
-                                    selectedAlbumId = it.albumId
-                                )
-                            )
-                        }
-
-                        is MainPageNavigationState.ToArtist -> {
-                            navigator.push(
-                                SelectedArtistDestination(
-                                    selectedArtistId = it.artistId,
-                                )
-                            )
-                        }
-
-                        is MainPageNavigationState.ToFolder -> {
-                            navigator.push(
-                                SelectedFolderDestination(
-                                    selectedFolderPath = it.folderPath,
                                 )
                             )
                         }
@@ -100,18 +70,9 @@ data object MainPageDestination : NavKey {
                                 )
                             )
                         }
-                        is MainPageNavigationState.ToMonth -> {
+                        is MainPageNavigationState.ToMusicListDetail -> {
                             navigator.push(
-                                SelectedMonthDestination(
-                                    month = it.month
-                                )
-                            )
-                        }
-                        is MainPageNavigationState.ToPlaylist -> {
-                            navigator.push(
-                                SelectedPlaylistDestination(
-                                    selectedPlaylistId = it.playlistId,
-                                )
+                                MusicListDetailDestination(it.detailId)
                             )
                         }
                         MainPageNavigationState.ToSettings -> {
@@ -138,18 +99,6 @@ data object MainPageDestination : NavKey {
                         is MainPageNavigationState.ToArtistBottomSheet -> {
                             navigator.push(
                                 ArtistBottomSheetDestination(it.artistIds)
-                            )
-                        }
-
-                        is MainPageNavigationState.ToFolderBottomSheet -> {
-                            navigator.push(
-                                FolderBottomSheetDestination(it.folderPaths)
-                            )
-                        }
-
-                        is MainPageNavigationState.ToMonthBottomSheet -> {
-                            navigator.push(
-                                MonthBottomSheetDestination(it.months)
                             )
                         }
                     }

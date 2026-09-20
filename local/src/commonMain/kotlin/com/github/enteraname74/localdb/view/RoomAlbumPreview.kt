@@ -3,6 +3,8 @@ package com.github.enteraname74.localdb.view
 import androidx.room3.DatabaseView
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.statistics.ListeningStatistics
+import com.github.enteraname74.domain.util.DateUtils
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
@@ -10,6 +12,7 @@ import kotlin.uuid.Uuid
     """
         SELECT 
         album.albumId AS id, 
+        album.remoteId, 
         album.albumName AS name, 
         album.nbPlayed, 
         album.addedDate, 
@@ -51,6 +54,7 @@ import kotlin.uuid.Uuid
 )
 data class RoomAlbumPreview(
     val id: Uuid,
+    val remoteId: Uuid?,
     val nbPlayed: Int,
     val addedDate: Instant,
     val name: String,
@@ -67,12 +71,21 @@ data class RoomAlbumPreview(
             initialCoverPath = musicCoverPath,
             fileCoverId = coverId,
         )
-        val remoteCover = coverUrl?.let { Cover.Url(it) } ?: musicCoverUrl?.let { Cover.Url(it) }
 
-        val usedCover = if (remoteCover == null) {
-            localCover
-        } else {
-            localCover.takeIf { !it.isEmpty() } ?: remoteCover
+        val usedCover: Cover? = when {
+            coverId != null -> localCover
+            coverUrl != null -> {
+                val fallback = if (localCover.isEmpty() && musicCoverUrl != null) {
+                    Cover.Url(musicCoverUrl, localCover)
+                } else {
+                    localCover
+                }
+
+                Cover.Url(coverUrl, fallback)
+            }
+            musicCoverPath != null -> localCover
+            musicCoverUrl != null -> Cover.Url(musicCoverUrl, localCover)
+            else -> null
         }
 
         return AlbumPreview(
@@ -82,6 +95,20 @@ data class RoomAlbumPreview(
             cover = usedCover,
             nbPlayed = nbPlayed,
             isInQuickAccess = isInQuickAccess,
+            remoteId = remoteId,
+        )
+    }
+
+    fun toAlbumStats(): ListeningStatistics.AlbumStats {
+        val localMonthYear = DateUtils.currentMonthYear()
+
+        return ListeningStatistics.AlbumStats(
+            album = toAlbumPreview(),
+            nbPlayed = nbPlayed,
+            // Dummy values, not used here
+            id = "$localMonthYear-$id",
+            localMonthYear = localMonthYear,
+            lastUpdatedMillis = DateUtils.now(),
         )
     }
 }

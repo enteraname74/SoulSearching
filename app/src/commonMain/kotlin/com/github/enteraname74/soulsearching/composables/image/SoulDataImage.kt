@@ -29,6 +29,7 @@ internal fun SoulDataImage(
     tint: Color,
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
+    onError: () -> Unit = {},
 ) {
     var previousSavedImage: Image? by remember {
         mutableStateOf(null)
@@ -44,6 +45,7 @@ internal fun SoulDataImage(
             }
         },
         onError = {
+            onError()
             onSuccess?.let { onSuccess ->
                 previousSavedImage = null
                 onSuccess(null)

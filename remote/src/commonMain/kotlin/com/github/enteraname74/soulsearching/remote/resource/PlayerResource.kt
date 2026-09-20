@@ -44,11 +44,6 @@ class PlayerResource {
         val parent: PlayerResource = PlayerResource()
     )
 
-    @Resource("url")
-    class Url(
-        val parent: PlayerResource = PlayerResource()
-    )
-
     @Resource("token")
     class Token(
         val parent: PlayerResource = PlayerResource()

@@ -16,7 +16,7 @@ data class RoomArtistWithMusics(
         associateBy = Junction(RoomMusicArtist::class),
         entity = RoomMusic::class,
     )
-    val roomMusics : List<RoomCompleteMusic>,
+    val roomMusics: List<RoomCompleteMusic>,
 )
 
 /**
@@ -24,6 +24,6 @@ data class RoomArtistWithMusics(
  */
 internal fun RoomArtistWithMusics.toArtistWithMusics(): ArtistWithMusics = ArtistWithMusics(
     artist = roomArtist.toArtist(),
-    musics = roomMusics.map { it.toMusic() }
+    musics = roomMusics.map { it.toMusic() }.sortedBy { it.name }
 )
 

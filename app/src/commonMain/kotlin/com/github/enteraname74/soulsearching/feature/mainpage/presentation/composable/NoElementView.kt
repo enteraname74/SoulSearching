@@ -16,6 +16,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 fun NoElementView(
+    text: String = strings.noElements,
     height: Dp = 163.dp
 ) {
     Column(
@@ -26,7 +27,7 @@ fun NoElementView(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = strings.noElements,
+            text = text,
             fontSize = 15.sp,
             color = SoulSearchingColorTheme.colorScheme.subPrimaryText
         )

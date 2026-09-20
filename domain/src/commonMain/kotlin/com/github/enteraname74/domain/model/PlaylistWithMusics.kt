@@ -9,25 +9,9 @@ data class PlaylistWithMusics(
     val playlist: Playlist,
     val musics: List<Music>,
 ) {
-
     val cover: Cover? = if (playlist.cover?.isEmpty() == false) {
-        playlist.cover
+        playlist.cover.copyIfUrl { it.copy(fallback = musics.coverFromSongs()) }
     } else {
         musics.coverFromSongs()
-    }
-
-    /**
-     * Convert a [PlaylistWithMusics] to a [PlaylistPreview].
-     */
-    fun toPlaylistPreview(): PlaylistPreview {
-        return PlaylistPreview(
-            id = playlist.playlistId,
-            isFavorite = playlist.isFavorite,
-            name = playlist.name,
-            totalMusics = musics.filter { !it.isHidden }.size,
-            cover = cover,
-            isInQuickAccess = playlist.isInQuickAccess,
-            nbPlayed = playlist.nbPlayed,
-        )
     }
 }

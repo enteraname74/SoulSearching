@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
@@ -22,11 +24,10 @@ import com.github.enteraname74.soulsearching.feature.settings.presentation.compo
 
 @Composable
 fun SettingsCloudSyncScreen(
-    actions: SettingsCloudSyncActions,
     state: SettingsCloudSyncState,
 ) {
     SettingPage(
-        navigateBack = actions::navigateBack,
+        navigateBack = state.navigateBack,
         title = strings.cloudSyncTitle,
         contentPadding = PaddingValues(
             all = UiConstants.Spacing.large,
@@ -41,13 +42,31 @@ fun SettingsCloudSyncScreen(
             ) {
                 SoulFilledButton(
                     text = strings.cloudSyncButton,
-                    onClick = actions::launchSync,
+                    onClick = state.launchSync,
                     enabled = state.syncingState !is SyncDataWithCloudUseCase.State.WorkingState,
                 )
             }
         }
         item {
             SyncingStateView(state = state.syncingState)
+        }
+        item {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
+            ) {
+                SyncState(
+                    modifier = Modifier
+                        .padding(
+                            top = UiConstants.Spacing.medium,
+                        ),
+                    title = strings.cloudSettingsLastGeneralSync,
+                    date = state.lastSync,
+                )
+                SyncState(
+                    title = strings.cloudSettingsLastStatisticsSync,
+                    date = state.lastStatisticsSync,
+                )
+            }
         }
     }
 }
@@ -87,5 +106,28 @@ private fun SyncingStateView(
                 drawStopIndicator = {},
             )
         }
+    }
+}
+
+@Composable
+private fun SyncState(
+    title: String,
+    date: String,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth(),
+    ) {
+        Text(
+            text = title,
+            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            style = UiConstants.Typography.bodyTitle
+        )
+        Text(
+            text = date,
+            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            style = UiConstants.Typography.body
+        )
     }
 }

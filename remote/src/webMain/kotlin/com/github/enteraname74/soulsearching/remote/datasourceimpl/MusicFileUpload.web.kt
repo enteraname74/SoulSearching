@@ -10,5 +10,6 @@ internal actual suspend fun uploadMusicFile(
     client: HttpClient,
     baseUrl: String,
     music: Music,
+    coverPath: String?,
     workDispatcher: WorkDispatcher,
 ): SoulResult<CloudMusic> = SoulResult.Error()

@@ -18,6 +18,7 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":domain"))
             implementation(project(":repository"))
+            implementation(project(":filemanager"))
             implementation(libs.ktor.client.auth)
             implementation(libs.ktor.client.content.negoctiation)
             implementation(libs.ktor.client.core)

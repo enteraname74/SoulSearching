@@ -1,0 +1,95 @@
+@file:Suppress("Deprecation")
+
+package com.github.enteraname74.soulsearching.feature.swipeableview
+
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
+import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+@OptIn(ExperimentalMaterialApi::class)
+
+open class SwipeableViewManager {
+
+    val draggableState: SwipeableState<BottomSheetStates> = SwipeableState(
+        initialValue = BottomSheetStates.COLLAPSED,
+    )
+
+    private val _state: MutableStateFlow<BottomSheetStates> =
+        MutableStateFlow(BottomSheetStates.COLLAPSED)
+    val state = _state.asStateFlow()
+
+    private val _targetState: MutableStateFlow<BottomSheetStates> =
+        MutableStateFlow(BottomSheetStates.COLLAPSED)
+    val targetState = _targetState.asStateFlow()
+
+    private val _previousState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
+    val previousState: StateFlow<BottomSheetStates?> = _previousState.asStateFlow()
+
+    private val _nextState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
+    val nextState: StateFlow<BottomSheetStates?> = _nextState.asStateFlow()
+
+    private val _snapState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
+    val snapState: StateFlow<BottomSheetStates?> = _snapState.asStateFlow()
+
+    val isAnimationRunning: Boolean
+        get() = (_state.value != _nextState.value) && (_nextState.value != null)
+
+    val currentValue: BottomSheetStates
+        get() = draggableState.currentValue
+    val targetValue: BottomSheetStates
+        get() = draggableState.targetValue
+
+    val offset: Float
+        get() = draggableState.offset.value
+
+    var onExpanded: (() -> Unit)? = null
+
+    fun animateTo(
+        newState: BottomSheetStates,
+        onExpanded: (() -> Unit)? = null,
+    ) {
+        this.onExpanded = onExpanded
+        _nextState.value = newState
+    }
+
+    fun snapTo(newState: BottomSheetStates) {
+        _snapState.value = newState
+    }
+
+    fun consumePreviousState() {
+        _previousState.value = null
+    }
+
+    fun consumeNextState() {
+        _nextState.value = null
+    }
+
+    fun consumeSnapState() {
+        _snapState.value = null
+    }
+
+    fun updateState(newState: BottomSheetStates) {
+        _previousState.value = _state.value
+        _state.value = newState
+        onExpanded?.let { it() }
+    }
+
+    fun updateTargetState(newState: BottomSheetStates) {
+        _targetState.value = newState
+    }
+
+    fun minimiseIfPossible() {
+        if (currentValue == BottomSheetStates.EXPANDED) {
+            animateTo(newState = BottomSheetStates.MINIMISED)
+        }
+    }
+
+    fun closeIfPossible() {
+        if (currentValue == BottomSheetStates.EXPANDED) {
+            animateTo(newState = BottomSheetStates.COLLAPSED)
+        }
+    }
+}

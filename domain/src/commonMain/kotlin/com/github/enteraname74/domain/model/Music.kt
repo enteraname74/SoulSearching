@@ -56,16 +56,17 @@ data class Music(
     ): Music =
         when (mergeMode) {
             MergeMode.LocalFirst -> copy(
-                remoteId = cloudMusic.fingerprint,
+                remoteId = cloudMusic.id,
+                cover = cover.takeIf { !it.isEmpty() } ?: Cover.Url(cloudMusic.coverPath, null),
             )
             MergeMode.RemoteFirst -> copy(
-                remoteId = cloudMusic.fingerprint,
+                remoteId = cloudMusic.id,
                 name = cloudMusic.name,
                 album = album,
                 artists = artists,
                 remotePath = cloudMusic.path,
                 albumPosition = cloudMusic.albumPosition,
-                cover = cover.takeIf { !it.isEmpty() } ?: Cover.Url(cloudMusic.coverPath),
+                cover = cover.takeIf { !it.isEmpty() } ?: Cover.Url(cloudMusic.coverPath, null),
                 lastUpdatedMillis = cloudMusic.lastUpdateAtMillis,
                 nbPlayed = max(nbPlayed, cloudMusic.nbPlayed),
                 isInQuickAccess = cloudMusic.isInQuickAccess,

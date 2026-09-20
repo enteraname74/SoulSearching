@@ -41,6 +41,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.launch
@@ -228,6 +230,38 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
                     LibraryResult.ofItemList(children, params)
                 }
 
+            override fun onSearch(
+                session: MediaLibrarySession,
+                browser: MediaSession.ControllerInfo,
+                query: String,
+                params: LibraryParams?,
+            ): ListenableFuture<LibraryResult<Void>> =
+                serviceScope.future {
+                    val resultCount = searchMediaItems(query).size
+                    session.notifySearchResultChanged(
+                        browser,
+                        query,
+                        resultCount,
+                        params,
+                    )
+                    LibraryResult.ofVoid(params)
+                }
+
+            override fun onGetSearchResult(
+                session: MediaLibrarySession,
+                browser: MediaSession.ControllerInfo,
+                query: String,
+                page: Int,
+                pageSize: Int,
+                params: LibraryParams?,
+            ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> =
+                serviceScope.future {
+                    LibraryResult.ofItemList(
+                        searchMediaItems(query).page(page, pageSize),
+                        params,
+                    )
+                }
+
             override fun onSetMediaItems(
                 mediaSession: MediaSession,
                 controller: MediaSession.ControllerInfo,
@@ -341,6 +375,21 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
             is AndroidAutoPlaybackContext.Playlist -> commonMusicUseCase.getAllMusicFromPlaylist(context.playlistId)
             is AndroidAutoPlaybackContext.Folder -> commonMusicUseCase.getAllMusicFromFolder(context.folder)
         }
+
+    private suspend fun searchMediaItems(query: String): List<MediaItem> =
+        combine(
+            commonMusicUseCase.searchAll(query),
+            commonAlbumUseCase.searchAll(query),
+            commonArtistUseCase.searchAll(query),
+            commonPlaylistUseCase.searchAll(query),
+        ) { musics, albums, artists, playlists ->
+            buildList {
+                addAll(musics.map { it.toMediaItem() })
+                addAll(albums.map { it.toMediaItem() })
+                addAll(artists.map { it.toMediaItem() })
+                addAll(playlists.map { it.toMediaItem() })
+            }
+        }.first()
 
     private suspend fun getMediaItemFromMediaId(mediaId: String): MediaItem? =
         getMusicItemFromMediaId(mediaId)

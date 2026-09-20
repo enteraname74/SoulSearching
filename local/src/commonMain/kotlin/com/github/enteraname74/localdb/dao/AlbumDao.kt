@@ -7,9 +7,10 @@ import androidx.room3.Query
 import androidx.room3.Transaction
 import androidx.room3.Upsert
 import com.github.enteraname74.localdb.model.RoomAlbum
-import com.github.enteraname74.localdb.view.RoomAlbumPreview
 import com.github.enteraname74.localdb.model.RoomCompleteAlbum
 import com.github.enteraname74.localdb.model.RoomCompleteAlbumWithMusics
+import com.github.enteraname74.localdb.model.mapping.GenericLocalIdToRemoteId
+import com.github.enteraname74.localdb.view.RoomAlbumPreview
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
@@ -245,10 +246,9 @@ interface AlbumDao {
             SELECT * FROM RoomAlbumPreview 
             WHERE nbPlayed >= 1
             ORDER BY nbPlayed DESC 
-            LIMIT 11
         """
     )
-    fun getMostListened(): Flow<List<RoomAlbumPreview>>
+    fun getMostListened(): PagingSource<Int, RoomAlbumPreview>
 
     @Query(
         """
@@ -289,4 +289,7 @@ interface AlbumDao {
         """
     )
     suspend fun getAlbumsOfArtistName(artistName: String): List<RoomCompleteAlbumWithMusics>
+
+    @Query("SELECT albumId AS localId, remoteId FROM RoomAlbum WHERE remoteId IS NOT NULL")
+    suspend fun getAllRemoteToLocalIds(): List<GenericLocalIdToRemoteId>
 }

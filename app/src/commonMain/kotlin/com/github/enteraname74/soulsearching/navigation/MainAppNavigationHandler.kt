@@ -20,7 +20,8 @@ import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetail
 import com.github.enteraname74.soulsearching.feature.editableelement.ModifyElementNavigationHandler
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceDestination
-import com.github.enteraname74.soulsearching.feature.playlistdetail.PlaylistDetailNavigationHandler
+import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceNavScope
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailDestination
 import com.github.enteraname74.soulsearching.feature.settings.SettingsNavigationHandler
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 
@@ -73,7 +74,15 @@ private fun buildEntryProvider(
 
     MultipleArtistsChoiceDestination.register(
         entryProviderScope = this,
-        navigator = navigator,
+        navScope = object : MultipleArtistsChoiceNavScope {
+            override fun toApp() {
+                // no-op
+            }
+
+            override fun navigateBack() {
+                navigator.pop()
+            }
+        }
     )
 
     SettingsNavigationHandler.register(
@@ -86,7 +95,7 @@ private fun buildEntryProvider(
         navigator = navigator,
     )
 
-    PlaylistDetailNavigationHandler.register(
+    MusicListDetailDestination.register(
         entryProviderScope = this,
         navigator = navigator,
     )

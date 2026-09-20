@@ -13,12 +13,11 @@ import com.github.enteraname74.soulsearching.PlayerViewScaffold
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.folder.FolderBottomSheetDestination
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
-import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
-import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
+import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanelUiUtils
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isComingFromPlaylistDetails
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
@@ -77,9 +76,7 @@ private fun MainAppRoute(
     val state: MainAppState by viewModel.state.collectAsStateWithLifecycle()
 
     Row {
-        val windowSize = rememberWindowSize()
-
-        if (windowSize == WindowSize.Large) {
+        if (NavigationPanelUiUtils.canShowPanel()) {
             NavigationPanel(
                 rows = state.navigationRows,
                 currentRoute = navigator.currentRoute,

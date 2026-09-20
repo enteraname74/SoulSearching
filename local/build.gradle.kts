@@ -36,8 +36,6 @@ kotlin {
 
         androidMain {
             dependencies {
-                // Used for injecting app context in database module
-                implementation(libs.koin.androidx.compose)
                 implementation(libs.androidx.room.sqlite.wrapper)
             }
         }
@@ -45,6 +43,7 @@ kotlin {
             implementation(project(":domain"))
             implementation(project(":repository"))
             implementation(project(":filemanager"))
+            implementation(project(":serialization"))
             implementation(libs.koin.core)
 
             implementation(libs.androidx.paging.common)
@@ -52,6 +51,8 @@ kotlin {
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.room.paging)
             implementation(libs.androidx.sqlite.async)
+
+            implementation(libs.kotlinx.datetime)
         }
     }
 }

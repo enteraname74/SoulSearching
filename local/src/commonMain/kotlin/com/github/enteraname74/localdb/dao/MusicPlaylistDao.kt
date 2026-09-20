@@ -18,8 +18,8 @@ interface MusicPlaylistDao {
     @Upsert
     suspend fun upsertAll(musicPlaylists: List<RoomMusicPlaylist>)
 
-    @Query("DELETE FROM RoomMusicPlaylist WHERE musicId = :musicId AND playlistId = :playlistId")
-    suspend fun deleteMusicFromPlaylist(musicId: Uuid, playlistId: Uuid)
+    @Query("DELETE FROM RoomMusicPlaylist WHERE musicId IN (:musicIds) AND playlistId = :playlistId")
+    suspend fun deleteFromPlaylist(musicIds: List<Uuid>, playlistId: Uuid)
 
     @Query("SELECT * FROM RoomMusicPlaylist WHERE musicId = :musicId AND playlistId = :playlistId")
     suspend fun getMusicPlaylist(musicId: Uuid, playlistId: Uuid): RoomMusicPlaylist?

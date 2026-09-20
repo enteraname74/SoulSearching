@@ -48,6 +48,7 @@ kotlin {
 
             implementation(libs.bundles.koin)
 
+            implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization)
             implementation(libs.kotlinx.serialization.json)
 
@@ -59,6 +60,7 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.resources)
             implementation(libs.compose.ui)
+            implementation(libs.compose.preview)
 
             implementation(libs.jaudiotagger)
             implementation(libs.androidx.annotation)

@@ -31,4 +31,8 @@ class CommonFolderUseCase(
             folder = folder
         )
     }
+
+    suspend fun setAll(folders: List<Folder>) {
+        folderRepository.setAll(folders)
+    }
 }

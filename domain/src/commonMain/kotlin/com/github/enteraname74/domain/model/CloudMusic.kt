@@ -6,7 +6,7 @@ import kotlin.uuid.Uuid
 
 @Serializable
 data class CloudMusic(
-    val fingerprint: String,
+    val id: String,
     val userId: Uuid,
     val name: String,
     val album: CloudAlbum,
@@ -27,11 +27,11 @@ data class CloudMusic(
     ): Music =
         Music(
             musicId = Uuid.random(),
-            remoteId = fingerprint,
+            remoteId = id,
             name = name,
             album = album,
             artists = artists,
-            cover = Cover.Url(coverPath),
+            cover = Cover.Url(coverPath, null),
             albumPosition = albumPosition,
             localPath = null,
             remotePath = path,

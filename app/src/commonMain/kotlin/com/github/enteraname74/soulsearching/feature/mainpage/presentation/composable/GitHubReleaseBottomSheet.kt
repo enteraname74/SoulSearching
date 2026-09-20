@@ -61,7 +61,7 @@ class GitHubReleaseBottomSheet(
             ) {
                 SoulTopBar(
                     title = strings.activateGithubReleaseFetchTitle,
-                    leftAction = object: TopBarActionSpec {
+                    leftAction = object : TopBarActionSpec {
                         override val icon = CoreRes.drawable.ic_cancel_filled
                         override val onClick = { closeWithAnim { } }
                     },

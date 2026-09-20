@@ -6,13 +6,10 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -55,9 +52,7 @@ import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
-import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add_link
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
@@ -74,10 +69,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
-import kotlin.uuid.Uuid
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.uuid.Uuid
 
 @Composable
 fun PlayerListView(
@@ -95,7 +90,6 @@ fun PlayerListView(
     selectedIconColors: SoulSelectedIconColors,
     playedListScope: PlayedListScope,
     getUserTag: (musicId: Uuid) -> UserTag?,
-    onAddFromUrl: (() -> Unit)?,
     workDispatcher: WorkDispatcher = injectElement(),
 ) {
 
@@ -107,24 +101,12 @@ fun PlayerListView(
             .fillMaxSize()
             .navigationBarsPadding()
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(UiConstants.Spacing.small),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            contentAlignment = Alignment.CenterEnd,
         ) {
-            if (onAddFromUrl != null) {
-                SoulIconButton(
-                    icon = CoreRes.drawable.ic_add_link,
-                    onClick = onAddFromUrl,
-                    colors = buttonColors,
-                )
-            } else {
-                Spacer(
-                    modifier = Modifier,
-                )
-            }
             SoulButton(
                 colors = buttonColors,
                 onClick = {

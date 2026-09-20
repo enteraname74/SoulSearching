@@ -55,6 +55,10 @@ class SettingsCloudUserViewHolder(
         navigate { toCode() }
     }
 
+    override fun toUserData() {
+        navigate { toUserData() }
+    }
+
     @Composable
     override fun Content(
         actions: SettingsCloudUserActions,

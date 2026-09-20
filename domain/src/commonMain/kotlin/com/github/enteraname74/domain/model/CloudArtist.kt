@@ -20,7 +20,7 @@ data class CloudArtist(
             artistId = Uuid.random(),
             artistName = name,
             remoteId = id,
-            cover = coverPath?.let { Cover.Url(it) },
+            cover = coverPath?.let { Cover.Url(it, null) },
             addedDate = Clock.System.now(),
             nbPlayed = nbPlayed,
             isInQuickAccess = isInQuickAccess,

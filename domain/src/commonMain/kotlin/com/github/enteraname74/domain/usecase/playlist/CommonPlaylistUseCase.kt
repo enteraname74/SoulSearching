@@ -7,7 +7,6 @@ import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlin.uuid.Uuid
 
@@ -16,6 +15,9 @@ class CommonPlaylistUseCase(
 ) {
     fun getFromId(playlistId: Uuid): Flow<Playlist?> =
         playlistRepository.getFromId(playlistId)
+
+    suspend fun getFromRemoteId(remoteId: Uuid): Playlist? =
+        playlistRepository.getFromRemoteId(remoteId = remoteId)
 
     fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
         playlistRepository.getFromIds(playlistIds)
@@ -50,17 +52,8 @@ class CommonPlaylistUseCase(
     suspend fun getAll(page: Int, pageSize: Int): List<PlaylistPreview> =
         playlistRepository.getAll(page = page, pageSize = pageSize)
 
-    suspend fun incrementNbPlayed(playlistId: Uuid) {
-        val playlist: Playlist = playlistRepository.getFromId(playlistId).first() ?: return
-        playlistRepository.upsert(
-            playlist.copy(
-                nbPlayed = playlist.nbPlayed + 1
-            )
-        )
-    }
-
-    suspend fun upsertAll(playlists: List<Playlist>) {
-        playlistRepository.upsertAll(playlists)
+    suspend fun upsertAll(playlists: List<Playlist>, keepUpdatedAt: Boolean = false) {
+        playlistRepository.upsertAll(playlists, keepUpdatedAt)
     }
 
     suspend fun upsert(playlist: Playlist) {
@@ -72,9 +65,6 @@ class CommonPlaylistUseCase(
     suspend fun cleanAllCovers() {
         playlistRepository.cleanAllCovers()
     }
-
-    fun getMostListened(): Flow<List<PlaylistPreview>> =
-        playlistRepository.getMostListened()
 
     fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?> =
         playlistRepository.getPlaylistPreview(playlistId)

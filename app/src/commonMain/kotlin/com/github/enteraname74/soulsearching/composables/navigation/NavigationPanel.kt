@@ -28,7 +28,7 @@ fun NavigationPanel(
             .background(color = SoulSearchingColorTheme.colorScheme.secondary)
             .fillMaxHeight()
             .statusBarsPadding()
-            .width(PanelWidth)
+            .width(NavigationPanelUiUtils.PanelWidth)
     ) {
         LazyColumnCompat {
             items(
@@ -57,5 +57,4 @@ private fun isRowSelected(
         is NavigationRowSpec.Settings -> currentRoute is SettingPage
     }
 
-private val PanelWidth: Dp = 300.dp
 private const val NAVIGATION_CONTENT_TYPE = "NAVIGATION_CONTENT_TYPE"

@@ -35,6 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.uuid.Uuid
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Repository of a PlayerMusic.
@@ -91,7 +92,7 @@ class PlayerRepositoryImpl(
     override suspend fun isAdminOfPlayedList(): Boolean =
         playerLocalDataSource.getCurrentScope().firstOrNull()?.isAdmin == true
 
-    override suspend fun setProgress(progress: Int) {
+    override suspend fun setProgress(progress: Duration) {
         playerLocalDataSource.setProgress(progress)
     }
 
@@ -492,17 +493,6 @@ class PlayerRepositoryImpl(
                 listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id
                     ?: return@withContext,
                 musicIds = musicRemoteIds,
-            )
-        }
-    }
-
-    override suspend fun addMusicFromURL(url: String) {
-        withContext(workScope) {
-            playerRemoteDataSource.addMusicFromURL(
-                deviceId = deviceLocalDataSource.getDeviceId(),
-                listId = playerLocalDataSource.getCurrentPlayedList().firstOrNull()?.id
-                    ?: return@withContext,
-                url = url,
             )
         }
     }

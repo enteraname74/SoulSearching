@@ -13,6 +13,7 @@ import com.github.enteraname74.domain.model.player.PlayerPlayedList
 import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
 import com.github.enteraname74.domain.model.player.SharedPlayedListUser
 import kotlinx.coroutines.flow.Flow
+import kotlin.time.Duration
 import kotlin.uuid.Uuid
 
 /**
@@ -72,7 +73,7 @@ interface PlayerLocalDataSource {
     )
 
     suspend fun setCurrent(musicId: Uuid)
-    suspend fun setProgress(progress: Int)
+    suspend fun setProgress(progress: Duration)
 
     suspend fun switchPlayerMode()
 

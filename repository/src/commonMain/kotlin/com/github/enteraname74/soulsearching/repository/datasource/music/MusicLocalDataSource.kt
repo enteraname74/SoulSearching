@@ -135,8 +135,6 @@ interface MusicLocalDataSource {
 
     suspend fun getAllMusicLocalPath(): List<String>
 
-    fun getMostListened(): Flow<List<Music>>
-
     fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>>
 
     fun getMonthMusicPreview(month: String): Flow<MonthMusicsPreview?>
@@ -154,12 +152,14 @@ interface MusicLocalDataSource {
         albumId: Uuid,
     ): Music?
 
-    suspend fun clearRemoteIds(remoteIds: List<String>)
+    suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>)
 
-    suspend fun deleteAllRemoteIds()
+    suspend fun deleteAllRemoteFields()
     suspend fun deleteNotExisting()
     suspend fun deleteSharedPlayedListMusics()
     suspend fun getFromPath(path: String): Music?
 
     fun observeDataChanged(): Flow<Unit>
+
+    suspend fun getAllRemoteToLocalIds(): Map<String, Uuid>
 }

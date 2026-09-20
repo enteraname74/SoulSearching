@@ -44,7 +44,7 @@ internal fun RoomArtist.toArtist(): Artist {
             )
         },
     )
-    val remoteCover = coverUrl?.let { Cover.Url(it) }
+    val remoteCover = coverUrl?.let { Cover.Url(it, localCover) }
 
     val usedCover = if (remoteCover == null) {
         localCover

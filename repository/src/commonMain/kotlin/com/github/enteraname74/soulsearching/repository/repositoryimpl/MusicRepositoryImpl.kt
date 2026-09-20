@@ -1,7 +1,11 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.CloudMusic
+import com.github.enteraname74.domain.model.MonthMusicsPreview
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicFolderPreview
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
@@ -211,9 +215,6 @@ class MusicRepositoryImpl(
     override suspend fun getAllMusicLocalPath(): List<String> =
         musicLocalDataSource.getAllMusicLocalPath()
 
-    override fun getMostListened(): Flow<List<Music>> =
-        musicLocalDataSource.getMostListened()
-
     override fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
         musicLocalDataSource.getAllMonthMusics()
 
@@ -275,12 +276,12 @@ class MusicRepositoryImpl(
             albumId = albumId,
         )
 
-    override suspend fun clearRemoteIds(remoteIds: List<String>) {
-        musicLocalDataSource.clearRemoteIds(remoteIds)
+    override suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>) {
+        musicLocalDataSource.deleteAllRemoteFieldsOfIds(remoteIds)
     }
 
-    override suspend fun deleteAllRemoteIds() {
-        musicLocalDataSource.deleteAllRemoteIds()
+    override suspend fun deleteAllRemoteFields() {
+        musicLocalDataSource.deleteAllRemoteFields()
     }
 
     override suspend fun deleteNotExisting() {
@@ -290,9 +291,6 @@ class MusicRepositoryImpl(
     override suspend fun deleteSharedPlayedListMusics() {
         musicLocalDataSource.deleteSharedPlayedListMusics()
     }
-
-    override suspend fun fetch(url: String): CloudMusic =
-        musicRemoteDataSource.fetch(url = url)
 
     private companion object {
         const val MAX_MUSICS_PER_PAGE = 300

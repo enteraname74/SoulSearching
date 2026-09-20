@@ -48,7 +48,7 @@ class SettingsCloudSharedListViewHolder(
                             previews = previews.map { preview ->
                                 UiListPreview(
                                     id = preview.id,
-                                    date = DateUiUtils.formatToReadableDate(preview.createdAtMillis),
+                                    date = DateUiUtils.formatToReadableDateTime(preview.createdAtMillis),
                                     allUsers = strings.sharedListPreviewUsers(preview),
                                     connectedUsers = strings.sharedListPreviewConnectedUsers(preview),
                                     onDelete = { showDeleteDialog(preview.id) }.takeIf { preview.isOwner },

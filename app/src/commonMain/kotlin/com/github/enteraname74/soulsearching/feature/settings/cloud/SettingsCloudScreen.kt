@@ -1,6 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -11,7 +17,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_chevron_right
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_groups_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_info_outlined
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_person_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_settings_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_sync_alt
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_warning_filled
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -77,16 +91,6 @@ fun SettingsCloudScreen(
                 subTitle = strings.cloudSyncText,
                 onClick = actions::toSync,
                 leadIcon = CoreRes.drawable.ic_sync_alt,
-            )
-        }
-
-        item {
-            SoulMenuElement(
-                enabled = state.connectedFeaturesEnabled,
-                title = strings.cloudFetchMusicTitle,
-                subTitle = strings.cloudFetchMusicText,
-                onClick = actions::toFetchMusic,
-                leadIcon = CoreRes.drawable.ic_music_note_filled,
             )
         }
 

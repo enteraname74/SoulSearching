@@ -1,10 +1,6 @@
-@file:Suppress("Deprecation")
-
 package com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel
 
 //noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -12,6 +8,7 @@ import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicListDetailId
 import com.github.enteraname74.domain.model.Platform
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistPreview
@@ -158,10 +155,6 @@ class MainPageViewModel(
         started = SharingStarted.Lazily,
         initialValue = true,
     )
-
-    @OptIn(ExperimentalMaterialApi::class)
-    val searchDraggableState: SwipeableState<BottomSheetStates> =
-        SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _musics: Flow<PagingData<Music>> = commonMusicUseCase
@@ -318,7 +311,7 @@ class MainPageViewModel(
         }
 
         coroutineScope.launch {
-            cloudBackgroundSyncJob.launchIfPossible()
+            cloudBackgroundSyncJob.launchIfPossible(syncStats = true)
             hasValidCloudInformationUseCase().distinctUntilChanged().collectLatest { hasInfo ->
                 if (hasInfo) {
                     observeDataChangedForCloudSync()
@@ -438,17 +431,17 @@ class MainPageViewModel(
     private fun navigateToQuickAccessible(quickAccessible: QuickAccessible) {
         navigateAndClearSelection(
             when (quickAccessible) {
-                is AlbumPreview -> MainPageNavigationState.ToAlbum(
-                    albumId = quickAccessible.id,
+                is AlbumPreview -> MainPageNavigationState.ToMusicListDetail(
+                    MusicListDetailId.Album(quickAccessible.id),
                 )
 
-                is ArtistPreview -> MainPageNavigationState.ToArtist(
-                    artistId = quickAccessible.id,
+                is ArtistPreview -> MainPageNavigationState.ToMusicListDetail(
+                    MusicListDetailId.Artist(quickAccessible.id),
                 )
 
                 is Music -> MainPageNavigationState.Idle
-                is PlaylistPreview -> MainPageNavigationState.ToPlaylist(
-                    playlistId = quickAccessible.id,
+                is PlaylistPreview -> MainPageNavigationState.ToMusicListDetail(
+                    MusicListDetailId.Playlist(quickAccessible.id),
                 )
             }
         )
@@ -492,8 +485,8 @@ class MainPageViewModel(
                         mainPageViewModel = this@MainPageViewModel,
                         navigateToPlaylist = { id ->
                             navigateAndClearSelection(
-                                MainPageNavigationState.ToPlaylist(
-                                    playlistId = id,
+                                MainPageNavigationState.ToMusicListDetail(
+                                    MusicListDetailId.Playlist(id),
                                 )
                             )
                         }
@@ -505,8 +498,8 @@ class MainPageViewModel(
                         mainPageViewModel = this@MainPageViewModel,
                         navigateToAlbum = { id ->
                             navigateAndClearSelection(
-                                MainPageNavigationState.ToAlbum(
-                                    albumId = id,
+                                MainPageNavigationState.ToMusicListDetail(
+                                    MusicListDetailId.Album(id),
                                 )
                             )
                         }
@@ -518,8 +511,8 @@ class MainPageViewModel(
                         mainPageViewModel = this@MainPageViewModel,
                         navigateToArtist = { id ->
                             navigateAndClearSelection(
-                                MainPageNavigationState.ToArtist(
-                                    artistId = id,
+                                MainPageNavigationState.ToMusicListDetail(
+                                    MusicListDetailId.Artist(id),
                                 )
                             )
                         }
@@ -531,8 +524,8 @@ class MainPageViewModel(
                         mainPageViewModel = this@MainPageViewModel,
                         navigateToMonth = { month ->
                             navigateAndClearSelection(
-                                MainPageNavigationState.ToMonth(
-                                    month = month,
+                                MainPageNavigationState.ToMusicListDetail(
+                                    MusicListDetailId.Month(month),
                                 )
                             )
                         },
@@ -545,8 +538,8 @@ class MainPageViewModel(
                         multiSelectionState = multiSelectionState,
                         navigateToFolder = { folderPath ->
                             navigateAndClearSelection(
-                                MainPageNavigationState.ToFolder(
-                                    folderPath = folderPath,
+                                MainPageNavigationState.ToMusicListDetail(
+                                    MusicListDetailId.Folder(folderPath)
                                 )
                             )
                         },
@@ -566,24 +559,24 @@ class MainPageViewModel(
 
     fun toPlaylist(playlistId: Uuid) {
         navigateAndClearSelection(
-            MainPageNavigationState.ToPlaylist(
-                playlistId = playlistId,
+            MainPageNavigationState.ToMusicListDetail(
+                MusicListDetailId.Playlist(playlistId)
             )
         )
     }
 
     fun toAlbum(albumId: Uuid) {
         navigateAndClearSelection(
-            MainPageNavigationState.ToAlbum(
-                albumId = albumId,
+            MainPageNavigationState.ToMusicListDetail(
+                MusicListDetailId.Album(albumId)
             )
         )
     }
 
     fun toArtist(artistId: Uuid) {
         navigateAndClearSelection(
-            MainPageNavigationState.ToArtist(
-                artistId = artistId,
+            MainPageNavigationState.ToMusicListDetail(
+                MusicListDetailId.Artist(artistId)
             )
         )
     }
@@ -653,18 +646,6 @@ class MainPageViewModel(
     fun showAlbumBottomSheet(albumIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToAlbumBottomSheet(
             albumIds = albumIds,
-        )
-    }
-
-    fun showFolderBottomSheet(folderPaths: List<String>) {
-        _navigationState.value = MainPageNavigationState.ToFolderBottomSheet(
-            folderPaths = folderPaths,
-        )
-    }
-
-    fun showMonthBottomSheet(months: List<String>) {
-        _navigationState.value = MainPageNavigationState.ToMonthBottomSheet(
-            months = months,
         )
     }
 

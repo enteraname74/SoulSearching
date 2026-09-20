@@ -61,9 +61,9 @@ class CloudMusicToMusicUseCase(
         albumId: Uuid,
         cachedMusics: Set<Music>,
     ): Music? =
-        cachedMusics.find { it.remoteId == cloudMusic.fingerprint } ?:
+        cachedMusics.find { it.remoteId == cloudMusic.id } ?:
         cachedMusics.find { it.name == cloudMusic.name && cloudMusic.album.id == albumId } ?:
-        musicRepository.getFromRemoteId(cloudMusic.fingerprint)
+        musicRepository.getFromRemoteId(cloudMusic.id)
             ?: musicRepository.getFromInformation(
                 musicName = cloudMusic.name,
                 albumId = albumId,

@@ -8,12 +8,22 @@ import kotlinx.coroutines.flow.Flow
 class CloudPreferencesRepositoryImpl(
     private val dataSource: CloudPreferencesDataSource
 ) : CloudPreferencesRepository {
+    override fun observePreferences(): Flow<CloudPreferences> =
+        dataSource.observePreferences()
+
     override fun observeUrl(): Flow<String?> =
         dataSource.observeUrl()
 
     override suspend fun setUrl(url: String) {
         dataSource.setUrl(url)
     }
+
+    override suspend fun setLastStatsSyncMillis(millis: Long) {
+        dataSource.setLastStatsSyncMillis(millis)
+    }
+
+    override suspend fun getLastStatsSyncMillis(): Long? =
+        dataSource.getLastStatsSyncMillis()
 
     override suspend fun setLastSyncMillis(millis: Long) {
         dataSource.setLastSyncMillis(millis)
@@ -22,7 +32,7 @@ class CloudPreferencesRepositoryImpl(
     override suspend fun getLastSyncMillis(): Long? =
         dataSource.getLastSyncMillis()
 
-    override suspend fun clearLastSyncMillis() {
-        dataSource.clearLastSyncMillis()
+    override suspend fun clearSyncsMillis() {
+        dataSource.clearSyncsMillis()
     }
 }

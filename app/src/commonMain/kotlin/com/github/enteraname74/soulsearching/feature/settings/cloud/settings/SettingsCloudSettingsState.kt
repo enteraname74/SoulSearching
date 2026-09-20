@@ -4,4 +4,6 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolde
 
 data class SettingsCloudSettingsState(
     val urlField: SoulTextFieldHolder,
+    val navigateBack: () -> Unit,
+    val saveChanges: () -> Unit,
 )

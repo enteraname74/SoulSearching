@@ -14,7 +14,7 @@ import kotlin.uuid.Uuid
  */
 class AlbumRepositoryImpl(
     private val albumDataSource: AlbumDataSource,
-): AlbumRepository {
+) : AlbumRepository {
 
     override suspend fun delete(album: Album) {
         albumDataSource.delete(album = album)
@@ -102,9 +102,6 @@ class AlbumRepositoryImpl(
             albumName = albumName,
             artistId = artistId,
         )
-
-    override fun getMostListened(): Flow<List<AlbumPreview>> =
-        albumDataSource.getMostListened()
 
     override fun getAlbumPreview(albumId: Uuid): Flow<AlbumPreview?> =
         albumDataSource.getAlbumPreview(albumId)

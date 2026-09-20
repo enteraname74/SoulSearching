@@ -4,6 +4,7 @@ import kotlin.uuid.Uuid
 
 data class ArtistPreview(
     val id: Uuid,
+    val remoteId: Uuid?,
     val name: String,
     val totalMusics: Int,
     val cover: Cover?,

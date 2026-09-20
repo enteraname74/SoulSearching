@@ -4,6 +4,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import androidx.room3.withReadTransaction
+import androidx.room3.withWriteTransaction
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
@@ -11,6 +13,7 @@ import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.util.DateUtils
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toRoomAlbum
 import com.github.enteraname74.localdb.utils.PagingUtils
@@ -19,6 +22,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlin.math.max
 import kotlin.uuid.Uuid
 
 /**
@@ -29,13 +33,33 @@ internal class RoomAlbumDataSourceImpl(
     private val settings: SoulSearchingSettings,
 ) : AlbumDataSource {
     override suspend fun upsert(album: Album) {
-        appDatabase.albumDao.upsert(
-            roomAlbum = album.toRoomAlbum()
-        )
+        appDatabase.withWriteTransaction {
+            val lastUpdatedAt = max(album.lastUpdateMillis ?: 0L, DateUtils.now())
+
+            appDatabase.albumDao.upsert(
+                roomAlbum = album.copy(
+                    lastUpdateMillis = lastUpdatedAt,
+                ).toRoomAlbum()
+            )
+
+            appDatabase.musicDao.updateLastUpdatedAtField(
+                musicIds = appDatabase.musicDao.getMusicIdsOfAlbum(albumIds = listOf(album.albumId)),
+                updatedAt = lastUpdatedAt,
+            )
+        }
     }
 
     override suspend fun upsertAll(albums: List<Album>) {
-        appDatabase.albumDao.upsertAll(albums.map { it.toRoomAlbum() })
+        appDatabase.withWriteTransaction {
+            val lastUpdatedAt = max(albums.maxBy { it.lastUpdateMillis ?: 0L }.lastUpdateMillis ?: 0L, DateUtils.now())
+
+            appDatabase.albumDao.upsertAll(albums.map { it.copy(lastUpdateMillis = lastUpdatedAt).toRoomAlbum() })
+
+            appDatabase.musicDao.updateLastUpdatedAtField(
+                musicIds = appDatabase.musicDao.getMusicIdsOfAlbum(albumIds = albums.map { it.albumId }),
+                updatedAt = lastUpdatedAt,
+            )
+        }
     }
 
     override suspend fun delete(album: Album) {
@@ -76,7 +100,6 @@ internal class RoomAlbumDataSourceImpl(
             }
         }
 
-
     override fun getFromId(albumId: Uuid): Flow<Album?> {
         return appDatabase.albumDao.getFromId(
             albumId = albumId
@@ -112,7 +135,7 @@ internal class RoomAlbumDataSourceImpl(
                         enablePlaceholders = false,
                     ),
                     pagingSourceFactory = {
-                        when(sortDirection) {
+                        when (sortDirection) {
                             SortDirection.ASC -> {
                                 when (sortType) {
                                     SortType.NAME -> appDatabase.albumDao.getAllPagedByNameAsc()
@@ -206,11 +229,6 @@ internal class RoomAlbumDataSourceImpl(
             artistId = artistId,
         )?.toAlbum()
 
-    override fun getMostListened(): Flow<List<AlbumPreview>> =
-        appDatabase.albumDao.getMostListened().map { list ->
-            list.map { it.toAlbumPreview() }
-        }
-
     override fun getAlbumPreview(albumId: Uuid): Flow<AlbumPreview?> =
         appDatabase.albumDao.getAlbumPreview(albumId).map { it?.toAlbumPreview() }
 
@@ -221,6 +239,9 @@ internal class RoomAlbumDataSourceImpl(
 
     override suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics> =
         appDatabase.albumDao.getAlbumsOfArtistName(artistName).map { it.toAlbumWithMusics() }
+
+    override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =
+        appDatabase.playlistDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
 }
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

@@ -5,6 +5,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.player.*
 import kotlinx.coroutines.flow.Flow
+import kotlin.time.Duration
 import kotlin.uuid.Uuid
 
 interface PlayerRepository {
@@ -52,7 +53,7 @@ interface PlayerRepository {
         musicId: Uuid,
     )
 
-    suspend fun setProgress(progress: Int)
+    suspend fun setProgress(progress: Duration)
 
     suspend fun playNext()
     suspend fun playPrevious()
@@ -94,8 +95,6 @@ interface PlayerRepository {
     suspend fun addToSharedPlayedList(
         musicRemoteIds: List<String>
     )
-
-    suspend fun addMusicFromURL(url: String)
 
     suspend fun removeFromSharedPlayedList(
         musicRemoteIds: List<String>

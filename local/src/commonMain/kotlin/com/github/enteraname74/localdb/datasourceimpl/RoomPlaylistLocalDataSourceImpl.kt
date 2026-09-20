@@ -22,6 +22,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlin.math.max
 import kotlin.uuid.Uuid
 
 internal class RoomPlaylistLocalDataSourceImpl(
@@ -32,18 +33,22 @@ internal class RoomPlaylistLocalDataSourceImpl(
         appDatabase.playlistDao.upsert(
             roomPlaylist = playlist
                 .copy(
-                    lastUpdatedMillis = DateUtils.now(),
+                    lastUpdatedMillis = max(DateUtils.now(), playlist.lastUpdatedMillis ?: 0L),
                 )
                 .toRoomPlaylist()
         )
     }
 
-    override suspend fun upsertAll(playlists: List<Playlist>) {
+    override suspend fun upsertAll(playlists: List<Playlist>, keepUpdatedAt: Boolean) {
         appDatabase.playlistDao.upsertAll(
             roomPlaylists = playlists.map {
-                it.copy(
-                    lastUpdatedMillis = DateUtils.now(),
-                ).toRoomPlaylist()
+                if (keepUpdatedAt) {
+                    it
+                } else {
+                    it.copy(
+                        lastUpdatedMillis = max(DateUtils.now(), it.lastUpdatedMillis ?: 0L),
+                    )
+                }.toRoomPlaylist()
             }
         )
     }
@@ -71,6 +76,9 @@ internal class RoomPlaylistLocalDataSourceImpl(
             playlistId = playlistId
         ).map { it?.toPlaylist() }
     }
+
+    override suspend fun getFromRemoteId(remoteId: Uuid): Playlist? =
+        appDatabase.playlistDao.getFromRemoteId(remoteId = remoteId)?.toPlaylist()
 
     override fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
         appDatabase.playlistDao.getFromIds(playlistIds).map { list ->
@@ -168,11 +176,6 @@ internal class RoomPlaylistLocalDataSourceImpl(
             list.map { it.toPlaylistPreview() }
         }
 
-    override fun getMostListened(): Flow<List<PlaylistPreview>> =
-        appDatabase.playlistDao.getMostListened().map { list ->
-            list.map { it.toPlaylistPreview() }
-        }
-
     override fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?> =
         appDatabase.playlistDao.getPlaylistPreview(playlistId).map { it?.toPlaylistPreview() }
 
@@ -191,6 +194,20 @@ internal class RoomPlaylistLocalDataSourceImpl(
 
     override suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid> =
         appDatabase.playlistDao.getAllRemoteIdsPossessedByUser()
+
+    override suspend fun deleteAllRemoteFields() {
+        appDatabase.playlistDao.deleteAllRemoteFields()
+    }
+
+    override suspend fun deleteAllEmptyExceptFavorite() {
+        appDatabase.playlistDao.deleteAllEmptyExceptFavorite()
+    }
+
+    override suspend fun getLatestUpdatedAt(): Long? =
+        appDatabase.playlistDao.getLatestUpdatedAt()
+
+    override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =
+        appDatabase.playlistDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
 }
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

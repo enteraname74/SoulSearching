@@ -27,4 +27,9 @@ class UserResource {
         val parent: UserResource = UserResource(),
         val id: Uuid
     )
+
+    @Resource("storage")
+    data class Storage(
+        val parent: UserResource = UserResource(),
+    )
 }

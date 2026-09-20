@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.remote.di
 
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.CoverRemoteDataSourceImpl
+import com.github.enteraname74.soulsearching.remote.datasourceimpl.ListeningStatisticsRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.LyricsRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.MusicRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.PlayerRemoteDataSourceImpl
@@ -12,17 +13,19 @@ import com.github.enteraname74.soulsearching.remote.utils.PlayerUserCommunicatio
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.code.UserInscriptionCodeRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.cover.CoverRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.listeningstatistics.ListeningStatisticsRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.lyrics.LyricsRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserRemoteDataSource
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val remoteModule = module {
+val remoteModule: Module = module {
     factory { provideHttpClient() }
     single(named(HttpClientNames.CLOUD)) {
         provideCloudHttpClient(
@@ -47,6 +50,7 @@ val remoteModule = module {
             client = get(named(HttpClientNames.CLOUD)),
             cloudPreferencesDataSource = get(),
             workDispatcher = get(),
+            coverFileManager = get(),
         )
     }
 
@@ -67,6 +71,13 @@ val remoteModule = module {
 
     factory<UserInscriptionCodeRemoteDataSource> {
         UserInscriptionCodeRemoteDataSourceImpl(
+            client = get(named(HttpClientNames.CLOUD)),
+            cloudPreferencesDataSource = get()
+        )
+    }
+
+    factory<ListeningStatisticsRemoteDataSource> {
+        ListeningStatisticsRemoteDataSourceImpl(
             client = get(named(HttpClientNames.CLOUD)),
             cloudPreferencesDataSource = get()
         )

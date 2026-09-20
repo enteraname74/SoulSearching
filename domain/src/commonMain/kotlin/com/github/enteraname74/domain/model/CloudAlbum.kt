@@ -23,7 +23,7 @@ data class CloudAlbum(
             remoteId = id,
             albumName = name,
             artist = artist,
-            cover = coverPath?.let { Cover.Url(it) },
+            cover = coverPath?.let { Cover.Url(it, null) },
             addedDate = Clock.System.now(),
             nbPlayed = nbPlayed,
             isInQuickAccess = isInQuickAccess,

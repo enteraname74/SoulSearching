@@ -15,9 +15,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import coil3.annotation.ExperimentalCoilApi
+import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
-import com.github.enteraname74.soulsearching.feature.appinit.MissingPermissionsComposable
+import com.github.enteraname74.soulsearching.feature.appinit.composable.MissingPermissionsComposable
 import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -33,6 +34,10 @@ class MainActivity : AppCompatActivity() {
     private val applicationViewModel: ApplicationViewModel by viewModel()
     private val playbackManager: PlaybackManager by inject()
     private val workDispatcher: WorkDispatcher by inject()
+
+    private val workScope = CoroutineScope(workDispatcher.dispatcher)
+
+    private val cloudBackgroundSyncJob: CloudBackgroundSyncJob by inject()
 
     @OptIn(ExperimentalCoilApi::class)
     @SuppressLint("CoroutineCreationDuringComposition", "UnspecifiedRegisterReceiverFlag")
@@ -131,8 +136,11 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) {
-            CoroutineScope(workDispatcher.dispatcher).launch {
+            workScope.launch {
                 playbackManager.stopPlayback(resetPlayedList = false)
+            }
+            workScope.launch {
+                cloudBackgroundSyncJob.launchIfPossible(syncStats = true)
             }
         }
     }

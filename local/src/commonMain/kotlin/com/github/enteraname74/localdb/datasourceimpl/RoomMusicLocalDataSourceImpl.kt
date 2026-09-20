@@ -431,11 +431,6 @@ internal class RoomMusicLocalDataSourceImpl(
     override suspend fun getAllMusicLocalPath(): List<String> =
         appDatabase.musicDao.getAllMusicLocalPath()
 
-    override fun getMostListened(): Flow<List<Music>> =
-        appDatabase.musicDao.getMostListened().map { list ->
-            list.map { it.toMusic() }
-        }
-
     override fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
         appDatabase.musicDao.getAllMonthMusics().map { list ->
             list.map { it.toMonthMusicsPreview() }
@@ -485,12 +480,12 @@ internal class RoomMusicLocalDataSourceImpl(
             albumId = albumId,
         )?.toMusic()
 
-    override suspend fun clearRemoteIds(remoteIds: List<String>) {
-        appDatabase.musicDao.clearRemoteIds(remoteIds)
+    override suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>) {
+        appDatabase.musicDao.deleteAllRemoteFieldsOfIds(remoteIds)
     }
 
-    override suspend fun deleteAllRemoteIds() {
-        appDatabase.musicDao.deleteAllRemoteIds()
+    override suspend fun deleteAllRemoteFields() {
+        appDatabase.musicDao.deleteAllRemoteFields()
     }
 
     override suspend fun deleteNotExisting() {
@@ -538,6 +533,9 @@ internal class RoomMusicLocalDataSourceImpl(
 
         return limit to offset
     }
+
+    override suspend fun getAllRemoteToLocalIds(): Map<String, Uuid> =
+        appDatabase.musicDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.musicId) }
 }
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

@@ -1,9 +1,11 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
 import uk.co.caprica.vlcj.player.base.MediaPlayer
@@ -11,14 +13,19 @@ import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.base.State
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 import java.io.File
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
 
 class SoulSearchingDesktopPlayerImpl(
     workDispatcher: WorkDispatcher,
     private val signedPlaybackUrlProvider: SignedPlaybackUrlProvider,
+    private val playerRepository: PlayerRepository,
 ) :
     SoulSearchingPlayer,
     MediaPlayerEventAdapter() {
+    private var startPlayBuffered: Boolean = false
+    private var startPauseBuffered: Boolean = false
     private val workScope = CoroutineScope(workDispatcher.dispatcher)
 
     private var player: MediaPlayer = AudioPlayerComponent().mediaPlayer()
@@ -36,6 +43,10 @@ class SoulSearchingDesktopPlayerImpl(
     }
 
     override fun playing(mediaPlayer: MediaPlayer?) {
+        if (startPlayBuffered) {
+            startPlayBuffered = false
+            return
+        }
         super.playing(mediaPlayer)
         workScope.launch {
             listener?.onPlay()
@@ -43,6 +54,10 @@ class SoulSearchingDesktopPlayerImpl(
     }
 
     override fun paused(mediaPlayer: MediaPlayer?) {
+        if (startPauseBuffered) {
+            startPauseBuffered = false
+            return
+        }
         super.paused(mediaPlayer)
         workScope.launch {
             listener?.onPause()
@@ -72,13 +87,13 @@ class SoulSearchingDesktopPlayerImpl(
     override suspend fun setMusic(music: Music) {
         try {
             if (player.status().state() == State.PLAYING) {
-                player.controls().pause()
+                player.controls().stop()
             }
             // Necessary to avoid blocking the app.
             delay(500.milliseconds)
             when {
                 music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
-                    player.media().prepare(music.path)
+                    safeStartPaused(music.localPath!!)
                 }
                 music.remotePath != null -> {
                     setFromRemote(music = music)
@@ -93,8 +108,18 @@ class SoulSearchingDesktopPlayerImpl(
         }
     }
 
+    /**
+     * Because player startPaused method quickly start playing the song then pauses it,
+     * we need to avoid emitting events.
+     */
+    private fun safeStartPaused(path: String) {
+        startPlayBuffered = true
+        startPauseBuffered = true
+        player.media().startPaused(path)
+    }
+
     private suspend fun setFromRemote(music: Music) {
-        val token = signedPlaybackUrlProvider.getUpdatedToken()
+        val token = signedPlaybackUrlProvider.getUpdatedToken(music)
 
         if (token == null || music.remoteId == null) {
             listener?.onError()
@@ -104,11 +129,21 @@ class SoulSearchingDesktopPlayerImpl(
             token = token,
             remoteId = music.remoteId.orEmpty(),
         )
-        player.media().prepare(musicUrl)
+        safeStartPaused(musicUrl)
     }
 
     override suspend fun play() {
+        if (signedPlaybackUrlProvider.shouldReloadMusic()) {
+            reloadCurrentMusic()
+        }
         player.controls().play()
+    }
+
+    private suspend fun reloadCurrentMusic() {
+        val currentMusic = playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
+        val currentProgress = getProgress()
+        setMusic(music = currentMusic)
+        seekToPosition(currentProgress.toInt(DurationUnit.MILLISECONDS))
     }
 
     override suspend fun pause() {
@@ -127,6 +162,16 @@ class SoulSearchingDesktopPlayerImpl(
         return player.status().isPlaying
     }
 
+    override suspend fun getState(): SoulSearchingPlayer.State {
+        val state = player.status().state()
+
+        return when (state) {
+            State.PLAYING -> SoulSearchingPlayer.State.Playing
+            State.PAUSED -> SoulSearchingPlayer.State.Paused
+            else -> SoulSearchingPlayer.State.Idle
+        }
+    }
+
     override suspend fun dismiss() {
         try {
             player.controls().stop()
@@ -136,20 +181,20 @@ class SoulSearchingDesktopPlayerImpl(
         }
     }
 
-    override suspend fun getProgress(): Int =
+    override suspend fun getProgress(): Duration =
         try {
             player.status().time().toInt().positive()
         } catch (_: Exception) {
             0
-        }
+        }.milliseconds
 
-    override suspend fun getMusicDuration(): Int =
+    override suspend fun getMusicDuration(): Duration =
         try {
             player.status().length().toInt().positive()
         } catch (e: Exception) {
             println("PLAYER -- MUSIC DURATION EXC: $e")
             0
-        }
+        }.milliseconds
 
     override suspend fun setPlayerVolume(volume: Float) {
 

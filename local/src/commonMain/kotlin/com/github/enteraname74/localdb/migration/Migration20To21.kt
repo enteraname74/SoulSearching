@@ -303,6 +303,36 @@ object Migration20To21 : Migration(20, 21) {
             )
             """.trimIndent()
         )
+        executeSQL(
+            """
+            CREATE TABLE IF NOT EXISTS RoomUserStorage (
+                id TEXT NOT NULL,
+                max TEXT NOT NULL,
+                current REAL NOT NULL,
+                PRIMARY KEY(id)
+            )
+            """.trimIndent()
+        )
+        executeSQL(
+            """
+            CREATE TABLE IF NOT EXISTS RoomListeningStatistics (
+                id TEXT NOT NULL,
+                nbPlayed INTEGER NOT NULL,
+                timeListened INTEGER,
+                musicId TEXT,
+                playlistId TEXT,
+                albumId TEXT,
+                artistId TEXT,
+                month INTEGER NOT NULL,
+                year INTEGER NOT NULL,
+                PRIMARY KEY(id),
+                FOREIGN KEY(musicId) REFERENCES RoomMusic(musicId) ON DELETE CASCADE,
+                FOREIGN KEY(playlistId) REFERENCES RoomPlaylist(playlistId) ON DELETE CASCADE,
+                FOREIGN KEY(albumId) REFERENCES RoomAlbum(albumId) ON DELETE CASCADE,
+                FOREIGN KEY(artistId) REFERENCES RoomArtist(artistId) ON DELETE CASCADE
+            )
+            """.trimIndent()
+        )
     }
 
     private suspend fun SQLiteConnection.restoreExistingData() {
@@ -420,6 +450,10 @@ object Migration20To21 : Migration(20, 21) {
         executeSQL("CREATE INDEX IF NOT EXISTS index_RoomPlayerMusic_playedListId ON RoomPlayerMusic(playedListId)")
         executeSQL("CREATE INDEX IF NOT EXISTS index_RoomPlayerMusic_musicId ON RoomPlayerMusic(musicId)")
         executeSQL("CREATE INDEX IF NOT EXISTS index_RoomSharedPlayedListUser_playedListId ON RoomSharedPlayedListUser(playedListId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomListeningStatistics_musicId ON RoomListeningStatistics(musicId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomListeningStatistics_playlistId ON RoomListeningStatistics(playlistId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomListeningStatistics_albumId ON RoomListeningStatistics(albumId)")
+        executeSQL("CREATE INDEX IF NOT EXISTS index_RoomListeningStatistics_artistId ON RoomListeningStatistics(artistId)")
     }
 
     private suspend fun SQLiteConnection.dropBackupTables() {
@@ -650,6 +684,7 @@ object Migration20To21 : Migration(20, 21) {
                 "                    AND music.isHidden = 0 \n" +
                 "                    AND scope != 'SharedPlayedList' \n" +
                 "                    AND music.coverId IS NOT NULL \n" +
+                "                    ORDER BY name ASC\n" +
                 "                    LIMIT 1\n" +
                 "                )\n" +
                 "            ELSE playlist.coverId END\n" +
@@ -661,6 +696,7 @@ object Migration20To21 : Migration(20, 21) {
                 "            AND playlist.playlistId = musicPlaylist.playlistId \n" +
                 "            AND music.isHidden = 0 \n" +
                 "            AND scope != 'SharedPlayedList' \n" +
+                "            ORDER BY name ASC\n" +
                 "            LIMIT 1\n" +
                 "        ) AS musicCoverPath,\n" +
                 "        (\n" +
@@ -670,6 +706,7 @@ object Migration20To21 : Migration(20, 21) {
                 "            AND playlist.playlistId = musicPlaylist.playlistId \n" +
                 "            AND music.isHidden = 0 \n" +
                 "            AND scope != 'SharedPlayedList' \n" +
+                "            ORDER BY name ASC\n" +
                 "            LIMIT 1\n" +
                 "        ) AS musicCoverUrl,\n" +
                 "        playlist.isInQuickAccess, \n" +
@@ -693,6 +730,13 @@ object Migration20To21 : Migration(20, 21) {
         END
         """.trimIndent()
 
+    /*
+     * Version 20 stored java.time.LocalDateTime.toString(), created from LocalDateTime.now().
+     * Those values represent the device's local wall-clock time and contain no UTC offset.
+     * The `utc` modifier converts that local time to UTC before producing the epoch value.
+     * `%f` preserves the millisecond part that would otherwise be lost by `%s`.
+     */
     private fun localDateTimeToMillis(column: String): String =
-        "CAST(strftime('%s', $column) AS INTEGER) * 1000"
+        "CAST(strftime('%s', $column, 'utc') AS INTEGER) * 1000 + " +
+            "CAST(substr(strftime('%f', $column, 'utc'), 4, 3) AS INTEGER)"
 }

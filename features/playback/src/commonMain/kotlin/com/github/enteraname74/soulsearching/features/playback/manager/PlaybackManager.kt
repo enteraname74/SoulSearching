@@ -19,6 +19,8 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerRepository
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementMusicListeningTimeUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementMusicNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
@@ -59,7 +61,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -80,6 +84,8 @@ class PlaybackManager(
     private val syncPlayedListMusicsUseCase: SyncPlayedListMusicsUseCase,
     private val playbackEnvironment: SoulSearchingPlaybackEnvironment,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
+    private val incrementMusicNbPlayedUseCase: IncrementMusicNbPlayedUseCase,
+    private val incrementMusicListeningTimeUseCase: IncrementMusicListeningTimeUseCase,
     workDispatcher: WorkDispatcher,
 ) : KoinComponent, SoulSearchingPlayer.Listener {
     private val notification: SoulSearchingNotification by inject()
@@ -95,8 +101,8 @@ class PlaybackManager(
             override suspend fun isPlaying(): Boolean =
                 player.isPlaying() == true
 
-            override suspend fun getMusicPosition(): Int =
-                this@PlaybackManager.getMusicPosition()
+            override suspend fun getPlayerProgress(): Duration =
+                this@PlaybackManager.getPlayerProgress()
         },
     )
 
@@ -121,7 +127,7 @@ class PlaybackManager(
     val currentScope: Flow<PlayedListScope?> = playerRepository
         .getCurrentScope()
 
-    val currentSongProgressionState: Flow<Int> = playbackProgressJob.state
+    val currentSongProgressionState: Flow<Duration> = playbackProgressJob.state
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentCover: Flow<ImageBitmap?> =
@@ -220,6 +226,7 @@ class PlaybackManager(
         notificationListener()
         sharedListCurrentMusicUpdateListener()
         noSharedPlayedListListener()
+        musicListeningTimeJob()
     }
 
     private fun init() {
@@ -273,7 +280,7 @@ class PlaybackManager(
                 /*
                 We drop the first value of the flow to avoid incrementing the music total playing number
                 when we relaunch the app.
-                There could we a case where we quit the app before the increment was done.
+                There could be a case where we quit the app before the increment was done.
                 Thus, relaunching the app would never increment the current music.
                 But this will do for now.
                  */
@@ -285,6 +292,22 @@ class PlaybackManager(
                         updateMusicNbPlayedJob?.cancel()
                     }
                 }
+        }
+    }
+
+    private fun musicListeningTimeJob() {
+        launchWithInit {
+            state.collectLatest { state ->
+                (state as? PlaybackManagerState.Data)?.let { dataState ->
+                    while (dataState.isPlaying) {
+                        delay(1.seconds)
+                        incrementMusicListeningTimeUseCase(
+                            musicId = dataState.currentMusic.musicId,
+                            addedListenedTime = 1.seconds,
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -352,7 +375,6 @@ class PlaybackManager(
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun notificationListener() {
         launchWithInit {
             notificationDataFlow.collectLatest { data ->
@@ -424,8 +446,12 @@ class PlaybackManager(
                 when (state) {
                     PlayedListState.Playing if scope?.isAdmin == true -> {
                         ensureReadyForPlayback()
-                        if (player.isPlaying() == false) {
-                            player.play()
+                        when (player.getState()) {
+                            SoulSearchingPlayer.State.Playing -> {
+                                // no-op
+                            }
+                            SoulSearchingPlayer.State.Paused -> player.play()
+                            SoulSearchingPlayer.State.Idle -> restoreAndPlay()
                         }
                         playbackProgressJob.launchDurationJobIfNecessary()
                     }
@@ -448,6 +474,15 @@ class PlaybackManager(
         }
     }
 
+    private suspend fun restoreAndPlay() {
+        val currentMusic = playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
+        val currentProgress = playerRepository.getCurrentProgress().firstOrNull() ?: 0
+
+        player.setMusic(currentMusic)
+        player.seekToPosition(currentProgress)
+        player.play()
+    }
+
     fun getCachedPlaylist(playlistId: String): Flow<PlayedListToContinue?> =
         playerRepository.getCachedPlayedList(playlistId)
 
@@ -460,9 +495,9 @@ class PlaybackManager(
     }
 
     /**
-     * Retrieves the current position in the current played song in milliseconds.
+     * Retrieves the current progress of the current played song.
      */
-    suspend fun getMusicPosition(): Int =
+    private suspend fun getPlayerProgress(): Duration =
         player.getProgress()
 
     /**
@@ -533,13 +568,13 @@ class PlaybackManager(
     suspend fun seekForward() {
         withAdminRight {
             val currentPosMillis = player.getProgress()
-            val currentMusicDuration = player.getMusicDuration().takeIf { it > 0 } ?: return@withAdminRight
-            val newPosMillis = currentPosMillis + INNER_SEEK_MILLIS
+            val currentMusicDuration = player.getMusicDuration().takeIf { it > Duration.ZERO } ?: return@withAdminRight
+            val newPos = currentPosMillis + INNER_SEEK_MILLIS
 
-            if (newPosMillis >= currentMusicDuration) {
+            if (newPos >= currentMusicDuration) {
                 next()
             } else {
-                player.seekToPosition(newPosMillis)
+                player.seekToPosition(newPos.toInt(DurationUnit.MILLISECONDS))
             }
         }
     }
@@ -551,12 +586,12 @@ class PlaybackManager(
     suspend fun seekBackward() {
         withAdminRight {
             val currentPosMillis = player.getProgress()
-            val newPosMillis = currentPosMillis - INNER_SEEK_MILLIS
+            val newPos = currentPosMillis - INNER_SEEK_MILLIS
 
-            if (newPosMillis < 0) {
+            if (newPos < Duration.ZERO) {
                 previous()
             } else {
-                player.seekToPosition(newPosMillis)
+                player.seekToPosition(newPos.toInt(DurationUnit.MILLISECONDS))
             }
         }
     }
@@ -630,8 +665,7 @@ class PlaybackManager(
                     playerRepository.getCurrentMusic().firstOrNull()?.music ?: return@withAdminRight
 
                 ensureReadyForPlayback()
-                player.setMusic(currentMusic)
-                player.play()
+                player.seekToPosition(0)
                 playerRepository.setPlayedListState(PlayedListState.Playing)
                 launchMusicCount(currentMusic.musicId)
             } else {
@@ -648,7 +682,7 @@ class PlaybackManager(
             val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return@withAdminRight
             val size: Int = playerRepository.getSize().firstOrNull() ?: return@withAdminRight
             val shouldRewind =
-                settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD && !skipRewind
+                settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getPlayerProgress() > REWIND_THRESHOLD && !skipRewind
 
             if (shouldRewind || playerMode == PlayerMode.Loop || size == 1) {
                 val currentMusicId: Uuid =
@@ -690,8 +724,8 @@ class PlaybackManager(
     private fun launchMusicCount(musicId: Uuid) {
         updateMusicNbPlayedJob?.cancel()
         updateMusicNbPlayedJob = workScope.launch {
-            delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED.milliseconds)
-            commonMusicUseCase.incrementNbPlayed(musicId = musicId)
+            delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
+            incrementMusicNbPlayedUseCase(musicId)
         }
     }
 
@@ -864,10 +898,10 @@ class PlaybackManager(
     }
 
     companion object {
-        private const val REWIND_THRESHOLD: Long = 5_000
-        private const val WAIT_TIME_BEFORE_UPDATE_NB_PLAYED: Long = 3_000
+        private val REWIND_THRESHOLD: Duration = 5.seconds
+        private val WAIT_TIME_BEFORE_UPDATE_NB_PLAYED: Duration = 3.seconds
 
-        private const val INNER_SEEK_MILLIS: Int = 5_000
+        private val INNER_SEEK_MILLIS: Duration = 5.seconds
     }
 
     enum class KeyboardAction {

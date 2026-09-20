@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 // TODO VIEW HOLDER 2.0: Remove actions
+@Deprecated("Use SoulViewModelHolderV2")
 abstract class SoulViewModelHolder<Actions, Navigation, State>(
     initialState: State,
 ) : ViewModel() {
@@ -62,8 +63,10 @@ abstract class SoulViewModelHolder<Actions, Navigation, State>(
         val uiNavigationState by navigationState.collectAsStateWithLifecycle()
 
         LaunchedEffect(uiNavigationState) {
-            uiNavigationState?.let { navigation.it() }
-            consumeNavigation()
+            uiNavigationState?.let {
+                navigation.it()
+                consumeNavigation()
+            }
         }
 
         Content(actions, uiState)

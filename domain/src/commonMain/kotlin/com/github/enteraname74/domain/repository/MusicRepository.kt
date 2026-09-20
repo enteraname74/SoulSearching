@@ -111,9 +111,9 @@ interface MusicRepository {
 
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid, page: Int, pageSize: Int): List<Music>
 
-    suspend fun getAllMusicFromMonth(month: String) : List<Music>
+    suspend fun getAllMusicFromMonth(month: String): List<Music>
 
-    suspend fun getAllMusicFromFolder(folder: String) : List<Music>
+    suspend fun getAllMusicFromFolder(folder: String): List<Music>
 
     suspend fun getAllMusicFromFolder(folder: String, page: Int, pageSize: Int) : List<Music>
 
@@ -129,8 +129,6 @@ interface MusicRepository {
 
     suspend fun getAllMusicLocalPath(): List<String>
 
-    fun getMostListened(): Flow<List<Music>>
-
     fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>>
 
     fun getMonthMusicPreview(month: String): Flow<MonthMusicsPreview?>
@@ -144,8 +142,20 @@ interface MusicRepository {
     suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music>
 
     suspend fun getDeletedRemoteMusicIds(): List<String>
-    suspend fun clearRemoteIds(remoteIds: List<String>)
-    suspend fun deleteAllRemoteIds()
+
+    /**
+     * Will delete all remote fields of all selected musics like:
+     * - remote id
+     * - cover url
+     */
+    suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>)
+
+    /**
+     * Will delete all remote fields of all musics like:
+     * - remote id
+     * - cover url
+     */
+    suspend fun deleteAllRemoteFields()
     suspend fun deleteNotExisting()
     suspend fun getAllToSendToCloud(): List<Music>
     suspend fun updateMusicToCloud(music: Music): CloudMusic?
@@ -162,7 +172,6 @@ interface MusicRepository {
 
     suspend fun deleteSharedPlayedListMusics()
 
-    suspend fun fetch(url: String): CloudMusic
     suspend fun getFromPath(path: String): Music?
 
     /**

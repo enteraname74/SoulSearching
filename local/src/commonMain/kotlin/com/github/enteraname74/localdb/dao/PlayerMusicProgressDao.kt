@@ -9,8 +9,24 @@ import kotlin.uuid.Uuid
 
 @Dao
 interface PlayerMusicProgressDao {
-    @Upsert
-    suspend fun upsert(progress: RoomPlayerMusicProgress)
+    @Query(
+        """
+            INSERT INTO RoomPlayerMusicProgress (
+                id, playedListId, playerMusicId, progress
+            )
+            VALUES (:id, :playedListId, :playerMusicId, :progress)
+            ON CONFLICT(id) DO UPDATE SET
+                playedListId = excluded.playedListId,
+                playerMusicId = excluded.playerMusicId,
+                progress = excluded.progress
+        """
+    )
+    suspend fun upsert(
+        id: String,
+        playedListId: Uuid,
+        playerMusicId: String,
+        progress: Int,
+    )
 
     @Query(
         """

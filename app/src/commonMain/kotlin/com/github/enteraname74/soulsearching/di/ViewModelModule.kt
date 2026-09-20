@@ -3,12 +3,12 @@ package com.github.enteraname74.soulsearching.di
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.folder.FolderBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetViewModel
-import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
-import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingViewModel
+import com.github.enteraname74.soulsearching.feature.appinit.AppInitSongFetchingViewHolder
 import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
 import com.github.enteraname74.soulsearching.feature.application.MainAppViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.ModifyAlbumViewModel
@@ -17,20 +17,14 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.ModifyPlaylistViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.migration.MigrationViewModel
-import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceViewModel
+import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceViewHolder
+import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailViewHolder
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
-import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.domain.SelectedAlbumViewModel
-import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.domain.SelectedArtistViewModel
-import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.domain.SelectedFolderViewModel
-import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.domain.SelectedMonthViewModel
-import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.domain.SelectedPlaylistViewModel
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudViewHolder
-import com.github.enteraname74.soulsearching.feature.settings.cloud.code.SettingsCloudCodesViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations.SettingsCloudExplanationsViewHolder
-import com.github.enteraname74.soulsearching.feature.settings.cloud.fetchmusic.SettingsCloudFetchMusicViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.join.SettingsCloudSharedListJoinViewHolder
@@ -38,17 +32,19 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.Setti
 import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.user.code.SettingsCloudCodesViewHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.user.data.SettingsCloudUserDataViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.users.SettingsCloudUsersViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeViewModel
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain.SettingsThemeSelectionViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.SettingsAddMusicsViewModel
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFoldersViewModel
+import com.github.enteraname74.soulsearching.feature.managefolders.ManageFoldersViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreenViewModel
 import com.github.enteraname74.soulsearching.feature.settings.shortcuts.SettingsShortcutsViewHolder
-import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsViewModel
+import com.github.enteraname74.soulsearching.feature.settings.statistics.SettingsStatisticsViewHolder
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -59,11 +55,11 @@ internal val viewModelModule: Module = module {
     // Settings
     viewModelOf(::SettingsScreenViewModel)
     viewModelOf(::SettingsAddMusicsViewModel)
-    viewModelOf(::SettingsAllFoldersViewModel)
+    viewModelOf(::ManageFoldersViewHolder)
     viewModelOf(::SettingsColorThemeViewModel)
     viewModelOf(::SettingsMainPagePersonalisationViewModel)
     viewModelOf(::SettingsPlayerPersonalisationViewModel)
-    viewModelOf(::SettingsStatisticsViewModel)
+    viewModelOf(::SettingsStatisticsViewHolder)
     viewModelOf(::SettingsThemeSelectionViewModel)
     viewModelOf(::SettingsColorSeedViewModel)
     viewModelOf(::SettingsAdvancedViewModel)
@@ -79,9 +75,9 @@ internal val viewModelModule: Module = module {
     viewModelOf(::SettingsCloudSharedListViewHolder)
     viewModelOf(::SettingsCloudSyncViewHolder)
     viewModelOf(::SettingsCloudSharedListJoinViewHolder)
-    viewModelOf(::SettingsCloudFetchMusicViewHolder)
     viewModelOf(::SettingsCloudExplanationsViewHolder)
     viewModelOf(::SettingsShortcutsViewHolder)
+    viewModelOf(::SettingsCloudUserDataViewHolder)
 
     // Main page
     viewModelOf(::MainPageViewModel)
@@ -89,8 +85,8 @@ internal val viewModelModule: Module = module {
     viewModelOf(::MainAppViewModel)
 
     // Song fetching and management
-    viewModelOf(::AppInitSongFetchingViewModel)
-    viewModelOf(::MultipleArtistsChoiceViewModel)
+    viewModelOf(::AppInitSongFetchingViewHolder)
+    viewModelOf(::MultipleArtistsChoiceViewHolder)
 
     // Modify elements
     viewModelOf(::ModifyAlbumViewModel)
@@ -98,12 +94,7 @@ internal val viewModelModule: Module = module {
     viewModelOf(::ModifyArtistViewModel)
     viewModelOf(::ModifyPlaylistViewModel)
 
-    // Selected elements
-    viewModelOf(::SelectedAlbumViewModel)
-    viewModelOf(::SelectedArtistViewModel)
-    viewModelOf(::SelectedPlaylistViewModel)
-    viewModelOf(::SelectedFolderViewModel)
-    viewModelOf(::SelectedMonthViewModel)
+    viewModelOf(::MusicListDetailViewHolder)
 
     // Player
     viewModelOf(::PlayerViewModel)

@@ -4,6 +4,8 @@ import androidx.room3.DatabaseView
 import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Cover.CoverFile.DevicePathSpec
+import com.github.enteraname74.domain.model.statistics.ListeningStatistics
+import com.github.enteraname74.domain.util.DateUtils
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
@@ -11,6 +13,7 @@ import kotlin.uuid.Uuid
     """
         SELECT 
         artist.artistId AS id, 
+        artist.remoteId,
         artist.artistName AS name, 
         artist.coverFolderKey,
         artist.addedDate, 
@@ -59,6 +62,7 @@ import kotlin.uuid.Uuid
 )
 data class RoomArtistPreview(
     val id: Uuid,
+    val remoteId: Uuid?,
     val name: String,
     val addedDate: Instant,
     val nbPlayed: Int,
@@ -82,12 +86,21 @@ data class RoomArtistPreview(
                 )
             },
         )
-        val remoteCover = coverUrl?.let { Cover.Url(it) } ?: musicCoverUrl?.let { Cover.Url(it) }
 
-        val usedCover = if (remoteCover == null) {
-            localCover
-        } else {
-            localCover.takeIf { !it.isEmpty() } ?: remoteCover
+        val usedCover: Cover? = when {
+            coverId != null -> localCover
+            coverUrl != null -> {
+                val fallback = if (localCover.isEmpty() && musicCoverUrl != null) {
+                    Cover.Url(musicCoverUrl, localCover)
+                } else {
+                    localCover
+                }
+
+                Cover.Url(coverUrl, fallback)
+            }
+            musicCoverPath != null -> localCover
+            musicCoverUrl != null -> Cover.Url(musicCoverUrl, localCover)
+            else -> null
         }
 
         return ArtistPreview(
@@ -96,7 +109,21 @@ data class RoomArtistPreview(
             nbPlayed = nbPlayed,
             totalMusics = totalMusics,
             cover = usedCover,
-            isInQuickAccess = isInQuickAccess
+            isInQuickAccess = isInQuickAccess,
+            remoteId = remoteId,
+        )
+    }
+
+    fun toArtistStats(): ListeningStatistics.ArtistStats {
+        val localMonthYear = DateUtils.currentMonthYear()
+
+        return ListeningStatistics.ArtistStats(
+            artist = toArtistPreview(),
+            nbPlayed = nbPlayed,
+            // Dummy values, not used here
+            id = "$localMonthYear-$id",
+            localMonthYear = localMonthYear,
+            lastUpdatedMillis = DateUtils.now(),
         )
     }
 }

@@ -4,6 +4,7 @@ import com.github.enteraname74.domain.model.CloudMusic
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.remote.ext.appendCoverFile
 import com.github.enteraname74.soulsearching.remote.ext.appendFile
 import com.github.enteraname74.soulsearching.remote.ext.appendJson
 import com.github.enteraname74.soulsearching.remote.ext.contentType
@@ -18,6 +19,7 @@ internal actual suspend fun uploadMusicFile(
     client: HttpClient,
     baseUrl: String,
     music: Music,
+    coverPath: String?,
     workDispatcher: WorkDispatcher,
 ): SoulResult<CloudMusic> {
     val file: File = music.localPath
@@ -39,6 +41,13 @@ internal actual suspend fun uploadMusicFile(
                         key = "metadata",
                         value = music.toMusicUpload(),
                     )
+                    coverPath?.let {
+                        appendCoverFile(
+                            key = "cover",
+                            path = it,
+                            workDispatcher = workDispatcher,
+                        )
+                    }
                 }
             )
         }

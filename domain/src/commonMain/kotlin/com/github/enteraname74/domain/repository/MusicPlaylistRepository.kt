@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.model.MusicPlaylist
+import com.github.enteraname74.domain.model.SoulResult
 import kotlin.uuid.Uuid
 
 interface MusicPlaylistRepository {
@@ -10,13 +11,9 @@ interface MusicPlaylistRepository {
      */
     suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist)
 
-    suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>)
+    suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>, keepUpdatedAt: Boolean)
 
-    /**
-     * Deletes a MusicPlaylist.
-     * It is the equivalent of removing a Music from a Playlist.
-     */
-    suspend fun deleteMusicFromPlaylist(musicId: Uuid, playlistId: Uuid)
+    suspend fun deleteFromPlaylist(musicIds: List<Uuid>, playlistId: Uuid)
 
     /**
      * Tries to retrieve a MusicPlaylist from given information.

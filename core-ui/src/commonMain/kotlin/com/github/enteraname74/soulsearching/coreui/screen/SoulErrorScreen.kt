@@ -12,12 +12,12 @@ fun SoulErrorScreen(
     text: String,
     title: String? = strings.anErrorOccurred,
 ) {
-   SoulTemplateScreen(
-       leftAction = leftAction,
-       text = text,
-       buttonSpec = null,
-       rightAction = null,
-       title = title,
-       icon = CoreRes.drawable.ic_error,
-   )
+    SoulTemplateScreen(
+        leftAction = leftAction,
+        text = text,
+        buttonSpec = null,
+        rightAction = null,
+        title = title,
+        icon = CoreRes.drawable.ic_error,
+    )
 }

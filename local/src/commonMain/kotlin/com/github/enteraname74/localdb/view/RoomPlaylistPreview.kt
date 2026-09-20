@@ -3,12 +3,15 @@ package com.github.enteraname74.localdb.view
 import androidx.room3.DatabaseView
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.PlaylistPreview
+import com.github.enteraname74.domain.model.statistics.ListeningStatistics
+import com.github.enteraname74.domain.util.DateUtils
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 @DatabaseView(
     """
         SELECT playlist.playlistId AS id, 
+        playlist.remoteId,
         playlist.name, 
         playlist.isFavorite, 
         playlist.addedDate, 
@@ -28,6 +31,7 @@ import kotlin.uuid.Uuid
                     AND music.isHidden = 0 
                     AND scope != 'SharedPlayedList' 
                     AND music.coverId IS NOT NULL 
+                    ORDER BY name ASC
                     LIMIT 1
                 )
             ELSE playlist.coverId END
@@ -39,6 +43,7 @@ import kotlin.uuid.Uuid
             AND playlist.playlistId = musicPlaylist.playlistId 
             AND music.isHidden = 0 
             AND scope != 'SharedPlayedList' 
+            ORDER BY name ASC
             LIMIT 1
         ) AS musicCoverPath,
         (
@@ -48,6 +53,7 @@ import kotlin.uuid.Uuid
             AND playlist.playlistId = musicPlaylist.playlistId 
             AND music.isHidden = 0 
             AND scope != 'SharedPlayedList' 
+            ORDER BY name ASC
             LIMIT 1
         ) AS musicCoverUrl,
         playlist.isInQuickAccess, 
@@ -57,6 +63,7 @@ import kotlin.uuid.Uuid
 )
 data class RoomPlaylistPreview(
     val id: Uuid,
+    val remoteId: Uuid?,
     val isFavorite: Boolean,
     val addedDate: Instant,
     val name: String,
@@ -73,12 +80,21 @@ data class RoomPlaylistPreview(
             initialCoverPath = musicCoverPath,
             fileCoverId = coverId,
         )
-        val remoteCover = coverUrl?.let { Cover.Url(it) } ?: musicCoverUrl?.let { Cover.Url(it) }
 
-        val usedCover = if (remoteCover == null) {
-            localCover
-        } else {
-            localCover.takeIf { !it.isEmpty() } ?: remoteCover
+        val usedCover: Cover? = when {
+            coverId != null -> localCover
+            coverUrl != null -> {
+                val fallback = if (localCover.isEmpty() && musicCoverUrl != null) {
+                    Cover.Url(musicCoverUrl, localCover)
+                } else {
+                    localCover
+                }
+
+                Cover.Url(coverUrl, fallback)
+            }
+            musicCoverPath != null -> localCover
+            musicCoverUrl != null -> Cover.Url(musicCoverUrl, localCover)
+            else -> null
         }
 
         return PlaylistPreview(
@@ -89,7 +105,20 @@ data class RoomPlaylistPreview(
             cover = usedCover,
             isInQuickAccess = isInQuickAccess,
             nbPlayed = nbPlayed,
+            remoteId = remoteId,
         )
     }
 
+    fun toPlaylistStats(): ListeningStatistics.PlaylistStats {
+        val localMonthYear = DateUtils.currentMonthYear()
+
+        return ListeningStatistics.PlaylistStats(
+            playlist = toPlaylistPreview(),
+            nbPlayed = nbPlayed,
+            // Dummy values, not used here
+            id = "$localMonthYear-$id",
+            localMonthYear = localMonthYear,
+            lastUpdatedMillis = DateUtils.now(),
+        )
+    }
 }

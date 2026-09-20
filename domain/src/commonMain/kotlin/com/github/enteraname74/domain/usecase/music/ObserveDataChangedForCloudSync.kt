@@ -4,9 +4,12 @@ import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 class ObserveDataChangedForCloudSync(
     private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase,
@@ -18,8 +21,19 @@ class ObserveDataChangedForCloudSync(
     private var job: Job? = null
     private val buffer: MutableStateFlow<Buffer> = MutableStateFlow(Buffer.Idle)
 
+    private val syncStats: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    private fun tryToLaunchOrWait() {
+        if (syncDataWithCloudUseCase.state.value is SyncDataWithCloudUseCase.State.WorkingState) {
+            setBufferIfNotBlocked(Buffer.Waiting)
+        } else {
+            setBufferIfNotBlocked(Buffer.Launch(syncStats.value))
+        }
+    }
+
     operator fun invoke() {
         job?.cancel()
+        syncStatsListener()
         job = workScope.launch {
             /*
             Checks for update request.
@@ -27,11 +41,7 @@ class ObserveDataChangedForCloudSync(
              */
             launch {
                 commonMusicUseCase.observeDataChanged().collectLatest {
-                    if (syncDataWithCloudUseCase.state.value is SyncDataWithCloudUseCase.State.WorkingState) {
-                        buffer.value = Buffer.Waiting
-                    } else {
-                        buffer.value = Buffer.Launch
-                    }
+                    tryToLaunchOrWait()
                 }
             }
 
@@ -43,7 +53,7 @@ class ObserveDataChangedForCloudSync(
             launch {
                 syncDataWithCloudUseCase.state.collectLatest { syncState ->
                     if (syncState is SyncDataWithCloudUseCase.State.EndState && buffer.value == Buffer.Waiting) {
-                        buffer.value = Buffer.Launch
+                        setBufferIfNotBlocked(Buffer.Launch(syncStats.value))
                     }
                 }
             }
@@ -55,12 +65,13 @@ class ObserveDataChangedForCloudSync(
             launch {
                 buffer.collectLatest { bufferState ->
                     when (bufferState) {
-                        Buffer.Waiting, Buffer.Idle -> {
+                        Buffer.Waiting, Buffer.Idle, Buffer.Blocked -> {
                             //no-op
                         }
-                        Buffer.Launch -> {
-                            cloudBackgroundSyncJob.launchIfPossible()
-                            buffer.value = Buffer.Idle
+                        is Buffer.Launch -> {
+                            cloudBackgroundSyncJob.launchIfPossible(syncStats = bufferState.syncStats)
+                            syncStats.value = false
+                            setBufferIfNotBlocked(Buffer.Idle)
                         }
                     }
                 }
@@ -68,14 +79,39 @@ class ObserveDataChangedForCloudSync(
         }
     }
 
+    private fun syncStatsListener() {
+        workScope.launch {
+            while (true) {
+                delay(5.minutes)
+                syncStats.value = true
+                tryToLaunchOrWait()
+            }
+        }
+    }
+
+    fun setBufferIfNotBlocked(newValue: Buffer) {
+        if (buffer.value != Buffer.Blocked) {
+            buffer.value = newValue
+        }
+    }
+
+    suspend fun skipUpdate(
+        block: suspend () -> Unit
+    ) {
+        buffer.value = Buffer.Blocked
+        block()
+        buffer.value = Buffer.Idle
+    }
+
     fun cancel() {
         job?.cancel()
         job = null
     }
 
-    enum class Buffer {
-        Waiting,
-        Idle,
-        Launch,
+    sealed interface Buffer {
+        data object Waiting : Buffer
+        data object Blocked : Buffer
+        data object Idle : Buffer
+        data class Launch(val syncStats: Boolean) : Buffer
     }
 }

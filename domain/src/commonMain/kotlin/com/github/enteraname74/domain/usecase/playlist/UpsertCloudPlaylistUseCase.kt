@@ -27,7 +27,7 @@ class UpsertCloudPlaylistUseCase(
             ) ?: it.toNewPlaylist()
         }
 
-        commonPlaylistUseCase.upsertAll(playlistToSaves)
+        commonPlaylistUseCase.upsertAll(playlists = playlistToSaves, keepUpdatedAt = true)
 
         playlistToSaves.forEach { playlist ->
             cloudPlaylists.find { it.playlist.id == playlist.remoteId }?.musicIds?.let { musicRemoteIds ->
@@ -40,7 +40,8 @@ class UpsertCloudPlaylistUseCase(
                             musicId = it,
                             playlistId = playlist.playlistId,
                         )
-                    }
+                    },
+                    keepUpdatedAt = true,
                 )
 
             }
@@ -53,6 +54,7 @@ class UpsertCloudPlaylistUseCase(
         if (cloudPlaylistInfo.isFavorite) {
             commonPlaylistUseCase.getFavorite()
         } else {
-            commonPlaylistUseCase.getFromName(name = cloudPlaylistInfo.name)
+            commonPlaylistUseCase.getFromRemoteId(remoteId = cloudPlaylistInfo.id)
+                ?: commonPlaylistUseCase.getFromName(name = cloudPlaylistInfo.name)
         }
 }

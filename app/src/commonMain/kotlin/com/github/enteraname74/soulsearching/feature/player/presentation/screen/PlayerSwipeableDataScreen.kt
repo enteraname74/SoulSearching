@@ -78,7 +78,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
     onClickOnMusic: ((Music) -> Unit)?,
     multiSelectionState: MultiSelectionState,
     onActivateRemoteLyrics: () -> Unit,
-    onAddFromUrl: (() -> Unit)?,
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
@@ -296,7 +295,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
                         onActivateRemoteLyrics = onActivateRemoteLyrics,
                         onSwiped = onSwiped,
                         onClickOnMusic = onClickOnMusic,
-                        onAddFromUrl = onAddFromUrl,
                     )
                 }
             }
@@ -318,7 +316,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 onActivateRemoteLyrics = onActivateRemoteLyrics,
                 onSwiped = onSwiped,
                 onClickOnMusic = onClickOnMusic,
-                onAddFromUrl = onAddFromUrl,
             )
         } else if (!PlayerUiUtils.canShowRowControlPanel()) {
             BoxWithConstraints(
@@ -356,7 +353,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
                     onActivateRemoteLyrics = onActivateRemoteLyrics,
                     onSwiped = onSwiped,
                     onClickOnMusic = onClickOnMusic,
-                    onAddFromUrl = onAddFromUrl,
                 )
             }
         }

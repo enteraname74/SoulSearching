@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.remote.datasourceimpl
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.user.SimpleUser
 import com.github.enteraname74.domain.model.user.User
+import com.github.enteraname74.domain.model.user.UserStorage
 import com.github.enteraname74.domain.model.user.UserTokens
 import com.github.enteraname74.domain.util.LocaleUtils
 import com.github.enteraname74.soulsearching.remote.di.HttpClientNames
@@ -98,4 +99,16 @@ class UserRemoteDataSourceImpl(
             .withUrl(url = cloudPreferencesDataSource.getUrl())
             .delete(UserResource.Delete(id = userId))
     }
+
+    override suspend fun fetchUserStorage(): UserStorage =
+        authenticatedClient
+            .withUrl(cloudPreferencesDataSource.getUrl())
+            .get(UserResource.Storage())
+            .bodyOrThrow()
+
+    override suspend fun clearUserData(): UserStorage =
+        authenticatedClient
+            .withUrl(cloudPreferencesDataSource.getUrl())
+            .delete(UserResource.Storage())
+            .bodyOrThrow()
 }

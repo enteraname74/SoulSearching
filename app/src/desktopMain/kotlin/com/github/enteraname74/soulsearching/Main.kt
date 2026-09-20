@@ -1,7 +1,9 @@
 package com.github.enteraname74.soulsearching
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -15,6 +17,8 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.app.generated.resources.Res
 import com.github.enteraname74.soulsearching.app.generated.resources.app_icon
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.keyboard.GlobalKeyboardShortcutState
+import com.github.enteraname74.soulsearching.coreui.keyboard.LocalGlobalKeyboardShortcutState
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -38,6 +42,7 @@ fun main(): Unit = application {
         ),
     ) {
         val playbackManager: PlaybackManager = injectElement()
+        val keyboardShortcutState = remember { GlobalKeyboardShortcutState() }
         val windowState = rememberSoulSearchingWindow()
         Window(
             state = windowState,
@@ -45,12 +50,14 @@ fun main(): Unit = application {
             title = strings.appName,
             icon = painterResource(Res.drawable.app_icon),
             onPreviewKeyEvent = {
-                val action = it.toKeyboardAction()
-                if (action != null) {
-                    playbackManager.handleKeyboardAction(action = action)
+                if (keyboardShortcutState.isBlocked) {
                     false
                 } else {
-                    true
+                    val action = it.toKeyboardAction()
+                    if (action != null) {
+                        playbackManager.handleKeyboardAction(action = action)
+                    }
+                    action != null
                 }
             }
         ) {
@@ -62,7 +69,11 @@ fun main(): Unit = application {
                 isPostNotificationGranted = SoulSearchingContext.checkIfPostNotificationGranted()
             }
 
-            SoulSearchingApplication()
+            CompositionLocalProvider(
+                LocalGlobalKeyboardShortcutState provides keyboardShortcutState,
+            ) {
+                SoulSearchingApplication()
+            }
         }
     }
 }

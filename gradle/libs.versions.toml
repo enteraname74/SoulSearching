@@ -1,10 +1,7 @@
 [versions]
 accompanist = "0.36.0"
 accompanist-system-ui-controller = "0.36.0"
-agp = "9.1.1"
-android-target-sdk = "36"
-android-compile-sdk = "37"
-android-min-sdk = "26"
+agp = "9.1.0"
 androidx-activity-compose = "1.13.0"
 androidx-core = "1.19.0"
 androidx-lifecycle = "2.11.0"
@@ -15,6 +12,7 @@ cloudy = "0.7.1"
 coil = "3.5.0"
 compose-multiplatform = "1.11.1"
 coroutines-core = "1.11.0"
+datetime = "0.8.0"
 dbus = "5.2.0"
 documentfile = "1.1.0"
 ffmpeg = "6.0-2"
@@ -25,7 +23,7 @@ kotlin = "2.4.10"
 kotlinx-serialization = "1.11.0"
 kotlinx-browser = "0.5.0"
 koin = "4.2.2"
-ksp = "2.3.9"
+ksp = "2.3.10"
 markdown-renderer = "0.43.0"
 material3 = "1.11.0-alpha07"
 ktor = "3.5.1"
@@ -33,7 +31,7 @@ multiplatform-settings = "1.3.0"
 nav3-core = "1.1.1"
 nav3-lifecycle = "2.11.0"
 reorderable = "3.1.0"
-room = "3.0.0"
+room = "3.0.1"
 sqlite = "2.7.0"
 vlcj = "4.12.1"
 media3 = "1.10.1"
@@ -66,6 +64,7 @@ compose-resources = { module = "org.jetbrains.compose.components:components-reso
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
 compose-cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 compose-navigationevent = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version.ref = "compose-navigation-event" }
+compose-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-multiplatform" }
 
 
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-core" }
@@ -90,6 +89,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-browser = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kotlinx-browser" }
@@ -127,16 +127,7 @@ androidx-media3-datasource = { group = "androidx.media3", name = "media3-datasou
 androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
 
 [plugins]
-androidApplication = { id = "com.android.application", version.ref = "agp" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
-androidKmpLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-room = { id = "androidx.room3", version.ref = "room" }
 
 [bundles]

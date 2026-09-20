@@ -10,7 +10,7 @@ import com.github.enteraname74.soulsearching.feature.settings.colortheme.Setting
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.SettingsManageMusicsDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.SettingsPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.shortcuts.SettingsShortcutsDestination
-import com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.SettingsStatisticsDestination
+import com.github.enteraname74.soulsearching.feature.settings.statistics.SettingsStatisticsDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
 

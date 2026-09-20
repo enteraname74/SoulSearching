@@ -1,30 +1,37 @@
 package com.github.enteraname74.domain.di
 
 import com.github.enteraname74.domain.usecase.DeleteEmptyAlbumsAndArtistsUseCase
+import com.github.enteraname74.domain.usecase.album.CloudAlbumToAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.CloudAlbumToAlbumUseCase
+import com.github.enteraname74.domain.usecase.artist.CloudArtistToArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.CloudArtistToArtistUseCase
 import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.GetPeriodStatisticsUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementAlbumNbPlayedUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementArtistNbPlayedUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementMusicListeningTimeUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementMusicNbPlayedUseCase
+import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementPlaylistNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
+import com.github.enteraname74.domain.usecase.music.CloudMusicToMusicUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
-import com.github.enteraname74.domain.usecase.music.FetchMusicFromUrlUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.ObserveDataChangedForCloudSync
 import com.github.enteraname74.domain.usecase.music.RemoveLocallyOrDeleteMusicUseCase
+import com.github.enteraname74.domain.usecase.music.SaveInitialFetchedMusicsUseCase
+import com.github.enteraname74.domain.usecase.music.SaveMusicsWithFoldersUseCase
 import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateMusicToCloudUseCase
 import com.github.enteraname74.domain.usecase.music.UploadMusicToCloudUseCase
-import com.github.enteraname74.domain.usecase.music.CloudMusicToMusicUseCase
 import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
 import com.github.enteraname74.domain.usecase.player.AddMusicsToSharedPlayedListUseCase
@@ -41,7 +48,10 @@ import com.github.enteraname74.domain.usecase.playlist.UploadPlaylistToCloudUseC
 import com.github.enteraname74.domain.usecase.playlist.UpsertCloudPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
+import com.github.enteraname74.domain.usecase.user.ClearUserDataUseCase
 import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.domain.usecase.user.DeleteSavedRemoteDataUseCase
+import com.github.enteraname74.domain.usecase.user.DeleteUserUseCase
 import com.github.enteraname74.domain.usecase.user.LogoutFromCloudUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -74,15 +84,16 @@ val domainModule: Module = module {
     // Music
     factoryOf(::CommonMusicUseCase)
     factoryOf(::DeleteMusicUseCase)
-    factoryOf(::FetchMusicFromUrlUseCase)
     factoryOf(::RemoveLocallyOrDeleteMusicUseCase)
     factoryOf(::IsMusicInFavoritePlaylistUseCase)
-    factoryOf(::ObserveDataChangedForCloudSync)
+    singleOf(::ObserveDataChangedForCloudSync)
     factoryOf(::ToggleMusicFavoriteStatusUseCase)
     factoryOf(::CloudMusicToMusicUseCase)
     factoryOf(::UploadMusicToCloudUseCase)
     factoryOf(::UpdateMusicToCloudUseCase)
     singleOf(::SyncDataWithCloudUseCase)
+    factoryOf(::SaveInitialFetchedMusicsUseCase)
+    factoryOf(::SaveMusicsWithFoldersUseCase)
 
     factoryOf(::DeleteEmptyAlbumsAndArtistsUseCase)
 
@@ -106,6 +117,9 @@ val domainModule: Module = module {
     // User
     factoryOf(::CommonUserUseCase)
     factoryOf(::LogoutFromCloudUseCase)
+    factoryOf(::ClearUserDataUseCase)
+    factoryOf(::DeleteSavedRemoteDataUseCase)
+    factoryOf(::DeleteUserUseCase)
 
     // CloudPreferences
     factoryOf(::CommonCloudPreferencesUseCase)
@@ -123,4 +137,12 @@ val domainModule: Module = module {
     factoryOf(::AddMusicsToSharedPlayedListUseCase)
     factoryOf(::RemoveMusicsFromSharedPlayedListUseCase)
     factoryOf(::JoinSharedPlayedListUseCase)
+
+    // Statistics
+    factoryOf(::GetPeriodStatisticsUseCase)
+    factoryOf(::IncrementAlbumNbPlayedUseCase)
+    factoryOf(::IncrementArtistNbPlayedUseCase)
+    factoryOf(::IncrementMusicNbPlayedUseCase)
+    factoryOf(::IncrementPlaylistNbPlayedUseCase)
+    factoryOf(::IncrementMusicListeningTimeUseCase)
 }
