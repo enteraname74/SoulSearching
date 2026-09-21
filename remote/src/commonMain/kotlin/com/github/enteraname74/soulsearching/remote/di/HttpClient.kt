@@ -108,7 +108,7 @@ fun provideCloudHttpClient(
 
         install(WebSockets) {
             pingInterval = 15.seconds
-            maxFrameSize = Long.MAX_VALUE
+            maxFrameSize = PLAYER_WEBSOCKET_MAX_FRAME_SIZE
             contentConverter = KotlinxWebsocketSerializationConverter(
                 Json {
                     ignoreUnknownKeys = true
@@ -122,3 +122,4 @@ object HttpClientNames {
 }
 
 internal const val APP_VERSION_HEADER: String = "SoulSearching-version"
+private const val PLAYER_WEBSOCKET_MAX_FRAME_SIZE: Long = 4 * 1024L

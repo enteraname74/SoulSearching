@@ -101,8 +101,11 @@ class ObserveDataChangedForCloudSync(
         block: suspend () -> Unit
     ) {
         buffer.value = Buffer.Blocked
-        block()
-        buffer.value = Buffer.Idle
+        try {
+            block()
+        } finally {
+            buffer.value = Buffer.Idle
+        }
     }
 
     fun cancel() {
