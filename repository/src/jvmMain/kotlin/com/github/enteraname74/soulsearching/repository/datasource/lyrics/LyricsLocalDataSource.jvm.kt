@@ -15,7 +15,7 @@ actual class LyricsLocalDataSource actual constructor() {
             val lyrics: String = tag.getFirst(FieldKey.LYRICS).takeIf { it.isNotBlank() } ?: return@runCatching null
 
             MusicLyrics(
-                plainLyrics = MusicLyrics.cleanPlainLyrics(lyrics),
+                plainLyrics = MusicLyrics.buildPlainLyrics(lyrics),
                 syncedLyrics = MusicLyrics.buildSyncedLyrics(lyrics),
                 provider = MusicLyrics.Provider.LocalFile,
             )

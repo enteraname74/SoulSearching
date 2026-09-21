@@ -22,6 +22,7 @@ class ObserveDataChangedForCloudSync(
     private val buffer: MutableStateFlow<Buffer> = MutableStateFlow(Buffer.Idle)
 
     private val syncStats: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private var delayJob: Job? = null
 
     private fun tryToLaunchOrWait() {
         if (syncDataWithCloudUseCase.state.value is SyncDataWithCloudUseCase.State.WorkingState) {
@@ -80,7 +81,8 @@ class ObserveDataChangedForCloudSync(
     }
 
     private fun syncStatsListener() {
-        workScope.launch {
+        delayJob?.cancel()
+        delayJob = workScope.launch {
             while (true) {
                 delay(5.minutes)
                 syncStats.value = true
@@ -106,6 +108,9 @@ class ObserveDataChangedForCloudSync(
     fun cancel() {
         job?.cancel()
         job = null
+
+        delayJob?.cancel()
+        delayJob = null
     }
 
     sealed interface Buffer {

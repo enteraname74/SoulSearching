@@ -23,7 +23,7 @@ class StringTimestampConverter(
     }
 
     private companion object {
-        val preciseRegex = Regex("""\[(\d*):(\d\d).(\d{1,2})]""")
+        val preciseRegex = Regex("""^\[([0-9]+):([0-9]{2})\.([0-9]{1,2})\]$""")
 
         const val MINUTES_INDEX = 0
         const val SECONDS_INDEX = 1

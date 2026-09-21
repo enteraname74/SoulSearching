@@ -6,42 +6,22 @@ data class MusicLyrics(
     val provider: Provider,
 ) {
     companion object {
-        private const val TIMESTAMP_REGEX_CONTENT = """\[\d\d:\d\d.\d{1,2}]"""
+        private val timestampRegex = Regex("""^\[[0-9]+:[0-9]{2}\.[0-9]{1,2}\]""")
 
-        fun cleanPlainLyrics(stringLyrics: String): List<String> {
-            val lines: List<String> = stringLyrics.split("\n")
-            val lyricsRegex = Regex("""($TIMESTAMP_REGEX_CONTENT)(\s?.*)""")
-
-            return buildList {
-                for (line in lines) {
-                    val text: String = lyricsRegex
-                        .find(line)
-                        ?.groupValues
-                        ?.lastOrNull()
-                        ?.trim()
-                        ?.replace("\n", "") ?: continue
-
-                    add(text)
-                }
-            }
-        }
+        fun buildPlainLyrics(stringLyrics: String): List<String> =
+            stringLyrics
+                .lineSequence()
+                .map { line -> timestampRegex.replaceFirst(line, "").trim() }
+                .filter(String::isNotEmpty)
+                .toList()
 
         fun buildSyncedLyrics(stringLyrics: String): List<SyncedLyric>? {
-            val timestampRegex = Regex(TIMESTAMP_REGEX_CONTENT)
-            val lyricsRegex = Regex("""($TIMESTAMP_REGEX_CONTENT)(\s?.*)""")
-
             val lines: List<String> = stringLyrics.split("\n")
             return buildList {
                 for (line in lines) {
-                    val timestamp: String = timestampRegex.find(line)?.groupValues?.getOrNull(0) ?: continue
+                    val timestamp: String = timestampRegex.find(line)?.value ?: continue
                     val timestampMs: Long = StringTimestampConverter(timestamp).convert() ?: continue
-
-                    val text: String = lyricsRegex
-                        .find(line)
-                        ?.groupValues
-                        ?.lastOrNull()
-                        ?.trim()
-                        ?.replace("\n", "") ?: continue
+                    val text: String = line.removePrefix(timestamp).trim()
 
                     add(
                         SyncedLyric(
