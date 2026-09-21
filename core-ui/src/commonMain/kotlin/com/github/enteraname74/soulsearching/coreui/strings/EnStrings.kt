@@ -389,7 +389,6 @@ object EnStrings : Strings {
     override val cloudExplanationsText: String = """
         Cloudy is a self-hosted cloud system for Soul Searching, designed for the following use cases:
         - accessing your songs from multiple devices
-        - fetching songs from external sources
         - launching a shared played list between multiple users
         - managing users (family, friends,...)
         
