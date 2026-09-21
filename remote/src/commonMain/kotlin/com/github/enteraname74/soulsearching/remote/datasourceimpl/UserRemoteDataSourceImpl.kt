@@ -76,11 +76,13 @@ class UserRemoteDataSourceImpl(
                 )
             }.bodyOrThrow<RemoteUserAuth>().toUser()
 
-    override suspend fun refreshTokens(): SoulResult<UserTokens> =
-        authenticatedClient
+    override suspend fun refreshTokens(refreshToken: String): SoulResult<UserTokens> =
+        client
             .withUrl(url = cloudPreferencesDataSource.getUrl())
             .safeRequest {
-                get(AuthResource.RefreshTokens())
+                get(AuthResource.RefreshTokens()) {
+                    header(HttpHeaders.Authorization, "Bearer $refreshToken")
+                }
             }
 
     override suspend fun logout() {
