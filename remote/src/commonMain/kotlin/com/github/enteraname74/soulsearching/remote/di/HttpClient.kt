@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.di
 
+import com.github.enteraname74.domain.AppVersion
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.user.UserTokens
 import com.github.enteraname74.domain.util.LocaleUtils
@@ -12,14 +13,15 @@ import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.resources.Resources
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.pingInterval
-import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.util.appendIfNameAbsent
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.seconds
@@ -28,16 +30,21 @@ internal expect fun createPlatformHttpClient(
     block: HttpClientConfig<*>.() -> Unit,
 ): HttpClient
 
-private fun <T : HttpClientEngineConfig> HttpClientConfig<T>.setLanguage() {
+private fun <T : HttpClientEngineConfig> HttpClientConfig<T>.defaultRequestHeaders() {
     defaultRequest {
-        header(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
+        commonRequestHeaders()
     }
+}
+
+internal fun DefaultRequest.DefaultRequestBuilder.commonRequestHeaders() {
+    headers.appendIfNameAbsent(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
+    headers.appendIfNameAbsent(APP_VERSION_HEADER, AppVersion.versionName)
 }
 
 fun provideHttpClient(): HttpClient =
     createPlatformHttpClient {
         install(Resources)
-        setLanguage()
+        defaultRequestHeaders()
         installContentNegotiation()
     }
 
@@ -57,7 +64,7 @@ fun provideCloudHttpClient(
 ): HttpClient =
     createPlatformHttpClient {
         install(Resources)
-        setLanguage()
+        defaultRequestHeaders()
         installContentNegotiation()
 
         install(Auth) {
@@ -113,3 +120,5 @@ fun provideCloudHttpClient(
 object HttpClientNames {
     const val CLOUD: String = "CLOUD"
 }
+
+internal const val APP_VERSION_HEADER: String = "SoulSearching-version"
