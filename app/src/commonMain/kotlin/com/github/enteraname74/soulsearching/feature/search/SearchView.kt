@@ -12,7 +12,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,7 +62,6 @@ fun SearchView(
         searchViewManager.currentValue == BottomSheetStates.EXPANDED
             && playerViewManager.currentValue != BottomSheetStates.EXPANDED
     ) {
-        focusRequester.freeFocus()
         focusManager.clearFocus()
         searchViewManager.animateTo(BottomSheetStates.COLLAPSED)
     }
@@ -71,10 +70,9 @@ fun SearchView(
         mutableStateOf("")
     }
 
-    if (searchViewManager.currentValue == BottomSheetStates.COLLAPSED) {
-        searchText = ""
-        SideEffect {
-            focusRequester.freeFocus()
+    LaunchedEffect(searchViewManager.currentValue) {
+        if (searchViewManager.currentValue == BottomSheetStates.COLLAPSED) {
+            searchText = ""
             focusManager.clearFocus()
         }
     }
@@ -119,7 +117,6 @@ fun SearchView(
                 focusManager = focusManager,
                 focusRequester = focusRequester,
                 onClose = {
-                    focusRequester.freeFocus()
                     focusManager.clearFocus()
                     searchViewManager.animateTo(BottomSheetStates.COLLAPSED)
                 }
