@@ -5,7 +5,7 @@ Une application complète :
 - Support de plusieurs listes de lectures
 - Gestion de la liste de lecture (mode de jeu, ajout, suppression,...)
 - Système d'accès rapide
-- Statistiques d'écoutes (toujours stockées uniquement en local)
+- Statistiques d'écoutes (par mois, années ou sur la durée d'utilisation de l'app)
 - Paroles synchronisées (provenant du fichier audio ou d'une source externe)
 - Modification d'albums, artistes et musiques (écriture sur les métadonnées des fichiers audio)
 - Support dde multiples artistes pour une même musique
@@ -25,3 +25,12 @@ Une application qui vous ressemble :
 - Choix de la graine utilisée pour générer le thème dynamique
 - Personnalisation du lecteur (balayage pour changer de musique, progression affichée sur le mode minimisée,...)
 - Personnalisation de la page d'accueil (onglet à ouvrir au démarrage, onglets visibles, style d'affichage,...)
+
+Support d'un Cloud :
+Attention, Cloudy est un système récent, et est encore en alpha.
+
+Avec Cloudy, sauvegardez vos données sur un cloud auto-hébergé, conçu spécialement pour Soul Searching !
+Accédez à vos musiques sur différentes plateformes comme Desktop, Web ou Android.
+Cloudy propose aussi d'autres fonctionnalités :
+- gestion de plusieurs utilisateurs
+- lancer une liste de lecture partagée avec d'autres utilisateurs, comme Spotify

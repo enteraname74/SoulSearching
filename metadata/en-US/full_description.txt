@@ -5,7 +5,7 @@ A complete application:
 - Support for multiple played lists
 - Played list management (play mode, adding, deleting, etc.)
 - Quick access system
-- Listening statistics (always stored locally only)
+- Listening statistics (by months, year, globally)
 - Synchronized lyrics (from the audio file or an external source)
 - Editing albums, artists, and songs (writing to audio file metadata)
 - Support for multiple artists for the same song
@@ -25,3 +25,12 @@ An application that reflects your style:
 - Choice of the seed used to generate the dynamic theme
 - Customization of the player (swipe to change tracks, progress displayed in minimized mode, etc.)
 - Home page customization (tab to open at startup, visible tabs, display style, etc.)
+
+Cloud support:
+Beware, Cloudy was recently introduced and is still in an alpha mode.
+
+With Cloudy, store your songs on a self-hosted cloud system, specially made for Soul Searching!
+Access your songs across multiple platforms like Desktop, Web and Android.
+Cloudy also offers others features like:
+- managing multiple users
+- launching shared played list with multiple users, like Spotify
