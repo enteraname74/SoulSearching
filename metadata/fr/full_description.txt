@@ -12,6 +12,7 @@ Une application complète :
 - Recherche et tris
 - Gestion des dossiers
 - Modification du volume du lecteur
+- Support Android Auto
 
 Une application performante :
 - Supporte un grand nombre de musique tout en restant fluide

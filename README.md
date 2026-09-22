@@ -50,6 +50,7 @@ You can have a theme that depends on your system settings or the current music c
 - Search and sorting
 - Folder management
 - Adjusting the player volume
+- Android Auto support (you may need to register the app on the Android Auto settings on your phone)
 
 ### A high-performance application:
 - Supports a **large number** of music while remaining fluid
@@ -70,8 +71,8 @@ You can have a theme that depends on your system settings or the current music c
 With [Cloudy](https://github.com/enteraname74/Cloudy), store your songs on a self-hosted cloud system, specially made for *Soul Searching*!\
 Access your songs across multiple platforms like Desktop, Web and Android.
 Cloudy also offers others features like:
-- managing multiple users
-- launching shared played list with multiple users, like Spotify
+- Managing multiple users
+- Launching shared played list with multiple users, like Spotify
 
 <div align="center">
     <img title="" src="metadata/en-US/images/phoneScreenshots/7.png" alt="" data-align="center" width="270">

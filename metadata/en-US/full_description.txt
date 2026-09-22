@@ -12,6 +12,7 @@ A complete application:
 - Search and sorting
 - Folder management
 - Adjusting the player volume
+- Android Auto support
 
 A high-performance application:
 - Supports a large number of music while remaining fluid
