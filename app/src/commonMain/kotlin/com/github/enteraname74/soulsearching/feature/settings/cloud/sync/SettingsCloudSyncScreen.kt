@@ -52,6 +52,10 @@ fun SettingsCloudSyncScreen(
         }
         item {
             Column(
+                modifier = Modifier
+                    .padding(
+                        top = UiConstants.Spacing.medium,
+                    ),
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
             ) {
                 SyncState(

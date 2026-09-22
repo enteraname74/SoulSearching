@@ -333,7 +333,7 @@ class MusicListDetailViewHolder(
                 else -> MusicListDetailState.Data(
                     cachedPlayedListUiSpec = cachedPlaylist?.toUiSpec(),
                     type = strings.folderDetailTitle,
-                    title = musicFolderPreview.folder,
+                    title = musicFolderPreview.name,
                     subTitle = strings.musics(musicFolderPreview.totalMusics),
                     cover = musicFolderPreview.cover,
                     musics = musics,

@@ -19,7 +19,7 @@ object AppDirectories {
         )
 
     private val appDirectoryName: String
-        get() = if (AppEnvironment.IS_IN_DEVELOPMENT) "$APP_ID/dev" else APP_ID
+        get() = if (AppEnvironment.IS_IN_DEVELOPMENT) "$APP_ID.dev" else APP_ID
 
     val data: Path by lazy {
         xdgDirectory("XDG_DATA_HOME", home.resolve(".local/share"))
