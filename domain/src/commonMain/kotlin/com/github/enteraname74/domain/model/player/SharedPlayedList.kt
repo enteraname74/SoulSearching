@@ -36,8 +36,11 @@ data class SharedPlayedList(
         }
     }
 
-    fun scope(userId: Uuid): PlayedListScope =
-        if (owner?.id == userId) {
+    fun scope(
+        userId: Uuid,
+        deviceId: String,
+    ): PlayedListScope =
+        if (owner?.id == userId && owner.deviceId == deviceId) {
             PlayedListScope.SharedHost
         } else {
             PlayedListScope.SharedGuest
@@ -45,6 +48,7 @@ data class SharedPlayedList(
 
     fun toPlayedList(
         userId: Uuid,
+        deviceId: String,
     ): PlayerPlayedList =
         PlayerPlayedList(
             id = id,
@@ -53,7 +57,10 @@ data class SharedPlayedList(
             mode = PlayerMode.Normal,
             state = state.toPlayedListState(),
             type = PlayedListType.Shared(inviteCode),
-            scope = scope(userId)
+            scope = scope(
+                userId = userId,
+                deviceId = deviceId,
+            )
         )
 
     fun buildUsers(): List<SharedPlayedListUser> =

@@ -196,7 +196,10 @@ class PlayerRepositoryImpl(
                 userLocalDataSource.observeUser().firstOrNull()?.id ?: return@withContext
 
             playerLocalDataSource.upsertPlayedList(
-                playedList = sharedPlayedList.toPlayedList(userId),
+                playedList = sharedPlayedList.toPlayedList(
+                    userId = userId,
+                    deviceId = deviceLocalDataSource.getDeviceId(),
+                ),
                 playerMusics = playerMusics,
             )
             playerLocalDataSource.setSharedUsers(sharedPlayedList.buildUsers())
@@ -524,9 +527,10 @@ class PlayerRepositoryImpl(
             withContext(workScope) {
                 val playedList = playerLocalDataSource.getCurrentPlayedList().firstOrNull() ?: return@withContext
                 val userId = userLocalDataSource.observeUser().firstOrNull()?.id ?: return@withContext
+                val deviceId = deviceLocalDataSource.getDeviceId()
 
                 val sharedList = playerRemoteDataSource.getPlayedList(
-                    deviceId = deviceLocalDataSource.getDeviceId(),
+                    deviceId = deviceId,
                     listId = playedList.id,
                 )
                 /*
@@ -537,7 +541,12 @@ class PlayerRepositoryImpl(
                 if (playedList.state != PlayedListState.Loading || sharedList.state == SharedPlayedList.State.Playing) {
                     playerLocalDataSource.setState(sharedList.state.toPlayedListState())
                 }
-                playerLocalDataSource.setScope(sharedList.scope(userId))
+                playerLocalDataSource.setScope(
+                    scope = sharedList.scope(
+                        userId = userId,
+                        deviceId = deviceId,
+                    )
+                )
                 playerLocalDataSource.setSharedUsers(sharedList.buildUsers())
             }
         }
