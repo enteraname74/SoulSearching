@@ -41,14 +41,24 @@ object AppDirectories {
 
     /**
      * Flatpak exposes this directory through the `xdg-music` filesystem grant.
-     * XDG_MUSIC_DIR may be supplied by the environment; ~/Music is the fallback.
+     * `xdg-user-dir` resolves the user's configured directory both inside and outside Flatpak.
+     * ~/Music is used when XDG user directories are unavailable.
      */
-    val music: Path by lazy {
-        System.getenv("XDG_MUSIC_DIR")
-            ?.takeIf(String::isNotBlank)
-            ?.let(::Path)
-            ?: home.resolve("Music")
-    }
+    val music: Path by lazy(::resolveMusicDirectory)
+
+    private fun resolveMusicDirectory(): Path =
+        runCatching {
+            val process = ProcessBuilder("xdg-user-dir", "MUSIC")
+                .redirectErrorStream(true)
+                .start()
+            val output = process.inputStream.bufferedReader().use { it.readText().trim() }
+
+            if (process.waitFor() == 0 && output.isNotBlank()) {
+                Path(output).takeIf { it.isAbsolute }
+            } else {
+                null
+            }
+        }.getOrNull() ?: home.resolve("Music")
 
     private fun xdgDirectory(environmentVariable: String, fallback: Path): Path =
         System.getenv(environmentVariable)
