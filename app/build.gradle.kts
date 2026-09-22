@@ -131,19 +131,19 @@ compose.desktop {
     }
 }
 
-val appId = "io.github.enteraname74.soulsearching"
-val appVersion = libs.versions.application.version.name.get()
+val appId: String = "io.github.enteraname74.soulsearching"
+val appVersion: String = libs.versions.application.version.name.get()
 
-val manifestFile = layout.projectDirectory.file("$appId.yml")
+val manifestFile: RegularFile = layout.projectDirectory.file("$appId.yml")
 
-val flatpakRootDirectory = layout.buildDirectory.dir("flatpak")
-val flatpakBuildDirectory = layout.buildDirectory.dir("flatpak/build-dir")
-val flatpakRepositoryDirectory = layout.buildDirectory.dir("flatpak/repo")
-val flatpakBundleFile = flatpakRootDirectory.map {
+val flatpakRootDirectory: Provider<Directory> = layout.buildDirectory.dir("flatpak")
+val flatpakBuildDirectory: Provider<Directory> = layout.buildDirectory.dir("flatpak/build-dir")
+val flatpakRepositoryDirectory: Provider<Directory> = layout.buildDirectory.dir("flatpak/repo")
+val flatpakBundleFile: Provider<RegularFile> = flatpakRootDirectory.map {
     it.file("$appId-$appVersion.flatpak")
 }
 
-val packageTarReleaseDistributable =
+val packageTarReleaseDistributable: TaskProvider<Tar> =
     tasks.register<Tar>("packageTarReleaseDistributable") {
         group = "compose desktop"
         description = "Creates the Linux release distributable archive."
@@ -178,7 +178,7 @@ val packageTarReleaseDistributable =
         archiveFileName.set("soulsearching-$appVersion-linux.tar.gz")
     }
 
-val buildFlatpak =
+val buildFlatpak: TaskProvider<Exec> =
     tasks.register<Exec>("buildFlatpak") {
         group = "compose desktop"
         description = "Builds the Flatpak application directory."
@@ -206,7 +206,7 @@ val buildFlatpak =
         }
     }
 
-val exportFlatpakRepository =
+val exportFlatpakRepository: TaskProvider<Exec> =
     tasks.register<Exec>("exportFlatpakRepository") {
         group = "compose desktop"
         description = "Exports the Flatpak build into an OSTree repository."

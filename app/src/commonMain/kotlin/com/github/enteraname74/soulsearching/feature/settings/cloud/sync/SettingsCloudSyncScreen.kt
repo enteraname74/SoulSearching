@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LinearProgressIndicator
@@ -52,6 +51,10 @@ fun SettingsCloudSyncScreen(
         }
         item {
             Column(
+                modifier = Modifier
+                    .padding(
+                        top = UiConstants.Spacing.medium,
+                    ),
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
             ) {
                 SyncState(

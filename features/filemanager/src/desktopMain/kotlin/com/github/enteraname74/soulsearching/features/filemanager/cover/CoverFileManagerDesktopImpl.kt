@@ -1,26 +1,13 @@
 package com.github.enteraname74.soulsearching.features.filemanager.cover
 
-import com.github.enteraname74.domain.util.AppEnvironment
+import com.github.enteraname74.domain.util.AppDirectories
 import java.io.File
+import kotlin.io.path.createDirectories
 
 internal class CoverFileManagerDesktopImpl: JvmCoverFileManager() {
-    override fun getCoverFolder(): File {
-        val userHome = System.getProperty("user.home") ?: ""
-        val userFolder = File(userHome)
-        val coverFolder = File(userFolder, COVERS_FOLDER)
-        if (!coverFolder.exists()) {
-            coverFolder.mkdirs()
-        }
-
-        return coverFolder
-    }
-
-    companion object {
-        private val SUFFIX = if (AppEnvironment.IS_IN_DEVELOPMENT) {
-            "_dev"
-        } else {
-            ""
-        }
-        private val COVERS_FOLDER: String = ".soul_searching$SUFFIX/covers"
-    }
+    override fun getCoverFolder(): File =
+        AppDirectories.cache
+            .resolve("covers")
+            .createDirectories()
+            .toFile()
 }

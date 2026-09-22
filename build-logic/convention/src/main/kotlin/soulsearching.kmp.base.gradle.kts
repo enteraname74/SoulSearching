@@ -1,8 +1,10 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import io.github.jwharm.flatpakgradlegenerator.FlatpakGradleGeneratorTask
 
 plugins {
     kotlin("multiplatform")
     id("com.android.kotlin.multiplatform.library")
+    id("io.github.jwharm.flatpak-gradle-generator")
 }
 
 kotlin {
@@ -53,5 +55,28 @@ kotlin {
             "kotlin.time.ExperimentalTime",
             "kotlin.uuid.ExperimentalUuidApi",
         )
+    }
+}
+
+val flatpakOnlyArch = providers.gradleProperty("flatpakOnlyArch").orElse("host")
+
+tasks.named<FlatpakGradleGeneratorTask>("flatpakGradleGenerator") {
+    outputFile.set(
+        rootProject.layout.projectDirectory.file(
+            "flatpak/dependencies/${flatpakOnlyArch.get()}/${project.name}.json"
+        )
+    )
+    downloadDirectory.set("offline-repository")
+    onlyArches.set(flatpakOnlyArch)
+    includeConfigurations.set(
+        setOf(
+            "desktopCompileClasspath",
+            "desktopRuntimeClasspath",
+            "kspDesktop",
+        )
+    )
+
+    doFirst {
+        outputFile.get().asFile.parentFile.mkdirs()
     }
 }

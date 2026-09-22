@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        maven { url = uri("../offline-repository") }
         google()
         mavenCentral()
         gradlePluginPortal()
@@ -8,6 +9,7 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
+        maven { url = uri("../offline-repository") }
         google()
         mavenCentral()
         gradlePluginPortal()
