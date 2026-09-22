@@ -1,8 +1,10 @@
 package com.github.enteraname74.soulsearching.remote.utils
 
+import com.github.enteraname74.domain.AppVersion
 import com.github.enteraname74.domain.repository.SharedPlayedListListener
 import com.github.enteraname74.domain.util.LocaleUtils
 import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.remote.di.APP_VERSION_HEADER
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
@@ -39,6 +41,7 @@ class PlayerUserCommunication(
                 client.webSocket(
                     request = {
                         header(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
+                        header(APP_VERSION_HEADER, AppVersion.versionName)
                     },
                     urlString = buildUrl(
                         listId = listId,
@@ -77,17 +80,12 @@ class PlayerUserCommunication(
         listId: Uuid,
         userId: Uuid,
         deviceId: String,
-    ): String {
-        val baseUrl = cloudPreferencesDataSource.getUrl().replace(
-            regex = """http(s?)://""".toRegex(),
-            replacement = "",
-        )
-        val path = "/player/$listId"
-
-        val queryParameters = "?userId=$userId&deviceId=$deviceId"
-
-        return "ws://$baseUrl$path$queryParameters"
-    }
+    ): String = buildPlayerWebSocketUrl(
+        baseUrl = cloudPreferencesDataSource.getUrl(),
+        listId = listId,
+        userId = userId,
+        deviceId = deviceId,
+    )
 
     private enum class Event {
         SyncMusics,
@@ -95,3 +93,22 @@ class PlayerUserCommunication(
         PlayedListDeleted,
     }
 }
+
+internal fun buildPlayerWebSocketUrl(
+    baseUrl: String,
+    listId: Uuid,
+    userId: Uuid,
+    deviceId: String,
+): String = URLBuilder(baseUrl).apply {
+    require(host.isNotBlank()) { "Cloudy URL must contain a host" }
+
+    protocol = when (protocol) {
+        URLProtocol.HTTP -> URLProtocol.WS
+        URLProtocol.HTTPS -> URLProtocol.WSS
+        else -> throw IllegalArgumentException("Unsupported Cloudy URL protocol: ${protocol.name}")
+    }
+
+    appendPathSegments("player", listId.toString())
+    parameters.append("userId", userId.toString())
+    parameters.append("deviceId", deviceId)
+}.buildString()

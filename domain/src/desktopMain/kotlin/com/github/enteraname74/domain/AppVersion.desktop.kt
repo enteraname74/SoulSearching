@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.domain
+package com.github.enteraname74.domain
 
 import com.github.enteraname74.domain.util.AppEnvironment
 
@@ -9,5 +9,5 @@ actual object AppVersion {
         ""
     }
 
-    actual val versionName = "0.16.0$suffix"
+    actual val versionName: String = "0.16.0$suffix"
 }

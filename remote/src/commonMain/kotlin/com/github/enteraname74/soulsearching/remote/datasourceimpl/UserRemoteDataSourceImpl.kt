@@ -5,7 +5,6 @@ import com.github.enteraname74.domain.model.user.SimpleUser
 import com.github.enteraname74.domain.model.user.User
 import com.github.enteraname74.domain.model.user.UserStorage
 import com.github.enteraname74.domain.model.user.UserTokens
-import com.github.enteraname74.domain.util.LocaleUtils
 import com.github.enteraname74.soulsearching.remote.di.HttpClientNames
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.clearToken
@@ -47,7 +46,6 @@ class UserRemoteDataSourceImpl(
             .withUrl(url = cloudPreferencesDataSource.getUrl())
             .post(AuthResource.LogIn()) {
                 contentType(ContentType.Application.Json)
-                header(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
                 setBody(
                     UserLogin(
                         username = username,
@@ -66,7 +64,6 @@ class UserRemoteDataSourceImpl(
             .withUrl(url = cloudPreferencesDataSource.getUrl())
             .post(AuthResource.SignIn()) {
                 contentType(ContentType.Application.Json)
-                header(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
                 setBody(
                     UserSignIn(
                         username = username,
@@ -76,11 +73,13 @@ class UserRemoteDataSourceImpl(
                 )
             }.bodyOrThrow<RemoteUserAuth>().toUser()
 
-    override suspend fun refreshTokens(): SoulResult<UserTokens> =
-        authenticatedClient
+    override suspend fun refreshTokens(refreshToken: String): SoulResult<UserTokens> =
+        client
             .withUrl(url = cloudPreferencesDataSource.getUrl())
             .safeRequest {
-                get(AuthResource.RefreshTokens())
+                get(AuthResource.RefreshTokens()) {
+                    header(HttpHeaders.Authorization, "Bearer $refreshToken")
+                }
             }
 
     override suspend fun logout() {

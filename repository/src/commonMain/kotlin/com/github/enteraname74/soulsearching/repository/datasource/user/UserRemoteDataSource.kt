@@ -19,7 +19,7 @@ interface UserRemoteDataSource {
         code: String,
     ): User
 
-    suspend fun refreshTokens(): SoulResult<UserTokens>
+    suspend fun refreshTokens(refreshToken: String): SoulResult<UserTokens>
 
     suspend fun logout()
 

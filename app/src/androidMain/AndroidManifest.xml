@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
-    <!-- TODO CLOUD: Remove usesCleartextTraffic for prod-->
     <application
         android:name="com.github.enteraname74.soulsearching.App"
         android:allowBackup="true"
@@ -24,7 +23,6 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.SoulSearching"
-        android:usesCleartextTraffic="true"
         tools:targetApi="33">
 
         <service

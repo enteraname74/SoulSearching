@@ -1,22 +1,27 @@
 package com.github.enteraname74.soulsearching.remote.di
 
+import com.github.enteraname74.domain.AppVersion
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.user.UserTokens
 import com.github.enteraname74.domain.util.LocaleUtils
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserRemoteDataSource
-import io.ktor.client.*
-import io.ktor.client.engine.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.resources.*
-import io.ktor.client.plugins.websocket.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.*
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
+import io.ktor.client.engine.HttpClientEngineConfig
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.DefaultRequest
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.resources.Resources
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.pingInterval
+import io.ktor.http.HttpHeaders
+import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.util.appendIfNameAbsent
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.seconds
@@ -25,16 +30,21 @@ internal expect fun createPlatformHttpClient(
     block: HttpClientConfig<*>.() -> Unit,
 ): HttpClient
 
-private fun <T : HttpClientEngineConfig> HttpClientConfig<T>.setLanguage() {
+private fun <T : HttpClientEngineConfig> HttpClientConfig<T>.defaultRequestHeaders() {
     defaultRequest {
-        header(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
+        commonRequestHeaders()
     }
+}
+
+internal fun DefaultRequest.DefaultRequestBuilder.commonRequestHeaders() {
+    headers.appendIfNameAbsent(HttpHeaders.AcceptLanguage, LocaleUtils.currentLanguage())
+    headers.appendIfNameAbsent(APP_VERSION_HEADER, AppVersion.versionName)
 }
 
 fun provideHttpClient(): HttpClient =
     createPlatformHttpClient {
         install(Resources)
-        setLanguage()
+        defaultRequestHeaders()
         installContentNegotiation()
     }
 
@@ -54,7 +64,7 @@ fun provideCloudHttpClient(
 ): HttpClient =
     createPlatformHttpClient {
         install(Resources)
-        setLanguage()
+        defaultRequestHeaders()
         installContentNegotiation()
 
         install(Auth) {
@@ -68,30 +78,37 @@ fun provideCloudHttpClient(
                 }
 
                 refreshTokens {
+                    val refreshToken = oldTokens
+                        ?.refreshToken
+                        ?.takeIf(String::isNotBlank)
+                        ?: return@refreshTokens null
                     val user = userLocalDataSource.observeUser().firstOrNull()
-                    val result: SoulResult<UserTokens> = userRemoteDataSource.refreshTokens()
-                    val tokens = (result as? SoulResult.Success)?.data
-                    tokens?.let { tokens ->
-                        user?.let { user ->
-                            userLocalDataSource.upsert(
-                                user = user.copy(
-                                    accessToken = tokens.accessToken,
-                                    refreshToken = tokens.refreshToken
-                                )
-                            )
-                        }
-                    }
-                    BearerTokens(
-                        accessToken = tokens?.accessToken.orEmpty(),
-                        refreshToken = tokens?.refreshToken.orEmpty(),
+                    val result: SoulResult<UserTokens> = userRemoteDataSource.refreshTokens(
+                        refreshToken = refreshToken,
                     )
+                    val tokens = (result as? SoulResult.Success)?.data
+
+                    if (tokens == null || user == null) {
+                        null
+                    } else {
+                        userLocalDataSource.upsert(
+                            user = user.copy(
+                                accessToken = tokens.accessToken,
+                                refreshToken = tokens.refreshToken
+                            )
+                        )
+                        BearerTokens(
+                            accessToken = tokens.accessToken,
+                            refreshToken = tokens.refreshToken,
+                        )
+                    }
                 }
             }
         }
 
         install(WebSockets) {
             pingInterval = 15.seconds
-            maxFrameSize = Long.MAX_VALUE
+            maxFrameSize = PLAYER_WEBSOCKET_MAX_FRAME_SIZE
             contentConverter = KotlinxWebsocketSerializationConverter(
                 Json {
                     ignoreUnknownKeys = true
@@ -103,3 +120,6 @@ fun provideCloudHttpClient(
 object HttpClientNames {
     const val CLOUD: String = "CLOUD"
 }
+
+internal const val APP_VERSION_HEADER: String = "SoulSearching-version"
+private const val PLAYER_WEBSOCKET_MAX_FRAME_SIZE: Long = 4 * 1024L

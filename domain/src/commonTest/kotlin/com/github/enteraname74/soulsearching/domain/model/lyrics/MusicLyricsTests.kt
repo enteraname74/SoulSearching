@@ -39,7 +39,7 @@ class MusicLyricsTests {
             "Second line",
             "Third line",
         )
-        val actualPlainLyrics = MusicLyrics.cleanPlainLyrics(syncedLyricsString)
+        val actualPlainLyrics = MusicLyrics.buildPlainLyrics(syncedLyricsString)
 
         assertEquals(
             expected = expectedPlainLyrics,
@@ -55,7 +55,7 @@ class MusicLyricsTests {
             "Second line",
             "Third line",
         )
-        val actualPlainLyrics = MusicLyrics.cleanPlainLyrics(syncedLyricsString)
+        val actualPlainLyrics = MusicLyrics.buildPlainLyrics(syncedLyricsString)
 
         assertEquals(
             expected = expectedPlainLyrics,

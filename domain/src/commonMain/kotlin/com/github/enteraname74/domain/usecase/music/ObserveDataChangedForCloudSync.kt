@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 class ObserveDataChangedForCloudSync(
     private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase,
@@ -22,6 +21,7 @@ class ObserveDataChangedForCloudSync(
     private val buffer: MutableStateFlow<Buffer> = MutableStateFlow(Buffer.Idle)
 
     private val syncStats: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private var delayJob: Job? = null
 
     private fun tryToLaunchOrWait() {
         if (syncDataWithCloudUseCase.state.value is SyncDataWithCloudUseCase.State.WorkingState) {
@@ -80,7 +80,8 @@ class ObserveDataChangedForCloudSync(
     }
 
     private fun syncStatsListener() {
-        workScope.launch {
+        delayJob?.cancel()
+        delayJob = workScope.launch {
             while (true) {
                 delay(5.minutes)
                 syncStats.value = true
@@ -99,13 +100,19 @@ class ObserveDataChangedForCloudSync(
         block: suspend () -> Unit
     ) {
         buffer.value = Buffer.Blocked
-        block()
-        buffer.value = Buffer.Idle
+        try {
+            block()
+        } finally {
+            buffer.value = Buffer.Idle
+        }
     }
 
     fun cancel() {
         job?.cancel()
         job = null
+
+        delayJob?.cancel()
+        delayJob = null
     }
 
     sealed interface Buffer {
