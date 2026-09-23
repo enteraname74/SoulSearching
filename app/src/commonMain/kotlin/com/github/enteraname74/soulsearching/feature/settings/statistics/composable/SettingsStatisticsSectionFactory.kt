@@ -53,28 +53,24 @@ object SettingsStatisticsSectionFactory {
     fun LazyListScope.largeList(
         elements: LazyPagingItems<StatisticsUiElement>,
     ) {
-        if (elements.itemCount == 1) {
-            emptyContent()
-        } else {
-            items(
-                key = { elements[it]?.id ?: Uuid.random() },
-                count = elements.itemCount,
-                contentType = { SECTION_LIST_CONTENT_TYPE }
-            ) { index ->
-                elements[index]?.let { elt ->
-                    if (index > 0) {
-                        // We skip the first element as it is shown elsewhere
-                        LinearPreviewComposable(
-                            padding = PaddingValues(
-                                vertical = UiConstants.Spacing.small,
-                            ),
-                            title = elt.title,
-                            text = elt.text,
-                            cover = elt.cover,
-                            onClick = elt.onClick,
-                            onLongClick = null,
-                        )
-                    }
+        items(
+            key = { elements[it]?.id ?: Uuid.random() },
+            count = elements.itemCount,
+            contentType = { SECTION_LIST_CONTENT_TYPE }
+        ) { index ->
+            elements[index]?.let { elt ->
+                if (index > 0) {
+                    // We skip the first element as it is shown elsewhere
+                    LinearPreviewComposable(
+                        padding = PaddingValues(
+                            vertical = UiConstants.Spacing.small,
+                        ),
+                        title = elt.title,
+                        text = elt.text,
+                        cover = elt.cover,
+                        onClick = elt.onClick,
+                        onLongClick = null,
+                    )
                 }
             }
         }
