@@ -4,7 +4,7 @@
     <img title="" src="screenshots/app_logo_uni.svg" alt="" data-align="center" width="250">
 </div>
 
-Soul Searching is a comprehensive, powerful, and customizable music app for listening to your local or remote (on a cloud) music on the following platforms:
+Soul Searching is a comprehensive, powerful, and customizable music app for listening to your local or remote (on a self-hosted cloud) music on the following platforms:
 - Android 8 and above
 - Desktop (Linux)
 - Web (see the official [_Soul Searching_](https://soulsearching.enteraname.fr) site! More information on the cloud section)
