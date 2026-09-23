@@ -1,11 +1,11 @@
 package com.github.enteraname74.soulsearching.feature.appinit
 
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.model.Folder
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.usecase.folder.CommonFolderUseCase
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolderV2
 import kotlinx.coroutines.CoroutineScope

@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.ext
 
 import androidx.work.ListenableWorker
-import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
 
 fun SoulResult<*>.toWorkerResult(): ListenableWorker.Result =
     when (this) {

@@ -2,9 +2,9 @@ package com.github.enteraname74.soulsearching.feature.migration
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.util.LocalDatabaseVersion
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.util.LocalDatabaseVersion
 import kotlinx.coroutines.launch
 
 class MigrationViewModel(

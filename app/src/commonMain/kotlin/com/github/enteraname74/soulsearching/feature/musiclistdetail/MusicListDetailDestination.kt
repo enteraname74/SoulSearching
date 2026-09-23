@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.feature.musiclistdetail
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.enteraname74.domain.model.MusicListDetailId
+import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.PlaylistDetailPage

@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumPreview
-import com.github.enteraname74.domain.model.AlbumWithMusics
-import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
+import com.github.enteraname74.soulsearching.domain.model.AlbumWithMusics
+import com.github.enteraname74.soulsearching.domain.repository.AlbumRepository
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid

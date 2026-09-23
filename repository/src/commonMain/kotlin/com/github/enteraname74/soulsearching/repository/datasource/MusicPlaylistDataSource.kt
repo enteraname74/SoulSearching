@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
-import com.github.enteraname74.domain.model.MusicPlaylist
+import com.github.enteraname74.soulsearching.domain.model.MusicPlaylist
 import kotlin.uuid.Uuid
 
 /**

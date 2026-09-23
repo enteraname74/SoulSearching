@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.statistics
 
-import com.github.enteraname74.domain.model.statistics.Period
+import com.github.enteraname74.soulsearching.domain.model.statistics.Period
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodType
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodUiStatistics
 

@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
-import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
-import com.github.enteraname74.domain.model.user.UserType
-import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
+import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedListPreview
+import com.github.enteraname74.soulsearching.domain.model.user.UserType
+import com.github.enteraname74.soulsearching.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 
 /**

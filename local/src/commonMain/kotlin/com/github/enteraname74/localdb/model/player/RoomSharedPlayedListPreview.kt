@@ -2,7 +2,7 @@ package com.github.enteraname74.localdb.model.player
 
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
-import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
+import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedListPreview
 import kotlin.uuid.Uuid
 
 @Entity

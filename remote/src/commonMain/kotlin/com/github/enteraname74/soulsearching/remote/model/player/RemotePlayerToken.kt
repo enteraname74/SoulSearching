@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.model.player
 
-import com.github.enteraname74.domain.model.player.PlayerToken
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerToken
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
 

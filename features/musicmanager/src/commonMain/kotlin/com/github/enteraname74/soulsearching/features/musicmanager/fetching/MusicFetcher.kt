@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Playlist
+import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.features.musicmanager.domain.OptimizedCachedData
 import kotlinx.coroutines.flow.firstOrNull

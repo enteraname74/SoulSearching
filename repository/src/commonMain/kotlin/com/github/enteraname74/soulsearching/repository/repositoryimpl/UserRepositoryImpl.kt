@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
-import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.model.user.SimpleUser
-import com.github.enteraname74.domain.model.user.User
-import com.github.enteraname74.domain.model.user.UserStorage
-import com.github.enteraname74.domain.repository.UserRepository
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.model.user.SimpleUser
+import com.github.enteraname74.soulsearching.domain.model.user.User
+import com.github.enteraname74.soulsearching.domain.model.user.UserStorage
+import com.github.enteraname74.soulsearching.domain.repository.UserRepository
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserRemoteDataSource
 import kotlinx.coroutines.flow.Flow

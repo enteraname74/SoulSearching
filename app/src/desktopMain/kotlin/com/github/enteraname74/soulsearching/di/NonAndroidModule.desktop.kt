@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.di
 
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.util.AppDirectories
-import com.github.enteraname74.domain.util.AppEnvironment
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.util.AppDirectories
+import com.github.enteraname74.soulsearching.domain.util.AppEnvironment
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
 import com.github.enteraname74.soulsearching.feature.musiclink.MusicLinkHandler
 import com.github.enteraname74.soulsearching.util.FileOperation

@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
 
-import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog

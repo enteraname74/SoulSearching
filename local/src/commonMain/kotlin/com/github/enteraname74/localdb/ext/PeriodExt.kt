@@ -1,6 +1,6 @@
 package com.github.enteraname74.localdb.ext
 
-import com.github.enteraname74.domain.model.statistics.Period
+import com.github.enteraname74.soulsearching.domain.model.statistics.Period
 import kotlinx.datetime.Month
 import kotlinx.datetime.number
 

@@ -1,12 +1,12 @@
 package com.github.enteraname74.soulsearching.features.playback.manager
 
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
-import com.github.enteraname74.domain.model.player.PlayedListScope
-import com.github.enteraname74.domain.model.player.PlayedListState
-import com.github.enteraname74.domain.model.player.PlayedListType
-import com.github.enteraname74.domain.model.player.PlayerMode
-import com.github.enteraname74.domain.model.player.SharedPlayedListUser
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.player.FullPlayerMusicUser
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListState
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListType
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerMode
+import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedListUser
 
 sealed interface PlaybackManagerState {
     data object Stopped : PlaybackManagerState

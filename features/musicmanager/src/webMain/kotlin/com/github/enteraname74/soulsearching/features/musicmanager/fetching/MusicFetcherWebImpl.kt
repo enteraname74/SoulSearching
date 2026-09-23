@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 
-import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 
 class MusicFetcherWebImpl(
     commonPlaylistUseCase: CommonPlaylistUseCase,

@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.di
 
-import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
+import com.github.enteraname74.soulsearching.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpNonAndroidManager
 import com.github.enteraname74.soulsearching.settings.cloud.worker.CloudBackgroundSyncJobNonAndroidImpl

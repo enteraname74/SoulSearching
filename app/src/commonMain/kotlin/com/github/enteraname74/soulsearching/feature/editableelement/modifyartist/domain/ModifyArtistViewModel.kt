@@ -2,11 +2,11 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifyarti
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.model.ArtistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.cover.CommonCoverUseCase
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings

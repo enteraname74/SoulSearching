@@ -1,6 +1,6 @@
-package com.github.enteraname74.domain
+package com.github.enteraname74.soulsearching.domain
 
-import com.github.enteraname74.domain.util.AppEnvironment
+import com.github.enteraname74.soulsearching.domain.util.AppEnvironment
 
 actual object AppVersion {
     private val suffix: String = if (AppEnvironment.IS_IN_DEVELOPMENT) {

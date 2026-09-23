@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.domain.model.lyrics
 
-import com.github.enteraname74.domain.model.lyrics.MusicLyrics
+import com.github.enteraname74.soulsearching.domain.model.lyrics.MusicLyrics
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.remote.utils
 
-import com.github.enteraname74.domain.AppVersion
-import com.github.enteraname74.domain.repository.SharedPlayedListListener
-import com.github.enteraname74.domain.util.LocaleUtils
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.AppVersion
+import com.github.enteraname74.soulsearching.domain.repository.SharedPlayedListListener
+import com.github.enteraname74.soulsearching.domain.util.LocaleUtils
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.remote.di.APP_VERSION_HEADER
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import io.ktor.client.*

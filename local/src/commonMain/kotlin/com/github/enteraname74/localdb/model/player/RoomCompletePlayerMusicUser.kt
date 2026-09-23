@@ -2,7 +2,7 @@ package com.github.enteraname74.localdb.model.player
 
 import androidx.room3.Embedded
 import androidx.room3.Relation
-import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
+import com.github.enteraname74.soulsearching.domain.model.player.FullPlayerMusicUser
 
 data class RoomCompletePlayerMusicUser(
     @Embedded val playerMusicUser: RoomPlayerMusicUser,

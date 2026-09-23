@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.domain.state
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.PlaylistPreview
-import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.domain.model.SortType
+import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
+import com.github.enteraname74.soulsearching.domain.model.SortDirection
+import com.github.enteraname74.soulsearching.domain.model.SortType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

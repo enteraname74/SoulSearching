@@ -1,13 +1,13 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.CloudPlaylist
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.model.PlaylistPreview
-import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.enteraname74.soulsearching.domain.model.CloudPlaylist
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Playlist
+import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
+import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.repository.PlaylistRepository
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistRemoteDataSource

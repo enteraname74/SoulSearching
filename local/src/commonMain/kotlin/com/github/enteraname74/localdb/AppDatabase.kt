@@ -7,7 +7,7 @@ import androidx.room3.Database
 import androidx.room3.RoomDatabase
 import androidx.room3.RoomDatabaseConstructor
 import androidx.room3.paging.PagingSourceDaoReturnTypeConverter
-import com.github.enteraname74.domain.util.LocalDatabaseVersion
+import com.github.enteraname74.soulsearching.domain.util.LocalDatabaseVersion
 import com.github.enteraname74.localdb.converters.DurationConverters
 import com.github.enteraname74.localdb.converters.InstantConverters
 import com.github.enteraname74.localdb.converters.StorageTypeConverters

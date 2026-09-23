@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.feedbackmanager
 
-import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 /**

@@ -2,10 +2,10 @@ package com.github.enteraname74.soulsearching.feature.musiclistdetail
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.AlbumWithMusics
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicListDetailId
+import com.github.enteraname74.soulsearching.domain.model.AlbumWithMusics
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
 import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.domain.model.CachedPlayedListUiSpec
 import kotlinx.coroutines.flow.Flow

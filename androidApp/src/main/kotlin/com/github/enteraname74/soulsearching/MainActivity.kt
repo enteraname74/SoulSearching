@@ -15,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import coil3.annotation.ExperimentalCoilApi
-import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.usecase.cloud.CloudBackgroundSyncJob
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.feature.appinit.composable.MissingPermissionsComposable
 import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel

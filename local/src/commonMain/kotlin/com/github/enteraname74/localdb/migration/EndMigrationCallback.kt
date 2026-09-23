@@ -2,9 +2,9 @@ package com.github.enteraname74.localdb.migration
 
 import androidx.room3.RoomDatabase
 import androidx.sqlite.SQLiteConnection
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.util.LocalDatabaseVersion
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.util.LocalDatabaseVersion
 
 class EndMigrationCallback(
     private val settings: SoulSearchingSettings,

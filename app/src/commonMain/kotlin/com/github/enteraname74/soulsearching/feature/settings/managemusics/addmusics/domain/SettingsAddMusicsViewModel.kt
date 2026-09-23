@@ -2,13 +2,13 @@ package com.github.enteraname74.soulsearching.feature.settings.managemusics.addm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
-import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.domain.usecase.music.SaveMusicsWithFoldersUseCase
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Folder
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.usecase.folder.CommonFolderUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.SaveMusicsWithFoldersUseCase
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.state.SettingsAddMusicsNavigationState
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher

@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
-import com.github.enteraname74.domain.model.CloudPreferences
+import com.github.enteraname74.soulsearching.domain.model.CloudPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 

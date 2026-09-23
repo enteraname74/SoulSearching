@@ -1,11 +1,11 @@
 package com.github.enteraname74.soulsearching.repository.datasource.player
 
-import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.model.player.PlayedListState
-import com.github.enteraname74.domain.model.player.PlayerToken
-import com.github.enteraname74.domain.model.player.SharedPlayedList
-import com.github.enteraname74.domain.model.player.SharedPlayerMusic
-import com.github.enteraname74.domain.repository.SharedPlayedListListener
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListState
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerToken
+import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedList
+import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayerMusic
+import com.github.enteraname74.soulsearching.domain.repository.SharedPlayedListListener
 import kotlin.uuid.Uuid
 
 interface PlayerRemoteDataSource {

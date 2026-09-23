@@ -5,9 +5,9 @@ package com.github.enteraname74.soulsearching.features.playback.notification
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.toPixelMap
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.repository.CloudPreferencesRepository
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.repository.CloudPreferencesRepository
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
 import kotlinx.browser.document

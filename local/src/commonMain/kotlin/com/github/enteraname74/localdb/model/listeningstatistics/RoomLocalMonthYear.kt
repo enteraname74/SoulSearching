@@ -1,6 +1,6 @@
 package com.github.enteraname74.localdb.model.listeningstatistics
 
-import com.github.enteraname74.domain.model.LocalMonthYear
+import com.github.enteraname74.soulsearching.domain.model.LocalMonthYear
 
 data class RoomLocalMonthYear(
     val month: Int,

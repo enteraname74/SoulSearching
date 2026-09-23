@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.player.PlayerToken
-import com.github.enteraname74.domain.repository.CloudPreferencesRepository
-import com.github.enteraname74.domain.repository.PlayerRepository
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerToken
+import com.github.enteraname74.soulsearching.domain.repository.CloudPreferencesRepository
+import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
 import kotlinx.coroutines.flow.firstOrNull
 import kotlin.math.max
 import kotlin.time.Clock

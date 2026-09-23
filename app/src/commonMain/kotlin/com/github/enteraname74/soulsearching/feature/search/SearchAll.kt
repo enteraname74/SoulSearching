@@ -9,10 +9,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
-import com.github.enteraname74.domain.model.AlbumPreview
-import com.github.enteraname74.domain.model.ArtistPreview
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistPreview
+import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
+import com.github.enteraname74.soulsearching.domain.model.ArtistPreview
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat

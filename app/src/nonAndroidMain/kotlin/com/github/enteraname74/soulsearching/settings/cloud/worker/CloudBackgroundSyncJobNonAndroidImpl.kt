@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.settings.cloud.worker
 
-import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
-import com.github.enteraname74.domain.usecase.cloud.HasValidCloudInformationUseCase
-import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.usecase.cloud.CloudBackgroundSyncJob
+import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.SyncDataWithCloudUseCase
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow

@@ -2,8 +2,8 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.decodeToImageBitmap
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.repository.CoverRepository
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.repository.CoverRepository
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.repository.datasource.cover.CoverLocalDataSource

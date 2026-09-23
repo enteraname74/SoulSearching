@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.ext
 
-import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.di.commonRequestHeaders
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

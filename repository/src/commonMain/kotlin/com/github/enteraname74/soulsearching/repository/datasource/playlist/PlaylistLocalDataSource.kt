@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.repository.datasource.playlist
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.model.PlaylistPreview
-import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.Playlist
+import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
+import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 

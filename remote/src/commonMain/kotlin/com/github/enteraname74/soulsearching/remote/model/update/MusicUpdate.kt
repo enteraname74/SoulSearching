@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.model.update
 
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Music
 import kotlinx.serialization.Serializable
 
 @Serializable

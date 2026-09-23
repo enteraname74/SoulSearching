@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.model
 
-import com.github.enteraname74.domain.model.Release
+import com.github.enteraname74.soulsearching.domain.model.Release
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
-import com.github.enteraname74.domain.model.player.SharedPlayedListPreview
-import com.github.enteraname74.domain.model.statistics.Period
-import com.github.enteraname74.domain.model.user.UserType
-import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
+import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedListPreview
+import com.github.enteraname74.soulsearching.domain.model.statistics.Period
+import com.github.enteraname74.soulsearching.domain.model.user.UserType
+import com.github.enteraname74.soulsearching.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 import kotlin.time.Duration
 

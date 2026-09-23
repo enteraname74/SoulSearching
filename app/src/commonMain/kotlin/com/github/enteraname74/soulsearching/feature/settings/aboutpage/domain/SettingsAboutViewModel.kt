@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.release.CommonReleaseUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

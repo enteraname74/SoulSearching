@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.ext
 
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.domain.model.lyrics.MusicLyrics
+import com.github.enteraname74.soulsearching.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable

@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.domain.ext
 
-import com.github.enteraname74.domain.ext.filenameFromPath
+import com.github.enteraname74.soulsearching.domain.ext.filenameFromPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

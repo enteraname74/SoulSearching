@@ -4,8 +4,8 @@ import androidx.room3.Entity
 import androidx.room3.ForeignKey
 import androidx.room3.Index
 import androidx.room3.PrimaryKey
-import com.github.enteraname74.domain.model.player.PlayerUserStatus
-import com.github.enteraname74.domain.model.player.SharedPlayedListUser
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerUserStatus
+import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedListUser
 import kotlin.uuid.Uuid
 
 @Entity(

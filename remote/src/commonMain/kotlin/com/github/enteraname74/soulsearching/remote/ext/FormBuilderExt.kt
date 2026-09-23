@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.remote.ext
 
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import io.ktor.client.request.forms.FormBuilder
 import io.ktor.http.ContentType
 import io.ktor.http.Headers

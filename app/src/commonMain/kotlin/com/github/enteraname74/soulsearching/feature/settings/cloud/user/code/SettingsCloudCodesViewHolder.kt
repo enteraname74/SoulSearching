@@ -2,8 +2,8 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.user.code
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.user.UserInscriptionCode
-import com.github.enteraname74.domain.repository.UserInscriptionCodeRepository
+import com.github.enteraname74.soulsearching.domain.model.user.UserInscriptionCode
+import com.github.enteraname74.soulsearching.domain.repository.UserInscriptionCodeRepository
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolder

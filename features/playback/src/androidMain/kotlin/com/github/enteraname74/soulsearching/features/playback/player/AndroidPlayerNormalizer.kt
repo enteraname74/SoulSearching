@@ -3,7 +3,7 @@
 //import com.arthenica.ffmpegkit.FFmpegKit
 //import com.arthenica.ffmpegkit.FFmpegSession
 //import com.arthenica.ffmpegkit.ReturnCode
-//import com.github.enteraname74.domain.model.Music
+//import com.github.enteraname74.soulsearching.domain.model.Music
 //
 //class AndroidPlayerNormalizer: PlayerNormalizer() {
 //    override suspend fun getMeanVolume(music: Music): Float? {

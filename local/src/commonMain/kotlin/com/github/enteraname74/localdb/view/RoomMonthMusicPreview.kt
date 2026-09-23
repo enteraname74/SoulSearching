@@ -1,8 +1,8 @@
 package com.github.enteraname74.localdb.view
 
 import androidx.room3.DatabaseView
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.MonthMusicsPreview
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.MonthMusicsPreview
 import kotlin.uuid.Uuid
 
 @DatabaseView(

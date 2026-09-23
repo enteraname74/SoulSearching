@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
-import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.domain.repository.FolderRepository
+import com.github.enteraname74.soulsearching.domain.model.Folder
+import com.github.enteraname74.soulsearching.domain.repository.FolderRepository
 import com.github.enteraname74.soulsearching.repository.datasource.FolderDataSource
 import kotlinx.coroutines.flow.Flow
 

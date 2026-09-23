@@ -2,8 +2,8 @@ package com.github.enteraname74.localdb.model
 
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
-import com.github.enteraname74.domain.model.user.SimpleUser
-import com.github.enteraname74.domain.model.user.UserType
+import com.github.enteraname74.soulsearching.domain.model.user.SimpleUser
+import com.github.enteraname74.soulsearching.domain.model.user.UserType
 import kotlin.uuid.Uuid
 
 @Entity

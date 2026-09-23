@@ -3,7 +3,7 @@ package com.github.enteraname74.localdb.model
 import androidx.room3.Embedded
 import androidx.room3.Junction
 import androidx.room3.Relation
-import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
 
 /**
  * Room representation of a PlaylistWithMusics.

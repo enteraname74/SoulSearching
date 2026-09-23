@@ -2,9 +2,9 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.repository.PlayerRepository
-import com.github.enteraname74.domain.usecase.player.JoinSharedPlayedListUseCase
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
+import com.github.enteraname74.soulsearching.domain.usecase.player.JoinSharedPlayedListUseCase
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog

@@ -1,0 +1,74 @@
+package com.github.enteraname74.soulsearching.domain.usecase.playlist
+
+import androidx.paging.PagingData
+import com.github.enteraname74.soulsearching.domain.model.Playlist
+import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
+import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.repository.PlaylistRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlin.uuid.Uuid
+
+class CommonPlaylistUseCase(
+    private val playlistRepository: PlaylistRepository,
+) {
+    fun getFromId(playlistId: Uuid): Flow<Playlist?> =
+        playlistRepository.getFromId(playlistId)
+
+    suspend fun getFromRemoteId(remoteId: Uuid): Playlist? =
+        playlistRepository.getFromRemoteId(remoteId = remoteId)
+
+    fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
+        playlistRepository.getFromIds(playlistIds)
+
+    suspend fun deleteAll(playlistIds: List<Uuid>): SoulResult<Unit> =
+        playlistRepository.deleteAll(playlistIds)
+
+    suspend fun getFavorite(): Playlist? =
+        playlistRepository.getFavorite()
+
+    suspend fun getFromName(name: String): Playlist? =
+        playlistRepository.getFromName(name = name)
+
+    fun getAllWithMusics(): Flow<List<PlaylistWithMusics>> =
+        playlistRepository.getAllPlaylistWithMusics()
+
+    fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>> =
+        playlistRepository.getAllFromQuickAccess()
+
+    // TODO OPTI: Improve favorite playlist retrieving
+    fun observeFavorite(): Flow<PlaylistWithMusics?> =
+        playlistRepository.getAllPlaylistWithMusics().map { list ->
+            list.firstOrNull { it.playlist.isFavorite }
+        }
+
+    fun getWithMusics(playlistId: Uuid): Flow<PlaylistWithMusics?> =
+        playlistRepository.getPlaylistWithMusics(playlistId)
+
+    fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
+        playlistRepository.getAllPaged()
+
+    suspend fun getAll(page: Int, pageSize: Int): List<PlaylistPreview> =
+        playlistRepository.getAll(page = page, pageSize = pageSize)
+
+    suspend fun upsertAll(playlists: List<Playlist>, keepUpdatedAt: Boolean = false) {
+        playlistRepository.upsertAll(playlists, keepUpdatedAt)
+    }
+
+    suspend fun upsert(playlist: Playlist) {
+        playlistRepository.upsert(
+            playlist = playlist,
+        )
+    }
+
+    suspend fun cleanAllCovers() {
+        playlistRepository.cleanAllCovers()
+    }
+
+    fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?> =
+        playlistRepository.getPlaylistPreview(playlistId)
+
+    fun searchAll(search: String): Flow<List<PlaylistPreview>> =
+        playlistRepository.searchAll(search)
+}

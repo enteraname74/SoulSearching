@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.repository.datasource.user
 
-import com.github.enteraname74.domain.model.user.SimpleUser
-import com.github.enteraname74.domain.model.user.User
-import com.github.enteraname74.domain.model.user.UserStorage
+import com.github.enteraname74.soulsearching.domain.model.user.SimpleUser
+import com.github.enteraname74.soulsearching.domain.model.user.User
+import com.github.enteraname74.soulsearching.domain.model.user.UserStorage
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 

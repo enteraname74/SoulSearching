@@ -1,6 +1,6 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
-import com.github.enteraname74.domain.model.MusicArtist
+import com.github.enteraname74.soulsearching.domain.model.MusicArtist
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toMusicArtist
 import com.github.enteraname74.localdb.model.toRoomMusicArtist

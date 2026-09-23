@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.domain.state
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.soulsearching.domain.model.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

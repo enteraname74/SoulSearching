@@ -3,9 +3,9 @@ package com.github.enteraname74.localdb.dao
 import androidx.room3.Dao
 import androidx.room3.Query
 import androidx.room3.Upsert
-import com.github.enteraname74.domain.model.player.PlayedListScope
-import com.github.enteraname74.domain.model.player.PlayedListState
-import com.github.enteraname74.domain.model.player.PlayerMode
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListState
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerMode
 import com.github.enteraname74.localdb.model.player.RoomPlayerPlayedList
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid

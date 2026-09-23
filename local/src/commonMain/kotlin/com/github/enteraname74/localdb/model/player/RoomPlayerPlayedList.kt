@@ -2,11 +2,11 @@ package com.github.enteraname74.localdb.model.player
 
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
-import com.github.enteraname74.domain.model.player.PlayedListScope
-import com.github.enteraname74.domain.model.player.PlayedListState
-import com.github.enteraname74.domain.model.player.PlayedListType
-import com.github.enteraname74.domain.model.player.PlayerMode
-import com.github.enteraname74.domain.model.player.PlayerPlayedList
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListState
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListType
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerMode
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerPlayedList
 import kotlin.uuid.Uuid
 
 @Entity

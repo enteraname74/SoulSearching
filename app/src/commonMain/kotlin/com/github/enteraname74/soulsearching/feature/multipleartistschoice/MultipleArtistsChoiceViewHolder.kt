@@ -2,9 +2,9 @@ package com.github.enteraname74.soulsearching.feature.multipleartistschoice
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.usecase.music.SaveInitialFetchedMusicsUseCase
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.usecase.music.SaveInitialFetchedMusicsUseCase
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddNewsSongsStepManager
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddNewsSongsStepState

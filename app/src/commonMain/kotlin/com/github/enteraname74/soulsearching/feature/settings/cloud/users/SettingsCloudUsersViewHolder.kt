@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.users
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog

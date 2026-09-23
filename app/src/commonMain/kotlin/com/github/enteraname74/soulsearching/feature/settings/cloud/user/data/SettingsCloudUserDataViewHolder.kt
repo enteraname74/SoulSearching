@@ -2,8 +2,8 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.user.data
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.repository.UserRepository
-import com.github.enteraname74.domain.usecase.user.ClearUserDataUseCase
+import com.github.enteraname74.soulsearching.domain.repository.UserRepository
+import com.github.enteraname74.soulsearching.domain.usecase.user.ClearUserDataUseCase
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager

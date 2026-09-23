@@ -1,6 +1,6 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
-import com.github.enteraname74.domain.model.Folder
+import com.github.enteraname74.soulsearching.domain.model.Folder
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toFolder
 import com.github.enteraname74.localdb.model.toRoomFolder

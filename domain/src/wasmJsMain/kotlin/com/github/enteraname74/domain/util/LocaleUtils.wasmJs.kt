@@ -1,4 +1,4 @@
-package com.github.enteraname74.domain.util
+package com.github.enteraname74.soulsearching.domain.util
 
 // TODO CLOUD: Add better locale system for WASM
 actual object LocaleUtils {

@@ -4,7 +4,7 @@ import androidx.room3.ColumnInfo
 import androidx.room3.Entity
 import androidx.room3.ForeignKey
 import androidx.room3.PrimaryKey
-import com.github.enteraname74.domain.model.MusicPlaylist
+import com.github.enteraname74.soulsearching.domain.model.MusicPlaylist
 import kotlin.uuid.Uuid
 
 /**

@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.domain
 
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import kotlinx.coroutines.flow.first
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

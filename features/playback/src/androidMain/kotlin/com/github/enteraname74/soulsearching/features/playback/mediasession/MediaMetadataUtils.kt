@@ -5,11 +5,11 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.core.graphics.scale
 import androidx.media3.common.MediaMetadata
-import com.github.enteraname74.domain.model.AlbumPreview
-import com.github.enteraname74.domain.model.ArtistPreview
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicFolderPreview
-import com.github.enteraname74.domain.model.PlaylistPreview
+import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
+import com.github.enteraname74.soulsearching.domain.model.ArtistPreview
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.MusicFolderPreview
+import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.features.playback.R
 import java.io.ByteArrayOutputStream
 

@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
-import com.github.enteraname74.domain.model.statistics.CloudListeningStatistics
-import com.github.enteraname74.domain.model.statistics.ListeningStatistics
-import com.github.enteraname74.domain.model.statistics.toCloud
+import com.github.enteraname74.soulsearching.domain.model.statistics.CloudListeningStatistics
+import com.github.enteraname74.soulsearching.domain.model.statistics.ListeningStatistics
+import com.github.enteraname74.soulsearching.domain.model.statistics.toCloud
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
 import com.github.enteraname74.soulsearching.remote.resource.StatisticsResource

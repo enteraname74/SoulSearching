@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.model.upload
 
-import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Album
 import kotlinx.serialization.Serializable
 
 @Serializable

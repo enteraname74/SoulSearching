@@ -2,9 +2,9 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.sync
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.usecase.cloud.CloudBackgroundSyncJob
-import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
-import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.cloud.CloudBackgroundSyncJob
+import com.github.enteraname74.soulsearching.domain.usecase.cloud.CommonCloudPreferencesUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.utils.DateUiUtils
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolderV2

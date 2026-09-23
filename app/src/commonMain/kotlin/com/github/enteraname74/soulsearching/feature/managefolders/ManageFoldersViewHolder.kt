@@ -2,13 +2,13 @@ package com.github.enteraname74.soulsearching.feature.managefolders
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
-import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
-import com.github.enteraname74.domain.usecase.music.SaveInitialFetchedMusicsUseCase
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.model.Folder
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.usecase.folder.CommonFolderUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.DeleteMusicUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.SaveInitialFetchedMusicsUseCase
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings

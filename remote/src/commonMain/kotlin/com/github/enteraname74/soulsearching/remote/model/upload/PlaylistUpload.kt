@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.model.upload
 
-import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 

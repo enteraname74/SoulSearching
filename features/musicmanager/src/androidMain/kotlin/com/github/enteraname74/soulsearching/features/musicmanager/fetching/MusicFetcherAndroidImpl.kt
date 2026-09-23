@@ -3,9 +3,9 @@ package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Playlist
+import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.features.musicmanager.ext.toMusic

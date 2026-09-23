@@ -2,7 +2,7 @@ package com.github.enteraname74.localdb.view
 
 import androidx.room3.DatabaseView
 import androidx.room3.Embedded
-import com.github.enteraname74.domain.model.player.PlayerMode
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerMode
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
 
 @DatabaseView(

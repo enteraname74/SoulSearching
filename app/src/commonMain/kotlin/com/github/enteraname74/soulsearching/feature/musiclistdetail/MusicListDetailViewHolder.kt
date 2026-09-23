@@ -5,18 +5,18 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicListDetailId
-import com.github.enteraname74.domain.model.player.PlayedListToContinue
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementAlbumNbPlayedUseCase
-import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementArtistNbPlayedUseCase
-import com.github.enteraname74.domain.usecase.listeningstatistics.IncrementPlaylistNbPlayedUseCase
-import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListToContinue
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementAlbumNbPlayedUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementArtistNbPlayedUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementPlaylistNbPlayedUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -439,7 +439,10 @@ class MusicListDetailViewHolder(
         when (detailId) {
             is MusicListDetailId.Album -> incrementAlbumNbPlayedUseCase(detailId.albumId)
             is MusicListDetailId.Artist -> incrementArtistNbPlayedUseCase(detailId.artistId)
-            is MusicListDetailId.Folder, is MusicListDetailId.Month -> TODO()
+            is MusicListDetailId.Folder, is MusicListDetailId.Month -> {
+                // TODO STATISTICS: Maybe add support for folder and month in stats?
+                // no-op
+            }
             is MusicListDetailId.Playlist -> incrementPlaylistNbPlayedUseCase(detailId.playlistId)
         }
     }

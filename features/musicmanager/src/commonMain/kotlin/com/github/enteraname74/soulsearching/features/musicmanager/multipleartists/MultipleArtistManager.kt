@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.multipleartists
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Music
 import kotlin.uuid.Uuid
 
 /**

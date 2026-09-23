@@ -1,0 +1,30 @@
+package com.github.enteraname74.soulsearching.domain.usecase.music
+
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.CloudMusic
+import com.github.enteraname74.soulsearching.domain.model.MergeMode
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.repository.MusicRepository
+
+class UpdateMusicToCloudUseCase(
+    private val musicRepository: MusicRepository,
+    private val cloudMusicToMusicUseCase: CloudMusicToMusicUseCase,
+) {
+    suspend operator fun invoke(
+        music: Music,
+        mergeMode: MergeMode,
+        cachedArtists: Set<Artist>,
+        cachedAlbums: Set<Album>,
+        cachedMusics: Set<Music>,
+    ): Music? {
+        val cloudMusic: CloudMusic = musicRepository.updateMusicToCloud(music = music) ?: return null
+        return cloudMusicToMusicUseCase(
+            cloudMusic = cloudMusic,
+            mergeMode = mergeMode,
+            cachedArtists = cachedArtists,
+            cachedAlbums = cachedAlbums,
+            cachedMusics = cachedMusics,
+        )
+    }
+}

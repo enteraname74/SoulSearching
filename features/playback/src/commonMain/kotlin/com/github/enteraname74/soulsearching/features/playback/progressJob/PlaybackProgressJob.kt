@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.features.playback.progressJob
 
-import com.github.enteraname74.domain.repository.PlayerRepository
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

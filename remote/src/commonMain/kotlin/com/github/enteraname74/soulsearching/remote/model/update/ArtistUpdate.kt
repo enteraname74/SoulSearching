@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.model.update
 
-import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Artist
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 

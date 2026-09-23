@@ -5,7 +5,7 @@ import androidx.room3.Entity
 import androidx.room3.ForeignKey
 import androidx.room3.Index
 import androidx.room3.PrimaryKey
-import com.github.enteraname74.domain.model.statistics.ListeningStatistics
+import com.github.enteraname74.soulsearching.domain.model.statistics.ListeningStatistics
 import com.github.enteraname74.localdb.model.RoomAlbum
 import com.github.enteraname74.localdb.model.RoomArtist
 import com.github.enteraname74.localdb.model.RoomMusic

@@ -1,8 +1,8 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
-import com.github.enteraname74.domain.model.user.SimpleUser
-import com.github.enteraname74.domain.model.user.User
-import com.github.enteraname74.domain.model.user.UserStorage
+import com.github.enteraname74.soulsearching.domain.model.user.SimpleUser
+import com.github.enteraname74.soulsearching.domain.model.user.User
+import com.github.enteraname74.soulsearching.domain.model.user.UserStorage
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.RoomUser
 import com.github.enteraname74.localdb.model.toRoomSimpleUser

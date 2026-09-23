@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.remote.model.user
 
-import com.github.enteraname74.domain.model.user.SimpleUser
-import com.github.enteraname74.domain.model.user.UserType
+import com.github.enteraname74.soulsearching.domain.model.user.SimpleUser
+import com.github.enteraname74.soulsearching.domain.model.user.UserType
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 

@@ -2,8 +2,8 @@ package com.github.enteraname74.localdb.model
 
 import androidx.room3.Embedded
 import androidx.room3.Relation
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Cover
 
 data class RoomCompleteAlbum(
     @Embedded val roomAlbum: RoomAlbum,

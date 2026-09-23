@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
-import com.github.enteraname74.domain.model.CloudMusic
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.model.CloudMusic
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.remote.ext.appendCoverFile
 import com.github.enteraname74.soulsearching.remote.ext.appendJson

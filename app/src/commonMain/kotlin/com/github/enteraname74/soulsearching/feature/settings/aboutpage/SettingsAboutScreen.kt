@@ -26,9 +26,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.enteraname74.domain.model.Platform
-import com.github.enteraname74.domain.model.Release
-import com.github.enteraname74.domain.util.PlatformUtils
+import com.github.enteraname74.soulsearching.domain.model.Platform
+import com.github.enteraname74.soulsearching.domain.model.Release
+import com.github.enteraname74.soulsearching.domain.util.PlatformUtils
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_open_in_new
@@ -42,7 +42,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.text.SoulMarkdownText
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.domain.AppVersion
+import com.github.enteraname74.soulsearching.domain.AppVersion
 import com.github.enteraname74.soulsearching.ext.isNewerThanCurrentVersion
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutState
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutViewModel

@@ -8,7 +8,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
-import com.github.enteraname74.domain.usecase.music.SyncDataWithCloudUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.ext.toWorkerResult
 import com.github.enteraname74.soulsearching.coreui.strings.StringsUtils
 import com.github.enteraname74.soulsearching.sharedapp.R

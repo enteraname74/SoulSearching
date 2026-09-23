@@ -19,9 +19,9 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.cloud.CommonCloudPreferencesUseCase
-import com.github.enteraname74.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.usecase.cloud.CommonCloudPreferencesUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaMetadataUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

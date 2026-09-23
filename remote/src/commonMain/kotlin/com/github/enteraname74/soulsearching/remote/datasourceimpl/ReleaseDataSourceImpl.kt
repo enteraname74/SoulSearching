@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
-import com.github.enteraname74.domain.model.Release
+import com.github.enteraname74.soulsearching.domain.model.Release
 import com.github.enteraname74.soulsearching.remote.model.RemoteRelease
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
 import io.ktor.client.*

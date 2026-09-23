@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.feature.settings.statistics
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.enteraname74.domain.model.MusicListDetailId
+import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailDestination
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.navigation.Navigator

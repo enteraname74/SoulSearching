@@ -4,8 +4,8 @@ import androidx.room3.Entity
 import androidx.room3.ForeignKey
 import androidx.room3.Index
 import androidx.room3.PrimaryKey
-import com.github.enteraname74.domain.model.player.PlayerMode
-import com.github.enteraname74.domain.model.player.PlayerMusic
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerMode
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerMusic
 import com.github.enteraname74.localdb.model.RoomMusic
 import kotlin.uuid.Uuid
 

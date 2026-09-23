@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.managefolders
 
-import com.github.enteraname74.domain.model.Folder
+import com.github.enteraname74.soulsearching.domain.model.Folder
 
 /**
  * State for managing folders.

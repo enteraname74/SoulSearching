@@ -1,8 +1,8 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
 import androidx.room3.withWriteTransaction
-import com.github.enteraname74.domain.model.MusicPlaylist
-import com.github.enteraname74.domain.util.DateUtils
+import com.github.enteraname74.soulsearching.domain.model.MusicPlaylist
+import com.github.enteraname74.soulsearching.domain.util.DateUtils
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toMusicPlaylist
 import com.github.enteraname74.localdb.model.toRoomMusicPlaylist

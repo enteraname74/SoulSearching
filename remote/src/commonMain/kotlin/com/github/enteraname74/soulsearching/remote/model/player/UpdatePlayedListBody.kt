@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.model.player
 
-import com.github.enteraname74.domain.model.player.SharedPlayedList
+import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedList
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 

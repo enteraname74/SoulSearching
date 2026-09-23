@@ -1,16 +1,16 @@
 package com.github.enteraname74.soulsearching.features.filemanager.usecase
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicArtist
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
-import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.MusicArtist
+import com.github.enteraname74.soulsearching.domain.repository.ArtistRepository
+import com.github.enteraname74.soulsearching.domain.repository.MusicArtistRepository
+import com.github.enteraname74.soulsearching.domain.repository.MusicRepository
+import com.github.enteraname74.soulsearching.domain.usecase.album.DeleteAlbumIfEmptyUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.album.GetCorrespondingAlbumUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.soulsearching.features.filemanager.util.MusicFileUpdater
 
 class UpdateMusicUseCase(

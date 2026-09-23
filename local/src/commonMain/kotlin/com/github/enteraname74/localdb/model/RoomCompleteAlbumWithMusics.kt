@@ -2,8 +2,8 @@ package com.github.enteraname74.localdb.model
 
 import androidx.room3.Embedded
 import androidx.room3.Relation
-import com.github.enteraname74.domain.model.AlbumWithMusics
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.AlbumWithMusics
+import com.github.enteraname74.soulsearching.domain.model.Music
 import kotlin.comparisons.nullsLast
 
 data class RoomCompleteAlbumWithMusics(

@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.remote.model.user
 
-import com.github.enteraname74.domain.model.user.User
-import com.github.enteraname74.domain.model.user.UserTokens
+import com.github.enteraname74.soulsearching.domain.model.user.User
+import com.github.enteraname74.soulsearching.domain.model.user.UserTokens
 import kotlinx.serialization.Serializable
 
 @Serializable

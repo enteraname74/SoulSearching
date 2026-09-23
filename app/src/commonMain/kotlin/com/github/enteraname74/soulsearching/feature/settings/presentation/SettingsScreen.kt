@@ -3,8 +3,8 @@ package com.github.enteraname74.soulsearching.feature.settings.presentation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.github.enteraname74.domain.model.Platform
-import com.github.enteraname74.domain.util.PlatformUtils
+import com.github.enteraname74.soulsearching.domain.model.Platform
+import com.github.enteraname74.soulsearching.domain.util.PlatformUtils
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_bar_chart
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cloud_filled

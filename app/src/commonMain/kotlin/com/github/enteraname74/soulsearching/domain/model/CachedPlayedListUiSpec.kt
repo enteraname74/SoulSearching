@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.domain.model
 
-import com.github.enteraname74.domain.model.player.PlayedListToContinue
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListToContinue
 import kotlin.uuid.Uuid
 
 data class CachedPlayedListUiSpec(

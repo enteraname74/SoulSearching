@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
-import com.github.enteraname74.domain.model.CloudPreferences
-import com.github.enteraname74.domain.repository.CloudPreferencesRepository
+import com.github.enteraname74.soulsearching.domain.model.CloudPreferences
+import com.github.enteraname74.soulsearching.domain.repository.CloudPreferencesRepository
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import kotlinx.coroutines.flow.Flow
 

@@ -3,9 +3,9 @@ package com.github.enteraname74.soulsearching.feature.settings.statistics
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
 import androidx.paging.map
-import com.github.enteraname74.domain.model.statistics.Period
-import com.github.enteraname74.domain.model.statistics.PeriodStatistics
-import com.github.enteraname74.domain.repository.ListeningStatisticsRepository
+import com.github.enteraname74.soulsearching.domain.model.statistics.Period
+import com.github.enteraname74.soulsearching.domain.model.statistics.PeriodStatistics
+import com.github.enteraname74.soulsearching.domain.repository.ListeningStatisticsRepository
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodType
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodUiStatistics

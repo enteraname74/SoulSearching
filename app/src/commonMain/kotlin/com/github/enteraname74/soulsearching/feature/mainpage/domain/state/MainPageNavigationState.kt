@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.domain.state
 
-import com.github.enteraname74.domain.model.MusicListDetailId
+import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
 import kotlin.uuid.Uuid
 

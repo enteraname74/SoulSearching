@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.ext
 
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.file.Files

@@ -2,8 +2,8 @@ package com.github.enteraname74.localdb.model
 
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
-import com.github.enteraname74.domain.model.user.UserStorage
-import com.github.enteraname74.domain.model.user.UserStorage.StorageType
+import com.github.enteraname74.soulsearching.domain.model.user.UserStorage
+import com.github.enteraname74.soulsearching.domain.model.user.UserStorage.StorageType
 
 @Entity
 data class RoomUserStorage(

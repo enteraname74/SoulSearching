@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.domain.usecase
 
-import com.github.enteraname74.domain.model.Platform
-import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
-import com.github.enteraname74.domain.util.PlatformUtils
+import com.github.enteraname74.soulsearching.domain.model.Platform
+import com.github.enteraname74.soulsearching.domain.usecase.release.CommonReleaseUseCase
+import com.github.enteraname74.soulsearching.domain.util.PlatformUtils
 import com.github.enteraname74.soulsearching.ext.isNewerThanCurrentVersion
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

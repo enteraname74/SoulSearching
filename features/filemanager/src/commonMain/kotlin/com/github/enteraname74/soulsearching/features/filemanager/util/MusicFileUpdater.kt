@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.features.filemanager.util
 
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Music
 
 /**
  * Utility class for updating a music file information.

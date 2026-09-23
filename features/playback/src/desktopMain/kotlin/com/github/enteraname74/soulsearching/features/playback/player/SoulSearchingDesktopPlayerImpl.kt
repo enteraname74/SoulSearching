@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.repository.PlayerRepository
-import com.github.enteraname74.domain.util.WorkDispatcher
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull

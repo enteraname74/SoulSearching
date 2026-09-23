@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
-import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.model.user.SimpleUser
-import com.github.enteraname74.domain.model.user.User
-import com.github.enteraname74.domain.model.user.UserStorage
-import com.github.enteraname74.domain.model.user.UserTokens
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.model.user.SimpleUser
+import com.github.enteraname74.soulsearching.domain.model.user.User
+import com.github.enteraname74.soulsearching.domain.model.user.UserStorage
+import com.github.enteraname74.soulsearching.domain.model.user.UserTokens
 import com.github.enteraname74.soulsearching.remote.di.HttpClientNames
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.clearToken

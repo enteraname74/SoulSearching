@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.remote.di
 
-import com.github.enteraname74.domain.AppVersion
-import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.model.user.UserTokens
-import com.github.enteraname74.domain.util.LocaleUtils
+import com.github.enteraname74.soulsearching.domain.AppVersion
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.model.user.UserTokens
+import com.github.enteraname74.soulsearching.domain.util.LocaleUtils
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserRemoteDataSource
 import io.ktor.client.HttpClient

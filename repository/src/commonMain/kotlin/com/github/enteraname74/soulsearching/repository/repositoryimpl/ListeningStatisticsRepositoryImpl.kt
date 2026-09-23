@@ -1,12 +1,12 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
-import com.github.enteraname74.domain.model.LocalMonthYear
-import com.github.enteraname74.domain.model.statistics.LightListeningStatistics
-import com.github.enteraname74.domain.model.statistics.ListeningStatistics
-import com.github.enteraname74.domain.model.statistics.Period
-import com.github.enteraname74.domain.model.statistics.PeriodStatistics
-import com.github.enteraname74.domain.repository.CloudPreferencesRepository
-import com.github.enteraname74.domain.repository.ListeningStatisticsRepository
+import com.github.enteraname74.soulsearching.domain.model.LocalMonthYear
+import com.github.enteraname74.soulsearching.domain.model.statistics.LightListeningStatistics
+import com.github.enteraname74.soulsearching.domain.model.statistics.ListeningStatistics
+import com.github.enteraname74.soulsearching.domain.model.statistics.Period
+import com.github.enteraname74.soulsearching.domain.model.statistics.PeriodStatistics
+import com.github.enteraname74.soulsearching.domain.repository.CloudPreferencesRepository
+import com.github.enteraname74.soulsearching.domain.repository.ListeningStatisticsRepository
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.listeningstatistics.ListeningStatisticsLocalDataSource

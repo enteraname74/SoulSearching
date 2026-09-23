@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.github.enteraname74.domain.util.PlatformUtils
+import com.github.enteraname74.soulsearching.domain.util.PlatformUtils
 import kotlinx.browser.window
 import org.w3c.dom.events.Event
 

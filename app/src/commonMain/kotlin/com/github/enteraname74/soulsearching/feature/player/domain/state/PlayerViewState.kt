@@ -1,11 +1,11 @@
 package com.github.enteraname74.soulsearching.feature.player.domain.state
 
 import androidx.compose.ui.graphics.Color
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.player.FullPlayerMusicUser
-import com.github.enteraname74.domain.model.player.PlayedListScope
-import com.github.enteraname74.domain.model.player.PlayerMode
-import com.github.enteraname74.domain.model.player.PlayerUserStatus
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.player.FullPlayerMusicUser
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerMode
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerUserStatus
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingDarkLightThemes

@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.repository.datasource.music
 
-import com.github.enteraname74.domain.model.CloudMusic
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.model.CloudMusic
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
 
 interface MusicRemoteDataSource {
     suspend fun getDeletedRemoteMusicIds(idsToCheck: List<String>): List<String>

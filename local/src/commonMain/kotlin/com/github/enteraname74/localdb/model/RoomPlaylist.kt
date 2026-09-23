@@ -2,8 +2,8 @@ package com.github.enteraname74.localdb.model
 
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Playlist
 import kotlin.time.Clock
 import kotlin.time.Instant
 import kotlin.uuid.Uuid

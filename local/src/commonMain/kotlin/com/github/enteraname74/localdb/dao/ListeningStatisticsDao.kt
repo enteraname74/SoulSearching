@@ -5,7 +5,7 @@ import androidx.room3.Dao
 import androidx.room3.Query
 import androidx.room3.Transaction
 import androidx.room3.Upsert
-import com.github.enteraname74.domain.model.statistics.LightListeningStatistics
+import com.github.enteraname74.soulsearching.domain.model.statistics.LightListeningStatistics
 import com.github.enteraname74.localdb.model.listeningstatistics.RoomCompleteListeningStatistics
 import com.github.enteraname74.localdb.model.listeningstatistics.RoomListeningStatistics
 import com.github.enteraname74.localdb.model.listeningstatistics.RoomLocalMonthYear

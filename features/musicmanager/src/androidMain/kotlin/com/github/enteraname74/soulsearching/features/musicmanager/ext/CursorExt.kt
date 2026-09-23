@@ -1,11 +1,11 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.ext
 
 import android.database.Cursor
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.Scope
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Scope
 import java.io.File
 
 private fun Cursor.getFilteredSafeString(index: Int): String =

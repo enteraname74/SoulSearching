@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
-import com.github.enteraname74.domain.model.Release
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.repository.ReleaseRepository
+import com.github.enteraname74.soulsearching.domain.model.Release
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.ReleaseRepository
 import com.github.enteraname74.soulsearching.features.serialization.SerializationUtils
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi

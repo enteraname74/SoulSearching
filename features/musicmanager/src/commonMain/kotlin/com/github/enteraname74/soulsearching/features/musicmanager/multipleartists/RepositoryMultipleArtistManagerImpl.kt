@@ -1,14 +1,14 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.multipleartists
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.MusicArtist
-import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.MusicArtist
+import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.album.DeleteAlbumUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.album.GetCorrespondingAlbumUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.musicartist.CommonMusicArtistUseCase
 import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

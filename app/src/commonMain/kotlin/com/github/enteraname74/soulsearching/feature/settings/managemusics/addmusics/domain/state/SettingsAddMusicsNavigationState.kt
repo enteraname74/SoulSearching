@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.state
 
-import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Artist
 
 sealed interface SettingsAddMusicsNavigationState {
     data object Idle : SettingsAddMusicsNavigationState

@@ -1,4 +1,4 @@
-package com.github.enteraname74.domain.util
+package com.github.enteraname74.soulsearching.domain.util
 
 actual object LocaleUtils {
     actual fun currentLanguage(): String =

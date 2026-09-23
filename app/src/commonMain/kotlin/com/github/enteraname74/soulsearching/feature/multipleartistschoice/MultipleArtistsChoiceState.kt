@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.multipleartistschoice
 
-import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Artist
 
 sealed interface MultipleArtistChoiceState {
     data object Loading : MultipleArtistChoiceState

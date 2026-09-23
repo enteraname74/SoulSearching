@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.features.playback.model
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.player.PlayedListScope
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
 
 data class UpdateData(
     val cover: ImageBitmap?,
