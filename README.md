@@ -11,9 +11,18 @@ Soul Searching is a comprehensive, powerful, and customizable music app for list
 
 > :warning: Web support is quite experimental, and may be quite laggy depending on the device.
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-alt="Get it on F-Droid"
-height="80">](https://f-droid.org/packages/com.github.enteraname74.soulsearching/)
+<p>
+  <a href="https://f-droid.org/packages/com.github.enteraname74.soulsearching/">
+    <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+         alt="Get it on F-Droid"
+         height="80">
+  </a>
+  <a href="https://apt.izzysoft.de/packages/com.github.enteraname74.soulsearching">
+    <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroidButtonGreyBorder_nofont.png"
+         alt="Get it on IzzyOnDroid"
+         height="80">
+  </a>
+</p>
 
 Or download the latest APK from the [Releases Section](https://github.com/enteraname74/SoulSearching/releases/latest).
 
