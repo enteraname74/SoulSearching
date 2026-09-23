@@ -6,21 +6,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
 import com.github.enteraname74.soulsearching.domain.model.ArtistPreview
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.domain.model.QuickAccessible
-import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
-import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllQuickAccessState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.QuickAccessExplanation
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
@@ -41,7 +40,8 @@ fun allQuickAccessTab(
             isUsingSort = false,
             key = null,
             contentType = { ALL_QUICK_ACCESS_CONTENT_TYPE },
-            emptyView = { QuickAccessExplanation() }
+            emptyTitle = strings.emptyQuickAccess,
+            emptyDescription = strings.emptyQuickAccessExplanations,
         ) { element ->
             element.ToPreview(
                 modifier = Modifier

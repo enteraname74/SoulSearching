@@ -49,6 +49,8 @@ fun allMusicFoldersTab(
             key = { it.folder },
             contentType = { ALL_MUSIC_FOLDERS_CONTENT_TYPE },
             isUsingSort = false,
+            emptyTitle = strings.emptyFolders,
+            emptyDescription = strings.emptyFoldersExplanations,
         ) { element ->
             BigPreviewComposable(
                 modifier = Modifier

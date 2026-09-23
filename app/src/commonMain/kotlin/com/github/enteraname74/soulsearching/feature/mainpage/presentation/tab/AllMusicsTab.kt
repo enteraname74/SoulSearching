@@ -3,13 +3,13 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.enteraname74.soulsearching.domain.model.SortDirection
-import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
-import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.AllMusicsComposable
+import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 
 fun allMusicsTab(
     mainPageViewModel: MainPageViewModel,

@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,6 +12,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.SortType
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
@@ -125,7 +127,14 @@ fun AllMusicsComposable(
                 key = ALL_MUSICS_NO_ELEMENT_KEY,
                 contentType = ALL_MUSICS_NO_ELEMENT_CONTENT_TYPE,
             ) {
-                NoElementView()
+                EmptyCard(
+                    modifier = Modifier
+                        .padding(
+                            end = UiConstants.Spacing.medium,
+                        ),
+                    title = strings.emptyMusics,
+                    description = strings.emptyMusicsExplanations,
+                )
             }
         }
     }

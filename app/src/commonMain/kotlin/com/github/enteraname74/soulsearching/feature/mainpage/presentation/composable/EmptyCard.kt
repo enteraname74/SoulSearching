@@ -15,17 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
-fun QuickAccessExplanation() {
+fun EmptyCard(
+    title: String,
+    description: String,
+    modifier: Modifier = Modifier,
+) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                top = UiConstants.Spacing.large,
-            ),
+        modifier = modifier
+            .fillMaxWidth(),
         contentAlignment = Alignment.Center,
     ) {
         Card(
@@ -48,13 +48,13 @@ fun QuickAccessExplanation() {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = strings.emptyQuickAccess,
+                    text = title,
                     color = SoulSearchingColorTheme.colorScheme.onSecondary,
                     textAlign = TextAlign.Center,
                     style = UiConstants.Typography.bodyTitle,
                 )
                 Text(
-                    text = strings.quickAccessExplanation,
+                    text = description,
                     color = SoulSearchingColorTheme.colorScheme.onSecondary,
                     textAlign = TextAlign.Center,
                     style = UiConstants.Typography.body,

@@ -44,6 +44,8 @@ fun allArtistsTab(
             sortDirection = artistState.sortDirection,
             key = { it?.id },
             contentType = ALL_ARTISTS_CONTENT_TYPE,
+            emptyTitle = strings.emptyArtists,
+            emptyDescription = strings.emptyArtistsExplanations,
         ) { element ->
             BigPreviewComposable(
                 modifier = Modifier

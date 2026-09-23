@@ -22,7 +22,19 @@ interface Strings {
     val cannotRetrieveSongs: String
     val noElements: String
     val emptyQuickAccess: String
-    val quickAccessExplanation: String
+    val emptyFolders: String
+    val emptyAlbums: String
+    val emptyMusics: String
+    val emptyArtists: String
+    val emptyPlaylists: String
+    val emptyMonths: String
+    val emptyMusicsExplanations: String
+    val emptyAlbumsExplanations: String
+    val emptyArtistsExplanations: String
+    val emptyFoldersExplanations: String
+    val emptyPlaylistsExplanations: String
+    val emptyQuickAccessExplanations: String
+    val emptyMonthsExplanations: String
     val backButton: String
     val headerBarRightButton: String
     val image: String

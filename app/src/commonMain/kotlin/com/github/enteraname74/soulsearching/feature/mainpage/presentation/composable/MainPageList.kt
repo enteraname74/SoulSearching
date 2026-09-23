@@ -30,7 +30,8 @@ fun <T> MainPageList(
     isUsingSort: Boolean = true,
     key: ((T) -> Any)?,
     contentType: (T) -> Any,
-    emptyView: @Composable () -> Unit = { NoElementView() },
+    emptyTitle: String,
+    emptyDescription: String,
     item: @Composable LazyGridItemScope.(element: T) -> Unit,
 ) {
 
@@ -71,7 +72,10 @@ fun <T> MainPageList(
                 item(
                     span = { GridItemSpan(maxLineSpan) }
                 ) {
-                    emptyView()
+                    EmptyCard(
+                        title = emptyTitle,
+                        description = emptyDescription,
+                    )
                 }
             }
         }
@@ -91,7 +95,8 @@ fun <T : Any> MainPageListPaged(
     isUsingSort: Boolean = true,
     key: ((T?) -> Any?)?,
     contentType: Any,
-    emptyView: @Composable () -> Unit = { NoElementView() },
+    emptyTitle: String,
+    emptyDescription: String,
     item: @Composable LazyGridItemScope.(element: T) -> Unit,
 ) {
 
@@ -134,7 +139,10 @@ fun <T : Any> MainPageListPaged(
                 item(
                     span = { GridItemSpan(maxLineSpan) }
                 ) {
-                    emptyView()
+                    EmptyCard(
+                        title = emptyTitle,
+                        description = emptyDescription,
+                    )
                 }
             }
         }

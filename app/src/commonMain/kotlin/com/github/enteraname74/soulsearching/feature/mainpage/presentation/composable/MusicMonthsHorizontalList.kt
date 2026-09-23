@@ -68,7 +68,14 @@ fun MusicMonthsHorizontalList(
                 }
             }
         } else {
-            NoElementView()
+            EmptyCard(
+                modifier = Modifier
+                    .padding(
+                        end = UiConstants.Spacing.medium,
+                    ),
+                title = strings.emptyMonths,
+                description = strings.emptyMonthsExplanations,
+            )
         }
     }
 }
