@@ -346,6 +346,7 @@ class PlaybackManager(
                         PlayedListState.Playing if playerScope?.isAdmin == true -> {
                             player.setMusic(currentMusic)
                             player.play()
+                            playbackProgressJob.launchDurationJobIfNecessary()
                         }
 
                         // We lost the admin status, and we were playing a song, we must stop the playback
@@ -717,7 +718,9 @@ class PlaybackManager(
 
     suspend fun setAndPlayMusicFromCurrentPlayedList(music: Music) {
         ensureReadyForPlayback()
+        playbackProgressJob.releaseDurationJob()
         playerRepository.setCurrent(music.musicId)
+        playerRepository.setProgress(Duration.ZERO)
         playerRepository.setPlayedListState(PlayedListState.Playing)
     }
 

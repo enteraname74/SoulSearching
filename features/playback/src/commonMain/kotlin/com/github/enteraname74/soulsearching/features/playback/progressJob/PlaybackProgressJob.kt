@@ -4,6 +4,7 @@ import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -51,8 +52,8 @@ internal class PlaybackProgressJob(
     /**
      * Release the duration job.
      */
-    fun releaseDurationJob() {
-        durationJob?.cancel()
+    suspend fun releaseDurationJob() {
+        durationJob?.cancelAndJoin()
         durationJob = null
     }
 

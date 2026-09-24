@@ -37,7 +37,7 @@ modules:
     build-commands:
       - install -Dm644 io.github.enteraname74.soulsearching.desktop
         /app/share/applications/io.github.enteraname74.soulsearching.desktop
-      - install -Dm644 app_icon.png
+      - install -Dm644 app_icon_bg.png
         /app/share/icons/hicolor/512x512/apps/io.github.enteraname74.soulsearching.png
       - install -Dm644 io.github.enteraname74.soulsearching.metainfo.xml
         /app/share/metainfo/io.github.enteraname74.soulsearching.metainfo.xml
@@ -46,7 +46,7 @@ modules:
       - type: archive
         path: build/distributions/soulsearching-0.16.0-linux.tar.gz
       - type: file
-        path: src/commonMain/composeResources/drawable/app_icon.png
+        path: src/commonMain/composeResources/drawable/app_icon_bg.png
       - type: file
         path: io.github.enteraname74.soulsearching.desktop
       - type: file

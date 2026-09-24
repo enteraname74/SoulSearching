@@ -26,6 +26,7 @@ class SoulSearchingDesktopPlayerImpl(
     MediaPlayerEventAdapter() {
     private var startPlayBuffered: Boolean = false
     private var startPauseBuffered: Boolean = false
+    private var stopForMediaChangeBuffered: Boolean = false
     private val workScope = CoroutineScope(workDispatcher.dispatcher)
 
     private var player: MediaPlayer = AudioPlayerComponent().mediaPlayer()
@@ -65,6 +66,10 @@ class SoulSearchingDesktopPlayerImpl(
     }
 
     override fun stopped(mediaPlayer: MediaPlayer?) {
+        if (stopForMediaChangeBuffered) {
+            stopForMediaChangeBuffered = false
+            return
+        }
         super.stopped(mediaPlayer)
         workScope.launch {
             listener?.onPause()
@@ -86,11 +91,13 @@ class SoulSearchingDesktopPlayerImpl(
 
     override suspend fun setMusic(music: Music) {
         try {
-            if (player.status().state() == State.PLAYING) {
+            if (player.status().state() in setOf(State.PLAYING, State.PAUSED, State.OPENING, State.BUFFERING)) {
+                stopForMediaChangeBuffered = true
                 player.controls().stop()
             }
             // Necessary to avoid blocking the app.
             delay(500.milliseconds)
+            stopForMediaChangeBuffered = false
             when {
                 music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
                     safeStartPaused(music.localPath!!)
@@ -116,6 +123,7 @@ class SoulSearchingDesktopPlayerImpl(
         startPlayBuffered = true
         startPauseBuffered = true
         player.media().startPaused(path)
+        player.controls().setTime(0)
     }
 
     private suspend fun setFromRemote(music: Music) {
