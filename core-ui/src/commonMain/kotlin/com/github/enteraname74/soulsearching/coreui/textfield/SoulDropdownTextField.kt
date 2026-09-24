@@ -76,7 +76,7 @@ fun SoulDropdownTextField(
                 focusManager = focusManager,
                 modifier = modifier
                     .menuAnchor(
-                        type = MenuAnchorType.PrimaryEditable,
+                        type = ExposedDropdownMenuAnchorType.PrimaryEditable,
                         enabled = true
                     )
                     .focusRequester(focusRequester),
