@@ -16,6 +16,28 @@
       on album artwork.
     </p>
   </description>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/enteraname74/SoulSearching/8c82d6feddabf73435a49dc3891b37c781017806/flatpak/screenshots/home.png</image>
+      <caption>Browse your local music library</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/enteraname74/SoulSearching/8c82d6feddabf73435a49dc3891b37c781017806/flatpak/screenshots/lyrics.png</image>
+      <caption>Follow synchronized lyrics while listening</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/enteraname74/SoulSearching/8c82d6feddabf73435a49dc3891b37c781017806/flatpak/screenshots/artist.png</image>
+      <caption>Explore an artist's albums and songs</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/enteraname74/SoulSearching/8c82d6feddabf73435a49dc3891b37c781017806/flatpak/screenshots/played_list.png</image>
+      <caption>View and reorder the current play queue</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/enteraname74/SoulSearching/8c82d6feddabf73435a49dc3891b37c781017806/flatpak/screenshots/albums.png</image>
+      <caption>Browse your album collection</caption>
+    </screenshot>
+  </screenshots>
   <launchable type="desktop-id">io.github.enteraname74.soulsearching.desktop</launchable>
   <url type="homepage">https://github.com/enteraname74/SoulSearching</url>
   <url type="bugtracker">https://github.com/enteraname74/SoulSearching/issues</url>
