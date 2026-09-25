@@ -7,8 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.github.enteraname74.soulsearching.domain.model.Platform
-import com.github.enteraname74.soulsearching.domain.util.PlatformUtils
+import com.github.enteraname74.soulsearching.domain.model.SoulPlatform
+import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import com.github.enteraname74.soulsearching.composables.image.SoulByteArrayImage
 import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -40,7 +40,7 @@ fun EditableElementCoverSection(
                 cover = editableElement.initialCover,
                 size = UiConstants.CoverSize.huge,
                 modifier = Modifier.clickableWithHandCursor(
-                    enabled = PlatformUtils.platform != Platform.Web
+                    enabled = SoulPlatformUtils.platform != SoulPlatform.Web
                 ) {
                     onSelectImage()
                 }
@@ -50,7 +50,7 @@ fun EditableElementCoverSection(
                 data = editableElement.newCover,
                 size = UiConstants.CoverSize.huge,
                 modifier = Modifier.clickableWithHandCursor(
-                    enabled = PlatformUtils.platform != Platform.Web
+                    enabled = SoulPlatformUtils.platform != SoulPlatform.Web
                 ) {
                     onSelectImage()
                 }

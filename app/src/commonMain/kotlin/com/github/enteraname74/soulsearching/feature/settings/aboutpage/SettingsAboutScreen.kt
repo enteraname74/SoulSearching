@@ -26,9 +26,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.enteraname74.soulsearching.domain.model.Platform
+import com.github.enteraname74.soulsearching.domain.model.SoulPlatform
 import com.github.enteraname74.soulsearching.domain.model.Release
-import com.github.enteraname74.soulsearching.domain.util.PlatformUtils
+import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_open_in_new
@@ -168,7 +168,7 @@ private fun Screen(
         navigateBack = navigateBack,
         title = strings.aboutTitle,
     ) {
-        if (PlatformUtils.platform != Platform.Web) {
+        if (SoulPlatformUtils.platform != SoulPlatform.Web) {
             item {
                 AnimatedVisibility(
                     visible = state.mostRecentRelease?.isNewerThanCurrentVersion() == true,

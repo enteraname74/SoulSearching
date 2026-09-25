@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.ext
 
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.soulsearching.domain.util.PlatformUtils
+import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 
 @Composable
-actual fun PlatformUtils.isMouseAndKeyboardOnly(): Boolean = false
+actual fun SoulPlatformUtils.isMouseAndKeyboardOnly(): Boolean = false

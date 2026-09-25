@@ -25,8 +25,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.soulsearching.domain.model.Platform
-import com.github.enteraname74.soulsearching.domain.util.PlatformUtils
+import com.github.enteraname74.soulsearching.domain.model.SoulPlatform
+import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
@@ -139,7 +139,7 @@ private fun SettingsAdvancedComposable(
                 onClick = { onAction(SettingsAdvancedAction.ToMultipleArtists) },
             )
         }
-        if (PlatformUtils.platform != Platform.Web) {
+        if (SoulPlatformUtils.platform != SoulPlatform.Web) {
             item {
                 SoulMenuElement(
                     title = strings.artistCoverMethodTitle,

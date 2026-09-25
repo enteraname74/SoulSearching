@@ -6,12 +6,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.github.enteraname74.soulsearching.domain.util.PlatformUtils
+import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import kotlinx.browser.window
 import org.w3c.dom.events.Event
 
 @Composable
-actual fun PlatformUtils.isMouseAndKeyboardOnly(): Boolean {
+actual fun SoulPlatformUtils.isMouseAndKeyboardOnly(): Boolean {
     val query = "(hover: none) and (pointer: coarse)"
     var isMobile by remember {
         mutableStateOf(!window.matchMedia(query).matches)

@@ -6,8 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import com.github.enteraname74.soulsearching.domain.util.PlatformUtils
+import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
@@ -32,7 +31,7 @@ fun SettingsStatisticsSectionIndicatorList(
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
-        if (PlatformUtils.isMouseAndKeyboardOnly()) {
+        if (SoulPlatformUtils.isMouseAndKeyboardOnly()) {
             SoulIconButton(
                 icon = CoreRes.drawable.ic_arrow_back,
                 onClick = {
@@ -57,7 +56,7 @@ fun SettingsStatisticsSectionIndicatorList(
             )
         }
 
-        if (PlatformUtils.isMouseAndKeyboardOnly()) {
+        if (SoulPlatformUtils.isMouseAndKeyboardOnly()) {
             SoulIconButton(
                 icon = CoreRes.drawable.ic_arrow_forward,
                 onClick = {

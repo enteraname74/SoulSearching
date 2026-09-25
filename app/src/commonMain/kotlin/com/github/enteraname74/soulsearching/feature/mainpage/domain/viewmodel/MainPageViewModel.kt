@@ -9,7 +9,7 @@ import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
 import com.github.enteraname74.soulsearching.domain.model.ArtistPreview
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
-import com.github.enteraname74.soulsearching.domain.model.Platform
+import com.github.enteraname74.soulsearching.domain.model.SoulPlatform
 import com.github.enteraname74.soulsearching.domain.model.Playlist
 import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.domain.model.QuickAccessible
@@ -28,7 +28,7 @@ import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlayl
 import com.github.enteraname74.soulsearching.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.release.CommonReleaseUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.user.CommonUserUseCase
-import com.github.enteraname74.soulsearching.domain.util.PlatformUtils
+import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -346,7 +346,7 @@ class MainPageViewModel(
         coroutineScope.launch {
             settings.getFlowOn(SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT)
                 .collectLatest { shouldShow ->
-                    if (shouldShow && PlatformUtils.platform != Platform.Web) {
+                    if (shouldShow && SoulPlatformUtils.platform != SoulPlatform.Web) {
                         _bottomSheetState.value = GitHubReleaseBottomSheet(
                             onClose = {
                                 _bottomSheetState.value = null
