@@ -29,7 +29,7 @@ suspend inline fun <reified T> HttpClient.safeRequest(
         SoulResult.Error(response.bodyAsText())
     }
 } catch (e: Exception) {
-    SoulResult.Error(e.message ?: e.toString())
+    SoulResult.Error(e)
 }
 
 suspend inline fun HttpClient.safeUnitRequest(
@@ -42,7 +42,7 @@ suspend inline fun HttpClient.safeUnitRequest(
         SoulResult.Error(response.bodyAsText())
     }
 } catch (e: Exception) {
-    SoulResult.Error(e.message ?: e.toString())
+    SoulResult.Error(e)
 }
 
 fun HttpClient.clearToken() {

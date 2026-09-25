@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import kotlinx.browser.document
@@ -60,15 +61,15 @@ class SoulSearchingWebPlayerImpl(
         }
     }
 
-    override suspend fun setMusic(music: Music) {
+    override suspend fun setMusic(music: Music): SoulResult<Unit> = SoulResult.runCatching {
         val version = ++sourceVersion
         val token = signedPlaybackUrlProvider.getUpdatedToken(music)
 
-        if (version != sourceVersion) return
+        if (version != sourceVersion) return@runCatching
 
         if (token == null || music.remoteId == null) {
             listener?.onError()
-            return
+            error("Cannot load remote music")
         }
 
         val musicUrl = signedPlaybackUrlProvider.getMusicUrl(
@@ -76,8 +77,8 @@ class SoulSearchingWebPlayerImpl(
             remoteId = music.remoteId.orEmpty(),
         )
 
-        if (version != sourceVersion) return
-        if (currentSource == musicUrl) return
+        if (version != sourceVersion) return@runCatching
+        if (currentSource == musicUrl) return@runCatching
 
         pauseSilently()
         audio.currentTime = 0.0
@@ -104,8 +105,9 @@ class SoulSearchingWebPlayerImpl(
     private suspend fun reloadCurrentMusic() {
         val currentMusic = playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
         val currentProgress = getProgress()
-        setMusic(music = currentMusic)
-        seekToPosition(currentProgress.toInt(DurationUnit.MILLISECONDS))
+        setMusic(music = currentMusic).onSuccess {
+            seekToPosition(currentProgress.toInt(DurationUnit.MILLISECONDS))
+        }
     }
 
     override suspend fun pause() {

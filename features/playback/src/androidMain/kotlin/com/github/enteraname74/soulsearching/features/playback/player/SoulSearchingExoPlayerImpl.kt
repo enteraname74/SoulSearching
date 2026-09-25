@@ -20,6 +20,7 @@ import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaMetadataUtils
@@ -139,12 +140,12 @@ class SoulSearchingExoPlayerImpl(
 
     override var listener: SoulSearchingPlayer.Listener? = null
 
-    private suspend fun <T> onPlayerThread(block: suspend () -> T): Result<T> =
+    private suspend fun <T> onPlayerThread(block: suspend () -> T): SoulResult<T> =
         withContext(playerDispatcher) {
-            runCatching {
+            SoulResult.runCatching {
                 block()
             }.onFailure {
-                Log.e("PLAYER", "got player error: $it")
+                Log.e("PLAYER", "got player error: $this")
             }
         }
 
@@ -186,19 +187,17 @@ class SoulSearchingExoPlayerImpl(
             .build()
     }
 
-    override suspend fun setMusic(music: Music) {
-        onPlayerThread {
-            val timelineIndex = player.timelineIndexOf(music.musicId)
-            if (timelineIndex != C.INDEX_UNSET) {
-                player.seekTo(timelineIndex, 0L)
-                player.prepare()
-                return@onPlayerThread
-            }
-
-            player.setMediaItem(music.toPlayableMediaItem(), 0L)
-            lastSyncedTimelineMusicIds = emptyList()
+    override suspend fun setMusic(music: Music): SoulResult<Unit> = onPlayerThread {
+        val timelineIndex = player.timelineIndexOf(music.musicId)
+        if (timelineIndex != C.INDEX_UNSET) {
+            player.seekTo(timelineIndex, 0L)
             player.prepare()
+            return@onPlayerThread
         }
+
+        player.setMediaItem(music.toPlayableMediaItem(), 0L)
+        lastSyncedTimelineMusicIds = emptyList()
+        player.prepare()
     }
 
     suspend fun syncPlayedListTimeline(

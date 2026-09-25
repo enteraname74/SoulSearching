@@ -46,6 +46,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -107,6 +108,9 @@ class PlaybackManager(
                 this@PlaybackManager.getPlayerProgress()
         },
     )
+
+    private val _playbackError: MutableStateFlow<PlaybackError?> = MutableStateFlow(null)
+    val playbackError: StateFlow<PlaybackError?> = _playbackError.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val currentMusicFavoriteStatusState: Flow<Boolean> =
@@ -506,19 +510,20 @@ class PlaybackManager(
                     is PlayerRequest.SetMusic -> {
                         println("CLUELESS -- will prepare song")
 
-                        player.setMusic(request.music)
-                        request.initialPosMillis?.let {
-                            player.seekToPosition(it)
-                        }
-                        val isLatestRequest =
-                            playerRequestFlow.value == request
-
-                        val shouldPlay = playerRepository.getCurrentState().firstOrNull() == PlayedListState.Playing
-                        if (isLatestRequest) {
-                            if (shouldPlay) {
-                                player.play()
+                        player.setMusic(request.music).onSuccess {
+                            request.initialPosMillis?.let {
+                                player.seekToPosition(it)
                             }
-                            playbackProgressJob.launchDurationJobIfNecessary()
+                            val isLatestRequest =
+                                playerRequestFlow.value == request
+
+                            val shouldPlay = playerRepository.getCurrentState().firstOrNull() == PlayedListState.Playing
+                            if (isLatestRequest) {
+                                if (shouldPlay) {
+                                    player.play()
+                                }
+                                playbackProgressJob.launchDurationJobIfNecessary()
+                            }
                         }
                         playerRequestFlow.compareAndSet(
                             expect = request,
@@ -787,6 +792,11 @@ class PlaybackManager(
         } else {
             playerRepository.removeCurrentAndPlayNext()
         }
+        _playbackError.value = PlaybackError.PlayerError
+    }
+
+    fun consumeError() {
+        _playbackError.value = null
     }
 
     suspend fun setAndPlayMusicFromCurrentPlayedList(music: Music) {
@@ -990,6 +1000,10 @@ class PlaybackManager(
         VolumeDown,
         ToggleFavorite,
     }
+}
+
+sealed interface PlaybackError {
+    data object PlayerError : PlaybackError
 }
 
 private sealed interface PlayerRequest {

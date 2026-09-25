@@ -472,6 +472,8 @@ object EnStrings : Strings {
     override val statisticsYearPeriodLabel: String = "By year"
     override val statisticsMonthPeriodLabel: String = "By month"
 
+    override val playbackErrorPlayerError: String = "Cannot play selected song"
+
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
             is SyncDataWithCloudUseCase.State.Failure -> "Failure"

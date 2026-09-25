@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import kotlin.time.Duration
 
 /**
@@ -16,7 +17,7 @@ interface SoulSearchingPlayer {
     /**
      * Set a song to the player.
      */
-    suspend fun setMusic(music: Music)
+    suspend fun setMusic(music: Music): SoulResult<Unit>
 
     /**
      * Play the loaded music.

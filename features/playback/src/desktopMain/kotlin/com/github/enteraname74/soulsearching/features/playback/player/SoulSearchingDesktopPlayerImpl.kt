@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -88,27 +89,23 @@ class SoulSearchingDesktopPlayerImpl(
         player.events().addMediaPlayerEventListener(this)
     }
 
-    override suspend fun setMusic(music: Music) {
-        try {
-            if (player.status().state() in setOf(State.PLAYING, State.PAUSED, State.OPENING, State.BUFFERING)) {
-                stopForMediaChangeBuffered = true
-                player.controls().stop()
+    override suspend fun setMusic(music: Music): SoulResult<Unit> = SoulResult.runCatching {
+        if (player.status().state() in setOf(State.PLAYING, State.PAUSED, State.OPENING, State.BUFFERING)) {
+            stopForMediaChangeBuffered = true
+            player.controls().stop()
+        }
+        stopForMediaChangeBuffered = false
+        when {
+            music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
+                safeStartPaused(music.localPath!!)
             }
-            stopForMediaChangeBuffered = false
-            when {
-                music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
-                    safeStartPaused(music.localPath!!)
-                }
-                music.remotePath != null -> {
-                    setFromRemote(music = music)
-                }
-                else -> {
-                    listener?.onError()
-                }
+            music.remotePath != null -> {
+                setFromRemote(music = music)
             }
-
-        } catch (e: Exception) {
-            println("SET MUSIC EXC: ${e.message}")
+            else -> {
+                listener?.onError()
+                error("Cannot load music")
+            }
         }
     }
 
@@ -128,7 +125,7 @@ class SoulSearchingDesktopPlayerImpl(
 
         if (token == null || music.remoteId == null) {
             listener?.onError()
-            return
+            error("Cannot load remote music")
         }
         val musicUrl = signedPlaybackUrlProvider.getMusicUrl(
             token = token,
@@ -147,8 +144,9 @@ class SoulSearchingDesktopPlayerImpl(
     private suspend fun reloadCurrentMusic() {
         val currentMusic = playerRepository.getCurrentMusic().firstOrNull()?.music ?: return
         val currentProgress = getProgress()
-        setMusic(music = currentMusic)
-        seekToPosition(currentProgress.toInt(DurationUnit.MILLISECONDS))
+        setMusic(music = currentMusic).onSuccess {
+            seekToPosition(currentProgress.toInt(DurationUnit.MILLISECONDS))
+        }
     }
 
     override suspend fun pause() {

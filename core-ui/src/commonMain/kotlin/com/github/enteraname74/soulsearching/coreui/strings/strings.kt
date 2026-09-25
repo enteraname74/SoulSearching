@@ -458,6 +458,8 @@ interface Strings {
     val statisticsYearPeriodLabel: String
     val statisticsMonthPeriodLabel: String
 
+    val playbackErrorPlayerError: String
+
     fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
     fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String
 

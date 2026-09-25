@@ -475,6 +475,8 @@ object FrStrings : Strings {
     override val statisticsYearPeriodLabel: String = "Par année"
     override val statisticsMonthPeriodLabel: String = "Par mois"
 
+    override val playbackErrorPlayerError: String = "Impossible de lire la musique sélectionnée"
+
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
             is SyncDataWithCloudUseCase.State.Failure -> "Erreur"

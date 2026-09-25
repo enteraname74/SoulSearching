@@ -12,4 +12,4 @@ internal actual suspend fun uploadMusicFile(
     music: Music,
     coverPath: String?,
     workDispatcher: WorkDispatcher,
-): SoulResult<CloudMusic> = SoulResult.Error()
+): SoulResult<CloudMusic> = SoulResult.Error("Not implemented for Web")
