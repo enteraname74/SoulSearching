@@ -6,6 +6,10 @@ plugins {
 kotlin {
     android.namespace = "com.github.enteraname74.soulsearching.domain"
     sourceSets {
+        webMain.dependencies {
+            implementation(libs.kotlinx.browser)
+        }
+
         commonMain.dependencies {
             implementation(libs.compose.ui)
             implementation(libs.androidx.paging.common)

@@ -40,6 +40,8 @@ interface PlaylistRepository {
 
     suspend fun getFavorite(): Playlist?
 
+    fun observeFavorite(): Flow<PlaylistWithMusics?>
+
     suspend fun getFromName(name: String): Playlist?
 
     /**

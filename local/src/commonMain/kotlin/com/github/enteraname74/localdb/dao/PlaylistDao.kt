@@ -47,6 +47,10 @@ interface PlaylistDao {
     @Query("SELECT * FROM RoomPlaylist WHERE isFavorite = 1 LIMIT 1")
     suspend fun getFavorite(): RoomPlaylist?
 
+    @Transaction
+    @Query("SELECT * FROM RoomPlaylist WHERE isFavorite = 1 LIMIT 1")
+    fun observeFavorite(): Flow<RoomPlaylistWithMusics?>
+
     @Query("SELECT * FROM RoomPlaylist WHERE name = :name LIMIT 1")
     suspend fun getFromName(name: String): RoomPlaylist?
 

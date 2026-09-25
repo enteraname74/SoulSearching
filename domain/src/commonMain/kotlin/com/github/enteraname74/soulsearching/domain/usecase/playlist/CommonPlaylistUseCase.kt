@@ -7,7 +7,6 @@ import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.repository.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlin.uuid.Uuid
 
 class CommonPlaylistUseCase(
@@ -37,11 +36,8 @@ class CommonPlaylistUseCase(
     fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>> =
         playlistRepository.getAllFromQuickAccess()
 
-    // TODO OPTI: Improve favorite playlist retrieving
     fun observeFavorite(): Flow<PlaylistWithMusics?> =
-        playlistRepository.getAllPlaylistWithMusics().map { list ->
-            list.firstOrNull { it.playlist.isFavorite }
-        }
+        playlistRepository.observeFavorite()
 
     fun getWithMusics(playlistId: Uuid): Flow<PlaylistWithMusics?> =
         playlistRepository.getPlaylistWithMusics(playlistId)

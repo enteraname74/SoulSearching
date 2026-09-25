@@ -40,7 +40,6 @@ import kotlin.time.Duration
 /**
  * Repository of a PlayerMusic.
  */
-// TODO SHARED PLAYED LIST: Use LoadingManager on all calls that uses setPlayedListState
 class PlayerRepositoryImpl(
     private val playerLocalDataSource: PlayerLocalDataSource,
     private val playerRemoteDataSource: PlayerRemoteDataSource,

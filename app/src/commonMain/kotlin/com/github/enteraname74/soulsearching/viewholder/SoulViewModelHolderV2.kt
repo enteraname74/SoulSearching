@@ -41,7 +41,6 @@ abstract class SoulViewModelHolderV2<Navigation, State> : ViewModel() {
         state: State,
     )
 
-    // TODO VIEW HOLDER 2.0: Could take the copy function directly
     protected fun updateState(updateBlock: State.() -> State) {
         _state.update(updateBlock)
     }

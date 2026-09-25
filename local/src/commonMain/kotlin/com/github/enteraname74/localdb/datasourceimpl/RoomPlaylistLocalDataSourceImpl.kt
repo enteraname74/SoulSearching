@@ -90,6 +90,9 @@ internal class RoomPlaylistLocalDataSourceImpl(
     override suspend fun getFavorite(): Playlist? =
         appDatabase.playlistDao.getFavorite()?.toPlaylist()
 
+    override fun observeFavorite(): Flow<PlaylistWithMusics?> =
+        appDatabase.playlistDao.observeFavorite().map { it?.toPlaylistWithMusics() }
+
     override suspend fun getFromName(name: String): Playlist? =
         appDatabase.playlistDao.getFromName(name = name)?.toPlaylist()
 

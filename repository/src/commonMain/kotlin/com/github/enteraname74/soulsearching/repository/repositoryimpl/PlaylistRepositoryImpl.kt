@@ -62,6 +62,9 @@ class PlaylistRepositoryImpl(
     override suspend fun getFavorite(): Playlist? =
         playlistLocalDataSource.getFavorite()
 
+    override fun observeFavorite(): Flow<PlaylistWithMusics?> =
+        playlistLocalDataSource.observeFavorite()
+
     override suspend fun getFromName(name: String): Playlist? =
         playlistLocalDataSource.getFromName(name = name)
 
