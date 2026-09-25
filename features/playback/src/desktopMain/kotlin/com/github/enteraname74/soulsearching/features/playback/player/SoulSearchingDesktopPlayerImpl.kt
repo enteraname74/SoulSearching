@@ -4,7 +4,6 @@ import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
@@ -95,8 +94,6 @@ class SoulSearchingDesktopPlayerImpl(
                 stopForMediaChangeBuffered = true
                 player.controls().stop()
             }
-            // Necessary to avoid blocking the app.
-            delay(500.milliseconds)
             stopForMediaChangeBuffered = false
             when {
                 music.localPath != null && File(music.localPath.orEmpty()).exists() -> {
@@ -176,6 +173,7 @@ class SoulSearchingDesktopPlayerImpl(
         return when (state) {
             State.PLAYING -> SoulSearchingPlayer.State.Playing
             State.PAUSED -> SoulSearchingPlayer.State.Paused
+            State.BUFFERING, State.OPENING -> SoulSearchingPlayer.State.Preparing
             else -> SoulSearchingPlayer.State.Idle
         }
     }

@@ -65,6 +65,7 @@ interface SoulSearchingPlayer {
         Playing,
         Paused,
         Idle,
+        Preparing,
     }
 
     interface Listener {

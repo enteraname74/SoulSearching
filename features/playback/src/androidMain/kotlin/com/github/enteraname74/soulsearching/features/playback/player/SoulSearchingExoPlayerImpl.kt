@@ -328,15 +328,23 @@ class SoulSearchingExoPlayerImpl(
 
     override suspend fun getState(): SoulSearchingPlayer.State =
         onPlayerThread {
-            when {
-                player.playbackState == Player.STATE_IDLE ->
+            when (player.playbackState) {
+                Player.STATE_READY ->
+                    if (player.playWhenReady) {
+                        SoulSearchingPlayer.State.Playing
+                    } else {
+                        SoulSearchingPlayer.State.Paused
+                    }
+
+                Player.STATE_BUFFERING ->
+                    SoulSearchingPlayer.State.Preparing
+
+                Player.STATE_IDLE,
+                Player.STATE_ENDED ->
                     SoulSearchingPlayer.State.Idle
 
-                player.playWhenReady ->
-                    SoulSearchingPlayer.State.Playing
-
                 else ->
-                    SoulSearchingPlayer.State.Paused
+                    SoulSearchingPlayer.State.Idle
             }
         }.getOrNull() ?: SoulSearchingPlayer.State.Idle
 
