@@ -508,8 +508,6 @@ class PlaybackManager(
                         /*no-op*/
                     }
                     is PlayerRequest.SetMusic -> {
-                        println("CLUELESS -- will prepare song")
-
                         player.setMusic(request.music).onSuccess {
                             request.initialPosMillis?.let {
                                 player.seekToPosition(it)
@@ -553,7 +551,7 @@ class PlaybackManager(
                     newRequest
 
                 current.initialPosMillis == null &&
-                    initialPosMillis != null ->
+                    (initialPosMillis != null && initialPosMillis > 0) ->
                     newRequest
 
                 else ->
