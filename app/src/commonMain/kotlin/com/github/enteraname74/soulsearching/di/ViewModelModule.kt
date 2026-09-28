@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.di
 
+import com.github.enteraname74.soulsearching.ApplicationViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.folder.FolderBottomSheetViewModel
@@ -8,8 +9,7 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addt
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
-import com.github.enteraname74.soulsearching.feature.appinit.AppInitSongFetchingViewHolder
-import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
+import com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching.AppInitSongFetchingViewHolder
 import com.github.enteraname74.soulsearching.feature.application.MainAppViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.ModifyAlbumViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.ModifyArtistViewModel

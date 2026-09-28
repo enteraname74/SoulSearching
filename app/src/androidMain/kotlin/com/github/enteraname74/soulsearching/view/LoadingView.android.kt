@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.coreui.loading
+package com.github.enteraname74.soulsearching.view
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

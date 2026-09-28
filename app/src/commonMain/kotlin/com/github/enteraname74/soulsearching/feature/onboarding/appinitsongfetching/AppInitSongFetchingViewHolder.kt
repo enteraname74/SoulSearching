@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.appinit
+package com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching
 
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.domain.model.Folder

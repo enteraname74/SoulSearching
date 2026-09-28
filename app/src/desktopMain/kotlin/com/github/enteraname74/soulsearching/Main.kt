@@ -12,18 +12,16 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.app.generated.resources.Res
 import com.github.enteraname74.soulsearching.app.generated.resources.app_icon
-import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.keyboard.GlobalKeyboardShortcutState
 import com.github.enteraname74.soulsearching.coreui.keyboard.LocalGlobalKeyboardShortcutState
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.ext.toKeyboardAction
-import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.compose.resources.painterResource
@@ -62,13 +60,6 @@ fun main(): Unit = application {
             }
         ) {
             ListenToWindowSizeChange(windowState = windowState)
-            val applicationViewModel = injectElement<ApplicationViewModel>()
-
-            with(applicationViewModel) {
-                isReadPermissionGranted = SoulSearchingContext.checkIfReadPermissionGranted()
-                isPostNotificationGranted = SoulSearchingContext.checkIfPostNotificationGranted()
-            }
-
             CompositionLocalProvider(
                 LocalGlobalKeyboardShortcutState provides keyboardShortcutState,
             ) {

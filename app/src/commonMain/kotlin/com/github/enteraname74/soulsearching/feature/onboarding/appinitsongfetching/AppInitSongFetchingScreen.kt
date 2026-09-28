@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.appinit
+package com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +26,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
-import com.github.enteraname74.soulsearching.feature.appinit.composable.FetchingMusicTabLayoutComposable
+import com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching.composable.FetchingMusicTabLayoutComposable
 
 @Composable
 fun AppInitSongFetchingScreen(

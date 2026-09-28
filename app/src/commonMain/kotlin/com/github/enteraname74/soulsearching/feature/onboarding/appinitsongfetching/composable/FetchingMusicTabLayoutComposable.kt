@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.appinit.composable
+package com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching.composable
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager

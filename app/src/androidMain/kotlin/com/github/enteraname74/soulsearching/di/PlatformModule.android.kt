@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearching
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpAndroidManager
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
+import com.github.enteraname74.soulsearching.feature.permission.PermissionManager
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
 import com.github.enteraname74.soulsearching.feature.musiclink.MusicLinkHandler
 import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.CloudBackgroundSyncJobAndroidImpl
@@ -13,11 +14,13 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.Cloud
 import com.github.enteraname74.soulsearching.util.FileOperation
 import com.russhwolf.settings.SharedPreferencesSettings
 import org.koin.androidx.workmanager.dsl.workerOf
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-actual val platformModule = module {
+actual val platformModule: Module = module {
     singleOf(::FeedbackPopUpAndroidManager) bind FeedbackPopUpManager::class
     single<SoulSearchingSettings> {
         SoulSearchingSettingsImpl(
@@ -33,6 +36,7 @@ actual val platformModule = module {
     factory {
         FileOperation(get<Context>())
     }
+    factoryOf(::PermissionManager)
     workerOf(::CloudSyncWorker)
     singleOf(::CloudBackgroundSyncJobAndroidImpl) bind CloudBackgroundSyncJob::class
 }

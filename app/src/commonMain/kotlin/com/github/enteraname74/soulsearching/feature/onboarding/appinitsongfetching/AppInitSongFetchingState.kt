@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.appinit
+package com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching
 
 data class AppInitSongFetchingState(
     val currentProgression: Float,

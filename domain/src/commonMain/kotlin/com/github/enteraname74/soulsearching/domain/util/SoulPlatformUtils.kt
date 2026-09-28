@@ -8,3 +8,6 @@ expect object SoulPlatformUtils {
 
 val SoulPlatformUtils.isNonAndroid: Boolean
     get() = platform != SoulPlatform.Android
+
+val SoulPlatformUtils.isWeb: Boolean
+    get() = platform == SoulPlatform.Web

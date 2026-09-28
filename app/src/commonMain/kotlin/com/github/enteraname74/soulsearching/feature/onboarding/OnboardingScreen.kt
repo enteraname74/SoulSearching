@@ -16,8 +16,8 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.feature.appinit.AppInitSongFetchingDestination
-import com.github.enteraname74.soulsearching.feature.appinit.AppInitSongFetchingNavScope
+import com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching.AppInitSongFetchingDestination
+import com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching.AppInitSongFetchingNavScope
 import com.github.enteraname74.soulsearching.feature.managefolders.ManageFoldersDestination
 import com.github.enteraname74.soulsearching.feature.managefolders.ManageFoldersNavScope
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceDestination

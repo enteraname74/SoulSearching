@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.appinit
+package com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching
 
 interface AppInitSongFetchingNavScope {
     fun toFoldersSelection()

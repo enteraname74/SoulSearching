@@ -15,23 +15,4 @@ actual object SoulSearchingContext {
     ) {
         // Does nothing on desktop.
     }
-
-    /**
-     * Check the state of the read permission.
-     */
-    @Composable
-    actual fun checkIfReadPermissionGranted(): Boolean {
-        // No permissions are necessary on desktop.
-        return true
-    }
-
-    /**
-     * Check the state of the post notification permission.
-     * If the device is below Android 13, the post notification is not necessary.
-     */
-    @Composable
-    actual fun checkIfPostNotificationGranted(): Boolean {
-        // No permissions are necessary on desktop.
-        return true
-    }
 }

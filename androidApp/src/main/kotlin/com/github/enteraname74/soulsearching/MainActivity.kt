@@ -14,12 +14,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.annotation.ExperimentalCoilApi
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
-import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
-import com.github.enteraname74.soulsearching.feature.appinit.composable.MissingPermissionsComposable
-import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
@@ -50,35 +49,27 @@ class MainActivity : AppCompatActivity() {
         TagOptionSingleton.getInstance().isAndroid = true
 
         setContent {
-            applicationViewModel.isReadPermissionGranted =
-                SoulSearchingContext.checkIfReadPermissionGranted()
-            applicationViewModel.isPostNotificationGranted =
-                SoulSearchingContext.checkIfPostNotificationGranted()
+            val state: ApplicationState by applicationViewModel.state.collectAsStateWithLifecycle()
 
             val readPermissionLauncher = permissionLauncher { isGranted ->
-                applicationViewModel.isReadPermissionGranted = isGranted
+                applicationViewModel.onReadStorageStateChanged(isGranted)
             }
 
             val postNotificationLauncher = permissionLauncher { isGranted ->
-                applicationViewModel.isPostNotificationGranted = isGranted
+                applicationViewModel.onNotificationStateChanged(isGranted)
             }
 
-            if (
-                !applicationViewModel.isReadPermissionGranted ||
-                !applicationViewModel.isPostNotificationGranted
-            ) {
-                MissingPermissionsComposable()
+            if (state.hasPermissions) {
                 SideEffect {
                     checkAndAskMissingPermissions(
-                        isReadPermissionGranted = applicationViewModel.isReadPermissionGranted,
-                        isPostNotificationGranted = applicationViewModel.isPostNotificationGranted,
+                        isReadPermissionGranted = state.hasReadStoragePermission,
+                        isPostNotificationGranted = state.hasNotificationPermissions,
                         readPermissionLauncher = readPermissionLauncher,
                         postNotificationLauncher = postNotificationLauncher,
                     )
                 }
-            } else {
-                SoulSearchingApplication()
             }
+            SoulSearchingApplication()
         }
 
         if (savedInstanceState == null) {

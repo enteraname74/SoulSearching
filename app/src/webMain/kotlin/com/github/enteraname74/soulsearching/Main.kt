@@ -6,13 +6,11 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
-import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.keyboard.GlobalKeyboardShortcutState
 import com.github.enteraname74.soulsearching.coreui.keyboard.LocalGlobalKeyboardShortcutState
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.toKeyboardAction
-import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -37,12 +35,6 @@ fun main() {
                 }
             ),
         ) {
-            val applicationViewModel = injectElement<ApplicationViewModel>()
-
-            with(applicationViewModel) {
-                isReadPermissionGranted = SoulSearchingContext.checkIfReadPermissionGranted()
-                isPostNotificationGranted = SoulSearchingContext.checkIfPostNotificationGranted()
-            }
             val keyboardShortcutState = remember { GlobalKeyboardShortcutState() }
             GlobalPlaybackKeyboardListener(
                 keyboardShortcutState = keyboardShortcutState,

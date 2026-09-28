@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.navigation
 
 import androidx.navigation3.runtime.NavKey
-import com.github.enteraname74.soulsearching.feature.appinit.AppInitSongFetchingDestination
+import com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching.AppInitSongFetchingDestination
 import com.github.enteraname74.soulsearching.feature.managefolders.ManageFoldersDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceDestination
 import kotlinx.serialization.modules.SerializersModule
