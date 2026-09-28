@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                 applicationViewModel.onNotificationStateChanged(isGranted)
             }
 
-            if (state.hasPermissions) {
+            if (!state.hasPermissions) {
                 SideEffect {
                     checkAndAskMissingPermissions(
                         isReadPermissionGranted = state.hasReadStoragePermission,

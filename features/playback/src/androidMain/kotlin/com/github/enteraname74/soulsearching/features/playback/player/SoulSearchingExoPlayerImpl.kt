@@ -73,8 +73,8 @@ class SoulSearchingExoPlayerImpl(
             val isPlayingState = when {
                 player.isPlaying -> true
 
-                !player.playWhenReady &&
-                    player.playbackState != Player.STATE_ENDED -> false
+                events.contains(Player.EVENT_PLAY_WHEN_READY_CHANGED) &&
+                    !player.playWhenReady -> false
 
                 else -> null
             }

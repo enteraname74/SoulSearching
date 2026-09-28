@@ -19,10 +19,11 @@ import com.github.enteraname74.soulsearching.navigation.ApplicationNavigationHan
 import com.github.enteraname74.soulsearching.navigation.ApplicationSerializerModule
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import com.github.enteraname74.soulsearching.view.LoadingView
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SoulSearchingApplication(
-    viewModel: ApplicationViewModel = injectElement()
+    viewModel: ApplicationViewModel = koinViewModel()
 ) {
     val state: ApplicationState by viewModel.state.collectAsStateWithLifecycle()
 

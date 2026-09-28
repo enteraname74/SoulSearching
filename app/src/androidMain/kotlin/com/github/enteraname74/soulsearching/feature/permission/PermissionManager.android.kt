@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.permission
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -9,7 +10,7 @@ actual class PermissionManager(
     private val context: Context,
 ) {
     actual fun isReadStorageGranted(): Boolean =
-        return if (Build.VERSION.SDK_INT >= 33) {
+        if (Build.VERSION.SDK_INT >= 33) {
             ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.READ_MEDIA_AUDIO

@@ -515,7 +515,8 @@ class PlaybackManager(
                             val isLatestRequest =
                                 playerRequestFlow.value == request
 
-                            val shouldPlay = playerRepository.getCurrentState().firstOrNull() == PlayedListState.Playing
+                            val state = playerRepository.getCurrentState().firstOrNull()
+                            val shouldPlay = state == PlayedListState.Playing
                             if (isLatestRequest) {
                                 if (shouldPlay) {
                                     player.play()
