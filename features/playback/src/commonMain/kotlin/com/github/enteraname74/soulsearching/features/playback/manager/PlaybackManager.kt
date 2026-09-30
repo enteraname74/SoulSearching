@@ -47,6 +47,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -55,6 +56,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -136,14 +138,24 @@ class PlaybackManager(
     val currentSongProgressionState: Flow<Duration> = playbackProgressJob.state
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val currentCover: Flow<ImageBitmap?> =
+    val currentCover: StateFlow<ImageBitmap?> =
         playerRepository
             .getCurrentMusic()
             .map { currentMusic -> currentMusic?.music?.cover }
             .distinctUntilChanged()
-            .map { cover ->
-                cover?.let { commonCoverUseCase.getCoverImageBitmap(it) }
+            .mapLatest { cover ->
+                cover?.let {
+                    commonCoverUseCase.getCoverImageBitmap(it)
+                }
             }
+            .catch {
+                emit(null)
+            }
+            .stateIn(
+                scope = workScope,
+                started = SharingStarted.Eagerly,
+                initialValue = null,
+            )
 
     // TODO PLAYER: Find a way to make drag and drop and paging list work together
     val playedList: Flow<List<Music>> = playerRepository.getAll()
@@ -153,7 +165,6 @@ class PlaybackManager(
         combine(
             playerRepository.getCurrentMusic(),
             playerRepository.getCurrentPlayedList(),
-            currentCover,
             playerRepository.getSize(),
             playerRepository.getCurrentPosition(),
             currentMusicFavoriteStatusState,
@@ -163,8 +174,8 @@ class PlaybackManager(
             playerRepository.observeFullPlayerMusicUsers(),
         ) { array ->
             val currentMusic: Music? = (array[0] as PlayerMusic?)?.music
-            val next: Music? = (array[6] as PlayerMusic?)?.music
-            val previous: Music? = (array[7] as PlayerMusic?)?.music
+            val next: Music? = (array[5] as PlayerMusic?)?.music
+            val previous: Music? = (array[6] as PlayerMusic?)?.music
             val currentPlayedList: PlayerPlayedList? = array[1] as PlayerPlayedList?
 
             if (currentMusic == null || currentPlayedList == null || currentPlayedList.state == PlayedListState.Cached) {
@@ -174,16 +185,16 @@ class PlaybackManager(
                     currentMusic = currentMusic,
                     next = next,
                     previous = previous,
-                    isCurrentMusicInFavorite = array[5] as Boolean,
-                    currentMusicIndex = ((array[4] as Int?) ?: 0) - 1,
-                    listSize = array[3] as Int,
+                    isCurrentMusicInFavorite = array[4] as Boolean,
+                    currentMusicIndex = ((array[3] as Int?) ?: 0) - 1,
+                    listSize = array[2] as Int,
                     playerMode = currentPlayedList.mode,
                     isPlaying = currentPlayedList.state == PlayedListState.Playing,
                     currentState = currentPlayedList.state,
                     currentScope = currentPlayedList.scope,
                     currentType = currentPlayedList.type,
-                    users = array[8] as List<SharedPlayedListUser>,
-                    playerMusicUsers = array[9] as List<FullPlayerMusicUser>
+                    users = array[7] as List<SharedPlayedListUser>,
+                    playerMusicUsers = array[8] as List<FullPlayerMusicUser>
                 )
             }
         }.distinctUntilChanged()

@@ -63,12 +63,18 @@ open class SwipeableViewManager {
         _previousState.value = null
     }
 
-    fun consumeNextState() {
-        _nextState.value = null
+    fun consumeNextState(expectedState: BottomSheetStates) {
+        _nextState.compareAndSet(
+            expect = expectedState,
+            update = null,
+        )
     }
 
-    fun consumeSnapState() {
-        _snapState.value = null
+    fun consumeSnapState(expectedState: BottomSheetStates) {
+        _snapState.compareAndSet(
+            expect = expectedState,
+            update = null,
+        )
     }
 
     fun updateState(newState: BottomSheetStates) {

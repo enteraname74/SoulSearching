@@ -9,6 +9,7 @@ import com.kmpalette.PaletteState
 import com.kmpalette.loader.ImageBitmapLoader
 import com.kmpalette.palette.graphics.Palette
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
 class ColorPaletteGenerator(
@@ -20,19 +21,24 @@ class ColorPaletteGenerator(
         settings.getFlowOn(COLOR_PALETTE_SEED_SETTINGS_ELEMENT).map { seedString ->
             ColorPaletteSeed.fromString(string = seedString) ?: ColorPaletteSeed.Default
         }
-    val paletteSwatch: StateFlow<Palette.Swatch?> = combine(
-        cover,
-        colorPaletteSeed
-    ) { cover, seed ->
-        getPaletteFromAlbumArt(
-            image = cover,
-            seed = seed,
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val paletteSwatch: StateFlow<Palette.Swatch?> =
+        combine(
+            cover,
+            colorPaletteSeed,
+        ) { cover, seed ->
+            cover to seed
+        }.mapLatest { (cover, seed) ->
+            getPaletteFromAlbumArt(
+                image = cover,
+                seed = seed,
+            )
+        }.stateIn(
+            scope = CoroutineScope(workDispatcher.dispatcher),
+            started = SharingStarted.Lazily,
+            initialValue = null,
         )
-    }.stateIn(
-        scope = CoroutineScope(workDispatcher.dispatcher),
-        started = SharingStarted.Lazily,
-        initialValue = null,
-    )
 
     fun setCover(cover: ImageBitmap?) {
         this.cover.value = cover

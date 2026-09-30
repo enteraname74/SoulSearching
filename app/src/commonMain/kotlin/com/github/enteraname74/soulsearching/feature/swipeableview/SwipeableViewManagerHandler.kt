@@ -6,9 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -25,28 +23,27 @@ fun SwipeableViewManagerHandler(
 
     val nextState by swipeableViewManager.nextState.collectAsState()
     val snapState by swipeableViewManager.snapState.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(snapState) {
-        snapState?.let {
-            coroutineScope.launch {
-                swipeableViewManager.draggableState.snapTo(
-                    targetValue = it,
-                )
-                swipeableViewManager.consumeSnapState()
-            }
+        val requestedState = snapState ?: return@LaunchedEffect
+
+        try {
+            swipeableViewManager.draggableState.snapTo(requestedState)
+        } finally {
+            swipeableViewManager.consumeSnapState(requestedState)
         }
     }
 
     LaunchedEffect(nextState) {
-        nextState?.let {
-            coroutineScope.launch {
-                swipeableViewManager.draggableState.animateTo(
-                    targetValue = it,
-                    anim = tween(UiConstants.AnimationDuration.normal),
-                )
-                swipeableViewManager.consumeNextState()
-            }
+        val requestedState = nextState ?: return@LaunchedEffect
+
+        try {
+            swipeableViewManager.draggableState.animateTo(
+                targetValue = requestedState,
+                anim = tween(UiConstants.AnimationDuration.normal),
+            )
+        } finally {
+            swipeableViewManager.consumeNextState(requestedState)
         }
     }
 }

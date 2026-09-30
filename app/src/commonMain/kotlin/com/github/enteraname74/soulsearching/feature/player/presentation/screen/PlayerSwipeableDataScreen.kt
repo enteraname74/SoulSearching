@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -84,11 +85,15 @@ fun BoxScope.PlayerSwipeableDataScreen(
     val alphaTransition = PlayerUiUtils.getAlphaTransition()
 
     val animatedBackgroundColor =
-        if (playerViewManager.currentValue == BottomSheetStates.EXPANDED || playerViewManager.targetValue == BottomSheetStates.EXPANDED) {
+        if (playerViewManager.targetValue == BottomSheetStates.EXPANDED) {
             SoulSearchingColorTheme.colorScheme.primary
         } else {
             SoulSearchingColorTheme.colorScheme.secondary
         }.animated(label = PlayerUiUtils.PLAYER_BACKGROUND_COLOR_LABEL)
+
+    LaunchedEffect(playerViewManager.currentValue) {
+        println("CLUELESS -- manager state: ${playerViewManager.currentValue}")
+    }
 
     BoxWithConstraints(
         modifier = Modifier
