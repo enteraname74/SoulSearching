@@ -1,8 +1,8 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
-import com.github.enteraname74.soulsearching.domain.model.CloudPreferences
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.RoomCloudPreferences
+import com.github.enteraname74.soulsearching.domain.model.CloudPreferences
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -15,7 +15,9 @@ class RoomCloudPreferencesDataSourceImpl(
         appDatabase.cloudPreferencesDao.observe().map { (it ?: RoomCloudPreferences()).toCloudPreferences() }
 
     override fun observeUrl(): Flow<String?> =
-        appDatabase.cloudPreferencesDao.observe().map { it?.url }
+        appDatabase.cloudPreferencesDao.observe().map { preferences ->
+            preferences?.url?.takeIf { it.isNotBlank() }
+        }
 
     override suspend fun setUrl(url: String) {
         val preferences: RoomCloudPreferences = appDatabase
