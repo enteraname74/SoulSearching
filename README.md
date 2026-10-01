@@ -33,7 +33,7 @@ Soul Searching is a comprehensive, powerful, and customizable music app for list
 Or download the latest APK from the [Releases Section](https://github.com/enteraname74/SoulSearching/releases/latest).
 
 <div align="center">
-    <img title="" src="screenshots/soul_searching_platforms.png">
+    <img title="" src="screenshots/soulsearching_platforms.png">
 </div>
 
 ## General look
