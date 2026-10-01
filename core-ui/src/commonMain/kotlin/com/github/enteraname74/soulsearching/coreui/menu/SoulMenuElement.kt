@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
@@ -18,11 +19,12 @@ import org.jetbrains.compose.resources.DrawableResource
 fun SoulMenuElement(
     title: String,
     subTitle: String?,
+    onClick: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     leadIcon: DrawableResource? = null,
     trailIcon: DrawableResource? = null,
     isBadged: Boolean = false,
-    onClick: (() -> Unit)?,
-    modifier: Modifier = Modifier,
     padding: PaddingValues = PaddingValues(
         horizontal = UiConstants.Spacing.large,
         vertical = UiConstants.Spacing.veryLarge,
@@ -31,7 +33,8 @@ fun SoulMenuElement(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .optionalClickable(onClick = onClick)
+            .alpha(if (enabled) 1.0f else UiConstants.ALPHA_DISABLED)
+            .optionalClickable(onClick = onClick.takeIf { enabled })
             .padding(padding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)

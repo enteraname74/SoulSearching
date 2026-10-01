@@ -5,7 +5,7 @@ import java.io.File
 
 internal class CoverFileManagerAndroidImpl(
     private val context: Context,
-): CoverFileManager {
+): JvmCoverFileManager() {
 
     override fun getCoverFolder(): File {
         val filesDir: File = context.filesDir

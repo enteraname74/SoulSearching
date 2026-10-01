@@ -1,12 +1,12 @@
 package com.github.enteraname74.localdb.migration
 
-import androidx.room.migration.Migration
+import androidx.room3.migration.Migration
 import androidx.sqlite.SQLiteConnection
-import androidx.sqlite.execSQL
+import androidx.sqlite.async.executeSQL
 
 object Migration19To20 : Migration(19, 20) {
-    override fun migrate(connection: SQLiteConnection) {
-        connection.execSQL(
+    override suspend fun migrate(connection: SQLiteConnection) {
+        connection.executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomPlayerPlayedList (
                 id BLOB NOT NULL PRIMARY KEY,
@@ -18,9 +18,9 @@ object Migration19To20 : Migration(19, 20) {
             """.trimIndent()
         )
 
-        connection.execSQL("DROP TABLE IF EXISTS RoomPlayerMusic")
+        connection.executeSQL("DROP TABLE IF EXISTS RoomPlayerMusic")
 
-        connection.execSQL(
+        connection.executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomPlayerMusic (
                 id TEXT NOT NULL PRIMARY KEY,
@@ -35,14 +35,14 @@ object Migration19To20 : Migration(19, 20) {
             """.trimIndent()
         )
 
-        connection.execSQL(
+        connection.executeSQL(
             "CREATE INDEX IF NOT EXISTS index_RoomPlayerMusic_musicId ON RoomPlayerMusic(musicId)"
         )
-        connection.execSQL(
+        connection.executeSQL(
             "CREATE INDEX IF NOT EXISTS index_RoomPlayerMusic_playedListId ON RoomPlayerMusic(playedListId)"
         )
 
-        connection.execSQL(
+        connection.executeSQL(
             """
             CREATE TABLE IF NOT EXISTS RoomPlayerMusicProgress (
                 id TEXT NOT NULL PRIMARY KEY,
@@ -53,7 +53,7 @@ object Migration19To20 : Migration(19, 20) {
             """.trimIndent()
         )
 
-        connection.execSQL(
+        connection.executeSQL(
             "CREATE VIEW `CurrentPlayerMusicsView` AS WITH currentPlayedList AS (\n" +
                     "        SELECT * FROM RoomPlayerPlayedList  \n" +
                     "        WHERE state != \"Cached\"\n" +
@@ -72,7 +72,7 @@ object Migration19To20 : Migration(19, 20) {
                     "    ORDER BY currentOrder"
         )
 
-        connection.execSQL(
+        connection.executeSQL(
             "CREATE VIEW `RoomMusicFolderPreview` AS SELECT \n" +
                     "                folderMusic.folder,\n" +
                     "                COUNT(*) AS totalMusics, \n" +
@@ -98,7 +98,7 @@ object Migration19To20 : Migration(19, 20) {
                     "            GROUP BY folderMusic.folder"
         )
 
-        connection.execSQL(
+        connection.executeSQL(
             "CREATE VIEW `RoomMonthMusicPreview` AS SELECT \n" +
                     "                strftime('%m/%Y', monthMusic.addedDate) AS month,\n" +
                     "                COUNT(*) AS totalMusics, \n" +
@@ -125,7 +125,7 @@ object Migration19To20 : Migration(19, 20) {
                     "            ORDER BY strftime('%Y-%m', addedDate) DESC"
         )
 
-        connection.execSQL(
+        connection.executeSQL(
             "CREATE VIEW `RoomAlbumPreview` AS SELECT \n" +
                     "        album.albumId AS id, \n" +
                     "        album.albumName AS name, \n" +
@@ -157,7 +157,7 @@ object Migration19To20 : Migration(19, 20) {
                     "        FROM RoomAlbum AS album"
         )
 
-        connection.execSQL(
+        connection.executeSQL(
             "CREATE VIEW `RoomArtistPreview` AS SELECT \n" +
                     "        artist.artistId AS id, \n" +
                     "        artist.artistName AS name, \n" +
@@ -192,7 +192,7 @@ object Migration19To20 : Migration(19, 20) {
                     "        FROM RoomArtist AS artist"
         )
 
-        connection.execSQL(
+        connection.executeSQL(
             "CREATE VIEW `RoomPlaylistPreview` AS SELECT playlist.playlistId AS id, \n" +
                     "        playlist.name, \n" +
                     "        playlist.isFavorite, \n" +

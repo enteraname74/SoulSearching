@@ -6,11 +6,24 @@ import com.github.enteraname74.soulsearching.feature.settings.aboutpage.Settings
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.developers.SettingsDevelopersDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.explanations.SettingsCloudExplanationsDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.settings.SettingsCloudSettingsDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.SettingsCloudSharedListDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist.join.SettingsCloudSharedListJoinDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.signin.SettingsCloudSignInDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.signup.SettingsCloudSignUpDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.sync.SettingsCloudSyncDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.user.SettingsCloudUserDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.user.code.SettingsCloudCodesDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.user.data.SettingsCloudUserDataDestination
+import com.github.enteraname74.soulsearching.feature.settings.cloud.users.SettingsCloudUsersDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.SettingsThemeSelectionDestination
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.SettingsAddMusicsDestination
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.SettingsUsedFoldersDestination
+import com.github.enteraname74.soulsearching.feature.managefolders.ManageFoldersDestination
+import com.github.enteraname74.soulsearching.feature.managefolders.ManageFoldersNavScope
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.SettingsManageMusicsDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.SettingsPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.album.SettingsAlbumViewPersonalisationDestination
@@ -18,7 +31,8 @@ import com.github.enteraname74.soulsearching.feature.settings.personalisation.ma
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.music.SettingsMusicViewPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.presentation.SettingsPlayerPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsDestination
-import com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.SettingsStatisticsDestination
+import com.github.enteraname74.soulsearching.feature.settings.shortcuts.SettingsShortcutsDestination
+import com.github.enteraname74.soulsearching.feature.settings.statistics.SettingsStatisticsDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 
@@ -77,9 +91,21 @@ object SettingsNavigationHandler {
             navigator = navigator,
         )
 
-        SettingsUsedFoldersDestination.register(
+        ManageFoldersDestination.register(
             entryProviderScope = entryProviderScope,
-            navigator = navigator,
+            navScope = object : ManageFoldersNavScope {
+                override fun navigateBack() {
+                    navigator.pop()
+                }
+
+                override fun navigateToMultipleArtists() {
+                    // no-op
+                }
+
+                override fun navigateToApp() {
+                    // no-op
+                }
+            }
         )
 
         SettingsManageMusicsDestination.register(
@@ -111,6 +137,59 @@ object SettingsNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+
+        SettingsCloudDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudSettingsDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudSignInDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudSignUpDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudUserDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudCodesDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudUsersDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudSharedListDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudSyncDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudSharedListJoinDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudExplanationsDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsShortcutsDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+        SettingsCloudUserDataDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
     }
 
     fun serializerModule(
@@ -126,13 +205,26 @@ object SettingsNavigationHandler {
             subclass(SettingsColorSeedDestination::class, SettingsColorSeedDestination.serializer())
             subclass(SettingsColorThemeDestination::class, SettingsColorThemeDestination.serializer())
             subclass(SettingsAddMusicsDestination::class, SettingsAddMusicsDestination.serializer())
-            subclass(SettingsUsedFoldersDestination::class, SettingsUsedFoldersDestination.serializer())
+            subclass(ManageFoldersDestination::class, ManageFoldersDestination.serializer())
             subclass(SettingsManageMusicsDestination::class, SettingsManageMusicsDestination.serializer())
             subclass(SettingsPersonalisationDestination::class, SettingsPersonalisationDestination.serializer())
             subclass(SettingsMainPagePersonalisationDestination::class, SettingsMainPagePersonalisationDestination.serializer())
             subclass(SettingsPlayerPersonalisationDestination::class, SettingsPlayerPersonalisationDestination.serializer())
             subclass(SettingsMusicViewPersonalisationDestination::class, SettingsMusicViewPersonalisationDestination.serializer())
             subclass(SettingsAlbumViewPersonalisationDestination::class, SettingsAlbumViewPersonalisationDestination.serializer())
+            subclass(SettingsCloudDestination::class, SettingsCloudDestination.serializer())
+            subclass(SettingsCloudSettingsDestination::class, SettingsCloudSettingsDestination.serializer())
+            subclass(SettingsCloudSignInDestination::class, SettingsCloudSignInDestination.serializer())
+            subclass(SettingsCloudSignUpDestination::class, SettingsCloudSignUpDestination.serializer())
+            subclass(SettingsCloudUserDestination::class, SettingsCloudUserDestination.serializer())
+            subclass(SettingsCloudCodesDestination::class, SettingsCloudCodesDestination.serializer())
+            subclass(SettingsCloudSyncDestination::class, SettingsCloudSyncDestination.serializer())
+            subclass(SettingsCloudSharedListJoinDestination::class, SettingsCloudSharedListJoinDestination.serializer())
+            subclass(SettingsCloudUsersDestination::class, SettingsCloudUsersDestination.serializer())
+            subclass(SettingsCloudExplanationsDestination::class, SettingsCloudExplanationsDestination.serializer())
+            subclass(SettingsCloudSharedListDestination::class, SettingsCloudSharedListDestination.serializer())
+            subclass(SettingsShortcutsDestination::class, SettingsShortcutsDestination.serializer())
+            subclass(SettingsCloudUserDataDestination::class, SettingsCloudUserDataDestination.serializer())
         }
     }
 }

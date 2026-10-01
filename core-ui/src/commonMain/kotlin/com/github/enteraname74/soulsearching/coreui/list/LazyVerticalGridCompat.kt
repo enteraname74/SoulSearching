@@ -38,8 +38,10 @@ fun LazyVerticalGridCompat(
         ) {
             content()
         }
-        SoulVerticalGridScrollBar(
-            lazyGridState = state,
-        )
+        if (state.canScrollForward || state.canScrollBackward) {
+            SoulVerticalGridScrollBar(
+                lazyGridState = state,
+            )
+        }
     }
 }

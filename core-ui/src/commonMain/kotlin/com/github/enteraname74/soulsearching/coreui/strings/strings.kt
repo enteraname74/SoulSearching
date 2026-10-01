@@ -1,13 +1,14 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
+import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedListPreview
+import com.github.enteraname74.soulsearching.domain.model.statistics.Period
+import com.github.enteraname74.soulsearching.domain.model.user.UserType
+import com.github.enteraname74.soulsearching.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
-import com.github.enteraname74.domain.ext.duration
-import com.github.enteraname74.domain.model.Music
 import kotlin.time.Duration
-import kotlin.time.DurationUnit
 
-val strings = when(Locale.current.language) {
+val strings = when (Locale.current.language) {
     "fr" -> FrStrings
     else -> EnStrings
 }
@@ -21,7 +22,19 @@ interface Strings {
     val cannotRetrieveSongs: String
     val noElements: String
     val emptyQuickAccess: String
-    val quickAccessExplanation: String
+    val emptyFolders: String
+    val emptyAlbums: String
+    val emptyMusics: String
+    val emptyArtists: String
+    val emptyPlaylists: String
+    val emptyMonths: String
+    val emptyMusicsExplanations: String
+    val emptyAlbumsExplanations: String
+    val emptyArtistsExplanations: String
+    val emptyFoldersExplanations: String
+    val emptyPlaylistsExplanations: String
+    val emptyQuickAccessExplanations: String
+    val emptyMonthsExplanations: String
     val backButton: String
     val headerBarRightButton: String
     val image: String
@@ -128,6 +141,14 @@ interface Strings {
 
     val deleteSelectedMusicsDialogTitle: String
     val deleteSelectedMusicsDialogText: String
+    val deleteFolderMusicsDialogTitle: String
+    val deleteFolderMusicsDialogText: String
+    val deleteSelectedFoldersMusicsDialogTitle: String
+    val deleteSelectedFoldersMusicsDialogText: String
+    val deleteMonthMusicsDialogTitle: String
+    val deleteMonthMusicsDialogText: String
+    val deleteSelectedMonthsMusicsDialogTitle: String
+    val deleteSelectedMonthsMusicsDialogText: String
     val deleteSelectedAlbumsDialogTitle: String
     val deleteSelectedArtistsDialogTitle: String
     val deleteSelectedPlaylistsDialogTitle: String
@@ -155,6 +176,10 @@ interface Strings {
     val deleteSelectedArtists: String
     val deleteSelectedPlaylists: String
     val deleteSelectedMusics: String
+    val deleteFolderMusics: String
+    val deleteSelectedFoldersMusics: String
+    val deleteMonthMusics: String
+    val deleteSelectedMonthsMusics: String
 
     val playNext: String
     val addToQueue: String
@@ -221,6 +246,9 @@ interface Strings {
     val statisticsTitle: String
     val statisticsText: String
     val mostPlayedSongs: String
+    val mostListenedSongs: String
+    val listeningTime: String
+    val noDataOnThisPeriod: String
     val mostPlayedAlbums: String
     val mostPlayedArtists: String
     val artistsWithMostSongs: String
@@ -323,6 +351,123 @@ interface Strings {
 
     val savedChanges: String
 
+    val cloudTitle: String get() = "Cloudy"
+    val cloudText: String
+    val cloudSettingsTitle: String
+    val cloudSettingsText: String
+    val cloudSettingsLastGeneralSync: String
+    val cloudSettingsLastStatisticsSync: String
+    val cloudSettingsNoSync: String
+    val cloudUrlFieldLabel: String
+    val cloudNameFieldLabel: String
+    val cloudPasswordFieldLabel: String
+    val cloudSignUp: String
+    val cloudNoAccount: String
+    val cloudConnection: String
+    val cloudSignIn: String
+    val cloudRegistrationCode: String
+    val cloudUserSettings: String
+    val disconnect: String
+    val inscriptionCodeSettingsTitle: String
+    val generateCodeButton: String
+    val inscriptionCodeSettingsText: String
+    val generatedCode: String
+
+    val cloudSyncTitle: String
+    val cloudSyncText: String
+    val cloudSyncButton: String
+
+    val musicChannelNotificationName: String
+    val musicChannelNotificationDescription: String
+    val cloudSyncChannelNotificationName: String
+    val cloudSyncChannelNotificationDescription: String
+    val startSharedPlayedList: String
+
+    val sharedListTitle: String
+    val sharedListHost: String
+    val sharedListGuests: String
+    val sharedListCodeTitle: String
+    val sharedListCodeDescription: String
+
+    val sharedListRemoveUserTitle: String
+    val sharedListRemoveUserText: String
+    val sharedListRemoveUserButton: String
+
+    val sharedListCodeLabel: String
+    val cloudSharedListTitle: String
+    val cloudSharedListText: String
+    val cloudSharedListJoinTitle: String
+    val cloudSharedlistJoinText: String
+    val joinSharedListButton: String
+    val cloudUsersTitle: String
+    val cloudUsersText: String
+    val cloudUsersDeleteDialogTitle: String
+    val cloudUsersDeleteDialogText: String
+
+    val cloudAlphaWarningText: String
+
+    val cloudExplanationsTitle: String
+    val cloudExplanationsText: String
+    val cloudExplanationsRedirect: String
+    val cloudDocumentationURL: String
+        get() = "https://github.com/enteraname74/Cloudy/blob/main/README.md"
+
+    val cloudAddUrlToSharedListTitle: String
+    val add: String
+
+    val sharedListDeleteTitle: String
+    val sharedListDeleteText: String
+
+    val musicSyncedOnCloud: String
+    val musicRemoteOnly: String
+    val musicLocalOnly: String
+
+    val shortcutsTitle: String
+    val shortcutsText: String
+
+    val shortcutPlayerCategory: String
+
+    val shortcutTogglePlayPauseDescription: String
+    val shortcutPreviousDescription: String
+    val shortcutNextDescription: String
+    val shortcutSeekForwardDescription: String
+    val shortcutSeekBackwardDescription: String
+    val shortcutVolumeUpDescription: String
+    val shortcutVolumeDownDescription: String
+    val shortcutToggleFavoriteDescription: String
+
+    val shortcutTogglePlayPauseCommands: List<String>
+    val shortcutPreviousCommands: List<String>
+    val shortcutNextCommands: List<String>
+    val shortcutSeekForwardCommands: List<String>
+    val shortcutSeekBackwardCommands: List<String>
+    val shortcutVolumeUpCommands: List<String>
+    val shortcutVolumeDownCommands: List<String>
+    val shortcutToggleFavoriteCommands: List<String>
+
+    val gigabyteAbbreviation: String
+    val userStorageTitle: String
+    val userStorageText: String
+    val userStorageSectionTitle: String
+    val userStorageAllAvailableInfo: String
+    val userStorageReducedInfo: String
+    val clearUserStorageButton: String
+    val clearUserStorageDialogText: String
+
+    val statisticsAllPeriodLabel: String
+    val statisticsYearPeriodLabel: String
+    val statisticsMonthPeriodLabel: String
+
+    val playbackErrorPlayerError: String
+
+    fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
+    fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String
+
+    fun userType(type: UserType): String
+
+    fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String
+    fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String
+
     /**
      * Shows a text indicating the number of musics.
      */
@@ -361,10 +506,12 @@ interface Strings {
 
     fun duration(duration: Duration): String {
         val hours = duration.inWholeHours
-        return if (hours > 0) {
-            "$hours ${hours(hours)} $and ${minutes(duration.inWholeMinutes.mod(60).toLong())}"
-        } else {
-            minutes(duration.inWholeMinutes)
+        val minutes = duration.inWholeMinutes
+
+        return when {
+            hours > 0 -> "${hours(hours)} $and ${minutes(duration.inWholeMinutes.mod(60).toLong())}"
+            minutes > 0 -> "${minutes(minutes)} $and ${seconds(duration.inWholeSeconds.mod(60).toLong())}"
+            else -> seconds(duration.inWholeSeconds)
         }
     }
 
@@ -372,4 +519,15 @@ interface Strings {
 
     fun minutes(minutes: Long): String =
         if (minutes == 1L) "$minutes minute" else "$minutes minutes"
+
+    fun seconds(seconds: Long): String
+
+    fun period(period: Period): String =
+        when (period) {
+            is Period.All -> statisticsAllPeriodLabel
+            is Period.Month -> "${month(period.month)} ${period.year}"
+            is Period.Year -> period.year.toString()
+        }
+
+    fun month(monthNumber: Int): String
 }

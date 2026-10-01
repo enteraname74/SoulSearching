@@ -1,241 +1,693 @@
 package com.github.enteraname74.soulsearching.features.playback.mediasession
 
+import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.media.MediaMetadata
-import android.media.session.PlaybackState
+import android.os.Build
 import android.os.Bundle
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import android.view.KeyEvent
+import android.os.Handler
+import androidx.annotation.OptIn
 import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.core.graphics.scale
-import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
-import com.github.enteraname74.soulsearching.features.playback.R
+import androidx.media3.common.C
+import androidx.media3.common.ForwardingPlayer
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.CommandButton
+import androidx.media3.session.MediaLibraryService.MediaLibrarySession
+import androidx.media3.session.MediaSession
+import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionCommands
+import androidx.media3.session.SessionError
+import androidx.media3.session.SessionResult
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Scope
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
+import com.github.enteraname74.soulsearching.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import com.github.enteraname74.soulsearching.features.playback.model.UpdateData
+import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingExoPlayerImpl
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import kotlin.uuid.Uuid
 
 /**
- * Manage media session related things.
+ * Manage Media3 session state exposed to system UI, headset controls and external controllers.
  */
+@OptIn(UnstableApi::class)
 class MediaSessionManager(
     private val context: Context,
-    private val playbackManager: PlaybackManager,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
-) {
-    private var mediaSession: MediaSessionCompat? = null
-    private var seekToJob: Job? = null
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val soulSearchingPlayer: SoulSearchingExoPlayerImpl,
+    private val mediaMetadataUtils: MediaMetadataUtils,
+    workDispatcher: WorkDispatcher,
+) : KoinComponent {
+    private val playbackManager: PlaybackManager by inject()
 
-    private val standardNotificationBitmap: Bitmap =
-        BitmapFactory.decodeResource(context.resources, R.drawable.new_notification_default)
-            .scale(DEFAULT_NOTIFICATION_SIZE, DEFAULT_NOTIFICATION_SIZE, false)
+    private var mediaSession: MediaSession? = null
+    private var currentPlayedListScope: PlayedListScope? = null
+    private var isFavoriteActionAvailable: Boolean = false
+    private var isCurrentMusicInFavorite: Boolean = false
+    private var playedListTimelineJob: Job? = null
+    private var isPlayedListTimelineSyncEnabled: Boolean = false
 
-    suspend fun getUpdatedMediaSessionToken(
+    private val coroutineScope = CoroutineScope(workDispatcher.dispatcher)
+    private val favoriteCommand = SessionCommand(FAVORITE_ACTION, Bundle.EMPTY)
+
+    @SuppressLint("ObsoleteSdkInt")
+    private val activityPendingIntent: PendingIntent = PendingIntent.getActivity(
+        context,
+        0,
+        Intent().apply {
+            setClassName(context.packageName, MAIN_ACTIVITY_CLASS_NAME)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            action = Intent.ACTION_MAIN
+            addCategory(Intent.CATEGORY_LAUNCHER)
+        },
+        PendingIntent.FLAG_UPDATE_CURRENT or
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.FLAG_IMMUTABLE
+            } else {
+                0
+            }
+    )
+
+    private val sessionPlayer: Player by lazy {
+        SoulSearchingSessionPlayer(
+            player = soulSearchingPlayer.player,
+            playbackManager = { playbackManager },
+            coroutineScope = coroutineScope,
+            canControl = { currentPlayedListScope?.isAdmin == true },
+            canUseTimeline = { isPlayedListTimelineSyncEnabled },
+        )
+    }
+
+    fun updateMediaSession(
         updateData: UpdateData,
-    ): MediaSessionCompat.Token {
-        if (mediaSession == null) {
-            init(
-                isPlaying = updateData.isPlaying,
-                isFavorite = updateData.isInFavorite,
-            )
-            updateMetadata(updateData)
-        } else {
-            updateMetadata(updateData)
-            updateState(
-                isPlaying = updateData.isPlaying,
-                isFavorite = updateData.isInFavorite,
-            )
+    ): MediaSession {
+        currentPlayedListScope = updateData.playedListScope
+        isFavoriteActionAvailable = updateData.music.scope != Scope.SharedPlayedList
+        isCurrentMusicInFavorite = updateData.isInFavorite
+
+        val session = mediaSession ?: init().also {
+            mediaSession = it
         }
-        return mediaSession!!.sessionToken
+
+        updateMetadata(updateData)
+        updateAvailableCommands(session)
+        return session
+    }
+
+    fun updateExistingMediaSession(
+        updateData: UpdateData,
+    ): Boolean {
+        val session = mediaSession ?: return false
+
+        currentPlayedListScope = updateData.playedListScope
+        isFavoriteActionAvailable = updateData.music.scope != Scope.SharedPlayedList
+        isCurrentMusicInFavorite = updateData.isInFavorite
+
+        updateMetadata(updateData)
+        updateAvailableCommands(session)
+        return true
+    }
+
+    private fun init(): MediaSession =
+        MediaSession.Builder(context, sessionPlayer)
+            .setSessionActivity(activityPendingIntent)
+            .setCallback(
+                object : MediaSession.Callback {
+                    override fun onConnect(
+                        session: MediaSession,
+                        controller: MediaSession.ControllerInfo,
+                    ): MediaSession.ConnectionResult =
+                        this@MediaSessionManager.onConnect(session)
+
+                    override fun onCustomCommand(
+                        session: MediaSession,
+                        controller: MediaSession.ControllerInfo,
+                        customCommand: SessionCommand,
+                        args: Bundle,
+                    ): ListenableFuture<SessionResult> =
+                        this@MediaSessionManager.onCustomCommand(customCommand)
+                }
+            )
+            .setMediaButtonPreferences(buildMediaButtonPreferences())
+            .build()
+
+    fun getOrCreateMediaLibrarySession(
+        callback: MediaLibrarySession.Callback,
+    ): MediaLibrarySession {
+        (mediaSession as? MediaLibrarySession)?.let { return it }
+
+        mediaSession?.release()
+        return MediaLibrarySession.Builder(context, sessionPlayer, callback)
+            .setSessionActivity(activityPendingIntent)
+            .setMediaButtonPreferences(buildMediaButtonPreferences())
+            .build()
+            .also { mediaSession = it }
     }
 
     /**
-     * Initialize the media session used by the player.
+     * Android Auto needs the full ExoPlayer timeline for queue browsing and item selection.
+     * Keep this opt-in so normal notification/service startup does not mirror huge playlists.
      */
-    @Suppress("DEPRECATION")
-    private suspend fun init(
-        isPlaying: Boolean,
-        isFavorite: Boolean,
-    ) {
-        mediaSession =
-            MediaSessionCompat(context, context.packageName + "soulSearchingMediaSession")
+    fun enablePlayedListTimelineSync() {
+        if (!isPlayedListTimelineSyncEnabled) {
+            isPlayedListTimelineSyncEnabled = true
+            mediaSession?.let(::updateAvailableCommands)
+        }
+        ensureListeningToPlayedListTimeline()
+    }
 
-        mediaSession?.setCallback(object : MediaSessionCompat.Callback() {
-            override fun onSeekTo(pos: Long) {
-                seekToJob?.cancel()
-                seekToJob = CoroutineScope(Dispatchers.IO).launch {
-                    playbackManager.seekToPosition(pos.toInt())
-                }
-            }
+    fun disablePlayedListTimelineSync() {
+        playedListTimelineJob?.cancel()
+        playedListTimelineJob = null
+        isPlayedListTimelineSyncEnabled = false
+        mediaSession?.let(::updateAvailableCommands)
+    }
 
-            override fun onMediaButtonEvent(mediaButtonIntent: Intent): Boolean {
-                val keyEvent = mediaButtonIntent.extras?.get(Intent.EXTRA_KEY_EVENT) as KeyEvent
-                if (keyEvent.action == KeyEvent.ACTION_DOWN) {
-                    when (keyEvent.keyCode) {
-                        KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY -> runBlocking {
-                            playbackManager.togglePlayPause()
-                        }
+    fun onConnect(
+        session: MediaSession,
+    ): MediaSession.ConnectionResult =
+        MediaSession.ConnectionResult.AcceptedResultBuilder(session)
+            .setAvailableSessionCommands(buildSessionCommands(session))
+            .setAvailablePlayerCommands(buildPlayerCommands())
+            .setMediaButtonPreferences(buildMediaButtonPreferences())
+            .build()
+
+    fun onCustomCommand(
+        customCommand: SessionCommand,
+    ): ListenableFuture<SessionResult> {
+        if (
+            customCommand.customAction == FAVORITE_ACTION &&
+            isFavoriteActionAvailable
+        ) {
+            playbackManager.currentSong.value
+                ?.takeIf { it.scope != Scope.SharedPlayedList }
+                ?.musicId
+                ?.let { musicId ->
+                    coroutineScope.launch {
+                        toggleMusicFavoriteStatusUseCase(musicId = musicId)
                     }
                 }
-                return super.onMediaButtonEvent(mediaButtonIntent)
-            }
+            return Futures.immediateFuture(
+                SessionResult(SessionResult.RESULT_SUCCESS)
+            )
+        }
 
-            override fun onPlay() {
-                super.onPlay()
-                playbackManager.play()
-            }
-
-            override fun onPause() {
-                super.onPause()
-                playbackManager.pause()
-            }
-
-            override fun onSkipToNext() {
-                super.onSkipToNext()
-                CoroutineScope(Dispatchers.IO).launch {
-                    playbackManager.next()
-                }
-            }
-
-            override fun onSkipToPrevious() {
-                super.onSkipToPrevious()
-                CoroutineScope(Dispatchers.IO).launch {
-                    playbackManager.previous()
-                }
-            }
-
-            override fun onCustomAction(action: String?, extras: Bundle?) {
-                super.onCustomAction(action, extras)
-                when (action) {
-                    FAVORITE_ACTION -> {
-                        playbackManager.currentSong.value?.musicId?.let {
-                            coroutineScope.launch {
-                                toggleMusicFavoriteStatusUseCase(musicId = it)
-                            }
-                        }
-                    }
-                }
-            }
-        })
-        updateState(
-            isPlaying = isPlaying,
-            isFavorite = isFavorite,
+        return Futures.immediateFuture(
+            SessionResult(SessionError.ERROR_NOT_SUPPORTED)
         )
-        mediaSession?.isActive = true
     }
 
     /**
      * Release all elements related to the media session.
      */
     fun release() {
+        disablePlayedListTimelineSync()
         mediaSession?.release()
         mediaSession = null
     }
 
     /**
-     * Update media session data with information the current played song in the player view model.
+     * Clear the player state that keeps the media notification alive.
      */
-    private fun updateMetadata(updateData: UpdateData) {
-        val bitmap = updateData.cover?.asAndroidBitmap() ?: standardNotificationBitmap
+    fun clearPlaybackState() {
+        disablePlayedListTimelineSync()
+        currentPlayedListScope = null
+        isFavoriteActionAvailable = false
+        isCurrentMusicInFavorite = false
+        mediaSession?.let(::updateAvailableCommands)
 
-        mediaSession?.setMetadata(
-            MediaMetadataCompat.Builder()
-                .putBitmap(
-                    MediaMetadata.METADATA_KEY_ALBUM_ART,
-                    bitmap,
+        val player = soulSearchingPlayer.player
+        Handler(player.applicationLooper).post {
+            player.stop()
+            player.clearMediaItems()
+        }
+    }
+
+    private fun ensureListeningToPlayedListTimeline() {
+        if (playedListTimelineJob != null) return
+
+        playedListTimelineJob = coroutineScope.launch {
+            val playedListSnapshotFlow = playbackManager.playedList
+                .map { musics ->
+                    PlayedListTimelineSnapshot(
+                        musics = musics,
+                        musicIds = musics.map { it.musicId },
+                    )
+                }
+                .distinctUntilChanged { old, new ->
+                    old.musicIds == new.musicIds
+                }
+
+            val currentMusicIdFlow = playbackManager.state
+                .map { state ->
+                    (state as? PlaybackManagerState.Data)
+                        ?.currentMusic
+                        ?.musicId
+                }
+                .distinctUntilChanged()
+
+            combine(
+                playedListSnapshotFlow,
+                currentMusicIdFlow,
+            ) { playedListSnapshot, currentMusicId ->
+                PlayedListTimelineData(
+                    musics = if (currentMusicId == null) {
+                        emptyList()
+                    } else {
+                        playedListSnapshot.musics
+                    },
+                    musicIds = if (currentMusicId == null) {
+                        emptyList()
+                    } else {
+                        playedListSnapshot.musicIds
+                    },
+                    currentMusicId = currentMusicId,
                 )
-                .putLong(
-                    MediaMetadataCompat.METADATA_KEY_DURATION,
-                    updateData.music.duration
-                )
-                .putString(
-                    MediaMetadata.METADATA_KEY_DISPLAY_TITLE,
-                    updateData.music.name
-                )
-                .putLong(
-                    MediaMetadata.METADATA_KEY_TRACK_NUMBER,
-                    updateData.position
-                )
-                .putLong(
-                    MediaMetadata.METADATA_KEY_NUM_TRACKS,
-                    updateData.playedListSize
-                )
-                // For old versions of Android
-                .putString(
-                    MediaMetadata.METADATA_KEY_TITLE,
-                    updateData.music.name
-                )
-                .putString(
-                    MediaMetadata.METADATA_KEY_ARTIST,
-                    updateData.music.artistsNames
-                )
-                .putString(
-                    MediaMetadata.METADATA_KEY_ALBUM,
-                    updateData.music.album.albumName,
-                )
-                .putString(
-                    MediaMetadata.METADATA_KEY_ALBUM_ARTIST,
-                    updateData.music.album.artist.artistName,
-                )
-                // A small bitmap for the artwork is also recommended
-                .putBitmap(
-                    MediaMetadata.METADATA_KEY_ART,
-                    bitmap
-                )
-                .build()
-        )
+            }
+                .collectLatest { timelineData ->
+                    soulSearchingPlayer.syncPlayedListTimeline(
+                        musics = timelineData.musics,
+                        musicIds = timelineData.musicIds,
+                        currentMusicId = timelineData.currentMusicId,
+                    )
+                }
+        }
     }
 
     /**
-     * Update the state of the player's media session.
+     * Update session metadata with information for the current played song.
      */
-    private suspend fun updateState(
-        isPlaying: Boolean,
-        isFavorite: Boolean,
-    ) {
-        val musicState = if (isPlaying) {
-            PlaybackState.STATE_PLAYING
-        } else {
-            PlaybackState.STATE_PAUSED
+    private fun updateMetadata(updateData: UpdateData) {
+        coroutineScope.launch {
+            val metadata = mediaMetadataUtils
+                .fromMusic(
+                    music = updateData.music,
+                    cover = updateData.cover?.asAndroidBitmap(),
+                )
+                .setTrackNumber(updateData.position.toInt())
+                .setTotalTrackCount(updateData.playedListSize.toInt())
+                .build()
+
+            soulSearchingPlayer.playerDispatcher.handler.post {
+                val currentMediaItem = soulSearchingPlayer.player.currentMediaItem ?: return@post
+                val currentIndex = soulSearchingPlayer.player.currentMediaItemIndex
+
+                if (currentIndex == C.INDEX_UNSET) return@post
+                if (currentMediaItem.mediaMetadata.hasSameQueueVisibleContentAs(metadata)) return@post
+
+                soulSearchingPlayer.player.replaceMediaItem(
+                    currentIndex,
+                    currentMediaItem.buildUpon()
+                        .setMediaMetadata(metadata)
+                        .build()
+                )
+            }
+        }
+    }
+
+    private fun MediaMetadata.hasSameQueueVisibleContentAs(
+        other: MediaMetadata,
+    ): Boolean =
+        title == other.title &&
+            displayTitle == other.displayTitle &&
+            artist == other.artist &&
+            albumTitle == other.albumTitle &&
+            albumArtist == other.albumArtist &&
+            durationMs == other.durationMs &&
+            trackNumber == other.trackNumber &&
+            totalTrackCount == other.totalTrackCount &&
+            isBrowsable == other.isBrowsable &&
+            isPlayable == other.isPlayable &&
+            mediaType == other.mediaType &&
+            artworkData.contentEqualsNullable(other.artworkData)
+
+    private fun ByteArray?.contentEqualsNullable(other: ByteArray?): Boolean =
+        when {
+            this === other -> true
+            this == null || other == null -> false
+            else -> contentEquals(other)
         }
 
-        val favoriteCustomAction = PlaybackStateCompat.CustomAction.Builder(
-            FAVORITE_ACTION,
-            FAVORITE_ACTION,
-            if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite
-        ).build()
+    private fun updateAvailableCommands(session: MediaSession) {
+        val sessionCommands = buildSessionCommands(session)
+        val playerCommands = buildPlayerCommands()
+        val mediaButtonPreferences = buildMediaButtonPreferences()
 
-        mediaSession?.setPlaybackState(
-            PlaybackStateCompat.Builder()
-                .setActions(
-                    PlaybackStateCompat.ACTION_PLAY
-                            or PlaybackStateCompat.ACTION_SEEK_TO
-                            or PlaybackStateCompat.ACTION_PAUSE
-                            or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                            or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                            or PlaybackStateCompat.ACTION_PLAY_PAUSE
-                )
-                .addCustomAction(favoriteCustomAction)
-                .setState(
-                    musicState,
-                    playbackManager.getMusicPosition().toLong(),
-                    1.0F
-                )
-                .build()
-        )
+        session.setMediaButtonPreferences(mediaButtonPreferences)
+        session.connectedControllers.forEach { controller ->
+            session.setAvailableCommands(
+                controller,
+                sessionCommands,
+                playerCommands,
+            )
+            session.setMediaButtonPreferences(
+                controller,
+                mediaButtonPreferences,
+            )
+        }
     }
 
-    companion object {
-        private const val DEFAULT_NOTIFICATION_SIZE: Int = 300
+    private fun buildSessionCommands(session: MediaSession): SessionCommands =
+        if (session is MediaLibrarySession) {
+            MediaSession.ConnectionResult.DEFAULT_SESSION_AND_LIBRARY_COMMANDS
+        } else {
+            MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS
+        }.buildUpon()
+            .apply {
+                if (isFavoriteActionAvailable) {
+                    add(favoriteCommand)
+                }
+            }
+            .build()
+
+    private fun buildPlayerCommands(): Player.Commands =
+        Player.Commands.Builder()
+            .apply {
+                add(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)
+                add(Player.COMMAND_GET_METADATA)
+                add(Player.COMMAND_GET_AUDIO_ATTRIBUTES)
+                add(Player.COMMAND_GET_VOLUME)
+                add(Player.COMMAND_GET_DEVICE_VOLUME)
+                add(Player.COMMAND_GET_TRACKS)
+                add(Player.COMMAND_SET_MEDIA_ITEM)
+                add(Player.COMMAND_PREPARE)
+
+                if (currentPlayedListScope?.isAdmin == true) {
+                    add(Player.COMMAND_PLAY_PAUSE)
+                    add(Player.COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM)
+                    add(Player.COMMAND_SEEK_TO_PREVIOUS)
+                    add(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+                    add(Player.COMMAND_SEEK_TO_NEXT)
+                    add(Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+                    add(Player.COMMAND_SEEK_TO_DEFAULT_POSITION)
+
+                    if (isPlayedListTimelineSyncEnabled) {
+                        add(Player.COMMAND_GET_TIMELINE)
+                        add(Player.COMMAND_SEEK_TO_MEDIA_ITEM)
+                    }
+                }
+            }
+            .build()
+
+    private fun buildMediaButtonPreferences(): List<CommandButton> =
+        buildList {
+            if (currentPlayedListScope?.isAdmin == true) {
+                add(
+                    CommandButton.Builder(CommandButton.ICON_PREVIOUS)
+                        .setDisplayName("Previous")
+                        .setPlayerCommand(Player.COMMAND_SEEK_TO_PREVIOUS)
+                        .build()
+                )
+                add(
+                    CommandButton.Builder(CommandButton.ICON_PLAY)
+                        .setDisplayName("Play/Pause")
+                        .setPlayerCommand(Player.COMMAND_PLAY_PAUSE)
+                        .build()
+                )
+                add(
+                    CommandButton.Builder(CommandButton.ICON_NEXT)
+                        .setDisplayName("Next")
+                        .setPlayerCommand(Player.COMMAND_SEEK_TO_NEXT)
+                        .build()
+                )
+            }
+
+            if (isFavoriteActionAvailable) {
+                add(
+                    CommandButton.Builder(
+                        if (isCurrentMusicInFavorite) {
+                            CommandButton.ICON_HEART_FILLED
+                        } else {
+                            CommandButton.ICON_HEART_UNFILLED
+                        }
+                    )
+                        .setDisplayName(
+                            if (isCurrentMusicInFavorite) {
+                                "Remove from favorites"
+                            } else {
+                                "Add to favorites"
+                            }
+                        )
+                        .setSessionCommand(favoriteCommand)
+                        .build()
+                )
+            }
+        }
+
+    private companion object {
         private const val FAVORITE_ACTION: String = "FAVORITE_ACTION"
+        private const val MAIN_ACTIVITY_CLASS_NAME: String =
+            "com.github.enteraname74.soulsearching.MainActivity"
     }
 }
+
+@OptIn(UnstableApi::class)
+private class SoulSearchingSessionPlayer(
+    player: Player,
+    private val playbackManager: () -> PlaybackManager,
+    private val coroutineScope: CoroutineScope,
+    private val canControl: () -> Boolean,
+    private val canUseTimeline: () -> Boolean,
+) : ForwardingPlayer(player) {
+    private var shouldIgnoreNextPrepare: Boolean = false
+
+    override fun setMediaItems(mediaItems: List<MediaItem>) {
+        if (mediaItems.isFromAndroidAutoLibrary()) {
+            shouldIgnoreNextPrepare = true
+        } else {
+            super.setMediaItems(mediaItems)
+        }
+    }
+
+    override fun setMediaItems(mediaItems: List<MediaItem>, resetPosition: Boolean) {
+        if (mediaItems.isFromAndroidAutoLibrary()) {
+            shouldIgnoreNextPrepare = true
+        } else {
+            super.setMediaItems(mediaItems, resetPosition)
+        }
+    }
+
+    override fun setMediaItems(
+        mediaItems: List<MediaItem>,
+        startIndex: Int,
+        startPositionMs: Long,
+    ) {
+        if (mediaItems.isFromAndroidAutoLibrary()) {
+            shouldIgnoreNextPrepare = true
+        } else {
+            super.setMediaItems(mediaItems, startIndex, startPositionMs)
+        }
+    }
+
+    override fun setMediaItem(mediaItem: MediaItem) {
+        if (mediaItem.isFromAndroidAutoLibrary()) {
+            shouldIgnoreNextPrepare = true
+        } else {
+            super.setMediaItem(mediaItem)
+        }
+    }
+
+    override fun setMediaItem(mediaItem: MediaItem, startPositionMs: Long) {
+        if (mediaItem.isFromAndroidAutoLibrary()) {
+            shouldIgnoreNextPrepare = true
+        } else {
+            super.setMediaItem(mediaItem, startPositionMs)
+        }
+    }
+
+    override fun setMediaItem(mediaItem: MediaItem, resetPosition: Boolean) {
+        if (mediaItem.isFromAndroidAutoLibrary()) {
+            shouldIgnoreNextPrepare = true
+        } else {
+            super.setMediaItem(mediaItem, resetPosition)
+        }
+    }
+
+    override fun prepare() {
+        if (shouldIgnoreNextPrepare) {
+            shouldIgnoreNextPrepare = false
+        } else {
+            super.prepare()
+        }
+    }
+
+    override fun getAvailableCommands(): Player.Commands =
+        super.getAvailableCommands()
+            .buildUpon()
+            .apply {
+                if (canControl()) {
+                    add(COMMAND_PLAY_PAUSE)
+                    add(COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM)
+                    add(COMMAND_SEEK_TO_PREVIOUS)
+                    add(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+                    add(COMMAND_SEEK_TO_NEXT)
+                    add(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+                    add(COMMAND_SEEK_TO_DEFAULT_POSITION)
+
+                    if (canUseTimeline()) {
+                        add(COMMAND_GET_TIMELINE)
+                        add(COMMAND_SEEK_TO_MEDIA_ITEM)
+                    } else {
+                        remove(COMMAND_GET_TIMELINE)
+                        remove(COMMAND_SEEK_TO_MEDIA_ITEM)
+                    }
+                } else {
+                    remove(COMMAND_PLAY_PAUSE)
+                    remove(COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM)
+                    remove(COMMAND_SEEK_TO_PREVIOUS)
+                    remove(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+                    remove(COMMAND_SEEK_TO_NEXT)
+                    remove(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+                    remove(COMMAND_GET_TIMELINE)
+                    remove(COMMAND_SEEK_TO_MEDIA_ITEM)
+                    remove(COMMAND_SEEK_TO_DEFAULT_POSITION)
+                }
+            }
+            .build()
+
+    override fun isCommandAvailable(command: Int): Boolean =
+        when (command) {
+            COMMAND_PLAY_PAUSE,
+            COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM,
+            COMMAND_SEEK_TO_PREVIOUS,
+            COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM,
+            COMMAND_SEEK_TO_NEXT,
+            COMMAND_SEEK_TO_NEXT_MEDIA_ITEM,
+            COMMAND_SEEK_TO_DEFAULT_POSITION -> canControl()
+            COMMAND_GET_TIMELINE,
+            COMMAND_SEEK_TO_MEDIA_ITEM -> canControl() && canUseTimeline()
+
+            else -> super.isCommandAvailable(command)
+        }
+
+    override fun play() {
+        if (canControl()) {
+            playbackManager().play()
+        }
+    }
+
+    override fun pause() {
+        if (canControl()) {
+            playbackManager().pause()
+        }
+    }
+
+    override fun seekTo(positionMs: Long) {
+        if (canControl()) {
+            coroutineScope.launch {
+                playbackManager().seekTo(positionMs.toInt())
+            }
+        }
+    }
+
+    override fun seekTo(mediaItemIndex: Int, positionMs: Long) {
+        selectMediaItem(mediaItemIndex, positionMs)
+    }
+
+    override fun seekToDefaultPosition() {
+        if (!canControl()) return
+
+        coroutineScope.launch {
+            playbackManager().seekTo(0)
+        }
+    }
+
+    override fun seekToDefaultPosition(mediaItemIndex: Int) {
+        selectMediaItem(mediaItemIndex, 0L)
+    }
+
+    private fun selectMediaItem(mediaItemIndex: Int, positionMs: Long) {
+        if (!canControl() || !canUseTimeline()) return
+
+        if (mediaItemIndex == currentMediaItemIndex) {
+            if (positionMs > 0) {
+                seekTo(positionMs)
+            }
+            return
+        }
+
+        val musicId = getMediaItemAtOrNull(mediaItemIndex)?.musicId() ?: return
+        super.seekTo(mediaItemIndex, positionMs)
+        coroutineScope.launch {
+            val music = playbackManager()
+                .playedList
+                .firstOrNull()
+                ?.firstOrNull { it.musicId == musicId }
+                ?: return@launch
+
+            playbackManager().setAndPlayMusicFromCurrentPlayedList(music)
+            if (positionMs > 0) {
+                playbackManager().seekTo(positionMs.toInt())
+            }
+        }
+    }
+
+    override fun seekToPrevious() {
+        if (canControl()) {
+            coroutineScope.launch {
+                playbackManager().previous()
+            }
+        }
+    }
+
+    override fun seekToPreviousMediaItem() {
+        seekToPrevious()
+    }
+
+    override fun seekToNext() {
+        if (canControl()) {
+            coroutineScope.launch {
+                playbackManager().next()
+            }
+        }
+    }
+
+    override fun seekToNextMediaItem() {
+        seekToNext()
+    }
+
+    private fun List<MediaItem>.isFromAndroidAutoLibrary(): Boolean =
+        any { it.isFromAndroidAutoLibrary() }
+
+    private fun MediaItem.isFromAndroidAutoLibrary(): Boolean =
+        AndroidAutoMediaIdsUtils.musicRequestFrom(mediaId) != null
+
+    private fun getMediaItemAtOrNull(index: Int): MediaItem? =
+        if (index in 0 until mediaItemCount) {
+            getMediaItemAt(index)
+        } else {
+            null
+        }
+
+    private fun MediaItem.musicId(): Uuid? =
+        runCatching { Uuid.parse(mediaId) }.getOrNull()
+}
+
+private data class PlayedListTimelineSnapshot(
+    val musics: List<Music>,
+    val musicIds: List<Uuid>,
+)
+
+private data class PlayedListTimelineData(
+    val musics: List<Music>,
+    val musicIds: List<Uuid>,
+    val currentMusicId: Uuid?,
+)

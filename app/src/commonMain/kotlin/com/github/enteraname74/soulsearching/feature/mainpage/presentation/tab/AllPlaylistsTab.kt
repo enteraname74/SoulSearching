@@ -4,14 +4,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cancel_filled
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
@@ -19,11 +18,11 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageListPaged
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 fun allPlaylistsTab(
     mainPageViewModel: MainPageViewModel,
-    navigateToPlaylist: (playlistId: UUID) -> Unit,
+    navigateToPlaylist: (playlistId: Uuid) -> Unit,
 ): PagerScreen =
     PagerScreen(
         type = ElementEnum.PLAYLISTS,
@@ -56,6 +55,8 @@ fun allPlaylistsTab(
                 sortDirection = playlistState.sortDirection,
                 key = { it?.id },
                 contentType = ALL_PLAYLISTS_CONTENT_TYPE,
+                emptyTitle = strings.emptyPlaylists,
+                emptyDescription = strings.emptyPlaylistsExplanations,
             ) { element ->
                 BigPreviewComposable(
                     modifier = Modifier
@@ -69,13 +70,13 @@ fun allPlaylistsTab(
                     },
                     onLongClick = {
                         mainPageViewModel.toggleElementInSelection(
-                            id = element.id,
+                            id = element.id.toString(),
                             mode = SelectionMode.Playlist,
                         )
                     },
                     isFavoritePlaylist = element.isFavorite,
-                    isSelected = multiSelectionState.selectedIds.contains(element.id),
-                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                    isSelected = multiSelectionState.selectedIds.contains(element.id.toString()),
+                    isSelectionModeOn = multiSelectionState.totalSelected > 0,
                 )
             }
         }

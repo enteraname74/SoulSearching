@@ -8,14 +8,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
-import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.domain.model.SortType
+import com.github.enteraname74.soulsearching.domain.model.SortDirection
+import com.github.enteraname74.soulsearching.domain.model.SortType
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyVerticalGridCompat
 import com.github.enteraname74.soulsearching.coreui.utils.OptionalPaddingForPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Composable
 fun <T> MainPageList(
@@ -30,7 +30,8 @@ fun <T> MainPageList(
     isUsingSort: Boolean = true,
     key: ((T) -> Any)?,
     contentType: (T) -> Any,
-    emptyView: @Composable () -> Unit = { NoElementView() },
+    emptyTitle: String,
+    emptyDescription: String,
     item: @Composable LazyGridItemScope.(element: T) -> Unit,
 ) {
 
@@ -71,7 +72,10 @@ fun <T> MainPageList(
                 item(
                     span = { GridItemSpan(maxLineSpan) }
                 ) {
-                    emptyView()
+                    EmptyCard(
+                        title = emptyTitle,
+                        description = emptyDescription,
+                    )
                 }
             }
         }
@@ -91,7 +95,8 @@ fun <T : Any> MainPageListPaged(
     isUsingSort: Boolean = true,
     key: ((T?) -> Any?)?,
     contentType: Any,
-    emptyView: @Composable () -> Unit = { NoElementView() },
+    emptyTitle: String,
+    emptyDescription: String,
     item: @Composable LazyGridItemScope.(element: T) -> Unit,
 ) {
 
@@ -123,7 +128,7 @@ fun <T : Any> MainPageListPaged(
             if (list.itemCount > 0) {
                 items(
                     count = list.itemCount,
-                    key = { key?.invoke(list[it]) ?: UUID.randomUUID() },
+                    key = { key?.invoke(list[it]) ?: Uuid.random() },
                     contentType = { contentType },
                 ) { index ->
                     list[index]?.let {
@@ -134,7 +139,10 @@ fun <T : Any> MainPageListPaged(
                 item(
                     span = { GridItemSpan(maxLineSpan) }
                 ) {
-                    emptyView()
+                    EmptyCard(
+                        title = emptyTitle,
+                        description = emptyDescription,
+                    )
                 }
             }
         }

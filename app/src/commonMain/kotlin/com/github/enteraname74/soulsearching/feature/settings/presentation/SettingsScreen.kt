@@ -3,13 +3,18 @@ package com.github.enteraname74.soulsearching.feature.settings.presentation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.github.enteraname74.soulsearching.domain.model.SoulPlatform
+import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_bar_chart
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cloud_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_handyman_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_info_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_keyboard
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_palette_filled
+import com.github.enteraname74.soulsearching.coreui.ext.isMouseAndKeyboardOnly
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -24,52 +29,34 @@ fun SettingsRoute(
     toPersonalisation: () -> Unit,
     toStatistics: () -> Unit,
     toAdvancedSettings: () -> Unit,
+    toCloudSettings: () -> Unit,
+    toShortcuts: () -> Unit,
 ) {
     val viewModel: SettingsScreenViewModel = koinViewModel()
 
     val shouldShowNewVersionPin: Boolean by viewModel.shouldShowNewVersionPin.collectAsState()
+    val isMouseAndKeyboardOnly = SoulPlatformUtils.isMouseAndKeyboardOnly()
 
-    SettingsScreenView(
-        shouldShowNewVersionPin = shouldShowNewVersionPin,
-        finishAction = navigateBack,
-        navigateToAbout = toAbout,
-        navigateToColorTheme = toColorTheme,
-        navigateToManageMusics = toManageMusics,
-        navigateToPersonalisation = toPersonalisation,
-        navigateToStatistics = toStatistics,
-        navigateToAdvanced = toAdvancedSettings,
-    )
-}
-
-@Composable
-fun SettingsScreenView(
-    shouldShowNewVersionPin: Boolean,
-    finishAction: () -> Unit,
-    navigateToManageMusics: () -> Unit,
-    navigateToColorTheme: () -> Unit,
-    navigateToPersonalisation: () -> Unit,
-    navigateToStatistics: () -> Unit,
-    navigateToAbout: () -> Unit,
-    navigateToAdvanced: () -> Unit,
-) {
     SettingPage(
-        navigateBack = finishAction,
+        navigateBack = navigateBack,
         title = strings.settings,
     ) {
-        item {
-            SoulMenuElement(
-                title = strings.manageMusicsTitle,
-                subTitle = strings.manageMusicsText,
-                leadIcon = CoreRes.drawable.ic_music_note_filled,
-                onClick = navigateToManageMusics
-            )
+        if (SoulPlatformUtils.platform != SoulPlatform.Web) {
+            item {
+                SoulMenuElement(
+                    title = strings.manageMusicsTitle,
+                    subTitle = strings.manageMusicsText,
+                    leadIcon = CoreRes.drawable.ic_music_note_filled,
+                    onClick = toManageMusics
+                )
+            }
         }
         item {
             SoulMenuElement(
                 title = strings.colorThemeTitle,
                 subTitle = strings.colorThemeText,
                 leadIcon = CoreRes.drawable.ic_palette_filled,
-                onClick = navigateToColorTheme
+                onClick = toColorTheme
             )
         }
         item {
@@ -77,31 +64,49 @@ fun SettingsScreenView(
                 title = strings.personalizationTitle,
                 subTitle = strings.personalizationText,
                 leadIcon = CoreRes.drawable.ic_edit_filled,
-                onClick = navigateToPersonalisation
+                onClick = toPersonalisation
             )
         }
         item {
             SoulMenuElement(
                 title = strings.statisticsTitle,
                 subTitle = strings.statisticsText,
-                leadIcon =  CoreRes.drawable.ic_bar_chart,
-                onClick = navigateToStatistics
+                leadIcon = CoreRes.drawable.ic_bar_chart,
+                onClick = toStatistics
             )
         }
         item {
             SoulMenuElement(
                 title = strings.advancedSettingsTitle,
                 subTitle = strings.advancedSettingsText,
-                leadIcon =  CoreRes.drawable.ic_handyman_filled,
-                onClick = navigateToAdvanced,
+                leadIcon = CoreRes.drawable.ic_handyman_filled,
+                onClick = toAdvancedSettings,
+            )
+        }
+        if (isMouseAndKeyboardOnly) {
+            item {
+                SoulMenuElement(
+                    title = strings.shortcutsTitle,
+                    subTitle = strings.shortcutsText,
+                    leadIcon = CoreRes.drawable.ic_keyboard,
+                    onClick = toShortcuts,
+                )
+            }
+        }
+        item {
+            SoulMenuElement(
+                title = strings.cloudTitle,
+                subTitle = strings.cloudText,
+                leadIcon = CoreRes.drawable.ic_cloud_filled,
+                onClick = toCloudSettings,
             )
         }
         item {
             SoulMenuElement(
                 title = strings.aboutTitle,
                 subTitle = strings.aboutText,
-                leadIcon =  CoreRes.drawable.ic_info_filled,
-                onClick = navigateToAbout,
+                leadIcon = CoreRes.drawable.ic_info_filled,
+                onClick = toAbout,
                 isBadged = shouldShowNewVersionPin,
             )
         }

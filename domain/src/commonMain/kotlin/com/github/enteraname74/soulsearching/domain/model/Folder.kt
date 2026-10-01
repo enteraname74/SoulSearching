@@ -1,0 +1,14 @@
+package com.github.enteraname74.soulsearching.domain.model
+
+import com.github.enteraname74.soulsearching.domain.ext.filenameFromPath
+
+/**
+ * Represent a Folder.
+ * The isSelected value indicate if the folder is used in the application.
+ */
+data class Folder(
+    val folderPath: String,
+    val isSelected: Boolean,
+) {
+    val name: String = folderPath.filenameFromPath()
+}

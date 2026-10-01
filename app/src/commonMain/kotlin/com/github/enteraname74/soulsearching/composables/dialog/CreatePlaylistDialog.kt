@@ -52,7 +52,7 @@ class CreatePlaylistDialog(
             title = strings.createPlaylistDialogTitle,
             content = {
                 val baseHeight: Dp = 10.dp
-                var textFieldHeight: Float by rememberSaveable { mutableStateOf(0f) }
+                var textFieldHeight: Float by rememberSaveable { mutableFloatStateOf(0f) }
                 Box(
                     modifier = Modifier
                         .height(baseHeight + textFieldHeight.toDp())

@@ -1,9 +1,9 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room.Embedded
-import androidx.room.Junction
-import androidx.room.Relation
-import com.github.enteraname74.domain.model.ArtistWithMusics
+import androidx.room3.Embedded
+import androidx.room3.Junction
+import androidx.room3.Relation
+import com.github.enteraname74.soulsearching.domain.model.ArtistWithMusics
 
 /**
  * Room representation of an ArtistWithMusics.
@@ -11,12 +11,12 @@ import com.github.enteraname74.domain.model.ArtistWithMusics
 data class RoomArtistWithMusics(
     @Embedded val roomArtist: RoomArtist,
     @Relation(
-        parentColumn = "artistId",
-        entityColumn = "musicId",
+        parentColumns = ["artistId"],
+        entityColumns = ["musicId"],
         associateBy = Junction(RoomMusicArtist::class),
         entity = RoomMusic::class,
     )
-    val roomMusics : List<RoomCompleteMusic>,
+    val roomMusics: List<RoomCompleteMusic>,
 )
 
 /**
@@ -24,6 +24,6 @@ data class RoomArtistWithMusics(
  */
 internal fun RoomArtistWithMusics.toArtistWithMusics(): ArtistWithMusics = ArtistWithMusics(
     artist = roomArtist.toArtist(),
-    musics = roomMusics.map { it.toMusic() }
+    musics = roomMusics.map { it.toMusic() }.sortedBy { it.name }
 )
 

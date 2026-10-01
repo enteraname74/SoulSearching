@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.domain.model
 
-import com.github.enteraname74.domain.model.settings.settingElementOf
+import com.github.enteraname74.soulsearching.domain.model.settings.settingElementOf
 
 /**
  * Represent all elements that can be shown on the main page screen.

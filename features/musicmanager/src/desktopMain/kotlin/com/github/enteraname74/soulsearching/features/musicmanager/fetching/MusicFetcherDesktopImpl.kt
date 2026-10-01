@@ -1,11 +1,13 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Scope
+import com.github.enteraname74.soulsearching.domain.model.Playlist
+import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.soulsearching.domain.util.AppDirectories
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.flow.firstOrNull
 import org.jaudiotagger.audio.AudioFile
@@ -15,15 +17,14 @@ import org.jaudiotagger.tag.Tag
 import java.io.File
 import java.net.URLConnection
 import java.nio.file.Files
-import java.util.*
-
+import kotlin.uuid.Uuid
 
 /**
  * Class handling music fetching for desktop application.
  */
 internal class MusicFetcherDesktopImpl(
-    private val commonPlaylistUseCase: CommonPlaylistUseCase,
-) : MusicFetcher() {
+    commonPlaylistUseCase: CommonPlaylistUseCase,
+) : MusicFetcher(commonPlaylistUseCase) {
 
     private val foldersNamesBlackList: List<String> = listOf(
         "node_modules"
@@ -99,12 +100,16 @@ internal class MusicFetcherDesktopImpl(
                         ),
                         artists = artists,
                         duration = (audioFile.audioHeader.trackLength * 1_000).toLong(),
-                        path = file.path,
+                        localPath = file.path,
                         folder = file.parent,
                         cover = Cover.CoverFile(
                             initialCoverPath = file.path,
                         ),
                         albumPosition = tag.getFirst(FieldKey.TRACK)?.toIntOrNull(),
+                        scope = Scope.User,
+                        remoteId = null,
+                        remotePath = null,
+                        lastUpdatedMillis = null,
                     )
                     onMusicFetched(musicToAdd)
                 } catch (e: Exception) {
@@ -126,21 +131,13 @@ internal class MusicFetcherDesktopImpl(
     override suspend fun fetchMusics(
         updateProgress: (Float, String?) -> Unit,
     ) {
-        val root = File(System.getProperty("user.home"))
+        val root = AppDirectories.music.toFile()
         extractMusicsFromCurrentDirectory(
             directory = root,
             updateProgress = updateProgress,
             onMusicFetched = ::cacheMusic
         )
-        if (commonPlaylistUseCase.getFavorite().firstOrNull() == null) {
-            commonPlaylistUseCase.upsert(
-                Playlist(
-                    playlistId = UUID.randomUUID(),
-                    name = strings.favorite,
-                    isFavorite = true
-                )
-            )
-        }
+        ensureFavoritePlaylistCreated()
     }
 
     override suspend fun fetchMusicsFromSelectedFolders(
@@ -148,13 +145,13 @@ internal class MusicFetcherDesktopImpl(
         hiddenFoldersPaths: List<String>
     ): List<SelectableMusicItem> {
         val newMusics = ArrayList<SelectableMusicItem>()
-        val root = File(System.getProperty("user.home"))
+        val root = AppDirectories.music.toFile()
 
         extractMusicsFromCurrentDirectory(
             directory = root,
             updateProgress = { _, _ -> },
             onMusicFetched = { music ->
-                if (!alreadyPresentMusicsPaths.any { it == music.path } && !hiddenFoldersPaths.any { it == music.folder }) {
+                if (!alreadyPresentMusicsPaths.any { it == music.localPath } && !hiddenFoldersPaths.any { it == music.folder }) {
                     newMusics.add(
                         SelectableMusicItem(
                             music = music,

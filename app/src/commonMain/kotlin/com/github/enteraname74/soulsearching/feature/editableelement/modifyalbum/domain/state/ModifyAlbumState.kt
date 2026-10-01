@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state
 
-import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.soulsearching.domain.model.AlbumWithMusics
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 
 /**

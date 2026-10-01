@@ -1,5 +1,7 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
+        maven { url = uri("offline-repository") }
         google()
         mavenCentral()
         gradlePluginPortal()
@@ -10,6 +12,7 @@ plugins {
 }
 dependencyResolutionManagement {
     repositories {
+        maven { url = uri("offline-repository") }
         google()
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
@@ -19,6 +22,7 @@ rootProject.name = "SoulSearching"
 include(":domain")
 include(":local")
 include(":app")
+include(":androidApp")
 include("core-ui")
 include("repository")
 include("shared-di")

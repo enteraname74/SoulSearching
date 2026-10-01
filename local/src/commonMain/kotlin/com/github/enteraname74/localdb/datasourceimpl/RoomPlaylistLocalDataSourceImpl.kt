@@ -1,0 +1,216 @@
+package com.github.enteraname74.localdb.datasourceimpl
+
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
+import com.github.enteraname74.soulsearching.domain.model.Playlist
+import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
+import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.SortDirection
+import com.github.enteraname74.soulsearching.domain.model.SortType
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.util.DateUtils
+import com.github.enteraname74.localdb.AppDatabase
+import com.github.enteraname74.localdb.model.toPlaylist
+import com.github.enteraname74.localdb.model.toPlaylistWithMusics
+import com.github.enteraname74.localdb.model.toRoomPlaylist
+import com.github.enteraname74.localdb.utils.PagingUtils
+import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlin.math.max
+import kotlin.uuid.Uuid
+
+internal class RoomPlaylistLocalDataSourceImpl(
+    private val appDatabase: AppDatabase,
+    private val settings: SoulSearchingSettings,
+) : PlaylistLocalDataSource {
+    override suspend fun upsert(playlist: Playlist) {
+        appDatabase.playlistDao.upsert(
+            roomPlaylist = playlist
+                .copy(
+                    lastUpdatedMillis = max(DateUtils.now(), playlist.lastUpdatedMillis ?: 0L),
+                )
+                .toRoomPlaylist()
+        )
+    }
+
+    override suspend fun upsertAll(playlists: List<Playlist>, keepUpdatedAt: Boolean) {
+        appDatabase.playlistDao.upsertAll(
+            roomPlaylists = playlists.map {
+                if (keepUpdatedAt) {
+                    it
+                } else {
+                    it.copy(
+                        lastUpdatedMillis = max(DateUtils.now(), it.lastUpdatedMillis ?: 0L),
+                    )
+                }.toRoomPlaylist()
+            }
+        )
+    }
+
+    override suspend fun deleteAll(playlistIds: List<Uuid>) {
+        appDatabase.playlistDao.deleteAll(
+            ids = playlistIds,
+        )
+    }
+
+    override suspend fun deleteAllFromRemote(remoteIds: List<Uuid>) {
+        appDatabase.playlistDao.deleteAllFromRemote(
+            remoteIds = remoteIds,
+        )
+    }
+
+    override fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>> {
+        return appDatabase.playlistDao.getAllPlaylistWithMusics().map { list ->
+            list.map { it.toPlaylistWithMusics() }
+        }
+    }
+
+    override fun getFromId(playlistId: Uuid): Flow<Playlist?> {
+        return appDatabase.playlistDao.getFromId(
+            playlistId = playlistId
+        ).map { it?.toPlaylist() }
+    }
+
+    override suspend fun getFromRemoteId(remoteId: Uuid): Playlist? =
+        appDatabase.playlistDao.getFromRemoteId(remoteId = remoteId)?.toPlaylist()
+
+    override fun getFromIds(playlistIds: List<Uuid>): Flow<List<PlaylistWithMusics>> =
+        appDatabase.playlistDao.getFromIds(playlistIds).map { list ->
+            list
+                .sortedBy { playlistIds.indexOf(it.roomPlaylist.playlistId) }
+                .map { it.toPlaylistWithMusics() }
+        }
+
+    override suspend fun getFavorite(): Playlist? =
+        appDatabase.playlistDao.getFavorite()?.toPlaylist()
+
+    override fun observeFavorite(): Flow<PlaylistWithMusics?> =
+        appDatabase.playlistDao.observeFavorite().map { it?.toPlaylistWithMusics() }
+
+    override suspend fun getFromName(name: String): Playlist? =
+        appDatabase.playlistDao.getFromName(name = name)?.toPlaylist()
+
+    override fun getPlaylistWithMusics(playlistId: Uuid): Flow<PlaylistWithMusics?> {
+        return appDatabase.playlistDao.getPlaylistWithMusics(playlistId = playlistId)
+            .map { it?.toPlaylistWithMusics() }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
+        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_DIRECTION_KEY).flatMapLatest { direction ->
+            settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_TYPE_KEY).flatMapLatest { type ->
+                val sortDirection = SortDirection.from(direction) ?: SortDirection.DEFAULT
+                val sortType = SortType.from(type) ?: SortType.DEFAULT
+
+                Pager(
+                    config = PagingConfig(
+                        pageSize = PagingUtils.PAGE_SIZE,
+                        enablePlaceholders = false,
+                    ),
+                    pagingSourceFactory = {
+                        when (sortDirection) {
+                            SortDirection.ASC -> {
+                                when (sortType) {
+                                    SortType.NAME -> appDatabase.playlistDao.getAllPagedByNameAsc()
+                                    SortType.ADDED_DATE -> appDatabase.playlistDao.getAllPagedByDateAsc()
+                                    SortType.NB_PLAYED -> appDatabase.playlistDao.getAllPagedByNbPlayedAsc()
+                                }
+                            }
+                            SortDirection.DESC -> {
+                                when (sortType) {
+                                    SortType.NAME -> appDatabase.playlistDao.getAllPagedByNameDesc()
+                                    SortType.ADDED_DATE -> appDatabase.playlistDao.getAllPagedByDateDesc()
+                                    SortType.NB_PLAYED -> appDatabase.playlistDao.getAllPagedByNbPlayedDesc()
+                                }
+                            }
+                        }
+                    }
+                ).flow.map { pagingData ->
+                    pagingData.map { it.toPlaylistPreview() }
+                }
+            }
+        }
+
+    override suspend fun getAll(page: Int, pageSize: Int): List<PlaylistPreview> {
+        val direction: SortDirection = SortDirection
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_DIRECTION_KEY))
+            ?: SortDirection.DEFAULT
+
+        val type: SortType = SortType
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_TYPE_KEY))
+            ?: SortType.DEFAULT
+
+        val limit = pageSize.takeIf { it > 0 } ?: DEFAULT_ANDROID_AUTO_PAGE_SIZE
+        val offset = page.coerceAtLeast(0) * limit
+
+        return with(appDatabase.playlistDao) {
+            when (direction) {
+                SortDirection.ASC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameAsc(limit = limit, offset = offset)
+                        SortType.ADDED_DATE -> getAllByDateAsc(limit = limit, offset = offset)
+                        SortType.NB_PLAYED -> getAllByNbPlayedAsc(limit = limit, offset = offset)
+                    }
+                }
+
+                SortDirection.DESC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameDesc(limit = limit, offset = offset)
+                        SortType.ADDED_DATE -> getAllByDateDesc(limit = limit, offset = offset)
+                        SortType.NB_PLAYED -> getAllByNbPlayedDesc(limit = limit, offset = offset)
+                    }
+                }
+            }
+        }.map { it.toPlaylistPreview() }
+    }
+
+    override suspend fun cleanAllCovers() {
+        appDatabase.playlistDao.cleanAllCovers()
+    }
+
+    override fun getAllFromQuickAccess(): Flow<List<PlaylistPreview>> =
+        appDatabase.playlistDao.getAllFromQuickAccess().map { list ->
+            list.map { it.toPlaylistPreview() }
+        }
+
+    override fun getPlaylistPreview(playlistId: Uuid): Flow<PlaylistPreview?> =
+        appDatabase.playlistDao.getPlaylistPreview(playlistId).map { it?.toPlaylistPreview() }
+
+    override fun searchAll(search: String): Flow<List<PlaylistPreview>> =
+        appDatabase.playlistDao.searchAll(search).map { list ->
+            list.map { it.toPlaylistPreview() }
+        }
+
+    override suspend fun getAllToSendToCloud(): List<PlaylistWithMusics> =
+        appDatabase.playlistDao.getAllToSendToCloud().map {
+            it.toPlaylistWithMusics()
+        }
+
+    override suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<Uuid> =
+        appDatabase.playlistDao.getRemoteIdsFromIds(ids = ids)
+
+    override suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid> =
+        appDatabase.playlistDao.getAllRemoteIdsPossessedByUser()
+
+    override suspend fun deleteAllRemoteFields() {
+        appDatabase.playlistDao.deleteAllRemoteFields()
+    }
+
+    override suspend fun deleteAllEmptyExceptFavorite() {
+        appDatabase.playlistDao.deleteAllEmptyExceptFavorite()
+    }
+
+    override suspend fun getLatestUpdatedAt(): Long? =
+        appDatabase.playlistDao.getLatestUpdatedAt()
+
+    override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =
+        appDatabase.playlistDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
+}
+
+private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

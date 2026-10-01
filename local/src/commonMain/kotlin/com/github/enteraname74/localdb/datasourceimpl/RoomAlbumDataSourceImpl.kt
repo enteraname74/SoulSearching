@@ -4,13 +4,16 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumPreview
-import com.github.enteraname74.domain.model.AlbumWithMusics
-import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.domain.model.SortType
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import androidx.room3.withReadTransaction
+import androidx.room3.withWriteTransaction
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
+import com.github.enteraname74.soulsearching.domain.model.AlbumWithMusics
+import com.github.enteraname74.soulsearching.domain.model.SortDirection
+import com.github.enteraname74.soulsearching.domain.model.SortType
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.util.DateUtils
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toRoomAlbum
 import com.github.enteraname74.localdb.utils.PagingUtils
@@ -19,7 +22,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import java.util.UUID
+import kotlin.math.max
+import kotlin.uuid.Uuid
 
 /**
  * Implementation of the AlbumDataSource with Room's DAO.
@@ -29,13 +33,33 @@ internal class RoomAlbumDataSourceImpl(
     private val settings: SoulSearchingSettings,
 ) : AlbumDataSource {
     override suspend fun upsert(album: Album) {
-        appDatabase.albumDao.upsert(
-            roomAlbum = album.toRoomAlbum()
-        )
+        appDatabase.withWriteTransaction {
+            val lastUpdatedAt = max(album.lastUpdateMillis ?: 0L, DateUtils.now())
+
+            appDatabase.albumDao.upsert(
+                roomAlbum = album.copy(
+                    lastUpdateMillis = lastUpdatedAt,
+                ).toRoomAlbum()
+            )
+
+            appDatabase.musicDao.updateLastUpdatedAtField(
+                musicIds = appDatabase.musicDao.getMusicIdsOfAlbum(albumIds = listOf(album.albumId)),
+                updatedAt = lastUpdatedAt,
+            )
+        }
     }
 
     override suspend fun upsertAll(albums: List<Album>) {
-        appDatabase.albumDao.upsertAll(albums.map { it.toRoomAlbum() })
+        appDatabase.withWriteTransaction {
+            val lastUpdatedAt = max(albums.maxBy { it.lastUpdateMillis ?: 0L }.lastUpdateMillis ?: 0L, DateUtils.now())
+
+            appDatabase.albumDao.upsertAll(albums.map { it.copy(lastUpdateMillis = lastUpdatedAt).toRoomAlbum() })
+
+            appDatabase.musicDao.updateLastUpdatedAtField(
+                musicIds = appDatabase.musicDao.getMusicIdsOfAlbum(albumIds = albums.map { it.albumId }),
+                updatedAt = lastUpdatedAt,
+            )
+        }
     }
 
     override suspend fun delete(album: Album) {
@@ -44,16 +68,20 @@ internal class RoomAlbumDataSourceImpl(
         )
     }
 
-    override suspend fun deleteAll(ids: List<UUID>) {
+    override suspend fun deleteAll(ids: List<Uuid>) {
         appDatabase.albumDao.deleteAll(
             ids = ids,
         )
     }
 
+    override suspend fun deleteAllEmpty() {
+        appDatabase.albumDao.deleteAllEmpty()
+    }
+
     override suspend fun getAlbumNamesContainingSearch(search: String): List<String> =
         appDatabase.albumDao.getAlbumNamesContainingSearch(search)
 
-    override fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> {
+    override fun getAlbumsOfArtist(artistId: Uuid): Flow<List<Album>> {
         return appDatabase.albumDao.getAllAlbumsFromArtist(
             artistId = artistId
         ).map { list ->
@@ -63,7 +91,7 @@ internal class RoomAlbumDataSourceImpl(
         }
     }
 
-    override fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>> =
+    override fun getAlbumsWithMusicsOfArtist(artistId: Uuid): Flow<List<AlbumWithMusics>> =
         appDatabase.albumDao.getAllAlbumsWithMusicsFromArtist(
             artistId = artistId
         ).map { list ->
@@ -72,21 +100,23 @@ internal class RoomAlbumDataSourceImpl(
             }
         }
 
-
-    override fun getFromId(albumId: UUID): Flow<Album?> {
+    override fun getFromId(albumId: Uuid): Flow<Album?> {
         return appDatabase.albumDao.getFromId(
             albumId = albumId
         ).map { it?.toAlbum() }
     }
 
-    override fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>> =
+    override suspend fun getFromRemoteId(remoteId: Uuid): Album? =
+        appDatabase.albumDao.getFromRemoteId(remoteId)?.toAlbum()
+
+    override fun getFromIds(albumIds: List<Uuid>): Flow<List<AlbumWithMusics>> =
         appDatabase.albumDao.getFromIds(albumIds).map { list ->
             list
                 .sortedBy { albumIds.indexOf(it.roomAlbum.albumId) }
                 .map { it.toAlbumWithMusics() }
         }
 
-    override fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?> {
+    override fun getAlbumWithMusics(albumId: Uuid): Flow<AlbumWithMusics?> {
         return appDatabase.albumDao.getAlbumWithMusics(
             albumId = albumId
         ).map { it?.toAlbumWithMusics() }
@@ -105,7 +135,7 @@ internal class RoomAlbumDataSourceImpl(
                         enablePlaceholders = false,
                     ),
                     pagingSourceFactory = {
-                        when(sortDirection) {
+                        when (sortDirection) {
                             SortDirection.ASC -> {
                                 when (sortType) {
                                     SortType.NAME -> appDatabase.albumDao.getAllPagedByNameAsc()
@@ -128,6 +158,39 @@ internal class RoomAlbumDataSourceImpl(
             }
         }
 
+    override suspend fun getAll(page: Int, pageSize: Int): List<AlbumPreview> {
+        val direction: SortDirection = SortDirection
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_ALBUMS_DIRECTION_KEY))
+            ?: SortDirection.DEFAULT
+
+        val type: SortType = SortType
+            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_ALBUMS_TYPE_KEY))
+            ?: SortType.DEFAULT
+
+        val limit = pageSize.takeIf { it > 0 } ?: DEFAULT_ANDROID_AUTO_PAGE_SIZE
+        val offset = page.coerceAtLeast(0) * limit
+
+        return with(appDatabase.albumDao) {
+            when (direction) {
+                SortDirection.ASC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameAsc(limit = limit, offset = offset)
+                        SortType.ADDED_DATE -> getAllByDateAsc(limit = limit, offset = offset)
+                        SortType.NB_PLAYED -> getAllByNbPlayedAsc(limit = limit, offset = offset)
+                    }
+                }
+
+                SortDirection.DESC -> {
+                    when (type) {
+                        SortType.NAME -> getAllByNameDesc(limit = limit, offset = offset)
+                        SortType.ADDED_DATE -> getAllByDateDesc(limit = limit, offset = offset)
+                        SortType.NB_PLAYED -> getAllByNbPlayedDesc(limit = limit, offset = offset)
+                    }
+                }
+            }
+        }.map { it.toAlbumPreview() }
+    }
+
     override fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
         appDatabase.albumDao.getAllFromQuickAccess().map { list ->
             list.map { it.toAlbumPreview() }
@@ -138,9 +201,9 @@ internal class RoomAlbumDataSourceImpl(
     }
 
     override suspend fun getDuplicatedAlbum(
-        albumId: UUID,
+        albumId: Uuid,
         albumName: String,
-        artistId: UUID
+        artistId: Uuid
     ): Album? =
         appDatabase.albumDao.getDuplicatedAlbum(
             albumId = albumId,
@@ -159,19 +222,14 @@ internal class RoomAlbumDataSourceImpl(
 
     override suspend fun getFromArtistId(
         albumName: String,
-        artistId: UUID
+        artistId: Uuid
     ): Album? =
         appDatabase.albumDao.getFromArtistId(
             albumName = albumName,
             artistId = artistId,
         )?.toAlbum()
 
-    override fun getMostListened(): Flow<List<AlbumPreview>> =
-        appDatabase.albumDao.getMostListened().map { list ->
-            list.map { it.toAlbumPreview() }
-        }
-
-    override fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?> =
+    override fun getAlbumPreview(albumId: Uuid): Flow<AlbumPreview?> =
         appDatabase.albumDao.getAlbumPreview(albumId).map { it?.toAlbumPreview() }
 
     override fun searchAll(search: String): Flow<List<AlbumPreview>> =
@@ -181,4 +239,9 @@ internal class RoomAlbumDataSourceImpl(
 
     override suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics> =
         appDatabase.albumDao.getAlbumsOfArtistName(artistName).map { it.toAlbumWithMusics() }
+
+    override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =
+        appDatabase.playlistDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
 }
+
+private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

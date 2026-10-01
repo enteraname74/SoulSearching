@@ -18,12 +18,13 @@ fun SoulMenuAction(
     clickAction: () -> Unit,
     clickEnabled: Boolean = true,
     isSelected: Boolean,
+    modifier: Modifier = Modifier,
     padding: PaddingValues = PaddingValues(UiConstants.Spacing.veryLarge),
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     subTextColor: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickableIf(enabled = clickEnabled) {
                 clickAction()

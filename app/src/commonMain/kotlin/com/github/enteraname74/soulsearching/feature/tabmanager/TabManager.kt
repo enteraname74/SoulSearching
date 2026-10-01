@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.tabmanager
 
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import kotlinx.coroutines.ExperimentalCoroutinesApi

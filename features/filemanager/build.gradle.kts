@@ -1,69 +1,34 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-
 plugins {
-    id("com.android.library")
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
+    id("soulsearching.kmp.compose")
 }
 
-group = "com.github.enteraname74.soulsearching.features.playback"
+group = "com.github.enteraname74.soulsearching.features.filemanager"
 description = "File manager elements of the application"
 
 kotlin {
-    jvmToolchain(17)
-    androidTarget()
-    jvm("desktop")
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    compilerOptions {
-        // Common compiler options applied to all Kotlin source sets for expect / actual implementations
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
-
+    android.namespace = "com.github.enteraname74.soulsearching.features.filemanager"
     sourceSets {
-        val desktopMain by getting {
+        desktopMain.dependencies {
+            implementation(libs.coroutines.core.swing)
+        }
+        val jvmMain by getting {
             dependencies {
-                implementation(libs.coroutines.core.swing)
+                implementation(libs.jaudiotagger)
             }
         }
+
         commonMain.dependencies {
             implementation(libs.compose.ui)
             implementation(libs.compose.resources)
             implementation(libs.koin.core)
-            implementation(libs.jaudiotagger)
 
             implementation(libs.coroutines.core)
-            implementation(libs.coroutines.core.jvm)
 
-            implementation(project(":core-ui"))
             implementation(project(":domain"))
         }
 
         androidMain.dependencies {
             implementation(libs.bundles.androidx)
         }
-    }
-}
-
-android {
-    namespace = "com.github.enteraname74.soulsearching.features.playback"
-    compileSdk = libs.versions.android.compile.sdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.min.sdk.get().toInt()
-    }
-
-    buildTypes {
-        create("dev-release")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        jvmToolchain(17)
     }
 }

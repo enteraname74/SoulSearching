@@ -4,18 +4,36 @@
     <img title="" src="screenshots/app_logo_uni.svg" alt="" data-align="center" width="250">
 </div>
 
-Soul Searching is a comprehensive, powerful, and customizable music app for listening to your local music on the following platforms:
+Soul Searching is a comprehensive, powerful, and customizable music app for listening to your local or remote (on a self-hosted cloud) music on the following platforms:
 - Android 8 and above
 - Desktop (Linux)
+- Web (see the official [_Soul Searching_](https://soulsearching.enteraname.fr) site! More information on the cloud section)
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-alt="Get it on F-Droid"
-height="80">](https://f-droid.org/packages/com.github.enteraname74.soulsearching/)
+> :warning: Web support is quite experimental, and may be quite laggy depending on the device.
+
+<table>
+  <tr>
+    <td valign="middle">
+      <a href="https://f-droid.org/packages/com.github.enteraname74.soulsearching/">
+        <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+             alt="Get it on F-Droid"
+             height="80">
+      </a>
+    </td>
+    <td valign="middle">
+      <a href="https://apt.izzysoft.de/packages/com.github.enteraname74.soulsearching">
+        <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroidButtonGreyBorder_nofont.png"
+             alt="Get it on IzzyOnDroid"
+             height="54">
+      </a>
+    </td>
+  </tr>
+</table>
 
 Or download the latest APK from the [Releases Section](https://github.com/enteraname74/SoulSearching/releases/latest).
 
 <div align="center">
-    <img title="" src="screenshots/soul_searching_platforms.png">
+    <img title="" src="screenshots/soulsearching_platforms.png">
 </div>
 
 ## General look
@@ -40,13 +58,14 @@ You can have a theme that depends on your system settings or the current music c
 - Played list management (play mode, adding, deleting, etc.)
 - Playlist creation
 - **Quick access** system
-- Listening **statistics** (always stored locally only)
+- Listening **statistics** (by months, year, globally)
 - **Synchronized lyrics** (from the audio file or an external source)
 - Editing albums, artists, and songs (writing to audio file metadata)
 - Support for **multiple artists** for the same song
 - Search and sorting
 - Folder management
 - Adjusting the player volume
+- Android Auto support (you may need to register the app on the Android Auto settings on your phone)
 
 ### A high-performance application:
 - Supports a **large number** of music while remaining fluid
@@ -60,6 +79,15 @@ You can have a theme that depends on your system settings or the current music c
 - Choice of the seed used to generate the dynamic theme
 - Customization of the player (swipe to change tracks, progress displayed in minimized mode, etc.)
 - Home page customization (tab to open at startup, visible tabs, display style, etc.)
+
+### Cloud Support
+> :warning: Cloudy was recently introduced and is still in an alpha mode. 
+
+With [Cloudy](https://github.com/enteraname74/Cloudy), store your songs on a self-hosted cloud system, specially made for *Soul Searching*!\
+Access your songs across multiple platforms like Desktop, Web and Android.
+Cloudy also offers others features like:
+- Managing multiple users
+- Launching shared played list with multiple users, like Spotify
 
 <div align="center">
     <img title="" src="metadata/en-US/images/phoneScreenshots/7.png" alt="" data-align="center" width="270">

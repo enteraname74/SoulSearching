@@ -1,11 +1,11 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumPreview
-import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
+import com.github.enteraname74.soulsearching.domain.model.AlbumWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Data source of an Album.
@@ -24,39 +24,45 @@ interface AlbumDataSource {
      */
     suspend fun delete(album: Album)
 
-    suspend fun deleteAll(ids: List<UUID>)
+    suspend fun deleteAll(ids: List<Uuid>)
+
+    suspend fun deleteAllEmpty()
 
     suspend fun getAlbumNamesContainingSearch(search: String): List<String>
 
     /**
      * Retrieves all Albums from an Artist as a flow.
      */
-    fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>>
+    fun getAlbumsOfArtist(artistId: Uuid): Flow<List<Album>>
 
-    fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>>
+    fun getAlbumsWithMusicsOfArtist(artistId: Uuid): Flow<List<AlbumWithMusics>>
 
     /**
      * Retrieves an Album from its id.
      */
-    fun getFromId(albumId: UUID): Flow<Album?>
+    fun getFromId(albumId: Uuid): Flow<Album?>
 
-    fun getFromIds(albumIds: List<UUID>): Flow<List<AlbumWithMusics>>
+    suspend fun getFromRemoteId(remoteId: Uuid): Album?
+
+    fun getFromIds(albumIds: List<Uuid>): Flow<List<AlbumWithMusics>>
     
     /**
      * Retrieves a flow of an AlbumWithMusics from an album's id.
      */
-    fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?>
+    fun getAlbumWithMusics(albumId: Uuid): Flow<AlbumWithMusics?>
 
     fun getAllPaged(): Flow<PagingData<AlbumPreview>>
+
+    suspend fun getAll(page: Int, pageSize: Int): List<AlbumPreview>
 
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>>
 
     suspend fun cleanAllCovers()
 
     suspend fun getDuplicatedAlbum(
-        albumId: UUID,
+        albumId: Uuid,
         albumName: String,
-        artistId: UUID
+        artistId: Uuid
     ): Album?
 
     suspend fun getFromInformation(
@@ -66,14 +72,14 @@ interface AlbumDataSource {
 
     suspend fun getFromArtistId(
         albumName: String,
-        artistId: UUID,
+        artistId: Uuid,
     ): Album?
 
-    fun getMostListened(): Flow<List<AlbumPreview>>
-
-    fun getAlbumPreview(albumId: UUID): Flow<AlbumPreview?>
+    fun getAlbumPreview(albumId: Uuid): Flow<AlbumPreview?>
 
     fun searchAll(search: String): Flow<List<AlbumPreview>>
 
     suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics>
+
+    suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid>
 }

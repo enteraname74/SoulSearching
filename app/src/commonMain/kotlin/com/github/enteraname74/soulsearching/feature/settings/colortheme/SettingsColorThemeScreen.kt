@@ -1,20 +1,17 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.unit.dp
-import com.github.enteraname74.soulsearching.app.generated.resources.Res
-import com.github.enteraname74.soulsearching.app.generated.resources.dynamic_main
-import com.github.enteraname74.soulsearching.app.generated.resources.dynamic_player
+import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_format_paint_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeType
-import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.ColorThemeCard
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.ColorCard
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.PersonalizedColorThemeCard
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import com.github.enteraname74.soulsearching.theme.ColorThemeSettings
@@ -53,10 +50,7 @@ fun SettingsColorThemeScreenView(
     SettingPage(
         navigateBack = navigateBack,
         title = strings.colorThemeTitle,
-        verticalPadding = UiConstants.Spacing.veryLarge,
-        contentPadding = PaddingValues(
-            all = UiConstants.Spacing.veryLarge,
-        )
+        verticalPadding = UiConstants.Spacing.medium,
     ) {
         item {
             SoulMenuElement(
@@ -64,32 +58,42 @@ fun SettingsColorThemeScreenView(
                 subTitle = strings.themeSelectionText,
                 leadIcon = CoreRes.drawable.ic_format_paint_filled,
                 onClick = navigateToThemeSelection,
-                padding = PaddingValues(0.dp)
             )
         }
         item {
-            ColorThemeCard(
-                title = strings.dynamicThemeTitle,
-                text = strings.dynamicThemeText,
-                onClick = { updateColorTheme(ColorThemeType.DYNAMIC) },
-                isSelected = state.colorThemeSettings is ColorThemeSettings.DynamicTheme,
-                images = listOf(
-                    Res.drawable.dynamic_main,
-                    Res.drawable.dynamic_player
-                ),
-            )
-        }
-        item {
-            ColorThemeCard(
+            ColorCard(
+                modifier = Modifier
+                    .padding(
+                        start = UiConstants.Spacing.large,
+                        end = UiConstants.Spacing.large,
+                        bottom = UiConstants.Spacing.mediumPlus,
+                    ),
                 title = strings.systemThemeTitle,
                 text = strings.systemThemeText,
                 onClick = { updateColorTheme(ColorThemeType.SYSTEM) },
                 isSelected = state.colorThemeSettings is ColorThemeSettings.FromSystem,
-                images = emptyList(),
+            )
+        }
+        item {
+            ColorCard(
+                modifier = Modifier
+                    .padding(
+                        start = UiConstants.Spacing.large,
+                        end = UiConstants.Spacing.large,
+                        bottom = UiConstants.Spacing.mediumPlus,
+                    ),
+                title = strings.dynamicThemeTitle,
+                text = strings.dynamicThemeText,
+                onClick = { updateColorTheme(ColorThemeType.DYNAMIC) },
+                isSelected = state.colorThemeSettings is ColorThemeSettings.DynamicTheme,
             )
         }
         item {
             PersonalizedColorThemeCard(
+                modifier = Modifier
+                    .padding(
+                        horizontal = UiConstants.Spacing.large,
+                    ),
                 onClick = { updateColorTheme(ColorThemeType.PERSONALIZED) },
                 isSelected = state.colorThemeSettings is ColorThemeSettings.Personalized,
                 hasPlayerTheme = state.hasPersonalizedDynamicPlayerTheme,

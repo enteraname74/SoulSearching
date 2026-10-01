@@ -1,12 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation
 
-
 //noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -15,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
+import com.github.enteraname74.soulsearching.domain.model.Scope
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.ext.isDark
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
@@ -24,6 +22,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.ext.swipeableView
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
@@ -35,20 +34,20 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.screen.
 import com.github.enteraname74.soulsearching.feature.player.presentation.screen.PlayerSwipeableLoadingScreen
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.orDefault
-import java.util.UUID
 import kotlin.math.max
 import kotlin.math.roundToInt
+import kotlin.uuid.Uuid
 
 @Suppress("Deprecation")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PlayerDraggableView(
     maxHeight: Float,
-    navigateToAlbum: (UUID) -> Unit,
-    navigateToArtist: (UUID) -> Unit,
-    navigateToModifyMusic: (UUID) -> Unit,
+    navigateToAlbum: (Uuid) -> Unit,
+    navigateToArtist: (Uuid) -> Unit,
+    navigateToModifyMusic: (Uuid) -> Unit,
     navigateToRemoteLyricsSettings: () -> Unit,
-    showMusicBottomSheet: (musicIds: List<UUID>) -> Unit,
+    showMusicBottomSheet: (musicIds: List<Uuid>) -> Unit,
     playerViewModel: PlayerViewModel,
     colorThemeManager: ColorThemeManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
@@ -61,12 +60,10 @@ fun PlayerDraggableView(
 
     val currentMusicProgressionState by playerViewModel.currentSongProgressionState.collectAsState()
     val bottomSheetState by playerViewModel.bottomSheetState.collectAsState()
-    val dialogState by playerViewModel.dialogState.collectAsState()
     val navigationState by playerViewModel.navigationState.collectAsState()
     val playerColorTheme by colorThemeManager.playerColorTheme.collectAsState()
 
     bottomSheetState?.BottomSheet()
-    dialogState?.Dialog()
 
     val previousDraggableState by playerViewManager.previousState.collectAsState()
 
@@ -151,9 +148,8 @@ fun PlayerDraggableView(
                         y = max(playerViewManager.offset.roundToInt(), 0)
                     )
                 }
-                .swipeable(
-                    state = playerViewManager.draggableState,
-                    orientation = Orientation.Vertical,
+                .swipeableView(
+                    swipeableViewManager = playerViewManager,
                     anchors = mapOf(
                         (maxHeight - PlayerMinimisedHeight) to BottomSheetStates.MINIMISED,
                         maxHeight to BottomSheetStates.COLLAPSED,
@@ -181,32 +177,33 @@ fun PlayerDraggableView(
                 }
 
                 is PlayerViewState.Data -> {
+                    val dataState = state as PlayerViewState.Data
+
+                    dataState.dialog?.Dialog()
+
                     PlayerSwipeableDataScreen(
                         maxHeight = maxHeight,
-                        state = state as PlayerViewState.Data,
+                        state = dataState,
                         lyricsState = lyricsState,
-                        onArtistClicked = {
-                            playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
-                            playerViewModel.navigateToArtist(it)
+                        playbackCommandsState = dataState.playbackCommandsState,
+                        onArtistClicked = ifOwnedByUser(dataState) {
+                            {
+                                playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+                                playerViewModel.navigateToArtist(it)
+                            }
                         },
-                        onAlbumClicked = {
-                            playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
-                            playerViewModel.navigateToAlbum()
+                        onAlbumClicked = ifOwnedByUser(dataState) {
+                            {
+                                playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+                                playerViewModel.navigateToAlbum()
+                            }
                         },
-                        showMusicBottomSheet = {
-                            playerViewModel.showMusicBottomSheet(listOf(it))
-                        },
-                        toggleFavoriteState = playerViewModel::toggleFavoriteState,
-                        seekTo = playerViewModel::seekTo,
-                        changePlayerMode = playerViewModel::changePlayerMode,
-                        previous = playerViewModel::previous,
-                        next = playerViewModel::next,
-                        togglePlayPause = playerViewModel::togglePlayPause,
+                        showMusicBottomSheet = { playerViewModel.showMusicBottomSheet(listOf(it)) },
                         currentMusicProgression = currentMusicProgressionState,
                         settingsState = settingsState,
                         onLongSelectOnMusic = {
                             playerViewModel.multiSelectionManager.toggleElementInSelection(
-                                id = it.musicId,
+                                id = it.musicId.toString(),
                                 mode = SelectionMode.Music,
                             )
                         },
@@ -215,10 +212,16 @@ fun PlayerDraggableView(
                         },
                         multiSelectionState = multiSelectionState,
                         onActivateRemoteLyrics = playerViewModel::navigateToRemoteLyricsSettings,
+                        onSwiped = ifAdmin(dataState) {
+                            { playerViewModel.onSwipeMusic(it) }
+                        },
+                        onClickOnMusic = ifAdmin(dataState) {
+                            { playerViewModel.onClickOnMusic(it) }
+                        },
                     )
 
                     /*
-                    If the previous state was expanded/minimised and the current one is collapsed,
+                    If the previous state was expanded/minimized and the current one is collapsed,
                     then it indicates that the playback should stop (user action for example).
                      */
                     if ((previousDraggableState != BottomSheetStates.COLLAPSED && previousDraggableState != null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
@@ -232,3 +235,16 @@ fun PlayerDraggableView(
     }
 }
 
+private fun <T> ifAdmin(state: PlayerViewState.Data, scope: () -> T): T? =
+    if (state.playedListScope.isAdmin) {
+        scope()
+    } else {
+        null
+    }
+
+private fun <T> ifOwnedByUser(state: PlayerViewState.Data, scope: () -> T): T? =
+    if (state.currentMusic.scope != Scope.SharedPlayedList) {
+        scope()
+    } else {
+        null
+    }

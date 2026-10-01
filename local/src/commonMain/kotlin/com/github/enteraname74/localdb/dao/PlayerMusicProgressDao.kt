@@ -1,16 +1,32 @@
 package com.github.enteraname74.localdb.dao
 
-import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.Upsert
+import androidx.room3.Dao
+import androidx.room3.Query
+import androidx.room3.Upsert
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Dao
 interface PlayerMusicProgressDao {
-    @Upsert
-    suspend fun upsert(progress: RoomPlayerMusicProgress)
+    @Query(
+        """
+            INSERT INTO RoomPlayerMusicProgress (
+                id, playedListId, playerMusicId, progress
+            )
+            VALUES (:id, :playedListId, :playerMusicId, :progress)
+            ON CONFLICT(id) DO UPDATE SET
+                playedListId = excluded.playedListId,
+                playerMusicId = excluded.playerMusicId,
+                progress = excluded.progress
+        """
+    )
+    suspend fun upsert(
+        id: String,
+        playedListId: Uuid,
+        playerMusicId: String,
+        progress: Int,
+    )
 
     @Query(
         """
@@ -20,7 +36,7 @@ interface PlayerMusicProgressDao {
         """
     )
     fun getCurrent(
-        listId: UUID,
+        listId: Uuid,
         playerMusicId: String,
     ): Flow<RoomPlayerMusicProgress?>
 }

@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
-import com.github.enteraname74.domain.model.Folder
+import com.github.enteraname74.soulsearching.domain.model.Folder
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -10,7 +10,7 @@ interface FolderDataSource {
     /**
      * Inserts or updates a Folder.
      */
-    suspend fun upsert(folder : Folder)
+    suspend fun upsert(folder: Folder)
 
     suspend fun upsertAll(folders: List<Folder>)
 
@@ -25,4 +25,6 @@ interface FolderDataSource {
      * Retrieves a flow of all Folder.
      */
     fun getAll(): Flow<List<Folder>>
+
+    suspend fun setAll(folders: List<Folder>)
 }

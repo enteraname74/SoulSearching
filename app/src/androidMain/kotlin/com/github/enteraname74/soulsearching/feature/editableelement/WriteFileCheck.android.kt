@@ -9,9 +9,9 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.model.utils.AndroidUtils
 
 @Composable
@@ -37,10 +37,10 @@ actual fun WriteFilesCheck(
 
             val uris = mutableListOf<Uri>()
 
-            musicsToSave.forEach { music ->
+            musicsToSave.filter { it.localPath != null }.forEach { music ->
                 val mediaId = AndroidUtils.musicPathToMediaId(
                     context = context,
-                    musicPath = music.path
+                    musicPath = music.localPath!!
                 )
                 uris.add(
                     ContentUris.withAppendedId(
@@ -48,6 +48,11 @@ actual fun WriteFilesCheck(
                         mediaId
                     )
                 )
+            }
+
+            if (uris.isEmpty()) {
+                onSave()
+                return
             }
 
             val intent = MediaStore.createWriteRequest(

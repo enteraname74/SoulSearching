@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Music
 import org.koin.core.component.KoinComponent
 import kotlin.math.pow
 

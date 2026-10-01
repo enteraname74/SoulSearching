@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.music.main
 
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 interface MusicBottomSheetNavScope {
     val navigateBack: () -> Unit
-    val toModifyMusic: (musicId: UUID) -> Unit
-    val toAddToPlaylists: (musicIds: List<UUID>) -> Unit
+    val toModifyMusic: (musicId: Uuid) -> Unit
+    val toAddToPlaylists: (musicIds: List<Uuid>) -> Unit
 }

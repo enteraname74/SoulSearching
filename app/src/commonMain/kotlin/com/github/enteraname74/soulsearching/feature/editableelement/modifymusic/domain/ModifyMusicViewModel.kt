@@ -3,14 +3,16 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifymusi
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
-import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.album.GetCorrespondingAlbumUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.cover.CommonCoverUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.ext.toByteArray
@@ -23,12 +25,10 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.MusicCoversBottomSheet
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
-import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateMusicUseCase
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +43,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class ModifyMusicViewModel(
     commonMusicUseCase: CommonMusicUseCase,
@@ -55,11 +55,12 @@ class ModifyMusicViewModel(
     private val loadingManager: LoadingManager,
     private val cachedCoverManager: CachedCoverManager,
     private val coverFileManager: CoverFileManager,
-    private val coverRetriever: CoverRetriever,
+    private val workDispatcher: WorkDispatcher,
+    hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
     destination: ModifyMusicDestination,
 ) : ViewModel() {
-    private val musicId: UUID = destination.selectedMusicId
-    private val deletedArtistIds: MutableStateFlow<List<UUID>> = MutableStateFlow(emptyList())
+    private val musicId: Uuid = destination.selectedMusicId
+    private val deletedArtistIds: MutableStateFlow<List<Uuid>> = MutableStateFlow(emptyList())
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
     private val _navigationState: MutableStateFlow<ModifyMusicNavigationState> = MutableStateFlow(
         ModifyMusicNavigationState.Idle
@@ -74,8 +75,9 @@ class ModifyMusicViewModel(
 
     val state: StateFlow<ModifyMusicState> = combine(
         initialMusic,
-        newCover
-    ) { initialMusic, newCover ->
+        newCover,
+        hasValidCloudInformationUseCase(),
+    ) { initialMusic, newCover, hasValidCloudInformation ->
         when {
             initialMusic == null -> ModifyMusicState.Loading
             else -> ModifyMusicState.Data(
@@ -83,11 +85,12 @@ class ModifyMusicViewModel(
                 editableElement = EditableElement(
                     initialCover = initialMusic.cover,
                     newCover = newCover
-                )
+                ),
+                hasValidCloudInformation = hasValidCloudInformation,
             )
         }
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = ModifyMusicState.Loading,
     )
@@ -115,13 +118,14 @@ class ModifyMusicViewModel(
                         savedData = savedData,
                         onFieldChange = { id, value ->
                             savedData[id] = value
-                        }
+                        },
+                        workDispatcher = workDispatcher,
                     )
                 }
             }
         }
     }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = ModifyMusicFormState.NoData,
     )
@@ -130,14 +134,14 @@ class ModifyMusicViewModel(
     private val coversOfAlbum: StateFlow<CoverListState> =
         getCorrespondingAlbumUseCase.withMusics(musicId = musicId).mapLatest { album ->
             CoverListState.Data(
-                covers = album?.let {
-                    coverRetriever.getAllUniqueCover(
-                        covers = it.musics.map { it.cover }
+                covers = album?.let { albumWithMusics ->
+                    commonCoverUseCase.getAllUniqueCover(
+                        covers = albumWithMusics.musics.map { it.cover }
                     )
                 } ?: emptyList()
             )
         }.stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
             started = SharingStarted.Eagerly,
             initialValue = CoverListState.Loading,
         )
@@ -153,7 +157,7 @@ class ModifyMusicViewModel(
     }
 
     private fun setNewCoverFromPath(musicPath: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             loadingManager.withLoading {
                 val coverImage: ImageBitmap? =
                     cachedCoverManager.getCachedImage(musicPath)
@@ -163,8 +167,8 @@ class ModifyMusicViewModel(
         }
     }
 
-    private fun setNewCoverFromCoverId(coverId: UUID) {
-        CoroutineScope(Dispatchers.IO).launch {
+    private fun setNewCoverFromCoverId(coverId: Uuid) {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             loadingManager.withLoading {
                 newCover.value = coverFileManager.getCoverData(coverId)
             }
@@ -198,7 +202,7 @@ class ModifyMusicViewModel(
      */
     @OptIn(ExperimentalResourceApi::class)
     fun updateMusic() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
 
             val state = (state.value as? ModifyMusicState.Data) ?: return@launch
             val form = (formState.value as? ModifyMusicFormState.Data) ?: return@launch
@@ -207,8 +211,8 @@ class ModifyMusicViewModel(
 
             loadingManager.startLoading()
 
-            val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
-                val newCoverId: UUID = UUID.randomUUID()
+            val coverFile: Uuid? = state.editableElement.newCover?.let { coverData ->
+                val newCoverId: Uuid = Uuid.random()
                 commonCoverUseCase.upsert(
                     id = newCoverId,
                     data = coverData,

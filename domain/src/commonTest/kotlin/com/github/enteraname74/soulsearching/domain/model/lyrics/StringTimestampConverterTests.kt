@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.domain.model.lyrics
 
 
-import com.github.enteraname74.domain.model.lyrics.StringTimestampConverter
+import com.github.enteraname74.soulsearching.domain.model.lyrics.StringTimestampConverter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

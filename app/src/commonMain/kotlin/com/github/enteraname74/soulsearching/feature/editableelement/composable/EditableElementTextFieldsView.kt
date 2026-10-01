@@ -1,11 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.composable
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 
@@ -19,6 +22,8 @@ fun LazyListScope.editableElementTextFieldsView(
         item {
             Box(
                 modifier = Modifier
+                    .widthIn(max = UiConstants.Size.textFieldMaxWidth)
+                    .fillMaxWidth()
                     .animateItem()
             ) {
                 it()
@@ -28,6 +33,8 @@ fun LazyListScope.editableElementTextFieldsView(
     items(textFields) {
         it.TextField(
             modifier = Modifier
+                .widthIn(max = UiConstants.Size.textFieldMaxWidth)
+                .fillMaxWidth()
                 .animateItem(),
             focusManager = focusManager,
         )

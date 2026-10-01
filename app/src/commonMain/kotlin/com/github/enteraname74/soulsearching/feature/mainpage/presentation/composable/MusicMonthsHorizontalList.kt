@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.github.enteraname74.domain.model.MonthMusicsPreview
+import com.github.enteraname74.soulsearching.domain.model.MonthMusicsPreview
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.list.LazyRowCompat
@@ -16,6 +16,8 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun MusicMonthsHorizontalList(
     months: List<MonthMusicsPreview>,
+    selectedMonths: List<String> = emptyList(),
+    isSelectionModeOn: Boolean = false,
     onMonthClicked: (month: String) -> Unit = {},
     onMonthLongClicked: (month: String) -> Unit = {},
 ) {
@@ -58,13 +60,22 @@ fun MusicMonthsHorizontalList(
                             onClick = {
                                 onMonthClicked(element.month)
                             },
-                            onLongClick = { onMonthLongClicked(element.month) }
+                            onLongClick = { onMonthLongClicked(element.month) },
+                            isSelected = selectedMonths.contains(element.month),
+                            isSelectionModeOn = isSelectionModeOn,
                         )
                     }
                 }
             }
         } else {
-            NoElementView()
+            EmptyCard(
+                modifier = Modifier
+                    .padding(
+                        end = UiConstants.Spacing.medium,
+                    ),
+                title = strings.emptyMonths,
+                description = strings.emptyMonthsExplanations,
+            )
         }
     }
 }

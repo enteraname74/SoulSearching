@@ -47,9 +47,10 @@ fun AddToPlaylistBottomSheetScreen(
             .padding(UiConstants.Spacing.medium)
     ) {
         SoulTopBar(
+            withStatusBarPadding = false,
             title = strings.addToPlaylist,
             leftAction = TopBarNavigationAction(
-                onClick = viewModel::close,
+                onClick = viewModel::navigateBack,
             ),
             rightAction = TopBarValidateAction(
                 onClick = viewModel::confirm,
