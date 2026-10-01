@@ -14,7 +14,6 @@ import io.ktor.client.plugins.resources.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import kotlin.uuid.Uuid
 
 class ListeningStatisticsRemoteDataSourceImpl(
     private val client: HttpClient,
@@ -22,13 +21,12 @@ class ListeningStatisticsRemoteDataSourceImpl(
 ) : ListeningStatisticsRemoteDataSource {
     override suspend fun upsertAll(
         statistics: List<ListeningStatistics>,
-        userId: Uuid,
     ) {
         client
             .withUrl(cloudPreferencesDataSource.getUrl())
             .post(StatisticsResource()) {
                 contentType(ContentType.Application.Json)
-                setBody(statistics.map { it.toCloud(userId) })
+                setBody(statistics.map { it.toCloud() })
             }
     }
 

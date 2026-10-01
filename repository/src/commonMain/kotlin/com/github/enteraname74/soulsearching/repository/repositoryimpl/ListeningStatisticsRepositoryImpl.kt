@@ -13,15 +13,12 @@ import com.github.enteraname74.soulsearching.repository.datasource.listeningstat
 import com.github.enteraname74.soulsearching.repository.datasource.listeningstatistics.ListeningStatisticsRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
-import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlin.uuid.Uuid
 
 class ListeningStatisticsRepositoryImpl(
     private val localDataSource: ListeningStatisticsLocalDataSource,
     private val remoteDataSource: ListeningStatisticsRemoteDataSource,
-    private val userLocalDataSource: UserLocalDataSource,
     private val playlistLocalDataSource: PlaylistLocalDataSource,
     private val musicLocalDataSource: MusicLocalDataSource,
     private val albumDataSource: AlbumDataSource,
@@ -91,13 +88,10 @@ class ListeningStatisticsRepositoryImpl(
         toSend: List<ListeningStatistics>,
         onSent: (Int) -> Unit,
     ) {
-        val userId = userLocalDataSource.observeUser().firstOrNull()?.id ?: return
-
         var sent = 0
         toSend.chunked(UPLOAD_CHUNK_SIZE).forEach { chunk ->
             remoteDataSource.upsertAll(
                 statistics = chunk,
-                userId = userId,
             )
             sent += chunk.size
             onSent(sent)

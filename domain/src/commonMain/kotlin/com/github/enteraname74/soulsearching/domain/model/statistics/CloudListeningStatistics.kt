@@ -7,7 +7,6 @@ import kotlin.uuid.Uuid
 @Serializable
 data class CloudListeningStatistics(
     val id: String,
-    val userId: Uuid,
     val lastUpdateAtMillis: Long,
     val nbPlayed: Int,
     val timeListened: Duration?,
@@ -18,10 +17,9 @@ data class CloudListeningStatistics(
     val artistId: Uuid?,
 )
 
-fun ListeningStatistics.toCloud(userId: Uuid): CloudListeningStatistics =
+fun ListeningStatistics.toCloud(): CloudListeningStatistics =
     CloudListeningStatistics(
         id = buildCloudId(),
-        userId = userId,
         lastUpdateAtMillis = lastUpdatedMillis,
         nbPlayed = nbPlayed,
         timeListened = (this as? ListeningStatistics.MusicStats)?.timeListened,
