@@ -12,23 +12,21 @@ import io.ktor.http.*
 class LyricsRemoteDataSourceImpl(
     private val client: HttpClient,
 ) : LyricsRemoteDataSource {
-    override suspend fun getLyricsOfSong(music: Music, principalArtistName: String): MusicLyrics? =
+    override suspend fun getLyricsOfSong(music: Music): MusicLyrics? =
         getLyrics(
             music = music,
-            principalArtistName = principalArtistName,
             withAlbum = true,
         ) ?: getLyrics(
             music = music,
-            principalArtistName = principalArtistName,
             withAlbum = false,
         )
 
-    private suspend fun getLyrics(music: Music, principalArtistName: String, withAlbum: Boolean): MusicLyrics? =
+    private suspend fun getLyrics(music: Music, withAlbum: Boolean): MusicLyrics? =
         try {
             val response = client.get(
                 buildUrl(
                     music = music,
-                    principalArtistName = principalArtistName,
+                    principalArtistName = music.album.artist.artistName,
                     withAlbum = withAlbum,
                 )
             )
@@ -45,7 +43,7 @@ class LyricsRemoteDataSourceImpl(
         private const val INITIAL_ROUTE = "https://lrclib.net/api/get"
 
         fun buildUrl(music: Music, principalArtistName: String, withAlbum: Boolean): String {
-            val albumField = if (withAlbum) "&album_name=${music.album}" else ""
+            val albumField = if (withAlbum) "&album_name=${music.album.albumName}" else ""
 
             return "$INITIAL_ROUTE?track_name=${music.name}&artist_name=${principalArtistName}$albumField"
                 .replace(" ", "%20")

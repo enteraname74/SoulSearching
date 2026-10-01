@@ -48,6 +48,11 @@ fun provideHttpClient(): HttpClient =
         installContentNegotiation()
     }
 
+fun provideSimpleClient(): HttpClient =
+    createPlatformHttpClient {
+        installContentNegotiation()
+    }
+
 fun <T : HttpClientEngineConfig> HttpClientConfig<T>.installContentNegotiation() {
     install(ContentNegotiation) {
         json(

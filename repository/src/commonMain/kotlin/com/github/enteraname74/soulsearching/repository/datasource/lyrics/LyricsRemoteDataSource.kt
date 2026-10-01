@@ -4,5 +4,5 @@ import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.lyrics.MusicLyrics
 
 interface LyricsRemoteDataSource {
-    suspend fun getLyricsOfSong(music: Music, principalArtistName: String): MusicLyrics?
+    suspend fun getLyricsOfSong(music: Music): MusicLyrics?
 }

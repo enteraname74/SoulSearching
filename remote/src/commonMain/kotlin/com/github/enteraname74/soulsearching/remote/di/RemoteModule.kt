@@ -33,8 +33,16 @@ val remoteModule: Module = module {
             userRemoteDataSource = get(),
         )
     }
-    factoryOf(::LyricsRemoteDataSourceImpl) bind LyricsRemoteDataSource::class
-    factoryOf(::ReleaseDataSourceImpl) bind ReleaseDataSource::class
+    factory<LyricsRemoteDataSource> {
+        LyricsRemoteDataSourceImpl(
+            client = provideSimpleClient(),
+        )
+    }
+    factory<ReleaseDataSource> {
+        ReleaseDataSourceImpl(
+            client = provideSimpleClient(),
+        )
+    }
     factoryOf(::UserRemoteDataSourceImpl) bind UserRemoteDataSource::class
 
     factory<PlayerRemoteDataSource> {
