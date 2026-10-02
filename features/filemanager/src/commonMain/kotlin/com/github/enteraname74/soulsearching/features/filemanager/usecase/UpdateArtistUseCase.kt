@@ -17,6 +17,10 @@ class UpdateArtistUseCase(
     private val musicArtistRepository: MusicArtistRepository,
     private val commonArtistUseCase: CommonArtistUseCase,
 ) {
+    suspend fun simpleUpsert(artist: Artist) {
+        artistRepository.upsert(artist)
+    }
+
     suspend operator fun invoke(newArtistWithMusicsInformation: ArtistWithMusics) {
         artistRepository.upsert(
             newArtistWithMusicsInformation.artist
@@ -44,7 +48,7 @@ class UpdateArtistUseCase(
         artistRepository.upsert(
             newArtistWithMusicsInformation.artist.copy(
                 isInQuickAccess = newArtistWithMusicsInformation.artist.isInQuickAccess ||
-                possibleDuplicatedArtist?.artist?.isInQuickAccess == true
+                    possibleDuplicatedArtist?.artist?.isInQuickAccess == true
             )
         )
     }
@@ -68,7 +72,7 @@ class UpdateArtistUseCase(
         for (entry in albumsOrderedByAppearance.entries) {
             val albumWithMusicToUpdate = legacyAlbumsOfArtist.find {
                 (it.album.albumName == entry.key)
-                        && (it.album.artist.artistId != artist.artistId)
+                    && (it.album.artist.artistId != artist.artistId)
             }
             if (entry.value == 2) {
                 // The album has a duplicate!
@@ -78,7 +82,7 @@ class UpdateArtistUseCase(
                         music = music.copy(
                             album = legacyAlbumsOfArtist.find {
                                 (it.album.albumName == entry.key)
-                                        && (it.album.artist.artistId == artist.artistId)
+                                    && (it.album.artist.artistId == artist.artistId)
                             }!!.album
                         )
                     )
