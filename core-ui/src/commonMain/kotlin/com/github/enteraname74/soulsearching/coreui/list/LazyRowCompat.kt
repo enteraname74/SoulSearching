@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
@@ -40,13 +39,15 @@ fun LazyRowCompat(
         ) {
             content()
         }
-        SoulHorizontalScrollBar(
-            modifier = Modifier
-                .padding(
-                    start = contentPadding.calculateStartPadding(LayoutDirection.Rtl),
-                    end = contentPadding.calculateEndPadding(LayoutDirection.Rtl),
-                ),
-            lazyListState = state,
-        )
+        if (state.canScrollForward || state.canScrollBackward) {
+            SoulHorizontalScrollBar(
+                modifier = Modifier
+                    .padding(
+                        start = contentPadding.calculateStartPadding(LayoutDirection.Rtl),
+                        end = contentPadding.calculateEndPadding(LayoutDirection.Rtl),
+                    ),
+                lazyListState = state,
+            )
+        }
     }
 }

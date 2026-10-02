@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain
 
 import androidx.lifecycle.ViewModel
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.USED_COLOR_THEME_ID_KEY
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager

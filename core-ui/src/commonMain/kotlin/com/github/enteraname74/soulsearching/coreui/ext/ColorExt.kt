@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.coreui.ext
 import androidx.annotation.FloatRange
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 
 fun Color.isDark(): Boolean =
     this.luminance() < 0.5
@@ -23,3 +24,6 @@ fun Color.blend(
         alpha = a
     )
 }
+
+fun Color.disableIf(disable: Boolean): Color =
+    copy(alpha = if (disable) UiConstants.ALPHA_DISABLED else 1f)

@@ -25,6 +25,7 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.keyboard.blockGlobalKeyboardShortcutsWhileFocused
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
@@ -54,6 +55,7 @@ fun SoulSearchBar(
         TextField(
             modifier = Modifier
                 .fillMaxWidth()
+                .blockGlobalKeyboardShortcutsWhileFocused()
                 .focusRequester(focusRequester),
             value = searchText,
             onValueChange = updateTextMethod,

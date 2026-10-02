@@ -1,27 +1,26 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    id("com.android.library")
+    id("soulsearching.kmp.base")
 }
 
 group = "com.github.enteraname74.soulsearching.shareddi"
 description = "Shared DI elements of the application"
 
 kotlin {
-    androidTarget()
-    jvm("desktop")
-    jvmToolchain(17)
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    compilerOptions {
-        // Common compiler options applied to all Kotlin source sets for expect / actual implementations
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
+    android.namespace = "com.github.enteraname74.soulsearching.shareddi"
 
     sourceSets {
+        desktopMain.dependencies {
+            implementation(libs.coroutines.core.swing)
+        }
+        val jvmMain by getting {
+            dependencies {
+                implementation(libs.jaudiotagger)
+            }
+        }
         commonMain.dependencies {
             implementation(libs.koin.core)
+            implementation(libs.coroutines.core)
+
             implementation(project(":domain"))
             implementation(project(":repository"))
             implementation(project(":remote"))
@@ -31,28 +30,6 @@ kotlin {
             implementation(project(":local"))
 
         }
-    }
-}
-
-android {
-    namespace = "com.github.enteraname74.soulsearching.shareddi"
-    compileSdk = libs.versions.android.compile.sdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.min.sdk.get().toInt()
-    }
-
-    buildTypes {
-        create("dev-release")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        jvmToolchain(17)
     }
 }
 

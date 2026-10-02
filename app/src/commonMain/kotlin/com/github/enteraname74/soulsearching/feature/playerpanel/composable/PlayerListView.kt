@@ -44,7 +44,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Scope
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
@@ -60,16 +63,16 @@ import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPaddin
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.UserTag
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
-import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.uuid.Uuid
 
 @Composable
 fun PlayerListView(
@@ -77,12 +80,17 @@ fun PlayerListView(
     currentMusicIndex: Int,
     playedList: List<Music>,
     onLongSelectOnMusic: (Music) -> Unit,
-    onMoreClickedOnMusic: (musicId: UUID) -> Unit,
+    onMoreClickedOnMusic: (musicId: Uuid) -> Unit,
+    onClickOnMusic: ((Music) -> Unit)?,
+    onSwiped: ((Music) -> Unit)?,
     containerColor: Color,
     contentColor: Color,
     buttonColors: SoulButtonColors,
     multiSelectionState: MultiSelectionState,
     selectedIconColors: SoulSelectedIconColors,
+    playedListScope: PlayedListScope,
+    getUserTag: (musicId: Uuid) -> UserTag?,
+    workDispatcher: WorkDispatcher = injectElement(),
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -172,9 +180,9 @@ fun PlayerListView(
                         Swipeable(
                             modifier = Modifier
                                 .animateItem(),
-                            music = elt,
                             contentColor = contentColor,
                             containerColor = containerColor,
+                            onSwiped = onSwiped?.let { { it(elt) } },
                         ) {
                             MusicItemComposable(
                                 modifier = Modifier
@@ -183,32 +191,30 @@ fun PlayerListView(
                                 reorderableModifier = Modifier
                                     .draggableHandle(
                                         onDragStopped = {
-                                            CoroutineScope(Dispatchers.IO).launch {
-                                                if (fromMusicId == null || afterMusicId == null) return@launch
+                                            CoroutineScope(workDispatcher.dispatcher).launch {
+                                                val fromMusicIdValue = fromMusicId ?: return@launch
+                                                val afterMusicIdValue = afterMusicId ?: return@launch
 
                                                 playbackManager.moveMusic(
-                                                    fromMusicId = UUID.fromString(fromMusicId),
-                                                    afterMusicId = UUID.fromString(afterMusicId),
+                                                    fromMusicId = Uuid.parse(fromMusicIdValue),
+                                                    afterMusicId = Uuid.parse(afterMusicIdValue),
                                                 )
                                             }
                                         }
-                                    ),
-                                onClick = { music ->
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        playbackManager.setAndPlayMusic(music)
-                                    }
-                                },
-                                onMoreClicked = {
-                                    coroutineScope.launch {
-                                        onMoreClickedOnMusic(elt.musicId)
-                                    }
+                                    ).takeIf { !playedListScope.isRemote },
+                                onClick = onClickOnMusic,
+                                onMoreClicked = onMoreClickedOnMusic.takeIf {
+                                    elt.scope != Scope.SharedPlayedList || playedListScope == PlayedListScope.SharedHost
+                                }?.let {
+                                    { it(elt.musicId) }
                                 },
                                 onLongClick = { onLongSelectOnMusic(elt) },
                                 textColor = contentColor,
                                 isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
-                                isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
-                                isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                                isSelected = multiSelectionState.selectedIds.contains(elt.musicId.toString()),
+                                isSelectionModeOn = multiSelectionState.totalSelected > 0,
                                 selectedIconColors = selectedIconColors,
+                                userTag = getUserTag(elt.musicId)
                             )
                         }
                     }
@@ -223,11 +229,10 @@ fun PlayerListView(
 @Composable
 @Suppress("Deprecation")
 private fun Swipeable(
-    music: Music,
     containerColor: Color,
     contentColor: Color,
     modifier: Modifier = Modifier,
-    playbackManager: PlaybackManager = injectElement(),
+    onSwiped: (() -> Unit)?,
     content: @Composable () -> Unit,
 ) {
     BoxWithConstraints(
@@ -239,11 +244,7 @@ private fun Swipeable(
 
         LaunchedEffect(swipeableState.currentValue) {
             if (swipeableState.currentValue == MusicItemSwipeableState.SWIPED) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    playbackManager.removeSongsFromPlayedPlaylist(
-                        musicIds = listOf(music.musicId)
-                    )
-                }
+                onSwiped?.invoke()
             }
         }
 
@@ -270,6 +271,7 @@ private fun Swipeable(
                     )
                 }.swipeable(
                     state = swipeableState,
+                    enabled = onSwiped != null,
                     orientation = Orientation.Horizontal,
                     anchors = mapOf(
                         0f to MusicItemSwipeableState.NORMAL,

@@ -1,18 +1,18 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room.Embedded
-import androidx.room.Junction
-import androidx.room.Relation
-import com.github.enteraname74.domain.model.PlaylistWithMusics
+import androidx.room3.Embedded
+import androidx.room3.Junction
+import androidx.room3.Relation
+import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
 
 /**
  * Room representation of a PlaylistWithMusics.
  */
 data class RoomPlaylistWithMusics(
-    @Embedded val roomPlaylist: RoomPlaylist = RoomPlaylist(),
+    @Embedded val roomPlaylist: RoomPlaylist,
     @Relation(
-        parentColumn = "playlistId",
-        entityColumn = "musicId",
+        parentColumns = ["playlistId"],
+        entityColumns = ["musicId"],
         associateBy = Junction(RoomMusicPlaylist::class),
         entity = RoomMusic::class,
     )
@@ -22,7 +22,7 @@ data class RoomPlaylistWithMusics(
 /**
  * Converts a RoomPlaylistWithMusics to a PlaylistWithMusics.
  */
-internal fun RoomPlaylistWithMusics.toPlaylistWIthMusics(): PlaylistWithMusics = PlaylistWithMusics(
+internal fun RoomPlaylistWithMusics.toPlaylistWithMusics(): PlaylistWithMusics = PlaylistWithMusics(
     playlist = roomPlaylist.toPlaylist(),
-    musics = roomMusics.map { it.toMusic() }
+    musics = roomMusics.map { it.toMusic() }.sortedBy { it.name }
 )

@@ -11,7 +11,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 class DeleteArtistDialog(
     private val onDelete: () -> Unit,
     private val onClose: () -> Unit,
-): SoulDialog {
+) : SoulDialog {
 
     @Composable
     override fun Dialog() {

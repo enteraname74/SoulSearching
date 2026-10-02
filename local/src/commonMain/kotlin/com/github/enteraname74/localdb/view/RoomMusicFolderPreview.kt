@@ -1,9 +1,9 @@
 package com.github.enteraname74.localdb.view
 
-import androidx.room.DatabaseView
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.MusicFolderPreview
-import java.util.UUID
+import androidx.room3.DatabaseView
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.MusicFolderPreview
+import kotlin.uuid.Uuid
 
 @DatabaseView(
     """
@@ -13,6 +13,7 @@ import java.util.UUID
                 (
                     SELECT music.coverId FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
+                    AND scope != 'SharedPlayedList' 
                     AND music.coverId IS NOT NULL 
                     AND music.folder = folderMusic.folder 
                     ORDER BY
@@ -21,30 +22,52 @@ import java.util.UUID
                     LIMIT 1
                 ) AS coverId,
                 (
-                    SELECT music.path FROM RoomMusic AS music 
+                    SELECT music.localPath FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
+                    AND scope != 'SharedPlayedList' 
                     AND music.folder = folderMusic.folder 
                     ORDER BY name 
                     LIMIT 1 
-                ) AS musicCoverPath 
+                ) AS musicCoverPath, 
+                (
+                    SELECT music.coverUrl FROM RoomMusic AS music 
+                    WHERE music.isHidden = 0 
+                    AND scope != 'SharedPlayedList' 
+                    AND music.folder = folderMusic.folder 
+                    ORDER BY name 
+                    LIMIT 1 
+                ) AS musicCoverUrl 
             FROM RoomMusic As folderMusic
             WHERE isHidden = 0 
+            AND scope != 'SharedPlayedList' 
             GROUP BY folderMusic.folder 
     """
 )
 data class RoomMusicFolderPreview(
     val folder: String,
-    val coverId: UUID?,
+    val coverId: Uuid?,
     val musicCoverPath: String?,
+    val musicCoverUrl: String?,
     val totalMusics: Int,
 ) {
-    fun toMusicFolderPreview(): MusicFolderPreview =
-        MusicFolderPreview(
+    fun toMusicFolderPreview(): MusicFolderPreview {
+        val localCover = Cover.CoverFile(
+            initialCoverPath = musicCoverPath,
+            fileCoverId = coverId,
+        )
+
+        val usedCover: Cover = when {
+            coverId != null -> localCover
+            musicCoverPath != null -> localCover
+            musicCoverUrl != null -> Cover.Url(musicCoverUrl, localCover)
+            else -> localCover
+        }
+
+        return MusicFolderPreview(
             folder = folder,
-            cover = Cover.CoverFile(
-                initialCoverPath = musicCoverPath,
-                fileCoverId = coverId,
-            ),
+            cover = usedCover,
             totalMusics = totalMusics,
         )
+    }
+
 }

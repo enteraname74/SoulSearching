@@ -1,0 +1,8 @@
+{
+  "name": "sql-js-worker",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@sqlite.org/sqlite-wasm": "^3.50.4-build1"
+  }
+}

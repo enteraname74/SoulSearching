@@ -3,9 +3,12 @@ package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfol
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
@@ -13,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalFocusManager
-import com.github.enteraname74.domain.model.CoverFolderRetriever
+import com.github.enteraname74.soulsearching.domain.model.CoverFolderRetriever
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulChoiceButton
@@ -97,7 +100,7 @@ private fun WhiteSpaceRule(
         ) {
             textField.TextField(
                 modifier = Modifier
-                    .alpha(if (whiteSpaceRule.isActivated) 1f else ContentAlpha.disabled),
+                    .alpha(if (whiteSpaceRule.isActivated) 1f else UiConstants.ALPHA_DISABLED),
                 focusManager = LocalFocusManager.current,
             )
         }

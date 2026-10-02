@@ -1,13 +1,15 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
-import java.time.LocalDateTime
-import java.util.UUID
+import androidx.room3.ColumnInfo
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
+import androidx.room3.PrimaryKey
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Scope
+import kotlin.time.Clock
+import kotlin.time.Instant
+import kotlin.uuid.Uuid
 
 /**
  * Room representation of a song.
@@ -24,19 +26,25 @@ import java.util.UUID
 )
 data class RoomMusic(
     @PrimaryKey
-    val musicId: UUID = UUID.randomUUID(),
+    val musicId: Uuid = Uuid.random(),
+    val remoteId: String?,
+    val lastUpdateMillis: Long?,
     var name: String = "",
-    var coverId: UUID? = null,
+    var coverId: Uuid? = null,
+    val coverUrl: String?,
     var duration: Long = 0L,
-    var path: String = "",
+    val path: String?,
+    var localPath: String?,
+    val remotePath: String?,
     var folder: String = "",
-    var addedDate: LocalDateTime = LocalDateTime.now(),
+    var addedDate: Instant = Clock.System.now(),
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false,
     var isHidden: Boolean = false,
     var albumPosition: Int?,
     @ColumnInfo(index = true)
-    val albumId: UUID
+    val albumId: Uuid,
+    val scope: Scope,
 )
 
 /**
@@ -47,7 +55,7 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     name = name,
     coverId = (cover as? Cover.CoverFile)?.fileCoverId,
     duration = duration,
-    path = path,
+    localPath = localPath,
     folder = folder,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
@@ -55,4 +63,10 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     isHidden = isHidden,
     albumPosition = albumPosition,
     albumId = album.albumId,
+    remoteId = remoteId,
+    lastUpdateMillis = lastUpdatedMillis,
+    remotePath = remotePath,
+    path = path,
+    coverUrl = (cover as? Cover.Url)?.url,
+    scope = scope,
 )

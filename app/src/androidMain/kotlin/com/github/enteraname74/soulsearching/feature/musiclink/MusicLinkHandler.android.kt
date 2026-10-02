@@ -5,59 +5,78 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.soulsearching.features.musicmanager.ext.toMusic
 import androidx.core.net.toUri
-import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Folder
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.folder.CommonFolderUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.features.musicmanager.ext.toMusic
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.flow.firstOrNull
 
 actual class MusicLinkHandler(
     private val context: Context,
     private val commonMusicUseCase: CommonMusicUseCase,
     private val commonFolderUseCase: CommonFolderUseCase,
+    private val commonAlbumUseCase: CommonAlbumUseCase,
     private val playbackManager: PlaybackManager,
     private val loadingManager: LoadingManager,
     private val playerViewManager: PlayerViewManager,
 ) {
     actual suspend fun handleLink(link: String) {
-        loadingManager.withLoading {
-            val builtMusic: Music = getCursor(link.toUri())?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    cursor.toMusic()
-                } else {
-                    null
-                }
-            } ?: return@withLoading
+        runCatching {
+            loadingManager.withLoading {
+                val builtMusic: Music = getCursor(link.toUri())?.use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        cursor.toMusic()
+                    } else {
+                        null
+                    }
+                } ?: return@withLoading
 
-            var fromPath: Music? = commonMusicUseCase.getFromPath(path = builtMusic.path)
+                var existingMusic: Music? = getExistingMusic(builtMusic)
 
-            if (fromPath == null) {
-                commonMusicUseCase.upsert(builtMusic)
-                commonFolderUseCase.upsertAll(
-                    allFolders = listOf(
-                        Folder(
-                            folderPath = builtMusic.folder,
-                            isSelected = true,
+                if (existingMusic == null) {
+                    commonMusicUseCase.upsert(builtMusic)
+                    commonFolderUseCase.upsertAll(
+                        allFolders = listOf(
+                            Folder(
+                                folderPath = builtMusic.folder,
+                                isSelected = true,
+                            )
                         )
                     )
-                )
-                fromPath = commonMusicUseCase.getFromPath(path = builtMusic.path) ?: return@withLoading
-            }
+                    existingMusic = getExistingMusic(builtMusic) ?: return@withLoading
+                }
 
-            playbackManager.setCurrentPlaylistAndMusic(
-                music = fromPath,
-                musicList = listOf(fromPath),
-                playlistId = null,
-                isMainPlaylist = false,
-            )
-            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+                playbackManager.setCurrentPlaylistAndMusic(
+                    music = existingMusic,
+                    musicList = listOf(existingMusic),
+                    playlistId = null,
+                    isMainPlaylist = false,
+                )
+                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            }
         }
+    }
+
+    private suspend fun getExistingMusic(builtMusic: Music): Music? {
+        val fromPath = builtMusic.localPath?.let { commonMusicUseCase.getFromPath(path = it) }
+        if (fromPath != null) return fromPath
+
+        val album: Album = commonAlbumUseCase.getFromInformation(
+            albumName = builtMusic.album.albumName,
+            artistName = builtMusic.album.artist.artistName,
+        ) ?: return null
+
+        return commonMusicUseCase.getFromInformation(
+            musicName = builtMusic.name,
+            albumId = album.albumId,
+        )
     }
 
     private fun getCursor(uri: Uri): Cursor? {

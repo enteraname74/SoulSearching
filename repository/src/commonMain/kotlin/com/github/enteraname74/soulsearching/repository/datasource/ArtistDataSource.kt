@@ -1,11 +1,11 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.ArtistPreview
-import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.ArtistPreview
+import com.github.enteraname74.soulsearching.domain.model.ArtistWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Data source of an Artist.
@@ -22,9 +22,11 @@ interface ArtistDataSource {
     /**
      * Deletes an Artist.
      */
-    suspend fun deleteAll(artist: Artist)
+    suspend fun delete(artist: Artist)
 
-    suspend fun deleteAll(artistsIds: List<UUID>)
+    suspend fun deleteAll(artistsIds: List<Uuid>)
+
+    suspend fun deleteAllEmpty()
 
     suspend fun getArtistNamesContainingSearch(search: String): List<String>
 
@@ -33,11 +35,15 @@ interface ArtistDataSource {
     /**
      * Retrieves an Artist from its id.
      */
-    fun getFromId(artistId: UUID) : Flow<Artist?>
+    fun getFromId(artistId: Uuid): Flow<Artist?>
 
-    fun getFromIds(artistIds: List<UUID>) : Flow<List<ArtistWithMusics>>
+    suspend fun getFromRemoteId(remoteId: Uuid): Artist?
+
+    fun getFromIds(artistIds: List<Uuid>): Flow<List<ArtistWithMusics>>
 
     fun getAllPaged(): Flow<PagingData<ArtistPreview>>
+
+    suspend fun getAll(page: Int, pageSize: Int): List<ArtistPreview>
 
     /**
      * Tries to find an artist from its name.
@@ -49,29 +55,27 @@ interface ArtistDataSource {
     /**
      * Retrieves a flow of an ArtistWithMusics.
      */
-    fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics?>
+    fun getArtistWithMusics(artistId: Uuid): Flow<ArtistWithMusics?>
 
     /**
      * Retrieves all artists linked to a music.
      */
-    fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>>
+    fun getArtistsOfMusic(musicId: Uuid): Flow<List<Artist>>
 
     fun getAllFromQuickAccess(): Flow<List<ArtistPreview>>
 
     suspend fun getDuplicatedArtist(
-        artistId: UUID,
+        artistId: Uuid,
         artistName: String
     ): ArtistWithMusics?
 
-    fun getArtistsWistMostMusics(): Flow<List<ArtistPreview>>
-
     suspend fun cleanAllCovers()
 
-    fun getMostListened(): Flow<List<ArtistPreview>>
-
-    fun getArtistPreview(artistId: UUID): Flow<ArtistPreview?>
+    fun getArtistPreview(artistId: Uuid): Flow<ArtistPreview?>
 
     fun searchAll(search: String): Flow<List<ArtistPreview>>
 
     suspend fun getPotentialMultipleArtists(): List<Artist>
+
+    suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid>
 }

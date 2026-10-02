@@ -1,10 +1,11 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.ext
 
 import android.database.Cursor
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Scope
 import java.io.File
 
 private fun Cursor.getFilteredSafeString(index: Int): String =
@@ -30,12 +31,16 @@ fun Cursor.toMusic(): Music? =
             ),
             artists = artists,
             duration = this.getLong(3),
-            path = this.getFilteredSafeString(4),
             folder = File(this.getFilteredSafeString(4)).parent ?: "",
             cover = Cover.CoverFile(initialCoverPath = this.getFilteredSafeString(4)),
             albumPosition = this.getFilteredSafeString(5).toIntOrNull(),
+            remoteId = null,
+            localPath = this.getFilteredSafeString(4),
+            remotePath = null,
+            lastUpdatedMillis = null,
+            scope = Scope.User,
         )
     } catch (e: Exception) {
-        println("Cursor to Music -- Exception while fetching song on the device: $e")
+        println("MusicFetcher -- Exception while fetching song on the device: $e")
         null
     }

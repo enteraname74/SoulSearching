@@ -3,12 +3,9 @@ package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Playlist
+import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.features.musicmanager.ext.toMusic
@@ -17,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.*
+import kotlin.uuid.Uuid
 
 /**
  * Class handling music fetching for Android devices.
@@ -25,8 +22,8 @@ import java.util.*
 internal class MusicFetcherAndroidImpl(
     private val context: Context,
     private val feedbackPopUpManager: FeedbackPopUpManager,
-    private val commonPlaylistUseCase: CommonPlaylistUseCase,
-) : MusicFetcher() {
+    commonPlaylistUseCase: CommonPlaylistUseCase,
+) : MusicFetcher(commonPlaylistUseCase) {
     /**
      * Build a cursor for fetching musics on device.
      */
@@ -77,15 +74,7 @@ internal class MusicFetcherAndroidImpl(
                     updateProgress((count * 1F) / cursor.count, null)
                 }
                 cursor.close()
-                if (commonPlaylistUseCase.getFavorite().firstOrNull() == null) {
-                    commonPlaylistUseCase.upsert(
-                        Playlist(
-                            playlistId = UUID.randomUUID(),
-                            name = strings.favorite,
-                            isFavorite = true
-                        )
-                    )
-                }
+                ensureFavoritePlaylistCreated()
             }
         }
     }

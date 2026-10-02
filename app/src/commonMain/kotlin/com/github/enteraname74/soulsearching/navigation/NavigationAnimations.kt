@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.navigation3.scene.Scene
 import androidx.navigation3.ui.NavDisplay
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import io.ktor.http.ContentType
 
 object NavigationAnimations {
     private val tweenSpec = tween<IntOffset>(
@@ -17,30 +18,39 @@ object NavigationAnimations {
             initialOffsetX = { it },
             animationSpec = tweenSpec,
         ) togetherWith
-                slideOutHorizontally(
-                    targetOffsetX = { -it },
-                    animationSpec = tweenSpec,
-                )
+            slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tweenSpec,
+            )
     }
     private val horizontalPopTransitionSpec: (AnimatedContentTransitionScope<Scene<*>>.() -> ContentTransform) = {
         slideInHorizontally(
             initialOffsetX = { -it },
             animationSpec = tweenSpec,
         ) togetherWith
-                slideOutHorizontally(
-                    targetOffsetX = { it },
-                    animationSpec = tweenSpec,
-                )
+            slideOutHorizontally(
+                targetOffsetX = { it },
+                animationSpec = tweenSpec,
+            )
     }
 
-    val horizontal =
+    val horizontalMetadata =
         NavDisplay.transitionSpec { horizontalTransitionSpec() } +
-                NavDisplay.popTransitionSpec { horizontalPopTransitionSpec() } +
-                NavDisplay.predictivePopTransitionSpec { horizontalPopTransitionSpec() }
+            NavDisplay.popTransitionSpec { horizontalPopTransitionSpec() } +
+            NavDisplay.predictivePopTransitionSpec { horizontalPopTransitionSpec() }
 
     val default: ContentTransform = fadeIn(
         tween(UiConstants.AnimationDuration.normal)
     ) togetherWith fadeOut(
         tween(UiConstants.AnimationDuration.normal)
     )
+
+    val horizontal: ContentTransform = slideInHorizontally(
+        initialOffsetX = { it },
+        animationSpec = tweenSpec,
+    ) togetherWith
+        slideOutHorizontally(
+            targetOffsetX = { -it },
+            animationSpec = tweenSpec,
+        )
 }

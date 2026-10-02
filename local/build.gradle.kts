@@ -1,79 +1,71 @@
-import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    id("com.android.library")
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.ksp)
+    id("soulsearching.kmp.base")
     alias(libs.plugins.androidx.room)
 }
 
-kotlin {
-    jvmToolchain(17)
-    androidTarget()
-    jvm("desktop")
+apply(plugin = "com.google.devtools.ksp")
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    compilerOptions {
-        // Common compiler options applied to all Kotlin source sets for expect / actual implementations
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-        freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
+kotlin {
+    android.namespace = "com.github.enteraname74.soulsearching.data"
+    js {
+        useEsModules()
+    }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        useEsModules()
     }
 
     sourceSets {
+        val jvmMain by getting {
+            dependencies {
+                implementation(libs.androidx.sqlite.bundled)
+            }
+        }
+        val webMain by getting {
+            dependencies {
+                implementation(libs.androidx.sqlite.web)
+                implementation(project(":serialization"))
+                implementation(npm("sql-js-worker", layout.projectDirectory.dir("worker").asFile))
+            }
+        }
+        wasmJsMain.dependencies {
+            implementation(libs.kotlinx.browser)
+        }
+
         androidMain {
             dependencies {
-                // Used for injecting app context in database module
-                implementation(libs.koin.androidx.compose)
                 implementation(libs.androidx.room.sqlite.wrapper)
             }
         }
-        commonMain {
-            dependencies {
-                implementation(project(":domain"))
-                implementation(project(":repository"))
-                implementation(project(":filemanager"))
-                implementation(libs.koin.core)
+        commonMain.dependencies {
+            implementation(project(":domain"))
+            implementation(project(":repository"))
+            implementation(project(":filemanager"))
+            implementation(project(":serialization"))
+            implementation(libs.koin.core)
 
-                implementation(libs.androidx.paging.common)
+            implementation(libs.androidx.paging.common)
 
-                implementation(libs.androidx.room.runtime)
-                implementation(libs.androidx.room.paging)
-                implementation(libs.androidx.sqlite.bundled)
-            }
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.room.paging)
+            implementation(libs.androidx.sqlite.async)
+
+            implementation(libs.kotlinx.datetime)
         }
     }
 }
 
-room {
+room3 {
     schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {
     add("kspAndroid", libs.androidx.room.compiler)
     add("kspDesktop", libs.androidx.room.compiler)
-}
-
-android {
-    namespace = "com.github.enteraname74.soulsearching.data"
-    compileSdk = libs.versions.android.compile.sdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.min.sdk.get().toInt()
-    }
-
-    buildTypes {
-        create("dev-release")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        jvmToolchain(17)
-    }
+    add("kspJs", libs.androidx.room.compiler)
+    add("kspWasmJs", libs.androidx.room.compiler)
 }
 
 java {

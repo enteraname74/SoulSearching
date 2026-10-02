@@ -3,34 +3,30 @@ package com.github.enteraname74.soulsearching.feature.application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationRowSpec
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_settings
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_settings_filled
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
-import com.github.enteraname74.soulsearching.ext.filledIcon
-import com.github.enteraname74.soulsearching.ext.isComingFromPlaylistDetails
-import com.github.enteraname74.soulsearching.ext.outlinedIcon
-import com.github.enteraname74.soulsearching.ext.text
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.settings.SettingPage
-import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsDestination
+import com.github.enteraname74.soulsearching.feature.search.SearchAllViewManager
 import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
-import com.github.enteraname74.soulsearching.navigation.Navigator
-import com.github.enteraname74.soulsearching.theme.ColorThemeManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class MainAppViewModel(
     shouldInformOfNewReleaseUseCase: ShouldInformOfNewReleaseUseCase,
     private val tabManager: TabManager,
     private val playerViewManager: PlayerViewManager,
-    private val colorThemeManager: ColorThemeManager,
-    private val navigator: Navigator,
+    private val navScope: MainAppNavScope,
+    private val searchAllViewManager: SearchAllViewManager,
+    private val playbackManager: PlaybackManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : ViewModel() {
     val state: StateFlow<MainAppState> = combine(
         tabManager.tabs,
@@ -50,24 +46,26 @@ class MainAppViewModel(
         started = SharingStarted.Eagerly,
     )
 
+    init {
+        viewModelScope.launch {
+            playbackManager.playbackError.filterNotNull().collectLatest {
+                feedbackPopUpManager.showFeedback(strings.playbackErrorPlayerError)
+                playbackManager.consumeError()
+            }
+        }
+    }
+
     private fun buildNavigationRows(
         shouldShowNewVersionPin: Boolean,
         currentPage: ElementEnum?,
         tabs: List<ElementEnum>,
     ): List<NavigationRowSpec> = buildList {
         add(
-            NavigationRowSpec(
-                title = strings.settings,
+            NavigationRowSpec.Settings(
                 onClick = {
                     playerViewManager.minimiseIfPossible()
-                    if (navigator.isComingFromPlaylistDetails()) {
-                        colorThemeManager.removePlaylistTheme()
-                    }
-                    navigator.push(SettingsDestination)
+                    navScope.toSettings()
                 },
-                filledIcon = CoreRes.drawable.ic_settings_filled,
-                outlinedIcon = CoreRes.drawable.ic_settings,
-                isSelected = navigator.currentRoute is SettingPage,
                 isBadged = shouldShowNewVersionPin,
             )
         )
@@ -76,21 +74,15 @@ class MainAppViewModel(
             val pageCheck: Boolean = (currentPage == null && index == 0) || (currentPage == tab)
 
             add(
-                NavigationRowSpec(
-                    title = tab.text(),
-                    filledIcon = tab.filledIcon(),
-                    outlinedIcon = tab.outlinedIcon(),
+                NavigationRowSpec.MainTabElement(
+                    element = tab,
+                    isCurrentPage = pageCheck,
                     onClick = {
+                        searchAllViewManager.closeIfPossible()
                         playerViewManager.minimiseIfPossible()
-                        if (navigator.isComingFromPlaylistDetails()) {
-                            colorThemeManager.removePlaylistTheme()
-                        }
-                        if (navigator.currentRoute != MainPageDestination) {
-                            navigator.push(MainPageDestination)
-                        }
+                        navScope.toMainPageDestinationIfNeeded()
                         tabManager.setCurrentPage(tab)
                     },
-                    isSelected = (navigator.currentRoute is MainPageDestination) && pageCheck
                 )
             )
         }

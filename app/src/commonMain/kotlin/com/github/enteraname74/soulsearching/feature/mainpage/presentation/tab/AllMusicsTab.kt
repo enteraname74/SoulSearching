@@ -2,14 +2,14 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
-import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.AllMusicsComposable
+import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 
 fun allMusicsTab(
     mainPageViewModel: MainPageViewModel,
@@ -23,6 +23,12 @@ fun allMusicsTab(
         AllMusicsComposable(
             musicState = musicState,
             navigateToMonth = navigateToMonth,
+            toggleMonthSelection = {
+                mainPageViewModel.toggleElementInSelection(
+                    id = it,
+                    mode = SelectionMode.Month,
+                )
+            },
             setSortType = mainPageViewModel::setMusicSortType,
             toggleSortDirection = {
                 val newDirection =
@@ -31,7 +37,7 @@ fun allMusicsTab(
                     } else {
                         SortDirection.ASC
                     }
-               mainPageViewModel.setMusicSortDirection(newDirection)
+                mainPageViewModel.setMusicSortDirection(newDirection)
             },
             onClick = mainPageViewModel::onMusicClicked,
             onPlayAll = mainPageViewModel::onPlayAll,
@@ -40,7 +46,7 @@ fun allMusicsTab(
             },
             onLongClick = { selectedMusic ->
                 mainPageViewModel.toggleElementInSelection(
-                    id = selectedMusic.musicId,
+                    id = selectedMusic.musicId.toString(),
                     mode = SelectionMode.Music,
                 )
             },

@@ -1,15 +1,21 @@
 package com.github.enteraname74.soulsearching.feature.player.domain
 
-import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
+import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanelUiUtils
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.ext.toPx
-import com.github.enteraname74.soulsearching.coreui.utils.*
+import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeight
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeightDp
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 
@@ -25,25 +31,18 @@ object PlayerUiUtils {
 
     @Composable
     fun canShowSidePanel(): Boolean {
-        val windowSize = rememberWindowSize()
         val maxHeightDp = rememberWindowHeightDp()
-
-        // If we are on the large window size, we show it no matter the height.
-        if (windowSize == WindowSize.Large) {
-            return true
+        val maxWidth = rememberWindowWidthDp()
+        val playerViewWidth = if (NavigationPanelUiUtils.canShowPanel()) {
+            maxWidth - NavigationPanelUiUtils.PanelWidth
+        } else {
+            maxWidth
         }
+        val freeSpaceForPanel: Dp = playerViewWidth - getImageSize()
+        val hasWidth = freeSpaceForPanel >= MinSidePanelWidth
+        val hasHeight = maxHeightDp > minHeightForRowView
 
-        /*
-        If the height of the screen is too small, we do not show the side panel.
-         */
-        if (maxHeightDp <= minHeightForRowView) {
-            return false
-        }
-
-        /*
-        Else, we only show it on large window size
-         */
-        return windowSize != WindowSize.Small
+        return hasHeight && hasWidth
     }
 
     @Composable
@@ -84,8 +83,14 @@ object PlayerUiUtils {
         val maxHeight: Dp = rememberWindowHeightDp()
         val ratio = getTransitionRatio()
 
+        val maxImageSizeRatio = if (rememberWindowSize() != WindowSize.Small) {
+            2f
+        } else {
+            2.45f
+        }
+
         val maxImageSize = max(
-            maxHeight / 2.45f,
+            maxHeight / maxImageSizeRatio,
             MinImageSize,
         )
 
@@ -102,13 +107,10 @@ object PlayerUiUtils {
     }
 
     @Composable
-    fun getImageHorizontalPadding(imageSize: Dp): Dp {
-        val windowSize = rememberWindowSize()
-        if (windowSize != WindowSize.Small) {
-            return MinImagePaddingStart
-        }
-
-        val maxWidth = rememberWindowWidthDp()
+    fun getImageHorizontalPadding(
+        imageSize: Dp,
+        maxWidth: Dp,
+    ): Dp {
         val ratio = getTransitionRatio()
         val alpha = 1f - ratio
 
@@ -136,7 +138,7 @@ object PlayerUiUtils {
         expandedMainInformationHeight: Int,
         imageSize: Dp
     ): Dp =
-        if (PlayerUiUtils.canShowRowControlPanel()) {
+        if (canShowRowControlPanel()) {
             getImageTopPaddingForRowView(imageSize)
         } else {
             getImageTopPaddingForColumnView(expandedMainInformationHeight)
@@ -193,5 +195,7 @@ object PlayerUiUtils {
     val MinPlayerSidePanelWidth: Dp = 50.dp
     val MaxPlayerSidePanelWidth: Dp = 600.dp
 
-    val PLAYER_BACKGROUND_COLOR_LABEL = "PLAYER_BACKGROUND_COLOR_LABEL"
+    val MinSidePanelWidth: Dp = 400.dp
+
+    const val PLAYER_BACKGROUND_COLOR_LABEL: String = "PLAYER_BACKGROUND_COLOR_LABEL"
 }

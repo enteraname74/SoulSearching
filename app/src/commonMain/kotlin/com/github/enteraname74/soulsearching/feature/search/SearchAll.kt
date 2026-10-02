@@ -9,10 +9,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
-import com.github.enteraname74.domain.model.AlbumPreview
-import com.github.enteraname74.domain.model.ArtistPreview
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistPreview
+import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
+import com.github.enteraname74.soulsearching.domain.model.ArtistPreview
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
@@ -25,20 +25,20 @@ import com.github.enteraname74.soulsearching.feature.search.composable.LinearPre
 import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchAll(
     lazyListState: LazyListState,
     searchAllState: SearchAllState,
-    onSelectedMusicForBottomSheet: (musicId: UUID) -> Unit,
+    onSelectedMusicForBottomSheet: (musicId: Uuid) -> Unit,
     onSelectedAlbumForBottomSheet: (AlbumPreview) -> Unit,
     onSelectedPlaylistForBottomSheet: (PlaylistPreview) -> Unit,
     onSelectedArtistForBottomSheet: (ArtistPreview) -> Unit,
-    navigateToPlaylist: (UUID) -> Unit,
-    navigateToArtist: (UUID) -> Unit,
-    navigateToAlbum: (UUID) -> Unit,
+    navigateToPlaylist: (Uuid) -> Unit,
+    navigateToArtist: (Uuid) -> Unit,
+    navigateToAlbum: (Uuid) -> Unit,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
     playbackManager: PlaybackManager = injectElement(),

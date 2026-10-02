@@ -1,29 +1,67 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        google()
-    }
-    dependencies {
-        classpath(libs.gradle)
-    }
-}
-
-
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    // Necessary plugins for compose multiplatform (android and desktop)
-    alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.jetbrainsCompose) apply false
-    alias(libs.plugins.kotlinMultiplatform) apply false
-    alias(libs.plugins.androidLibrary) apply false
-    alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
-    alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.kotlinSerialization) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.androidx.room) apply false
 }
 repositories {
+    maven { url = uri("offline-repository") }
     google()
     mavenCentral()
+}
+
+val flatpakOnlyArch = providers.gradleProperty("flatpakOnlyArch").orElse("host")
+val flatpakDependencyDirectory =
+    layout.projectDirectory.dir("flatpak/dependencies/${flatpakOnlyArch.get()}")
+val flatpakSourcesFile =
+    layout.projectDirectory.file("flatpak/flatpak-sources-${flatpakOnlyArch.get()}.json")
+
+val buildLogicFlatpakDependencies =
+    gradle.includedBuild("build-logic").task(":convention:flatpakGradleGenerator")
+
+val generateFlatpakDependencies = tasks.register("generateFlatpakDependencies") {
+    group = "flatpak"
+    description = "Generates and merges offline Gradle sources for one Linux architecture."
+
+    dependsOn(buildLogicFlatpakDependencies)
+
+    outputs.file(flatpakSourcesFile)
+
+    doFirst {
+        val arch = flatpakOnlyArch.get()
+        require(arch == "x86_64" || arch == "aarch64") {
+            "Set -PflatpakOnlyArch=x86_64 or -PflatpakOnlyArch=aarch64"
+        }
+    }
+
+    doLast {
+        val sourceEntries =
+            flatpakDependencyDirectory.asFile
+                .listFiles { file -> file.extension == "json" }
+                .orEmpty()
+                .sortedBy { it.name }
+                .flatMap { file ->
+                    file.readText()
+                        .trim()
+                        .removePrefix("[")
+                        .removeSuffix("]")
+                        .trim()
+                        .takeIf(String::isNotEmpty)
+                        ?.let(::listOf)
+                        .orEmpty()
+                }
+
+        flatpakSourcesFile.asFile.apply {
+            parentFile.mkdirs()
+            writeText(sourceEntries.joinToString(",\n", "[\n", "\n]\n"))
+        }
+    }
+}
+
+gradle.projectsEvaluated {
+    generateFlatpakDependencies.configure {
+        dependsOn(
+            subprojects.mapNotNull {
+                it.tasks.findByName("flatpakGradleGenerator")
+            }
+        )
+    }
 }

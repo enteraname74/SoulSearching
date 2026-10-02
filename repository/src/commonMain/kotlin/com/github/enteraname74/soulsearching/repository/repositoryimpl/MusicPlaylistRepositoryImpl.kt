@@ -1,35 +1,42 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
-import com.github.enteraname74.domain.model.MusicPlaylist
-import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.soulsearching.domain.model.MusicPlaylist
+import com.github.enteraname74.soulsearching.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.soulsearching.repository.datasource.MusicPlaylistDataSource
-import java.util.*
+import kotlin.uuid.Uuid
 
 /**
  * Repository of a MusicPlaylist.
  */
 class MusicPlaylistRepositoryImpl(
-    private val musicPlaylistDataSource: MusicPlaylistDataSource
-): MusicPlaylistRepository {
-    override suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) =
+    private val musicPlaylistDataSource: MusicPlaylistDataSource,
+) : MusicPlaylistRepository {
+    override suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) {
         musicPlaylistDataSource.upsertMusicIntoPlaylist(
             musicPlaylist = musicPlaylist
         )
+    }
 
-    override suspend fun deleteMusicFromPlaylist(musicId: UUID, playlistId: UUID) =
-        musicPlaylistDataSource.deleteMusicFromPlaylist(
-            musicId = musicId,
+    override suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>, keepUpdatedAt: Boolean) {
+        musicPlaylistDataSource.upsertAll(musicPlaylists, keepUpdatedAt)
+    }
+
+    override suspend fun deleteFromPlaylist(musicIds: List<Uuid>, playlistId: Uuid) {
+        musicPlaylistDataSource.deleteFromPlaylist(
+            musicIds = musicIds,
             playlistId = playlistId
         )
+    }
 
-    override suspend fun getMusicPlaylist(musicId: UUID, playlistId: UUID): MusicPlaylist? =
+    override suspend fun getMusicPlaylist(musicId: Uuid, playlistId: Uuid): MusicPlaylist? =
         musicPlaylistDataSource.getMusicPlaylist(
             musicId = musicId,
             playlistId = playlistId
         )
 
-    override suspend fun deleteMusicFromAllPlaylists(musicId: UUID) =
+    override suspend fun deleteMusicFromAllPlaylists(musicId: Uuid) {
         musicPlaylistDataSource.deleteMusicFromAllPlaylists(
             musicId = musicId
         )
+    }
 }

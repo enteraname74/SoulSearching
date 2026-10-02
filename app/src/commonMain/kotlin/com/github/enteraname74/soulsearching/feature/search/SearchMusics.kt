@@ -10,7 +10,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
@@ -22,7 +22,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -31,7 +31,7 @@ fun SearchMusics(
     foundMusics: List<Music>,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
-    onSelectedMusicForBottomSheet: (musicId: UUID) -> Unit,
+    onSelectedMusicForBottomSheet: (musicId: Uuid) -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     playbackManager: PlaybackManager = injectElement(),

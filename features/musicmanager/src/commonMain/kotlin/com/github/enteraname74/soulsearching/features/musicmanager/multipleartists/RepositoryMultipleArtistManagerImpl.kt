@@ -1,18 +1,18 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.multipleartists
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.MusicArtist
-import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.MusicArtist
+import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.album.DeleteAlbumUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.album.GetCorrespondingAlbumUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.musicartist.CommonMusicArtistUseCase
 import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinComponent {
     private val commonMusicUseCase: CommonMusicUseCase by inject()
@@ -49,20 +49,20 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
     override suspend fun getArtistFromName(artistName: String): Artist? =
         cachedArtists.find { it.artistName == artistName }
 
-    override suspend fun getMusicIdsOfArtist(artist: Artist): List<UUID> =
+    override suspend fun getMusicIdsOfArtist(artist: Artist): List<Uuid> =
         commonArtistUseCase.getArtistWithMusic(artistId = artist.artistId)
             .firstOrNull()
             ?.musics
             ?.map { it.musicId }
             ?: emptyList()
 
-    override suspend fun getAlbumIdsOfArtist(artist: Artist): List<UUID> =
+    override suspend fun getAlbumIdsOfArtist(artist: Artist): List<Uuid> =
         commonAlbumUseCase.getAlbumsOfArtist(artistId = artist.artistId)
             .firstOrNull()
             ?.map { it.albumId }
             ?: emptyList()
 
-    override suspend fun linkMusicToArtists(musicId: UUID, artists: List<Artist>) {
+    override suspend fun linkMusicToArtists(musicId: Uuid, artists: List<Artist>) {
         cachedMusicArtists.addAll(
             artists.map { artist ->
                 MusicArtist(

@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.coreui.theme.color
 
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingElement
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.model.settings.settingElementOf
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingElement
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.model.settings.settingElementOf
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 data class SoulSearchingDarkLightTheme(

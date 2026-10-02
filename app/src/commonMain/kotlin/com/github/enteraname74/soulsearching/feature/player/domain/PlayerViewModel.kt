@@ -3,30 +3,40 @@ package com.github.enteraname74.soulsearching.feature.player.domain
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.lyrics.MusicLyrics
-import com.github.enteraname74.domain.model.player.PlayedListState
-import com.github.enteraname74.domain.model.player.PlayerMode
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
-import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
-import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Scope
+import com.github.enteraname74.soulsearching.domain.model.lyrics.MusicLyrics
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListState
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListType
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerMode
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.domain.model.user.User
+import com.github.enteraname74.soulsearching.domain.usecase.lyrics.CommonLyricsUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.user.CommonUserUseCase
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.SharedListState
+import com.github.enteraname74.soulsearching.feature.player.presentation.composable.dialog.RemoveUserFromPlayedListDialog
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -41,7 +51,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.time.DurationUnit
+import kotlin.uuid.Uuid
 
 /**
  * Handler for managing the PlayerViewModel.
@@ -49,15 +60,17 @@ import java.util.UUID
 class PlayerViewModel(
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
-    settings: SoulSearchingSettings,
+    private val settings: SoulSearchingSettings,
     private val colorThemeManager: ColorThemeManager,
     private val commonLyricsUseCase: CommonLyricsUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     val multiSelectionManager: MultiSelectionManager,
+    private val loadingManager: LoadingManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
     private val savedStateHandle: SavedStateHandle,
-    commonPlaylistUseCase: CommonPlaylistUseCase,
+    commonUserUseCase: CommonUserUseCase,
+    private val workDispatcher: WorkDispatcher,
 ) : ViewModel() {
-
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
         .stateIn(
@@ -67,6 +80,7 @@ class PlayerViewModel(
         )
 
     val currentSongProgressionState: StateFlow<Int> = playbackManager.currentSongProgressionState
+        .map { it.toInt(DurationUnit.MILLISECONDS) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -135,11 +149,15 @@ class PlayerViewModel(
         )
     )
 
+    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+
     val state: StateFlow<PlayerViewState> = combine(
         playbackManager.state,
-        commonPlaylistUseCase.getAllWithMusics(),
-        playbackManager.playedList
-    ) { playbackMainState, playlists, playedList ->
+        playbackManager.playedList,
+        _dialogState,
+        commonUserUseCase.observeUser(),
+        settings.getFlowOn(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME),
+    ) { playbackMainState, playedList, dialog, user, playerVolume ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
@@ -147,8 +165,12 @@ class PlayerViewModel(
                     currentMusicIndex = playbackMainState.currentMusicIndex,
                     isCurrentMusicInFavorite = playbackMainState.isCurrentMusicInFavorite,
                     playerMode = playbackMainState.playerMode,
-                    isPlaying = playbackMainState.isPlaying,
-                    playlistsWithMusics = playlists,
+                    playbackCommandsState = buildPlaybackState(
+                        scope = playbackMainState.currentScope,
+                        isPlaying = playbackMainState.isPlaying,
+                        currentMusicScope = playbackMainState.currentMusic.scope,
+                        playerVolume = playerVolume,
+                    ),
                     aroundSongs = if (playbackMainState.playerMode == PlayerMode.Loop) {
                         listOfNotNull(
                             playbackMainState.currentMusic,
@@ -168,6 +190,13 @@ class PlayerViewModel(
                         }
                     },
                     playedList = playedList,
+                    playedListScope = playbackMainState.currentScope,
+                    sharedListState = buildSharedListState(
+                        playbackManagerState = playbackMainState,
+                        currentUser = user,
+                    ),
+                    playerMusicUsers = playbackMainState.playerMusicUsers,
+                    dialog = dialog,
                 )
             }
 
@@ -181,9 +210,6 @@ class PlayerViewModel(
         SharingStarted.Eagerly,
         PlayerViewState.Closed
     )
-
-    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
-    val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
 
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
@@ -255,12 +281,98 @@ class PlayerViewModel(
         }
     }
 
+    private fun buildPlaybackState(
+        scope: PlayedListScope,
+        isPlaying: Boolean,
+        playerVolume: Float,
+        currentMusicScope: Scope,
+    ): PlaybackCommandsState =
+        PlaybackCommandsState(
+            isPlaying = isPlaying,
+            playerVolume = playerVolume,
+            previous = { previous() }.takeIf { scope.isAdmin },
+            next = { next() }.takeIf { scope.isAdmin },
+            togglePlayPause = { togglePlayPause() }.takeIf { scope.isAdmin },
+            changePlayerMode = { changePlayerMode() }.takeIf { !scope.isRemote },
+            toggleFavoriteState = { toggleFavoriteState() }.takeIf { currentMusicScope != Scope.SharedPlayedList },
+            seekTo = { newPosition: Int -> seekTo(newPosition) }.takeIf { scope.isAdmin },
+            setPlayerVolume = { newVolume ->
+                settings.set(
+                    key = SoulSearchingSettingsKeys.Player.PLAYER_VOLUME.key,
+                    value = newVolume,
+                )
+            }
+        )
+
+    private suspend fun buildSharedListState(
+        playbackManagerState: PlaybackManagerState.Data,
+        currentUser: User?,
+    ): SharedListState? {
+        val notRemote = !playbackManagerState.currentScope.isRemote
+        val isAdmin = playbackManagerState.currentScope.isAdmin
+        val deviceId = playbackManager.getDeviceId()
+        val code: String? = (playbackManagerState.currentType as? PlayedListType.Shared)?.invitationCode
+
+        return if (notRemote || code == null) {
+            null
+        } else {
+            val host = playbackManagerState.users.find { it.isOwner }?.let { owner ->
+                val userDuplicates = playbackManagerState.users.filter { it.username == owner.username }
+                val index = userDuplicates
+                    .indexOfFirst { it.listUserId == owner.listUserId }
+                    .takeIf { it >= 0 && userDuplicates.size > 1 }
+
+                SharedListState.User(
+                    id = owner.id,
+                    deviceId = owner.deviceId,
+                    username = owner.username,
+                    appearance = index,
+                    status = owner.status,
+                    isCurrentUser = owner.id == currentUser?.id
+                        && owner.deviceId == deviceId,
+                    onRemove = null,
+                )
+            }
+
+            val guests = playbackManagerState
+                .users
+                .groupBy { it.username }
+                .flatMap { (_, duplicates) ->
+                    duplicates.mapIndexedNotNull { index, user ->
+                        val isCurrentUser = user.id == currentUser?.id
+                            && user.deviceId == deviceId
+
+                        SharedListState.User(
+                            id = user.id,
+                            username = user.username,
+                            deviceId = user.deviceId,
+                            appearance = index.takeIf { duplicates.size > 1 },
+                            status = user.status,
+                            isCurrentUser = isCurrentUser,
+                            onRemove = {
+                                showRemoveUserDialog(
+                                    userId = user.id,
+                                    deviceId = user.deviceId,
+                                )
+                            }.takeIf { isAdmin && !isCurrentUser }
+                        ).takeIf { !user.isOwner }
+                    }
+                }
+
+            SharedListState(
+                code = code,
+                host = host,
+                guests = guests,
+            )
+        }
+    }
+
     /**
      * Set the current music position.
      */
     fun seekTo(position: Int) {
         viewModelScope.launch {
-            playbackManager.seekToPosition(position = position)
+            playbackManager.seekTo(millis = position)
         }
     }
 
@@ -277,25 +389,25 @@ class PlayerViewModel(
      * Set the player mode.
      */
     fun changePlayerMode() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             playbackManager.switchPlayerMode()
         }
     }
 
     fun next() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             playbackManager.next()
         }
     }
 
     fun previous() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             playbackManager.previous()
         }
     }
 
     fun stopPlayback() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(workDispatcher.dispatcher).launch {
             playbackManager.stopPlayback(resetPlayedList = true)
         }
     }
@@ -305,7 +417,7 @@ class PlayerViewModel(
      */
     fun toggleFavoriteState() {
         (state.value as? PlayerViewState.Data)?.currentMusic?.let {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(workDispatcher.dispatcher).launch {
                 toggleMusicFavoriteStatusUseCase(musicId = it.musicId)
             }
         }
@@ -327,11 +439,56 @@ class PlayerViewModel(
         }
     }
 
+    fun onSwipeMusic(music: Music) {
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            val result = playbackManager.removeSongsFromPlayedList(
+                musicIds = listOf(music.musicId),
+            )
+            feedbackPopUpManager.showErrorIfAny(result)
+        }
+    }
+
+    fun onClickOnMusic(music: Music) {
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            playbackManager.setAndPlayMusicFromCurrentPlayedList(music)
+        }
+    }
+
+    private fun showRemoveUserDialog(
+        userId: Uuid,
+        deviceId: String
+    ) {
+        _dialogState.value = RemoveUserFromPlayedListDialog(
+            onRemove = {
+                removeUser(
+                    userId = userId,
+                    deviceId = deviceId,
+                )
+            },
+            onClose = { _dialogState.value = null }
+        )
+    }
+
+    private fun removeUser(
+        userId: Uuid,
+        deviceId: String
+    ) {
+        loadingManager.withLoadingOnScope(viewModelScope) {
+            feedbackPopUpManager.showErrorIfAny(
+                playbackManager.removeUserFromSharedList(
+                    userId = userId,
+                    deviceId = deviceId,
+                )
+            )
+            _dialogState.value = null
+        }
+    }
+
     fun navigateToRemoteLyricsSettings() {
         _navigationState.value = PlayerNavigationState.ToRemoteLyricsSettings
     }
 
-    fun showMusicBottomSheet(musicIds: List<UUID>) {
+    fun showMusicBottomSheet(musicIds: List<Uuid>) {
         _navigationState.value = PlayerNavigationState.ToMusicBottomSheet(musicIds)
     }
 

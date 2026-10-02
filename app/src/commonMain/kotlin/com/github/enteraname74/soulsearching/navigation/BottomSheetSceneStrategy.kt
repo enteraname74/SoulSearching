@@ -25,11 +25,16 @@ internal class BottomSheetScene<T : Any>(
     private val onBack: () -> Unit,
 ) : OverlayScene<T> {
 
+    private var removeWithAnim: suspend () -> Unit = {}
+
     override val entries: List<NavEntry<T>> = listOf(entry)
 
     override val content: @Composable (() -> Unit) = {
         SoulBottomSheetHandler(
             onClose = onBack,
+            onRemoveRequest = {
+                removeWithAnim = it
+            },
         ) { closeWithAnim ->
             CompositionLocalProvider(
                 LocalBottomSheetCloseWithAnimAction provides closeWithAnim
@@ -38,6 +43,16 @@ internal class BottomSheetScene<T : Any>(
             }
         }
     }
+
+    override suspend fun onRemove() {
+        removeWithAnim()
+    }
+
+    override fun equals(other: Any?): Boolean =
+        other is BottomSheetScene<*> && key == other.key
+
+    override fun hashCode(): Int =
+        key.hashCode()
 }
 
 val LocalBottomSheetCloseWithAnimAction: ProvidableCompositionLocal<(()->Unit) -> Unit> = compositionLocalOf { {} }

@@ -15,12 +15,8 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_folder_filled
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import io.github.vinceglb.filekit.PlatformFile
-import io.github.vinceglb.filekit.absolutePath
-import io.github.vinceglb.filekit.bookmarkData
+import com.github.enteraname74.soulsearching.util.FilePlatformUtils
 import io.github.vinceglb.filekit.dialogs.compose.rememberDirectoryPickerLauncher
-import io.github.vinceglb.filekit.fromBookmarkData
-import kotlinx.coroutines.runBlocking
 
 @Composable
 fun CoverFolderRetrieverFolderSelection(
@@ -28,19 +24,27 @@ fun CoverFolderRetrieverFolderSelection(
     currentFolder: String?,
 ) {
     val folderPicker = rememberDirectoryPickerLauncher(
-        title = strings.coverFolderRetrieverPathSelectionTitle,
+        dialogSettings = provideDirectoryPickerSettings(),
     ) { platformFile ->
-        runBlocking {
-            platformFile?.let {
-                val path = PlatformFile.fromBookmarkData(platformFile.bookmarkData()).absolutePath()
-                onSelectedFolder(path)
-            }
+        platformFile?.let {
+            val path = FilePlatformUtils.getPath(file = platformFile)
+            onSelectedFolder(path)
         }
     }
 
+    CoverFolderRetrieverFolderSelectionContent(
+        currentFolder = currentFolder,
+        onClick = folderPicker::launch,
+    )
+}
+
+@Composable
+private fun CoverFolderRetrieverFolderSelectionContent(
+    currentFolder: String?,
+    onClick: () -> Unit,
+) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
     ) {
         Text(
@@ -51,35 +55,24 @@ fun CoverFolderRetrieverFolderSelection(
             ),
         )
         Row(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             SoulIconButton(
                 icon = CoreRes.drawable.ic_folder_filled,
-                onClick = {
-                    folderPicker.launch()
-                }
+                onClick = onClick,
             )
-            if (currentFolder != null) {
-                Text(
-                    modifier = Modifier
-                        .weight(1f),
-                    text = currentFolder,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    style = UiConstants.Typography.body,
-                )
-            } else {
-                Text(
-                    modifier = Modifier
-                        .weight(1f),
-                    text = strings.coverFolderRetrieverPathSelectionNoPathSelected,
-                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                    style = UiConstants.Typography.body,
-                )
-            }
-
+            Text(
+                modifier = Modifier.weight(1f),
+                text = currentFolder ?: strings.coverFolderRetrieverPathSelectionNoPathSelected,
+                color = if (currentFolder != null) {
+                    SoulSearchingColorTheme.colorScheme.onPrimary
+                } else {
+                    SoulSearchingColorTheme.colorScheme.subPrimaryText
+                },
+                style = UiConstants.Typography.body,
+            )
         }
     }
 }

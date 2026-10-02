@@ -3,13 +3,11 @@ package com.github.enteraname74.soulsearching.feature.settings.colortheme.compos
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuAction
@@ -21,24 +19,24 @@ fun ColorCard(
     text: String,
     onClick: () -> Unit,
     isSelected: Boolean,
-    subComposable: @Composable (() -> Unit)
+    modifier: Modifier = Modifier,
+    subComposable: @Composable (() -> Unit)? = null
 ) {
     Card(
-        modifier = Modifier
-            .alpha(if (isSelected) 1.0f else ContentAlpha.disabled),
+        modifier = modifier
+            .alpha(if (isSelected) 1.0f else 0.60f),
         colors = CardDefaults.cardColors(
             contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
             containerColor = SoulSearchingColorTheme.colorScheme.secondary
         )
     ) {
-        Column(
-            modifier = Modifier
-                .clickableWithHandCursor { onClick() }
-                .padding(
-                    all = UiConstants.Spacing.large,
-                )
-        ) {
+        Column {
             SoulMenuAction(
+                modifier = Modifier
+                    .clickableWithHandCursor { onClick() }
+                    .padding(
+                        all = UiConstants.Spacing.large,
+                    ),
                 clickEnabled = false,
                 title = title,
                 subTitle = text,
@@ -48,7 +46,7 @@ fun ColorCard(
                 textColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
             )
-            subComposable()
+            subComposable?.invoke()
         }
     }
 }

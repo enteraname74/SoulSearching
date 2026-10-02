@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.domain
 
-import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Cover
 
 data class EditableElement(
     val initialCover: Cover?,
@@ -8,9 +8,7 @@ data class EditableElement(
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as EditableElement
+        if (other !is EditableElement) return false
 
         if (initialCover != other.initialCover) return false
         if (newCover != null) {

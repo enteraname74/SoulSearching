@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
+import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedListPreview
+import com.github.enteraname74.soulsearching.domain.model.user.UserType
+import com.github.enteraname74.soulsearching.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 
 /**
@@ -9,8 +12,20 @@ object EnStrings : Strings {
     override val appLogo = "Application's logo"
     override val noElements = "No elements"
     override val emptyQuickAccess = "No items in quick access"
-    override val quickAccessExplanation: String = "Add a song, album, artist, or playlist to quick access " +
-            "to see it appear here."
+    override val emptyFolders: String = "No folders"
+    override val emptyAlbums: String = "No albums"
+    override val emptyMusics: String = "No songs"
+    override val emptyArtists: String = "No artists"
+    override val emptyPlaylists: String = "No playlists"
+    override val emptyMonths: String = "No months"
+    override val emptyMonthsExplanations: String = "Add songs from the settings to see them grouped by added month here"
+    override val emptyMusicsExplanations: String = "Add songs from the settings to see them here"
+    override val emptyAlbumsExplanations: String = "Add songs from the settings to see your albums here"
+    override val emptyArtistsExplanations: String = "Add songs from the settings to see your artists here"
+    override val emptyFoldersExplanations: String = "Add songs from the settings to see your folders here"
+    override val emptyPlaylistsExplanations: String = """Create a playlist by clicking on the "+" button"""
+    override val emptyQuickAccessExplanations: String = "Add a song, album, artist, or playlist to quick access " +
+        "to see it appear here."
     override val cannotRetrieveSongs: String = "Cannot retrieve songs!"
     override val backButton = "Back button"
     override val createPlaylistButton = "Create playlist button"
@@ -30,11 +45,11 @@ object EnStrings : Strings {
     override val activateRemoteLyricsFetchTitle = "Enable remote lyrics fetch"
     override val activateRemoteLyricsFetchText by lazy {
         "The app needs your permission to search for the lyrics of the current song via an external service ($lyricsProviderName) " +
-                "when no lyrics is found in the song's file."
+            "when no lyrics is found in the song's file."
     }
     override val activateRemoteLyricsFetchHint by lazy {
         "The application will use a song's name, album and artist to find lyrics from a remote source ($lyricsProviderName) " +
-                "when no lyrics where found in the song's file."
+            "when no lyrics where found in the song's file."
     }
     override val noLyricsFound = "No lyrics found for this song"
     override val localLyricsProvider = "Lyrics from the metadata of the music file"
@@ -84,7 +99,7 @@ object EnStrings : Strings {
     override val delete = "Delete"
 
     override val soulMixInfoDialogText = "Listen to a mix of fetched songs from each of your folder!\nYou can " +
-            "define the total of songs fetched from each folder in the settings."
+        "define the total of songs fetched from each folder in the settings."
 
     override val createPlaylistDialogTitle = "Create a new playlist"
     override val playlistName = "Playlist's name"
@@ -115,6 +130,16 @@ object EnStrings : Strings {
 
     override val deleteSelectedMusicsDialogTitle = "Are you sure to delete the selected songs?"
     override val deleteSelectedMusicsDialogText = "They will be removed from the application."
+    override val deleteFolderMusicsDialogTitle = "Are you sure to delete this folder?"
+    override val deleteFolderMusicsDialogText =
+        "All songs from this folder will be removed from the application. The folder will also be disabled for future fetching."
+    override val deleteSelectedFoldersMusicsDialogTitle = "Are you sure to delete the selected folders?"
+    override val deleteSelectedFoldersMusicsDialogText =
+        "All songs from these folders will be removed from the application. These folders will also be disabled for future fetching."
+    override val deleteMonthMusicsDialogTitle = "Are you sure to delete this month selection?"
+    override val deleteMonthMusicsDialogText = "All songs from this month will be removed from the application."
+    override val deleteSelectedMonthsMusicsDialogTitle = "Are you sure to delete the selected month selections?"
+    override val deleteSelectedMonthsMusicsDialogText = "All songs from these months will be removed from the application."
     override val deleteSelectedAlbumsDialogTitle = "Are you sure to delete the selected albums?"
     override val deleteSelectedArtistsDialogTitle = "Are you sure to delete the selected artists?"
     override val deleteSelectedPlaylistsDialogTitle = "Are you sure to delete the selected playlists?"
@@ -143,6 +168,10 @@ object EnStrings : Strings {
     override val deleteSelectedArtists = "Delete selected artists"
     override val deleteSelectedPlaylists = "Delete selected playlists"
     override val deleteSelectedMusics = "Delete selected songs"
+    override val deleteFolderMusics = "Delete folder"
+    override val deleteSelectedFoldersMusics = "Delete selected folders"
+    override val deleteMonthMusics = "Delete month selection"
+    override val deleteSelectedMonthsMusics = "Delete selected month selections"
 
     override val playNext = "Play next"
     override val addToQueue = "Add to queue"
@@ -209,7 +238,10 @@ object EnStrings : Strings {
     override val newReleaseAvailableTitle = "New release available!"
     override val statisticsTitle = "Statistics"
     override val statisticsText = "Statistics about your plays"
-    override val mostPlayedSongs = "Most played songs"
+    override val mostPlayedSongs = "Most played songs (number of plays)"
+    override val mostListenedSongs: String = "Most played songs (time listened)"
+    override val listeningTime: String = "Total time listened"
+    override val noDataOnThisPeriod: String = "No data on this period"
     override val mostPlayedAlbums = "Most played albums"
     override val mostPlayedArtists = "Most played artists"
     override val artistsWithMostSongs = "Artists with the most songs"
@@ -240,7 +272,6 @@ object EnStrings : Strings {
     override val initialSectionText = "Select the initial section to show on app launch"
     override val useVerticalAccessBarTitle = "Use vertical access bar"
     override val useHorizontalAccessBarText = "Use horizontal access bar"
-
 
     override val manageAlbumViewTitle = "Album view"
     override val manageAlbumViewText = "Manage album view"
@@ -282,7 +313,7 @@ object EnStrings : Strings {
     override val multipleArtistsTitle = "Songs with multiple artists"
     override val multipleArtistsText =
         "Songs with multiple artists were found by the application. " +
-                "Choose whether you want to split these artists into multiple ones or keep them as one artist."
+            "Choose whether you want to split these artists into multiple ones or keep them as one artist."
     override val multipleArtistsSelectionTitle = "Selected artists to split:"
     override val noMultipleArtists = "No artists to split"
 
@@ -315,6 +346,196 @@ object EnStrings : Strings {
     override val continuePlayedListAction = "Resume"
 
     override val savedChanges = "Saved changes"
+
+    override val cloudText: String = "Synchronize your songs with Cloudy"
+    override val cloudSettingsTitle: String = "Settings"
+    override val cloudSettingsText: String = "Host URL"
+    override val cloudSettingsLastGeneralSync: String = "Last general sync"
+    override val cloudSettingsLastStatisticsSync: String = "Last statistics sync"
+    override val cloudSettingsNoSync: String = "No sync"
+    override val cloudUrlFieldLabel: String = "Host URL"
+    override val cloudNameFieldLabel: String = "Username"
+    override val cloudPasswordFieldLabel: String = "Password"
+    override val cloudSignUp: String = "Sign up"
+    override val cloudNoAccount: String = "I don't have an account"
+    override val cloudConnection: String = "Connection"
+    override val cloudSignIn: String = "Sign in"
+    override val cloudRegistrationCode: String = "Registration code"
+    override val cloudUserSettings: String = "User settings"
+    override val disconnect: String = "Disconnect"
+    override val inscriptionCodeSettingsTitle: String = "Inscription codes"
+    override val generateCodeButton: String = " Generate code"
+    override val inscriptionCodeSettingsText: String = "Manage your invitation codes, generate a one time usage code for a new user"
+    override val generatedCode: String = "Generated code"
+    override val cloudSyncTitle: String = "Synchronization"
+    override val cloudSyncText: String = "Manage synchronization between the app and Cloudy"
+    override val cloudSyncButton: String = "Synchronize with cloud"
+    override val musicChannelNotificationDescription: String = "Used for controlling the song that is currently playing"
+    override val cloudSyncChannelNotificationDescription: String = "used for syncing data between the app and Cloudy"
+    override val musicChannelNotificationName: String = "Currently played music notification"
+    override val cloudSyncChannelNotificationName: String = "Cloudy syncing notification"
+    override val startSharedPlayedList: String = "Start shared played list"
+
+    override val sharedListTitle: String = "Shared list"
+    override val sharedListHost: String = "Host"
+    override val sharedListGuests: String = "Guests"
+    override val sharedListCodeTitle: String = "Invitation code"
+    override val sharedListCodeDescription: String = "Share this code to your friends to let them join you in this shared played list!"
+    override val sharedListRemoveUserTitle: String = "Remove user from shared list"
+    override val sharedListRemoveUserText: String = "Removing this user will also remove its songs from the played list"
+    override val sharedListRemoveUserButton: String = "Remove"
+
+    override val sharedListCodeLabel: String = "Invitation code"
+    override val cloudSharedListTitle: String = "Shared played list"
+    override val cloudSharedListText: String = "Join and manages shared played lists"
+    override val cloudSharedListJoinTitle: String = "Join a played list"
+    override val cloudSharedlistJoinText: String = "Join a shared played list with a code"
+    override val joinSharedListButton: String = "Join"
+    override val cloudUsersTitle: String = "Cloudy users"
+    override val cloudUsersText: String = "See all users on the Cloudy instance"
+    override val cloudUsersDeleteDialogTitle: String = "Delete the user"
+    override val cloudUsersDeleteDialogText: String = "Are you sure to delete this user?"
+
+    override val cloudExplanationsTitle: String = "A cloud for Soul Searching"
+    override val cloudAlphaWarningText: String = "Cloudy is in alpha state and all features in the app may not work correctly with Cloudy"
+    override val cloudExplanationsText: String = """
+        Cloudy is a self-hosted cloud system for Soul Searching, designed for the following use cases:
+        - accessing your songs from multiple devices
+        - launching a shared played list between multiple users
+        - managing users (family, friends,...)
+        
+        For self-hosting Cloudy, please refer its documentation.
+    """.trimIndent()
+    override val cloudExplanationsRedirect: String = "Cloudy documentation"
+
+    override val cloudAddUrlToSharedListTitle: String = "Add a song from a URL"
+    override val add: String = "Add"
+
+    override val sharedListDeleteTitle: String = "Delete this shared played list"
+    override val sharedListDeleteText: String = "Users will be disconnected from the list and it will be deleted"
+
+    override val musicSyncedOnCloud: String = "Song synced on the cloud"
+    override val musicRemoteOnly: String = "Song coming from the cloud"
+    override val musicLocalOnly: String = "Song not uploaded on the cloud"
+
+    override val shortcutsTitle: String = "Shortcuts"
+    override val shortcutsText: String = "See shortcuts of the app"
+
+    override val shortcutPlayerCategory: String = "Player shortcuts"
+
+    override val shortcutTogglePlayPauseDescription: String = "Toggle play/pause"
+    override val shortcutPreviousDescription: String = "Previous"
+    override val shortcutNextDescription: String = "Next"
+    override val shortcutSeekForwardDescription: String = "Seek forward"
+    override val shortcutSeekBackwardDescription: String = "Seek backward"
+    override val shortcutVolumeUpDescription: String = "Volume up"
+    override val shortcutVolumeDownDescription: String = "Volume down"
+    override val shortcutToggleFavoriteDescription: String = "Toggle favorite of playing song"
+
+    override val shortcutTogglePlayPauseCommands: List<String> = listOf(
+        "Space",
+    )
+    override val shortcutPreviousCommands: List<String> = listOf(
+        "Shift",
+        "Left arrow",
+    )
+    override val shortcutNextCommands: List<String> = listOf(
+        "Shift",
+        "Right arrow",
+    )
+    override val shortcutSeekForwardCommands: List<String> = listOf(
+        "Right arrow"
+    )
+    override val shortcutSeekBackwardCommands: List<String> = listOf(
+        "Left arrow"
+    )
+    override val shortcutVolumeUpCommands: List<String> = listOf(
+        "Up arrow"
+    )
+    override val shortcutVolumeDownCommands: List<String> = listOf(
+        "Down arrow"
+    )
+    override val shortcutToggleFavoriteCommands: List<String> = listOf(
+        "F"
+    )
+
+    override val gigabyteAbbreviation: String = "GB"
+    override val userStorageTitle: String = "User data"
+    override val userStorageText: String = "Manage user data stored on Cloudy"
+    override val userStorageSectionTitle: String = "Storage"
+    override val userStorageAllAvailableInfo: String = "As an admin, your maximum available storage matches the available storage on the Cloudy instance"
+    override val userStorageReducedInfo: String = "As a user, your maximum available storage matches a rule set by the admin of this Cloudy instance. Contact your admin for more information"
+    override val clearUserStorageButton: String = "Clear all my data"
+    override val clearUserStorageDialogText: String = "All your data will be deleted from Cloudy. Your account will not be deleted"
+
+    override val statisticsAllPeriodLabel: String = "All periods"
+    override val statisticsYearPeriodLabel: String = "By year"
+    override val statisticsMonthPeriodLabel: String = "By month"
+
+    override val playbackErrorPlayerError: String = "Cannot play selected song"
+
+    override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
+        when (state) {
+            is SyncDataWithCloudUseCase.State.Failure -> "Failure"
+            SyncDataWithCloudUseCase.State.Idle -> "Waiting"
+            SyncDataWithCloudUseCase.State.NoMusicsToSend -> "No songs to send"
+            SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Checking"
+            SyncDataWithCloudUseCase.State.Cleaning -> "Cleaning songs"
+            SyncDataWithCloudUseCase.State.ClearingRemoteMusicIds -> "Cleaning songs"
+            SyncDataWithCloudUseCase.State.FetchingFromRemote -> "Fetching songs"
+            is SyncDataWithCloudUseCase.State.SavingRemote -> "Saving songs"
+            is SyncDataWithCloudUseCase.State.UpdateMusics -> "Updating songs"
+            is SyncDataWithCloudUseCase.State.UploadMusics -> "Uploading songs"
+            SyncDataWithCloudUseCase.State.FetchingRemotePlaylists -> "Fetching playlists"
+            is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Uploading playlists"
+            SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists"
+            SyncDataWithCloudUseCase.State.Finish -> "Finish"
+            SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Cleaning playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Fetching listening statistics"
+            is SyncDataWithCloudUseCase.State.UploadingStats -> "Uploading listening statistics"
+        }
+
+    override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
+        when (state) {
+            is SyncDataWithCloudUseCase.State.Failure -> "A failure occurred during the syncing process: ${state.error ?: "Unknown error"}"
+            SyncDataWithCloudUseCase.State.Finish -> "Syncing process has finished"
+            SyncDataWithCloudUseCase.State.Idle -> "Waiting for syncing to start"
+            SyncDataWithCloudUseCase.State.NoMusicsToSend -> "No local songs to send to cloud"
+            SyncDataWithCloudUseCase.State.CheckingMusicsToSend -> "Checking for songs to send to cloud"
+            SyncDataWithCloudUseCase.State.Cleaning -> "Cleaning legacy local songs after sync"
+            SyncDataWithCloudUseCase.State.ClearingRemoteMusicIds -> "Cleaning deleted remote songs before sync"
+            SyncDataWithCloudUseCase.State.FetchingFromRemote -> "Fetching songs from cloud"
+            is SyncDataWithCloudUseCase.State.SavingRemote -> "Saving fetched information from cloud"
+            is SyncDataWithCloudUseCase.State.UpdateMusics -> "Updating existing remote musics to cloud"
+            is SyncDataWithCloudUseCase.State.UploadMusics -> "Uploading musics to cloud"
+            SyncDataWithCloudUseCase.State.FetchingRemotePlaylists -> "Fetching playlists from cloud"
+            is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Uploading playlists to cloud"
+            SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists from cloud"
+            SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Cleaning deleted remote playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Fetching listening statistics from cloud"
+            is SyncDataWithCloudUseCase.State.UploadingStats -> "Uploading listening statistics to cloud"
+        }
+
+    override fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String =
+        when (preview.totalUsers) {
+            0 -> "No users"
+            1 -> "1 user"
+            else -> "${preview.totalUsers} users"
+        }
+
+    override fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String =
+        when (preview.connectedUsers) {
+            0 -> "No connected users"
+            1 -> "1 connected user"
+            else -> "${preview.connectedUsers} connected users"
+        }
+
+    override fun userType(type: UserType): String =
+        when (type) {
+            UserType.User -> "User"
+            UserType.Admin -> "Admin"
+            UserType.Unknown -> "No status"
+        }
 
     override fun musics(total: Int): String {
         return when (total) {
@@ -353,6 +574,7 @@ object EnStrings : Strings {
 
     override fun artistCoverMethodExampleTitle(artist: String): String =
         "Path example with artist $artist:"
+
     override fun colorPaletteSeed(seed: ColorPaletteSeed): String =
         when (seed) {
             ColorPaletteSeed.DarkVibrant -> "Dark vibrant"
@@ -363,6 +585,26 @@ object EnStrings : Strings {
             ColorPaletteSeed.Muted -> "Muted"
             ColorPaletteSeed.Vibrant -> "Vibrant"
         }
+
     override fun hours(hours: Long): String =
-        if (hours == 1L) "hour" else "hours"
+        if (hours == 1L) "$hours hour" else "$hours hours"
+
+    override fun seconds(seconds: Long): String =
+        if (seconds == 1L) "$seconds second" else "$seconds seconds"
+
+    override fun month(monthNumber: Int): String =
+        when (monthNumber) {
+            1 -> "January"
+            2 -> "February"
+            3 -> "March"
+            4 -> "April"
+            5 -> "May"
+            6 -> "June"
+            7 -> "July"
+            8 -> "August"
+            9 -> "September"
+            10 -> "October"
+            11 -> "November"
+            else -> "December"
+        }
 }

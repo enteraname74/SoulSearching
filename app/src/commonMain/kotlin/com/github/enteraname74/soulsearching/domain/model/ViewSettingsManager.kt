@@ -3,9 +3,9 @@ package com.github.enteraname74.soulsearching.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
@@ -46,7 +46,11 @@ class ViewSettingsManager(
             arePlaylistsShown = arePlaylistsShown,
             areAlbumsShown = areAlbumsShown,
             areArtistsShown = areArtistsShown,
-            areMusicFoldersShown = areMusicFoldersShown,
+            areMusicFoldersShown = if (SoulPlatformUtils.platform == SoulPlatform.Web) {
+                false
+            } else {
+                areMusicFoldersShown
+            },
         )
     }
 

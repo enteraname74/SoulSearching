@@ -1,11 +1,12 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Playlist
-import java.time.LocalDateTime
-import java.util.*
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Playlist
+import kotlin.time.Clock
+import kotlin.time.Instant
+import kotlin.uuid.Uuid
 
 /**
  * Room representation of a Playlist.
@@ -13,27 +14,43 @@ import java.util.*
 @Entity
 data class RoomPlaylist(
     @PrimaryKey
-    val playlistId: UUID = UUID.randomUUID(),
+    val playlistId: Uuid = Uuid.random(),
+    val remoteId: Uuid?,
     var name: String = "",
-    var coverId: UUID? = null,
+    var coverId: Uuid? = null,
+    val coverUrl: String?,
     val isFavorite: Boolean = false,
-    var addedDate: LocalDateTime = LocalDateTime.now(),
+    var addedDate: Instant = Clock.System.now(),
     var nbPlayed: Int = 0,
-    var isInQuickAccess: Boolean = false
+    var isInQuickAccess: Boolean = false,
+    val lastUpdatedMillis: Long?,
 )
 
 /**
  * Converts a RoomPlaylist to a Playlist.
  */
-internal fun RoomPlaylist.toPlaylist(): Playlist = Playlist(
-    playlistId = playlistId,
-    name = name,
-    cover = Cover.CoverFile(fileCoverId = coverId),
-    isFavorite = isFavorite,
-    addedDate = addedDate,
-    nbPlayed = nbPlayed,
-    isInQuickAccess = isInQuickAccess
-)
+internal fun RoomPlaylist.toPlaylist(): Playlist {
+    val localCover = Cover.CoverFile(fileCoverId = coverId)
+    val remoteCover = coverUrl?.let { Cover.Url(it, localCover) }
+
+    val usedCover = if (remoteCover == null) {
+        localCover
+    } else {
+        localCover.takeIf { !it.isEmpty() } ?: remoteCover
+    }
+
+    return Playlist(
+        playlistId = playlistId,
+        remoteId = remoteId,
+        lastUpdatedMillis = lastUpdatedMillis,
+        name = name,
+        cover = usedCover,
+        isFavorite = isFavorite,
+        addedDate = addedDate,
+        nbPlayed = nbPlayed,
+        isInQuickAccess = isInQuickAccess,
+    )
+}
 
 /**
  * Converts a Playlist to a RoomPlaylist.
@@ -45,5 +62,8 @@ internal fun Playlist.toRoomPlaylist(): RoomPlaylist = RoomPlaylist(
     isFavorite = isFavorite,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
-    isInQuickAccess = isInQuickAccess
+    isInQuickAccess = isInQuickAccess,
+    remoteId = remoteId,
+    coverUrl = (cover as? Cover.Url)?.url,
+    lastUpdatedMillis = lastUpdatedMillis,
 )

@@ -1,19 +1,21 @@
 package com.github.enteraname74.soulsearching.features.filemanager.usecase
 
-import com.github.enteraname74.domain.model.*
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import java.util.*
+import com.github.enteraname74.soulsearching.domain.model.Album
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.MusicArtist
+import com.github.enteraname74.soulsearching.domain.repository.AlbumRepository
+import com.github.enteraname74.soulsearching.domain.repository.ArtistRepository
+import com.github.enteraname74.soulsearching.domain.repository.MusicArtistRepository
+import com.github.enteraname74.soulsearching.domain.repository.MusicRepository
+import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
+import kotlin.uuid.Uuid
 
 class UpdateAlbumUseCase(
     private val albumRepository: AlbumRepository,
     private val artistRepository: ArtistRepository,
     private val musicRepository: MusicRepository,
-    private val commonAlbumUseCase: CommonAlbumUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
     private val musicArtistRepository: MusicArtistRepository,
 ) {
@@ -75,8 +77,8 @@ class UpdateAlbumUseCase(
 
     private suspend fun replaceArtistOfMusic(
         music: Music,
-        legacyArtistId: UUID,
-        newArtistId: UUID,
+        legacyArtistId: Uuid,
+        newArtistId: Uuid,
     ) {
         // We first remove the link to the legacy artist
         musicArtistRepository.deleteMusicArtist(

@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.ext
 
-import com.github.enteraname74.domain.model.Release
+import com.github.enteraname74.soulsearching.domain.model.Release
 import com.github.enteraname74.soulsearching.domain.AppVersion
 
 fun Release.isNewerThanCurrentVersion(): Boolean {

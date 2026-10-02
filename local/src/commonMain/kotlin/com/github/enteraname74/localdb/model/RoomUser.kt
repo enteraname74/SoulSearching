@@ -1,0 +1,34 @@
+package com.github.enteraname74.localdb.model
+
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
+import com.github.enteraname74.soulsearching.domain.model.user.User
+import com.github.enteraname74.soulsearching.domain.model.user.UserType
+import kotlin.uuid.Uuid
+
+@Entity
+data class RoomUser(
+    @PrimaryKey val id: Uuid,
+    val username: String,
+    val accessToken: String,
+    val refreshToken: String,
+    val type: UserType,
+) {
+    fun toUser(): User =
+        User(
+            id = id,
+            username = username,
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            type = type,
+        )
+}
+
+fun User.toRoomUser(): RoomUser =
+    RoomUser(
+        id = id,
+        username = username,
+        accessToken = accessToken,
+        refreshToken = refreshToken,
+        type = type,
+    )

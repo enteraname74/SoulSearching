@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.multipleartistschoice
 
-import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Artist
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule

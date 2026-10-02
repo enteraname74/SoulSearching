@@ -1,17 +1,18 @@
 package com.github.enteraname74.localdb.dao
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Upsert
+import androidx.room3.Dao
+import androidx.room3.Delete
+import androidx.room3.Query
+import androidx.room3.Transaction
+import androidx.room3.Upsert
 import com.github.enteraname74.localdb.model.RoomAlbum
-import com.github.enteraname74.localdb.view.RoomAlbumPreview
 import com.github.enteraname74.localdb.model.RoomCompleteAlbum
 import com.github.enteraname74.localdb.model.RoomCompleteAlbumWithMusics
+import com.github.enteraname74.localdb.model.mapping.GenericLocalIdToRemoteId
+import com.github.enteraname74.localdb.view.RoomAlbumPreview
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * DAO of an Album.
@@ -29,10 +30,10 @@ interface AlbumDao {
     suspend fun delete(roomAlbum: RoomAlbum)
 
     @Query("DELETE FROM RoomAlbum WHERE albumId = :id")
-    suspend fun delete(id: UUID)
+    suspend fun delete(id: Uuid)
 
     @Query("DELETE FROM RoomAlbum WHERE albumId IN (:ids)")
-    suspend fun deleteAll(ids: List<UUID>)
+    suspend fun deleteAll(ids: List<Uuid>)
 
     @Query(
         """
@@ -42,16 +43,16 @@ interface AlbumDao {
     )
     suspend fun deleteAllEmpty()
 
-    @Query("SELECT albumName FROM RoomAlbum WHERE LOWER(albumName) LIKE LOWER('%' || :search || '%')")
+    @Query("SELECT albumName FROM RoomAlbum WHERE LOWER(albumName) LIKE LOWER('%' || :search || '%') AND scope != 'SharedPlayedList'")
     suspend fun getAlbumNamesContainingSearch(search: String): List<String>
 
     @Transaction
-    @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId")
-    fun getAllAlbumsFromArtist(artistId: UUID): Flow<List<RoomCompleteAlbum>>
+    @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId AND scope != 'SharedPlayedList'")
+    fun getAllAlbumsFromArtist(artistId: Uuid): Flow<List<RoomCompleteAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId")
-    fun getAllAlbumsWithMusicsFromArtist(artistId: UUID): Flow<List<RoomCompleteAlbumWithMusics>>
+    @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId AND scope != 'SharedPlayedList'")
+    fun getAllAlbumsWithMusicsFromArtist(artistId: Uuid): Flow<List<RoomCompleteAlbumWithMusics>>
 
     @Transaction
     @Query(
@@ -66,10 +67,30 @@ interface AlbumDao {
     @Query(
         """
             SELECT * FROM RoomAlbumPreview 
+            ORDER BY name ASC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByNameAsc(limit: Int, offset: Int): List<RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
             ORDER BY name DESC
         """
     )
     fun getAllPagedByNameDesc(): PagingSource<Int, RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
+            ORDER BY name DESC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByNameDesc(limit: Int, offset: Int): List<RoomAlbumPreview>
 
     @Transaction
     @Query(
@@ -84,10 +105,30 @@ interface AlbumDao {
     @Query(
         """
             SELECT * FROM RoomAlbumPreview 
+            ORDER BY addedDate ASC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByDateAsc(limit: Int, offset: Int): List<RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
             ORDER BY addedDate DESC
         """
     )
     fun getAllPagedByDateDesc(): PagingSource<Int, RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
+            ORDER BY addedDate DESC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByDateDesc(limit: Int, offset: Int): List<RoomAlbumPreview>
 
     @Transaction
     @Query(
@@ -102,22 +143,46 @@ interface AlbumDao {
     @Query(
         """
             SELECT * FROM RoomAlbumPreview 
+            ORDER BY nbPlayed ASC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByNbPlayedAsc(limit: Int, offset: Int): List<RoomAlbumPreview>
+
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
             ORDER BY nbPlayed DESC
         """
     )
     fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomAlbumPreview>
 
     @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomAlbumPreview 
+            ORDER BY nbPlayed DESC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    suspend fun getAllByNbPlayedDesc(limit: Int, offset: Int): List<RoomAlbumPreview>
+
+    @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId LIMIT 1")
-    fun getFromId(albumId: UUID): Flow<RoomCompleteAlbum?>
+    fun getFromId(albumId: Uuid): Flow<RoomCompleteAlbum?>
+
+    @Transaction
+    @Query("SELECT * FROM RoomAlbum WHERE remoteId = :remoteId")
+    suspend fun getFromRemoteId(remoteId: Uuid): RoomCompleteAlbum?
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId in (:albumIds)")
-    fun getFromIds(albumIds: List<UUID>): Flow<List<RoomCompleteAlbumWithMusics>>
+    fun getFromIds(albumIds: List<Uuid>): Flow<List<RoomCompleteAlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")
-    fun getAlbumWithMusics(albumId: UUID): Flow<RoomCompleteAlbumWithMusics?>
+    fun getAlbumWithMusics(albumId: Uuid): Flow<RoomCompleteAlbumWithMusics?>
 
     @Transaction
     @Query(
@@ -142,9 +207,9 @@ interface AlbumDao {
         """
     )
     suspend fun getDuplicatedAlbum(
-        albumId: UUID,
+        albumId: Uuid,
         albumName: String,
-        artistId: UUID
+        artistId: Uuid
     ): RoomCompleteAlbum?
 
     @Transaction
@@ -153,6 +218,7 @@ interface AlbumDao {
             SELECT album.* FROM RoomAlbum AS album
             WHERE album.albumName = :albumName 
             AND (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) = :artistName 
+            AND scope != 'SharedPlayedList'
             LIMIT 1
         """
     )
@@ -172,7 +238,7 @@ interface AlbumDao {
     )
     suspend fun getFromArtistId(
         albumName: String,
-        artistId: UUID,
+        artistId: Uuid,
     ): RoomCompleteAlbum?
 
     @Query(
@@ -180,10 +246,9 @@ interface AlbumDao {
             SELECT * FROM RoomAlbumPreview 
             WHERE nbPlayed >= 1
             ORDER BY nbPlayed DESC 
-            LIMIT 11
         """
     )
-    fun getMostListened(): Flow<List<RoomAlbumPreview>>
+    fun getMostListened(): PagingSource<Int, RoomAlbumPreview>
 
     @Query(
         """
@@ -192,7 +257,7 @@ interface AlbumDao {
             LIMIT 1
         """
     )
-    fun getAlbumPreview(albumId: UUID): Flow<RoomAlbumPreview?>
+    fun getAlbumPreview(albumId: Uuid): Flow<RoomAlbumPreview?>
 
     // TODO: Normalise with accents.
     @Query(
@@ -219,8 +284,12 @@ interface AlbumDao {
             SELECT album.* FROM RoomAlbum AS album 
             INNER JOIN RoomArtist AS artist 
             ON album.artistId = artist.artistId 
-            AND artist.artistName = :artistName
+            AND artist.artistName = :artistName 
+            AND album.scope != 'SharedPlayedList'
         """
     )
     suspend fun getAlbumsOfArtistName(artistName: String): List<RoomCompleteAlbumWithMusics>
+
+    @Query("SELECT albumId AS localId, remoteId FROM RoomAlbum WHERE remoteId IS NOT NULL")
+    suspend fun getAllRemoteToLocalIds(): List<GenericLocalIdToRemoteId>
 }

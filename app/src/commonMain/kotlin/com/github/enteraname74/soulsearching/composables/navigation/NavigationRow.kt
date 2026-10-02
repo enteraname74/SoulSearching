@@ -18,7 +18,8 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 
 @Composable
 fun NavigationRow(
-    navigationRowSpec: NavigationRowSpec
+    navigationRowSpec: NavigationRowSpec,
+    isSelected: Boolean,
 ) {
     Row(
         modifier = Modifier
@@ -36,7 +37,7 @@ fun NavigationRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SoulIcon(
-            icon = navigationRowSpec.icon,
+            icon = navigationRowSpec.icon(isSelected),
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             contentDescription = null,
         )
@@ -44,13 +45,13 @@ fun NavigationRow(
             text = navigationRowSpec.title,
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = if (navigationRowSpec.isSelected) {
+            fontWeight = if (isSelected) {
                 FontWeight.Black
             } else {
                 FontWeight.Normal
             }
         )
-        if (navigationRowSpec.isBadged) {
+        if ((navigationRowSpec as? NavigationRowSpec.Settings)?.isBadged == true) {
             Badge(
                 containerColor = SoulSearchingColorTheme.colorScheme.onSecondary,
             )

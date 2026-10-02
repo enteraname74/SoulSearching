@@ -4,7 +4,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.github.enteraname74.domain.model.SortDirection
+import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
@@ -14,11 +14,11 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Pager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageListPaged
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 fun allArtistsTab(
     mainPageViewModel: MainPageViewModel,
-    navigateToArtist: (artistId: UUID) -> Unit,
+    navigateToArtist: (artistId: Uuid) -> Unit,
 ): PagerScreen = PagerScreen(
     type = ElementEnum.ARTISTS,
     screen = {
@@ -44,6 +44,8 @@ fun allArtistsTab(
             sortDirection = artistState.sortDirection,
             key = { it?.id },
             contentType = ALL_ARTISTS_CONTENT_TYPE,
+            emptyTitle = strings.emptyArtists,
+            emptyDescription = strings.emptyArtistsExplanations,
         ) { element ->
             BigPreviewComposable(
                 modifier = Modifier
@@ -57,12 +59,12 @@ fun allArtistsTab(
                 },
                 onLongClick = {
                     mainPageViewModel.toggleElementInSelection(
-                        id = element.id,
+                        id = element.id.toString(),
                         mode = SelectionMode.Artist,
                     )
                 },
-                isSelected = multiSelectionState.selectedIds.contains(element.id),
-                isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                isSelected = multiSelectionState.selectedIds.contains(element.id.toString()),
+                isSelectionModeOn = multiSelectionState.totalSelected > 0,
             )
         }
     }

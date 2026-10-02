@@ -1,107 +1,136 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.MonthMusicsPreview
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicFolderPreview
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
+import com.github.enteraname74.soulsearching.domain.model.CloudMusic
+import com.github.enteraname74.soulsearching.domain.model.MonthMusicsPreview
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.MusicFolderPreview
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.repository.MusicRepository
+import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
 import kotlin.time.Duration
+import kotlin.uuid.Uuid
 
 /**
  * Repository for handling Music related work.
  */
 class MusicRepositoryImpl(
-    private val musicDataSource: MusicDataSource,
+    private val musicLocalDataSource: MusicLocalDataSource,
+    private val musicRemoteDataSource: MusicRemoteDataSource,
 ) : MusicRepository {
     override suspend fun upsert(music: Music) {
-        musicDataSource.upsert(music = music)
+        musicLocalDataSource.upsert(music = music)
     }
 
     override suspend fun upsertAll(musics: List<Music>) {
-        musicDataSource.upsertAll(musics = musics)
+        musicLocalDataSource.upsertAll(musics = musics)
     }
 
     override suspend fun delete(music: Music) {
-        musicDataSource.delete(music = music)
+        musicLocalDataSource.delete(music = music)
     }
 
-    override suspend fun deleteAll(ids: List<UUID>) {
-        musicDataSource.deleteAll(ids = ids)
+    override suspend fun deleteAll(ids: List<Uuid>) {
+        musicLocalDataSource.deleteAll(ids = ids)
     }
 
     override suspend fun deleteAllFromUnselectedFolders() {
-        musicDataSource.deleteAllFromUnselectedFolders()
+        musicLocalDataSource.deleteAllFromUnselectedFolders()
     }
 
-    override fun getFromId(musicId: UUID): Flow<Music?> = musicDataSource.getFromId(
+    override suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<String> =
+        musicLocalDataSource.getRemoteIdsFromIds(ids)
+
+    override suspend fun getIdsFromRemoteIds(remoteIds: List<String>): List<Uuid> =
+        musicLocalDataSource.getIdsFromRemoteIds(remoteIds)
+
+    override suspend fun deleteRemotely(remoteIds: List<String>): SoulResult<Unit> =
+        musicRemoteDataSource.delete(remoteIds)
+
+    override fun getFromId(musicId: Uuid): Flow<Music?> = musicLocalDataSource.getFromId(
         musicId = musicId
     )
 
-    override fun getFromIds(ids: List<UUID>): Flow<List<Music>> =
-        musicDataSource.getFromIds(ids)
+    override suspend fun getFromRemoteId(remoteId: String): Music? =
+        musicLocalDataSource.getFromRemoteId(remoteId)
 
-    override suspend fun getAllIdsFromUnselectedFolders(): List<UUID> =
-        musicDataSource.getAllIdsFromUnselectedFolders()
+    override fun getFromIds(ids: List<Uuid>): Flow<List<Music>> =
+        musicLocalDataSource.getFromIds(ids)
+
+    override suspend fun getAllIdsFromUnselectedFolders(): List<Uuid> =
+        musicLocalDataSource.getAllIdsFromUnselectedFolders()
 
     @Deprecated("Avoid fetching all music from DB because of performance issue")
     override fun getAll(): Flow<List<Music>> =
-        musicDataSource.getAll()
+        musicLocalDataSource.getAll()
+
+    override suspend fun getAllLocalMusic(): List<Music> =
+        musicLocalDataSource.getAllLocalMusic()
 
     override suspend fun getAllSorted(): List<Music> =
-        musicDataSource.getAllSorted()
+        musicLocalDataSource.getAllSorted()
+
+    override suspend fun getAllSorted(page: Int, pageSize: Int): List<Music> =
+        musicLocalDataSource.getAllSorted(page = page, pageSize = pageSize)
 
     override fun getAllFromQuickAccess(): Flow<List<Music>> =
-        musicDataSource.getAllFromQuickAccess()
+        musicLocalDataSource.getAllFromQuickAccess()
 
     override fun getAllPaged(): Flow<PagingData<Music>> =
-        musicDataSource.getAllPaged()
+        musicLocalDataSource.getAllPaged()
 
-    override fun getAllPagedOfAlbum(albumId: UUID): Flow<PagingData<Music>> =
-        musicDataSource.getAllPagedOfAlbum(albumId)
+    override fun getAllPagedOfAlbum(albumId: Uuid): Flow<PagingData<Music>> =
+        musicLocalDataSource.getAllPagedOfAlbum(albumId)
 
     override fun getAllPagedByNameAscOfFolder(folder: String): Flow<PagingData<Music>> =
-        musicDataSource.getAllPagedByNameAscOfFolder(folder)
+        musicLocalDataSource.getAllPagedByNameAscOfFolder(folder)
 
     override fun getAllPagedByNameAscOfMonth(month: String): Flow<PagingData<Music>> =
-        musicDataSource.getAllPagedByNameAscOfMonth(month)
+        musicLocalDataSource.getAllPagedByNameAscOfMonth(month)
 
-    override fun getAllPagedByNameAscOfPlaylist(playlistId: UUID): Flow<PagingData<Music>> =
-        musicDataSource.getAllPagedByNameAscOfPlaylist(playlistId)
+    override fun getAllPagedByNameAscOfPlaylist(playlistId: Uuid): Flow<PagingData<Music>> =
+        musicLocalDataSource.getAllPagedByNameAscOfPlaylist(playlistId)
 
-    override fun getAllPagedByNameAscOfArtist(artistId: UUID): Flow<PagingData<Music>> =
-        musicDataSource.getAllPagedByNameAscOfArtist(artistId)
+    override fun getAllPagedByNameAscOfArtist(artistId: Uuid): Flow<PagingData<Music>> =
+        musicLocalDataSource.getAllPagedByNameAscOfArtist(artistId)
 
-    override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
-        musicDataSource.getAllMusicFromAlbum(
+    override suspend fun getAllMusicFromAlbum(albumId: Uuid): List<Music> =
+        musicLocalDataSource.getAllMusicFromAlbum(
             albumId = albumId
         )
 
+    override suspend fun getAllMusicFromAlbum(albumId: Uuid, page: Int, pageSize: Int): List<Music> =
+        musicLocalDataSource.getAllMusicFromAlbum(
+            albumId = albumId,
+            page = page,
+            pageSize = pageSize,
+        )
+
     override fun searchFromAlbum(
-        albumId: UUID,
+        albumId: Uuid,
         search: String
     ): Flow<List<Music>> =
-        musicDataSource.searchFromAlbum(
+        musicLocalDataSource.searchFromAlbum(
             albumId = albumId,
             search = search,
         )
 
     override fun searchFromPlaylist(
-        playlistId: UUID,
+        playlistId: Uuid,
         search: String
     ): Flow<List<Music>> =
-        musicDataSource.searchFromPlaylist(
+        musicLocalDataSource.searchFromPlaylist(
             playlistId = playlistId,
             search = search,
         )
 
     override fun searchFromArtist(
-        artistId: UUID,
+        artistId: Uuid,
         search: String
     ): Flow<List<Music>> =
-        musicDataSource.searchFromArtist(
+        musicLocalDataSource.searchFromArtist(
             artistId = artistId,
             search = search,
         )
@@ -110,7 +139,7 @@ class MusicRepositoryImpl(
         folder: String,
         search: String
     ): Flow<List<Music>> =
-        musicDataSource.searchFromFolder(
+        musicLocalDataSource.searchFromFolder(
             folder = folder,
             search = search,
         )
@@ -119,70 +148,157 @@ class MusicRepositoryImpl(
         month: String,
         search: String
     ): Flow<List<Music>> =
-        musicDataSource.searchFromMonth(
+        musicLocalDataSource.searchFromMonth(
             month = month,
             search = search,
         )
 
     override fun searchAll(search: String): Flow<List<Music>> =
-        musicDataSource.searchAll(search)
+        musicLocalDataSource.searchAll(search)
 
-    override suspend fun getAllMusicFromArtist(artistId: UUID): List<Music> =
-        musicDataSource.getAllMusicFromArtist(artistId)
+    override suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music> =
+        musicLocalDataSource.getAllMusicFromArtist(artistId)
 
-    override suspend fun getAllMusicFromPlaylist(playlistId: UUID): List<Music> =
-        musicDataSource.getAllMusicFromPlaylist(playlistId)
+    override suspend fun getAllMusicFromArtist(artistId: Uuid, page: Int, pageSize: Int): List<Music> =
+        musicLocalDataSource.getAllMusicFromArtist(
+            artistId = artistId,
+            page = page,
+            pageSize = pageSize,
+        )
+
+    override suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music> =
+        musicLocalDataSource.getAllMusicFromPlaylist(playlistId)
+
+    override suspend fun getAllMusicFromPlaylist(playlistId: Uuid, page: Int, pageSize: Int): List<Music> =
+        musicLocalDataSource.getAllMusicFromPlaylist(
+            playlistId = playlistId,
+            page = page,
+            pageSize = pageSize,
+        )
 
     override suspend fun getAllMusicFromMonth(month: String): List<Music> =
-        musicDataSource.getAllMusicFromMonth(month)
+        musicLocalDataSource.getAllMusicFromMonth(month)
 
     override suspend fun getAllMusicFromFolder(folder: String): List<Music> =
-        musicDataSource.getAllMusicFromFolder(folder)
+        musicLocalDataSource.getAllMusicFromFolder(folder)
 
-    override fun getAlbumDuration(albumId: UUID): Flow<Duration> =
-        musicDataSource.getAlbumDuration(albumId)
+    override suspend fun getAllMusicFromFolder(folder: String, page: Int, pageSize: Int): List<Music> =
+        musicLocalDataSource.getAllMusicFromFolder(
+            folder = folder,
+            page = page,
+            pageSize = pageSize,
+        )
 
-    override fun getArtistDuration(artistId: UUID): Flow<Duration> =
-        musicDataSource.getArtistDuration(artistId)
+    override fun getAlbumDuration(albumId: Uuid): Flow<Duration> =
+        musicLocalDataSource.getAlbumDuration(albumId)
 
-    override fun getPlaylistDuration(playlistId: UUID): Flow<Duration> =
-        musicDataSource.getPlaylistDuration(playlistId)
+    override fun getArtistDuration(artistId: Uuid): Flow<Duration> =
+        musicLocalDataSource.getArtistDuration(artistId)
+
+    override fun getPlaylistDuration(playlistId: Uuid): Flow<Duration> =
+        musicLocalDataSource.getPlaylistDuration(playlistId)
 
     override fun getMonthMusicsDuration(month: String): Flow<Duration> =
-        musicDataSource.getMonthMusicsDuration(month)
+        musicLocalDataSource.getMonthMusicsDuration(month)
 
     override fun getFolderMusicsDuration(folder: String): Flow<Duration> =
-        musicDataSource.getFolderMusicsDuration(folder)
+        musicLocalDataSource.getFolderMusicsDuration(folder)
 
-    override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
-        musicDataSource.updateMusicsAlbum(newAlbumId, legacyAlbumId)
+    override suspend fun updateMusicsAlbum(newAlbumId: Uuid, legacyAlbumId: Uuid) {
+        musicLocalDataSource.updateMusicsAlbum(newAlbumId, legacyAlbumId)
     }
 
     override suspend fun cleanAllMusicCovers() {
-        musicDataSource.cleanAllMusicCovers()
+        musicLocalDataSource.cleanAllMusicCovers()
     }
 
-    override suspend fun getAllMusicPath(): List<String> =
-        musicDataSource.getAllMusicPath()
-
-    override fun getMostListened(): Flow<List<Music>> =
-        musicDataSource.getMostListened()
+    override suspend fun getAllMusicLocalPath(): List<String> =
+        musicLocalDataSource.getAllMusicLocalPath()
 
     override fun getAllMonthMusics(): Flow<List<MonthMusicsPreview>> =
-        musicDataSource.getAllMonthMusics()
+        musicLocalDataSource.getAllMonthMusics()
 
     override fun getMonthMusicPreview(month: String): Flow<MonthMusicsPreview?> =
-        musicDataSource.getMonthMusicPreview(month)
+        musicLocalDataSource.getMonthMusicPreview(month)
 
     override fun getAllMusicFolders(): Flow<List<MusicFolderPreview>> =
-        musicDataSource.getAllMusicFolders()
+        musicLocalDataSource.getAllMusicFolders()
+
+    override suspend fun getAllMusicFolders(page: Int, pageSize: Int): List<MusicFolderPreview> =
+        musicLocalDataSource.getAllMusicFolders(page = page, pageSize = pageSize)
 
     override fun getMusicFolderPreview(folder: String): Flow<MusicFolderPreview?> =
-        musicDataSource.getMusicFolderPreview(folder)
+        musicLocalDataSource.getMusicFolderPreview(folder)
 
     override suspend fun getSoulMixMusics(totalPerFolder: Int): List<Music> =
-        musicDataSource.getSoulMixMusics(totalPerFolder)
+        musicLocalDataSource.getSoulMixMusics(totalPerFolder)
+
+    override suspend fun getDeletedRemoteMusicIds(): List<String> {
+        val allRemoteIds: List<String> = musicLocalDataSource.getAllRemoteIdsPossessedByUser()
+        return musicRemoteDataSource.getDeletedRemoteMusicIds(idsToCheck = allRemoteIds)
+    }
+
+    override suspend fun getAllToSendToCloud(): List<Music> =
+        musicLocalDataSource.getAllToSendToCloud()
+
+    override suspend fun updateMusicToCloud(music: Music): CloudMusic? =
+        musicRemoteDataSource.updateMusicToCloud(music).getOrNull()
+
+    override suspend fun uploadMusicToCloud(music: Music): CloudMusic? =
+        musicRemoteDataSource.uploadMusicToCloud(music).getOrNull()
+
+    override suspend fun fetchUpdatedSongsFromCloud(lastSyncMillis: Long?): List<CloudMusic> {
+        var page = 0
+
+        val fetchedMusics: MutableList<CloudMusic> = mutableListOf()
+        while (true) {
+            val fetchedData = musicRemoteDataSource.getOfUser(
+                lastUpdateAt = lastSyncMillis,
+                maxPerPage = MAX_MUSICS_PER_PAGE,
+                page = page
+            )
+
+            fetchedMusics += fetchedData
+            if (fetchedData.size < MAX_MUSICS_PER_PAGE) break
+
+            page += 1
+        }
+
+        return fetchedMusics
+    }
+
+    override suspend fun getFromInformation(
+        musicName: String,
+        albumId: Uuid
+    ): Music? =
+        musicLocalDataSource.getFromInformation(
+            musicName = musicName,
+            albumId = albumId,
+        )
+
+    override suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>) {
+        musicLocalDataSource.deleteAllRemoteFieldsOfIds(remoteIds)
+    }
+
+    override suspend fun deleteAllRemoteFields() {
+        musicLocalDataSource.deleteAllRemoteFields()
+    }
+
+    override suspend fun deleteNotExisting() {
+        musicLocalDataSource.deleteNotExisting()
+    }
+
+    override suspend fun deleteSharedPlayedListMusics() {
+        musicLocalDataSource.deleteSharedPlayedListMusics()
+    }
+
+    private companion object {
+        const val MAX_MUSICS_PER_PAGE = 300
+    }
 
     override suspend fun getFromPath(path: String): Music? =
-        musicDataSource.getFromPath(path)
+        musicLocalDataSource.getFromPath(path)
+
+    override fun observeDataChanged(): Flow<Unit> =
+        musicLocalDataSource.observeDataChanged()
 }

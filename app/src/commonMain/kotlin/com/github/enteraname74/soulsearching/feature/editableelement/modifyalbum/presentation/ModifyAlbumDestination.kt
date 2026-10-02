@@ -2,18 +2,16 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifyalbu
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.enteraname74.domain.util.serializer.UUIDSerializer
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumNavigationState
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Serializable
 data class ModifyAlbumDestination(
-    @Serializable(with = UUIDSerializer::class)
-    val selectedAlbumId: UUID,
+    val selectedAlbumId: Uuid,
 ) : NavKey {
     companion object {
         fun register(

@@ -1,8 +1,6 @@
 package com.github.enteraname74.soulsearching.domain.model.settings
 
-import com.github.enteraname74.domain.model.player.PlayerMode
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingElement
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.player.PlayerMode
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 
@@ -14,7 +12,7 @@ class SoulSearchingSettingsImpl(
 ) : SoulSearchingSettings {
 
     override fun <T> set(key: String, value: T) {
-        when(value) {
+        when (value) {
             is String -> settings.putString(key, value)
             is Boolean -> settings.putBoolean(key, value)
             is Int -> settings.putInt(key, value)
@@ -30,7 +28,7 @@ class SoulSearchingSettingsImpl(
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(settingElement: SoulSearchingSettingElement<T>): T =
         with(settingElement) {
-            when(defaultValue) {
+            when (defaultValue) {
                 is String -> settings[key, defaultValue as String] as T
                 is Boolean -> settings[key, defaultValue as Boolean] as T
                 is Int -> settings[key, defaultValue as Int] as T

@@ -2,13 +2,11 @@ package com.github.enteraname74.soulsearching.coreui
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.soulsearching.coreui.ext.toPx
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
@@ -44,18 +42,19 @@ object UiConstants {
         val smallPlus: Dp = 24.dp
         val medium: Dp = 32.dp
         val mediumPlus: Dp = 40.dp
+        val mediumLarge: Dp = 48.dp
         val large: Dp = 64.dp
         val largePlus: Dp = 120.dp
         val veryLarge: Dp
-        @Composable
-        get() {
-            val windowSize = rememberWindowSize()
-            return if (windowSize == WindowSize.Large) {
-                148.dp
-            } else {
-                128.dp
+            @Composable
+            get() {
+                val windowSize = rememberWindowSize()
+                return if (windowSize == WindowSize.Large) {
+                    164.dp
+                } else {
+                    128.dp
+                }
             }
-        }
         val huge: Dp = 160.dp
 
         val veryHuge: Dp
@@ -75,15 +74,15 @@ object UiConstants {
      */
     object CoverSize {
         val small: Dp
-        @Composable
-        get() {
-            val windowSize = rememberWindowSize()
-            return if (windowSize == WindowSize.Large) {
-                65.dp
-            } else {
-                55.dp
+            @Composable
+            get() {
+                val windowSize = rememberWindowSize()
+                return if (windowSize == WindowSize.Large) {
+                    65.dp
+                } else {
+                    55.dp
+                }
             }
-        }
         val medium: Dp = 80.dp
         val huge: Dp = 200.dp
     }
@@ -93,11 +92,16 @@ object UiConstants {
      */
     object AnimationDuration {
         const val short: Int = 100
+        const val shortPlus: Int = 150
         const val medium: Int = 200
         const val normal: Int = 300
     }
 
     object Typography {
+        val titleBig: TextStyle = TextStyle(
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 36.sp
+        )
         val titleSmall: TextStyle = TextStyle(
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
@@ -123,4 +127,11 @@ object UiConstants {
             @Composable
             get() = MaterialTheme.typography.bodySmall
     }
+
+    object Size {
+        val textFieldMaxWidth: Dp = 500.dp
+    }
+
+    // Based on material values
+    const val ALPHA_DISABLED: Float = 0.38f
 }

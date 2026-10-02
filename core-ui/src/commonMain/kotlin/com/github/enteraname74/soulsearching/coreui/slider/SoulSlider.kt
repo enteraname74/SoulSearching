@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -19,24 +20,25 @@ import kotlin.math.max
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SoulSlider(
-    minValue: Float = 0f,
     maxValue: Float,
     value: Float,
     onThumbDragged: (tmpPosition: Float?) -> Unit,
     onValueChanged: (newValue: Float) -> Unit,
+    modifier: Modifier = Modifier,
+    minValue: Float = 0f,
     steps: Int = 0,
-) {
-    val fixedMin = max(0f, minValue)
-    val fixedMax = max(maxValue, 0f)
-
-    val interactionSource = remember { MutableInteractionSource() }
-    val sliderColors = SliderDefaults.colors(
+    sliderColors: SliderColors = SliderDefaults.colors(
         thumbColor = SoulSearchingColorTheme.colorScheme.onPrimary,
         activeTrackColor = SoulSearchingColorTheme.colorScheme.onPrimary,
         inactiveTrackColor = SoulSearchingColorTheme.colorScheme.secondary,
         activeTickColor = SoulSearchingColorTheme.colorScheme.onPrimary,
         inactiveTickColor = SoulSearchingColorTheme.colorScheme.secondary,
     )
+) {
+    val fixedMin = max(0f, minValue)
+    val fixedMax = max(maxValue, 0f)
+
+    val interactionSource = remember { MutableInteractionSource() }
 
 
     var overridePosition: Float? by rememberSaveable {
@@ -44,8 +46,7 @@ fun SoulSlider(
     }
 
     Slider(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         value = overridePosition ?: value.coerceIn(fixedMin, fixedMax),
         onValueChange = { tmpPosition ->
             overridePosition = tmpPosition

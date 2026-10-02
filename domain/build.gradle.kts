@@ -1,56 +1,28 @@
 plugins {
-    id("com.android.library")
-    alias(libs.plugins.kotlinMultiplatform)
+    id("soulsearching.kmp.compose")
     alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
-    androidTarget()
-    jvm("desktop")
-    jvmToolchain(17)
-
-    compilerOptions {
-        freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
-    }
-
+    android.namespace = "com.github.enteraname74.soulsearching.domain"
     sourceSets {
-        commonMain {
-            dependencies {
-                implementation(libs.androidx.paging.common)
-                implementation(libs.koin.core)
-                implementation(libs.coroutines.core)
-                implementation(libs.coroutines.core.jvm)
-                implementation(libs.jaudiotagger)
-                implementation(libs.kotlinx.serialization.json)
-            }
+        webMain.dependencies {
+            implementation(libs.kotlinx.browser)
+        }
+
+        commonMain.dependencies {
+            implementation(libs.compose.ui)
+            implementation(libs.androidx.paging.common)
+            implementation(libs.koin.core)
+            implementation(libs.coroutines.core)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.serialization.json)
         }
 
         commonTest.dependencies {
             implementation(project(":serialization"))
             implementation(libs.kotlin.test)
         }
-    }
-}
-
-android {
-    namespace = "com.github.enteraname74.soulsearching"
-    compileSdk = libs.versions.android.compile.sdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.min.sdk.get().toInt()
-    }
-
-    buildTypes {
-        create("dev-release")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        jvmToolchain(17)
     }
 }
 

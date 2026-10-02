@@ -1,14 +1,14 @@
 package com.github.enteraname74.soulsearching.features.filemanager.usecase
 
-import com.github.enteraname74.domain.model.AlbumWithMusics
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.domain.model.MusicArtist
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.model.AlbumWithMusics
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.ArtistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.MusicArtist
+import com.github.enteraname74.soulsearching.domain.repository.AlbumRepository
+import com.github.enteraname74.soulsearching.domain.repository.ArtistRepository
+import com.github.enteraname74.soulsearching.domain.repository.MusicArtistRepository
+import com.github.enteraname74.soulsearching.domain.repository.MusicRepository
+import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
 
 class UpdateArtistUseCase(
     private val artistRepository: ArtistRepository,

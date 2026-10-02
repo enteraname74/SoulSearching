@@ -2,15 +2,17 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.SortType
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.SortType
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
@@ -23,7 +25,7 @@ import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -31,6 +33,7 @@ fun AllMusicsComposable(
     musicState: AllMusicsState,
     multiSelectionState: MultiSelectionState,
     navigateToMonth: (month: String) -> Unit,
+    toggleMonthSelection: (month: String) -> Unit,
     setSortType: (SortType) -> Unit,
     toggleSortDirection: () -> Unit = {},
     isUsingSort: Boolean = true,
@@ -57,8 +60,10 @@ fun AllMusicsComposable(
             ) {
                 MusicMonthsHorizontalList(
                     months = musicState.monthMusicPreviews,
+                    selectedMonths = multiSelectionState.selectedIds,
+                    isSelectionModeOn = multiSelectionState.totalSelected > 0,
                     onMonthClicked = navigateToMonth,
-                    onMonthLongClicked = {}
+                    onMonthLongClicked = toggleMonthSelection,
                 )
             }
         }
@@ -89,7 +94,7 @@ fun AllMusicsComposable(
         }
         if (musics.itemCount > 0) {
             items(
-                key = { musics[it]?.musicId ?: UUID.randomUUID() },
+                key = { musics[it]?.musicId ?: Uuid.random() },
                 contentType = { ALL_MUSICS_CONTENT_TYPE },
                 count = musics.itemCount,
             ) { index ->
@@ -106,8 +111,8 @@ fun AllMusicsComposable(
                         },
                         onLongClick = { onLongClick(elt) },
                         isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
-                        isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
-                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                        isSelected = multiSelectionState.selectedIds.contains(elt.musicId.toString()),
+                        isSelectionModeOn = multiSelectionState.totalSelected > 0,
                     )
                 }
             }
@@ -122,7 +127,14 @@ fun AllMusicsComposable(
                 key = ALL_MUSICS_NO_ELEMENT_KEY,
                 contentType = ALL_MUSICS_NO_ELEMENT_CONTENT_TYPE,
             ) {
-                NoElementView()
+                EmptyCard(
+                    modifier = Modifier
+                        .padding(
+                            end = UiConstants.Spacing.medium,
+                        ),
+                    title = strings.emptyMusics,
+                    description = strings.emptyMusicsExplanations,
+                )
             }
         }
     }

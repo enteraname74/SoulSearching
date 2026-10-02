@@ -1,9 +1,6 @@
-@file:Suppress("Deprecation")
 package com.github.enteraname74.soulsearching.feature.search
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,10 +11,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
-import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,8 +30,11 @@ import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.ext.swipeableView
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.composable.SoulSearchBar
+import com.github.enteraname74.soulsearching.feature.swipeableview.SwipeableViewManager
+import com.github.enteraname74.soulsearching.feature.swipeableview.SwipeableViewManagerHandler
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -44,7 +42,7 @@ import kotlin.math.roundToInt
 @Composable
 fun SearchView(
     maxHeight: Float,
-    draggableState: SwipeableState<BottomSheetStates>,
+    searchViewManager: SwipeableViewManager,
     placeholder: String,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     focusRequester: FocusRequester,
@@ -56,28 +54,25 @@ fun SearchView(
     val focusManager = LocalFocusManager.current
     val lazyListState = rememberLazyListState()
 
+    SwipeableViewManagerHandler(
+        swipeableViewManager = searchViewManager,
+    )
+
     SoulBackHandler(
-        draggableState.currentValue == BottomSheetStates.EXPANDED
-                && playerViewManager.currentValue != BottomSheetStates.EXPANDED
+        searchViewManager.currentValue == BottomSheetStates.EXPANDED
+            && playerViewManager.currentValue != BottomSheetStates.EXPANDED
     ) {
-        focusRequester.freeFocus()
         focusManager.clearFocus()
-        coroutineScope.launch {
-            draggableState.animateTo(
-                BottomSheetStates.COLLAPSED,
-                tween(UiConstants.AnimationDuration.normal)
-            )
-        }
+        searchViewManager.animateTo(BottomSheetStates.COLLAPSED)
     }
 
     var searchText by rememberSaveable {
         mutableStateOf("")
     }
 
-    if (draggableState.currentValue == BottomSheetStates.COLLAPSED) {
-        searchText = ""
-        SideEffect {
-            focusRequester.freeFocus()
+    LaunchedEffect(searchViewManager.currentValue) {
+        if (searchViewManager.currentValue == BottomSheetStates.COLLAPSED) {
+            searchText = ""
             focusManager.clearFocus()
         }
     }
@@ -87,15 +82,14 @@ fun SearchView(
             .offset {
                 IntOffset(
                     x = 0,
-                    y = draggableState.offset.value.roundToInt()
+                    y = searchViewManager.offset.roundToInt()
                 )
             }
-            .swipeable(
-                state = draggableState,
-                orientation = Orientation.Vertical,
+            .swipeableView(
+                swipeableViewManager = searchViewManager,
                 anchors = mapOf(
                     maxHeight to BottomSheetStates.COLLAPSED,
-                    0f to BottomSheetStates.EXPANDED
+                    0f to BottomSheetStates.EXPANDED,
                 )
             )
     ) {
@@ -123,14 +117,8 @@ fun SearchView(
                 focusManager = focusManager,
                 focusRequester = focusRequester,
                 onClose = {
-                    focusRequester.freeFocus()
                     focusManager.clearFocus()
-                    coroutineScope.launch {
-                        draggableState.animateTo(
-                            targetValue = BottomSheetStates.COLLAPSED,
-                            anim = tween(UiConstants.AnimationDuration.normal),
-                        )
-                    }
+                    searchViewManager.animateTo(BottomSheetStates.COLLAPSED)
                 }
             )
 
