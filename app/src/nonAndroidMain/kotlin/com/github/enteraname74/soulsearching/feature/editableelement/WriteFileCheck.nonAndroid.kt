@@ -8,6 +8,7 @@ import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearching
 actual fun WriteFilesCheck(
     onSave: () -> Unit,
     musicsToSave: List<Music>,
+    conditionToAskWriteFiles: () -> Boolean,
     settings: SoulSearchingSettings,
     content: @Composable (onSave: () -> Unit) -> Unit,
 ) {

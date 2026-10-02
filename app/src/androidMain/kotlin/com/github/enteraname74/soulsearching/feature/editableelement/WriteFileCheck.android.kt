@@ -18,6 +18,7 @@ import com.github.enteraname74.soulsearching.model.utils.AndroidUtils
 actual fun WriteFilesCheck(
     onSave: () -> Unit,
     musicsToSave: List<Music>,
+    conditionToAskWriteFiles: () -> Boolean,
     settings: SoulSearchingSettings,
     content: @Composable (onSave: () -> Unit) -> Unit,
 ) {
@@ -33,7 +34,7 @@ actual fun WriteFilesCheck(
         }
 
     fun acceptWriteFile() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && isMusicFileModificationOn) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && isMusicFileModificationOn && conditionToAskWriteFiles()) {
 
             val uris = mutableListOf<Uri>()
 

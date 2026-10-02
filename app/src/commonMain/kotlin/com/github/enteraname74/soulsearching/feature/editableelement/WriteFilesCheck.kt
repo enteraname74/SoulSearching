@@ -9,6 +9,7 @@ import com.github.enteraname74.soulsearching.di.injectElement
 expect fun WriteFilesCheck(
     onSave: () -> Unit,
     musicsToSave: List<Music>,
+    conditionToAskWriteFiles: () -> Boolean = { true },
     settings: SoulSearchingSettings = injectElement(),
     content: @Composable (onSave: () -> Unit) -> Unit,
 )

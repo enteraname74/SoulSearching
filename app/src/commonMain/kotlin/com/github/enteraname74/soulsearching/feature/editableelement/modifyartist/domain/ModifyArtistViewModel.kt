@@ -161,11 +161,19 @@ class ModifyArtistViewModel(
                         cover = (state.initialArtist.artist.cover as? Cover.CoverFile)?.copy(
                             fileCoverId = coverFile
                         ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) },
-                        artistName = form.getArtistName().trim(),
+                        artistName = form.getArtistName(),
                     )
                 )
 
-                updateArtistUseCase(newArtistWithMusicsInformation = newArtistInformation)
+                /*
+                If the name changed, we need to do a whole update (album, songs,...).
+                Else, a simple update of the cover should do the job.
+                 */
+                if (form.getArtistName() != state.initialArtist.artist.artistName) {
+                    updateArtistUseCase(newArtistWithMusicsInformation = newArtistInformation)
+                } else {
+                    updateArtistUseCase.simpleUpsert(newArtistInformation.artist)
+                }
             }
 
             _navigationState.value = ModifyArtistNavigationState.Back
