@@ -14,4 +14,5 @@ data class LightListeningStatistics(
     val playlistId: Uuid?,
     val albumId: Uuid?,
     val artistId: Uuid?,
+    val collectionId: Uuid?,
 )

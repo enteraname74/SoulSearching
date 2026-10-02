@@ -12,8 +12,10 @@ import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearching
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementAlbumNbPlayedUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementArtistNbPlayedUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementCollectionNbPlayedUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementPlaylistNbPlayedUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
@@ -53,6 +55,7 @@ class MusicListDetailViewHolder(
     private val commonArtistUseCase: CommonArtistUseCase,
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
+    private val commonCollectionUseCase: CommonCollectionUseCase,
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
     private val multiSelectionManager: MultiSelectionManager,
@@ -63,6 +66,7 @@ class MusicListDetailViewHolder(
     private val incrementAlbumNbPlayedUseCase: IncrementAlbumNbPlayedUseCase,
     private val incrementPlaylistNbPlayedUseCase: IncrementPlaylistNbPlayedUseCase,
     private val incrementArtistNbPlayedUseCase: IncrementArtistNbPlayedUseCase,
+    private val incrementCollectionNbPlayedUseCase: IncrementCollectionNbPlayedUseCase,
 ) : SoulViewModelHolderV2<MusicListDetailNavScope, MusicListDetailState>() {
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
         .stateIn(
@@ -97,6 +101,7 @@ class MusicListDetailViewHolder(
                 is MusicListDetailId.Folder -> folderFlow(detailId)
                 is MusicListDetailId.Month -> monthFlow(detailId)
                 is MusicListDetailId.Playlist -> playlistFlow(detailId)
+                is MusicListDetailId.Collection -> collectionFlow(detailId)
             }.collectLatest { state ->
                 updateState { state }
             }
@@ -277,6 +282,47 @@ class MusicListDetailViewHolder(
             }
         }
 
+    private fun collectionFlow(
+        detailId: MusicListDetailId.Collection,
+    ): Flow<MusicListDetailState> =
+        combine(
+            commonMusicUseCase.getCollectionDuration(detailId.collectionId),
+            commonCollectionUseCase.getCollectionPreview(detailId.collectionId),
+            searchResult,
+            playbackManager.getCachedPlaylist(detailId.collectionId.toString()),
+        ) { duration, collectionPreview, searchMusics, cachedPlaylist ->
+            when {
+                collectionPreview == null -> MusicListDetailState.Error(
+                    error = strings.collectionDoesNotExists,
+                    navigateBack = { navigate { navigateBack() } },
+                )
+                else -> MusicListDetailState.Data(
+                    cachedPlayedListUiSpec = cachedPlaylist?.toUiSpec(),
+                    type = strings.collectionDetailTitle,
+                    title = collectionPreview.name,
+                    subTitle = strings.musics(collectionPreview.totalMusics),
+                    // TODO COLLECTION: Add cover support
+                    cover = null,
+                    musics = musics,
+                    duration = duration,
+                    searchMusics = searchMusics,
+                    optionalContent = null,
+                    musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
+                    navigateBack = { navigate { navigateBack() } },
+                    onSubtitleClicked = null,
+                    onCloseSelection = ::onCloseSelection,
+                    onLongClickOnMusic = ::onLongClickOnMusic,
+                    onSearch = ::onSearch,
+                    showMusicBottomSheet = ::showMusicBottomSheet,
+                    onPlay = ::onPlay,
+                    onShuffle = ::onShuffle,
+                    // TODO COLLECTION: Add edit support
+                    onEdit = null,
+                    onCoverLoaded = ::onCoverLoaded,
+                )
+            }
+        }
+
     private fun monthFlow(
         detailId: MusicListDetailId.Month,
     ): Flow<MusicListDetailState> =
@@ -444,6 +490,7 @@ class MusicListDetailViewHolder(
                 // no-op
             }
             is MusicListDetailId.Playlist -> incrementPlaylistNbPlayedUseCase(detailId.playlistId)
+            is MusicListDetailId.Collection -> incrementCollectionNbPlayedUseCase(detailId.collectionId)
         }
     }
 

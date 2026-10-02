@@ -30,6 +30,11 @@ interface ListeningStatisticsLocalDataSource {
         localMonthYear: LocalMonthYear,
     ): ListeningStatistics.PlaylistStats?
 
+    suspend fun getCollectionStatistics(
+        collectionId: Uuid,
+        localMonthYear: LocalMonthYear,
+    ): ListeningStatistics.CollectionStats?
+
     fun getPeriodStatistics(period: Period): PeriodStatistics
 
     fun observeAllMonthPeriods(): Flow<List<Period.Month>>

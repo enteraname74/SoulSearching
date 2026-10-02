@@ -1,8 +1,8 @@
 package com.github.enteraname74.localdb.model
 
-import androidx.room3.ColumnInfo
 import androidx.room3.Entity
 import androidx.room3.ForeignKey
+import androidx.room3.Index
 import androidx.room3.PrimaryKey
 import com.github.enteraname74.soulsearching.domain.model.MusicArtist
 import kotlin.uuid.Uuid
@@ -24,12 +24,16 @@ import kotlin.uuid.Uuid
             childColumns = ["artistId"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [
+        Index(value = ["artistId", "musicId"], unique = true),
+        Index(value = ["musicId"]),
+    ],
 )
 data class RoomMusicArtist(
     @PrimaryKey val id: String,
-    @ColumnInfo(index = true) val musicId: Uuid = Uuid.random(),
-    @ColumnInfo(index = true) val artistId: Uuid = Uuid.random()
+    val musicId: Uuid = Uuid.random(),
+    val artistId: Uuid = Uuid.random()
 )
 
 /**

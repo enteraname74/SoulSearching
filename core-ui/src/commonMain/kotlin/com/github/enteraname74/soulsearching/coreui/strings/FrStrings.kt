@@ -329,6 +329,7 @@ object FrStrings : Strings {
     override val albumDoesNotExists = "L'album n'existe pas"
     override val artistDoesNotExists = "L'artiste n'existe pas"
     override val playlistDoesNotExists = "La playlist n'existe pas"
+    override val collectionDoesNotExists = "La collection n'existe pas"
     override val folderDoesNotExists = "Le dossier n'existe pas"
     override val monthPlaylistDoesNotExists = "La playlist de mois n'existe pas"
 

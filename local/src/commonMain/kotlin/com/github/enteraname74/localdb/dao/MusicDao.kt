@@ -218,6 +218,82 @@ interface MusicDao {
     fun getAllPagedByNameAscOfArtist(artistId: Uuid): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
+    @Query(
+        """
+        SELECT music.*
+        FROM RoomMusic AS music
+        WHERE music.isHidden = 0
+          AND music.scope != 'SharedPlayedList'
+          AND (
+              EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionAlbum AS collectionAlbum
+                  WHERE collectionAlbum.collectionId = :collectionId
+                    AND collectionAlbum.albumId = music.albumId
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionArtist AS collectionArtist
+                  INNER JOIN RoomMusicArtist AS musicArtist
+                      ON musicArtist.artistId = collectionArtist.artistId
+                  WHERE collectionArtist.collectionId = :collectionId
+                    AND musicArtist.musicId = music.musicId
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionPlaylist AS collectionPlaylist
+                  INNER JOIN RoomMusicPlaylist AS musicPlaylist
+                      ON musicPlaylist.playlistId = collectionPlaylist.playlistId
+                  WHERE collectionPlaylist.collectionId = :collectionId
+                    AND musicPlaylist.musicId = music.musicId
+              )
+          )
+        ORDER BY music.name ASC
+    """
+    )
+    fun getAllPagedOfCollection(
+        collectionId: Uuid,
+    ): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+        SELECT music.*
+        FROM RoomMusic AS music
+        WHERE music.isHidden = 0
+          AND music.scope != 'SharedPlayedList'
+          AND (
+              EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionAlbum AS collectionAlbum
+                  WHERE collectionAlbum.collectionId = :collectionId
+                    AND collectionAlbum.albumId = music.albumId
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionArtist AS collectionArtist
+                  INNER JOIN RoomMusicArtist AS musicArtist
+                      ON musicArtist.artistId = collectionArtist.artistId
+                  WHERE collectionArtist.collectionId = :collectionId
+                    AND musicArtist.musicId = music.musicId
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionPlaylist AS collectionPlaylist
+                  INNER JOIN RoomMusicPlaylist AS musicPlaylist
+                      ON musicPlaylist.playlistId = collectionPlaylist.playlistId
+                  WHERE collectionPlaylist.collectionId = :collectionId
+                    AND musicPlaylist.musicId = music.musicId
+              )
+          )
+        ORDER BY music.name ASC
+    """
+    )
+    suspend fun getAllFromCollection(
+        collectionId: Uuid,
+    ): List<RoomCompleteMusic>
+
+    @Transaction
     @Query("SELECT * FROM RoomMusic WHERE musicId IN (:ids)")
     suspend fun getAllFromId(ids: List<Uuid>): List<RoomCompleteMusic>
 
@@ -453,6 +529,71 @@ interface MusicDao {
         search: String,
     ): Flow<List<RoomCompleteMusic>>
 
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+    SELECT music.*
+    FROM RoomMusic AS music
+    WHERE music.isHidden = 0
+      AND music.scope != 'SharedPlayedList'
+
+      AND (
+          EXISTS (
+              SELECT 1
+              FROM RoomCollectionAlbum AS collectionAlbum
+              WHERE collectionAlbum.collectionId = :collectionId
+                AND collectionAlbum.albumId = music.albumId
+          )
+          OR EXISTS (
+              SELECT 1
+              FROM RoomCollectionArtist AS collectionArtist
+              INNER JOIN RoomMusicArtist AS collectionMusicArtist
+                  ON collectionMusicArtist.artistId = collectionArtist.artistId
+              WHERE collectionArtist.collectionId = :collectionId
+                AND collectionMusicArtist.musicId = music.musicId
+          )
+          OR EXISTS (
+              SELECT 1
+              FROM RoomCollectionPlaylist AS collectionPlaylist
+              INNER JOIN RoomMusicPlaylist AS collectionMusicPlaylist
+                  ON collectionMusicPlaylist.playlistId =
+                     collectionPlaylist.playlistId
+              WHERE collectionPlaylist.collectionId = :collectionId
+                AND collectionMusicPlaylist.musicId = music.musicId
+          )
+      )
+
+      AND (
+          music.name LIKE '%' || :search || '%' COLLATE NOCASE
+
+          OR EXISTS (
+              SELECT 1
+              FROM RoomAlbum AS album
+              WHERE album.albumId = music.albumId
+                AND album.albumName LIKE '%' || :search || '%'
+                    COLLATE NOCASE
+          )
+
+          OR EXISTS (
+              SELECT 1
+              FROM RoomArtist AS artist
+              INNER JOIN RoomMusicArtist AS searchedMusicArtist
+                  ON searchedMusicArtist.artistId = artist.artistId
+              WHERE searchedMusicArtist.musicId = music.musicId
+                AND artist.artistName LIKE '%' || :search || '%'
+                    COLLATE NOCASE
+          )
+      )
+
+    ORDER BY music.name COLLATE NOCASE ASC, music.musicId ASC
+    """
+    )
+    fun searchFromCollection(
+        collectionId: Uuid,
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
+
     @Query(
         """
             SELECT COALESCE(SUM(music.duration), 0) FROM RoomMusic AS music
@@ -464,6 +605,40 @@ interface MusicDao {
         """
     )
     fun getPlaylistDuration(playlistId: Uuid): Flow<Long>
+
+    @Query(
+        """
+        SELECT COALESCE(SUM(music.duration), 0)
+        FROM RoomMusic AS music
+        WHERE music.isHidden = 0
+          AND music.scope != 'SharedPlayedList'
+          AND (
+              EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionAlbum AS collectionAlbum
+                  WHERE collectionAlbum.collectionId = :collectionId
+                    AND collectionAlbum.albumId = music.albumId
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionArtist AS collectionArtist
+                  INNER JOIN RoomMusicArtist AS musicArtist
+                      ON musicArtist.artistId = collectionArtist.artistId
+                  WHERE collectionArtist.collectionId = :collectionId
+                    AND musicArtist.musicId = music.musicId
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionPlaylist AS collectionPlaylist
+                  INNER JOIN RoomMusicPlaylist AS musicPlaylist
+                      ON musicPlaylist.playlistId = collectionPlaylist.playlistId
+                  WHERE collectionPlaylist.collectionId = :collectionId
+                    AND musicPlaylist.musicId = music.musicId
+              )
+          )
+        """
+    )
+    fun getCollectionDuration(collectionId: Uuid): Flow<Long>
 
     @Transaction
     @Query(

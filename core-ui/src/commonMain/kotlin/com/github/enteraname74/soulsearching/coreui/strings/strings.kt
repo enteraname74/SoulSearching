@@ -331,10 +331,12 @@ interface Strings {
     val albumDoesNotExists: String
     val artistDoesNotExists: String
     val playlistDoesNotExists: String
+    val collectionDoesNotExists: String
     val folderDoesNotExists: String
     val monthPlaylistDoesNotExists: String
 
     val playlistDetailTitle: String get() = "Playlist"
+    val collectionDetailTitle: String get() = "Collection"
     val artistDetailTitle: String
     val albumDetailTitle: String get() = "Album"
     val monthDetailTitle: String

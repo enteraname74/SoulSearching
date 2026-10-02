@@ -10,6 +10,7 @@ import com.github.enteraname74.localdb.model.RoomAlbum
 import com.github.enteraname74.localdb.model.RoomArtist
 import com.github.enteraname74.localdb.model.RoomMusic
 import com.github.enteraname74.localdb.model.RoomPlaylist
+import com.github.enteraname74.localdb.model.collection.RoomCollection
 import kotlin.time.Duration
 import kotlin.uuid.Uuid
 
@@ -39,12 +40,19 @@ import kotlin.uuid.Uuid
             childColumns = ["artistId"],
             onDelete = ForeignKey.CASCADE,
         ),
+        ForeignKey(
+            entity = RoomCollection::class,
+            parentColumns = ["collectionId"],
+            childColumns = ["collectionId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index("musicId"),
         Index("playlistId"),
         Index("albumId"),
         Index("artistId"),
+        Index("collectionId"),
     ]
 )
 data class RoomListeningStatistics(
@@ -58,6 +66,7 @@ data class RoomListeningStatistics(
     val playlistId: Uuid?,
     val albumId: Uuid?,
     val artistId: Uuid?,
+    val collectionId: Uuid?,
 )
 
 fun ListeningStatistics.toRoomListeningStatistics(): RoomListeningStatistics =
@@ -70,5 +79,6 @@ fun ListeningStatistics.toRoomListeningStatistics(): RoomListeningStatistics =
         playlistId = (this as? ListeningStatistics.PlaylistStats)?.playlist?.id,
         albumId = (this as? ListeningStatistics.AlbumStats)?.album?.id,
         artistId = (this as? ListeningStatistics.ArtistStats)?.artist?.id,
+        collectionId = (this as? ListeningStatistics.CollectionStats)?.collection?.id,
         lastUpdatedMillis = lastUpdatedMillis,
     )

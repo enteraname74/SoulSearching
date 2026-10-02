@@ -328,6 +328,7 @@ object EnStrings : Strings {
     override val albumDoesNotExists = "This album doesn't exist"
     override val artistDoesNotExists = "This artist doesn't exist"
     override val playlistDoesNotExists = "This playlist doesn't exist"
+    override val collectionDoesNotExists = "This collection doesn't exist"
     override val folderDoesNotExists = "This folder doesn't exist"
     override val monthPlaylistDoesNotExists = "This month playlist doesn't exist"
 

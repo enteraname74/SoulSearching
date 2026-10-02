@@ -11,11 +11,13 @@ import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistU
 import com.github.enteraname74.soulsearching.domain.usecase.artist.DeleteArtistUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.GetPeriodStatisticsUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementAlbumNbPlayedUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementArtistNbPlayedUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementCollectionNbPlayedUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementMusicListeningTimeUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementMusicNbPlayedUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementPlaylistNbPlayedUseCase
@@ -74,6 +76,9 @@ val domainModule: Module = module {
 
     // Folder
     factoryOf(::CommonFolderUseCase)
+
+    // Collection
+    factoryOf(::CommonCollectionUseCase)
 
     // ImageCover
     factoryOf(::CommonCoverUseCase)
@@ -142,6 +147,7 @@ val domainModule: Module = module {
     factoryOf(::GetPeriodStatisticsUseCase)
     factoryOf(::IncrementAlbumNbPlayedUseCase)
     factoryOf(::IncrementArtistNbPlayedUseCase)
+    factoryOf(::IncrementCollectionNbPlayedUseCase)
     factoryOf(::IncrementMusicNbPlayedUseCase)
     factoryOf(::IncrementPlaylistNbPlayedUseCase)
     factoryOf(::IncrementMusicListeningTimeUseCase)

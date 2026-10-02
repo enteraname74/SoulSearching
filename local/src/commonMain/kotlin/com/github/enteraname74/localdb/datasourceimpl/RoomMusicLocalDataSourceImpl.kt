@@ -6,6 +6,14 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.map
 import androidx.room3.useWriterConnection
+import com.github.enteraname74.localdb.AppDatabase
+import com.github.enteraname74.localdb.dao.MusicDao
+import com.github.enteraname74.localdb.ext.toRoomMusicArtists
+import com.github.enteraname74.localdb.model.RoomCompleteMusic
+import com.github.enteraname74.localdb.model.toRoomAlbum
+import com.github.enteraname74.localdb.model.toRoomArtist
+import com.github.enteraname74.localdb.model.toRoomMusic
+import com.github.enteraname74.localdb.utils.PagingUtils
 import com.github.enteraname74.soulsearching.domain.model.Artist
 import com.github.enteraname74.soulsearching.domain.model.MonthMusicsPreview
 import com.github.enteraname74.soulsearching.domain.model.Music
@@ -15,22 +23,14 @@ import com.github.enteraname74.soulsearching.domain.model.SortType
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.util.DateUtils
-import com.github.enteraname74.localdb.AppDatabase
-import com.github.enteraname74.localdb.dao.MusicDao
-import com.github.enteraname74.localdb.ext.toRoomMusicArtists
-import com.github.enteraname74.localdb.model.RoomCompleteMusic
-import com.github.enteraname74.localdb.model.toRoomAlbum
-import com.github.enteraname74.localdb.model.toRoomArtist
-import com.github.enteraname74.localdb.model.toRoomMusic
-import com.github.enteraname74.localdb.utils.PagingUtils
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlin.uuid.Uuid
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.uuid.Uuid
 
 /**
  * Implementation of the MusicDataSource with Room's DAO.
@@ -272,6 +272,9 @@ internal class RoomMusicLocalDataSourceImpl(
     override fun getAllPagedByNameAscOfArtist(artistId: Uuid): Flow<PagingData<Music>> =
         withPaging { getAllPagedByNameAscOfArtist(artistId) }
 
+    override fun getAllPagedOfCollection(collectionId: Uuid): Flow<PagingData<Music>> =
+        withPaging { getAllPagedOfCollection(collectionId) }
+
     override suspend fun getAllMusicFromAlbum(albumId: Uuid): List<Music> =
         appDatabase.musicDao.getAllMusicFromAlbum(
             albumId = albumId
@@ -308,6 +311,17 @@ internal class RoomMusicLocalDataSourceImpl(
     ): Flow<List<Music>> =
         appDatabase.musicDao.searchFromPlaylist(
             playlistId = playlistId,
+            search = search,
+        ).map { list ->
+            list.map { it.toMusic() }
+        }
+
+    override fun searchFromCollection(
+        collectionId: Uuid,
+        search: String,
+    ): Flow<List<Music>> =
+        appDatabase.musicDao.searchFromCollection(
+            collectionId = collectionId,
             search = search,
         ).map { list ->
             list.map { it.toMusic() }
@@ -371,6 +385,9 @@ internal class RoomMusicLocalDataSourceImpl(
     override suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music> =
         appDatabase.musicDao.getAllMusicFromPlaylist(playlistId).map { it.toMusic() }
 
+    override suspend fun getAllMusicsFromCollection(collectionId: Uuid): List<Music> =
+        appDatabase.musicDao.getAllFromCollection(collectionId).map { it.toMusic() }
+
     override suspend fun getAllMusicFromPlaylist(
         playlistId: Uuid,
         page: Int,
@@ -413,6 +430,9 @@ internal class RoomMusicLocalDataSourceImpl(
 
     override fun getPlaylistDuration(playlistId: Uuid): Flow<Duration> =
         appDatabase.musicDao.getPlaylistDuration(playlistId).map { it.milliseconds }
+
+    override fun getCollectionDuration(collectionId: Uuid): Flow<Duration> =
+        appDatabase.musicDao.getCollectionDuration(collectionId).map { it.milliseconds }
 
     override fun getMonthMusicsDuration(month: String): Flow<Duration> =
         appDatabase.musicDao.getMonthMusicsDuration(month).map { it.milliseconds }

@@ -96,6 +96,9 @@ class MusicRepositoryImpl(
     override fun getAllPagedByNameAscOfArtist(artistId: Uuid): Flow<PagingData<Music>> =
         musicLocalDataSource.getAllPagedByNameAscOfArtist(artistId)
 
+    override fun getAllPagedOfCollection(collectionId: Uuid): Flow<PagingData<Music>> =
+        musicLocalDataSource.getAllPagedOfCollection(collectionId)
+
     override suspend fun getAllMusicFromAlbum(albumId: Uuid): List<Music> =
         musicLocalDataSource.getAllMusicFromAlbum(
             albumId = albumId
@@ -123,6 +126,15 @@ class MusicRepositoryImpl(
     ): Flow<List<Music>> =
         musicLocalDataSource.searchFromPlaylist(
             playlistId = playlistId,
+            search = search,
+        )
+
+    override fun searchFromCollection(
+        collectionId: Uuid,
+        search: String,
+    ): Flow<List<Music>> =
+        musicLocalDataSource.searchFromCollection(
+            collectionId = collectionId,
             search = search,
         )
 
@@ -169,6 +181,9 @@ class MusicRepositoryImpl(
     override suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music> =
         musicLocalDataSource.getAllMusicFromPlaylist(playlistId)
 
+    override suspend fun getAllMusicsFromCollection(collectionId: Uuid): List<Music> =
+        musicLocalDataSource.getAllMusicsFromCollection(collectionId)
+
     override suspend fun getAllMusicFromPlaylist(playlistId: Uuid, page: Int, pageSize: Int): List<Music> =
         musicLocalDataSource.getAllMusicFromPlaylist(
             playlistId = playlistId,
@@ -197,6 +212,9 @@ class MusicRepositoryImpl(
 
     override fun getPlaylistDuration(playlistId: Uuid): Flow<Duration> =
         musicLocalDataSource.getPlaylistDuration(playlistId)
+
+    override fun getCollectionDuration(collectionId: Uuid): Flow<Duration> =
+        musicLocalDataSource.getCollectionDuration(collectionId)
 
     override fun getMonthMusicsDuration(month: String): Flow<Duration> =
         musicLocalDataSource.getMonthMusicsDuration(month)

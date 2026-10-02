@@ -159,6 +159,10 @@ class CommonMusicUseCase(
                 playlistId = musicListDetailId.playlistId,
                 search = search,
             )
+            is MusicListDetailId.Collection -> musicRepository.searchFromCollection(
+                collectionId = musicListDetailId.collectionId,
+                search = search,
+            )
         }
 
     fun observeMusicsFromMusicListDetailId(
@@ -170,6 +174,7 @@ class CommonMusicUseCase(
             is MusicListDetailId.Folder -> musicRepository.getAllPagedByNameAscOfFolder(musicListDetailId.folder)
             is MusicListDetailId.Month -> musicRepository.getAllPagedByNameAscOfMonth(musicListDetailId.month)
             is MusicListDetailId.Playlist -> musicRepository.getAllPagedByNameAscOfPlaylist(musicListDetailId.playlistId)
+            is MusicListDetailId.Collection -> musicRepository.getAllPagedOfCollection(musicListDetailId.collectionId)
         }
 
     suspend fun getMusicsFromMusicListDetailId(
@@ -181,6 +186,7 @@ class CommonMusicUseCase(
             is MusicListDetailId.Folder -> musicRepository.getAllMusicFromFolder(musicListDetailId.folder)
             is MusicListDetailId.Month -> musicRepository.getAllMusicFromMonth(musicListDetailId.month)
             is MusicListDetailId.Playlist -> musicRepository.getAllMusicFromPlaylist(musicListDetailId.playlistId)
+            is MusicListDetailId.Collection -> musicRepository.getAllMusicsFromCollection(musicListDetailId.collectionId)
         }
 
     fun searchAll(
@@ -196,6 +202,9 @@ class CommonMusicUseCase(
 
     fun getPlaylistDuration(playlistId: Uuid): Flow<Duration> =
         musicRepository.getPlaylistDuration(playlistId)
+
+    fun getCollectionDuration(collectionId: Uuid): Flow<Duration> =
+        musicRepository.getCollectionDuration(collectionId)
 
     fun getMonthMusicsDuration(month: String): Flow<Duration> =
         musicRepository.getMonthMusicsDuration(month)

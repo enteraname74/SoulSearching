@@ -16,6 +16,7 @@ import com.github.enteraname74.localdb.converters.UuidTypeConverters
 import com.github.enteraname74.localdb.dao.AlbumDao
 import com.github.enteraname74.localdb.dao.ArtistDao
 import com.github.enteraname74.localdb.dao.CloudPreferencesDao
+import com.github.enteraname74.localdb.dao.CollectionDao
 import com.github.enteraname74.localdb.dao.CoverDao
 import com.github.enteraname74.localdb.dao.DeviceIdDao
 import com.github.enteraname74.localdb.dao.FolderDao
@@ -46,6 +47,10 @@ import com.github.enteraname74.localdb.model.RoomSimpleUser
 import com.github.enteraname74.localdb.model.RoomUser
 import com.github.enteraname74.localdb.model.RoomUserInscriptionCode
 import com.github.enteraname74.localdb.model.RoomUserStorage
+import com.github.enteraname74.localdb.model.collection.RoomCollection
+import com.github.enteraname74.localdb.model.collection.RoomCollectionAlbum
+import com.github.enteraname74.localdb.model.collection.RoomCollectionArtist
+import com.github.enteraname74.localdb.model.collection.RoomCollectionPlaylist
 import com.github.enteraname74.localdb.model.listeningstatistics.RoomListeningStatistics
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
@@ -56,6 +61,7 @@ import com.github.enteraname74.localdb.model.player.RoomSharedPlayedListUser
 import com.github.enteraname74.localdb.view.CurrentPlayerMusicsView
 import com.github.enteraname74.localdb.view.RoomAlbumPreview
 import com.github.enteraname74.localdb.view.RoomArtistPreview
+import com.github.enteraname74.localdb.view.RoomCollectionPreview
 import com.github.enteraname74.localdb.view.RoomMonthMusicPreview
 import com.github.enteraname74.localdb.view.RoomMusicFolderPreview
 import com.github.enteraname74.localdb.view.RoomPlaylistPreview
@@ -83,6 +89,10 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
         RoomSharedPlayedListPreview::class,
         RoomUserStorage::class,
         RoomListeningStatistics::class,
+        RoomCollection::class,
+        RoomCollectionAlbum::class,
+        RoomCollectionArtist::class,
+        RoomCollectionPlaylist::class,
     ],
     views = [
         CurrentPlayerMusicsView::class,
@@ -91,6 +101,7 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
         RoomAlbumPreview::class,
         RoomArtistPreview::class,
         RoomPlaylistPreview::class,
+        RoomCollectionPreview::class,
     ]
 )
 @ConstructedBy(AppDatabaseConstructor::class)
@@ -123,6 +134,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val playerMusicUserDao: PlayerMusicUserDao
     abstract val sharedPlayedListPreviewDao: SharedPlayedListPreviewDao
     abstract val listeningStatisticsDao: ListeningStatisticsDao
+    abstract val collectionDao: CollectionDao
 }
 
 // The Room compiler generates the `actual` implementations.
