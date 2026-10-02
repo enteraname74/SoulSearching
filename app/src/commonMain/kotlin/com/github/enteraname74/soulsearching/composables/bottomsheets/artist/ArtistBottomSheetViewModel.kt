@@ -57,6 +57,7 @@ class ArtistBottomSheetViewModel(
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
         ),
+        settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.ARE_COLLECTIONS_SHOWN),
         hasValidCloudInformationUseCase(),
         playbackManager.currentScope,
     ) { data ->
@@ -64,8 +65,9 @@ class ArtistBottomSheetViewModel(
         val playedList = data[1] as List<Music>
         val dialogState = data[2] as SoulDialog?
         val isQuickAccessShown = data[3] as Boolean
-        val hasValidCloudInformation = data[4] as Boolean
-        val playedListScope = data[5] as PlayedListScope?
+        val areCollectionsShown = data[4] as Boolean
+        val hasValidCloudInformation = data[5] as Boolean
+        val playedListScope = data[6] as PlayedListScope?
 
         ArtistBottomSheetState(
             artists = artists,
@@ -73,6 +75,7 @@ class ArtistBottomSheetViewModel(
             rowSpecs = buildRowSpecs(
                 artists = artists,
                 isQuickAccessShown = isQuickAccessShown,
+                areCollectionsShown = areCollectionsShown,
                 hasValidCloudInformation = hasValidCloudInformation,
                 playedList = playedList,
                 playedListScope = playedListScope,
@@ -89,6 +92,7 @@ class ArtistBottomSheetViewModel(
         artists: List<ArtistWithMusics>,
         playedList: List<Music>,
         isQuickAccessShown: Boolean,
+        areCollectionsShown: Boolean,
         hasValidCloudInformation: Boolean,
         playedListScope: PlayedListScope?,
     ): List<BottomSheetRowSpec> = buildList {
@@ -126,6 +130,10 @@ class ArtistBottomSheetViewModel(
 
         if (hasUserMusics) {
             add(BottomSheetRowSpec.addToPlaylist(::addToPlaylists))
+        }
+
+        if (areCollectionsShown && hasUserMusics) {
+            add(BottomSheetRowSpec.addToCollection(::addToCollections))
         }
 
         if (playedListScope?.isRemote != true) {
@@ -269,6 +277,10 @@ class ArtistBottomSheetViewModel(
                 .map { it.musicId }
 
         navScope.toAddToPlaylists(musicIds)
+    }
+
+    private fun addToCollections() {
+        navScope.toAddToCollections(artistIds)
     }
 
     private fun removeFromPlayedList() {

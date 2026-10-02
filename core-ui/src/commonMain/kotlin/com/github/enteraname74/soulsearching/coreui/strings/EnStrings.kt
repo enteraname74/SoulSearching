@@ -93,6 +93,7 @@ object EnStrings : Strings {
     override val removeFromPlayedList = "Remove from played list"
     override val addToQuickAccess = "Add to quick access"
     override val addToPlaylist = "Add to a playlist"
+    override val addToCollection = "Add to a collection"
 
     override val create = "Create"
     override val cancel = "Cancel"
@@ -102,7 +103,10 @@ object EnStrings : Strings {
         "define the total of songs fetched from each folder in the settings."
 
     override val createPlaylistDialogTitle = "Create a new playlist"
+    override val createCollectionDialogTitle = "Create a new collection"
     override val playlistName = "Playlist's name"
+    override val collectionName = "Collection's name"
+    override val nameAlreadyExists = "This name already exists"
     override val musicName = "Song's name"
     override val musicAlbumPosition = "Position in album"
     override val albumName = "Album's name"
@@ -262,6 +266,8 @@ object EnStrings : Strings {
     override val mainPageText = "Manage main page view"
     override val showQuickAccess = "Show quick access"
     override val showPlaylists = "Show playlists"
+    override val showCollections = "Show collections"
+    override val collections = "Collections"
     override val showAlbums = "Show albums"
     override val showArtists = "Show artists"
     override val manageMusicsViewText = "Manage songs view"

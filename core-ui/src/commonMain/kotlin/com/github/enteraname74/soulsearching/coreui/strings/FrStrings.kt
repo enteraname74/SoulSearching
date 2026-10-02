@@ -92,6 +92,7 @@ object FrStrings : Strings {
     override val removeFromPlayedList = "Retirer de la liste jouée"
     override val addToQuickAccess = "Ajouter aux accès rapides"
     override val addToPlaylist = "Ajouter à une playlist"
+    override val addToCollection = "Ajouter à une collection"
 
     override val create = "Créer"
     override val cancel = "Annuler"
@@ -101,7 +102,10 @@ object FrStrings : Strings {
         "définir le nombre de musiques récupérées de chaque dossier dans les paramètres."
 
     override val createPlaylistDialogTitle = "Créer une nouvelle playlist"
+    override val createCollectionDialogTitle = "Créer une nouvelle collection"
     override val playlistName = "Nom de la playlist"
+    override val collectionName = "Nom de la collection"
+    override val nameAlreadyExists = "Ce nom existe déjà"
     override val musicName = "Nom de la musique"
     override val musicAlbumPosition = "Position dans l'album"
     override val albumName = "Nom de l'album"
@@ -263,6 +267,8 @@ object FrStrings : Strings {
     override val mainPageText = "Gérer la vue de la page principale"
     override val showQuickAccess = "Afficher les accès rapides"
     override val showPlaylists = "Afficher les playlists"
+    override val showCollections = "Afficher les collections"
+    override val collections = "Collections"
     override val showAlbums = "Afficher les albums"
     override val showArtists = "Afficher les artistes"
     override val manageMusicsViewText = "Gérer la vue des musiques"

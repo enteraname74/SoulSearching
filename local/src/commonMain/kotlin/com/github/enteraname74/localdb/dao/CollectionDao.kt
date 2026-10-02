@@ -3,6 +3,7 @@ package com.github.enteraname74.localdb.dao
 import androidx.room3.Dao
 import androidx.room3.Query
 import androidx.room3.Upsert
+import androidx.paging.PagingSource
 import com.github.enteraname74.localdb.model.collection.RoomCollection
 import com.github.enteraname74.localdb.model.collection.RoomCollectionAlbum
 import com.github.enteraname74.localdb.model.collection.RoomCollectionArtist
@@ -17,6 +18,30 @@ interface CollectionDao {
     @Upsert
     suspend fun upsert(collection: RoomCollection)
 
+    @Query("SELECT * FROM RoomCollection")
+    suspend fun getAllCollections(): List<RoomCollection>
+
+    @Query("SELECT * FROM RoomCollectionPreview ORDER BY name ASC, id ASC")
+    fun getAllPreviews(): Flow<List<RoomCollectionPreview>>
+
+    @Query("SELECT * FROM RoomCollectionPreview ORDER BY name ASC, id ASC")
+    fun getAllPagedByNameAsc(): PagingSource<Int, RoomCollectionPreview>
+
+    @Query("SELECT * FROM RoomCollectionPreview ORDER BY name DESC, id ASC")
+    fun getAllPagedByNameDesc(): PagingSource<Int, RoomCollectionPreview>
+
+    @Query("SELECT * FROM RoomCollectionPreview ORDER BY addedDate ASC, id ASC")
+    fun getAllPagedByDateAsc(): PagingSource<Int, RoomCollectionPreview>
+
+    @Query("SELECT * FROM RoomCollectionPreview ORDER BY addedDate DESC, id ASC")
+    fun getAllPagedByDateDesc(): PagingSource<Int, RoomCollectionPreview>
+
+    @Query("SELECT * FROM RoomCollectionPreview ORDER BY nbPlayed ASC, id ASC")
+    fun getAllPagedByNbPlayedAsc(): PagingSource<Int, RoomCollectionPreview>
+
+    @Query("SELECT * FROM RoomCollectionPreview ORDER BY nbPlayed DESC, id ASC")
+    fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomCollectionPreview>
+
     @Upsert
     suspend fun addArtist(item: RoomCollectionArtist)
 
@@ -25,6 +50,24 @@ interface CollectionDao {
 
     @Upsert
     suspend fun addPlaylist(item: RoomCollectionPlaylist)
+
+    @Upsert
+    suspend fun addArtists(items: List<RoomCollectionArtist>)
+
+    @Upsert
+    suspend fun addAlbums(items: List<RoomCollectionAlbum>)
+
+    @Upsert
+    suspend fun addPlaylists(items: List<RoomCollectionPlaylist>)
+
+    @Query("SELECT collectionId FROM RoomCollectionArtist WHERE artistId = :artistId")
+    fun getCollectionIdsContainingArtist(artistId: Uuid): Flow<List<Uuid>>
+
+    @Query("SELECT collectionId FROM RoomCollectionAlbum WHERE albumId = :albumId")
+    fun getCollectionIdsContainingAlbum(albumId: Uuid): Flow<List<Uuid>>
+
+    @Query("SELECT collectionId FROM RoomCollectionPlaylist WHERE playlistId = :playlistId")
+    fun getCollectionIdsContainingPlaylist(playlistId: Uuid): Flow<List<Uuid>>
 
     @Query("SELECT * FROM RoomCollectionPreview WHERE id = :collectionId LIMIT 1")
     fun getCollectionPreview(collectionId: Uuid): Flow<RoomCollectionPreview?>

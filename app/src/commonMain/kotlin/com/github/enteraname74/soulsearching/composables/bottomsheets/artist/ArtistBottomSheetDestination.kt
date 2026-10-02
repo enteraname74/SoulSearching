@@ -17,6 +17,8 @@ import androidx.savedstate.serialization.SavedStateConfiguration
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetNavScope
+import com.github.enteraname74.soulsearching.composables.bottomsheets.collection.add.AddToCollectionBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.collection.add.AddToCollectionBottomSheetNavScope
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -130,6 +132,9 @@ private fun NavHost(
                             )
                         )
                     }
+                    override val toAddToCollections: (List<Uuid>) -> Unit = { ids ->
+                        navigator.push(AddToCollectionBottomSheetDestination(artistIds = ids))
+                    }
                 }
             )
             AddToPlaylistBottomSheetDestination.register(
@@ -143,6 +148,13 @@ private fun NavHost(
                     }
                 }
             )
+            AddToCollectionBottomSheetDestination.register(
+                entryProviderScope = this,
+                navScope = object : AddToCollectionBottomSheetNavScope {
+                    override val onSave: () -> Unit = { closeWithAnim { } }
+                    override val navigateBack: () -> Unit = { navigator.pop() }
+                },
+            )
         }
     )
 }
@@ -151,5 +163,6 @@ private val SerializerModule = SerializersModule {
     polymorphic(NavKey::class) {
         subclass(InnerArtistDestination::class, InnerArtistDestination.serializer())
         subclass(AddToPlaylistBottomSheetDestination::class, AddToPlaylistBottomSheetDestination.serializer())
+        subclass(AddToCollectionBottomSheetDestination::class, AddToCollectionBottomSheetDestination.serializer())
     }
 }

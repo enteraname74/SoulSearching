@@ -13,16 +13,19 @@ interface SortingInformationDelegate {
     val artistSortingInformation: Flow<SortingInformation>
     val albumSortingInformation: Flow<SortingInformation>
     val playlistSortingInformation: Flow<SortingInformation>
+    val collectionSortingInformation: Flow<SortingInformation>
 
     fun setMusicSortType(type: SortType)
     fun setArtistSortType(type: SortType)
     fun setAlbumSortType(type: SortType)
     fun setPlaylistSortType(type: SortType)
+    fun setCollectionSortType(type: SortType)
 
     fun setMusicSortDirection(direction: SortDirection)
     fun setArtistSortDirection(direction: SortDirection)
     fun setAlbumSortDirection(direction: SortDirection)
     fun setPlaylistSortDirection(direction: SortDirection)
+    fun setCollectionSortDirection(direction: SortDirection)
 }
 
 class SortingInformationDelegateImpl(
@@ -68,6 +71,16 @@ class SortingInformationDelegateImpl(
         )
     }
 
+    override val collectionSortingInformation: Flow<SortingInformation> = combine(
+        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_COLLECTIONS_TYPE_KEY),
+        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_COLLECTIONS_DIRECTION_KEY),
+    ) { sortType, sortDirection ->
+        SortingInformation(
+            type = SortType.from(sortType) ?: SortType.DEFAULT,
+            direction = SortDirection.from(sortDirection) ?: SortDirection.DEFAULT,
+        )
+    }
+
     override fun setMusicSortType(type: SortType) {
         settings.set(
             key = SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY.key,
@@ -96,6 +109,13 @@ class SortingInformationDelegateImpl(
         )
     }
 
+    override fun setCollectionSortType(type: SortType) {
+        settings.set(
+            key = SoulSearchingSettingsKeys.Sort.SORT_COLLECTIONS_TYPE_KEY.key,
+            value = type.value,
+        )
+    }
+
     override fun setMusicSortDirection(direction: SortDirection) {
         settings.set(
             key = SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY.key,
@@ -120,6 +140,13 @@ class SortingInformationDelegateImpl(
     override fun setPlaylistSortDirection(direction: SortDirection) {
         settings.set(
             key = SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_DIRECTION_KEY.key,
+            value = direction.value,
+        )
+    }
+
+    override fun setCollectionSortDirection(direction: SortDirection) {
+        settings.set(
+            key = SoulSearchingSettingsKeys.Sort.SORT_COLLECTIONS_DIRECTION_KEY.key,
             value = direction.value,
         )
     }

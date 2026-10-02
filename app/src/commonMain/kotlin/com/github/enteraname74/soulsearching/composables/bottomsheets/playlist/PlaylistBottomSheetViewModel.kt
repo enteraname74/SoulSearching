@@ -55,6 +55,7 @@ class PlaylistBottomSheetViewModel(
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
         ),
+        settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.ARE_COLLECTIONS_SHOWN),
         hasValidCloudInformationUseCase(),
         playbackManager.currentScope,
     ) { data ->
@@ -62,8 +63,9 @@ class PlaylistBottomSheetViewModel(
         val playedList = data[1] as List<Music>
         val dialogState = data[2] as SoulDialog?
         val isQuickAccessShown = data[3] as Boolean
-        val hasValidCloudInformation = data[4] as Boolean
-        val playedListScope = data[5] as PlayedListScope?
+        val areCollectionsShown = data[4] as Boolean
+        val hasValidCloudInformation = data[5] as Boolean
+        val playedListScope = data[6] as PlayedListScope?
 
         PlaylistBottomSheetState(
             playlists = playlists,
@@ -71,6 +73,7 @@ class PlaylistBottomSheetViewModel(
             rowSpecs = buildRowSpecs(
                 playlists = playlists,
                 isQuickAccessShown = isQuickAccessShown,
+                areCollectionsShown = areCollectionsShown,
                 hasValidCloudInformation = hasValidCloudInformation,
                 playedList = playedList,
                 playedListScope = playedListScope,
@@ -87,6 +90,7 @@ class PlaylistBottomSheetViewModel(
         playlists: List<PlaylistWithMusics>,
         playedList: List<Music>,
         isQuickAccessShown: Boolean,
+        areCollectionsShown: Boolean,
         hasValidCloudInformation: Boolean,
         playedListScope: PlayedListScope?,
     ): List<BottomSheetRowSpec> = buildList {
@@ -129,6 +133,10 @@ class PlaylistBottomSheetViewModel(
 
         if (hasUserMusics) {
             add(BottomSheetRowSpec.addToPlaylist(::addToPlaylists))
+        }
+
+        if (areCollectionsShown) {
+            add(BottomSheetRowSpec.addToCollection(::addToCollections))
         }
 
         if (playedListScope?.isRemote != true) {
@@ -275,6 +283,10 @@ class PlaylistBottomSheetViewModel(
                 .map { it.musicId }
 
         navScope.toAddToPlaylists(musicIds)
+    }
+
+    private fun addToCollections() {
+        navScope.toAddToCollections(playlistIds)
     }
 
     private fun removeFromPlayedList() {

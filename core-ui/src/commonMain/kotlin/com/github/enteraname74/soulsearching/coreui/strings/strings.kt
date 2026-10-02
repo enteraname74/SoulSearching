@@ -103,6 +103,7 @@ interface Strings {
     val removeFromPlayedList: String
     val addToQuickAccess: String
     val addToPlaylist: String
+    val addToCollection: String
 
     val create: String
     val cancel: String
@@ -113,7 +114,10 @@ interface Strings {
     val soulMixInfoDialogText: String
 
     val createPlaylistDialogTitle: String
+    val createCollectionDialogTitle: String
     val playlistName: String
+    val collectionName: String
+    val nameAlreadyExists: String
     val musicName: String
     val musicAlbumPosition: String
     val albumName: String
@@ -273,6 +277,8 @@ interface Strings {
     val mainPageText: String
     val showQuickAccess: String
     val showPlaylists: String
+    val showCollections: String
+    val collections: String
     val showAlbums: String
     val showArtists: String
     val manageMusicsViewText: String

@@ -93,6 +93,14 @@ object SoulSearchingSettingsKeys {
             key = "SORT_PLAYLISTS_DIRECTION",
             defaultValue = SortDirection.DEFAULT.value,
         )
+        val SORT_COLLECTIONS_TYPE_KEY: SoulSearchingSettingElement<Int> = settingElementOf(
+            key = "SORT_COLLECTIONS_TYPE",
+            defaultValue = SortType.DEFAULT.value,
+        )
+        val SORT_COLLECTIONS_DIRECTION_KEY: SoulSearchingSettingElement<Int> = settingElementOf(
+            key = "SORT_COLLECTIONS_DIRECTION",
+            defaultValue = SortDirection.DEFAULT.value,
+        )
     }
 
     object Player {
@@ -160,6 +168,10 @@ object SoulSearchingSettingsKeys {
         )
         val IS_PLAYLISTS_SHOWN: SoulSearchingSettingElement<Boolean> = settingElementOf(
             key = "IS_PLAYLISTS_SHOWN",
+            defaultValue = true,
+        )
+        val ARE_COLLECTIONS_SHOWN: SoulSearchingSettingElement<Boolean> = settingElementOf(
+            key = "ARE_COLLECTIONS_SHOWN",
             defaultValue = true,
         )
         val IS_ALBUMS_SHOWN: SoulSearchingSettingElement<Boolean> = settingElementOf(

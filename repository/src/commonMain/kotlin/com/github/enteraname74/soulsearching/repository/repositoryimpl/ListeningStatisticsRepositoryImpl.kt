@@ -9,7 +9,6 @@ import com.github.enteraname74.soulsearching.domain.repository.CloudPreferencesR
 import com.github.enteraname74.soulsearching.domain.repository.ListeningStatisticsRepository
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
-import com.github.enteraname74.soulsearching.repository.datasource.collection.CollectionLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.listeningstatistics.ListeningStatisticsLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.listeningstatistics.ListeningStatisticsRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
@@ -24,7 +23,6 @@ class ListeningStatisticsRepositoryImpl(
     private val musicLocalDataSource: MusicLocalDataSource,
     private val albumDataSource: AlbumDataSource,
     private val artistDataSource: ArtistDataSource,
-    private val collectionLocalDataSource: CollectionLocalDataSource,
     private val cloudPreferencesRepository: CloudPreferencesRepository,
 ) : ListeningStatisticsRepository {
     override suspend fun upsert(listeningStatistics: ListeningStatistics) {
@@ -40,7 +38,6 @@ class ListeningStatisticsRepositoryImpl(
         val albumRemoteToLocalIds: Map<Uuid, Uuid> = albumDataSource.getAllRemoteToLocalIds()
         val playlistRemoteToLocalIds: Map<Uuid, Uuid> = playlistLocalDataSource.getAllRemoteToLocalIds()
         val artistRemoteToLocalIds: Map<Uuid, Uuid> = artistDataSource.getAllRemoteToLocalIds()
-        val collectionRemoteToLocalIds: Map<Uuid, Uuid> = collectionLocalDataSource.getAllRemoteToLocalIds()
 
         var page = 0
         val fetchedStats: MutableList<LightListeningStatistics> = mutableListOf()
@@ -57,7 +54,7 @@ class ListeningStatisticsRepositoryImpl(
                     cloudData.albumId != null -> albumRemoteToLocalIds[cloudData.albumId]
                     cloudData.artistId != null -> artistRemoteToLocalIds[cloudData.artistId]
                     cloudData.playlistId != null -> playlistRemoteToLocalIds[cloudData.playlistId]
-                    cloudData.collectionId != null -> collectionRemoteToLocalIds[cloudData.collectionId]
+                    cloudData.collectionId != null -> null
                     else -> null
                 }
 
@@ -74,7 +71,7 @@ class ListeningStatisticsRepositoryImpl(
                         playlistId = playlistRemoteToLocalIds.get(cloudData.playlistId),
                         albumId = albumRemoteToLocalIds.get(cloudData.albumId),
                         artistId = artistRemoteToLocalIds.get(cloudData.artistId),
-                        collectionId = collectionRemoteToLocalIds.get(cloudData.collectionId),
+                        collectionId = null,
                     )
                 }
             }
@@ -94,7 +91,7 @@ class ListeningStatisticsRepositoryImpl(
         onSent: (Int) -> Unit,
     ) {
         var sent = 0
-        toSend.chunked(UPLOAD_CHUNK_SIZE).forEach { chunk ->
+        toSend.filterNot { it is ListeningStatistics.CollectionStats }.chunked(UPLOAD_CHUNK_SIZE).forEach { chunk ->
             remoteDataSource.upsertAll(
                 statistics = chunk,
             )
@@ -107,7 +104,7 @@ class ListeningStatisticsRepositoryImpl(
         localDataSource.getLastSyncMillis()
 
     override suspend fun getAllToSendToCloud(): List<ListeningStatistics> =
-        localDataSource.getAllToSendToCloud()
+        localDataSource.getAllToSendToCloud().filterNot { it is ListeningStatistics.CollectionStats }
 
     override suspend fun getMusicStatistics(
         musicId: Uuid,

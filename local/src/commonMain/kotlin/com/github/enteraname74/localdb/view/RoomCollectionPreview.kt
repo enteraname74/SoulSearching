@@ -64,7 +64,6 @@ data class RoomCollectionPreview(
         name = name,
         totalMusics = totalMusics,
         nbPlayed = nbPlayed,
-        isInQuickAccess = isInQuickAccess,
     )
 
     fun toCollectionStats(): ListeningStatistics.CollectionStats {

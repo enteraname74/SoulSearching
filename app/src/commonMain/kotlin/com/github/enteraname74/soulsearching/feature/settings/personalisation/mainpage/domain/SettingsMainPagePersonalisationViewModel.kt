@@ -58,6 +58,16 @@ class SettingsMainPagePersonalisationViewModel(
         )
     }
 
+    fun toggleCollectionsVisibility() {
+        val elementsVisibility =
+            (state.value as? SettingsMainPagePersonalisationState.Data)?.elementsVisibility ?: return
+
+        settings.set(
+            key = SoulSearchingSettingsKeys.MainPage.ARE_COLLECTIONS_SHOWN.key,
+            value = !elementsVisibility.areCollectionsShown,
+        )
+    }
+
 
     fun toggleAlbumsVisibility() {
         val elementsVisibility =

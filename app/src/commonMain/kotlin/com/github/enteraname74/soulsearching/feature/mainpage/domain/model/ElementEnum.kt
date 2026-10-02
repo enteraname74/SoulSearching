@@ -8,6 +8,7 @@ import com.github.enteraname74.soulsearching.domain.model.settings.settingElemen
 enum class ElementEnum {
     QUICK_ACCESS,
     PLAYLISTS,
+    COLLECTIONS,
     ALBUMS,
     ARTISTS,
     MUSICS,

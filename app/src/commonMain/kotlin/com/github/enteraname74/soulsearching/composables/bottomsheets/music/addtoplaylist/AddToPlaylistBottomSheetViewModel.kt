@@ -65,7 +65,7 @@ class AddToPlaylistBottomSheetViewModel(
                 viewModelScope.launch {
                     loadingManager.withLoading {
                         if (playlistName.isNotBlank()) {
-                            val newPlaylist = Playlist(name = playlistName)
+                            val newPlaylist = Playlist(name = playlistName.trim())
                             commonPlaylistUseCase.upsert(playlist = newPlaylist)
                             addMusicsToPlaylist(
                                 playlistIds = listOf(newPlaylist.playlistId),

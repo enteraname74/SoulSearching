@@ -6,4 +6,5 @@ interface ArtistBottomSheetNavScope {
     val navigateBack: () -> Unit
     val toModifyArtist: (artistId: Uuid) -> Unit
     val toAddToPlaylists: (musicIds: List<Uuid>) -> Unit
+    val toAddToCollections: (artistIds: List<Uuid>) -> Unit
 }
