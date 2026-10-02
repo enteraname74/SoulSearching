@@ -25,6 +25,7 @@ internal fun RoomCollection.toCollection(): Collection = Collection(
     name = name,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
+    isInQuickAccess = isInQuickAccess,
     lastUpdatedMillis = lastUpdatedMillis,
 )
 
@@ -34,6 +35,6 @@ internal fun Collection.toRoomCollection(): RoomCollection = RoomCollection(
     name = name,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
-    isInQuickAccess = false,
+    isInQuickAccess = isInQuickAccess,
     lastUpdatedMillis = lastUpdatedMillis,
 )

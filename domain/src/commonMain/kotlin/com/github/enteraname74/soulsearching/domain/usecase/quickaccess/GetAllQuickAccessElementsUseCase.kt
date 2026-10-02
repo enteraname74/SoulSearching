@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.domain.usecase.quickaccess
 import com.github.enteraname74.soulsearching.domain.model.QuickAccessible
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import kotlinx.coroutines.flow.Flow
@@ -13,18 +14,21 @@ class GetAllQuickAccessElementsUseCase(
     private val commonArtistUseCase: CommonArtistUseCase,
     private val commonAlbumUseCase: CommonAlbumUseCase,
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
+    private val commonCollectionUseCase: CommonCollectionUseCase,
 ) {
     operator fun invoke(): Flow<List<QuickAccessible>> = combine(
         commMusicUseCase.getAllFromQuickAccess(),
         commonArtistUseCase.getAllFromQuickAccess(),
         commonAlbumUseCase.getAllFromQuickAccess(),
         commonPlaylistUseCase.getAllFromQuickAccess(),
-    ) { musics, artists, albums, playlists ->
+        commonCollectionUseCase.getAllFromQuickAccess(),
+    ) { musics, artists, albums, playlists, collections ->
         buildList {
             addAll(musics)
             addAll(artists)
             addAll(albums)
             addAll(playlists)
+            addAll(collections)
         }
     }
 }

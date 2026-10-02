@@ -8,4 +8,5 @@ data class CollectionPreview(
     val name: String,
     val totalMusics: Int,
     val nbPlayed: Int,
-)
+    override val isInQuickAccess: Boolean,
+) : QuickAccessible

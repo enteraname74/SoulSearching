@@ -18,11 +18,20 @@ interface CollectionDao {
     @Upsert
     suspend fun upsert(collection: RoomCollection)
 
+    @Upsert
+    suspend fun upsertAll(collections: List<RoomCollection>)
+
     @Query("SELECT * FROM RoomCollection")
     suspend fun getAllCollections(): List<RoomCollection>
 
     @Query("SELECT * FROM RoomCollectionPreview ORDER BY name ASC, id ASC")
     fun getAllPreviews(): Flow<List<RoomCollectionPreview>>
+
+    @Query("SELECT * FROM RoomCollection WHERE collectionId IN (:collectionIds)")
+    fun getFromIds(collectionIds: List<Uuid>): Flow<List<RoomCollection>>
+
+    @Query("SELECT * FROM RoomCollectionPreview WHERE isInQuickAccess = 1")
+    fun getAllFromQuickAccess(): Flow<List<RoomCollectionPreview>>
 
     @Query("SELECT * FROM RoomCollectionPreview ORDER BY name ASC, id ASC")
     fun getAllPagedByNameAsc(): PagingSource<Int, RoomCollectionPreview>
@@ -115,6 +124,6 @@ interface CollectionDao {
     )
     suspend fun removePlaylist(collectionId: Uuid, playlistId: Uuid)
 
-    @Query("DELETE FROM RoomCollection WHERE collectionId = :collectionId")
-    suspend fun delete(collectionId: Uuid)
+    @Query("DELETE FROM RoomCollection WHERE collectionId IN (:collectionIds)")
+    suspend fun deleteAll(collectionIds: List<Uuid>)
 }

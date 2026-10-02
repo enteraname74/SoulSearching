@@ -294,6 +294,44 @@ interface MusicDao {
     ): List<RoomCompleteMusic>
 
     @Transaction
+    @Query(
+        """
+        SELECT music.*
+        FROM RoomMusic AS music
+        WHERE music.isHidden = 0
+          AND music.scope != 'SharedPlayedList'
+          AND (
+              EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionAlbum AS collectionAlbum
+                  WHERE collectionAlbum.collectionId = :collectionId
+                    AND collectionAlbum.albumId = music.albumId
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionArtist AS collectionArtist
+                  INNER JOIN RoomMusicArtist AS musicArtist
+                      ON musicArtist.artistId = collectionArtist.artistId
+                  WHERE collectionArtist.collectionId = :collectionId
+                    AND musicArtist.musicId = music.musicId
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionPlaylist AS collectionPlaylist
+                  INNER JOIN RoomMusicPlaylist AS musicPlaylist
+                      ON musicPlaylist.playlistId = collectionPlaylist.playlistId
+                  WHERE collectionPlaylist.collectionId = :collectionId
+                    AND musicPlaylist.musicId = music.musicId
+              )
+          )
+        ORDER BY music.name ASC
+    """
+    )
+    fun observeAllFromCollection(
+        collectionId: Uuid,
+    ): Flow<List<RoomCompleteMusic>>
+
+    @Transaction
     @Query("SELECT * FROM RoomMusic WHERE musicId IN (:ids)")
     suspend fun getAllFromId(ids: List<Uuid>): List<RoomCompleteMusic>
 

@@ -16,6 +16,8 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Pager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllCollectionsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageListPaged
+import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import kotlin.uuid.Uuid
 
 fun allCollectionsTab(
@@ -25,6 +27,7 @@ fun allCollectionsTab(
     type = ElementEnum.COLLECTIONS,
     screen = {
         val state: AllCollectionsState by mainPageViewModel.allCollectionsState.collectAsState()
+        val multiSelectionState: MultiSelectionState by mainPageViewModel.multiSelectionState.collectAsState()
         val collections = state.collections.collectAsLazyPagingItems()
 
         MainPageListPaged(
@@ -58,7 +61,14 @@ fun allCollectionsTab(
                 text = strings.musics(collection.totalMusics),
                 imageSize = null,
                 onClick = { navigateToCollection(collection.id) },
-                onLongClick = {},
+                onLongClick = {
+                    mainPageViewModel.toggleElementInSelection(
+                        id = collection.id.toString(),
+                        mode = SelectionMode.Collection,
+                    )
+                },
+                isSelected = collection.id.toString() in multiSelectionState.selectedIds,
+                isSelectionModeOn = multiSelectionState.totalSelected > 0,
             )
         }
     },

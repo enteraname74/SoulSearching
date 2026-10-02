@@ -7,6 +7,7 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.folder.Fol
 import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.collection.add.AddToCollectionBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.collection.CollectionBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
@@ -110,6 +111,7 @@ internal val viewModelModule: Module = module {
     viewModelOf(::MusicBottomSheetViewModel)
     viewModelOf(::AddToPlaylistBottomSheetViewModel)
     viewModelOf(::AddToCollectionBottomSheetViewModel)
+    viewModelOf(::CollectionBottomSheetViewModel)
     viewModelOf(::PlaylistBottomSheetViewModel)
     viewModelOf(::ArtistBottomSheetViewModel)
     viewModelOf(::AlbumBottomSheetViewModel)

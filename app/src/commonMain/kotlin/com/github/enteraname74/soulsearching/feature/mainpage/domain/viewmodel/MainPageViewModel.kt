@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
 import com.github.enteraname74.soulsearching.domain.model.ArtistPreview
+import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
 import com.github.enteraname74.soulsearching.domain.model.Playlist
@@ -476,6 +477,10 @@ class MainPageViewModel(
                     MusicListDetailId.Artist(quickAccessible.id),
                 )
 
+                is CollectionPreview -> MainPageNavigationState.ToMusicListDetail(
+                    MusicListDetailId.Collection(quickAccessible.id),
+                )
+
                 is Music -> MainPageNavigationState.Idle
                 is PlaylistPreview -> MainPageNavigationState.ToMusicListDetail(
                     MusicListDetailId.Playlist(quickAccessible.id),
@@ -493,6 +498,10 @@ class MainPageViewModel(
 
                 is ArtistPreview -> showArtistBottomSheet(
                     artistIds = listOf(quickAccessible.id),
+                )
+
+                is CollectionPreview -> showCollectionBottomSheet(
+                    collectionIds = listOf(quickAccessible.id),
                 )
 
                 is Music -> showMusicBottomSheet(
@@ -684,6 +693,12 @@ class MainPageViewModel(
     fun showPlaylistBottomSheet(playlistIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToPlaylistBottomSheet(
             playlistIds = playlistIds,
+        )
+    }
+
+    fun showCollectionBottomSheet(collectionIds: List<Uuid>) {
+        _navigationState.value = MainPageNavigationState.ToCollectionBottomSheet(
+            collectionIds = collectionIds,
         )
     }
 

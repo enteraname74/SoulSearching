@@ -14,6 +14,10 @@ sealed interface MultiSelectionNavigationState {
         val playlistIds: List<Uuid>,
     ) : MultiSelectionNavigationState
 
+    data class ToCollectionBottomSheet(
+        val collectionIds: List<Uuid>,
+    ) : MultiSelectionNavigationState
+
     data class ToArtistBottomSheet(
         val artistIds: List<Uuid>,
     ) : MultiSelectionNavigationState

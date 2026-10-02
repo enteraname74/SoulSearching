@@ -11,5 +11,6 @@ data class Collection(
     val name: String,
     val addedDate: Instant = Clock.System.now(),
     val nbPlayed: Int = 0,
+    val isInQuickAccess: Boolean = false,
     val lastUpdatedMillis: Long? = DateUtils.now(),
 )

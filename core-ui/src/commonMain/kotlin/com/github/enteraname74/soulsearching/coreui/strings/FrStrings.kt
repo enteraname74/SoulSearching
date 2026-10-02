@@ -129,6 +129,7 @@ object FrStrings : Strings {
     override val deleteMusicDialogText = "Elle sera supprimée de l'application."
     override val deleteAlbumDialogTitle = "Voulez-vous vraiment supprimer cet album ?"
     override val deletePlaylistDialogTitle = "Voulez-vous vraiment supprimer cette playlist ?"
+    override val deleteCollectionDialogTitle = "Voulez-vous vraiment supprimer cette collection ?"
     override val deleteArtistDialogTitle = "Voulez-vous vraiment supprimer cet artiste ?"
 
     override val deleteSelectedMusicsDialogTitle = "Voulez-vous vraiment supprimer ces musiques ?"
@@ -146,6 +147,7 @@ object FrStrings : Strings {
     override val deleteSelectedAlbumsDialogTitle = "Voulez-vous vraiment supprimer ces albums ?"
     override val deleteSelectedArtistsDialogTitle = "Voulez-vous vraiment supprimer ces artistes ?"
     override val deleteSelectedPlaylistsDialogTitle = "Voulez-vous vraiment supprimer ces playlists ?"
+    override val deleteSelectedCollectionsDialogTitle = "Voulez-vous vraiment supprimer ces collections ?"
 
     override val removeMusicFromPlaylistTitle = "Voulez-vous vraiment supprimer cette musique de cette playlist ?"
     override val removeMusicFromPlaylistText =
@@ -169,9 +171,11 @@ object FrStrings : Strings {
     override val deleteArtist = "Supprimer cet artiste"
     override val deleteMusic = "Supprimer cette musique"
     override val deletePlaylist = "Supprimer cette playlist"
+    override val deleteCollection = "Supprimer cette collection"
     override val deleteSelectedAlbums = "Supprimer les albums sélectionnés"
     override val deleteSelectedArtists = "Supprimer les artistes sélectionnés"
     override val deleteSelectedPlaylists = "Supprimer les playlists sélectionnées"
+    override val deleteSelectedCollections = "Supprimer les collections sélectionnées"
     override val deleteSelectedMusics = "Supprimer les musiques sélectionnées"
     override val deleteFolderMusics = "Supprimer le dossier"
     override val deleteSelectedFoldersMusics = "Supprimer les dossiers sélectionnés"

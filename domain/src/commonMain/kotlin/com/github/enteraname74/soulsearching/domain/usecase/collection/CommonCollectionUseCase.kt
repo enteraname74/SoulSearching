@@ -3,6 +3,8 @@ package com.github.enteraname74.soulsearching.domain.usecase.collection
 import androidx.paging.PagingData
 import com.github.enteraname74.soulsearching.domain.model.Collection
 import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
+import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.repository.CollectionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
@@ -17,7 +19,20 @@ class CommonCollectionUseCase(
     fun getCollectionPreview(collectionId: Uuid): Flow<CollectionPreview?> =
         collectionRepository.getCollectionPreview(collectionId)
 
+    fun getFromIds(collectionIds: List<Uuid>): Flow<List<CollectionWithMusics>> =
+        collectionRepository.getFromIds(collectionIds)
+
+    fun getAllFromQuickAccess(): Flow<List<CollectionPreview>> =
+        collectionRepository.getAllFromQuickAccess()
+
     suspend fun create(name: String): Collection = collectionRepository.create(name.trim())
+
+    suspend fun upsertAll(collections: List<Collection>) {
+        collectionRepository.upsertAll(collections)
+    }
+
+    suspend fun deleteAll(collectionIds: List<Uuid>): SoulResult<Unit> =
+        collectionRepository.deleteAll(collectionIds)
 
     suspend fun addArtists(collectionIds: List<Uuid>, artistIds: List<Uuid>) {
         collectionRepository.addArtists(collectionIds, artistIds)

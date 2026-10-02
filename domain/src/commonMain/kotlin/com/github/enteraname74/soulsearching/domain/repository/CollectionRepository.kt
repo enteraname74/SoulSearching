@@ -3,6 +3,8 @@ package com.github.enteraname74.soulsearching.domain.repository
 import androidx.paging.PagingData
 import com.github.enteraname74.soulsearching.domain.model.Collection
 import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
+import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
@@ -13,7 +15,15 @@ interface CollectionRepository {
 
     fun getCollectionPreview(collectionId: Uuid): Flow<CollectionPreview?>
 
+    fun getFromIds(collectionIds: List<Uuid>): Flow<List<CollectionWithMusics>>
+
+    fun getAllFromQuickAccess(): Flow<List<CollectionPreview>>
+
     suspend fun create(name: String): Collection
+
+    suspend fun upsertAll(collections: List<Collection>)
+
+    suspend fun deleteAll(collectionIds: List<Uuid>): SoulResult<Unit>
 
     suspend fun addArtists(collectionIds: List<Uuid>, artistIds: List<Uuid>)
 

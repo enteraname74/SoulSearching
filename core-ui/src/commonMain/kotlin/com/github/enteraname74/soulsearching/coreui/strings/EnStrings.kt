@@ -130,6 +130,7 @@ object EnStrings : Strings {
     override val deleteMusicDialogText = "It will be removed from the application."
     override val deleteAlbumDialogTitle = "Are you sure to delete this album?"
     override val deletePlaylistDialogTitle = "Are you sure to delete this playlist?"
+    override val deleteCollectionDialogTitle = "Are you sure to delete this collection?"
     override val deleteArtistDialogTitle = "Are you sure to delete this artist?"
 
     override val deleteSelectedMusicsDialogTitle = "Are you sure to delete the selected songs?"
@@ -147,6 +148,7 @@ object EnStrings : Strings {
     override val deleteSelectedAlbumsDialogTitle = "Are you sure to delete the selected albums?"
     override val deleteSelectedArtistsDialogTitle = "Are you sure to delete the selected artists?"
     override val deleteSelectedPlaylistsDialogTitle = "Are you sure to delete the selected playlists?"
+    override val deleteSelectedCollectionsDialogTitle = "Are you sure to delete the selected collections?"
 
     override val removeMusicFromPlaylistTitle = "Are you sure to remove this song from this playlist?"
     override val removeMusicFromPlaylistText =
@@ -168,9 +170,11 @@ object EnStrings : Strings {
     override val deleteArtist = "Delete this artist"
     override val deleteMusic = "Delete this song"
     override val deletePlaylist = "Delete this playlist"
+    override val deleteCollection = "Delete this collection"
     override val deleteSelectedAlbums = "Delete selected albums"
     override val deleteSelectedArtists = "Delete selected artists"
     override val deleteSelectedPlaylists = "Delete selected playlists"
+    override val deleteSelectedCollections = "Delete selected collections"
     override val deleteSelectedMusics = "Delete selected songs"
     override val deleteFolderMusics = "Delete folder"
     override val deleteSelectedFoldersMusics = "Delete selected folders"

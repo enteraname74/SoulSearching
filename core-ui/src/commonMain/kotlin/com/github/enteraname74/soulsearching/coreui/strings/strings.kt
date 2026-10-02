@@ -141,6 +141,7 @@ interface Strings {
     val deleteMusicDialogText: String
     val deleteAlbumDialogTitle: String
     val deletePlaylistDialogTitle: String
+    val deleteCollectionDialogTitle: String
     val deleteArtistDialogTitle: String
 
     val deleteSelectedMusicsDialogTitle: String
@@ -156,6 +157,7 @@ interface Strings {
     val deleteSelectedAlbumsDialogTitle: String
     val deleteSelectedArtistsDialogTitle: String
     val deleteSelectedPlaylistsDialogTitle: String
+    val deleteSelectedCollectionsDialogTitle: String
 
     val removeMusicFromPlaylistTitle: String
     val removeMusicFromPlaylistText: String
@@ -176,9 +178,11 @@ interface Strings {
     val deleteArtist: String
     val deleteMusic: String
     val deletePlaylist: String
+    val deleteCollection: String
     val deleteSelectedAlbums: String
     val deleteSelectedArtists: String
     val deleteSelectedPlaylists: String
+    val deleteSelectedCollections: String
     val deleteSelectedMusics: String
     val deleteFolderMusics: String
     val deleteSelectedFoldersMusics: String
