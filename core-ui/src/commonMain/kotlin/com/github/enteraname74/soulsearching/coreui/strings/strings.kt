@@ -47,6 +47,7 @@ interface Strings {
     val favorite: String
     val playlists: String get() = "Playlists"
     val albums: String get() = "Albums"
+    val inThisCollection: String
     val folders: String
     val artists: String
     val byFolders: String
@@ -101,6 +102,7 @@ interface Strings {
     val removeFromQuickAccess: String
     val removeFromPlaylist: String
     val removeFromPlayedList: String
+    val removeFromCollection: String
     val addToQuickAccess: String
     val addToPlaylist: String
     val addToCollection: String
@@ -108,6 +110,7 @@ interface Strings {
     val create: String
     val cancel: String
     val delete: String
+    val remove: String
     val ok: String get() = "Ok"
 
     val soulMixInfoDialogTitle: String get() = "Soul Mix"
@@ -165,6 +168,12 @@ interface Strings {
     val removeMusicFromPlaylistText: String
     val removeSelectedMusicFromPlaylistTitle: String
     val removeSelectedMusicFromPlaylistText: String
+    val removeArtistFromCollectionTitle: String
+    val removeArtistFromCollectionText: String
+    val removeAlbumFromCollectionTitle: String
+    val removeAlbumFromCollectionText: String
+    val removePlaylistFromCollectionTitle: String
+    val removePlaylistFromCollectionText: String
 
     val modifyAlbum: String
     val modifyArtist: String

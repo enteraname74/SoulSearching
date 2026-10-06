@@ -37,6 +37,7 @@ import kotlin.uuid.Uuid
 @Serializable
 data class PlaylistBottomSheetDestination(
     val playlistIds: List<Uuid>,
+    val collectionId: Uuid? = null,
 ) : BottomSheetDestination {
     companion object {
         fun register(
@@ -47,7 +48,7 @@ data class PlaylistBottomSheetDestination(
                 metadata = BottomSheetSceneStrategy.bottomSheet()
             ) { params ->
                 NavHost(
-                    initialRoute = InnerPlaylistDestination(params.playlistIds),
+                    initialRoute = InnerPlaylistDestination(params.playlistIds, params.collectionId),
                     parentNavigator = navigator,
                 )
             }
@@ -58,6 +59,7 @@ data class PlaylistBottomSheetDestination(
 @Serializable
 data class InnerPlaylistDestination(
     val playlistIds: List<Uuid>,
+    val collectionId: Uuid?,
 ) : NavKey {
     companion object {
         fun register(
@@ -66,7 +68,7 @@ data class InnerPlaylistDestination(
         ) {
             entryProviderScope.entry<InnerPlaylistDestination> { params ->
                 val viewModel: PlaylistBottomSheetViewModel = koinViewModel {
-                    parametersOf(navScope, PlaylistBottomSheetDestination(params.playlistIds))
+                    parametersOf(navScope, PlaylistBottomSheetDestination(params.playlistIds, params.collectionId))
                 }
                 PlaylistBottomSheetScreen(
                     viewModel = viewModel,

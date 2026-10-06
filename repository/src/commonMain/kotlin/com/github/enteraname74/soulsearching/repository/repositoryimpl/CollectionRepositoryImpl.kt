@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.github.enteraname74.soulsearching.domain.model.Collection
 import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
 import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
+import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.repository.CollectionRepository
 import com.github.enteraname74.soulsearching.repository.datasource.collection.CollectionLocalDataSource
@@ -20,6 +21,9 @@ class CollectionRepositoryImpl(
 
     override fun getCollectionPreview(collectionId: Uuid): Flow<CollectionPreview?> =
         collectionLocalDataSource.getCollectionPreview(collectionId)
+
+    override fun getElements(collectionId: Uuid): Flow<List<CollectionElementPreview>> =
+        collectionLocalDataSource.getElements(collectionId)
 
     override fun getFromIds(collectionIds: List<Uuid>): Flow<List<CollectionWithMusics>> =
         collectionLocalDataSource.getFromIds(collectionIds)
@@ -48,6 +52,15 @@ class CollectionRepositoryImpl(
     override suspend fun addPlaylists(collectionIds: List<Uuid>, playlistIds: List<Uuid>) {
         collectionLocalDataSource.addPlaylists(collectionIds, playlistIds)
     }
+
+    override suspend fun removeArtist(collectionId: Uuid, artistId: Uuid): SoulResult<Unit> =
+        SoulResult.runCatching { collectionLocalDataSource.removeArtist(collectionId, artistId) }
+
+    override suspend fun removeAlbum(collectionId: Uuid, albumId: Uuid): SoulResult<Unit> =
+        SoulResult.runCatching { collectionLocalDataSource.removeAlbum(collectionId, albumId) }
+
+    override suspend fun removePlaylist(collectionId: Uuid, playlistId: Uuid): SoulResult<Unit> =
+        SoulResult.runCatching { collectionLocalDataSource.removePlaylist(collectionId, playlistId) }
 
     override fun getCollectionIdsContainingArtist(artistId: Uuid): Flow<List<Uuid>> =
         collectionLocalDataSource.getCollectionIdsContainingArtist(artistId)

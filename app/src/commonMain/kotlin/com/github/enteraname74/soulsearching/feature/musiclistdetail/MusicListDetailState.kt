@@ -2,7 +2,8 @@ package com.github.enteraname74.soulsearching.feature.musiclistdetail
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.paging.PagingData
-import com.github.enteraname74.soulsearching.domain.model.AlbumWithMusics
+import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
+import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
 import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
@@ -46,9 +47,15 @@ sealed interface MusicListDetailState {
     ) : MusicListDetailState {
         sealed interface OptionalContent {
             data class Albums(
-                val albums: List<AlbumWithMusics>,
+                val albums: List<AlbumPreview>,
                 val onClick: (albumId: Uuid) -> Unit,
                 val onLongClick: (albumId: Uuid) -> Unit,
+            ) : OptionalContent
+
+            data class CollectionElements(
+                val elements: List<CollectionElementPreview>,
+                val onClick: (element: CollectionElementPreview) -> Unit,
+                val onLongClick: (element: CollectionElementPreview) -> Unit,
             ) : OptionalContent
         }
     }

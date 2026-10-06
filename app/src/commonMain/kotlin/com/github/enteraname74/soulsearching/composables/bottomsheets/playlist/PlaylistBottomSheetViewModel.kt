@@ -10,10 +10,12 @@ import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiPlaylistDialog
+import com.github.enteraname74.soulsearching.composables.dialog.RemoveFromCollectionDialog
 import com.github.enteraname74.soulsearching.composables.dialog.DeletePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
@@ -34,6 +36,7 @@ import kotlin.uuid.Uuid
 
 class PlaylistBottomSheetViewModel(
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
+    private val commonCollectionUseCase: CommonCollectionUseCase,
     private val playbackManager: PlaybackManager,
     private val multiSelectionManager: MultiSelectionManager,
     private val loadingManager: LoadingManager,
@@ -44,6 +47,7 @@ class PlaylistBottomSheetViewModel(
     params: PlaylistBottomSheetDestination,
 ) : ViewModel() {
     private val playlistIds: List<Uuid> = params.playlistIds
+    private val collectionId: Uuid? = params.collectionId
 
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
@@ -158,6 +162,16 @@ class PlaylistBottomSheetViewModel(
             )
         }
 
+        if (collectionId != null && playlists.size == 1) {
+            add(
+                BottomSheetRowSpec(
+                    icon = CoreRes.drawable.ic_delete_filled,
+                    title = strings.removeFromCollection,
+                    onClick = ::showRemoveFromCollectionDialog,
+                )
+            )
+        }
+
         if (showDelete) {
             add(
                 BottomSheetRowSpec(
@@ -209,6 +223,32 @@ class PlaylistBottomSheetViewModel(
                 onDelete = ::deletePlaylists,
                 onClose = { dialogState.value = null },
             )
+        }
+    }
+
+    private fun showRemoveFromCollectionDialog() {
+        dialogState.value = RemoveFromCollectionDialog(
+            title = strings.removePlaylistFromCollectionTitle,
+            text = strings.removePlaylistFromCollectionText,
+            onConfirm = ::removeFromCollection,
+            onClose = { dialogState.value = null },
+        )
+    }
+
+    private fun removeFromCollection() {
+        val collectionId = collectionId ?: return
+        val playlistId = playlistIds.firstOrNull() ?: return
+        viewModelScope.launch {
+            loadingManager.startLoading()
+            val result = commonCollectionUseCase.removePlaylist(collectionId, playlistId)
+            loadingManager.stopLoading()
+            if (result.isError()) {
+                feedbackPopUpManager.showErrorIfAny(result)
+            } else {
+                dialogState.value = null
+                multiSelectionManager.clearMultiSelection()
+                navScope.navigateBack()
+            }
         }
     }
 

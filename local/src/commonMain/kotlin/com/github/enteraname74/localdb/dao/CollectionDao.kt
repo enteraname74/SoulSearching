@@ -10,6 +10,9 @@ import com.github.enteraname74.localdb.model.collection.RoomCollectionArtist
 import com.github.enteraname74.localdb.model.collection.RoomCollectionPlaylist
 import com.github.enteraname74.localdb.model.mapping.GenericLocalIdToRemoteId
 import com.github.enteraname74.localdb.view.RoomCollectionPreview
+import com.github.enteraname74.localdb.view.RoomAlbumPreview
+import com.github.enteraname74.localdb.view.RoomArtistPreview
+import com.github.enteraname74.localdb.view.RoomPlaylistPreview
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
@@ -83,6 +86,39 @@ interface CollectionDao {
 
     @Query(
         """
+            SELECT preview.*
+            FROM RoomPlaylistPreview AS preview
+            INNER JOIN RoomCollectionPlaylist AS relation ON relation.playlistId = preview.id
+            WHERE relation.collectionId = :collectionId
+            ORDER BY preview.name ASC, preview.id ASC
+        """
+    )
+    fun getPlaylistPreviews(collectionId: Uuid): Flow<List<RoomPlaylistPreview>>
+
+    @Query(
+        """
+            SELECT preview.*
+            FROM RoomAlbumPreview AS preview
+            INNER JOIN RoomCollectionAlbum AS relation ON relation.albumId = preview.id
+            WHERE relation.collectionId = :collectionId
+            ORDER BY preview.name ASC, preview.id ASC
+        """
+    )
+    fun getAlbumPreviews(collectionId: Uuid): Flow<List<RoomAlbumPreview>>
+
+    @Query(
+        """
+            SELECT preview.*
+            FROM RoomArtistPreview AS preview
+            INNER JOIN RoomCollectionArtist AS relation ON relation.artistId = preview.id
+            WHERE relation.collectionId = :collectionId
+            ORDER BY preview.name ASC, preview.id ASC
+        """
+    )
+    fun getArtistPreviews(collectionId: Uuid): Flow<List<RoomArtistPreview>>
+
+    @Query(
+        """
         UPDATE RoomCollection
         SET nbPlayed = nbPlayed + 1,
             lastUpdatedMillis = :lastUpdatedMillis
@@ -126,6 +162,9 @@ interface CollectionDao {
     """
     )
     suspend fun removePlaylist(collectionId: Uuid, playlistId: Uuid)
+
+    @Query("UPDATE RoomCollection SET lastUpdatedMillis = :lastUpdatedMillis WHERE collectionId IN (:collectionIds)")
+    suspend fun touch(collectionIds: List<Uuid>, lastUpdatedMillis: Long)
 
     @Query("DELETE FROM RoomCollection WHERE collectionId IN (:collectionIds)")
     suspend fun deleteAll(collectionIds: List<Uuid>)

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
 import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
 import com.github.enteraname74.soulsearching.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
@@ -21,6 +22,9 @@ import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUse
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.CachedPlayedListUiSpec
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -187,7 +191,7 @@ class MusicListDetailViewHolder(
         detailId: MusicListDetailId.Artist,
     ): Flow<MusicListDetailState> =
         combine(
-            commonAlbumUseCase.getAlbumsWithMusicsOfArtist(artistId = detailId.artistId),
+            commonAlbumUseCase.getAlbumPreviewsOfArtist(artistId = detailId.artistId),
             commonArtistUseCase.getArtistPreview(artistId = detailId.artistId),
             commonMusicUseCase.getArtistDuration(detailId.artistId),
             searchResult,
@@ -289,9 +293,10 @@ class MusicListDetailViewHolder(
         combine(
             commonMusicUseCase.getCollectionDuration(detailId.collectionId),
             commonCollectionUseCase.getCollectionPreview(detailId.collectionId),
+            commonCollectionUseCase.getElements(detailId.collectionId),
             searchResult,
             playbackManager.getCachedPlaylist(detailId.collectionId.toString()),
-        ) { duration, collectionPreview, searchMusics, cachedPlaylist ->
+        ) { duration, collectionPreview, elements, searchMusics, cachedPlaylist ->
             when {
                 collectionPreview == null -> MusicListDetailState.Error(
                     error = strings.collectionDoesNotExists,
@@ -306,7 +311,44 @@ class MusicListDetailViewHolder(
                     musics = musics,
                     duration = duration,
                     searchMusics = searchMusics,
-                    optionalContent = null,
+                    optionalContent = elements.takeIf { it.isNotEmpty() }?.let {
+                        MusicListDetailState.Data.OptionalContent.CollectionElements(
+                            elements = it,
+                            onClick = { element ->
+                                navigate {
+                                    toDestination(
+                                        MusicListDetailDestination(
+                                            when (element) {
+                                                is CollectionElementPreview.Playlist -> MusicListDetailId.Playlist(element.id)
+                                                is CollectionElementPreview.Album -> MusicListDetailId.Album(element.id)
+                                                is CollectionElementPreview.Artist -> MusicListDetailId.Artist(element.id)
+                                            }
+                                        )
+                                    )
+                                }
+                            },
+                            onLongClick = { element ->
+                                navigate {
+                                    toDestination(
+                                        when (element) {
+                                            is CollectionElementPreview.Playlist -> PlaylistBottomSheetDestination(
+                                                playlistIds = listOf(element.id),
+                                                collectionId = detailId.collectionId,
+                                            )
+                                            is CollectionElementPreview.Album -> AlbumBottomSheetDestination(
+                                                albumIds = listOf(element.id),
+                                                collectionId = detailId.collectionId,
+                                            )
+                                            is CollectionElementPreview.Artist -> ArtistBottomSheetDestination(
+                                                artistIds = listOf(element.id),
+                                                collectionId = detailId.collectionId,
+                                            )
+                                        }
+                                    )
+                                }
+                            },
+                        )
+                    },
                     musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
                     navigateBack = { navigate { navigateBack() } },
                     onSubtitleClicked = null,

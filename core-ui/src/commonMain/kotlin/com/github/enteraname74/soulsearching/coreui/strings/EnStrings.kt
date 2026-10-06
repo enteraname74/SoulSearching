@@ -40,6 +40,7 @@ object EnStrings : Strings {
         "You must accept all permissions required by the application for it to work properly."
     override val playedList = "Played list"
     override val currentSong = "Current song"
+    override val inThisCollection = "In this collection"
 
     override val lyrics = "Lyrics"
     override val activateRemoteLyricsFetchTitle = "Enable remote lyrics fetch"
@@ -91,6 +92,7 @@ object EnStrings : Strings {
     override val removeFromQuickAccess = "Remove from quick access"
     override val removeFromPlaylist = "Remove from playlist"
     override val removeFromPlayedList = "Remove from played list"
+    override val removeFromCollection = "Remove from collection"
     override val addToQuickAccess = "Add to quick access"
     override val addToPlaylist = "Add to a playlist"
     override val addToCollection = "Add to a collection"
@@ -98,6 +100,7 @@ object EnStrings : Strings {
     override val create = "Create"
     override val cancel = "Cancel"
     override val delete = "Delete"
+    override val remove = "Remove"
 
     override val soulMixInfoDialogText = "Listen to a mix of fetched songs from each of your folder!\nYou can " +
         "define the total of songs fetched from each folder in the settings."
@@ -157,6 +160,12 @@ object EnStrings : Strings {
         "This song will be removed from this playlist but not deleted from the application."
     override val removeSelectedMusicFromPlaylistTitle = "Are you sure to remove the selected songs from this playlist?"
     override val removeSelectedMusicFromPlaylistText = "The selected songs will be removed from this playlist but not deleted from the application."
+    override val removeArtistFromCollectionTitle = "Remove this artist from the collection?"
+    override val removeArtistFromCollectionText = "The artist will be removed from this collection but not deleted from the application."
+    override val removeAlbumFromCollectionTitle = "Remove this album from the collection?"
+    override val removeAlbumFromCollectionText = "The album will be removed from this collection but not deleted from the application."
+    override val removePlaylistFromCollectionTitle = "Remove this playlist from the collection?"
+    override val removePlaylistFromCollectionText = "The playlist will be removed from this collection but not deleted from the application."
 
     override val modifyAlbum = "Modify this album"
     override val modifyArtist = "Modify this artist"

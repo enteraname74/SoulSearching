@@ -100,6 +100,11 @@ internal class RoomAlbumDataSourceImpl(
             }
         }
 
+    override fun getAlbumPreviewsOfArtist(artistId: Uuid): Flow<List<AlbumPreview>> =
+        appDatabase.albumDao.getAlbumPreviewsFromArtist(artistId).map { previews ->
+            previews.map { it.toAlbumPreview() }
+        }
+
     override fun getFromId(albumId: Uuid): Flow<Album?> {
         return appDatabase.albumDao.getFromId(
             albumId = albumId

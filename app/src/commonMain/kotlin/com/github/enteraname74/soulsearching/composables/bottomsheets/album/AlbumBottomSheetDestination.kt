@@ -37,6 +37,7 @@ import kotlin.uuid.Uuid
 @Serializable
 data class AlbumBottomSheetDestination(
     val albumIds: List<Uuid>,
+    val collectionId: Uuid? = null,
 ) : BottomSheetDestination {
     companion object {
         fun register(
@@ -47,7 +48,7 @@ data class AlbumBottomSheetDestination(
                 metadata = BottomSheetSceneStrategy.bottomSheet()
             ) { params ->
                 NavHost(
-                    initialRoute = InnerAlbumDestination(params.albumIds),
+                    initialRoute = InnerAlbumDestination(params.albumIds, params.collectionId),
                     parentNavigator = navigator,
                 )
             }
@@ -58,6 +59,7 @@ data class AlbumBottomSheetDestination(
 @Serializable
 data class InnerAlbumDestination(
     val albumIds: List<Uuid>,
+    val collectionId: Uuid?,
 ) : NavKey {
     companion object {
         fun register(
@@ -66,7 +68,7 @@ data class InnerAlbumDestination(
         ) {
             entryProviderScope.entry<InnerAlbumDestination> { params ->
                 val viewModel: AlbumBottomSheetViewModel = koinViewModel {
-                    parametersOf(navScope, AlbumBottomSheetDestination(params.albumIds))
+                    parametersOf(navScope, AlbumBottomSheetDestination(params.albumIds, params.collectionId))
                 }
                 AlbumBottomSheetScreen(
                     viewModel = viewModel,

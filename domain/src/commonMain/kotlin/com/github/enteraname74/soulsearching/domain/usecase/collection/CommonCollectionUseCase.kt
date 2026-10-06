@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.github.enteraname74.soulsearching.domain.model.Collection
 import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
 import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
+import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.repository.CollectionRepository
 import kotlinx.coroutines.flow.Flow
@@ -18,6 +19,9 @@ class CommonCollectionUseCase(
 
     fun getCollectionPreview(collectionId: Uuid): Flow<CollectionPreview?> =
         collectionRepository.getCollectionPreview(collectionId)
+
+    fun getElements(collectionId: Uuid): Flow<List<CollectionElementPreview>> =
+        collectionRepository.getElements(collectionId)
 
     fun getFromIds(collectionIds: List<Uuid>): Flow<List<CollectionWithMusics>> =
         collectionRepository.getFromIds(collectionIds)
@@ -49,6 +53,15 @@ class CommonCollectionUseCase(
     suspend fun addPlaylists(collectionIds: List<Uuid>, playlistIds: List<Uuid>) {
         collectionRepository.addPlaylists(collectionIds, playlistIds)
     }
+
+    suspend fun removeArtist(collectionId: Uuid, artistId: Uuid): SoulResult<Unit> =
+        collectionRepository.removeArtist(collectionId, artistId)
+
+    suspend fun removeAlbum(collectionId: Uuid, albumId: Uuid): SoulResult<Unit> =
+        collectionRepository.removeAlbum(collectionId, albumId)
+
+    suspend fun removePlaylist(collectionId: Uuid, playlistId: Uuid): SoulResult<Unit> =
+        collectionRepository.removePlaylist(collectionId, playlistId)
 
     fun getCollectionIdsContainingArtist(artistId: Uuid): Flow<List<Uuid>> =
         collectionRepository.getCollectionIdsContainingArtist(artistId)

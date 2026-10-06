@@ -46,6 +46,9 @@ class AlbumRepositoryImpl(
     override fun getAlbumsWithMusicsOfArtist(artistId: Uuid): Flow<List<AlbumWithMusics>> =
         albumDataSource.getAlbumsWithMusicsOfArtist(artistId)
 
+    override fun getAlbumPreviewsOfArtist(artistId: Uuid): Flow<List<AlbumPreview>> =
+        albumDataSource.getAlbumPreviewsOfArtist(artistId)
+
     override fun getFromId(albumId: Uuid): Flow<Album?> = albumDataSource.getFromId(
         albumId = albumId
     )

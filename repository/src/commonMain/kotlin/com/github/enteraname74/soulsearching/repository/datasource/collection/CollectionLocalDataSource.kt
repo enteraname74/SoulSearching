@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.github.enteraname74.soulsearching.domain.model.Collection
 import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
 import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
+import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
@@ -13,6 +14,8 @@ interface CollectionLocalDataSource {
     fun getAll(): Flow<List<CollectionPreview>>
 
     fun getCollectionPreview(collectionId: Uuid): Flow<CollectionPreview?>
+
+    fun getElements(collectionId: Uuid): Flow<List<CollectionElementPreview>>
 
     fun getFromIds(collectionIds: List<Uuid>): Flow<List<CollectionWithMusics>>
 
@@ -29,6 +32,12 @@ interface CollectionLocalDataSource {
     suspend fun addAlbums(collectionIds: List<Uuid>, albumIds: List<Uuid>)
 
     suspend fun addPlaylists(collectionIds: List<Uuid>, playlistIds: List<Uuid>)
+
+    suspend fun removeArtist(collectionId: Uuid, artistId: Uuid)
+
+    suspend fun removeAlbum(collectionId: Uuid, albumId: Uuid)
+
+    suspend fun removePlaylist(collectionId: Uuid, playlistId: Uuid)
 
     fun getCollectionIdsContainingArtist(artistId: Uuid): Flow<List<Uuid>>
 

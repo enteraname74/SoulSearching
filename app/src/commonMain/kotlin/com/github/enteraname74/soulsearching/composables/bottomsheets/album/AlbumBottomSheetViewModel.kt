@@ -12,10 +12,12 @@ import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearching
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteAlbumDialog
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiAlbumDialog
+import com.github.enteraname74.soulsearching.composables.dialog.RemoveFromCollectionDialog
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
@@ -36,6 +38,7 @@ import kotlin.uuid.Uuid
 class AlbumBottomSheetViewModel(
     private val commonAlbumUseCase: CommonAlbumUseCase,
     private val deleteAlbumUseCase: DeleteAlbumUseCase,
+    private val commonCollectionUseCase: CommonCollectionUseCase,
     private val playbackManager: PlaybackManager,
     private val multiSelectionManager: MultiSelectionManager,
     private val loadingManager: LoadingManager,
@@ -46,6 +49,7 @@ class AlbumBottomSheetViewModel(
     params: AlbumBottomSheetDestination,
 ) : ViewModel() {
     private val albumIds: List<Uuid> = params.albumIds
+    private val collectionId: Uuid? = params.collectionId
 
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
@@ -152,6 +156,16 @@ class AlbumBottomSheetViewModel(
             )
         }
 
+        if (collectionId != null && albums.size == 1) {
+            add(
+                BottomSheetRowSpec(
+                    icon = CoreRes.drawable.ic_delete_filled,
+                    title = strings.removeFromCollection,
+                    onClick = ::showRemoveFromCollectionDialog,
+                )
+            )
+        }
+
         add(
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_delete_filled,
@@ -201,6 +215,32 @@ class AlbumBottomSheetViewModel(
                 onDelete = ::deleteAlbums,
                 onClose = { dialogState.value = null },
             )
+        }
+    }
+
+    private fun showRemoveFromCollectionDialog() {
+        dialogState.value = RemoveFromCollectionDialog(
+            title = strings.removeAlbumFromCollectionTitle,
+            text = strings.removeAlbumFromCollectionText,
+            onConfirm = ::removeFromCollection,
+            onClose = { dialogState.value = null },
+        )
+    }
+
+    private fun removeFromCollection() {
+        val collectionId = collectionId ?: return
+        val albumId = albumIds.firstOrNull() ?: return
+        viewModelScope.launch {
+            loadingManager.startLoading()
+            val result = commonCollectionUseCase.removeAlbum(collectionId, albumId)
+            loadingManager.stopLoading()
+            if (result.isError()) {
+                feedbackPopUpManager.showErrorIfAny(result)
+            } else {
+                dialogState.value = null
+                multiSelectionManager.clearMultiSelection()
+                navScope.navigateBack()
+            }
         }
     }
 

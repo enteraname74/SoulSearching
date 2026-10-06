@@ -12,6 +12,7 @@ import com.github.enteraname74.localdb.model.collection.toCollection
 import com.github.enteraname74.localdb.model.collection.toRoomCollection
 import com.github.enteraname74.localdb.utils.PagingUtils
 import com.github.enteraname74.soulsearching.domain.model.Collection
+import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
 import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
 import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
 import com.github.enteraname74.soulsearching.domain.model.SortDirection
@@ -72,6 +73,18 @@ internal class RoomCollectionLocalDataSourceImpl(
             it?.toCollectionPreview()
         }
 
+    override fun getElements(collectionId: Uuid): Flow<List<CollectionElementPreview>> = combine(
+        appDatabase.collectionDao.getPlaylistPreviews(collectionId),
+        appDatabase.collectionDao.getAlbumPreviews(collectionId),
+        appDatabase.collectionDao.getArtistPreviews(collectionId),
+    ) { playlists, albums, artists ->
+        buildList {
+            addAll(playlists.map { CollectionElementPreview.Playlist(it.toPlaylistPreview()) })
+            addAll(albums.map { CollectionElementPreview.Album(it.toAlbumPreview()) })
+            addAll(artists.map { CollectionElementPreview.Artist(it.toArtistPreview()) })
+        }.sortedWith(compareBy<CollectionElementPreview> { it.name }.thenBy { it.id.toString() })
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getFromIds(collectionIds: List<Uuid>): Flow<List<CollectionWithMusics>> =
         appDatabase.collectionDao.getFromIds(collectionIds).flatMapLatest { roomCollections ->
@@ -126,6 +139,7 @@ internal class RoomCollectionLocalDataSourceImpl(
                 artistIds.map { artistId -> RoomCollectionArtist(collectionId, artistId) }
             }
         )
+        touch(collectionIds)
     }
 
     override suspend fun addAlbums(collectionIds: List<Uuid>, albumIds: List<Uuid>) {
@@ -134,6 +148,7 @@ internal class RoomCollectionLocalDataSourceImpl(
                 albumIds.map { albumId -> RoomCollectionAlbum(collectionId, albumId) }
             }
         )
+        touch(collectionIds)
     }
 
     override suspend fun addPlaylists(collectionIds: List<Uuid>, playlistIds: List<Uuid>) {
@@ -142,6 +157,22 @@ internal class RoomCollectionLocalDataSourceImpl(
                 playlistIds.map { playlistId -> RoomCollectionPlaylist(collectionId, playlistId) }
             }
         )
+        touch(collectionIds)
+    }
+
+    override suspend fun removeArtist(collectionId: Uuid, artistId: Uuid) {
+        appDatabase.collectionDao.removeArtist(collectionId, artistId)
+        touch(listOf(collectionId))
+    }
+
+    override suspend fun removeAlbum(collectionId: Uuid, albumId: Uuid) {
+        appDatabase.collectionDao.removeAlbum(collectionId, albumId)
+        touch(listOf(collectionId))
+    }
+
+    override suspend fun removePlaylist(collectionId: Uuid, playlistId: Uuid) {
+        appDatabase.collectionDao.removePlaylist(collectionId, playlistId)
+        touch(listOf(collectionId))
     }
 
     override fun getCollectionIdsContainingArtist(artistId: Uuid): Flow<List<Uuid>> =
@@ -168,4 +199,10 @@ internal class RoomCollectionLocalDataSourceImpl(
         appDatabase.collectionDao.getAllLocalToRemoteIds().associate {
             it.remoteId to it.localId
         }
+
+    private suspend fun touch(collectionIds: List<Uuid>) {
+        if (collectionIds.isNotEmpty()) {
+            appDatabase.collectionDao.touch(collectionIds, DateUtils.now())
+        }
+    }
 }
