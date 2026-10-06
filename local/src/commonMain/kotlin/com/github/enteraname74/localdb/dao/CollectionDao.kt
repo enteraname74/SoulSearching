@@ -7,12 +7,10 @@ import androidx.paging.PagingSource
 import com.github.enteraname74.localdb.model.collection.RoomCollection
 import com.github.enteraname74.localdb.model.collection.RoomCollectionAlbum
 import com.github.enteraname74.localdb.model.collection.RoomCollectionArtist
-import com.github.enteraname74.localdb.model.collection.RoomCollectionPlaylist
 import com.github.enteraname74.localdb.model.mapping.GenericLocalIdToRemoteId
 import com.github.enteraname74.localdb.view.RoomCollectionPreview
 import com.github.enteraname74.localdb.view.RoomAlbumPreview
 import com.github.enteraname74.localdb.view.RoomArtistPreview
-import com.github.enteraname74.localdb.view.RoomPlaylistPreview
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
@@ -61,16 +59,10 @@ interface CollectionDao {
     suspend fun addAlbum(item: RoomCollectionAlbum)
 
     @Upsert
-    suspend fun addPlaylist(item: RoomCollectionPlaylist)
-
-    @Upsert
     suspend fun addArtists(items: List<RoomCollectionArtist>)
 
     @Upsert
     suspend fun addAlbums(items: List<RoomCollectionAlbum>)
-
-    @Upsert
-    suspend fun addPlaylists(items: List<RoomCollectionPlaylist>)
 
     @Query("SELECT collectionId FROM RoomCollectionArtist WHERE artistId = :artistId")
     fun getCollectionIdsContainingArtist(artistId: Uuid): Flow<List<Uuid>>
@@ -78,22 +70,8 @@ interface CollectionDao {
     @Query("SELECT collectionId FROM RoomCollectionAlbum WHERE albumId = :albumId")
     fun getCollectionIdsContainingAlbum(albumId: Uuid): Flow<List<Uuid>>
 
-    @Query("SELECT collectionId FROM RoomCollectionPlaylist WHERE playlistId = :playlistId")
-    fun getCollectionIdsContainingPlaylist(playlistId: Uuid): Flow<List<Uuid>>
-
     @Query("SELECT * FROM RoomCollectionPreview WHERE id = :collectionId LIMIT 1")
     fun getCollectionPreview(collectionId: Uuid): Flow<RoomCollectionPreview?>
-
-    @Query(
-        """
-            SELECT preview.*
-            FROM RoomPlaylistPreview AS preview
-            INNER JOIN RoomCollectionPlaylist AS relation ON relation.playlistId = preview.id
-            WHERE relation.collectionId = :collectionId
-            ORDER BY preview.name ASC, preview.id ASC
-        """
-    )
-    fun getPlaylistPreviews(collectionId: Uuid): Flow<List<RoomPlaylistPreview>>
 
     @Query(
         """
@@ -154,14 +132,6 @@ interface CollectionDao {
     """
     )
     suspend fun removeAlbum(collectionId: Uuid, albumId: Uuid)
-
-    @Query(
-        """
-        DELETE FROM RoomCollectionPlaylist
-        WHERE collectionId = :collectionId AND playlistId = :playlistId
-    """
-    )
-    suspend fun removePlaylist(collectionId: Uuid, playlistId: Uuid)
 
     @Query("UPDATE RoomCollection SET lastUpdatedMillis = :lastUpdatedMillis WHERE collectionId IN (:collectionIds)")
     suspend fun touch(collectionIds: List<Uuid>, lastUpdatedMillis: Long)

@@ -31,19 +31,13 @@ interface CollectionLocalDataSource {
 
     suspend fun addAlbums(collectionIds: List<Uuid>, albumIds: List<Uuid>)
 
-    suspend fun addPlaylists(collectionIds: List<Uuid>, playlistIds: List<Uuid>)
-
     suspend fun removeArtist(collectionId: Uuid, artistId: Uuid)
 
     suspend fun removeAlbum(collectionId: Uuid, albumId: Uuid)
 
-    suspend fun removePlaylist(collectionId: Uuid, playlistId: Uuid)
-
     fun getCollectionIdsContainingArtist(artistId: Uuid): Flow<List<Uuid>>
 
     fun getCollectionIdsContainingAlbum(albumId: Uuid): Flow<List<Uuid>>
-
-    fun getCollectionIdsContainingPlaylist(playlistId: Uuid): Flow<List<Uuid>>
 
     suspend fun incrementNbPlayed(collectionId: Uuid)
 

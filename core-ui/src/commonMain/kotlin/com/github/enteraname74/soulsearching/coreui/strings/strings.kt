@@ -172,8 +172,6 @@ interface Strings {
     val removeArtistFromCollectionText: String
     val removeAlbumFromCollectionTitle: String
     val removeAlbumFromCollectionText: String
-    val removePlaylistFromCollectionTitle: String
-    val removePlaylistFromCollectionText: String
 
     val modifyAlbum: String
     val modifyArtist: String

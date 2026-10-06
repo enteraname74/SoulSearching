@@ -165,8 +165,6 @@ object FrStrings : Strings {
     override val removeArtistFromCollectionText = "L'artiste sera retiré de cette collection mais ne sera pas supprimé de l'application."
     override val removeAlbumFromCollectionTitle = "Retirer cet album de la collection ?"
     override val removeAlbumFromCollectionText = "L'album sera retiré de cette collection mais ne sera pas supprimé de l'application."
-    override val removePlaylistFromCollectionTitle = "Retirer cette playlist de la collection ?"
-    override val removePlaylistFromCollectionText = "La playlist sera retirée de cette collection mais ne sera pas supprimée de l'application."
 
     override val modifyAlbum = "Modifier cet album"
     override val modifyArtist = "Modifier cet artiste"

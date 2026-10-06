@@ -24,7 +24,6 @@ import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
-import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.CachedPlayedListUiSpec
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -319,7 +318,6 @@ class MusicListDetailViewHolder(
                                     toDestination(
                                         MusicListDetailDestination(
                                             when (element) {
-                                                is CollectionElementPreview.Playlist -> MusicListDetailId.Playlist(element.id)
                                                 is CollectionElementPreview.Album -> MusicListDetailId.Album(element.id)
                                                 is CollectionElementPreview.Artist -> MusicListDetailId.Artist(element.id)
                                             }
@@ -331,10 +329,6 @@ class MusicListDetailViewHolder(
                                 navigate {
                                     toDestination(
                                         when (element) {
-                                            is CollectionElementPreview.Playlist -> PlaylistBottomSheetDestination(
-                                                playlistIds = listOf(element.id),
-                                                collectionId = detailId.collectionId,
-                                            )
                                             is CollectionElementPreview.Album -> AlbumBottomSheetDestination(
                                                 albumIds = listOf(element.id),
                                                 collectionId = detailId.collectionId,

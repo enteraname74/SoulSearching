@@ -50,27 +50,17 @@ class CommonCollectionUseCase(
         collectionRepository.addAlbums(collectionIds, albumIds)
     }
 
-    suspend fun addPlaylists(collectionIds: List<Uuid>, playlistIds: List<Uuid>) {
-        collectionRepository.addPlaylists(collectionIds, playlistIds)
-    }
-
     suspend fun removeArtist(collectionId: Uuid, artistId: Uuid): SoulResult<Unit> =
         collectionRepository.removeArtist(collectionId, artistId)
 
     suspend fun removeAlbum(collectionId: Uuid, albumId: Uuid): SoulResult<Unit> =
         collectionRepository.removeAlbum(collectionId, albumId)
 
-    suspend fun removePlaylist(collectionId: Uuid, playlistId: Uuid): SoulResult<Unit> =
-        collectionRepository.removePlaylist(collectionId, playlistId)
-
     fun getCollectionIdsContainingArtist(artistId: Uuid): Flow<List<Uuid>> =
         collectionRepository.getCollectionIdsContainingArtist(artistId)
 
     fun getCollectionIdsContainingAlbum(albumId: Uuid): Flow<List<Uuid>> =
         collectionRepository.getCollectionIdsContainingAlbum(albumId)
-
-    fun getCollectionIdsContainingPlaylist(playlistId: Uuid): Flow<List<Uuid>> =
-        collectionRepository.getCollectionIdsContainingPlaylist(playlistId)
 
     suspend fun cleanAllCovers() {
         collectionRepository.cleanAllCovers()

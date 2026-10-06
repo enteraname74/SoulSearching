@@ -164,8 +164,6 @@ object EnStrings : Strings {
     override val removeArtistFromCollectionText = "The artist will be removed from this collection but not deleted from the application."
     override val removeAlbumFromCollectionTitle = "Remove this album from the collection?"
     override val removeAlbumFromCollectionText = "The album will be removed from this collection but not deleted from the application."
-    override val removePlaylistFromCollectionTitle = "Remove this playlist from the collection?"
-    override val removePlaylistFromCollectionText = "The playlist will be removed from this collection but not deleted from the application."
 
     override val modifyAlbum = "Modify this album"
     override val modifyArtist = "Modify this artist"

@@ -49,27 +49,17 @@ class CollectionRepositoryImpl(
         collectionLocalDataSource.addAlbums(collectionIds, albumIds)
     }
 
-    override suspend fun addPlaylists(collectionIds: List<Uuid>, playlistIds: List<Uuid>) {
-        collectionLocalDataSource.addPlaylists(collectionIds, playlistIds)
-    }
-
     override suspend fun removeArtist(collectionId: Uuid, artistId: Uuid): SoulResult<Unit> =
         SoulResult.runCatching { collectionLocalDataSource.removeArtist(collectionId, artistId) }
 
     override suspend fun removeAlbum(collectionId: Uuid, albumId: Uuid): SoulResult<Unit> =
         SoulResult.runCatching { collectionLocalDataSource.removeAlbum(collectionId, albumId) }
 
-    override suspend fun removePlaylist(collectionId: Uuid, playlistId: Uuid): SoulResult<Unit> =
-        SoulResult.runCatching { collectionLocalDataSource.removePlaylist(collectionId, playlistId) }
-
     override fun getCollectionIdsContainingArtist(artistId: Uuid): Flow<List<Uuid>> =
         collectionLocalDataSource.getCollectionIdsContainingArtist(artistId)
 
     override fun getCollectionIdsContainingAlbum(albumId: Uuid): Flow<List<Uuid>> =
         collectionLocalDataSource.getCollectionIdsContainingAlbum(albumId)
-
-    override fun getCollectionIdsContainingPlaylist(playlistId: Uuid): Flow<List<Uuid>> =
-        collectionLocalDataSource.getCollectionIdsContainingPlaylist(playlistId)
 
     override suspend fun incrementNbPlayed(collectionId: Uuid) {
         collectionLocalDataSource.incrementNbPlayed(collectionId)

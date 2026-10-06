@@ -7,7 +7,6 @@ import androidx.paging.map
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.collection.RoomCollectionAlbum
 import com.github.enteraname74.localdb.model.collection.RoomCollectionArtist
-import com.github.enteraname74.localdb.model.collection.RoomCollectionPlaylist
 import com.github.enteraname74.localdb.model.collection.toCollection
 import com.github.enteraname74.localdb.model.collection.toRoomCollection
 import com.github.enteraname74.localdb.utils.PagingUtils
@@ -74,12 +73,10 @@ internal class RoomCollectionLocalDataSourceImpl(
         }
 
     override fun getElements(collectionId: Uuid): Flow<List<CollectionElementPreview>> = combine(
-        appDatabase.collectionDao.getPlaylistPreviews(collectionId),
         appDatabase.collectionDao.getAlbumPreviews(collectionId),
         appDatabase.collectionDao.getArtistPreviews(collectionId),
-    ) { playlists, albums, artists ->
+    ) { albums, artists ->
         buildList {
-            addAll(playlists.map { CollectionElementPreview.Playlist(it.toPlaylistPreview()) })
             addAll(albums.map { CollectionElementPreview.Album(it.toAlbumPreview()) })
             addAll(artists.map { CollectionElementPreview.Artist(it.toArtistPreview()) })
         }.sortedWith(compareBy<CollectionElementPreview> { it.name }.thenBy { it.id.toString() })
@@ -151,15 +148,6 @@ internal class RoomCollectionLocalDataSourceImpl(
         touch(collectionIds)
     }
 
-    override suspend fun addPlaylists(collectionIds: List<Uuid>, playlistIds: List<Uuid>) {
-        appDatabase.collectionDao.addPlaylists(
-            collectionIds.flatMap { collectionId ->
-                playlistIds.map { playlistId -> RoomCollectionPlaylist(collectionId, playlistId) }
-            }
-        )
-        touch(collectionIds)
-    }
-
     override suspend fun removeArtist(collectionId: Uuid, artistId: Uuid) {
         appDatabase.collectionDao.removeArtist(collectionId, artistId)
         touch(listOf(collectionId))
@@ -170,19 +158,11 @@ internal class RoomCollectionLocalDataSourceImpl(
         touch(listOf(collectionId))
     }
 
-    override suspend fun removePlaylist(collectionId: Uuid, playlistId: Uuid) {
-        appDatabase.collectionDao.removePlaylist(collectionId, playlistId)
-        touch(listOf(collectionId))
-    }
-
     override fun getCollectionIdsContainingArtist(artistId: Uuid): Flow<List<Uuid>> =
         appDatabase.collectionDao.getCollectionIdsContainingArtist(artistId)
 
     override fun getCollectionIdsContainingAlbum(albumId: Uuid): Flow<List<Uuid>> =
         appDatabase.collectionDao.getCollectionIdsContainingAlbum(albumId)
-
-    override fun getCollectionIdsContainingPlaylist(playlistId: Uuid): Flow<List<Uuid>> =
-        appDatabase.collectionDao.getCollectionIdsContainingPlaylist(playlistId)
 
     override suspend fun incrementNbPlayed(collectionId: Uuid) {
         appDatabase.collectionDao.incrementNbPlayed(

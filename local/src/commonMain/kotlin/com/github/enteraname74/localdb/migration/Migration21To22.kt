@@ -44,21 +44,8 @@ object Migration21To22 : Migration(21, 22) {
             )
             """.trimIndent()
         )
-        connection.executeSQL(
-            """
-            CREATE TABLE IF NOT EXISTS RoomCollectionPlaylist (
-                collectionId TEXT NOT NULL,
-                playlistId TEXT NOT NULL,
-                PRIMARY KEY(collectionId, playlistId),
-                FOREIGN KEY(collectionId) REFERENCES RoomCollection(collectionId) ON DELETE CASCADE,
-                FOREIGN KEY(playlistId) REFERENCES RoomPlaylist(playlistId) ON DELETE CASCADE
-            )
-            """.trimIndent()
-        )
-
         connection.executeSQL("CREATE INDEX IF NOT EXISTS index_RoomCollectionAlbum_albumId ON RoomCollectionAlbum(albumId)")
         connection.executeSQL("CREATE INDEX IF NOT EXISTS index_RoomCollectionArtist_artistId ON RoomCollectionArtist(artistId)")
-        connection.executeSQL("CREATE INDEX IF NOT EXISTS index_RoomCollectionPlaylist_playlistId ON RoomCollectionPlaylist(playlistId)")
 
         connection.executeSQL(
             "ALTER TABLE RoomListeningStatistics ADD COLUMN collectionId TEXT REFERENCES RoomCollection(collectionId) ON DELETE CASCADE"
@@ -128,14 +115,6 @@ object Migration21To22 : Migration(21, 22) {
                               WHERE collectionArtist.collectionId = collection.collectionId
                                 AND musicArtist.musicId = music.musicId
                           )
-                          OR EXISTS (
-                              SELECT 1
-                              FROM RoomCollectionPlaylist AS collectionPlaylist
-                              INNER JOIN RoomMusicPlaylist AS musicPlaylist
-                                  ON musicPlaylist.playlistId = collectionPlaylist.playlistId
-                              WHERE collectionPlaylist.collectionId = collection.collectionId
-                                AND musicPlaylist.musicId = music.musicId
-                          )
                       )
                 ) AS totalMusics,
                 COALESCE(
@@ -149,7 +128,6 @@ object Migration21To22 : Migration(21, 22) {
                           AND (
                               EXISTS (SELECT 1 FROM RoomCollectionAlbum ca WHERE ca.collectionId = collection.collectionId AND ca.albumId = music.albumId)
                               OR EXISTS (SELECT 1 FROM RoomCollectionArtist ca INNER JOIN RoomMusicArtist ma ON ma.artistId = ca.artistId WHERE ca.collectionId = collection.collectionId AND ma.musicId = music.musicId)
-                              OR EXISTS (SELECT 1 FROM RoomCollectionPlaylist cp INNER JOIN RoomMusicPlaylist mp ON mp.playlistId = cp.playlistId WHERE cp.collectionId = collection.collectionId AND mp.musicId = music.musicId)
                           )
                         ORDER BY music.name ASC
                         LIMIT 1
@@ -163,7 +141,6 @@ object Migration21To22 : Migration(21, 22) {
                       AND (
                           EXISTS (SELECT 1 FROM RoomCollectionAlbum ca WHERE ca.collectionId = collection.collectionId AND ca.albumId = music.albumId)
                           OR EXISTS (SELECT 1 FROM RoomCollectionArtist ca INNER JOIN RoomMusicArtist ma ON ma.artistId = ca.artistId WHERE ca.collectionId = collection.collectionId AND ma.musicId = music.musicId)
-                          OR EXISTS (SELECT 1 FROM RoomCollectionPlaylist cp INNER JOIN RoomMusicPlaylist mp ON mp.playlistId = cp.playlistId WHERE cp.collectionId = collection.collectionId AND mp.musicId = music.musicId)
                       )
                     ORDER BY music.name ASC
                     LIMIT 1
@@ -176,7 +153,6 @@ object Migration21To22 : Migration(21, 22) {
                       AND (
                           EXISTS (SELECT 1 FROM RoomCollectionAlbum ca WHERE ca.collectionId = collection.collectionId AND ca.albumId = music.albumId)
                           OR EXISTS (SELECT 1 FROM RoomCollectionArtist ca INNER JOIN RoomMusicArtist ma ON ma.artistId = ca.artistId WHERE ca.collectionId = collection.collectionId AND ma.musicId = music.musicId)
-                          OR EXISTS (SELECT 1 FROM RoomCollectionPlaylist cp INNER JOIN RoomMusicPlaylist mp ON mp.playlistId = cp.playlistId WHERE cp.collectionId = collection.collectionId AND mp.musicId = music.musicId)
                       )
                     ORDER BY music.name ASC
                     LIMIT 1

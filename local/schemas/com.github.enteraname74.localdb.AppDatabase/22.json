@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 22,
-    "identityHash": "ca2dbc345b5084fa3674a7f33e21560a",
+    "identityHash": "f4426039f79dbec81c344bbcac7f841f",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -1455,66 +1455,6 @@
             ]
           }
         ]
-      },
-      {
-        "tableName": "RoomCollectionPlaylist",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`collectionId` TEXT NOT NULL, `playlistId` TEXT NOT NULL, PRIMARY KEY(`collectionId`, `playlistId`), FOREIGN KEY(`collectionId`) REFERENCES `RoomCollection`(`collectionId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playlistId`) REFERENCES `RoomPlaylist`(`playlistId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "collectionId",
-            "columnName": "collectionId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "playlistId",
-            "columnName": "playlistId",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "collectionId",
-            "playlistId"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_RoomCollectionPlaylist_playlistId",
-            "unique": false,
-            "columnNames": [
-              "playlistId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_RoomCollectionPlaylist_playlistId` ON `${TABLE_NAME}` (`playlistId`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "RoomCollection",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "collectionId"
-            ],
-            "referencedColumns": [
-              "collectionId"
-            ]
-          },
-          {
-            "table": "RoomPlaylist",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "playlistId"
-            ],
-            "referencedColumns": [
-              "playlistId"
-            ]
-          }
-        ]
       }
     ],
     "views": [
@@ -1544,12 +1484,12 @@
       },
       {
         "viewName": "RoomCollectionPreview",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT\n            collection.collectionId AS id,\n            collection.remoteId,\n            collection.name,\n            collection.addedDate,\n            collection.coverUrl,\n            collection.nbPlayed,\n            collection.isInQuickAccess,\n            (\n                SELECT COUNT(*)\n                FROM RoomMusic AS music\n                WHERE music.isHidden = 0\n                  AND music.scope != 'SharedPlayedList'\n                  AND (\n                      EXISTS (\n                          SELECT 1\n                          FROM RoomCollectionAlbum AS collectionAlbum\n                          WHERE collectionAlbum.collectionId = collection.collectionId\n                            AND collectionAlbum.albumId = music.albumId\n                      )\n                      OR EXISTS (\n                          SELECT 1\n                          FROM RoomCollectionArtist AS collectionArtist\n                          INNER JOIN RoomMusicArtist AS musicArtist\n                              ON musicArtist.artistId = collectionArtist.artistId\n                          WHERE collectionArtist.collectionId = collection.collectionId\n                            AND musicArtist.musicId = music.musicId\n                      )\n                      OR EXISTS (\n                          SELECT 1\n                          FROM RoomCollectionPlaylist AS collectionPlaylist\n                          INNER JOIN RoomMusicPlaylist AS musicPlaylist\n                              ON musicPlaylist.playlistId = collectionPlaylist.playlistId\n                          WHERE collectionPlaylist.collectionId = collection.collectionId\n                            AND musicPlaylist.musicId = music.musicId\n                      )\n                  )\n            ) AS totalMusics,\n            COALESCE(\n                collection.coverId,\n                (\n                    SELECT music.coverId\n                    FROM RoomMusic AS music\n                    WHERE music.isHidden = 0\n                      AND music.scope != 'SharedPlayedList'\n                      AND music.coverId IS NOT NULL\n                      AND (\n                          EXISTS (SELECT 1 FROM RoomCollectionAlbum ca WHERE ca.collectionId = collection.collectionId AND ca.albumId = music.albumId)\n                          OR EXISTS (SELECT 1 FROM RoomCollectionArtist ca INNER JOIN RoomMusicArtist ma ON ma.artistId = ca.artistId WHERE ca.collectionId = collection.collectionId AND ma.musicId = music.musicId)\n                          OR EXISTS (SELECT 1 FROM RoomCollectionPlaylist cp INNER JOIN RoomMusicPlaylist mp ON mp.playlistId = cp.playlistId WHERE cp.collectionId = collection.collectionId AND mp.musicId = music.musicId)\n                      )\n                    ORDER BY music.name ASC\n                    LIMIT 1\n                )\n            ) AS coverId,\n            (\n                SELECT music.localPath\n                FROM RoomMusic AS music\n                WHERE music.isHidden = 0\n                  AND music.scope != 'SharedPlayedList'\n                  AND (\n                      EXISTS (SELECT 1 FROM RoomCollectionAlbum ca WHERE ca.collectionId = collection.collectionId AND ca.albumId = music.albumId)\n                      OR EXISTS (SELECT 1 FROM RoomCollectionArtist ca INNER JOIN RoomMusicArtist ma ON ma.artistId = ca.artistId WHERE ca.collectionId = collection.collectionId AND ma.musicId = music.musicId)\n                      OR EXISTS (SELECT 1 FROM RoomCollectionPlaylist cp INNER JOIN RoomMusicPlaylist mp ON mp.playlistId = cp.playlistId WHERE cp.collectionId = collection.collectionId AND mp.musicId = music.musicId)\n                  )\n                ORDER BY music.name ASC\n                LIMIT 1\n            ) AS musicCoverPath,\n            (\n                SELECT music.coverUrl\n                FROM RoomMusic AS music\n                WHERE music.isHidden = 0\n                  AND music.scope != 'SharedPlayedList'\n                  AND (\n                      EXISTS (SELECT 1 FROM RoomCollectionAlbum ca WHERE ca.collectionId = collection.collectionId AND ca.albumId = music.albumId)\n                      OR EXISTS (SELECT 1 FROM RoomCollectionArtist ca INNER JOIN RoomMusicArtist ma ON ma.artistId = ca.artistId WHERE ca.collectionId = collection.collectionId AND ma.musicId = music.musicId)\n                      OR EXISTS (SELECT 1 FROM RoomCollectionPlaylist cp INNER JOIN RoomMusicPlaylist mp ON mp.playlistId = cp.playlistId WHERE cp.collectionId = collection.collectionId AND mp.musicId = music.musicId)\n                  )\n                ORDER BY music.name ASC\n                LIMIT 1\n            ) AS musicCoverUrl\n        FROM RoomCollection AS collection"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT\n            collection.collectionId AS id,\n            collection.remoteId,\n            collection.name,\n            collection.addedDate,\n            collection.coverUrl,\n            collection.nbPlayed,\n            collection.isInQuickAccess,\n            (\n                SELECT COUNT(*)\n                FROM RoomMusic AS music\n                WHERE music.isHidden = 0\n                  AND music.scope != 'SharedPlayedList'\n                  AND (\n                      EXISTS (\n                          SELECT 1\n                          FROM RoomCollectionAlbum AS collectionAlbum\n                          WHERE collectionAlbum.collectionId = collection.collectionId\n                            AND collectionAlbum.albumId = music.albumId\n                      )\n                      OR EXISTS (\n                          SELECT 1\n                          FROM RoomCollectionArtist AS collectionArtist\n                          INNER JOIN RoomMusicArtist AS musicArtist\n                              ON musicArtist.artistId = collectionArtist.artistId\n                          WHERE collectionArtist.collectionId = collection.collectionId\n                            AND musicArtist.musicId = music.musicId\n                      )\n                  )\n            ) AS totalMusics,\n            COALESCE(\n                collection.coverId,\n                (\n                    SELECT music.coverId\n                    FROM RoomMusic AS music\n                    WHERE music.isHidden = 0\n                      AND music.scope != 'SharedPlayedList'\n                      AND music.coverId IS NOT NULL\n                      AND (\n                          EXISTS (SELECT 1 FROM RoomCollectionAlbum ca WHERE ca.collectionId = collection.collectionId AND ca.albumId = music.albumId)\n                          OR EXISTS (SELECT 1 FROM RoomCollectionArtist ca INNER JOIN RoomMusicArtist ma ON ma.artistId = ca.artistId WHERE ca.collectionId = collection.collectionId AND ma.musicId = music.musicId)\n                      )\n                    ORDER BY music.name ASC\n                    LIMIT 1\n                )\n            ) AS coverId,\n            (\n                SELECT music.localPath\n                FROM RoomMusic AS music\n                WHERE music.isHidden = 0\n                  AND music.scope != 'SharedPlayedList'\n                  AND (\n                      EXISTS (SELECT 1 FROM RoomCollectionAlbum ca WHERE ca.collectionId = collection.collectionId AND ca.albumId = music.albumId)\n                      OR EXISTS (SELECT 1 FROM RoomCollectionArtist ca INNER JOIN RoomMusicArtist ma ON ma.artistId = ca.artistId WHERE ca.collectionId = collection.collectionId AND ma.musicId = music.musicId)\n                  )\n                ORDER BY music.name ASC\n                LIMIT 1\n            ) AS musicCoverPath,\n            (\n                SELECT music.coverUrl\n                FROM RoomMusic AS music\n                WHERE music.isHidden = 0\n                  AND music.scope != 'SharedPlayedList'\n                  AND (\n                      EXISTS (SELECT 1 FROM RoomCollectionAlbum ca WHERE ca.collectionId = collection.collectionId AND ca.albumId = music.albumId)\n                      OR EXISTS (SELECT 1 FROM RoomCollectionArtist ca INNER JOIN RoomMusicArtist ma ON ma.artistId = ca.artistId WHERE ca.collectionId = collection.collectionId AND ma.musicId = music.musicId)\n                  )\n                ORDER BY music.name ASC\n                LIMIT 1\n            ) AS musicCoverUrl\n        FROM RoomCollection AS collection"
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ca2dbc345b5084fa3674a7f33e21560a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f4426039f79dbec81c344bbcac7f841f')"
     ]
   }
 }

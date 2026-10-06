@@ -7,12 +7,6 @@ sealed interface CollectionElementPreview {
     val name: String
     val cover: Cover?
 
-    data class Playlist(val preview: PlaylistPreview) : CollectionElementPreview {
-        override val id: Uuid = preview.id
-        override val name: String = preview.name
-        override val cover: Cover? = preview.cover
-    }
-
     data class Album(val preview: AlbumPreview) : CollectionElementPreview {
         override val id: Uuid = preview.id
         override val name: String = preview.name

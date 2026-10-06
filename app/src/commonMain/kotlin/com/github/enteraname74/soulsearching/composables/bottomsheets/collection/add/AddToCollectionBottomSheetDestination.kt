@@ -11,7 +11,6 @@ import kotlin.uuid.Uuid
 data class AddToCollectionBottomSheetDestination(
     val artistIds: List<Uuid> = emptyList(),
     val albumIds: List<Uuid> = emptyList(),
-    val playlistIds: List<Uuid> = emptyList(),
 ) : NavKey {
     companion object {
         fun register(

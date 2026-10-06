@@ -53,14 +53,12 @@ fun CollectionElements(
                     cover = element.cover,
                     title = element.name,
                     text = when (element) {
-                        is CollectionElementPreview.Playlist -> strings.musics(element.preview.totalMusics)
                         is CollectionElementPreview.Album -> element.preview.artist
                         is CollectionElementPreview.Artist -> strings.musics(element.preview.totalMusics)
                     },
                     onClick = { spec.onClick(element) },
                     imageSize = if (canShowColumnLayout) LARGE_COVER_SIZE else UiConstants.ImageSize.veryLarge,
                     onLongClick = { spec.onLongClick(element) },
-                    isFavoritePlaylist = (element as? CollectionElementPreview.Playlist)?.preview?.isFavorite == true,
                 )
             }
         }
@@ -71,7 +69,6 @@ private val LARGE_COVER_SIZE: Dp = 174.dp
 
 private val CollectionElementPreview.typeKey: String
     get() = when (this) {
-        is CollectionElementPreview.Playlist -> "playlist"
         is CollectionElementPreview.Album -> "album"
         is CollectionElementPreview.Artist -> "artist"
     }

@@ -33,8 +33,6 @@ class AddToCollectionBottomSheetViewModel(
             commonCollectionUseCase.getCollectionIdsContainingArtist(params.artistIds.first())
         params.albumIds.size == 1 && selectedElementCount == 1 ->
             commonCollectionUseCase.getCollectionIdsContainingAlbum(params.albumIds.first())
-        params.playlistIds.size == 1 && selectedElementCount == 1 ->
-            commonCollectionUseCase.getCollectionIdsContainingPlaylist(params.playlistIds.first())
         else -> flowOf(emptyList())
     }
 
@@ -56,7 +54,7 @@ class AddToCollectionBottomSheetViewModel(
     )
 
     private val selectedElementCount: Int
-        get() = params.artistIds.size + params.albumIds.size + params.playlistIds.size
+        get() = params.artistIds.size + params.albumIds.size
 
     fun showCreateCollectionDialog() {
         dialogState.value = CreateCollectionDialog(
@@ -93,7 +91,6 @@ class AddToCollectionBottomSheetViewModel(
     private suspend fun addToCollections(collectionIds: List<Uuid>) {
         commonCollectionUseCase.addArtists(collectionIds, params.artistIds)
         commonCollectionUseCase.addAlbums(collectionIds, params.albumIds)
-        commonCollectionUseCase.addPlaylists(collectionIds, params.playlistIds)
     }
 
     private fun finish() {

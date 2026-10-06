@@ -6,5 +6,4 @@ interface PlaylistBottomSheetNavScope {
     val navigateBack: () -> Unit
     val toModifyPlaylist: (playlistId: Uuid) -> Unit
     val toAddToPlaylists: (musicIds: List<Uuid>) -> Unit
-    val toAddToCollections: (playlistIds: List<Uuid>) -> Unit
 }

@@ -239,14 +239,6 @@ interface MusicDao {
                   WHERE collectionArtist.collectionId = :collectionId
                     AND musicArtist.musicId = music.musicId
               )
-              OR EXISTS (
-                  SELECT 1
-                  FROM RoomCollectionPlaylist AS collectionPlaylist
-                  INNER JOIN RoomMusicPlaylist AS musicPlaylist
-                      ON musicPlaylist.playlistId = collectionPlaylist.playlistId
-                  WHERE collectionPlaylist.collectionId = :collectionId
-                    AND musicPlaylist.musicId = music.musicId
-              )
           )
         ORDER BY music.name ASC
     """
@@ -277,14 +269,6 @@ interface MusicDao {
                   WHERE collectionArtist.collectionId = :collectionId
                     AND musicArtist.musicId = music.musicId
               )
-              OR EXISTS (
-                  SELECT 1
-                  FROM RoomCollectionPlaylist AS collectionPlaylist
-                  INNER JOIN RoomMusicPlaylist AS musicPlaylist
-                      ON musicPlaylist.playlistId = collectionPlaylist.playlistId
-                  WHERE collectionPlaylist.collectionId = :collectionId
-                    AND musicPlaylist.musicId = music.musicId
-              )
           )
         ORDER BY music.name ASC
     """
@@ -314,14 +298,6 @@ interface MusicDao {
                       ON musicArtist.artistId = collectionArtist.artistId
                   WHERE collectionArtist.collectionId = :collectionId
                     AND musicArtist.musicId = music.musicId
-              )
-              OR EXISTS (
-                  SELECT 1
-                  FROM RoomCollectionPlaylist AS collectionPlaylist
-                  INNER JOIN RoomMusicPlaylist AS musicPlaylist
-                      ON musicPlaylist.playlistId = collectionPlaylist.playlistId
-                  WHERE collectionPlaylist.collectionId = :collectionId
-                    AND musicPlaylist.musicId = music.musicId
               )
           )
         ORDER BY music.name ASC
@@ -591,15 +567,6 @@ interface MusicDao {
               WHERE collectionArtist.collectionId = :collectionId
                 AND collectionMusicArtist.musicId = music.musicId
           )
-          OR EXISTS (
-              SELECT 1
-              FROM RoomCollectionPlaylist AS collectionPlaylist
-              INNER JOIN RoomMusicPlaylist AS collectionMusicPlaylist
-                  ON collectionMusicPlaylist.playlistId =
-                     collectionPlaylist.playlistId
-              WHERE collectionPlaylist.collectionId = :collectionId
-                AND collectionMusicPlaylist.musicId = music.musicId
-          )
       )
 
       AND (
@@ -664,14 +631,6 @@ interface MusicDao {
                       ON musicArtist.artistId = collectionArtist.artistId
                   WHERE collectionArtist.collectionId = :collectionId
                     AND musicArtist.musicId = music.musicId
-              )
-              OR EXISTS (
-                  SELECT 1
-                  FROM RoomCollectionPlaylist AS collectionPlaylist
-                  INNER JOIN RoomMusicPlaylist AS musicPlaylist
-                      ON musicPlaylist.playlistId = collectionPlaylist.playlistId
-                  WHERE collectionPlaylist.collectionId = :collectionId
-                    AND musicPlaylist.musicId = music.musicId
               )
           )
         """

@@ -50,7 +50,6 @@ import com.github.enteraname74.localdb.model.RoomUserStorage
 import com.github.enteraname74.localdb.model.collection.RoomCollection
 import com.github.enteraname74.localdb.model.collection.RoomCollectionAlbum
 import com.github.enteraname74.localdb.model.collection.RoomCollectionArtist
-import com.github.enteraname74.localdb.model.collection.RoomCollectionPlaylist
 import com.github.enteraname74.localdb.model.listeningstatistics.RoomListeningStatistics
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
@@ -92,7 +91,6 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
         RoomCollection::class,
         RoomCollectionAlbum::class,
         RoomCollectionArtist::class,
-        RoomCollectionPlaylist::class,
     ],
     views = [
         CurrentPlayerMusicsView::class,
