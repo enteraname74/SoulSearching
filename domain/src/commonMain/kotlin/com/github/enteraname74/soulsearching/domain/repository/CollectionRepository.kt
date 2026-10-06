@@ -38,4 +38,6 @@ interface CollectionRepository {
     fun getCollectionIdsContainingPlaylist(playlistId: Uuid): Flow<List<Uuid>>
 
     suspend fun incrementNbPlayed(collectionId: Uuid)
+
+    suspend fun cleanAllCovers()
 }

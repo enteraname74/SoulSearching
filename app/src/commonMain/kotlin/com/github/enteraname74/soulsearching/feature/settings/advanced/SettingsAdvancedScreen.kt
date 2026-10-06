@@ -234,6 +234,18 @@ private fun ReloadImagesContent(
         SoulMenuSwitch(
             titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
             textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+            title = strings.deleteCollectionsCovers,
+            toggleAction = { onAction(SettingsAdvancedAction.ToggleCollectionsCovers) },
+            isChecked = state.shouldDeleteCollectionsCovers,
+            padding = PaddingValues(
+                start = UiConstants.Spacing.large,
+                end = UiConstants.Spacing.large,
+                bottom = UiConstants.Spacing.small,
+            ),
+        )
+        SoulMenuSwitch(
+            titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+            textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
             title = strings.reloadAlbumsCovers,
             toggleAction = { onAction(SettingsAdvancedAction.ToggleAlbumsCovers) },
             isChecked = state.shouldReloadAlbumsCovers,

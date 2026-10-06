@@ -56,7 +56,7 @@ fun allCollectionsTab(
         ) { collection ->
             BigPreviewComposable(
                 modifier = Modifier.animateItem(),
-                cover = null,
+                cover = collection.cover,
                 title = collection.name,
                 text = strings.musics(collection.totalMusics),
                 imageSize = null,

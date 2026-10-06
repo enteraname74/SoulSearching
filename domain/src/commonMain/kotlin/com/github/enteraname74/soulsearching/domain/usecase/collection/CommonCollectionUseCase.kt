@@ -31,6 +31,10 @@ class CommonCollectionUseCase(
         collectionRepository.upsertAll(collections)
     }
 
+    suspend fun upsert(collection: Collection) {
+        collectionRepository.upsertAll(listOf(collection))
+    }
+
     suspend fun deleteAll(collectionIds: List<Uuid>): SoulResult<Unit> =
         collectionRepository.deleteAll(collectionIds)
 
@@ -54,4 +58,8 @@ class CommonCollectionUseCase(
 
     fun getCollectionIdsContainingPlaylist(playlistId: Uuid): Flow<List<Uuid>> =
         collectionRepository.getCollectionIdsContainingPlaylist(playlistId)
+
+    suspend fun cleanAllCovers() {
+        collectionRepository.cleanAllCovers()
+    }
 }

@@ -15,6 +15,7 @@ import com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetch
 import com.github.enteraname74.soulsearching.feature.application.MainAppViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.ModifyAlbumViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.ModifyArtistViewModel
+import com.github.enteraname74.soulsearching.feature.editableelement.modifycollection.domain.ModifyCollectionViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.ModifyMusicViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.ModifyPlaylistViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
@@ -95,6 +96,7 @@ internal val viewModelModule: Module = module {
     viewModelOf(::ModifyMusicViewModel)
     viewModelOf(::ModifyArtistViewModel)
     viewModelOf(::ModifyPlaylistViewModel)
+    viewModelOf(::ModifyCollectionViewModel)
 
     viewModelOf(::MusicListDetailViewHolder)
 

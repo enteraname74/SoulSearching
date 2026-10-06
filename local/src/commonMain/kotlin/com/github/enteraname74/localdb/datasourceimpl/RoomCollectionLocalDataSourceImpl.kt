@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.combine
+import kotlin.math.max
 import kotlin.uuid.Uuid
 
 internal class RoomCollectionLocalDataSourceImpl(
@@ -106,7 +107,13 @@ internal class RoomCollectionLocalDataSourceImpl(
         }
 
     override suspend fun upsertAll(collections: List<Collection>) {
-        appDatabase.collectionDao.upsertAll(collections.map { it.toRoomCollection() })
+        appDatabase.collectionDao.upsertAll(
+            collections.map {
+                it.copy(
+                    lastUpdatedMillis = max(DateUtils.now(), it.lastUpdatedMillis ?: 0L),
+                ).toRoomCollection()
+            }
+        )
     }
 
     override suspend fun deleteAll(collectionIds: List<Uuid>) {
@@ -151,6 +158,10 @@ internal class RoomCollectionLocalDataSourceImpl(
             collectionId = collectionId,
             lastUpdatedMillis = DateUtils.now(),
         )
+    }
+
+    override suspend fun cleanAllCovers() {
+        appDatabase.collectionDao.cleanAllCovers()
     }
 
     override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =

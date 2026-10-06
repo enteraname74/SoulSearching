@@ -93,8 +93,7 @@ private fun QuickAccessible.ToPreview(
         is CollectionPreview -> {
             BigPreviewComposable(
                 modifier = modifier,
-                // TODO COLLECTIONS: Add cover support
-                cover = null,
+                cover = cover,
                 title = name,
                 text = strings.musics(total = totalMusics),
                 imageSize = null,

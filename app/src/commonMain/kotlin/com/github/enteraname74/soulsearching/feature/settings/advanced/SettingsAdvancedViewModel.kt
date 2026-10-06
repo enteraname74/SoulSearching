@@ -7,6 +7,7 @@ import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearching
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.release.CommonReleaseUseCase
@@ -33,6 +34,7 @@ class SettingsAdvancedViewModel(
     private val commonAlbumUseCase: CommonAlbumUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
+    private val commonCollectionUseCase: CommonCollectionUseCase,
     private val commonReleaseUseCase: CommonReleaseUseCase,
     private val loadingManager: LoadingManager,
     private val settings: SoulSearchingSettings,
@@ -112,6 +114,10 @@ class SettingsAdvancedViewModel(
 
             SettingsAdvancedAction.TogglePlaylistsCovers -> {
                 toggleDeletePlaylistsCovers()
+            }
+
+            SettingsAdvancedAction.ToggleCollectionsCovers -> {
+                toggleDeleteCollectionsCovers()
             }
 
             SettingsAdvancedAction.ToggleGithubReleaseFetchPermission -> {
@@ -209,6 +215,7 @@ class SettingsAdvancedViewModel(
                 checkAndReloadArtists()
                 checkAndReloadAlbums()
                 checkAndReloadPlaylists()
+                checkAndReloadCollections()
                 _state.value = SettingsAdvancedState(
                     focusedElement = focusedElement,
                 )
@@ -240,6 +247,12 @@ class SettingsAdvancedViewModel(
         )
     }
 
+    private fun toggleDeleteCollectionsCovers() {
+        _state.value = _state.value.copy(
+            shouldDeleteCollectionsCovers = !_state.value.shouldDeleteCollectionsCovers,
+        )
+    }
+
     private suspend fun checkAndReloadSongs() {
         if (_state.value.shouldReloadSongsCovers) {
             commonMusicUseCase.cleanAllMusicCovers()
@@ -249,6 +262,12 @@ class SettingsAdvancedViewModel(
     private suspend fun checkAndReloadPlaylists() {
         if (_state.value.shouldDeletePlaylistsCovers) {
             commonPlaylistUseCase.cleanAllCovers()
+        }
+    }
+
+    private suspend fun checkAndReloadCollections() {
+        if (_state.value.shouldDeleteCollectionsCovers) {
+            commonCollectionUseCase.cleanAllCovers()
         }
     }
 

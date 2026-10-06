@@ -9,6 +9,7 @@ data class Collection(
     val collectionId: Uuid = Uuid.random(),
     val remoteId: Uuid? = null,
     val name: String,
+    val cover: Cover? = null,
     val addedDate: Instant = Clock.System.now(),
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,

@@ -38,5 +38,7 @@ interface CollectionLocalDataSource {
 
     suspend fun incrementNbPlayed(collectionId: Uuid)
 
+    suspend fun cleanAllCovers()
+
     suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid>
 }

@@ -109,7 +109,7 @@ private fun CollectionSelectable(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
-            SoulImage(cover = null, size = UiConstants.CoverSize.small, tint = color)
+            SoulImage(cover = collection.cover, size = UiConstants.CoverSize.small, tint = color)
             Text(
                 text = collection.name,
                 color = color,

@@ -26,6 +26,7 @@ import com.github.enteraname74.soulsearching.domain.model.CachedPlayedListUiSpec
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistDestination
+import com.github.enteraname74.soulsearching.feature.editableelement.modifycollection.presentation.ModifyCollectionDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistDestination
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
@@ -301,8 +302,7 @@ class MusicListDetailViewHolder(
                     type = strings.collectionDetailTitle,
                     title = collectionPreview.name,
                     subTitle = strings.musics(collectionPreview.totalMusics),
-                    // TODO COLLECTION: Add cover support
-                    cover = null,
+                    cover = collectionPreview.cover,
                     musics = musics,
                     duration = duration,
                     searchMusics = searchMusics,
@@ -316,8 +316,11 @@ class MusicListDetailViewHolder(
                     showMusicBottomSheet = ::showMusicBottomSheet,
                     onPlay = ::onPlay,
                     onShuffle = ::onShuffle,
-                    // TODO COLLECTION: Add edit support
-                    onEdit = null,
+                    onEdit = {
+                        navigate {
+                            toDestination(ModifyCollectionDestination(detailId.collectionId))
+                        }
+                    },
                     onCoverLoaded = ::onCoverLoaded,
                 )
             }

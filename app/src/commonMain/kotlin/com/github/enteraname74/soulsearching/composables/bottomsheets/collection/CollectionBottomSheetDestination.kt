@@ -20,6 +20,7 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addt
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.feature.editableelement.modifycollection.presentation.ModifyCollectionDestination
 import com.github.enteraname74.soulsearching.navigation.BottomSheetSceneStrategy
 import com.github.enteraname74.soulsearching.navigation.LocalBottomSheetCloseWithAnimAction
 import com.github.enteraname74.soulsearching.navigation.NavigationAnimations
@@ -38,12 +39,14 @@ data class CollectionBottomSheetDestination(
     companion object {
         fun register(
             entryProviderScope: EntryProviderScope<NavKey>,
+            navigator: Navigator,
         ) {
             entryProviderScope.entry<CollectionBottomSheetDestination>(
                 metadata = BottomSheetSceneStrategy.bottomSheet(),
             ) { params ->
                 NavHost(
                     initialRoute = InnerCollectionDestination(params.collectionIds),
+                    parentNavigator = navigator,
                 )
             }
         }
@@ -58,6 +61,7 @@ private data class InnerCollectionDestination(
 @Composable
 private fun NavHost(
     initialRoute: NavKey,
+    parentNavigator: Navigator,
     loadingManager: LoadingManager = injectElement(),
 ) {
     val isLoading by loadingManager.state.collectAsStateWithLifecycle()
@@ -90,6 +94,11 @@ private fun NavHost(
             entry<InnerCollectionDestination> { params ->
                 val navScope = object : CollectionBottomSheetNavScope {
                     override val navigateBack: () -> Unit = { closeWithAnim { } }
+                    override val toModifyCollection: (Uuid) -> Unit = { collectionId ->
+                        closeWithAnim {
+                            parentNavigator.push(ModifyCollectionDestination(collectionId))
+                        }
+                    }
                     override val toAddToPlaylists: (List<Uuid>) -> Unit = { musicIds ->
                         navigator.push(AddToPlaylistBottomSheetDestination(musicIds))
                     }

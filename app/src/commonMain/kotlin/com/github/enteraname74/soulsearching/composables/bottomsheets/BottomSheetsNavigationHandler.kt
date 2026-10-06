@@ -29,6 +29,7 @@ object BottomSheetsNavigationHandler {
 
         CollectionBottomSheetDestination.register(
             entryProviderScope = entryProviderScope,
+            navigator = navigator,
         )
 
         ArtistBottomSheetDestination.register(

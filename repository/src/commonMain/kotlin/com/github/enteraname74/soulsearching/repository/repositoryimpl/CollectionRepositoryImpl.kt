@@ -61,4 +61,8 @@ class CollectionRepositoryImpl(
     override suspend fun incrementNbPlayed(collectionId: Uuid) {
         collectionLocalDataSource.incrementNbPlayed(collectionId)
     }
+
+    override suspend fun cleanAllCovers() {
+        collectionLocalDataSource.cleanAllCovers()
+    }
 }

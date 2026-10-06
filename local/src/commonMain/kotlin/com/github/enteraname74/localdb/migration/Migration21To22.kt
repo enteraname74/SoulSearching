@@ -12,6 +12,8 @@ object Migration21To22 : Migration(21, 22) {
                 collectionId TEXT NOT NULL,
                 remoteId TEXT,
                 name TEXT NOT NULL,
+                coverId TEXT,
+                coverUrl TEXT,
                 addedDate INTEGER NOT NULL,
                 nbPlayed INTEGER NOT NULL,
                 isInQuickAccess INTEGER NOT NULL,
@@ -103,6 +105,7 @@ object Migration21To22 : Migration(21, 22) {
                 collection.remoteId,
                 collection.name,
                 collection.addedDate,
+                collection.coverUrl,
                 collection.nbPlayed,
                 collection.isInQuickAccess,
                 (
@@ -134,7 +137,50 @@ object Migration21To22 : Migration(21, 22) {
                                 AND musicPlaylist.musicId = music.musicId
                           )
                       )
-                ) AS totalMusics
+                ) AS totalMusics,
+                COALESCE(
+                    collection.coverId,
+                    (
+                        SELECT music.coverId
+                        FROM RoomMusic AS music
+                        WHERE music.isHidden = 0
+                          AND music.scope != 'SharedPlayedList'
+                          AND music.coverId IS NOT NULL
+                          AND (
+                              EXISTS (SELECT 1 FROM RoomCollectionAlbum ca WHERE ca.collectionId = collection.collectionId AND ca.albumId = music.albumId)
+                              OR EXISTS (SELECT 1 FROM RoomCollectionArtist ca INNER JOIN RoomMusicArtist ma ON ma.artistId = ca.artistId WHERE ca.collectionId = collection.collectionId AND ma.musicId = music.musicId)
+                              OR EXISTS (SELECT 1 FROM RoomCollectionPlaylist cp INNER JOIN RoomMusicPlaylist mp ON mp.playlistId = cp.playlistId WHERE cp.collectionId = collection.collectionId AND mp.musicId = music.musicId)
+                          )
+                        ORDER BY music.name ASC
+                        LIMIT 1
+                    )
+                ) AS coverId,
+                (
+                    SELECT music.localPath
+                    FROM RoomMusic AS music
+                    WHERE music.isHidden = 0
+                      AND music.scope != 'SharedPlayedList'
+                      AND (
+                          EXISTS (SELECT 1 FROM RoomCollectionAlbum ca WHERE ca.collectionId = collection.collectionId AND ca.albumId = music.albumId)
+                          OR EXISTS (SELECT 1 FROM RoomCollectionArtist ca INNER JOIN RoomMusicArtist ma ON ma.artistId = ca.artistId WHERE ca.collectionId = collection.collectionId AND ma.musicId = music.musicId)
+                          OR EXISTS (SELECT 1 FROM RoomCollectionPlaylist cp INNER JOIN RoomMusicPlaylist mp ON mp.playlistId = cp.playlistId WHERE cp.collectionId = collection.collectionId AND mp.musicId = music.musicId)
+                      )
+                    ORDER BY music.name ASC
+                    LIMIT 1
+                ) AS musicCoverPath,
+                (
+                    SELECT music.coverUrl
+                    FROM RoomMusic AS music
+                    WHERE music.isHidden = 0
+                      AND music.scope != 'SharedPlayedList'
+                      AND (
+                          EXISTS (SELECT 1 FROM RoomCollectionAlbum ca WHERE ca.collectionId = collection.collectionId AND ca.albumId = music.albumId)
+                          OR EXISTS (SELECT 1 FROM RoomCollectionArtist ca INNER JOIN RoomMusicArtist ma ON ma.artistId = ca.artistId WHERE ca.collectionId = collection.collectionId AND ma.musicId = music.musicId)
+                          OR EXISTS (SELECT 1 FROM RoomCollectionPlaylist cp INNER JOIN RoomMusicPlaylist mp ON mp.playlistId = cp.playlistId WHERE cp.collectionId = collection.collectionId AND mp.musicId = music.musicId)
+                      )
+                    ORDER BY music.name ASC
+                    LIMIT 1
+                ) AS musicCoverUrl
             FROM RoomCollection AS collection
             """.trimIndent()
         )

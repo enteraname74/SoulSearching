@@ -124,9 +124,11 @@ interface Strings {
     val albumArtistName: String
     val artistName: String
     val playlistCover: String
+    val collectionCover: String
     val albumCover: String
     val artistCover: String
     val playlistInformation: String
+    val collectionInformation: String
     val musicInformation: String
     val musicPath: String
     val musicFileCover: String
@@ -168,9 +170,11 @@ interface Strings {
     val modifyArtist: String
     val modifyMusic: String
     val modifyPlaylist: String
+    val modifyCollection: String
     val coversOfTheAlbum: String
     val coversOfTheArtist: String
     val coversOfThePlaylist: String
+    val coversOfTheCollection: String
     val coversOfSongAlbum: String
     val noAvailableCovers: String
 
@@ -205,6 +209,7 @@ interface Strings {
     val reloadCoversText: String
     val reloadMusicsCovers: String
     val deletePlaylistsCovers: String
+    val deleteCollectionsCovers: String
     val reloadAlbumsCovers: String
     val reloadArtistsCovers: String
 

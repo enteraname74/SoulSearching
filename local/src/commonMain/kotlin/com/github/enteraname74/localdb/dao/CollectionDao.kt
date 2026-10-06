@@ -91,6 +91,9 @@ interface CollectionDao {
     )
     suspend fun incrementNbPlayed(collectionId: Uuid, lastUpdatedMillis: Long)
 
+    @Query("UPDATE RoomCollection SET coverId = NULL")
+    suspend fun cleanAllCovers()
+
     @Query(
         """
         SELECT collectionId AS localId, remoteId

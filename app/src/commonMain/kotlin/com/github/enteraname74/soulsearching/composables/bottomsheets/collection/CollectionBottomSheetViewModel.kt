@@ -8,6 +8,7 @@ import com.github.enteraname74.soulsearching.composables.dialog.DeleteCollection
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiCollectionDialog
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -102,6 +103,16 @@ class CollectionBottomSheetViewModel(
             )
         }
 
+        if (collections.size == 1) {
+            add(
+                BottomSheetRowSpec(
+                    icon = CoreRes.drawable.ic_edit_filled,
+                    title = strings.modifyCollection,
+                    onClick = ::toModifyCollection,
+                )
+            )
+        }
+
         if (hasUserMusics) {
             add(BottomSheetRowSpec.addToPlaylist(::addToPlaylists))
         }
@@ -142,7 +153,7 @@ class CollectionBottomSheetViewModel(
         BottomSheetTopInformation(
             title = collection.collection.name,
             subTitle = strings.musics(collection.musics.size),
-            cover = null,
+            cover = collection.cover,
         )
     } else {
         BottomSheetTopInformation(
@@ -163,6 +174,15 @@ class CollectionBottomSheetViewModel(
                 onDelete = ::deleteCollections,
                 onClose = { dialogState.value = null },
             )
+        }
+    }
+
+    private fun toModifyCollection() {
+        collectionIds.firstOrNull()?.let { collectionId ->
+            viewModelScope.launch {
+                multiSelectionManager.clearMultiSelection()
+                navScope.toModifyCollection(collectionId)
+            }
         }
     }
 
