@@ -166,7 +166,7 @@ class UpdateMusicUseCase(
         val legacyMusic: Music,
         val newName: String,
         val newAlbumName: String,
-        val newCover: Cover,
+        val newCover: Cover.Simple,
         val newAlbumPosition: Int?,
         val newAlbumArtistName: String,
         private val newArtistsNames: List<String>

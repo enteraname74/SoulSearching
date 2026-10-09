@@ -1,10 +1,12 @@
 package com.github.enteraname74.localdb.model
 
 import androidx.room3.ColumnInfo
+import androidx.room3.Embedded
 import androidx.room3.Entity
 import androidx.room3.ForeignKey
 import androidx.room3.PrimaryKey
-import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.localdb.model.cover.RoomSimpleCover
+import com.github.enteraname74.localdb.model.cover.toRoomSimpleCover
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.Scope
 import kotlin.time.Clock
@@ -30,8 +32,7 @@ data class RoomMusic(
     val remoteId: String?,
     val lastUpdateMillis: Long?,
     var name: String = "",
-    var coverId: Uuid? = null,
-    val coverUrl: String?,
+    @Embedded("cover_") val cover: RoomSimpleCover,
     var duration: Long = 0L,
     val path: String?,
     var localPath: String?,
@@ -53,7 +54,6 @@ data class RoomMusic(
 internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     musicId = musicId,
     name = name,
-    coverId = (cover as? Cover.CoverFile)?.fileCoverId,
     duration = duration,
     localPath = localPath,
     folder = folder,
@@ -67,6 +67,6 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     lastUpdateMillis = lastUpdatedMillis,
     remotePath = remotePath,
     path = path,
-    coverUrl = (cover as? Cover.Url)?.url,
     scope = scope,
+    cover = cover.toRoomSimpleCover(),
 )

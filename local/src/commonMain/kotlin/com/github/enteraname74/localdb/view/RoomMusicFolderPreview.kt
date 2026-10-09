@@ -11,13 +11,13 @@ import kotlin.uuid.Uuid
                 folderMusic.folder,
                 COUNT(*) AS totalMusics, 
                 (
-                    SELECT music.coverId FROM RoomMusic AS music 
+                    SELECT music.cover_fileCoverId FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
                     AND scope != 'SharedPlayedList' 
-                    AND music.coverId IS NOT NULL 
+                    AND music.cover_fileCoverId IS NOT NULL 
                     AND music.folder = folderMusic.folder 
                     ORDER BY
-                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                    CASE WHEN music.cover_fileCoverId IS NULL THEN 1 ELSE 0 END, 
                     name 
                     LIMIT 1
                 ) AS coverId,
@@ -30,7 +30,7 @@ import kotlin.uuid.Uuid
                     LIMIT 1 
                 ) AS musicCoverPath, 
                 (
-                    SELECT music.coverUrl FROM RoomMusic AS music 
+                    SELECT music.cover_url FROM RoomMusic AS music 
                     WHERE music.isHidden = 0 
                     AND scope != 'SharedPlayedList' 
                     AND music.folder = folderMusic.folder 

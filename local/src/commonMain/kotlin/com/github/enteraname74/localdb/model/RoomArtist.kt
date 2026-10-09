@@ -1,11 +1,11 @@
 package com.github.enteraname74.localdb.model
 
+import androidx.room3.Embedded
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
-import androidx.room3.TransactionScope
+import com.github.enteraname74.localdb.model.cover.RoomSimpleCover
+import com.github.enteraname74.localdb.model.cover.toRoomSimpleCover
 import com.github.enteraname74.soulsearching.domain.model.Artist
-import com.github.enteraname74.soulsearching.domain.model.Cover
-import com.github.enteraname74.soulsearching.domain.model.Cover.CoverFile.DevicePathSpec
 import com.github.enteraname74.soulsearching.domain.model.Scope
 import kotlin.time.Clock
 import kotlin.time.Instant
@@ -20,9 +20,7 @@ data class RoomArtist(
     val artistId: Uuid = Uuid.random(),
     val remoteId: Uuid?,
     val artistName: String,
-    val coverId: Uuid? = null,
-    val coverFolderKey: String? = null,
-    val coverUrl: String?,
+    @Embedded("cover_") val cover: RoomSimpleCover?,
     val addedDate: Instant = Clock.System.now(),
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,
@@ -33,29 +31,11 @@ data class RoomArtist(
 /**
  * Converts a RoomArtist to an Artist.
  */
-internal fun RoomArtist.toArtist(): Artist {
-    val localCover = Cover.CoverFile(
-        fileCoverId = coverId,
-        devicePathSpec = coverFolderKey?.let { key ->
-            DevicePathSpec(
-                settingsKey = key,
-                dynamicElementName = artistName,
-                fallback = Cover.CoverFile(fileCoverId = coverId),
-            )
-        },
-    )
-    val remoteCover = coverUrl?.let { Cover.Url(it, localCover) }
-
-    val usedCover = if (remoteCover == null) {
-        localCover
-    } else {
-        localCover.takeIf { !it.isEmpty() } ?: remoteCover
-    }
-
-    return Artist(
+internal fun RoomArtist.toArtist(): Artist =
+    Artist(
         artistId = artistId,
         artistName = artistName,
-        cover = usedCover,
+        cover = cover?.toSimpleCover(artistName),
         addedDate = addedDate,
         nbPlayed = nbPlayed,
         isInQuickAccess = isInQuickAccess,
@@ -63,7 +43,6 @@ internal fun RoomArtist.toArtist(): Artist {
         lastUpdatedMillis = lastUpdatedMillis,
         scope = scope,
     )
-}
 
 /**
  * Converts an Artist to a RoomArtist.
@@ -71,13 +50,11 @@ internal fun RoomArtist.toArtist(): Artist {
 internal fun Artist.toRoomArtist(): RoomArtist = RoomArtist(
     artistId = artistId,
     artistName = artistName,
-    coverId = (cover as? Cover.CoverFile)?.fileCoverId,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
-    coverFolderKey = (cover as? Cover.CoverFile)?.devicePathSpec?.settingsKey,
     remoteId = remoteId,
     lastUpdatedMillis = lastUpdatedMillis,
-    coverUrl = (cover as? Cover.Url)?.url,
     scope = scope,
+    cover = cover?.toRoomSimpleCover(),
 )

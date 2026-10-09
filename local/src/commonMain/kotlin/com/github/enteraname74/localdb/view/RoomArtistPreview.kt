@@ -15,25 +15,25 @@ import kotlin.uuid.Uuid
         artist.artistId AS id, 
         artist.remoteId,
         artist.artistName AS name, 
-        artist.coverFolderKey,
+        artist.cover_devicePathSpecKey AS coverFolderKey,
         artist.addedDate, 
         artist.nbPlayed, 
-        artist.coverUrl, 
+        artist.cover_url AS coverUrl, 
         (SELECT COUNT(*) FROM RoomMusicArtist AS musicArtist WHERE musicArtist.artistId = artist.artistId) AS totalMusics, 
         (
-            CASE WHEN artist.coverId IS NULL THEN 
+            CASE WHEN artist.cover_fileCoverId IS NULL THEN 
                 (
-                    SELECT music.coverId FROM RoomMusic AS music 
+                    SELECT music.cover_fileCoverId FROM RoomMusic AS music 
                     INNER JOIN RoomMusicArtist AS musicArtist 
                     ON music.musicId = musicArtist.musicId 
                     AND artist.artistId = musicArtist.artistId 
                     AND music.isHidden = 0 
                     AND scope != 'SharedPlayedList' 
-                    AND music.coverId IS NOT NULL 
+                    AND music.cover_fileCoverId IS NOT NULL 
                     ORDER BY name ASC 
                     LIMIT 1
                 )
-            ELSE artist.coverId END
+            ELSE artist.cover_fileCoverId END
         ) AS coverId,
         (
             SELECT music.localPath FROM RoomMusic AS music 
@@ -46,7 +46,7 @@ import kotlin.uuid.Uuid
             LIMIT 1
         ) AS musicCoverPath,
         (
-            SELECT music.coverUrl FROM RoomMusic AS music 
+            SELECT music.cover_url FROM RoomMusic AS music 
             INNER JOIN RoomMusicArtist AS musicArtist 
             ON music.musicId = musicArtist.musicId 
             AND artist.artistId = musicArtist.artistId 
@@ -87,7 +87,7 @@ data class RoomArtistPreview(
             },
         )
 
-        val usedCover: Cover? = when {
+        val usedCover: Cover.Simple? = when {
             coverId != null -> localCover
             coverUrl != null -> {
                 val fallback = if (localCover.isEmpty() && musicCoverUrl != null) {

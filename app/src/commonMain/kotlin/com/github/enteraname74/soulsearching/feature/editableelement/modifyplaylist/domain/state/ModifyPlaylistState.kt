@@ -10,6 +10,7 @@ sealed interface ModifyPlaylistState {
     data class Data(
         val initialPlaylist: PlaylistWithMusics,
         val editableElement: EditableElement,
-    ): ModifyPlaylistState
-    data object Loading: ModifyPlaylistState
+    ) : ModifyPlaylistState
+
+    data object Loading : ModifyPlaylistState
 }

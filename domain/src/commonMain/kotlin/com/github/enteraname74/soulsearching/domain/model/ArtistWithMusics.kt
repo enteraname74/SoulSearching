@@ -9,7 +9,7 @@ data class ArtistWithMusics(
     val artist: Artist,
     val musics: List<Music>,
 ) {
-    val cover: Cover? = if (artist.cover?.isEmpty() == false) {
+    val cover: Cover.Simple? = if (artist.cover?.isEmpty() == false) {
         artist.cover.ifCoverFile { coverFile ->
             coverFile.copy(
                 devicePathSpec = coverFile.devicePathSpec?.copy(

@@ -801,7 +801,7 @@ interface MusicDao {
     @Query("UPDATE RoomMusic SET albumId = :newAlbumId WHERE albumId = :legacyAlbumId")
     suspend fun updateMusicsAlbum(newAlbumId: Uuid, legacyAlbumId: Uuid)
 
-    @Query("UPDATE RoomMusic SET coverId = NULL")
+    @Query("UPDATE RoomMusic SET cover_fileCoverId = NULL")
     suspend fun cleanAllMusicCovers()
 
     @Query("SELECT localPath FROM RoomMusic WHERE localPath IS NOT NULL AND isHidden = 0 AND scope != 'SharedPlayedList'")
@@ -910,10 +910,10 @@ interface MusicDao {
         albumId: Uuid,
     ): RoomCompleteMusic?
 
-    @Query("UPDATE RoomMusic SET remoteId = NULL, coverUrl = NULL WHERE remoteId IN (:remoteIds)")
+    @Query("UPDATE RoomMusic SET remoteId = NULL, cover_url = NULL WHERE remoteId IN (:remoteIds)")
     suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>)
 
-    @Query("UPDATE RoomMusic SET remoteId = NULL, coverUrl = NULL")
+    @Query("UPDATE RoomMusic SET remoteId = NULL, cover_url = NULL")
     suspend fun deleteAllRemoteFields()
 
     @Query("DELETE FROM RoomMusic WHERE localPath IS NULL AND remoteId IS NULL")

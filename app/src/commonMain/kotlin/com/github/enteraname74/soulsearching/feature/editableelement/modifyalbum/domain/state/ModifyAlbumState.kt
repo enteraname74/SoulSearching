@@ -11,5 +11,5 @@ sealed interface ModifyAlbumState {
     data class Data(
         val initialAlbum: AlbumWithMusics,
         val editableElement: EditableElement,
-    ): ModifyAlbumState
+    ) : ModifyAlbumState
 }

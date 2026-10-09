@@ -3,7 +3,6 @@ package com.github.enteraname74.localdb.model
 import androidx.room3.Embedded
 import androidx.room3.Relation
 import com.github.enteraname74.soulsearching.domain.model.Album
-import com.github.enteraname74.soulsearching.domain.model.Cover
 
 data class RoomCompleteAlbum(
     @Embedded val roomAlbum: RoomAlbum,
@@ -13,21 +12,12 @@ data class RoomCompleteAlbum(
     )
     val roomArtist: RoomArtist
 ) {
-    fun toAlbum(): Album {
-        val localCover = Cover.CoverFile(fileCoverId = roomAlbum.coverId)
-        val remoteCover = roomAlbum.coverUrl?.let { Cover.Url(it, localCover) }
-
-        val usedCover = if (remoteCover == null) {
-            localCover
-        } else {
-            localCover.takeIf { !it.isEmpty() } ?: remoteCover
-        }
-
-        return Album(
+    fun toAlbum(): Album =
+        Album(
             albumId = roomAlbum.albumId,
             albumName = roomAlbum.albumName,
             artist = roomArtist.toArtist(),
-            cover = usedCover,
+            cover = roomAlbum.cover?.toSimpleCover(null),
             addedDate = roomAlbum.addedDate,
             nbPlayed = roomAlbum.nbPlayed,
             isInQuickAccess = roomAlbum.isInQuickAccess,
@@ -35,5 +25,4 @@ data class RoomCompleteAlbum(
             lastUpdateMillis = roomAlbum.lastUpdatedMillis,
             scope = roomAlbum.scope,
         )
-    }
 }

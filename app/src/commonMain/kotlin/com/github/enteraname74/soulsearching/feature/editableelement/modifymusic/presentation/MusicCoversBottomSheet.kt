@@ -39,14 +39,14 @@ import org.jetbrains.compose.resources.DrawableResource
 import kotlin.uuid.Uuid
 
 class MusicCoversBottomSheet(
-    private val musicCover: Cover,
+    private val musicCover: Cover.Simple,
     private val albumCoversStateFlow: StateFlow<CoverListState>,
     private val onMusicFileCoverSelected: (path: String) -> Unit,
     private val onFileCoverSelected: (coverId: Uuid) -> Unit,
     private val onAlbumCoverSelected: (ByteArray) -> Unit,
     private val onCoverFromStorageSelected: (imageFile: PlatformFile) -> Unit,
     private val onClose: () -> Unit,
-): SoulBottomSheet {
+) : SoulBottomSheet {
 
     @Composable
     private fun ImageList(

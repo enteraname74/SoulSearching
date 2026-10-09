@@ -17,19 +17,19 @@ import kotlin.uuid.Uuid
         album.nbPlayed, 
         album.addedDate, 
         album.artistId,
-        album.coverUrl, 
+        album.cover_url AS coverUrl, 
         (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) AS artist, 
         (
-            CASE WHEN album.coverId IS NULL THEN 
+            CASE WHEN album.cover_fileCoverId IS NULL THEN 
                 (
-                    SELECT music.coverId FROM RoomMusic AS music 
+                    SELECT music.cover_fileCoverId FROM RoomMusic AS music 
                     WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY 
                     CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
                     music.albumPosition, 
-                    CASE WHEN music.coverId IS NULL THEN 1 ELSE 0 END, 
+                    CASE WHEN music.cover_fileCoverId IS NULL THEN 1 ELSE 0 END, 
                     music.name 
                 )
-            ELSE album.coverId END
+            ELSE album.cover_fileCoverId END
         ) AS coverId,
         (
             SELECT music.localPath FROM RoomMusic AS music 
@@ -40,7 +40,7 @@ import kotlin.uuid.Uuid
             LIMIT 1 
         ) AS musicCoverPath,
         (
-            SELECT music.coverUrl FROM RoomMusic AS music 
+            SELECT music.cover_url FROM RoomMusic AS music 
             WHERE music.albumId = album.albumId AND music.isHidden = 0 AND scope != 'SharedPlayedList' ORDER BY 
             CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
             music.albumPosition, 
@@ -72,7 +72,7 @@ data class RoomAlbumPreview(
             fileCoverId = coverId,
         )
 
-        val usedCover: Cover? = when {
+        val usedCover: Cover.Simple? = when {
             coverId != null -> localCover
             coverUrl != null -> {
                 val fallback = if (localCover.isEmpty() && musicCoverUrl != null) {

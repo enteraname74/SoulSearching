@@ -15,7 +15,7 @@ data class Album(
     val remoteId: Uuid? = null,
     val albumName: String,
     val artist: Artist,
-    val cover: Cover? = null,
+    val cover: Cover.Simple? = null,
     val addedDate: Instant = Clock.System.now(),
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,

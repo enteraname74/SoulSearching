@@ -18,7 +18,7 @@ class CoverRepositoryImpl(
     private val cachedCoverManager: CachedCoverManager,
     private val coverLocalDataSource: CoverLocalDataSource,
     private val coverRemoteDataSource: CoverRemoteDataSource,
-): CoverRepository {
+) : CoverRepository {
     override suspend fun upsert(id: Uuid, data: ByteArray) {
         coverFileManager.saveCover(
             id = id,
@@ -38,7 +38,7 @@ class CoverRepositoryImpl(
     override suspend fun isCoverUsed(coverId: Uuid): Boolean =
         coverLocalDataSource.isCoverUsed(coverId)
 
-    override suspend fun getCoverImageBitmap(cover: Cover): ImageBitmap? =
+    override suspend fun getCoverImageBitmap(cover: Cover.Simple): ImageBitmap? =
         when (cover) {
             is Cover.CoverFile -> {
                 when {
@@ -60,8 +60,8 @@ class CoverRepositoryImpl(
             is Cover.Url -> coverRemoteDataSource.getRemoteCover(cover)?.decodeToImageBitmap()
         }
 
-    private suspend fun getCoverByteArray(cover: Cover): ByteArray? =
-        when(cover) {
+    private suspend fun getCoverByteArray(cover: Cover.Simple): ByteArray? =
+        when (cover) {
             is Cover.CoverFile -> {
                 when {
                     cover.fileCoverId != null -> {
@@ -82,6 +82,6 @@ class CoverRepositoryImpl(
             is Cover.Url -> coverRemoteDataSource.getRemoteCover(cover)
         }
 
-    override suspend fun getAllUniqueCover(covers: List<Cover>): List<ByteArray> =
+    override suspend fun getAllUniqueCover(covers: List<Cover.Simple>): List<ByteArray> =
         covers.mapNotNull { getCoverByteArray(it) }.distinctBy { it.contentHashCode() }
 }

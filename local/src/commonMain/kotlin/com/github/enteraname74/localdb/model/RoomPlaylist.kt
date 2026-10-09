@@ -1,8 +1,10 @@
 package com.github.enteraname74.localdb.model
 
+import androidx.room3.Embedded
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
-import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.localdb.model.cover.RoomCover
+import com.github.enteraname74.localdb.model.cover.toRoomCover
 import com.github.enteraname74.soulsearching.domain.model.Playlist
 import kotlin.time.Clock
 import kotlin.time.Instant
@@ -17,8 +19,7 @@ data class RoomPlaylist(
     val playlistId: Uuid = Uuid.random(),
     val remoteId: Uuid?,
     var name: String = "",
-    var coverId: Uuid? = null,
-    val coverUrl: String?,
+    @Embedded("cover_") val cover: RoomCover?,
     val isFavorite: Boolean = false,
     var addedDate: Instant = Clock.System.now(),
     var nbPlayed: Int = 0,
@@ -29,28 +30,18 @@ data class RoomPlaylist(
 /**
  * Converts a RoomPlaylist to a Playlist.
  */
-internal fun RoomPlaylist.toPlaylist(): Playlist {
-    val localCover = Cover.CoverFile(fileCoverId = coverId)
-    val remoteCover = coverUrl?.let { Cover.Url(it, localCover) }
-
-    val usedCover = if (remoteCover == null) {
-        localCover
-    } else {
-        localCover.takeIf { !it.isEmpty() } ?: remoteCover
-    }
-
-    return Playlist(
+internal fun RoomPlaylist.toPlaylist(): Playlist =
+    Playlist(
         playlistId = playlistId,
         remoteId = remoteId,
         lastUpdatedMillis = lastUpdatedMillis,
         name = name,
-        cover = usedCover,
+        cover = cover?.toCover(null),
         isFavorite = isFavorite,
         addedDate = addedDate,
         nbPlayed = nbPlayed,
         isInQuickAccess = isInQuickAccess,
     )
-}
 
 /**
  * Converts a Playlist to a RoomPlaylist.
@@ -58,12 +49,11 @@ internal fun RoomPlaylist.toPlaylist(): Playlist {
 internal fun Playlist.toRoomPlaylist(): RoomPlaylist = RoomPlaylist(
     playlistId = playlistId,
     name = name,
-    coverId = (cover as? Cover.CoverFile)?.fileCoverId,
     isFavorite = isFavorite,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
     remoteId = remoteId,
-    coverUrl = (cover as? Cover.Url)?.url,
     lastUpdatedMillis = lastUpdatedMillis,
+    cover = cover?.toRoomCover(),
 )
