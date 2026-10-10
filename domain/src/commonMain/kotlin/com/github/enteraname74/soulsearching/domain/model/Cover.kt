@@ -36,19 +36,19 @@ sealed interface Cover {
     }
 
     data class Grid(
-        val topStart: Simple?,
-        val topEnd: Simple?,
-        val bottomStart: Simple?,
-        val bottomEnd: Simple?,
+        val topStart: Cover?,
+        val topEnd: Cover?,
+        val bottomStart: Cover?,
+        val bottomEnd: Cover?,
     ) : Cover {
-        val list: List<Simple?> = listOf(
+        val list: List<Cover?> = listOf(
             topStart,
             topEnd,
             bottomStart,
             bottomEnd,
         )
 
-        constructor(covers: List<Simple>) : this(
+        constructor(covers: List<Cover>) : this(
             topStart = covers.getOrNull(0),
             topEnd = covers.getOrNull(1),
             bottomStart = covers.getOrNull(2),

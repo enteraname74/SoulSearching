@@ -22,6 +22,19 @@ fun List<Music>.gridCoverIfPossible(): Cover? {
     }
 }
 
+fun List<Music>.gridCoverWithEmpty(): Cover.Grid? {
+    val availableCovers = distinctBy { it.cover }
+        .mapNotNull { music ->
+            music.cover.takeIf { !it.isEmpty() }
+        }
+
+    return if (availableCovers.isEmpty()) {
+        null
+    } else {
+        Cover.Grid(availableCovers)
+    }
+}
+
 fun List<Music>.duration(): Duration =
     this.fold(initial = 0L) { current, music ->
         current + music.duration

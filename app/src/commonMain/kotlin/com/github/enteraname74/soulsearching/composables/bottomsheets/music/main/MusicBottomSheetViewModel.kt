@@ -24,6 +24,8 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.domain.ext.gridCoverIfPossible
+import com.github.enteraname74.soulsearching.domain.ext.gridCoverWithEmpty
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
@@ -243,7 +245,7 @@ class MusicBottomSheetViewModel(
             BottomSheetTopInformation(
                 title = strings.multipleSelection,
                 subTitle = strings.selectedElements(total = musics.size),
-                cover = null,
+                cover = musics.gridCoverWithEmpty(),
             )
         }
 

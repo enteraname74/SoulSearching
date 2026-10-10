@@ -132,7 +132,7 @@ data class CoverEditMode(
 }
 
 sealed interface GridUpdatedCells {
-    data class ExistingCell(val cover: Cover.Simple) : GridUpdatedCells
+    data class ExistingCell(val cover: Cover) : GridUpdatedCells
     data class NewCell(val byteArray: ByteArray) : GridUpdatedCells {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

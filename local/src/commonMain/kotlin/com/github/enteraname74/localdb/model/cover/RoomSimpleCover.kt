@@ -36,7 +36,7 @@ data class RoomSimpleCover(
     }
 }
 
-internal fun Cover.Simple.toRoomSimpleCover(): RoomSimpleCover =
+internal fun Cover.toRoomSimpleCover(): RoomSimpleCover =
     RoomSimpleCover(
         initialCoverPath = (this as? Cover.CoverFile)?.initialCoverPath,
         fileCoverId = (this as? Cover.CoverFile)?.fileCoverId,

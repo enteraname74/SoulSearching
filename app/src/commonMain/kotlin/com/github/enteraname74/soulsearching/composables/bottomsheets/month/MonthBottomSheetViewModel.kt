@@ -2,14 +2,6 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.month
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.soulsearching.domain.model.MonthMusicsPreview
-import com.github.enteraname74.soulsearching.domain.model.Music
-import com.github.enteraname74.soulsearching.domain.model.Scope
-import com.github.enteraname74.soulsearching.domain.model.SoulResult
-import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
-import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
-import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
-import com.github.enteraname74.soulsearching.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicsDialog
@@ -19,17 +11,27 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.domain.ext.gridCoverWithEmpty
+import com.github.enteraname74.soulsearching.domain.model.MonthMusicsPreview
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.Scope
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
+import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.uuid.Uuid
 
 class MonthBottomSheetViewModel(
@@ -66,7 +68,7 @@ class MonthBottomSheetViewModel(
     }
 
     @Suppress("UNCHECKED_CAST")
-    val state = combine(
+    val state: StateFlow<MonthBottomSheetState> = combine(
         months,
         musics,
         playbackManager.playedList,
@@ -161,7 +163,7 @@ class MonthBottomSheetViewModel(
             BottomSheetTopInformation(
                 title = strings.multipleSelection,
                 subTitle = strings.selectedElements(total = months.size),
-                cover = null,
+                cover = months.gridCoverWithEmpty(),
             )
         }
 

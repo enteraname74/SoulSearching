@@ -31,7 +31,7 @@ class CoverEditManager(
         if (!gridCoverEditMode.isValid()) return gridCoverEditMode.initialCover
 
         val savedNewCovers = mutableListOf<Pair<ByteArray, Cover.Simple>>()
-        val simpleCovers: List<Cover.Simple> = gridCoverEditMode.updatedCells().map { gridCell ->
+        val covers: List<Cover> = gridCoverEditMode.updatedCells().map { gridCell ->
             when (gridCell) {
                 is GridUpdatedCells.ExistingCell -> gridCell.cover
                 is GridUpdatedCells.NewCell -> {
@@ -55,7 +55,7 @@ class CoverEditManager(
             }
         }
 
-        return Cover.Grid(covers = simpleCovers)
+        return Cover.Grid(covers = covers)
     }
 
     suspend fun getUpdatedCover(
