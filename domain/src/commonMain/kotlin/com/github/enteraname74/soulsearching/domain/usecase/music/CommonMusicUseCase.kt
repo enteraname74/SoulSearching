@@ -188,6 +188,12 @@ class CommonMusicUseCase(
     ): Flow<List<Music>> =
         musicRepository.searchAll(search)
 
+    fun availableSongsForPlaylist(
+        playlistId: Uuid,
+        search: String,
+    ): Flow<PagingData<Music>> =
+        musicRepository.availableSongsForPlaylist(playlistId, search)
+
     fun getAlbumDuration(albumId: Uuid): Flow<Duration> =
         musicRepository.getAlbumDuration(albumId)
 

@@ -351,6 +351,12 @@ internal class RoomMusicLocalDataSourceImpl(
             list.map { it.toMusic() }
         }
 
+    override fun availableSongsForPlaylist(
+        playlistId: Uuid,
+        search: String,
+    ): Flow<PagingData<Music>> =
+        withPaging { appDatabase.musicDao.availableSongsForPlaylist(playlistId, search) }
+
     override suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music> =
         appDatabase.musicDao.getAllMusicFromArtist(artistId).map { it.toMusic() }
 

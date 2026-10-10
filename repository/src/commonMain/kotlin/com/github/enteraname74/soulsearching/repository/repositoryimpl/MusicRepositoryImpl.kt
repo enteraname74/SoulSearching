@@ -156,6 +156,12 @@ class MusicRepositoryImpl(
     override fun searchAll(search: String): Flow<List<Music>> =
         musicLocalDataSource.searchAll(search)
 
+    override fun availableSongsForPlaylist(
+        playlistId: Uuid,
+        search: String,
+    ): Flow<PagingData<Music>> =
+        musicLocalDataSource.availableSongsForPlaylist(playlistId, search)
+
     override suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music> =
         musicLocalDataSource.getAllMusicFromArtist(artistId)
 

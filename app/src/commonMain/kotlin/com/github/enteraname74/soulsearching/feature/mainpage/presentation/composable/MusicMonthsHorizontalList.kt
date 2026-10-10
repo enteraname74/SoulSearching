@@ -70,6 +70,7 @@ fun MusicMonthsHorizontalList(
         } else {
             EmptyCard(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .padding(
                         end = UiConstants.Spacing.medium,
                     ),

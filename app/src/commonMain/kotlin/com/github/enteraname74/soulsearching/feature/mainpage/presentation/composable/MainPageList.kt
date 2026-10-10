@@ -73,6 +73,8 @@ fun <T> MainPageList(
                     span = { GridItemSpan(maxLineSpan) }
                 ) {
                     EmptyCard(
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         title = emptyTitle,
                         description = emptyDescription,
                     )
@@ -140,6 +142,8 @@ fun <T : Any> MainPageListPaged(
                     span = { GridItemSpan(maxLineSpan) }
                 ) {
                     EmptyCard(
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         title = emptyTitle,
                         description = emptyDescription,
                     )

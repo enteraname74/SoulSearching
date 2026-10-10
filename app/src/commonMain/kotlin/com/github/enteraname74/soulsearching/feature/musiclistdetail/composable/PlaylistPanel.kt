@@ -16,6 +16,7 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedIconButt
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_playlist_add
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_shuffle
 import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -43,6 +44,7 @@ fun PlaylistPanel(
             shuffleAction = data.onShuffle,
             playAction = { data.onPlay(null) },
             tint = tint,
+            addToList = data.onAddToList,
             primaryColor = secondaryColor
         )
     }
@@ -54,6 +56,7 @@ private fun ImagesButton(
     editAction: (() -> Unit)?,
     playAction: () -> Unit,
     shuffleAction: () -> Unit,
+    addToList: (() -> Unit)?,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
@@ -79,6 +82,15 @@ private fun ImagesButton(
                     contentPadding = SoulButtonDefaults.contentPadding(),
                 )
             )
+            addToList?.let {
+                add(
+                    SoulSegmentedIconButton(
+                        data = CoreRes.drawable.ic_playlist_add,
+                        onClick = it,
+                        contentPadding = SoulButtonDefaults.contentPadding(),
+                    )
+                )
+            }
             add(
                 SoulSegmentedIconButton(
                     data = CoreRes.drawable.ic_shuffle,

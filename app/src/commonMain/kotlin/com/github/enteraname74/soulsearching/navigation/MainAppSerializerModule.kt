@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.navigation
 
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetsNavigationHandler
+import com.github.enteraname74.soulsearching.feature.addtoplaylist.AddToPlaylistDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.ModifyElementNavigationHandler
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceDestination
@@ -16,6 +17,7 @@ internal val MainAppSerializerModule = SerializersModule {
         subclass(MainPageDestination::class, MainPageDestination.serializer())
         subclass(MultipleArtistsChoiceDestination::class, MultipleArtistsChoiceDestination.serializer())
         subclass(MusicListDetailDestination::class, MusicListDetailDestination.serializer())
+        subclass(AddToPlaylistDestination::class, AddToPlaylistDestination.serializer())
 
         ModifyElementNavigationHandler.serializerModule(
             polymorphicModuleBuilder = this,
