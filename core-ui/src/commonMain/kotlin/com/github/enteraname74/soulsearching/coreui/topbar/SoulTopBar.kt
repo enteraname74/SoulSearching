@@ -94,7 +94,13 @@ fun SoulTopBar(
                 icon = rightAction.icon,
                 contentDescription = rightAction.contentDescription,
                 colors = SoulButtonDefaults.colors(
-                    contentColor = colors.contentColorWithElevation(isElevated),
+                    contentColor = colors.contentColorWithElevation(isElevated).copy(
+                        alpha = if (rightAction.isEnabled) {
+                            1f
+                        } else {
+                            UiConstants.ALPHA_DISABLED
+                        }
+                    ),
                     containerColor = Color.Transparent,
                 ),
                 onClick = rightAction.onClick,

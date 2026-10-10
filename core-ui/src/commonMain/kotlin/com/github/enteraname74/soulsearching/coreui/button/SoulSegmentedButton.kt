@@ -62,7 +62,7 @@ private fun InnerButtons(
     }
 
     buttons.forEachIndexed { index, spec ->
-        val shape = when(index) {
+        val shape = when (index) {
             0 -> LEFT_BUTTON_SHAPE
             buttons.lastIndex -> RIGHT_BUTTON_SHAPE
             else -> CENTER_SHAPE

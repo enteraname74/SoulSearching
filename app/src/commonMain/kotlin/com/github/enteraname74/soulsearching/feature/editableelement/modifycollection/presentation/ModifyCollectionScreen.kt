@@ -34,11 +34,16 @@ fun ModifyCollectionRoute(
             EditableElementView(
                 title = strings.collectionInformation,
                 coverSectionTitle = strings.collectionCover,
-                editableElement = (state as ModifyCollectionState.Data).editableElement,
+                onSwitchModeType = viewModel::switchCoverEditModeType,
                 navigateBack = viewModel::navigateBack,
                 onSelectCover = viewModel::showCoversBottomSheet,
                 onValidateModification = viewModel::updateCollection,
+                isValid = {
+                    (formState as ModifyCollectionFormState.Data).isFormValid() &&
+                        (state as ModifyCollectionState.Data).coverEditMode.isValid()
+                },
                 textFields = (formState as ModifyCollectionFormState.Data).textFields,
+                coverEditMode = (state as ModifyCollectionState.Data).coverEditMode
             )
         }
         state is ModifyCollectionState.Loading -> SoulLoadingScreen(navigateBack = viewModel::navigateBack)

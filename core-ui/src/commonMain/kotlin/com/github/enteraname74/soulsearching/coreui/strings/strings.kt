@@ -137,6 +137,10 @@ interface Strings {
     val musicFileCover: String
     val musicAppCover: String
     val coverSelection: String
+    val selectTopStartCoverImage: String
+    val selectTopEndCoverImage: String
+    val selectBottomStartCoverImage: String
+    val selectBottomEndCoverImage: String
     val artistInformation: String
     val albumInformation: String
 
@@ -483,6 +487,9 @@ interface Strings {
     val statisticsMonthPeriodLabel: String
 
     val playbackErrorPlayerError: String
+
+    val simpleCoverType: String
+    val gridCoverType: String
 
     fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
     fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String

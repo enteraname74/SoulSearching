@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state
 
 import com.github.enteraname74.soulsearching.domain.model.Music
-import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 
 /**
  * UI state of the modify music screen.
@@ -10,7 +10,7 @@ sealed interface ModifyMusicState {
     data object Loading : ModifyMusicState
     data class Data(
         val initialMusic: Music,
-        val editableElement: EditableElement,
+        val coverEditMode: CoverEditMode,
         val hasValidCloudInformation: Boolean,
     ) : ModifyMusicState
 }

@@ -8,6 +8,7 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementView
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.ModifyPlaylistViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistNavigationState
@@ -36,6 +37,7 @@ fun ModifyPlaylistRoute(
         navigateBack = viewModel::navigateBack,
         onSelectCover = viewModel::showCoversBottomSheet,
         onValidateModification = viewModel::updatePlaylist,
+        onSwitchModeType = viewModel::switchCoverEditModeType,
     )
 }
 
@@ -44,19 +46,24 @@ private fun ModifyPlaylistScreenView(
     state: ModifyPlaylistState,
     formState: ModifyPlaylistFormState,
     navigateBack: () -> Unit,
-    onSelectCover: () -> Unit,
+    onSelectCover: (pos: Int) -> Unit,
     onValidateModification: () -> Unit,
+    onSwitchModeType: (new: CoverEditMode.Type) -> Unit,
 ) {
     when {
         state is ModifyPlaylistState.Data && formState is ModifyPlaylistFormState.Data -> {
             EditableElementView(
                 title = strings.playlistInformation,
                 coverSectionTitle = strings.playlistCover,
-                editableElement = state.editableElement,
+                coverEditMode = state.coverEditMode,
                 navigateBack = navigateBack,
                 onSelectCover = onSelectCover,
                 onValidateModification = onValidateModification,
+                isValid = {
+                    formState.isFormValid() && state.coverEditMode.isValid()
+                },
                 textFields = formState.textFields,
+                onSwitchModeType = onSwitchModeType,
             )
         }
 

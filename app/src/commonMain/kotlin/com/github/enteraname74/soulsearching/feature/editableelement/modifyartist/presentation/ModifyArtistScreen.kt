@@ -64,10 +64,14 @@ private fun ModifyArtistScreenView(
                 EditableElementView(
                     title = strings.artistInformation,
                     coverSectionTitle = strings.artistCover,
-                    editableElement = state.editableElement,
+                    coverEditMode = state.coverEditMode,
                     navigateBack = navigateBack,
-                    onSelectCover = onSelectCover,
+                    onSelectCover = { onSelectCover() },
+                    onSwitchModeType = { },
                     onValidateModification = onSave,
+                    isValid = {
+                        formState.isFormValid() && state.coverEditMode.isValid()
+                    },
                     textFields = formState.textFields,
                 )
             }

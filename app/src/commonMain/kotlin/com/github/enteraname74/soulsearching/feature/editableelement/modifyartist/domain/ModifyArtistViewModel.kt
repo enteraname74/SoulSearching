@@ -2,17 +2,17 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifyarti
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.soulsearching.domain.model.ArtistWithMusics
-import com.github.enteraname74.soulsearching.domain.model.Cover
-import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.soulsearching.domain.usecase.cover.CommonCoverUseCase
-import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.domain.model.ArtistWithMusics
+import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.cover.CommonCoverUseCase
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementCoversBottomSheet
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditManager
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
-import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistState
@@ -40,6 +40,7 @@ class ModifyArtistViewModel(
     private val updateArtistUseCase: UpdateArtistUseCase,
     private val loadingManager: LoadingManager,
     private val workDispatcher: WorkDispatcher,
+    private val coverEditManager: CoverEditManager,
     destination: ModifyArtistDestination,
 ) : ViewModel() {
     private val artistId: Uuid = destination.selectedArtistId
@@ -64,10 +65,14 @@ class ModifyArtistViewModel(
             initialArtist == null -> ModifyArtistState.Loading
             else -> ModifyArtistState.Data(
                 initialArtist = initialArtist,
-                editableElement = EditableElement(
-                    initialCover = initialArtist.cover,
-                    newCover = newCover,
-                )
+                coverEditMode = CoverEditMode(
+                    simple = CoverEditMode.Simple(
+                        initialCover = initialArtist.cover,
+                        newCover = newCover
+                    ),
+                    grid = null,
+                    selectedType = CoverEditMode.Type.Simple,
+                ),
             )
         }
     }.stateIn(
@@ -142,25 +147,13 @@ class ModifyArtistViewModel(
     fun updateArtist() {
         CoroutineScope(workDispatcher.dispatcher).launch {
 
-            val state = (state.value as? ModifyArtistState.Data) ?: return@launch
+            val state = (state.value as? ModifyArtistState.Data)?.takeIf { it.coverEditMode.isValid() } ?: return@launch
             val form = (formState.value as? ModifyArtistFormState.Data)?.takeIf { it.isFormValid() } ?: return@launch
 
             loadingManager.withLoading {
-                val coverFile: Uuid? =
-                    state.editableElement.newCover?.let { coverData ->
-                        val newCoverId: Uuid = Uuid.random()
-                        commonCoverUseCase.upsert(
-                            id = newCoverId,
-                            data = coverData,
-                        )
-                        newCoverId
-                    } ?: (state.initialArtist.artist.cover as? Cover.CoverFile)?.fileCoverId
-
                 val newArtistInformation = state.initialArtist.copy(
                     artist = state.initialArtist.artist.copy(
-                        cover = (state.initialArtist.artist.cover as? Cover.CoverFile)?.copy(
-                            fileCoverId = coverFile
-                        ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) },
+                        cover = coverEditManager.getSimpleCover(state.coverEditMode.simple),
                         artistName = form.getArtistName(),
                     )
                 )

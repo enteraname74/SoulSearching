@@ -57,5 +57,9 @@ sealed interface Cover {
 
         override fun isEmpty(): Boolean =
             list.none { it?.isEmpty() == false }
+
+        companion object {
+            const val GRID_SIZE: Int = 4
+        }
     }
 }

@@ -2,22 +2,24 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifyplay
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
-import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
-import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementCoversBottomSheet
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditManager
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
-import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistDestination
-import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,6 +40,8 @@ class ModifyPlaylistViewModel(
     private val commonCoverUseCase: CommonCoverUseCase,
     private val loadingManager: LoadingManager,
     private val workDispatcher: WorkDispatcher,
+    private val coverEditManager: CoverEditManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
     destination: ModifyPlaylistDestination,
 ) : ViewModel() {
     private val playlistId: Uuid = destination.selectedPlaylistId
@@ -53,20 +57,39 @@ class ModifyPlaylistViewModel(
     private val initialPlaylist: Flow<PlaylistWithMusics?> = commonPlaylistUseCase
         .getWithMusics(playlistId = playlistId)
 
-    private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
+    private val newSimpleCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
+    private val newGridCover: MutableStateFlow<CoverEditMode.Grid.GridContent> = MutableStateFlow(
+        CoverEditMode.Grid.GridContent(
+            topStart = null,
+            topEnd = null,
+            bottomStart = null,
+            bottomEnd = null,
+        )
+    )
+
+    private val selectedCoverMode: MutableStateFlow<CoverEditMode.Type?> = MutableStateFlow(null)
 
     val state: StateFlow<ModifyPlaylistState> = combine(
         initialPlaylist,
-        newCover,
-    ) { initialPlaylist, newCover ->
+        newSimpleCover,
+        newGridCover,
+        selectedCoverMode,
+    ) { initialPlaylist, newCover, newGridCover, selectedCoverMode ->
         when {
             initialPlaylist == null -> ModifyPlaylistState.Loading
             else -> ModifyPlaylistState.Data(
                 initialPlaylist = initialPlaylist,
-                editableElement = EditableElement(
-                    initialCover = initialPlaylist.cover,
-                    newCover = newCover,
-                )
+                coverEditMode = CoverEditMode(
+                    simple = CoverEditMode.Simple(
+                        initialCover = (initialPlaylist.cover as? Cover.Simple),
+                        newCover = newCover,
+                    ),
+                    grid = CoverEditMode.Grid(
+                        initialCover = (initialPlaylist.cover as? Cover.Grid),
+                        newCover = newGridCover,
+                    ),
+                    selectedType = selectedCoverMode ?: CoverEditMode.Type.fromCover(initialPlaylist.cover),
+                ),
             )
         }
     }.stateIn(
@@ -89,7 +112,7 @@ class ModifyPlaylistViewModel(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val artistsCover: StateFlow<CoverListState> = state.mapLatest { state ->
+    private val playlistCovers: StateFlow<CoverListState> = state.mapLatest { state ->
         when (state) {
             is ModifyPlaylistState.Data -> CoverListState.Data(
                 covers = commonCoverUseCase.getAllUniqueCover(
@@ -105,15 +128,25 @@ class ModifyPlaylistViewModel(
         initialValue = CoverListState.Loading,
     )
 
-    fun showCoversBottomSheet() {
+    fun showCoversBottomSheet(pos: Int) {
         _bottomSheetState.value = EditableElementCoversBottomSheet(
             title = { strings.coversOfThePlaylist },
-            coverStateFlow = artistsCover,
+            coverStateFlow = playlistCovers,
             onCoverSelected = { cover ->
-                newCover.value = cover
+                viewModelScope.launch {
+                    setNewCover(
+                        bytes = cover,
+                        pos = pos,
+                    )
+                }
             },
             onCoverFromStorageSelected = { imageFile ->
-                setNewCover(imageFile = imageFile)
+                viewModelScope.launch {
+                    setNewCover(
+                        bytes = imageFile.readBytes(),
+                        pos = pos,
+                    )
+                }
             },
             onClose = {
                 _bottomSheetState.value = null
@@ -129,32 +162,32 @@ class ModifyPlaylistViewModel(
             val state = (state.value as? ModifyPlaylistState.Data) ?: return@launch
             val form = (formState.value as? ModifyPlaylistFormState.Data) ?: return@launch
 
-            if (!form.isFormValid()) return@launch
+            if (!form.isFormValid() || !state.coverEditMode.isValid()) return@launch
 
             loadingManager.startLoading()
-
-            val coverFile: Uuid? = state.editableElement.newCover?.let { coverData ->
-                val newCoverId: Uuid = Uuid.random()
-                commonCoverUseCase.upsert(
-                    id = newCoverId,
-                    data = coverData,
-                )
-                newCoverId
-            } ?: (state.initialPlaylist.cover as? Cover.CoverFile)?.fileCoverId
-
-            val newPlaylistInformation = state.initialPlaylist.playlist.copy(
-                cover = (state.initialPlaylist.cover as? Cover.CoverFile)?.copy(
-                    fileCoverId = coverFile,
-                ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) },
-                name = form.getPlaylistName().trim(),
+            val newCoverResult = coverEditManager.getUpdatedCover(
+                coverEditMode = state.coverEditMode,
             )
 
-            commonPlaylistUseCase.upsert(
-                playlist = newPlaylistInformation,
-            )
+            when (newCoverResult) {
+                is SoulResult.Error -> {
+                    loadingManager.stopLoading()
+                    feedbackPopUpManager.showErrorIfAny(newCoverResult)
+                }
+                is SoulResult.Success -> {
+                    val newPlaylistInformation = state.initialPlaylist.playlist.copy(
+                        cover = newCoverResult.data,
+                        name = form.getPlaylistName().trim(),
+                    )
 
-            loadingManager.stopLoading()
-            _navigationState.value = ModifyPlaylistNavigationState.Back
+                    commonPlaylistUseCase.upsert(
+                        playlist = newPlaylistInformation,
+                    )
+                    loadingManager.stopLoading()
+                    _navigationState.value = ModifyPlaylistNavigationState.Back
+                }
+            }
+
         }
     }
 
@@ -162,10 +195,21 @@ class ModifyPlaylistViewModel(
         _navigationState.value = ModifyPlaylistNavigationState.Idle
     }
 
-    private fun setNewCover(imageFile: PlatformFile) {
-        viewModelScope.launch {
-            newCover.value = imageFile.readBytes()
+    private fun setNewCover(
+        bytes: ByteArray,
+        pos: Int,
+    ) {
+        val selectedCoverModeType = (state.value as? ModifyPlaylistState.Data)?.coverEditMode?.selectedType ?: return
+        when (selectedCoverModeType) {
+            CoverEditMode.Type.Simple -> newSimpleCover.value = bytes
+            CoverEditMode.Type.Grid -> newGridCover.value = newGridCover.value.setAt(pos, bytes)
         }
+    }
+
+    fun switchCoverEditModeType(
+        type: CoverEditMode.Type,
+    ) {
+        selectedCoverMode.value = type
     }
 
     fun navigateBack() {

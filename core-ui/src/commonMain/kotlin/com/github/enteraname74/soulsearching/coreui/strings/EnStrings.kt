@@ -126,6 +126,10 @@ object EnStrings : Strings {
     override val musicFileCover = "File's cover"
     override val musicAppCover = "App's cover"
     override val coverSelection = "Cover selection"
+    override val selectTopStartCoverImage = "Select top-left cover image"
+    override val selectTopEndCoverImage = "Select top-right cover image"
+    override val selectBottomStartCoverImage = "Select bottom-left cover image"
+    override val selectBottomEndCoverImage = "Select bottom-right cover image"
     override val artistInformation = "Artist's information"
     override val albumInformation = "Album's information"
 
@@ -496,6 +500,9 @@ object EnStrings : Strings {
     override val statisticsMonthPeriodLabel: String = "By month"
 
     override val playbackErrorPlayerError: String = "Cannot play selected song"
+
+    override val simpleCoverType: String = "Simpl"
+    override val gridCoverType: String = "Grid"
 
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
