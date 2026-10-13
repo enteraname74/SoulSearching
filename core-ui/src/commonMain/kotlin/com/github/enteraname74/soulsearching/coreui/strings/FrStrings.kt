@@ -500,6 +500,11 @@ object FrStrings : Strings {
 
     override val playbackErrorPlayerError: String = "Impossible de lire la musique sélectionnée"
 
+    override val addToPlaylistScreenTitle: String = "Ajouter à la playlist"
+    override val addToPlaylistSearchPlaceholder: String = "Rechercher des musiques à ajouter dans la playlist"
+    override val addToPlaylistEmptyTitle: String = "Aucune musique"
+    override val addToPlaylistEmptyText: String = "Aucune musique trouvée à ajouter dans la playlist"
+
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
             is SyncDataWithCloudUseCase.State.Failure -> "Erreur"
@@ -593,6 +598,13 @@ object FrStrings : Strings {
             0 -> "Aucun élément sélectionné"
             1 -> "Un élément sélectionné"
             else -> "$total éléments sélectionnés"
+        }
+
+    override fun selectedMusics(total: Int): String =
+        when (total) {
+            0 -> "Aucune musique sélectionnée"
+            1 -> "Une musique sélectionnée"
+            else -> "$total musiques sélectionnées"
         }
 
     override fun newReleaseAvailableText(releaseName: String): String =

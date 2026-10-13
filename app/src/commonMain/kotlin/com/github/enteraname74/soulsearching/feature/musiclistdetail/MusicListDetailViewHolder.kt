@@ -27,6 +27,7 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.Art
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.CachedPlayedListUiSpec
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.addtoplaylist.AddToPlaylistDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifycollection.presentation.ModifyCollectionDestination
@@ -182,6 +183,7 @@ class MusicListDetailViewHolder(
                         }
                     },
                     onCoverLoaded = ::onCoverLoaded,
+                    onAddToList = null,
                 )
             }
         }
@@ -239,6 +241,7 @@ class MusicListDetailViewHolder(
                         }
                     },
                     onCoverLoaded = ::onCoverLoaded,
+                    onAddToList = null,
                 )
             }
         }
@@ -282,6 +285,11 @@ class MusicListDetailViewHolder(
                         }
                     },
                     onCoverLoaded = ::onCoverLoaded,
+                    onAddToList = {
+                        navigate {
+                            toDestination(AddToPlaylistDestination(detailId.playlistId))
+                        }
+                    }
                 )
             }
         }
@@ -397,6 +405,7 @@ class MusicListDetailViewHolder(
                     onShuffle = ::onShuffle,
                     onEdit = null,
                     onCoverLoaded = ::onCoverLoaded,
+                    onAddToList = null,
                 )
             }
         }
@@ -436,6 +445,7 @@ class MusicListDetailViewHolder(
                     onShuffle = ::onShuffle,
                     onEdit = null,
                     onCoverLoaded = ::onCoverLoaded,
+                    onAddToList = null,
                 )
             }
         }

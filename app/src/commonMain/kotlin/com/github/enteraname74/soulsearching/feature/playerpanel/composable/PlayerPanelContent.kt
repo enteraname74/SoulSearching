@@ -25,7 +25,7 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconDefaults
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
+import com.github.enteraname74.soulsearching.domain.model.lyrics.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager

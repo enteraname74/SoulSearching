@@ -27,19 +27,18 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_drag_handle
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_more_vertical
 import com.github.enteraname74.soulsearching.coreui.ext.chainIf
-import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIcon
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconDefaults
@@ -55,10 +54,11 @@ fun MusicItemComposable(
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
     isPlayedMusic: Boolean,
-    onLongClick: () -> Unit = {},
+    onLongClick: (() -> Unit)? = null,
     reorderableModifier: Modifier? = null,
     isSelected: Boolean = false,
     isSelectionModeOn: Boolean = false,
+    hideMoreIcon: Boolean = false,
     padding: PaddingValues = PaddingValues(UiConstants.Spacing.medium),
     leadingSpec: MusicItemLeadingSpec = MusicItemLeadingSpec.Cover,
     userTag: UserTag? = null,
@@ -70,10 +70,10 @@ fun MusicItemComposable(
             modifier = Modifier
                 .fillMaxWidth()
                 .chainIf(onClick != null) {
-                    Modifier.combinedClickableWithRightClick(
+                    Modifier.optionalClickable(
                         onClick = {
                             if (isSelectionModeOn) {
-                                onLongClick()
+                                onLongClick?.invoke()
                             } else {
                                 onClick?.invoke(music)
                             }
@@ -153,7 +153,7 @@ fun MusicItemComposable(
                         icon = CoreRes.drawable.ic_drag_handle,
                         color = textColor
                     )
-                } else {
+                } else if (!hideMoreIcon) {
                     SoulIcon(
                         modifier = Modifier
                             .clip(CircleShape)

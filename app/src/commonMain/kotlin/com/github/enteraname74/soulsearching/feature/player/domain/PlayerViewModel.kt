@@ -10,7 +10,7 @@ import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.domain.model.Artist
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.Scope
-import com.github.enteraname74.soulsearching.domain.model.lyrics.MusicLyrics
+import com.github.enteraname74.soulsearching.domain.model.lyrics.LyricsFetchState
 import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
 import com.github.enteraname74.soulsearching.domain.model.player.PlayedListState
 import com.github.enteraname74.soulsearching.domain.model.player.PlayedListType
@@ -19,13 +19,12 @@ import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearching
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.user.User
-import com.github.enteraname74.soulsearching.domain.usecase.lyrics.CommonLyricsUseCase
+import com.github.enteraname74.soulsearching.domain.repository.LyricsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
@@ -42,12 +41,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -62,14 +59,14 @@ class PlayerViewModel(
     private val playerViewManager: PlayerViewManager,
     private val settings: SoulSearchingSettings,
     private val colorThemeManager: ColorThemeManager,
-    private val commonLyricsUseCase: CommonLyricsUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     val multiSelectionManager: MultiSelectionManager,
     private val loadingManager: LoadingManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     private val savedStateHandle: SavedStateHandle,
-    commonUserUseCase: CommonUserUseCase,
     private val workDispatcher: WorkDispatcher,
+    commonUserUseCase: CommonUserUseCase,
+    lyricsRepository: LyricsRepository,
 ) : ViewModel() {
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
@@ -88,45 +85,9 @@ class PlayerViewModel(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val lyricsState: StateFlow<LyricsFetchState> = settings.getFlowOn(
-        SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED
-    ).flatMapLatest { isRemoteFetchEnabled ->
-        playbackManager.currentSong.flatMapLatest { music ->
-            channelFlow {
-                if (music == null) {
-                    send(LyricsFetchState.NoLyricsFound)
-                } else {
-                    send(LyricsFetchState.FetchingLyrics)
-
-                    var lyrics: MusicLyrics? = commonLyricsUseCase.getLocalLyricsForMusic(music = music)
-                    if (lyrics == null && isRemoteFetchEnabled) {
-                        lyrics = commonLyricsUseCase.getRemoteLyricsForMusic(music = music)
-                    }
-
-                    if (lyrics == null) {
-                        if (isRemoteFetchEnabled) {
-                            send(LyricsFetchState.NoLyricsFound)
-                        } else {
-                            send(LyricsFetchState.NoPermission)
-                        }
-                    } else {
-                        currentSongProgressionState.collectLatest { progression ->
-                            send(
-                                LyricsFetchState.FoundLyrics(
-                                    lyrics = lyrics,
-                                    currentMusicId = music.musicId,
-                                    highlightedLyricsLine = lyrics
-                                        .syncedLyrics
-                                        ?.indexOfLast { it.timestampMs < progression }
-                                        ?.takeIf { it >= 0 }
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }.stateIn(
+    val lyricsState: StateFlow<LyricsFetchState> = lyricsRepository.observeLyrics(
+        songProgressionFlow = currentSongProgressionState,
+    ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = LyricsFetchState.FetchingLyrics

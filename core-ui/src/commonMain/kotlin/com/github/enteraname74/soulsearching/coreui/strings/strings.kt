@@ -484,6 +484,11 @@ interface Strings {
 
     val playbackErrorPlayerError: String
 
+    val addToPlaylistScreenTitle: String
+    val addToPlaylistSearchPlaceholder: String
+    val addToPlaylistEmptyTitle: String
+    val addToPlaylistEmptyText: String
+
     fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
     fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String
 
@@ -516,6 +521,8 @@ interface Strings {
      * Shows a text indicating the total of selected elements.
      */
     fun selectedElements(total: Int): String
+
+    fun selectedMusics(total: Int): String
 
     /**
      * Shows a text indicating the detail of the new latest release of Soul Searching

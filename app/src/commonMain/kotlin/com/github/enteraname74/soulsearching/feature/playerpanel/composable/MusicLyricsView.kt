@@ -66,7 +66,7 @@ import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateComposabl
 import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
-import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
+import com.github.enteraname74.soulsearching.domain.model.lyrics.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.playerpanel.ext.description
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -155,7 +155,6 @@ private fun LyricsView(
     lyricsState: LyricsFetchState.FoundLyrics,
 ) {
     val hasSyncedLyrics = lyricsState.lyrics.syncedLyrics?.takeIf { it.isNotEmpty() } != null
-
 
     var isSwitchLyricsVisible by rememberSaveable {
         mutableStateOf(hasSyncedLyrics)

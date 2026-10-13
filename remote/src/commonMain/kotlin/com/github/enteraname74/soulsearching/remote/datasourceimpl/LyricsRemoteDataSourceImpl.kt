@@ -1,51 +1,42 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
-import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.lyrics.MusicLyrics
+import com.github.enteraname74.soulsearching.domain.model.lyrics.MusicLyricsRequest
+import com.github.enteraname74.soulsearching.remote.ext.safeRequest
 import com.github.enteraname74.soulsearching.remote.model.RemoteLyrics
 import com.github.enteraname74.soulsearching.repository.datasource.lyrics.LyricsRemoteDataSource
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
 
 class LyricsRemoteDataSourceImpl(
     private val client: HttpClient,
 ) : LyricsRemoteDataSource {
-    override suspend fun getLyricsOfSong(music: Music): MusicLyrics? =
-        getLyrics(
-            music = music,
+    override suspend fun getLyricsOfSong(request: MusicLyricsRequest): MusicLyrics? =
+        fetchLyrics(
+            request = request,
             withAlbum = true,
-        ) ?: getLyrics(
-            music = music,
+        ) ?: fetchLyrics(
+            request = request,
             withAlbum = false,
         )
 
-    private suspend fun getLyrics(music: Music, withAlbum: Boolean): MusicLyrics? =
-        try {
-            val response = client.get(
+    private suspend fun fetchLyrics(request: MusicLyricsRequest, withAlbum: Boolean): MusicLyrics? =
+        client.safeRequest<RemoteLyrics> {
+            get(
                 buildUrl(
-                    music = music,
-                    principalArtistName = music.album.artist.artistName,
+                    request = request,
                     withAlbum = withAlbum,
                 )
             )
-            if (response.status.isSuccess()) {
-                response.body<RemoteLyrics>().toMusicLyrics()
-            } else {
-                null
-            }
-        } catch (_: Exception) {
-            null
-        }
+        }.getOrNull()?.toMusicLyrics()
 
     companion object {
         private const val INITIAL_ROUTE = "https://lrclib.net/api/get"
 
-        fun buildUrl(music: Music, principalArtistName: String, withAlbum: Boolean): String {
-            val albumField = if (withAlbum) "&album_name=${music.album.albumName}" else ""
+        fun buildUrl(request: MusicLyricsRequest, withAlbum: Boolean): String {
+            val albumField = if (withAlbum) "&album_name=${request.albumName}" else ""
 
-            return "$INITIAL_ROUTE?track_name=${music.name}&artist_name=${principalArtistName}$albumField"
+            return "$INITIAL_ROUTE?track_name=${request.musicName}&artist_name=${request.artistName}$albumField"
                 .replace(" ", "%20")
         }
     }
