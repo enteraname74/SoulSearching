@@ -8,6 +8,6 @@ data class AlbumPreview(
     val nbPlayed: Int,
     val name: String,
     val artist: String,
-    val cover: Cover?,
+    val cover: Cover.Simple?,
     override val isInQuickAccess: Boolean,
 ) : QuickAccessible

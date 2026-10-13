@@ -10,7 +10,7 @@ data class AlbumWithMusics(
     val musics: List<Music>,
 ) {
 
-    val cover: Cover? = if (album.cover?.isEmpty() == false) {
+    val cover: Cover.Simple? = if (album.cover?.isEmpty() == false) {
         album.cover.copyIfUrl { it.copy(fallback = musics.coverFromSongs()) }
     } else {
         musics.coverFromSongs()

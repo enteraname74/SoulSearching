@@ -13,6 +13,7 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.domain.ext.gridCoverWithEmpty
 import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.Scope
@@ -159,7 +160,7 @@ class CollectionBottomSheetViewModel(
         BottomSheetTopInformation(
             title = strings.multipleSelection,
             subTitle = strings.selectedElements(collections.size),
-            cover = null,
+            cover = collections.gridCoverWithEmpty(),
         )
     }
 

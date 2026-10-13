@@ -105,7 +105,16 @@ interface CollectionDao {
     )
     suspend fun incrementNbPlayed(collectionId: Uuid, lastUpdatedMillis: Long)
 
-    @Query("UPDATE RoomCollection SET coverId = NULL")
+    @Query(
+        """
+        UPDATE RoomCollection SET
+            cover_simple_fileCoverId = NULL,
+            cover_grid_topStart_fileCoverId = NULL,
+            cover_grid_topEnd_fileCoverId = NULL,
+            cover_grid_bottomStart_fileCoverId = NULL,
+            cover_grid_bottomEnd_fileCoverId = NULL
+        """
+    )
     suspend fun cleanAllCovers()
 
     @Query(

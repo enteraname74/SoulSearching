@@ -58,7 +58,16 @@ interface PlaylistDao {
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
     fun getPlaylistWithMusics(playlistId: Uuid): Flow<RoomPlaylistWithMusics?>
 
-    @Query("UPDATE RoomPlaylist SET coverId = NULL")
+    @Query(
+        """
+        UPDATE RoomPlaylist SET
+            cover_simple_fileCoverId = NULL,
+            cover_grid_topStart_fileCoverId = NULL,
+            cover_grid_topEnd_fileCoverId = NULL,
+            cover_grid_bottomStart_fileCoverId = NULL,
+            cover_grid_bottomEnd_fileCoverId = NULL
+        """
+    )
     suspend fun cleanAllCovers()
 
     @Transaction
@@ -249,7 +258,7 @@ interface PlaylistDao {
     )
     suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid>
 
-    @Query("UPDATE RoomPlaylist SET remoteId = NULL, coverUrl = NULL")
+    @Query("UPDATE RoomPlaylist SET remoteId = NULL, cover_simple_url = NULL")
     suspend fun deleteAllRemoteFields()
 
     @Query(

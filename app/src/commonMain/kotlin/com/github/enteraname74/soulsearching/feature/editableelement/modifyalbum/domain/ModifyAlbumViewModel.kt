@@ -2,18 +2,18 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifyalbu
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.AlbumWithMusics
-import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
-import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
-import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementCoversBottomSheet
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditManager
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
-import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumState
@@ -33,7 +33,6 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import kotlin.uuid.Uuid
 
 class ModifyAlbumViewModel(
     private val commonAlbumUseCase: CommonAlbumUseCase,
@@ -42,6 +41,7 @@ class ModifyAlbumViewModel(
     private val updateAlbumUseCase: UpdateAlbumUseCase,
     private val loadingManager: LoadingManager,
     private val workDispatcher: WorkDispatcher,
+    private val coverEditManager: CoverEditManager,
     destination: ModifyAlbumDestination,
 ) : ViewModel() {
     private val albumId = destination.selectedAlbumId
@@ -65,10 +65,14 @@ class ModifyAlbumViewModel(
             initialAlbum == null -> ModifyAlbumState.Loading
             else -> ModifyAlbumState.Data(
                 initialAlbum = initialAlbum,
-                editableElement = EditableElement(
-                    initialCover = initialAlbum.cover,
-                    newCover = newCover,
-                )
+                coverEditMode = CoverEditMode(
+                    simple = CoverEditMode.Simple(
+                        initialCover = initialAlbum.cover,
+                        newCover = newCover
+                    ),
+                    grid = null,
+                    selectedType = CoverEditMode.Type.Simple,
+                ),
             )
         }
     }.stateIn(
@@ -96,7 +100,7 @@ class ModifyAlbumViewModel(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val artistsCover: StateFlow<CoverListState> = state.mapLatest { state ->
+    private val albumCovers: StateFlow<CoverListState> = state.mapLatest { state ->
         when (state) {
             is ModifyAlbumState.Data -> CoverListState.Data(
                 covers = commonCoverUseCase.getAllUniqueCover(
@@ -128,7 +132,7 @@ class ModifyAlbumViewModel(
     fun showCoversBottomSheet() {
         _bottomSheetState.value = EditableElementCoversBottomSheet(
             title = { strings.coversOfTheAlbum },
-            coverStateFlow = artistsCover,
+            coverStateFlow = albumCovers,
             onCoverSelected = { cover ->
                 newCover.value = cover
             },
@@ -146,30 +150,17 @@ class ModifyAlbumViewModel(
      */
     fun updateAlbum() {
         CoroutineScope(workDispatcher.dispatcher).launch {
-            val state = (state.value as? ModifyAlbumState.Data) ?: return@launch
+            val state = (state.value as? ModifyAlbumState.Data)?.takeIf { it.coverEditMode.isValid() } ?: return@launch
             val form = (formState.value as? ModifyAlbumFormState.Data)?.takeIf { it.isFormValid() } ?: return@launch
 
             loadingManager.withLoading {
-                // If the image has changed, we need to save it and retrieve its id.
-                val coverFile: Uuid? = state.editableElement.newCover?.let { coverData ->
-                    val newCoverId: Uuid = Uuid.random()
-
-                    commonCoverUseCase.upsert(
-                        id = newCoverId,
-                        data = coverData,
-                    )
-                    newCoverId
-                } ?: (state.initialAlbum.album.cover as? Cover.CoverFile)?.fileCoverId
-
                 // We update the information of the album.
                 updateAlbumUseCase(
                     updateInformation = UpdateAlbumUseCase.UpdateInformation(
                         legacyAlbum = state.initialAlbum.album,
                         newName = form.getAlbumName().trim(),
                         newArtistName = form.getArtistName().trim(),
-                        newCover = (state.initialAlbum.album.cover as? Cover.CoverFile)?.copy(
-                            fileCoverId = coverFile,
-                        ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) }
+                        newCover = coverEditManager.getSimpleCover(state.coverEditMode.simple),
                     )
                 )
             }

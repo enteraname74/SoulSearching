@@ -36,9 +36,9 @@ fun MusicSelectableComposable(
     )
 }
 
-private sealed interface CoverType{
-    data class CoverData(val cover: Cover?): CoverType
-    data class Bitmap(val bitmap: ImageBitmap?): CoverType
+private sealed interface CoverType {
+    data class CoverData(val cover: Cover.Simple?) : CoverType
+    data class Bitmap(val bitmap: ImageBitmap?) : CoverType
 }
 
 @Composable
@@ -63,7 +63,7 @@ private fun InnerContent(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            when(coverType) {
+            when (coverType) {
                 is CoverType.Bitmap -> {
                     SoulBitmapImage(
                         bitmap = coverType.bitmap,

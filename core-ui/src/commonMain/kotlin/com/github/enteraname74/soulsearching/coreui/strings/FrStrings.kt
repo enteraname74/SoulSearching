@@ -125,6 +125,10 @@ object FrStrings : Strings {
     override val musicFileCover = "Couverture du fichier"
     override val musicAppCover = "Couverture de l'application"
     override val coverSelection = "Sélection d'une couverture"
+    override val selectTopStartCoverImage = "Sélectionner l'image de couverture en haut à gauche"
+    override val selectTopEndCoverImage = "Sélectionner l'image de couverture en haut à droite"
+    override val selectBottomStartCoverImage = "Sélectionner l'image de couverture en bas à gauche"
+    override val selectBottomEndCoverImage = "Sélectionner l'image de couverture en bas à droite"
     override val artistInformation = "Informations de l'artiste"
     override val albumInformation = "Informations de l'album"
 
@@ -500,6 +504,8 @@ object FrStrings : Strings {
 
     override val playbackErrorPlayerError: String = "Impossible de lire la musique sélectionnée"
 
+    override val simpleCoverType: String = "Simple"
+    override val gridCoverType: String = "Grille"
     override val addToPlaylistScreenTitle: String = "Ajouter à la playlist"
     override val addToPlaylistSearchPlaceholder: String = "Rechercher des musiques à ajouter dans la playlist"
     override val addToPlaylistEmptyTitle: String = "Aucune musique"

@@ -2,15 +2,6 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.soulsearching.domain.model.Music
-import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
-import com.github.enteraname74.soulsearching.domain.model.Scope
-import com.github.enteraname74.soulsearching.domain.model.SoulResult
-import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
-import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiPlaylistDialog
@@ -22,6 +13,16 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.domain.ext.gridCoverWithEmpty
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.Scope
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -185,7 +186,7 @@ class PlaylistBottomSheetViewModel(
             BottomSheetTopInformation(
                 title = strings.multipleSelection,
                 subTitle = strings.selectedElements(total = playlists.size),
-                cover = null,
+                cover = playlists.gridCoverWithEmpty(),
             )
         }
 

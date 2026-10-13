@@ -52,7 +52,7 @@ class UpdateAlbumUseCase(
             artist = albumArtistToSave,
             albumName = updateInformation.newName,
             isInQuickAccess = updateInformation.legacyAlbum.isInQuickAccess
-                    || duplicateAlbum?.isInQuickAccess == true,
+                || duplicateAlbum?.isInQuickAccess == true,
             cover = updateInformation.newCover,
         )
 
@@ -153,6 +153,6 @@ class UpdateAlbumUseCase(
         val legacyAlbum: Album,
         val newName: String,
         val newArtistName: String,
-        val newCover: Cover?,
+        val newCover: Cover.Simple?,
     )
 }

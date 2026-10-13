@@ -6,8 +6,34 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-fun List<Music>.coverFromSongs(): Cover? =
+fun List<Music>.coverFromSongs(): Cover.Simple? =
     this.firstOrNull { !it.cover.isEmpty() }?.cover
+
+fun List<Music>.gridCoverIfPossible(): Cover? {
+    val availableCovers = distinctBy { it.cover }
+        .mapNotNull { music ->
+            music.cover.takeIf { !it.isEmpty() }
+        }
+
+    return if (availableCovers.size < 4) {
+        coverFromSongs()
+    } else {
+        Cover.Grid(availableCovers)
+    }
+}
+
+fun List<Music>.gridCoverWithEmpty(): Cover.Grid? {
+    val availableCovers = distinctBy { it.cover }
+        .mapNotNull { music ->
+            music.cover.takeIf { !it.isEmpty() }
+        }
+
+    return if (availableCovers.isEmpty()) {
+        null
+    } else {
+        Cover.Grid(availableCovers)
+    }
+}
 
 fun List<Music>.duration(): Duration =
     this.fold(initial = 0L) { current, music ->

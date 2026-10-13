@@ -2,7 +2,11 @@ package com.github.enteraname74.soulsearching.feature.editableelement.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,13 +16,14 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 
 @Composable
 fun EditableElementRowView(
     coverSectionTitle: String,
-    editableElement: EditableElement,
-    onSelectImage: () -> Unit,
+    coverEditMode: CoverEditMode,
+    onSelectImage: (pos: Int) -> Unit,
+    onSwitchModeType: (new: CoverEditMode.Type) -> Unit,
     focusManager: FocusManager,
     textFields: List<SoulTextFieldHolder>,
     extraFormTopContent: @Composable (() -> Unit)?,
@@ -41,8 +46,9 @@ fun EditableElementRowView(
             modifier = Modifier
                 .weight(1F),
             title = coverSectionTitle,
-            editableElement = editableElement,
+            coverEditMode = coverEditMode,
             onSelectImage = onSelectImage,
+            onSwitchModeType = onSwitchModeType,
         )
         Box(
             modifier = Modifier

@@ -3,7 +3,6 @@ package com.github.enteraname74.localdb.model
 import androidx.room3.Embedded
 import androidx.room3.Junction
 import androidx.room3.Relation
-import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.statistics.ListeningStatistics
 import com.github.enteraname74.soulsearching.domain.util.DateUtils
@@ -24,25 +23,13 @@ data class RoomCompleteMusic(
     )
     val artists: List<RoomArtist>
 ) {
-    fun toMusic(): Music {
-        val localCover = Cover.CoverFile(
-            initialCoverPath = music.localPath,
-            fileCoverId = music.coverId,
-        )
-        val remoteCover = music.coverUrl?.let { Cover.Url(it, localCover) }
-
-        val usedCover = if (remoteCover == null) {
-            localCover
-        } else {
-            localCover.takeIf { !it.isEmpty() } ?: remoteCover
-        }
-
-        return Music(
+    fun toMusic(): Music =
+        Music(
             musicId = music.musicId,
             name = music.name,
             album = completeAlbum.toAlbum(),
             artists = artists.map { it.toArtist() },
-            cover = usedCover,
+            cover = music.cover.toSimpleCover(null),
             albumPosition = music.albumPosition,
             localPath = music.localPath,
             folder = music.folder,
@@ -56,7 +43,6 @@ data class RoomCompleteMusic(
             lastUpdatedMillis = music.lastUpdateMillis,
             scope = music.scope,
         )
-    }
 
     fun toMusicStats(): ListeningStatistics.MusicStats {
         val localMonthYear = DateUtils.currentMonthYear()

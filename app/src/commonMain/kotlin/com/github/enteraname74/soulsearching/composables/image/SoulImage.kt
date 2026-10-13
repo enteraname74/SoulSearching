@@ -5,21 +5,32 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -40,6 +51,7 @@ import com.github.enteraname74.soulsearching.features.serialization.Serializatio
 import com.github.enteraname74.soulsearching.util.FileOperation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import kotlin.uuid.Uuid
@@ -136,6 +148,86 @@ fun InnerSoulImage(
                 onSuccess = onSuccess,
                 builderOptions = builderOptions,
             )
+        }
+        cover is Cover.Grid -> {
+            GridCover(
+                cover = cover,
+                modifier = modifier,
+                tint = tint,
+                contentScale = contentScale,
+                onSuccess = onSuccess,
+                builderOptions = builderOptions,
+            )
+        }
+    }
+}
+
+@Composable
+private fun GridCover(
+    cover: Cover.Grid,
+    modifier: Modifier,
+    tint: Color,
+    contentScale: ContentScale,
+    onSuccess: ((bitmap: ImageBitmap?) -> Unit)?,
+    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder,
+) {
+    val graphicsLayer = rememberGraphicsLayer()
+    val currentOnSuccess by rememberUpdatedState(onSuccess)
+    var successfulCells by remember(cover) { mutableIntStateOf(0) }
+    val successfulCellEvents = remember(cover) { Channel<Unit>(Channel.UNLIMITED) }
+
+    LaunchedEffect(successfulCellEvents) {
+        while (true) {
+            successfulCellEvents.receive()
+            withFrameNanos { }
+            currentOnSuccess?.invoke(graphicsLayer.toImageBitmap())
+        }
+    }
+
+    Column(
+        modifier = modifier.drawWithContent {
+            graphicsLayer.record {
+                this@drawWithContent.drawContent()
+            }
+            drawLayer(graphicsLayer)
+        }
+    ) {
+        repeat(2) { rowIndex ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+            ) {
+                repeat(2) { columnIndex ->
+                    val cellIndex = rowIndex * 2 + columnIndex
+                    val cellCover = cover.list[cellIndex]
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f),
+                    ) {
+                        InnerSoulImage(
+                            cover = cellCover,
+                            modifier = Modifier.fillMaxSize(),
+                            tint = tint,
+                            contentScale = contentScale,
+                            onSuccess = if (cellCover == null || cellCover.isEmpty()) {
+                                null
+                            } else {
+                                { bitmap ->
+                                    val cellMask = 1 shl cellIndex
+                                    if (bitmap != null && successfulCells and cellMask == 0) {
+                                        successfulCells = successfulCells or cellMask
+                                        successfulCellEvents.trySend(Unit)
+                                    }
+                                }
+                            },
+                            builderOptions = builderOptions,
+                        )
+                    }
+                }
+            }
         }
     }
 }

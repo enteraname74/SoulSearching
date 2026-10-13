@@ -13,7 +13,7 @@ interface CoverRepository {
 
     suspend fun isCoverUsed(coverId: Uuid): Boolean
 
-    suspend fun getCoverImageBitmap(cover: Cover): ImageBitmap?
+    suspend fun getCoverImageBitmap(cover: Cover.Simple): ImageBitmap?
 
-    suspend fun getAllUniqueCover(covers: List<Cover>): List<ByteArray>
+    suspend fun getAllUniqueCover(covers: List<Cover.Simple>): List<ByteArray>
 }
