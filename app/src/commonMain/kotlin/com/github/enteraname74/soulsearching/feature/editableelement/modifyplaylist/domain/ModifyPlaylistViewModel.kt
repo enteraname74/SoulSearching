@@ -154,7 +154,6 @@ class ModifyPlaylistViewModel(
             )
 
             loadingManager.stopLoading()
-
             _navigationState.value = ModifyPlaylistNavigationState.Back
         }
     }

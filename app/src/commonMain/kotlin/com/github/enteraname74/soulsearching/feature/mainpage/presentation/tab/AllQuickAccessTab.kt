@@ -11,6 +11,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
 import com.github.enteraname74.soulsearching.domain.model.ArtistPreview
+import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.domain.model.QuickAccessible
@@ -86,6 +87,18 @@ private fun QuickAccessible.ToPreview(
                 imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }
+            )
+        }
+
+        is CollectionPreview -> {
+            BigPreviewComposable(
+                modifier = modifier,
+                cover = cover,
+                title = name,
+                text = strings.musics(total = totalMusics),
+                imageSize = null,
+                onClick = { onClick(this) },
+                onLongClick = { onLongClick(this) },
             )
         }
 

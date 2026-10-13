@@ -44,7 +44,6 @@ class PlaylistBottomSheetViewModel(
     params: PlaylistBottomSheetDestination,
 ) : ViewModel() {
     private val playlistIds: List<Uuid> = params.playlistIds
-
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
     @Suppress("UNCHECKED_CAST")
@@ -96,6 +95,7 @@ class PlaylistBottomSheetViewModel(
         val hasUserMusics: Boolean = playlists.any { playlist ->
             playlist.musics.any { it.scope == Scope.User }
         }
+        val hasMusics: Boolean = playlists.any { it.musics.isNotEmpty() }
         val showDelete: Boolean = if (playlists.size == 1) {
             !playlists.first().playlist.isFavorite
         } else {
@@ -131,11 +131,13 @@ class PlaylistBottomSheetViewModel(
             add(BottomSheetRowSpec.addToPlaylist(::addToPlaylists))
         }
 
-        if (playedListScope?.isRemote != true) {
+        if (hasMusics && playedListScope?.isRemote != true) {
             add(BottomSheetRowSpec.playNext(::playNext))
         }
 
-        add(BottomSheetRowSpec.addToQueue(::addToQueue))
+        if (hasMusics) {
+            add(BottomSheetRowSpec.addToQueue(::addToQueue))
+        }
 
         if (hasValidCloudInformation && hasUserMusics && playedListScope?.isRemote != true) {
             add(BottomSheetRowSpec.startSharedPlayedList(::startSharedPlayedList))

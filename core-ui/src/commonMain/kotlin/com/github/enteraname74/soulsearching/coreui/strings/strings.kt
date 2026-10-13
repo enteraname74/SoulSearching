@@ -47,6 +47,7 @@ interface Strings {
     val favorite: String
     val playlists: String get() = "Playlists"
     val albums: String get() = "Albums"
+    val inThisCollection: String
     val folders: String
     val artists: String
     val byFolders: String
@@ -101,28 +102,36 @@ interface Strings {
     val removeFromQuickAccess: String
     val removeFromPlaylist: String
     val removeFromPlayedList: String
+    val removeFromCollection: String
     val addToQuickAccess: String
     val addToPlaylist: String
+    val addToCollection: String
 
     val create: String
     val cancel: String
     val delete: String
+    val remove: String
     val ok: String get() = "Ok"
 
     val soulMixInfoDialogTitle: String get() = "Soul Mix"
     val soulMixInfoDialogText: String
 
     val createPlaylistDialogTitle: String
+    val createCollectionDialogTitle: String
     val playlistName: String
+    val collectionName: String
+    val nameAlreadyExists: String
     val musicName: String
     val musicAlbumPosition: String
     val albumName: String
     val albumArtistName: String
     val artistName: String
     val playlistCover: String
+    val collectionCover: String
     val albumCover: String
     val artistCover: String
     val playlistInformation: String
+    val collectionInformation: String
     val musicInformation: String
     val musicPath: String
     val musicFileCover: String
@@ -137,6 +146,7 @@ interface Strings {
     val deleteMusicDialogText: String
     val deleteAlbumDialogTitle: String
     val deletePlaylistDialogTitle: String
+    val deleteCollectionDialogTitle: String
     val deleteArtistDialogTitle: String
 
     val deleteSelectedMusicsDialogTitle: String
@@ -152,19 +162,26 @@ interface Strings {
     val deleteSelectedAlbumsDialogTitle: String
     val deleteSelectedArtistsDialogTitle: String
     val deleteSelectedPlaylistsDialogTitle: String
+    val deleteSelectedCollectionsDialogTitle: String
 
     val removeMusicFromPlaylistTitle: String
     val removeMusicFromPlaylistText: String
     val removeSelectedMusicFromPlaylistTitle: String
     val removeSelectedMusicFromPlaylistText: String
+    val removeArtistFromCollectionTitle: String
+    val removeArtistFromCollectionText: String
+    val removeAlbumFromCollectionTitle: String
+    val removeAlbumFromCollectionText: String
 
     val modifyAlbum: String
     val modifyArtist: String
     val modifyMusic: String
     val modifyPlaylist: String
+    val modifyCollection: String
     val coversOfTheAlbum: String
     val coversOfTheArtist: String
     val coversOfThePlaylist: String
+    val coversOfTheCollection: String
     val coversOfSongAlbum: String
     val noAvailableCovers: String
 
@@ -172,9 +189,11 @@ interface Strings {
     val deleteArtist: String
     val deleteMusic: String
     val deletePlaylist: String
+    val deleteCollection: String
     val deleteSelectedAlbums: String
     val deleteSelectedArtists: String
     val deleteSelectedPlaylists: String
+    val deleteSelectedCollections: String
     val deleteSelectedMusics: String
     val deleteFolderMusics: String
     val deleteSelectedFoldersMusics: String
@@ -197,6 +216,7 @@ interface Strings {
     val reloadCoversText: String
     val reloadMusicsCovers: String
     val deletePlaylistsCovers: String
+    val deleteCollectionsCovers: String
     val reloadAlbumsCovers: String
     val reloadArtistsCovers: String
 
@@ -273,6 +293,8 @@ interface Strings {
     val mainPageText: String
     val showQuickAccess: String
     val showPlaylists: String
+    val showCollections: String
+    val collections: String
     val showAlbums: String
     val showArtists: String
     val manageMusicsViewText: String
@@ -331,10 +353,12 @@ interface Strings {
     val albumDoesNotExists: String
     val artistDoesNotExists: String
     val playlistDoesNotExists: String
+    val collectionDoesNotExists: String
     val folderDoesNotExists: String
     val monthPlaylistDoesNotExists: String
 
     val playlistDetailTitle: String get() = "Playlist"
+    val collectionDetailTitle: String get() = "Collection"
     val artistDetailTitle: String
     val albumDetailTitle: String get() = "Album"
     val monthDetailTitle: String

@@ -73,6 +73,8 @@ interface MusicLocalDataSource {
 
     fun getAllPagedByNameAscOfArtist(artistId: Uuid): Flow<PagingData<Music>>
 
+    fun getAllPagedOfCollection(collectionId: Uuid): Flow<PagingData<Music>>
+
     /**
      * Retrieves all musics of an Album.
      */
@@ -87,6 +89,11 @@ interface MusicLocalDataSource {
 
     fun searchFromPlaylist(
         playlistId: Uuid,
+        search: String,
+    ): Flow<List<Music>>
+
+    fun searchFromCollection(
+        collectionId: Uuid,
         search: String,
     ): Flow<List<Music>>
 
@@ -120,6 +127,8 @@ interface MusicLocalDataSource {
 
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music>
 
+    suspend fun getAllMusicsFromCollection(collectionId: Uuid): List<Music>
+
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid, page: Int, pageSize: Int): List<Music>
 
     suspend fun getAllMusicFromMonth(month: String): List<Music>
@@ -131,6 +140,7 @@ interface MusicLocalDataSource {
     fun getAlbumDuration(albumId: Uuid): Flow<Duration>
     fun getArtistDuration(artistId: Uuid): Flow<Duration>
     fun getPlaylistDuration(playlistId: Uuid): Flow<Duration>
+    fun getCollectionDuration(collectionId: Uuid): Flow<Duration>
     fun getMonthMusicsDuration(month: String): Flow<Duration>
     fun getFolderMusicsDuration(folder: String): Flow<Duration>
 

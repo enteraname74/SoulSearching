@@ -7,10 +7,11 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
 import com.github.enteraname74.soulsearching.domain.model.ArtistPreview
+import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
-import com.github.enteraname74.soulsearching.domain.model.SoulPlatform
 import com.github.enteraname74.soulsearching.domain.model.Playlist
+import com.github.enteraname74.soulsearching.domain.model.SoulPlatform
 import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.domain.model.QuickAccessible
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
@@ -18,6 +19,7 @@ import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearching
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.CloudBackgroundSyncJob
+import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.folder.CommonFolderUseCase
@@ -31,6 +33,7 @@ import com.github.enteraname74.soulsearching.domain.usecase.user.CommonUserUseCa
 import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
+import com.github.enteraname74.soulsearching.composables.dialog.CreateCollectionDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
@@ -40,6 +43,7 @@ import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewRel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllCollectionsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicFoldersState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
@@ -50,6 +54,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.Searc
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.GitHubReleaseBottomSheet
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SoulMixDialog
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allAlbumsTab
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allCollectionsTab
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allArtistsTab
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allMusicFoldersTab
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allMusicsTab
@@ -111,6 +116,7 @@ class MainPageViewModel(
     private val commonArtistUseCase: CommonArtistUseCase by inject()
     private val commonCoverUseCase: CommonCoverUseCase by inject()
     private val commonPlaylistUseCase: CommonPlaylistUseCase by inject()
+    private val commonCollectionUseCase: CommonCollectionUseCase by inject()
     private val commonFolderUseCase: CommonFolderUseCase by inject()
     private val commonReleaseUseCase: CommonReleaseUseCase by inject()
     private val shouldInformOfNewReleaseUseCase: ShouldInformOfNewReleaseUseCase by inject()
@@ -173,6 +179,11 @@ class MainPageViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _playlists = commonPlaylistUseCase
+        .getAllPaged()
+        .cachedIn(viewModelScope)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _collections = commonCollectionUseCase
         .getAllPaged()
         .cachedIn(viewModelScope)
 
@@ -278,7 +289,20 @@ class MainPageViewModel(
         }.stateIn(
             scope = viewModelScope.plus(workDispatcher.dispatcher),
             started = SharingStarted.Lazily,
-            initialValue = AllPlaylistsState()
+            initialValue = AllPlaylistsState(),
+        )
+
+    val allCollectionsState: StateFlow<AllCollectionsState> =
+        collectionSortingInformation.map { sortingInformation ->
+            AllCollectionsState(
+                collections = _collections,
+                sortType = sortingInformation.type,
+                sortDirection = sortingInformation.direction,
+            )
+        }.stateIn(
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
+            started = SharingStarted.Lazily,
+            initialValue = AllCollectionsState(),
         )
 
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
@@ -413,12 +437,26 @@ class MainPageViewModel(
                 if (playlistName.isNotBlank()) {
                     viewModelScope.launch {
                         commonPlaylistUseCase.upsert(
-                            playlist = Playlist(name = playlistName)
+                            playlist = Playlist(name = playlistName.trim())
                         )
                     }
                 }
                 _dialogState.value = null
             }
+        )
+    }
+
+    fun showCreateCollectionDialog() {
+        _dialogState.value = CreateCollectionDialog(
+            onDismiss = { _dialogState.value = null },
+            onConfirm = { collectionName ->
+                if (collectionName.isNotBlank()) {
+                    viewModelScope.launch {
+                        commonCollectionUseCase.create(collectionName)
+                    }
+                }
+                _dialogState.value = null
+            },
         )
     }
 
@@ -439,6 +477,10 @@ class MainPageViewModel(
                     MusicListDetailId.Artist(quickAccessible.id),
                 )
 
+                is CollectionPreview -> MainPageNavigationState.ToMusicListDetail(
+                    MusicListDetailId.Collection(quickAccessible.id),
+                )
+
                 is Music -> MainPageNavigationState.Idle
                 is PlaylistPreview -> MainPageNavigationState.ToMusicListDetail(
                     MusicListDetailId.Playlist(quickAccessible.id),
@@ -456,6 +498,10 @@ class MainPageViewModel(
 
                 is ArtistPreview -> showArtistBottomSheet(
                     artistIds = listOf(quickAccessible.id),
+                )
+
+                is CollectionPreview -> showCollectionBottomSheet(
+                    collectionIds = listOf(quickAccessible.id),
                 )
 
                 is Music -> showMusicBottomSheet(
@@ -490,6 +536,19 @@ class MainPageViewModel(
                                 )
                             )
                         }
+                    )
+                )
+
+                ElementEnum.COLLECTIONS -> add(
+                    allCollectionsTab(
+                        mainPageViewModel = this@MainPageViewModel,
+                        navigateToCollection = { id ->
+                            navigateAndClearSelection(
+                                MainPageNavigationState.ToMusicListDetail(
+                                    MusicListDetailId.Collection(id),
+                                )
+                            )
+                        },
                     )
                 )
 
@@ -634,6 +693,12 @@ class MainPageViewModel(
     fun showPlaylistBottomSheet(playlistIds: List<Uuid>) {
         _navigationState.value = MainPageNavigationState.ToPlaylistBottomSheet(
             playlistIds = playlistIds,
+        )
+    }
+
+    fun showCollectionBottomSheet(collectionIds: List<Uuid>) {
+        _navigationState.value = MainPageNavigationState.ToCollectionBottomSheet(
+            collectionIds = collectionIds,
         )
     }
 

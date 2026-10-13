@@ -35,21 +35,25 @@ class ViewSettingsManager(
     }
 
     val visibleElements: Flow<ElementsVisibility> = combine(
-        settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN),
-        settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.IS_PLAYLISTS_SHOWN),
-        settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.IS_ALBUMS_SHOWN),
-        settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.IS_ARTISTS_SHOWN),
-        settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_FOLDERS_SHOWN),
-    ) { isQuickAccessShown, arePlaylistsShown, areAlbumsShown, areArtistsShown, areMusicFoldersShown ->
+        listOf(
+            settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN),
+            settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.IS_PLAYLISTS_SHOWN),
+            settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.ARE_COLLECTIONS_SHOWN),
+            settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.IS_ALBUMS_SHOWN),
+            settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.IS_ARTISTS_SHOWN),
+            settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_FOLDERS_SHOWN),
+        )
+    ) { values ->
         ElementsVisibility(
-            isQuickAccessShown = isQuickAccessShown,
-            arePlaylistsShown = arePlaylistsShown,
-            areAlbumsShown = areAlbumsShown,
-            areArtistsShown = areArtistsShown,
+            isQuickAccessShown = values[0],
+            arePlaylistsShown = values[1],
+            areCollectionsShown = values[2],
+            areAlbumsShown = values[3],
+            areArtistsShown = values[4],
             areMusicFoldersShown = if (SoulPlatformUtils.platform == SoulPlatform.Web) {
                 false
             } else {
-                areMusicFoldersShown
+                values[5]
             },
         )
     }
@@ -59,6 +63,7 @@ class ViewSettingsManager(
             ElementsVisibility(
                 isQuickAccessShown = get(SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN),
                 arePlaylistsShown = get(SoulSearchingSettingsKeys.MainPage.IS_PLAYLISTS_SHOWN),
+                areCollectionsShown = get(SoulSearchingSettingsKeys.MainPage.ARE_COLLECTIONS_SHOWN),
                 areAlbumsShown = get(SoulSearchingSettingsKeys.MainPage.IS_ALBUMS_SHOWN),
                 areArtistsShown = get(SoulSearchingSettingsKeys.MainPage.IS_ARTISTS_SHOWN),
                 areMusicFoldersShown = get(SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_FOLDERS_SHOWN)

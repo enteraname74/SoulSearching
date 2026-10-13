@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_folder
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_folder_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_library_music
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_person
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_person_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_queue_music
@@ -18,6 +19,7 @@ fun ElementEnum.filledIcon(): DrawableResource =
     when (this) {
         ElementEnum.QUICK_ACCESS -> CoreRes.drawable.ic_quick_access_filled
         ElementEnum.PLAYLISTS -> CoreRes.drawable.ic_queue_music
+        ElementEnum.COLLECTIONS -> CoreRes.drawable.ic_library_music
         ElementEnum.ALBUMS -> CoreRes.drawable.ic_album_filled
         ElementEnum.ARTISTS -> CoreRes.drawable.ic_person_filled
         ElementEnum.MUSICS -> CoreRes.drawable.ic_music_note_filled
@@ -29,6 +31,7 @@ fun ElementEnum.outlinedIcon(): DrawableResource =
     when (this) {
         ElementEnum.QUICK_ACCESS -> CoreRes.drawable.ic_quick_access_filled
         ElementEnum.PLAYLISTS -> CoreRes.drawable.ic_queue_music
+        ElementEnum.COLLECTIONS -> CoreRes.drawable.ic_library_music
         ElementEnum.ALBUMS -> CoreRes.drawable.ic_album
         ElementEnum.ARTISTS -> CoreRes.drawable.ic_person
         ElementEnum.MUSICS -> CoreRes.drawable.ic_music_note_filled
@@ -39,6 +42,7 @@ fun ElementEnum.text(): String =
     when (this) {
         ElementEnum.QUICK_ACCESS -> strings.quickAccess
         ElementEnum.PLAYLISTS -> strings.playlists
+        ElementEnum.COLLECTIONS -> strings.collections
         ElementEnum.ALBUMS -> strings.albums
         ElementEnum.ARTISTS -> strings.artists
         ElementEnum.MUSICS -> strings.musics

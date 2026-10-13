@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.domain.model.statistics
 
 import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
 import com.github.enteraname74.soulsearching.domain.model.ArtistPreview
+import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
 import com.github.enteraname74.soulsearching.domain.model.LocalMonthYear
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
@@ -15,6 +16,33 @@ sealed interface ListeningStatistics {
     val lastUpdatedMillis: Long
 
     fun increment(): ListeningStatistics
+
+    data class CollectionStats(
+        val collection: CollectionPreview,
+        override val id: String,
+        override val nbPlayed: Int,
+        override val localMonthYear: LocalMonthYear,
+        override val lastUpdatedMillis: Long,
+    ) : ListeningStatistics {
+        override fun increment(): ListeningStatistics = copy(
+            nbPlayed = nbPlayed + 1,
+            lastUpdatedMillis = DateUtils.now(),
+        )
+
+        companion object {
+            fun new(collection: CollectionPreview): CollectionStats {
+                val localMonthYear = DateUtils.currentMonthYear()
+
+                return CollectionStats(
+                    collection = collection,
+                    id = "$localMonthYear-${collection.id}",
+                    nbPlayed = 0,
+                    localMonthYear = localMonthYear,
+                    lastUpdatedMillis = DateUtils.now(),
+                )
+            }
+        }
+    }
 
     data class PlaylistStats(
         val playlist: PlaylistPreview,

@@ -97,7 +97,7 @@ fun <T : Any> MainPageListPaged(
     isUsingSort: Boolean = true,
     key: ((T?) -> Any?)?,
     contentType: Any,
-    emptyTitle: String,
+    emptyTitle: String?,
     emptyDescription: String,
     item: @Composable LazyGridItemScope.(element: T) -> Unit,
 ) {
@@ -137,7 +137,7 @@ fun <T : Any> MainPageListPaged(
                         item(it)
                     }
                 }
-            } else {
+            } else if (emptyTitle != null) {
                 item(
                     span = { GridItemSpan(maxLineSpan) }
                 ) {

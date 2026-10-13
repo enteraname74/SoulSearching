@@ -31,4 +31,9 @@ sealed interface MusicListDetailId {
     data class Playlist(val playlistId: Uuid) : MusicListDetailId {
         override val id: String = playlistId.toString()
     }
+
+    @Serializable
+    data class Collection(val collectionId: Uuid) : MusicListDetailId {
+        override val id: String = collectionId.toString()
+    }
 }

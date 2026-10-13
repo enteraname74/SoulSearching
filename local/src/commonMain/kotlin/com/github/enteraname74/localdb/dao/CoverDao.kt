@@ -13,6 +13,7 @@ interface CoverDao {
                 OR EXISTS (SELECT 1 FROM RoomAlbum WHERE coverId = :coverId)
                 OR EXISTS (SELECT 1 FROM RoomPlaylist WHERE coverId = :coverId)
                 OR EXISTS (SELECT 1 FROM RoomArtist WHERE coverId = :coverId)
+                OR EXISTS (SELECT 1 FROM RoomCollection WHERE coverId = :coverId)
         """
     )
     suspend fun isCoverUsed(coverId: Uuid): Boolean

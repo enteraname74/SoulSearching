@@ -17,6 +17,8 @@ import androidx.savedstate.serialization.SavedStateConfiguration
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetNavScope
+import com.github.enteraname74.soulsearching.composables.bottomsheets.collection.add.AddToCollectionBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.collection.add.AddToCollectionBottomSheetNavScope
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -35,6 +37,7 @@ import kotlin.uuid.Uuid
 @Serializable
 data class ArtistBottomSheetDestination(
     val artistIds: List<Uuid>,
+    val collectionId: Uuid? = null,
 ) : BottomSheetDestination {
     companion object {
         fun register(
@@ -45,7 +48,7 @@ data class ArtistBottomSheetDestination(
                 metadata = BottomSheetSceneStrategy.bottomSheet()
             ) { params ->
                 NavHost(
-                    initialRoute = InnerArtistDestination(params.artistIds),
+                    initialRoute = InnerArtistDestination(params.artistIds, params.collectionId),
                     parentNavigator = navigator,
                 )
             }
@@ -56,6 +59,7 @@ data class ArtistBottomSheetDestination(
 @Serializable
 data class InnerArtistDestination(
     val artistIds: List<Uuid>,
+    val collectionId: Uuid?,
 ) : NavKey {
     companion object {
         fun register(
@@ -64,7 +68,7 @@ data class InnerArtistDestination(
         ) {
             entryProviderScope.entry<InnerArtistDestination> { params ->
                 val viewModel: ArtistBottomSheetViewModel = koinViewModel {
-                    parametersOf(navScope, ArtistBottomSheetDestination(params.artistIds))
+                    parametersOf(navScope, ArtistBottomSheetDestination(params.artistIds, params.collectionId))
                 }
                 ArtistBottomSheetScreen(
                     viewModel = viewModel,
@@ -130,6 +134,9 @@ private fun NavHost(
                             )
                         )
                     }
+                    override val toAddToCollections: (List<Uuid>) -> Unit = { ids ->
+                        navigator.push(AddToCollectionBottomSheetDestination(artistIds = ids))
+                    }
                 }
             )
             AddToPlaylistBottomSheetDestination.register(
@@ -143,6 +150,13 @@ private fun NavHost(
                     }
                 }
             )
+            AddToCollectionBottomSheetDestination.register(
+                entryProviderScope = this,
+                navScope = object : AddToCollectionBottomSheetNavScope {
+                    override val onSave: () -> Unit = { closeWithAnim { } }
+                    override val navigateBack: () -> Unit = { navigator.pop() }
+                },
+            )
         }
     )
 }
@@ -151,5 +165,6 @@ private val SerializerModule = SerializersModule {
     polymorphic(NavKey::class) {
         subclass(InnerArtistDestination::class, InnerArtistDestination.serializer())
         subclass(AddToPlaylistBottomSheetDestination::class, AddToPlaylistBottomSheetDestination.serializer())
+        subclass(AddToCollectionBottomSheetDestination::class, AddToCollectionBottomSheetDestination.serializer())
     }
 }

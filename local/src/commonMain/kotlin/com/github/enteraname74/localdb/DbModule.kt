@@ -4,6 +4,7 @@ import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.localdb.datasourceimpl.RoomAlbumDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomArtistDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomCloudPreferencesDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomCollectionLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomCoverLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomDeviceLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomFolderDataSourceImpl
@@ -21,9 +22,11 @@ import com.github.enteraname74.localdb.migration.Migration17To18
 import com.github.enteraname74.localdb.migration.Migration18To19
 import com.github.enteraname74.localdb.migration.Migration19To20
 import com.github.enteraname74.localdb.migration.Migration20To21
+import com.github.enteraname74.localdb.migration.Migration21To22
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.collection.CollectionLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DeviceLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.FolderDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.MusicArtistDataSource
@@ -60,6 +63,7 @@ private fun Scope.getAppDatabase(
             ),
             Migration19To20,
             Migration20To21,
+            Migration21To22,
         )
         .addCallback(
             EndMigrationCallback(
@@ -82,6 +86,7 @@ val localModule: Module = module {
 
     singleOf(::RoomAlbumDataSourceImpl) bind AlbumDataSource::class
     singleOf(::RoomArtistDataSourceImpl) bind ArtistDataSource::class
+    singleOf(::RoomCollectionLocalDataSourceImpl) bind CollectionLocalDataSource::class
     singleOf(::RoomFolderDataSourceImpl) bind FolderDataSource::class
     singleOf(::RoomMusicArtistDataSourceImpl) bind MusicArtistDataSource::class
     singleOf(::RoomMusicLocalDataSourceImpl) bind MusicLocalDataSource::class

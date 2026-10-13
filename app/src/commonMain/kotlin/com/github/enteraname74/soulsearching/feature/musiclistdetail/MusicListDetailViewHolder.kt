@@ -6,25 +6,31 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
 import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
 import com.github.enteraname74.soulsearching.domain.model.player.PlayedListToContinue
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementAlbumNbPlayedUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementArtistNbPlayedUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementCollectionNbPlayedUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementPlaylistNbPlayedUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.CachedPlayedListUiSpec
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.addtoplaylist.AddToPlaylistDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistDestination
+import com.github.enteraname74.soulsearching.feature.editableelement.modifycollection.presentation.ModifyCollectionDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistDestination
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
@@ -54,6 +60,7 @@ class MusicListDetailViewHolder(
     private val commonArtistUseCase: CommonArtistUseCase,
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
+    private val commonCollectionUseCase: CommonCollectionUseCase,
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
     private val multiSelectionManager: MultiSelectionManager,
@@ -64,6 +71,7 @@ class MusicListDetailViewHolder(
     private val incrementAlbumNbPlayedUseCase: IncrementAlbumNbPlayedUseCase,
     private val incrementPlaylistNbPlayedUseCase: IncrementPlaylistNbPlayedUseCase,
     private val incrementArtistNbPlayedUseCase: IncrementArtistNbPlayedUseCase,
+    private val incrementCollectionNbPlayedUseCase: IncrementCollectionNbPlayedUseCase,
 ) : SoulViewModelHolderV2<MusicListDetailNavScope, MusicListDetailState>() {
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
         .stateIn(
@@ -98,6 +106,7 @@ class MusicListDetailViewHolder(
                 is MusicListDetailId.Folder -> folderFlow(detailId)
                 is MusicListDetailId.Month -> monthFlow(detailId)
                 is MusicListDetailId.Playlist -> playlistFlow(detailId)
+                is MusicListDetailId.Collection -> collectionFlow(detailId)
             }.collectLatest { state ->
                 updateState { state }
             }
@@ -183,7 +192,7 @@ class MusicListDetailViewHolder(
         detailId: MusicListDetailId.Artist,
     ): Flow<MusicListDetailState> =
         combine(
-            commonAlbumUseCase.getAlbumsWithMusicsOfArtist(artistId = detailId.artistId),
+            commonAlbumUseCase.getAlbumPreviewsOfArtist(artistId = detailId.artistId),
             commonArtistUseCase.getArtistPreview(artistId = detailId.artistId),
             commonMusicUseCase.getArtistDuration(detailId.artistId),
             searchResult,
@@ -281,6 +290,82 @@ class MusicListDetailViewHolder(
                             toDestination(AddToPlaylistDestination(detailId.playlistId))
                         }
                     }
+                )
+            }
+        }
+
+    private fun collectionFlow(
+        detailId: MusicListDetailId.Collection,
+    ): Flow<MusicListDetailState> =
+        combine(
+            commonMusicUseCase.getCollectionDuration(detailId.collectionId),
+            commonCollectionUseCase.getCollectionPreview(detailId.collectionId),
+            commonCollectionUseCase.getElements(detailId.collectionId),
+            searchResult,
+            playbackManager.getCachedPlaylist(detailId.collectionId.toString()),
+        ) { duration, collectionPreview, elements, searchMusics, cachedPlaylist ->
+            when {
+                collectionPreview == null -> MusicListDetailState.Error(
+                    error = strings.collectionDoesNotExists,
+                    navigateBack = { navigate { navigateBack() } },
+                )
+                else -> MusicListDetailState.Data(
+                    cachedPlayedListUiSpec = cachedPlaylist?.toUiSpec(),
+                    type = strings.collectionDetailTitle,
+                    title = collectionPreview.name,
+                    subTitle = strings.musics(collectionPreview.totalMusics),
+                    cover = collectionPreview.cover,
+                    musics = musics,
+                    duration = duration,
+                    searchMusics = searchMusics,
+                    optionalContent = elements.takeIf { it.isNotEmpty() }?.let {
+                        MusicListDetailState.Data.OptionalContent.CollectionElements(
+                            elements = it,
+                            onClick = { element ->
+                                navigate {
+                                    toDestination(
+                                        MusicListDetailDestination(
+                                            when (element) {
+                                                is CollectionElementPreview.Album -> MusicListDetailId.Album(element.id)
+                                                is CollectionElementPreview.Artist -> MusicListDetailId.Artist(element.id)
+                                            }
+                                        )
+                                    )
+                                }
+                            },
+                            onLongClick = { element ->
+                                navigate {
+                                    toDestination(
+                                        when (element) {
+                                            is CollectionElementPreview.Album -> AlbumBottomSheetDestination(
+                                                albumIds = listOf(element.id),
+                                                collectionId = detailId.collectionId,
+                                            )
+                                            is CollectionElementPreview.Artist -> ArtistBottomSheetDestination(
+                                                artistIds = listOf(element.id),
+                                                collectionId = detailId.collectionId,
+                                            )
+                                        }
+                                    )
+                                }
+                            },
+                        )
+                    },
+                    musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
+                    navigateBack = { navigate { navigateBack() } },
+                    onSubtitleClicked = null,
+                    onCloseSelection = ::onCloseSelection,
+                    onLongClickOnMusic = ::onLongClickOnMusic,
+                    onSearch = ::onSearch,
+                    showMusicBottomSheet = ::showMusicBottomSheet,
+                    onPlay = ::onPlay,
+                    onShuffle = ::onShuffle,
+                    onEdit = {
+                        navigate {
+                            toDestination(ModifyCollectionDestination(detailId.collectionId))
+                        }
+                    },
+                    onCoverLoaded = ::onCoverLoaded,
                 )
             }
         }
@@ -454,6 +539,7 @@ class MusicListDetailViewHolder(
                 // no-op
             }
             is MusicListDetailId.Playlist -> incrementPlaylistNbPlayedUseCase(detailId.playlistId)
+            is MusicListDetailId.Collection -> incrementCollectionNbPlayedUseCase(detailId.collectionId)
         }
     }
 

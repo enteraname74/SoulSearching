@@ -22,7 +22,6 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 
-
 class CreatePlaylistDialog(
     private val onConfirm: (playlistName: String) -> Unit,
     private val onDismiss: () -> Unit,

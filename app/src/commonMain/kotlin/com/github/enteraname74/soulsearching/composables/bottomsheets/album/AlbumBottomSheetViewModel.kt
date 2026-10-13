@@ -12,10 +12,12 @@ import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearching
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteAlbumDialog
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiAlbumDialog
+import com.github.enteraname74.soulsearching.composables.dialog.RemoveFromCollectionDialog
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
@@ -36,6 +38,7 @@ import kotlin.uuid.Uuid
 class AlbumBottomSheetViewModel(
     private val commonAlbumUseCase: CommonAlbumUseCase,
     private val deleteAlbumUseCase: DeleteAlbumUseCase,
+    private val commonCollectionUseCase: CommonCollectionUseCase,
     private val playbackManager: PlaybackManager,
     private val multiSelectionManager: MultiSelectionManager,
     private val loadingManager: LoadingManager,
@@ -46,6 +49,7 @@ class AlbumBottomSheetViewModel(
     params: AlbumBottomSheetDestination,
 ) : ViewModel() {
     private val albumIds: List<Uuid> = params.albumIds
+    private val collectionId: Uuid? = params.collectionId
 
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
@@ -57,6 +61,7 @@ class AlbumBottomSheetViewModel(
         settings.getFlowOn(
             settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
         ),
+        settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.ARE_COLLECTIONS_SHOWN),
         hasValidCloudInformationUseCase(),
         playbackManager.currentScope,
     ) { data ->
@@ -64,8 +69,9 @@ class AlbumBottomSheetViewModel(
         val playedList = data[1] as List<Music>
         val dialogState = data[2] as SoulDialog?
         val isQuickAccessShown = data[3] as Boolean
-        val hasValidCloudInformation = data[4] as Boolean
-        val playedListScope = data[5] as PlayedListScope?
+        val areCollectionsShown = data[4] as Boolean
+        val hasValidCloudInformation = data[5] as Boolean
+        val playedListScope = data[6] as PlayedListScope?
 
         AlbumBottomSheetState(
             albums = albums,
@@ -73,6 +79,7 @@ class AlbumBottomSheetViewModel(
             rowSpecs = buildRowSpecs(
                 albums = albums,
                 isQuickAccessShown = isQuickAccessShown,
+                areCollectionsShown = areCollectionsShown,
                 hasValidCloudInformation = hasValidCloudInformation,
                 playedList = playedList,
                 playedListScope = playedListScope,
@@ -89,6 +96,7 @@ class AlbumBottomSheetViewModel(
         albums: List<AlbumWithMusics>,
         playedList: List<Music>,
         isQuickAccessShown: Boolean,
+        areCollectionsShown: Boolean,
         hasValidCloudInformation: Boolean,
         playedListScope: PlayedListScope?,
     ): List<BottomSheetRowSpec> = buildList {
@@ -128,6 +136,10 @@ class AlbumBottomSheetViewModel(
             add(BottomSheetRowSpec.addToPlaylist(::addToPlaylists))
         }
 
+        if (areCollectionsShown && hasUserMusics) {
+            add(BottomSheetRowSpec.addToCollection(::addToCollections))
+        }
+
         if (playedListScope?.isRemote != true) {
             add(BottomSheetRowSpec.playNext(::playNext))
         }
@@ -141,6 +153,16 @@ class AlbumBottomSheetViewModel(
         if (playedList.isNotEmpty()) {
             add(
                 BottomSheetRowSpec.removeFromPlayedList(::removeFromPlayedList),
+            )
+        }
+
+        if (collectionId != null && albums.size == 1) {
+            add(
+                BottomSheetRowSpec(
+                    icon = CoreRes.drawable.ic_delete_filled,
+                    title = strings.removeFromCollection,
+                    onClick = ::showRemoveFromCollectionDialog,
+                )
             )
         }
 
@@ -193,6 +215,32 @@ class AlbumBottomSheetViewModel(
                 onDelete = ::deleteAlbums,
                 onClose = { dialogState.value = null },
             )
+        }
+    }
+
+    private fun showRemoveFromCollectionDialog() {
+        dialogState.value = RemoveFromCollectionDialog(
+            title = strings.removeAlbumFromCollectionTitle,
+            text = strings.removeAlbumFromCollectionText,
+            onConfirm = ::removeFromCollection,
+            onClose = { dialogState.value = null },
+        )
+    }
+
+    private fun removeFromCollection() {
+        val collectionId = collectionId ?: return
+        val albumId = albumIds.firstOrNull() ?: return
+        viewModelScope.launch {
+            loadingManager.startLoading()
+            val result = commonCollectionUseCase.removeAlbum(collectionId, albumId)
+            loadingManager.stopLoading()
+            if (result.isError()) {
+                feedbackPopUpManager.showErrorIfAny(result)
+            } else {
+                dialogState.value = null
+                multiSelectionManager.clearMultiSelection()
+                navScope.navigateBack()
+            }
         }
     }
 
@@ -269,6 +317,10 @@ class AlbumBottomSheetViewModel(
                 .map { it.musicId }
 
         navScope.toAddToPlaylists(musicIds)
+    }
+
+    private fun addToCollections() {
+        navScope.toAddToCollections(albumIds)
     }
 
     private fun removeFromPlayedList() {

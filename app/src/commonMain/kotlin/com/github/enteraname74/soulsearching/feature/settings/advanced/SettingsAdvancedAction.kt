@@ -5,6 +5,7 @@ sealed interface SettingsAdvancedAction {
     data object ToArtistCoverMethod: SettingsAdvancedAction
     data object ToggleMusicsCover: SettingsAdvancedAction
     data object TogglePlaylistsCovers: SettingsAdvancedAction
+    data object ToggleCollectionsCovers: SettingsAdvancedAction
     data object ToggleAlbumsCovers: SettingsAdvancedAction
     data object ToggleArtistsCovers: SettingsAdvancedAction
     data object ToggleLyricsPermission: SettingsAdvancedAction

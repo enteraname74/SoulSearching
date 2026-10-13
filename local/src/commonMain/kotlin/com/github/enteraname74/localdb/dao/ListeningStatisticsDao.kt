@@ -85,6 +85,22 @@ abstract class ListeningStatisticsDao {
     @Transaction
     @Query(
         """
+            SELECT * FROM RoomListeningStatistics
+            WHERE collectionId = :collectionId
+            AND month = :month
+            AND year = :year
+            LIMIT 1
+        """
+    )
+    abstract suspend fun getCollectionStatistics(
+        collectionId: Uuid,
+        month: Int,
+        year: Int,
+    ): RoomCompleteListeningStatistics?
+
+    @Transaction
+    @Query(
+        """
             SELECT * FROM RoomListeningStatistics 
             WHERE musicId IS NOT NULL 
             AND month IN (:months) 
@@ -215,7 +231,7 @@ abstract class ListeningStatisticsDao {
             SELECT s.* FROM RoomListeningStatistics s 
             CROSS JOIN RoomCloudPreferences cp
             WHERE cp.lastStatisticsSyncMillis IS NULL
-               OR s.lastUpdatedMillis > cp.lastStatisticsSyncMillis 
+               OR s.lastUpdatedMillis > cp.lastStatisticsSyncMillis
         """
     )
     abstract suspend fun getAllToSendToCloud(): List<RoomCompleteListeningStatistics>
@@ -232,7 +248,8 @@ abstract class ListeningStatisticsDao {
         musicId,
         playlistId,
         albumId,
-        artistId
+        artistId,
+        collectionId
     )
     VALUES (
         :id,
@@ -244,7 +261,8 @@ abstract class ListeningStatisticsDao {
         :musicId,
         :playlistId,
         :albumId,
-        :artistId
+        :artistId,
+        :collectionId
     )
     ON CONFLICT(id) DO UPDATE SET
         lastUpdatedMillis = MAX(
@@ -275,6 +293,7 @@ abstract class ListeningStatisticsDao {
         playlistId: Uuid?,
         albumId: Uuid?,
         artistId: Uuid?,
+        collectionId: Uuid?,
     )
 
     private suspend fun upsertLight(
@@ -292,6 +311,7 @@ abstract class ListeningStatisticsDao {
                 playlistId = playlistId,
                 albumId = albumId,
                 artistId = artistId,
+                collectionId = collectionId,
             )
         }
     }

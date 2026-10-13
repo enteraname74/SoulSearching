@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.repository.di
 import com.github.enteraname74.soulsearching.domain.repository.AlbumRepository
 import com.github.enteraname74.soulsearching.domain.repository.ArtistRepository
 import com.github.enteraname74.soulsearching.domain.repository.CloudPreferencesRepository
+import com.github.enteraname74.soulsearching.domain.repository.CollectionRepository
 import com.github.enteraname74.soulsearching.domain.repository.CoverRepository
 import com.github.enteraname74.soulsearching.domain.repository.FolderRepository
 import com.github.enteraname74.soulsearching.domain.repository.ListeningStatisticsRepository
@@ -20,6 +21,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.lyrics.Lyrics
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.AlbumRepositoryImpl
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.ArtistRepositoryImpl
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.CloudPreferencesRepositoryImpl
+import com.github.enteraname74.soulsearching.repository.repositoryimpl.CollectionRepositoryImpl
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.CoverRepositoryImpl
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.FolderRepositoryImpl
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.ListeningStatisticsRepositoryImpl
@@ -40,6 +42,7 @@ import org.koin.dsl.module
 val repositoryModule: Module = module {
     singleOf(::AlbumRepositoryImpl) bind AlbumRepository::class
     singleOf(::ArtistRepositoryImpl) bind ArtistRepository::class
+    singleOf(::CollectionRepositoryImpl) bind CollectionRepository::class
     singleOf(::FolderRepositoryImpl) bind FolderRepository::class
     singleOf(::CoverRepositoryImpl) bind CoverRepository::class
     singleOf(::LyricsRepositoryImpl) bind LyricsRepository::class

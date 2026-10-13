@@ -54,6 +54,7 @@ class ListeningStatisticsRepositoryImpl(
                     cloudData.albumId != null -> albumRemoteToLocalIds[cloudData.albumId]
                     cloudData.artistId != null -> artistRemoteToLocalIds[cloudData.artistId]
                     cloudData.playlistId != null -> playlistRemoteToLocalIds[cloudData.playlistId]
+                    cloudData.collectionId != null -> null
                     else -> null
                 }
 
@@ -70,6 +71,7 @@ class ListeningStatisticsRepositoryImpl(
                         playlistId = playlistRemoteToLocalIds.get(cloudData.playlistId),
                         albumId = albumRemoteToLocalIds.get(cloudData.albumId),
                         artistId = artistRemoteToLocalIds.get(cloudData.artistId),
+                        collectionId = null,
                     )
                 }
             }
@@ -89,7 +91,7 @@ class ListeningStatisticsRepositoryImpl(
         onSent: (Int) -> Unit,
     ) {
         var sent = 0
-        toSend.chunked(UPLOAD_CHUNK_SIZE).forEach { chunk ->
+        toSend.filterNot { it is ListeningStatistics.CollectionStats }.chunked(UPLOAD_CHUNK_SIZE).forEach { chunk ->
             remoteDataSource.upsertAll(
                 statistics = chunk,
             )
@@ -102,7 +104,7 @@ class ListeningStatisticsRepositoryImpl(
         localDataSource.getLastSyncMillis()
 
     override suspend fun getAllToSendToCloud(): List<ListeningStatistics> =
-        localDataSource.getAllToSendToCloud()
+        localDataSource.getAllToSendToCloud().filterNot { it is ListeningStatistics.CollectionStats }
 
     override suspend fun getMusicStatistics(
         musicId: Uuid,
@@ -137,6 +139,15 @@ class ListeningStatisticsRepositoryImpl(
     ): ListeningStatistics.PlaylistStats? =
         localDataSource.getPlaylistStatistics(
             playlistId = playlistId,
+            localMonthYear = localMonthYear,
+        )
+
+    override suspend fun getCollectionStatistics(
+        collectionId: Uuid,
+        localMonthYear: LocalMonthYear,
+    ): ListeningStatistics.CollectionStats? =
+        localDataSource.getCollectionStatistics(
+            collectionId = collectionId,
             localMonthYear = localMonthYear,
         )
 

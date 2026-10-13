@@ -14,6 +14,7 @@ sealed interface MainPageNavigationState {
     data object ToSettings : MainPageNavigationState
     data class ToMusicBottomSheet(val musicIds: List<Uuid>) : MainPageNavigationState
     data class ToPlaylistBottomSheet(val playlistIds: List<Uuid>) : MainPageNavigationState
+    data class ToCollectionBottomSheet(val collectionIds: List<Uuid>) : MainPageNavigationState
     data class ToArtistBottomSheet(val artistIds: List<Uuid>) : MainPageNavigationState
     data class ToAlbumBottomSheet(val albumIds: List<Uuid>) : MainPageNavigationState
 

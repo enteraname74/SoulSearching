@@ -64,6 +64,9 @@ class CommonAlbumUseCase(
             artistId = artistId,
         )
 
+    fun getAlbumPreviewsOfArtist(artistId: Uuid): Flow<List<AlbumPreview>> =
+        albumRepository.getAlbumPreviewsOfArtist(artistId)
+
     suspend fun upsert(album: Album) {
         albumRepository.upsert(
             album = album,

@@ -70,6 +70,9 @@ class MultiSelectionManager {
             SelectionMode.Playlist -> MultiSelectionNavigationState.ToPlaylistBottomSheet(
                 playlistIds = _state.value.selectedUuids(),
             )
+            SelectionMode.Collection -> MultiSelectionNavigationState.ToCollectionBottomSheet(
+                collectionIds = _state.value.selectedUuids(),
+            )
             SelectionMode.Album -> MultiSelectionNavigationState.ToAlbumBottomSheet(
                 albumIds = _state.value.selectedUuids(),
             )
@@ -92,6 +95,7 @@ class MultiSelectionManager {
 enum class SelectionMode {
     Music,
     Playlist,
+    Collection,
     Album,
     Artist,
     Folder,

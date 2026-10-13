@@ -4,6 +4,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistDestination
+import com.github.enteraname74.soulsearching.feature.editableelement.modifycollection.presentation.ModifyCollectionDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
@@ -30,6 +31,10 @@ object ModifyElementNavigationHandler {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+        ModifyCollectionDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
     }
 
     fun serializerModule(
@@ -40,6 +45,7 @@ object ModifyElementNavigationHandler {
             subclass(ModifyArtistDestination::class, ModifyArtistDestination.serializer())
             subclass(ModifyMusicDestination::class, ModifyMusicDestination.serializer())
             subclass(ModifyPlaylistDestination::class, ModifyPlaylistDestination.serializer())
+            subclass(ModifyCollectionDestination::class, ModifyCollectionDestination.serializer())
         }
     }
 }

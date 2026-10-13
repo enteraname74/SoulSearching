@@ -92,6 +92,17 @@ private fun Data(
         }
         item {
             SoulMenuSwitch(
+                title = strings.showCollections,
+                toggleAction = { viewModel.toggleCollectionsVisibility() },
+                isChecked = state.elementsVisibility.areCollectionsShown,
+                padding = PaddingValues(
+                    horizontal = UiConstants.Spacing.large,
+                    vertical = UiConstants.Spacing.medium,
+                ),
+            )
+        }
+        item {
+            SoulMenuSwitch(
                 title = strings.showAlbums,
                 toggleAction = { viewModel.toggleAlbumsVisibility() },
                 isChecked = state.elementsVisibility.areAlbumsShown,

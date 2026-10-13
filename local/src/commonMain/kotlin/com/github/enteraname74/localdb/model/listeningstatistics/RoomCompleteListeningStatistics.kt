@@ -7,6 +7,7 @@ import com.github.enteraname74.localdb.model.RoomCompleteMusic
 import com.github.enteraname74.localdb.model.RoomMusic
 import com.github.enteraname74.localdb.view.RoomAlbumPreview
 import com.github.enteraname74.localdb.view.RoomArtistPreview
+import com.github.enteraname74.localdb.view.RoomCollectionPreview
 import com.github.enteraname74.localdb.view.RoomPlaylistPreview
 import kotlin.time.Duration
 
@@ -34,6 +35,13 @@ data class RoomCompleteListeningStatistics(
         entity = RoomArtistPreview::class,
     )
     val artist: RoomArtistPreview?,
+
+    @Relation(
+        parentColumns = ["collectionId"],
+        entityColumns = ["id"],
+        entity = RoomCollectionPreview::class,
+    )
+    val collection: RoomCollectionPreview?,
 
     @Relation(
         parentColumns = ["musicId"],
@@ -87,12 +95,24 @@ data class RoomCompleteListeningStatistics(
             )
         }
 
+    fun toCollectionStats(): ListeningStatistics.CollectionStats? =
+        collection?.let {
+            ListeningStatistics.CollectionStats(
+                collection = collection.toCollectionPreview(),
+                id = listeningStatistics.id,
+                nbPlayed = listeningStatistics.nbPlayed,
+                localMonthYear = listeningStatistics.localMonthYear.toLocalMonthYear(),
+                lastUpdatedMillis = listeningStatistics.lastUpdatedMillis,
+            )
+        }
+
     fun toListeningStatistics(): ListeningStatistics? =
         when {
             music != null -> toMusicStats()
             playlist != null -> toPlaylistStats()
             album != null -> toAlbumStats()
             artist != null -> toArtistStats()
+            collection != null -> toCollectionStats()
             else -> null
         }
 }

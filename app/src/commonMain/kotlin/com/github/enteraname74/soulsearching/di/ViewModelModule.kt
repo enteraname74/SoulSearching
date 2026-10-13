@@ -6,6 +6,8 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.Art
 import com.github.enteraname74.soulsearching.composables.bottomsheets.folder.FolderBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist.AddToPlaylistBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.collection.add.AddToCollectionBottomSheetViewModel
+import com.github.enteraname74.soulsearching.composables.bottomsheets.collection.CollectionBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetViewModel
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetViewModel
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
@@ -13,6 +15,7 @@ import com.github.enteraname74.soulsearching.feature.addtoplaylist.AddToPlaylist
 import com.github.enteraname74.soulsearching.feature.application.MainAppViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.ModifyAlbumViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.ModifyArtistViewModel
+import com.github.enteraname74.soulsearching.feature.editableelement.modifycollection.domain.ModifyCollectionViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.ModifyMusicViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.ModifyPlaylistViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
@@ -94,6 +97,7 @@ internal val viewModelModule: Module = module {
     viewModelOf(::ModifyMusicViewModel)
     viewModelOf(::ModifyArtistViewModel)
     viewModelOf(::ModifyPlaylistViewModel)
+    viewModelOf(::ModifyCollectionViewModel)
 
     viewModelOf(::MusicListDetailViewHolder)
 
@@ -111,6 +115,8 @@ internal val viewModelModule: Module = module {
     // Bottom sheets
     viewModelOf(::MusicBottomSheetViewModel)
     viewModelOf(::AddToPlaylistBottomSheetViewModel)
+    viewModelOf(::AddToCollectionBottomSheetViewModel)
+    viewModelOf(::CollectionBottomSheetViewModel)
     viewModelOf(::PlaylistBottomSheetViewModel)
     viewModelOf(::ArtistBottomSheetViewModel)
     viewModelOf(::AlbumBottomSheetViewModel)
