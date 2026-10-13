@@ -26,12 +26,12 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.animated
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.Artist
 import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.lyrics.LyricsFetchState
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils.MaxPlayerSidePanelWidth
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils.MinPlayerSidePanelWidth
-import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
