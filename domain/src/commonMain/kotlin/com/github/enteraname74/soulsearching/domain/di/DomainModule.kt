@@ -21,7 +21,6 @@ import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementMusicListeningTimeUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementMusicNbPlayedUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementPlaylistNbPlayedUseCase
-import com.github.enteraname74.soulsearching.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.CloudMusicToMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.DeleteMusicUseCase
@@ -82,9 +81,6 @@ val domainModule: Module = module {
 
     // ImageCover
     factoryOf(::CommonCoverUseCase)
-
-    // Lyrics
-    factoryOf(::CommonLyricsUseCase)
 
     // Music
     factoryOf(::CommonMusicUseCase)

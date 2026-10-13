@@ -503,6 +503,10 @@ object EnStrings : Strings {
 
     override val simpleCoverType: String = "Simpl"
     override val gridCoverType: String = "Grid"
+    override val addToPlaylistScreenTitle: String = "Add to playlist"
+    override val addToPlaylistSearchPlaceholder: String = "Search songs to add to the playlist"
+    override val addToPlaylistEmptyTitle: String = "No songs"
+    override val addToPlaylistEmptyText: String = "No songs to add to the playlist found"
 
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
@@ -597,6 +601,13 @@ object EnStrings : Strings {
             0 -> "No selected elements"
             1 -> "1 selected element"
             else -> "$total selected elements"
+        }
+
+    override fun selectedMusics(total: Int): String =
+        when (total) {
+            0 -> "No selected songs"
+            1 -> "1 selected song"
+            else -> "$total selected songs"
         }
 
     override fun newReleaseAvailableText(releaseName: String): String =

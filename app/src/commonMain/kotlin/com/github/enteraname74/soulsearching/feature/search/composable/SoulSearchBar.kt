@@ -34,23 +34,27 @@ fun SoulSearchBar(
     searchText: String,
     placeholder: String,
     updateTextMethod: (String) -> Unit,
-    onClose: () -> Unit,
+    modifier: Modifier = Modifier,
+    onClose: (() -> Unit)? = null,
     focusManager: FocusManager,
     focusRequester: FocusRequester,
 ) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
-        SoulIconButton(
-            icon = CoreRes.drawable.ic_keyboard_arrow_down,
-            contentDescription = strings.cancel,
-            onClick = onClose,
-            colors = SoulButtonDefaults.colors(
-                contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                containerColor = Color.Transparent
+        onClose?.let {
+            SoulIconButton(
+                icon = CoreRes.drawable.ic_keyboard_arrow_down,
+                contentDescription = strings.cancel,
+                onClick = onClose,
+                colors = SoulButtonDefaults.colors(
+                    contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    containerColor = Color.Transparent
+                )
             )
-        )
+        }
 
         TextField(
             modifier = Modifier

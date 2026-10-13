@@ -8,7 +8,7 @@ import com.github.enteraname74.soulsearching.domain.usecase.music.SyncDataWithCl
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 import kotlin.time.Duration
 
-val strings = when (Locale.current.language) {
+val strings: Strings = when (Locale.current.language) {
     "fr" -> FrStrings
     else -> EnStrings
 }
@@ -490,6 +490,10 @@ interface Strings {
 
     val simpleCoverType: String
     val gridCoverType: String
+    val addToPlaylistScreenTitle: String
+    val addToPlaylistSearchPlaceholder: String
+    val addToPlaylistEmptyTitle: String
+    val addToPlaylistEmptyText: String
 
     fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
     fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String
@@ -523,6 +527,8 @@ interface Strings {
      * Shows a text indicating the total of selected elements.
      */
     fun selectedElements(total: Int): String
+
+    fun selectedMusics(total: Int): String
 
     /**
      * Shows a text indicating the detail of the new latest release of Soul Searching
