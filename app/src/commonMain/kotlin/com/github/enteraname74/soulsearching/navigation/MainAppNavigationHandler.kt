@@ -17,6 +17,7 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomShee
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
+import com.github.enteraname74.soulsearching.feature.addtoplaylist.AddToPlaylistDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.ModifyElementNavigationHandler
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceDestination
@@ -101,6 +102,11 @@ private fun buildEntryProvider(
     )
 
     BottomSheetsNavigationHandler.register(
+        entryProviderScope = this,
+        navigator = navigator,
+    )
+
+    AddToPlaylistDestination.register(
         entryProviderScope = this,
         navigator = navigator,
     )

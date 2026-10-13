@@ -2,12 +2,11 @@ package com.github.enteraname74.soulsearching.feature.musiclistdetail
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.paging.PagingData
+import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.domain.model.AlbumWithMusics
+import com.github.enteraname74.soulsearching.domain.model.CachedPlayedListUiSpec
 import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.domain.model.Music
-import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
-import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
-import com.github.enteraname74.soulsearching.domain.model.CachedPlayedListUiSpec
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Duration
 import kotlin.uuid.Uuid
@@ -40,6 +39,7 @@ sealed interface MusicListDetailState {
         val onShuffle: () -> Unit,
         val onPlay: (music: Music?) -> Unit,
         val onEdit: (() -> Unit)?,
+        val onAddToList: (() -> Unit)?,
         val onSearch: (search: String) -> Unit,
         val showMusicBottomSheet: (musicId: Uuid) -> Unit,
         val onCoverLoaded: (ImageBitmap?) -> Unit,

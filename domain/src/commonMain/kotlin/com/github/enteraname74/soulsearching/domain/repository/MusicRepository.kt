@@ -103,6 +103,11 @@ interface MusicRepository {
         search: String,
     ): Flow<List<Music>>
 
+    fun availableSongsForPlaylist(
+        playlistId: Uuid,
+        search: String,
+    ): Flow<PagingData<Music>>
+
     suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music>
 
     suspend fun getAllMusicFromArtist(artistId: Uuid, page: Int, pageSize: Int): List<Music>
@@ -115,7 +120,7 @@ interface MusicRepository {
 
     suspend fun getAllMusicFromFolder(folder: String): List<Music>
 
-    suspend fun getAllMusicFromFolder(folder: String, page: Int, pageSize: Int) : List<Music>
+    suspend fun getAllMusicFromFolder(folder: String, page: Int, pageSize: Int): List<Music>
 
     fun getAlbumDuration(albumId: Uuid): Flow<Duration>
     fun getArtistDuration(artistId: Uuid): Flow<Duration>

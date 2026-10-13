@@ -453,6 +453,45 @@ interface MusicDao {
         search: String,
     ): Flow<List<RoomCompleteMusic>>
 
+    @Transaction
+    @Query(
+        """
+        SELECT music.*
+        FROM RoomMusic AS music
+        WHERE music.isHidden = 0
+          AND music.scope != 'SharedPlayedList'
+          AND NOT EXISTS (
+              SELECT 1
+              FROM RoomMusicPlaylist AS musicPlaylist
+              WHERE musicPlaylist.musicId = music.musicId
+                AND musicPlaylist.playlistId = :playlistId
+          )
+          AND (
+              :search = ''
+              OR music.name LIKE '%' || :search || '%' COLLATE NOCASE
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomAlbum AS album
+                  WHERE album.albumId = music.albumId
+                    AND album.albumName LIKE '%' || :search || '%' COLLATE NOCASE
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomArtist AS artist
+                  INNER JOIN RoomMusicArtist AS musicArtist
+                      ON musicArtist.artistId = artist.artistId
+                  WHERE musicArtist.musicId = music.musicId
+                    AND artist.artistName LIKE '%' || :search || '%' COLLATE NOCASE
+              )
+          )
+        ORDER BY music.name ASC
+    """
+    )
+    fun availableSongsForPlaylist(
+        playlistId: Uuid,
+        search: String,
+    ): PagingSource<Int, RoomCompleteMusic>
+
     @Query(
         """
             SELECT COALESCE(SUM(music.duration), 0) FROM RoomMusic AS music
