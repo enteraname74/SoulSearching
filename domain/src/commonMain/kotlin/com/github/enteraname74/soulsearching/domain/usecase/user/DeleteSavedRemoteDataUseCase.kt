@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.domain.usecase.user
 
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.repository.CloudPreferencesRepository
+import com.github.enteraname74.soulsearching.domain.repository.CollectionRepository
 import com.github.enteraname74.soulsearching.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
 import com.github.enteraname74.soulsearching.domain.repository.PlaylistRepository
@@ -15,6 +16,7 @@ class DeleteSavedRemoteDataUseCase(
     private val playerRepository: PlayerRepository,
     private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
     private val playlistRepository: PlaylistRepository,
+    private val collectionRepository: CollectionRepository,
 ) {
     suspend operator fun invoke(): SoulResult<Unit> = SoulResult.runCatching {
         cloudBackgroundSyncJob.cancelIfNeeded()
@@ -29,9 +31,11 @@ class DeleteSavedRemoteDataUseCase(
         musicRepository.deleteAllRemoteFields()
         musicRepository.deleteNotExisting()
         playlistRepository.deleteAllRemoteFields()
+        collectionRepository.deleteAllRemoteFields()
 
         playlistRepository.deleteAllEmptyExceptFavorite()
         deleteEmptyAlbumsAndArtistsUseCase()
+        collectionRepository.deleteAllEmpty()
 
         playerRepository.deleteAllSharedPlayedListPreviews()
     }

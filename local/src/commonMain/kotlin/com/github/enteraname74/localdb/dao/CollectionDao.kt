@@ -25,6 +25,12 @@ interface CollectionDao {
     @Query("SELECT * FROM RoomCollection")
     suspend fun getAllCollections(): List<RoomCollection>
 
+    @Query("SELECT * FROM RoomCollection WHERE remoteId = :remoteId LIMIT 1")
+    suspend fun getFromRemoteId(remoteId: Uuid): RoomCollection?
+
+    @Query("SELECT * FROM RoomCollection WHERE name = :name LIMIT 1")
+    suspend fun getFromName(name: String): RoomCollection?
+
     @Query("SELECT * FROM RoomCollectionPreview ORDER BY name ASC, id ASC")
     fun getAllPreviews(): Flow<List<RoomCollectionPreview>>
 
@@ -125,6 +131,67 @@ interface CollectionDao {
         """
     )
     suspend fun getAllLocalToRemoteIds(): List<GenericLocalIdToRemoteId>
+
+    @Query(
+        """
+            SELECT collection.* FROM RoomCollection collection
+            CROSS JOIN RoomCloudPreferences preferences
+            WHERE collection.lastUpdatedMillis IS NULL
+                OR preferences.lastSyncMillis IS NULL
+                OR collection.lastUpdatedMillis > preferences.lastSyncMillis
+                OR collection.remoteId IS NULL
+        """
+    )
+    suspend fun getAllToSendToCloud(): List<RoomCollection>
+
+    @Query(
+        """
+            SELECT artist.remoteId FROM RoomArtist artist
+            INNER JOIN RoomCollectionArtist relation ON relation.artistId = artist.artistId
+            WHERE relation.collectionId = :collectionId AND artist.remoteId IS NOT NULL
+        """
+    )
+    suspend fun getArtistRemoteIds(collectionId: Uuid): List<Uuid>
+
+    @Query(
+        """
+            SELECT album.remoteId FROM RoomAlbum album
+            INNER JOIN RoomCollectionAlbum relation ON relation.albumId = album.albumId
+            WHERE relation.collectionId = :collectionId AND album.remoteId IS NOT NULL
+        """
+    )
+    suspend fun getAlbumRemoteIds(collectionId: Uuid): List<Uuid>
+
+    @Query("SELECT remoteId FROM RoomCollection WHERE collectionId IN (:ids) AND remoteId IS NOT NULL")
+    suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<Uuid>
+
+    @Query("SELECT remoteId FROM RoomCollection WHERE remoteId IS NOT NULL")
+    suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid>
+
+    @Query("DELETE FROM RoomCollection WHERE remoteId IN (:remoteIds)")
+    suspend fun deleteAllFromRemote(remoteIds: List<Uuid>)
+
+    @Query("UPDATE RoomCollection SET remoteId = NULL, cover_simple_url = NULL")
+    suspend fun deleteAllRemoteFields()
+
+    @Query(
+        """
+            DELETE FROM RoomCollection
+            WHERE (SELECT COUNT(*) FROM RoomCollectionArtist WHERE RoomCollectionArtist.collectionId = RoomCollection.collectionId) = 0
+              AND (SELECT COUNT(*) FROM RoomCollectionAlbum WHERE RoomCollectionAlbum.collectionId = RoomCollection.collectionId) = 0
+        """
+    )
+    suspend fun deleteAllEmpty()
+
+    @Query(
+        """
+            SELECT lastUpdatedMillis FROM RoomCollection
+            WHERE lastUpdatedMillis IS NOT NULL
+            ORDER BY lastUpdatedMillis DESC
+            LIMIT 1
+        """
+    )
+    suspend fun getLatestUpdatedAt(): Long?
 
     @Query(
         """

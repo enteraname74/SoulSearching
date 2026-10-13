@@ -14,6 +14,7 @@ import com.github.enteraname74.soulsearching.domain.model.Collection
 import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
 import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
 import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
+import com.github.enteraname74.soulsearching.domain.model.CollectionSyncData
 import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.domain.model.SortType
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
@@ -116,36 +117,48 @@ internal class RoomCollectionLocalDataSourceImpl(
             appDatabase.collectionDao.upsert(it.toRoomCollection())
         }
 
-    override suspend fun upsertAll(collections: List<Collection>) {
+    override suspend fun upsertAll(collections: List<Collection>, keepUpdatedAt: Boolean) {
         appDatabase.collectionDao.upsertAll(
             collections.map {
                 it.copy(
-                    lastUpdatedMillis = max(DateUtils.now(), it.lastUpdatedMillis ?: 0L),
+                    lastUpdatedMillis = if (keepUpdatedAt) {
+                        it.lastUpdatedMillis
+                    } else {
+                        max(DateUtils.now(), it.lastUpdatedMillis ?: 0L)
+                    },
                 ).toRoomCollection()
             }
         )
     }
 
+    override suspend fun getFromRemoteId(remoteId: Uuid): Collection? =
+        appDatabase.collectionDao.getFromRemoteId(remoteId)?.toCollection()
+
+    override suspend fun getFromName(name: String): Collection? =
+        appDatabase.collectionDao.getFromName(name)?.toCollection()
+
     override suspend fun deleteAll(collectionIds: List<Uuid>) {
         appDatabase.collectionDao.deleteAll(collectionIds)
     }
 
-    override suspend fun addArtists(collectionIds: List<Uuid>, artistIds: List<Uuid>) {
+    override suspend fun addArtists(collectionIds: List<Uuid>, artistIds: List<Uuid>, keepUpdatedAt: Boolean) {
+        if (collectionIds.isEmpty() || artistIds.isEmpty()) return
         appDatabase.collectionDao.addArtists(
             collectionIds.flatMap { collectionId ->
                 artistIds.map { artistId -> RoomCollectionArtist(collectionId, artistId) }
             }
         )
-        touch(collectionIds)
+        if (!keepUpdatedAt) touch(collectionIds)
     }
 
-    override suspend fun addAlbums(collectionIds: List<Uuid>, albumIds: List<Uuid>) {
+    override suspend fun addAlbums(collectionIds: List<Uuid>, albumIds: List<Uuid>, keepUpdatedAt: Boolean) {
+        if (collectionIds.isEmpty() || albumIds.isEmpty()) return
         appDatabase.collectionDao.addAlbums(
             collectionIds.flatMap { collectionId ->
                 albumIds.map { albumId -> RoomCollectionAlbum(collectionId, albumId) }
             }
         )
-        touch(collectionIds)
+        if (!keepUpdatedAt) touch(collectionIds)
     }
 
     override suspend fun removeArtist(collectionId: Uuid, artistId: Uuid) {
@@ -179,6 +192,48 @@ internal class RoomCollectionLocalDataSourceImpl(
         appDatabase.collectionDao.getAllLocalToRemoteIds().associate {
             it.remoteId to it.localId
         }
+
+    override suspend fun getAllToSendToCloud(): List<CollectionSyncData> =
+        appDatabase.collectionDao.getAllToSendToCloud().map { roomCollection ->
+            CollectionSyncData(
+                collection = roomCollection.toCollection(),
+                artistRemoteIds = appDatabase.collectionDao.getArtistRemoteIds(roomCollection.collectionId),
+                albumRemoteIds = appDatabase.collectionDao.getAlbumRemoteIds(roomCollection.collectionId),
+            )
+        }
+
+    override suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<Uuid> =
+        if (ids.isEmpty()) emptyList() else appDatabase.collectionDao.getRemoteIdsFromIds(ids)
+
+    override suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid> =
+        appDatabase.collectionDao.getAllRemoteIdsPossessedByUser()
+
+    override suspend fun deleteAllFromRemote(remoteIds: List<Uuid>) {
+        if (remoteIds.isNotEmpty()) appDatabase.collectionDao.deleteAllFromRemote(remoteIds)
+    }
+
+    override suspend fun deleteAllRemoteFields() {
+        appDatabase.collectionDao.deleteAllRemoteFields()
+    }
+
+    override suspend fun deleteAllEmpty() {
+        appDatabase.collectionDao.deleteAllEmpty()
+    }
+
+    override suspend fun getLatestUpdatedAt(): Long? =
+        appDatabase.collectionDao.getLatestUpdatedAt()
+
+    override suspend fun getLocalArtistIdsFromRemoteIds(remoteIds: List<Uuid>): List<Uuid> {
+        if (remoteIds.isEmpty()) return emptyList()
+        val mapping = appDatabase.artistDao.getAllRemoteToLocalIds().associate { it.remoteId to it.localId }
+        return remoteIds.mapNotNull(mapping::get)
+    }
+
+    override suspend fun getLocalAlbumIdsFromRemoteIds(remoteIds: List<Uuid>): List<Uuid> {
+        if (remoteIds.isEmpty()) return emptyList()
+        val mapping = appDatabase.albumDao.getAllRemoteToLocalIds().associate { it.remoteId to it.localId }
+        return remoteIds.mapNotNull(mapping::get)
+    }
 
     private suspend fun touch(collectionIds: List<Uuid>) {
         if (collectionIds.isNotEmpty()) {

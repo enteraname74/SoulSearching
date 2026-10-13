@@ -365,6 +365,7 @@ class MusicListDetailViewHolder(
                             toDestination(ModifyCollectionDestination(detailId.collectionId))
                         }
                     },
+                    onAddToList = null,
                     onCoverLoaded = ::onCoverLoaded,
                 )
             }

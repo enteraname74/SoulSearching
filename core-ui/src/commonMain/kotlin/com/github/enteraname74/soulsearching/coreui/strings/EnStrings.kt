@@ -525,6 +525,10 @@ object EnStrings : Strings {
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists"
             SyncDataWithCloudUseCase.State.Finish -> "Finish"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Cleaning playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteCollections -> "Fetching collections"
+            is SyncDataWithCloudUseCase.State.UploadingCollections -> "Uploading collections"
+            SyncDataWithCloudUseCase.State.SavingRemoteCollections -> "Saving collections"
+            SyncDataWithCloudUseCase.State.ClearingRemoteCollectionIds -> "Cleaning collections"
             SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Fetching listening statistics"
             is SyncDataWithCloudUseCase.State.UploadingStats -> "Uploading listening statistics"
         }
@@ -546,6 +550,10 @@ object EnStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Uploading playlists to cloud"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Saving playlists from cloud"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Cleaning deleted remote playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteCollections -> "Fetching collections from cloud"
+            is SyncDataWithCloudUseCase.State.UploadingCollections -> "Uploading collections to cloud"
+            SyncDataWithCloudUseCase.State.SavingRemoteCollections -> "Saving collections from cloud"
+            SyncDataWithCloudUseCase.State.ClearingRemoteCollectionIds -> "Cleaning deleted remote collections"
             SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Fetching listening statistics from cloud"
             is SyncDataWithCloudUseCase.State.UploadingStats -> "Uploading listening statistics to cloud"
         }

@@ -31,7 +31,7 @@ interface ArtistRepository {
 
     suspend fun getFromRemoteId(remoteId: Uuid): Artist?
 
-    fun getFromIds(artistIds: List<Uuid>) : Flow<List<ArtistWithMusics>>
+    fun getFromIds(artistIds: List<Uuid>): Flow<List<ArtistWithMusics>>
 
     /**
      * Retrieves an Artist from its name.

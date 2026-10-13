@@ -528,6 +528,10 @@ object FrStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Téléversement des playlists"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Sauvegarde des playlists"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Nettoyage des playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteCollections -> "Téléchargement des collections"
+            is SyncDataWithCloudUseCase.State.UploadingCollections -> "Téléversement des collections"
+            SyncDataWithCloudUseCase.State.SavingRemoteCollections -> "Sauvegarde des collections"
+            SyncDataWithCloudUseCase.State.ClearingRemoteCollectionIds -> "Nettoyage des collections"
             SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Téléchargement des statistiques d'écoutes"
             is SyncDataWithCloudUseCase.State.UploadingStats -> "Téléversement des statistiques d'écoutes"
         }
@@ -549,6 +553,10 @@ object FrStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Téléversement des playlists vers le cloud"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Sauvegarde des playlists téléchargées du cloud"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Nettoyage des playlists supprimées du cloud"
+            SyncDataWithCloudUseCase.State.FetchingRemoteCollections -> "Téléchargement des collections du cloud"
+            is SyncDataWithCloudUseCase.State.UploadingCollections -> "Téléversement des collections vers le cloud"
+            SyncDataWithCloudUseCase.State.SavingRemoteCollections -> "Sauvegarde des collections téléchargées du cloud"
+            SyncDataWithCloudUseCase.State.ClearingRemoteCollectionIds -> "Nettoyage des collections supprimées du cloud"
             SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Téléchargement des statistiques d'écoutes du cloud"
             is SyncDataWithCloudUseCase.State.UploadingStats -> "Téléversement des statistiques d'écoutes vers le cloud"
         }
