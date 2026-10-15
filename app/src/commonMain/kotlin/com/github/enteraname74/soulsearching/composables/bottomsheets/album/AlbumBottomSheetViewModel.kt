@@ -7,8 +7,7 @@ import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.Scope
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
@@ -32,6 +31,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
@@ -46,7 +46,7 @@ class AlbumBottomSheetViewModel(
     private val navScope: AlbumBottomSheetNavScope,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
-    settings: SoulSearchingSettings,
+    settingsRepository: SettingsRepository,
     params: AlbumBottomSheetDestination,
 ) : ViewModel() {
     private val albumIds: List<Uuid> = params.albumIds
@@ -59,10 +59,8 @@ class AlbumBottomSheetViewModel(
         commonAlbumUseCase.getFromIds(albumIds),
         playbackManager.playedList,
         dialogState,
-        settings.getFlowOn(
-            settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
-        ),
-        settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.ARE_COLLECTIONS_SHOWN),
+        settingsRepository.observeMainPage().map { it.isQuickAccessShown },
+        settingsRepository.observeMainPage().map { it.areCollectionsShown },
         hasValidCloudInformationUseCase(),
         playbackManager.currentScope,
     ) { data ->

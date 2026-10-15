@@ -17,6 +17,8 @@ interface ReleaseRepository {
 
     suspend fun fetchLatestRelease()
 
+    suspend fun markReleaseViewed(tag: String)
+
     /**
      * Delete the saved latest release
      */

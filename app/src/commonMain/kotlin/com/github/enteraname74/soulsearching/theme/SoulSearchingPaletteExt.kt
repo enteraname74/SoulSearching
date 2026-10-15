@@ -2,8 +2,8 @@ package com.github.enteraname74.soulsearching.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.github.enteraname74.soulsearching.coreui.theme.color.*
 import com.github.enteraname74.soulsearching.di.injectElement
 
@@ -13,11 +13,11 @@ fun SoulSearchingPalette?.orDefault(): SoulSearchingPalette =
 
 @Composable
 private fun defaultTheme(
-    settings: SoulSearchingSettings = injectElement(),
+    colorThemeManager: ColorThemeManager = injectElement(),
 ): SoulSearchingPalette {
-    val themeId: String = settings.get(SoulSearchingSettingsKeys.ColorTheme.USED_COLOR_THEME_ID_KEY)
+    val settings by colorThemeManager.currentDefaultThemeSettings.collectAsState()
     val theme: SoulSearchingDarkLightTheme = SoulSearchingDarkLightThemes.fromId(
-        id = SoulSearchingTheme.from(id = themeId)
+        id = settings.themeId,
     )
 
     return theme.palette(isInDarkTheme = isInDarkTheme())

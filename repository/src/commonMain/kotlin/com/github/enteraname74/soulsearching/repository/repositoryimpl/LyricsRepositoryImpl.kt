@@ -2,9 +2,8 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.soulsearching.domain.model.lyrics.LyricsFetchState
 import com.github.enteraname74.soulsearching.domain.model.lyrics.MusicLyricsRequest
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.repository.LyricsRepository
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.repository.datasource.lyrics.LyricsLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.lyrics.LyricsRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerLocalDataSource
@@ -20,15 +19,14 @@ class LyricsRepositoryImpl(
     private val lyricsRemoteDataSource: LyricsRemoteDataSource,
     private val lyricsLocalDataSource: LyricsLocalDataSource,
     private val playerLocalDataSource: PlayerLocalDataSource,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
 ) : LyricsRepository {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun observeLyrics(
         songProgressionFlow: Flow<Int>,
     ): Flow<LyricsFetchState> =
-        settings.getFlowOn(
-            SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED
-        ).flatMapLatest { isRemoteFetchEnabled ->
+        settingsRepository.observePlayer().mapLatest { it.isRemoteLyricsFetchEnabled }
+            .flatMapLatest { isRemoteFetchEnabled ->
             playerLocalDataSource
                 .getCurrentMusic()
                 .mapLatest {

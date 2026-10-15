@@ -5,47 +5,41 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlin.math.max
 
 class SettingsPlayerPersonalisationViewModel(
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
-    val state: StateFlow<SettingsPlayerPersonalisationState> = combine(
-        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME),
-    ) { isPlayerSwipeEnabled, isRewindEnabled, isMinimisedSongProgressionEnabled, playerVolume ->
+    val state: StateFlow<SettingsPlayerPersonalisationState> = settingsRepository.observePlayer().map { settings ->
         SettingsPlayerPersonalisationState(
-            isPlayerSwipeEnabled = isPlayerSwipeEnabled,
-            isRewindEnabled = isRewindEnabled,
-            isMinimisedSongProgressionShown = isMinimisedSongProgressionEnabled,
-            playerVolume = playerVolume,
+            isPlayerSwipeEnabled = settings.isPlayerSwipeEnabled,
+            isRewindEnabled = settings.isRewindEnabled,
+            isMinimisedSongProgressionShown = settings.isMinimisedSongProgressionShown,
+            playerVolume = settings.playerVolume,
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = SettingsPlayerPersonalisationState(
-            isPlayerSwipeEnabled = SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED.defaultValue,
-            isRewindEnabled = SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED.defaultValue,
-            isMinimisedSongProgressionShown =
-            SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN.defaultValue,
-            playerVolume = SoulSearchingSettingsKeys.Player.PLAYER_VOLUME.defaultValue,
+            isPlayerSwipeEnabled = true,
+            isRewindEnabled = true,
+            isMinimisedSongProgressionShown = true,
+            playerVolume = 1f,
         )
     )
 
     val soulMixTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
         id = SOUL_MIX_TEXT_FIELD,
-        initialValue = settings.get(SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST).toString(),
+        initialValue = "50",
         isValid = { text -> text.isNotBlank() },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number,
@@ -54,40 +48,33 @@ class SettingsPlayerPersonalisationViewModel(
         getLabel = { null },
         onValueChange = { text ->
             val intValue = text.toIntOrNull() ?: return@SoulTextFieldHolderImpl
-            settings.set(
-                key = SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST.key,
-                value = max(1, intValue),
-            )
+            viewModelScope.launch { settingsRepository.setSoulMixTotalByList(max(1, intValue)) }
         },
         getError = { strings.fieldCannotBeEmpty },
     )
 
+    init {
+        viewModelScope.launch {
+            settingsRepository.observePlayer().collect { settings ->
+                soulMixTextField.updateValue(settings.soulMixTotalByList.toString())
+            }
+        }
+    }
+
     fun togglePlayerSwipe() {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED.key,
-            value = !state.value.isPlayerSwipeEnabled,
-        )
+        viewModelScope.launch { settingsRepository.setPlayerSwipeEnabled(!state.value.isPlayerSwipeEnabled) }
     }
 
     fun toggleRewind() {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED.key,
-            value = !state.value.isRewindEnabled,
-        )
+        viewModelScope.launch { settingsRepository.setRewindEnabled(!state.value.isRewindEnabled) }
     }
 
     fun toggleMinimisedProgression() {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN.key,
-            value = !state.value.isMinimisedSongProgressionShown,
-        )
+        viewModelScope.launch { settingsRepository.setMinimisedSongProgressionShown(!state.value.isMinimisedSongProgressionShown) }
     }
 
     fun setVolumePlayer(newVolume: Float) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Player.PLAYER_VOLUME.key,
-            value = newVolume,
-        )
+        viewModelScope.launch { settingsRepository.setPlayerVolume(newVolume) }
     }
 
     companion object {

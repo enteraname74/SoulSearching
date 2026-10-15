@@ -37,8 +37,7 @@ import androidx.compose.ui.unit.DpSize
 import coil3.request.ImageRequest
 import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.domain.model.CoverFolderRetriever
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.app.generated.resources.Res
 import com.github.enteraname74.soulsearching.app.generated.resources.app_logo_uni_xml
@@ -294,7 +293,7 @@ private fun CoverFolderImage(
     tint: Color,
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder,
-    settings: SoulSearchingSettings = injectElement(),
+    settingsRepository: SettingsRepository = injectElement(),
     fileOperation: FileOperation = injectElement(),
     workDispatcher: WorkDispatcher = injectElement(),
 ) {
@@ -310,16 +309,11 @@ private fun CoverFolderImage(
         }
 
         job = CoroutineScope(workDispatcher.dispatcher).launch {
-            inputStream = settings.get(SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER)
-                .takeIf { it.isNotBlank() }?.let {
-                    runCatching {
-                        val coverFolderRetriever: CoverFolderRetriever = SerializationUtils.deserialize(it)
-                        coverFolderRetriever.buildSafeDynamicCoverPath(
-                            dynamicName = devicePathSpec.dynamicElementName,
-                            safeBuilder = fileOperation::buildSafePath,
-                        )
-                    }.getOrNull()
-                }
+            inputStream = settingsRepository.getSettings().cover.artistCoverFolderRetriever
+                .buildSafeDynamicCoverPath(
+                    dynamicName = devicePathSpec.dynamicElementName,
+                    safeBuilder = fileOperation::buildSafePath,
+                )
             shouldUseFallback = inputStream == null
         }
     }

@@ -16,7 +16,6 @@ import androidx.navigation3.ui.NavDisplay
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.application.MainAppDestination
-import com.github.enteraname74.soulsearching.feature.migration.MigrationDestination
 import com.github.enteraname74.soulsearching.feature.onboarding.OnboardingDestination
 
 @Composable
@@ -56,10 +55,6 @@ fun ApplicationNavigationHandler(
 private fun buildEntryProvider(
     navigator: Navigator,
 ): (NavKey) -> NavEntry<NavKey> = entryProvider {
-    MigrationDestination.register(
-        entryProviderScope = this,
-        navigator = navigator,
-    )
     OnboardingDestination.register(
         entryProviderScope = this,
         navigator = navigator,

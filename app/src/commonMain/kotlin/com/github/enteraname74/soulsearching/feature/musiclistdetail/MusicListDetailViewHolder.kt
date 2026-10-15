@@ -9,8 +9,7 @@ import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
 import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
 import com.github.enteraname74.soulsearching.domain.model.player.PlayedListToContinue
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
@@ -51,6 +50,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
@@ -65,7 +65,7 @@ class MusicListDetailViewHolder(
     private val playerViewManager: PlayerViewManager,
     private val multiSelectionManager: MultiSelectionManager,
     val playlistSearchViewManager: PlaylistSearchViewManager,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
     private val detailId: MusicListDetailId,
     private val colorThemeManager: ColorThemeManager,
     private val incrementAlbumNbPlayedUseCase: IncrementAlbumNbPlayedUseCase,
@@ -135,7 +135,7 @@ class MusicListDetailViewHolder(
             commonAlbumUseCase.getAlbumPreview(albumId = detailId.albumId),
             commonMusicUseCase.getAlbumDuration(detailId.albumId),
             searchResult,
-            settings.getFlowOn(SoulSearchingSettingsKeys.Album.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW),
+            settingsRepository.observeSettings().map { it.album.shouldShowTrackPositionInAlbumView },
             playbackManager.getCachedPlaylist(detailId.albumId.toString()),
         ) { albumPreview, duration, searchMusics, showTrackPosition, cachedPlaylist ->
             when {

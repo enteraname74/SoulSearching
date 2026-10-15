@@ -2,29 +2,28 @@ package com.github.enteraname74.soulsearching.feature.settings.colortheme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.model.settings.ColorThemeType
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class SettingsColorThemeViewModel(
     colorThemeManager: ColorThemeManager,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
     val colorThemeSettingsState: StateFlow<SettingsColorThemeState> = combine(
         colorThemeManager.currentColorThemeSettings,
-        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYER_THEME),
-        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYLIST_THEME),
-        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_OTHER_VIEWS_THEME),
-    ) { colorThemeSettings, dynamicPlayer, dynamicPlaylists, dynamicOthers ->
+        settingsRepository.observeColorTheme(),
+    ) { colorThemeSettings, settings ->
         SettingsColorThemeState(
             colorThemeSettings = colorThemeSettings,
-            hasPersonalizedDynamicPlayerTheme = dynamicPlayer,
-            hasPersonalizedDynamicPlaylistTheme = dynamicPlaylists,
-            hasPersonalizedDynamicOtherTheme = dynamicOthers,
+            hasPersonalizedDynamicPlayerTheme = settings.dynamicPlayerTheme,
+            hasPersonalizedDynamicPlaylistTheme = settings.dynamicPlaylistTheme,
+            hasPersonalizedDynamicOtherTheme = settings.dynamicOtherViewsTheme,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -35,34 +34,28 @@ class SettingsColorThemeViewModel(
     /**
      * Update the type of color theme used in the application.
      */
-    fun updateColorTheme(newTheme: Int) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.ColorTheme.COLOR_THEME_KEY.key,
-            value = newTheme
-        )
+    fun updateColorTheme(newTheme: ColorThemeType) {
+        viewModelScope.launch { settingsRepository.setColorThemeType(newTheme) }
     }
 
     fun togglePersonalizedDynamicPlayerTheme() {
-        val previousValue: Boolean = settings.get(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYER_THEME)
-        settings.set(
-            key = SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYER_THEME.key,
-            value = !previousValue
-        )
+        viewModelScope.launch {
+            val previousValue = settingsRepository.getSettings().colorTheme.dynamicPlayerTheme
+            settingsRepository.setDynamicPlayerTheme(!previousValue)
+        }
     }
 
     fun togglePersonalizedDynamicPlaylistTheme() {
-        val previousValue: Boolean = settings.get(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYLIST_THEME)
-        settings.set(
-            key = SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYLIST_THEME.key,
-            value = !previousValue
-        )
+        viewModelScope.launch {
+            val previousValue = settingsRepository.getSettings().colorTheme.dynamicPlaylistTheme
+            settingsRepository.setDynamicPlaylistTheme(!previousValue)
+        }
     }
 
     fun togglePersonalizedDynamicOtherViewsTheme() {
-        val previousValue: Boolean = settings.get(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_OTHER_VIEWS_THEME)
-        settings.set(
-            key = SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_OTHER_VIEWS_THEME.key,
-            value = !previousValue
-        )
+        viewModelScope.launch {
+            val previousValue = settingsRepository.getSettings().colorTheme.dynamicOtherViewsTheme
+            settingsRepository.setDynamicOtherViewsTheme(!previousValue)
+        }
     }
 }

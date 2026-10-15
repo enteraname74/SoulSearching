@@ -3,8 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.advanced
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
@@ -37,7 +36,7 @@ class SettingsAdvancedViewModel(
     private val commonCollectionUseCase: CommonCollectionUseCase,
     private val commonReleaseUseCase: CommonReleaseUseCase,
     private val loadingManager: LoadingManager,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
     private val workDispatcher: WorkDispatcher,
     destination: SettingsAdvancedDestination
 ) : ViewModel() {
@@ -50,19 +49,19 @@ class SettingsAdvancedViewModel(
     val state: StateFlow<SettingsAdvancedState> = _state.asStateFlow()
 
     val permissionState: StateFlow<SettingsAdvancedPermissionState> = combine(
-        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED),
-    ) { lyricsPermission, githubPermission ->
+        settingsRepository.observePlayer(),
+        settingsRepository.observeRelease(),
+    ) { player, release ->
         SettingsAdvancedPermissionState(
-            isLyricsPermissionEnabled = lyricsPermission,
-            isGitHubReleaseFetchPermissionEnabled = githubPermission,
+            isLyricsPermissionEnabled = player.isRemoteLyricsFetchEnabled,
+            isGitHubReleaseFetchPermissionEnabled = release.isFetchReleaseFromGithubEnabled,
         )
     }.stateIn(
         scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = SettingsAdvancedPermissionState(
-            isLyricsPermissionEnabled = settings.get(SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED),
-            isGitHubReleaseFetchPermissionEnabled = settings.get(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED),
+            isLyricsPermissionEnabled = false,
+            isGitHubReleaseFetchPermissionEnabled = false,
         ),
     )
 
@@ -139,19 +138,16 @@ class SettingsAdvancedViewModel(
     }
 
     private fun toggleLyricsPermission() {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED.key,
-            value = !settings.get(SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED)
-        )
+        viewModelScope.launch {
+            val enabled = settingsRepository.getSettings().playerSettings.isRemoteLyricsFetchEnabled
+            settingsRepository.setRemoteLyricsFetchEnabled(!enabled)
+        }
     }
 
     private fun toggleGitHubReleasePermission() {
         CoroutineScope(workDispatcher.dispatcher).launch {
-            val newState = !settings.get(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED)
-            settings.set(
-                key = SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED.key,
-                value = newState
-            )
+            val newState = !settingsRepository.getSettings().release.isFetchReleaseFromGithubEnabled
+            settingsRepository.setFetchReleaseFromGithubEnabled(newState)
             if (!newState) {
                 commonReleaseUseCase.deleteLatest()
             } else {

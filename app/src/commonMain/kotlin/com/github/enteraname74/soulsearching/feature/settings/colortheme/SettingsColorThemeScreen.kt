@@ -10,7 +10,7 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_format_paint_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeType
+import com.github.enteraname74.soulsearching.domain.model.settings.ColorThemeType
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.ColorCard
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.PersonalizedColorThemeCard
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -40,7 +40,7 @@ fun SettingsColorThemeRoute(
 fun SettingsColorThemeScreenView(
     navigateBack: () -> Unit,
     state: SettingsColorThemeState,
-    updateColorTheme: (Int) -> Unit,
+    updateColorTheme: (ColorThemeType) -> Unit,
     togglePersonalizedDynamicPlayerTheme: () -> Unit,
     togglePersonalizedDynamicPlaylistTheme: () -> Unit,
     togglePersonalizedDynamicOtherViewsTheme: () -> Unit,

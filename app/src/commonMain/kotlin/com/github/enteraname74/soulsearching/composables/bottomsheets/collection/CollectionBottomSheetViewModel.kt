@@ -19,8 +19,7 @@ import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.Scope
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
@@ -29,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
@@ -41,7 +41,7 @@ class CollectionBottomSheetViewModel(
     private val navScope: CollectionBottomSheetNavScope,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
-    settings: SoulSearchingSettings,
+    settingsRepository: SettingsRepository,
     params: CollectionBottomSheetDestination,
 ) : ViewModel() {
     private val collectionIds: List<Uuid> = params.collectionIds
@@ -52,7 +52,7 @@ class CollectionBottomSheetViewModel(
         commonCollectionUseCase.getFromIds(collectionIds),
         playbackManager.playedList,
         dialogState,
-        settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN),
+        settingsRepository.observeMainPage().map { it.isQuickAccessShown },
         hasValidCloudInformationUseCase(),
         playbackManager.currentScope,
     ) { data ->

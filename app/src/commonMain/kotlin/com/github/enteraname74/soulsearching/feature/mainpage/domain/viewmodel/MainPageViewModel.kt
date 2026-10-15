@@ -14,8 +14,7 @@ import com.github.enteraname74.soulsearching.domain.model.Playlist
 import com.github.enteraname74.soulsearching.domain.model.SoulPlatform
 import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.domain.model.QuickAccessible
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.CloudBackgroundSyncJob
@@ -107,7 +106,7 @@ class MainPageViewModel(
 ) : ViewModel(), KoinComponent,
     SortingInformationDelegate by sortingInformationDelegateImpl {
 
-    private val settings: SoulSearchingSettings by inject()
+    private val settingsRepository: SettingsRepository by inject()
     private val removeLocallyOrDeleteMusicUseCase: RemoveLocallyOrDeleteMusicUseCase by inject()
     private val feedbackPopUpManager: FeedbackPopUpManager by inject()
 
@@ -152,15 +151,13 @@ class MainPageViewModel(
         started = SharingStarted.Lazily,
         initialValue = emptyList()
     )
-    val initialPage: Int = tabManager.initialPage
-
-    val isUsingVerticalAccessBar: StateFlow<Boolean> = settings.getFlowOn(
-        SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR,
-    ).stateIn(
-        scope = viewModelScope.plus(workDispatcher.dispatcher),
-        started = SharingStarted.Lazily,
-        initialValue = true,
-    )
+    val isUsingVerticalAccessBar: StateFlow<Boolean> = settingsRepository.observeMainPage()
+        .map { it.isUsingVerticalAccessBar }
+        .stateIn(
+            scope = viewModelScope.plus(workDispatcher.dispatcher),
+            started = SharingStarted.Lazily,
+            initialValue = true,
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _musics: Flow<PagingData<Music>> = commonMusicUseCase
@@ -360,24 +357,21 @@ class MainPageViewModel(
 
 
         viewModelScope.launch {
-            settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED).collectLatest { isEnabled ->
-                if (isEnabled) {
+            settingsRepository.observeRelease().collectLatest { settings ->
+                if (settings.isFetchReleaseFromGithubEnabled) {
                     commonReleaseUseCase.fetchLatest()
                 }
             }
         }
 
         coroutineScope.launch {
-            settings.getFlowOn(SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT)
+            settingsRepository.observeRelease().map { it.shouldShowReleaseBottomEnableHint }
                 .collectLatest { shouldShow ->
                     if (shouldShow && SoulPlatformUtils.platform != SoulPlatform.Web) {
                         _bottomSheetState.value = GitHubReleaseBottomSheet(
                             onClose = {
                                 _bottomSheetState.value = null
-                                settings.set(
-                                    key = SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT.key,
-                                    value = false,
-                                )
+                                viewModelScope.launch { settingsRepository.setShowReleaseBottomEnableHint(false) }
                             },
                             onNavigateToGithubReleasePermission = {
                                 navigateAndClearSelection(

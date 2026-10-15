@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 22,
-    "identityHash": "50858d522d3e430626896ea5c0d2114f",
+    "identityHash": "0e06a8b4702136de013ff39a3af2568a",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -1660,6 +1660,350 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "RoomSoulSearchingSettings",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `hasMusicsBeenFetched` INTEGER NOT NULL, `isMusicFileModificationOn` INTEGER NOT NULL, `musicSort_type` INTEGER NOT NULL, `musicSort_direction` INTEGER NOT NULL, `albumSort_type` INTEGER NOT NULL, `albumSort_direction` INTEGER NOT NULL, `artistSort_type` INTEGER NOT NULL, `artistSort_direction` INTEGER NOT NULL, `playlistSort_type` INTEGER NOT NULL, `playlistSort_direction` INTEGER NOT NULL, `collectionSort_type` INTEGER NOT NULL, `collectionSort_direction` INTEGER NOT NULL, `player_isPlayerSwipeEnabled` INTEGER NOT NULL, `player_soulMixTotalByList` INTEGER NOT NULL, `player_isRewindEnabled` INTEGER NOT NULL, `player_isMinimisedSongProgressionShown` INTEGER NOT NULL, `player_playerVolume` REAL NOT NULL, `player_isRemoteLyricsFetchEnabled` INTEGER NOT NULL, `player_sharedPlayedListMusicUpdateMillis` INTEGER NOT NULL, `colorTheme_type` INTEGER NOT NULL, `colorTheme_dynamicPlayerTheme` INTEGER NOT NULL, `colorTheme_dynamicPlaylistTheme` INTEGER NOT NULL, `colorTheme_dynamicOtherViewsTheme` INTEGER NOT NULL, `colorTheme_forceDarkTheme` INTEGER NOT NULL, `colorTheme_forceLightTheme` INTEGER NOT NULL, `colorTheme_usedTheme` TEXT NOT NULL, `colorTheme_paletteSeed` TEXT NOT NULL, `mainPage_isQuickAccessShown` INTEGER NOT NULL, `mainPage_arePlaylistsShown` INTEGER NOT NULL, `mainPage_areCollectionsShown` INTEGER NOT NULL, `mainPage_areAlbumsShown` INTEGER NOT NULL, `mainPage_areArtistsShown` INTEGER NOT NULL, `mainPage_areMusicsByMonthsShown` INTEGER NOT NULL, `mainPage_areMusicsByFoldersShown` INTEGER NOT NULL, `mainPage_isUsingVerticalAccessBar` INTEGER NOT NULL, `mainPage_initialTab` TEXT NOT NULL, `cover_isActivated` INTEGER NOT NULL, `cover_folderModePath` TEXT, `cover_fileModePath` TEXT, `cover_coverFileName` TEXT, `cover_fileExtension` TEXT, `cover_whiteSpaceRuleActivated` INTEGER NOT NULL, `cover_whiteSpaceReplacement` TEXT NOT NULL, `cover_lowerCaseRule` INTEGER, `cover_mode` TEXT NOT NULL, `desktop_windowHeight` REAL NOT NULL, `desktop_windowWidth` REAL NOT NULL, `desktop_isFullscreen` INTEGER NOT NULL, `release_isFetchReleaseFromGithubEnabled` INTEGER NOT NULL, `release_shouldShowReleaseBottomEnableHint` INTEGER NOT NULL, `release_latestViewedReleaseTag` TEXT, `release_latestReleaseName` TEXT, `release_latestReleaseTag` TEXT, `release_latestReleaseGithubUrl` TEXT, `release_latestReleaseChangelog` TEXT, `album_shouldShowTrackPositionInAlbumView` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasMusicsBeenFetched",
+            "columnName": "hasMusicsBeenFetched",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isMusicFileModificationOn",
+            "columnName": "isMusicFileModificationOn",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "musicSort.type",
+            "columnName": "musicSort_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "musicSort.direction",
+            "columnName": "musicSort_direction",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "albumSort.type",
+            "columnName": "albumSort_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "albumSort.direction",
+            "columnName": "albumSort_direction",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "artistSort.type",
+            "columnName": "artistSort_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "artistSort.direction",
+            "columnName": "artistSort_direction",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playlistSort.type",
+            "columnName": "playlistSort_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playlistSort.direction",
+            "columnName": "playlistSort_direction",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "collectionSort.type",
+            "columnName": "collectionSort_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "collectionSort.direction",
+            "columnName": "collectionSort_direction",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "player.isPlayerSwipeEnabled",
+            "columnName": "player_isPlayerSwipeEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "player.soulMixTotalByList",
+            "columnName": "player_soulMixTotalByList",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "player.isRewindEnabled",
+            "columnName": "player_isRewindEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "player.isMinimisedSongProgressionShown",
+            "columnName": "player_isMinimisedSongProgressionShown",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "player.playerVolume",
+            "columnName": "player_playerVolume",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "player.isRemoteLyricsFetchEnabled",
+            "columnName": "player_isRemoteLyricsFetchEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "player.sharedPlayedListMusicUpdateMillis",
+            "columnName": "player_sharedPlayedListMusicUpdateMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colorTheme.type",
+            "columnName": "colorTheme_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colorTheme.dynamicPlayerTheme",
+            "columnName": "colorTheme_dynamicPlayerTheme",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colorTheme.dynamicPlaylistTheme",
+            "columnName": "colorTheme_dynamicPlaylistTheme",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colorTheme.dynamicOtherViewsTheme",
+            "columnName": "colorTheme_dynamicOtherViewsTheme",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colorTheme.forceDarkTheme",
+            "columnName": "colorTheme_forceDarkTheme",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colorTheme.forceLightTheme",
+            "columnName": "colorTheme_forceLightTheme",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colorTheme.usedTheme",
+            "columnName": "colorTheme_usedTheme",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colorTheme.paletteSeed",
+            "columnName": "colorTheme_paletteSeed",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mainPage.isQuickAccessShown",
+            "columnName": "mainPage_isQuickAccessShown",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mainPage.arePlaylistsShown",
+            "columnName": "mainPage_arePlaylistsShown",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mainPage.areCollectionsShown",
+            "columnName": "mainPage_areCollectionsShown",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mainPage.areAlbumsShown",
+            "columnName": "mainPage_areAlbumsShown",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mainPage.areArtistsShown",
+            "columnName": "mainPage_areArtistsShown",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mainPage.areMusicsByMonthsShown",
+            "columnName": "mainPage_areMusicsByMonthsShown",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mainPage.areMusicsByFoldersShown",
+            "columnName": "mainPage_areMusicsByFoldersShown",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mainPage.isUsingVerticalAccessBar",
+            "columnName": "mainPage_isUsingVerticalAccessBar",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mainPage.initialTab",
+            "columnName": "mainPage_initialTab",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cover.isActivated",
+            "columnName": "cover_isActivated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cover.folderModePath",
+            "columnName": "cover_folderModePath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cover.fileModePath",
+            "columnName": "cover_fileModePath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cover.coverFileName",
+            "columnName": "cover_coverFileName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cover.fileExtension",
+            "columnName": "cover_fileExtension",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cover.whiteSpaceRuleActivated",
+            "columnName": "cover_whiteSpaceRuleActivated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cover.whiteSpaceReplacement",
+            "columnName": "cover_whiteSpaceReplacement",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cover.lowerCaseRule",
+            "columnName": "cover_lowerCaseRule",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "cover.mode",
+            "columnName": "cover_mode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "desktop.windowHeight",
+            "columnName": "desktop_windowHeight",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "desktop.windowWidth",
+            "columnName": "desktop_windowWidth",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "desktop.isFullscreen",
+            "columnName": "desktop_isFullscreen",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "release.isFetchReleaseFromGithubEnabled",
+            "columnName": "release_isFetchReleaseFromGithubEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "release.shouldShowReleaseBottomEnableHint",
+            "columnName": "release_shouldShowReleaseBottomEnableHint",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "release.latestViewedReleaseTag",
+            "columnName": "release_latestViewedReleaseTag",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "release.latestReleaseName",
+            "columnName": "release_latestReleaseName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "release.latestReleaseTag",
+            "columnName": "release_latestReleaseTag",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "release.latestReleaseGithubUrl",
+            "columnName": "release_latestReleaseGithubUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "release.latestReleaseChangelog",
+            "columnName": "release_latestReleaseChangelog",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "album.shouldShowTrackPositionInAlbumView",
+            "columnName": "album_shouldShowTrackPositionInAlbumView",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
       }
     ],
     "views": [
@@ -1694,7 +2038,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '50858d522d3e430626896ea5c0d2114f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0e06a8b4702136de013ff39a3af2568a')"
     ]
   }
 }

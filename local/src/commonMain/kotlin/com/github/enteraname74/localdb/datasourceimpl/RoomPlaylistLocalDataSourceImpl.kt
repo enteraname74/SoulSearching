@@ -9,8 +9,7 @@ import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.domain.model.SortType
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.util.DateUtils
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toPlaylist
@@ -27,7 +26,7 @@ import kotlin.uuid.Uuid
 
 internal class RoomPlaylistLocalDataSourceImpl(
     private val appDatabase: AppDatabase,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
 ) : PlaylistLocalDataSource {
     override suspend fun upsert(playlist: Playlist) {
         appDatabase.playlistDao.upsert(
@@ -103,10 +102,9 @@ internal class RoomPlaylistLocalDataSourceImpl(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getAllPaged(): Flow<PagingData<PlaylistPreview>> =
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_DIRECTION_KEY).flatMapLatest { direction ->
-            settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_TYPE_KEY).flatMapLatest { type ->
-                val sortDirection = SortDirection.from(direction) ?: SortDirection.DEFAULT
-                val sortType = SortType.from(type) ?: SortType.DEFAULT
+        settingsRepository.observeSettings().flatMapLatest { settings ->
+                val sortDirection = settings.playlistSortSetup.direction
+                val sortType = settings.playlistSortSetup.type
 
                 Pager(
                     config = PagingConfig(
@@ -134,17 +132,12 @@ internal class RoomPlaylistLocalDataSourceImpl(
                 ).flow.map { pagingData ->
                     pagingData.map { it.toPlaylistPreview() }
                 }
-            }
         }
 
     override suspend fun getAll(page: Int, pageSize: Int): List<PlaylistPreview> {
-        val direction: SortDirection = SortDirection
-            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_DIRECTION_KEY))
-            ?: SortDirection.DEFAULT
-
-        val type: SortType = SortType
-            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_TYPE_KEY))
-            ?: SortType.DEFAULT
+        val sortSettings = settingsRepository.getSettings().playlistSortSetup
+        val direction = sortSettings.direction
+        val type = sortSettings.type
 
         val limit = pageSize.takeIf { it > 0 } ?: DEFAULT_ANDROID_AUTO_PAGE_SIZE
         val offset = page.coerceAtLeast(0) * limit

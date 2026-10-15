@@ -1,9 +1,8 @@
 package com.github.enteraname74.soulsearching.coreui.theme.color
 
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingTheme
+
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingElement
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.soulsearching.domain.model.settings.settingElementOf
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 data class SoulSearchingDarkLightTheme(
@@ -81,8 +80,3 @@ object SoulSearchingDarkLightThemes {
         themes.find { it.id == id } ?: mainTheme
 }
 
-val SoulSearchingSettingsKeys.ColorTheme.USED_COLOR_THEME_ID_KEY: SoulSearchingSettingElement<String>
-    get() = settingElementOf(
-        key = "USED_COLOR_THEME_ID_KEY",
-        defaultValue = SoulSearchingTheme.MainTheme.value,
-    )
