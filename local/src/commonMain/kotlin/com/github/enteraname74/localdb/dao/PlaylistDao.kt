@@ -258,7 +258,17 @@ interface PlaylistDao {
     )
     suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid>
 
-    @Query("UPDATE RoomPlaylist SET remoteId = NULL, cover_simple_url = NULL")
+    @Query(
+        """
+            UPDATE RoomPlaylist SET
+                remoteId = NULL,
+                cover_simple_url = NULL,
+                cover_grid_topStart_url = NULL,
+                cover_grid_topEnd_url = NULL,
+                cover_grid_bottomStart_url = NULL,
+                cover_grid_bottomEnd_url = NULL
+        """
+    )
     suspend fun deleteAllRemoteFields()
 
     @Query(

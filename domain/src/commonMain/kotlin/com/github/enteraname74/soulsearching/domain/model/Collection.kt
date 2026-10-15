@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.domain.model
 
 import com.github.enteraname74.soulsearching.domain.util.DateUtils
+import kotlin.math.max
 import kotlin.time.Clock
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
-import kotlin.math.max
 
 data class Collection(
     val collectionId: Uuid = Uuid.random(),
@@ -20,21 +20,25 @@ data class Collection(
         when (mergeMode) {
             MergeMode.LocalFirst -> copy(
                 remoteId = cloudCollectionInfo.id,
-                cover = buildNewCover(cloudCollectionInfo.coverPath),
+                cover = buildNewCover(remoteCover = cloudCollectionInfo.cover),
             )
             MergeMode.RemoteFirst -> copy(
                 remoteId = cloudCollectionInfo.id,
                 name = cloudCollectionInfo.name,
-                cover = buildNewCover(cloudCollectionInfo.coverPath),
+                cover = buildNewCover(remoteCover = cloudCollectionInfo.cover),
                 nbPlayed = max(nbPlayed, cloudCollectionInfo.nbPlayed),
                 isInQuickAccess = cloudCollectionInfo.isInQuickAccess,
                 lastUpdatedMillis = cloudCollectionInfo.lastUpdateAtMillis,
             )
         }
 
-    private fun buildNewCover(cloudCoverPath: String?): Cover? = when {
-        cover is Cover.Url -> cloudCoverPath?.let { Cover.Url(it, null) }
-        cover?.isEmpty() == false -> cover
-        else -> cloudCoverPath?.let { Cover.Url(it, null) }
-    }
+    private fun buildNewCover(
+        remoteCover: RemoteCover?,
+    ): Cover? =
+        when {
+            // If the saved cover is already an Url, we will always overwrite it with latest cloud info
+            (cover is Cover.Url) || ((cover as? Cover.Grid)?.list?.all { it is Cover.Url } == true) -> remoteCover?.toCover()
+            cover?.isEmpty() == false -> cover
+            else -> remoteCover?.toCover()
+        }
 }

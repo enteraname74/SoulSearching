@@ -532,6 +532,9 @@ internal class RoomMusicLocalDataSourceImpl(
             "RoomArtist",
             "RoomPlaylist",
             "RoomMusicPlaylist",
+            "RoomCollection",
+            "RoomCollectionArtist",
+            "RoomCollectionAlbum",
             "RoomMusicArtist",
             emitInitialState = false,
         ).map { }

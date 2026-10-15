@@ -68,7 +68,6 @@ val remoteModule: Module = module {
         PlaylistRemoteDataSourceImpl(
             client = get(named(HttpClientNames.CLOUD)),
             cloudPreferencesDataSource = get(),
-            workDispatcher = get(),
         )
     }
 
@@ -76,7 +75,6 @@ val remoteModule: Module = module {
         CollectionRemoteDataSourceImpl(
             client = get(named(HttpClientNames.CLOUD)),
             cloudPreferencesDataSource = get(),
-            workDispatcher = get(),
         )
     }
 

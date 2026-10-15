@@ -3,8 +3,7 @@ package com.github.enteraname74.soulsearching.remote.datasourceimpl
 import com.github.enteraname74.soulsearching.domain.model.CloudCollection
 import com.github.enteraname74.soulsearching.domain.model.CollectionSyncData
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
-import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
-import com.github.enteraname74.soulsearching.remote.ext.appendCoverFile
+import com.github.enteraname74.soulsearching.remote.ext.appendCoverData
 import com.github.enteraname74.soulsearching.remote.ext.appendJson
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
@@ -29,7 +28,6 @@ import kotlin.uuid.Uuid
 class CollectionRemoteDataSourceImpl(
     private val client: HttpClient,
     private val cloudPreferencesDataSource: CloudPreferencesDataSource,
-    private val workDispatcher: WorkDispatcher,
 ) : CollectionRemoteDataSource {
     override suspend fun getDeletedRemoteCollectionIds(idsToCheck: List<Uuid>): List<Uuid> =
         client.withUrl(cloudPreferencesDataSource.getUrl()).post(CollectionResource.Check()) {
@@ -56,12 +54,14 @@ class CollectionRemoteDataSourceImpl(
         }
     }
 
-    override suspend fun upload(collection: CollectionSyncData, coverPath: String?): CloudCollection =
+    override suspend fun upload(collection: CollectionSyncData, coversData: List<ByteArray?>): CloudCollection =
         client.submitFormWithBinaryData(
             url = "${cloudPreferencesDataSource.getUrl()}/collection",
             formData = formData {
                 appendJson("metadata", collection.toCollectionUpload())
-                coverPath?.let { appendCoverFile("cover", it, workDispatcher) }
+                coversData.take(4).forEachIndexed { index, data ->
+                    data?.let { appendCoverData("cover$index", it) }
+                }
             }
         ) {
             method = HttpMethod.Post

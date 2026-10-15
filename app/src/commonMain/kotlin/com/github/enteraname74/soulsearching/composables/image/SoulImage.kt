@@ -179,7 +179,9 @@ private fun GridCover(
     LaunchedEffect(successfulCellEvents) {
         while (true) {
             successfulCellEvents.receive()
-            withFrameNanos { }
+            do {
+                withFrameNanos { }
+            } while (graphicsLayer.size.width <= 0 || graphicsLayer.size.height <= 0)
             currentOnSuccess?.invoke(graphicsLayer.toImageBitmap())
         }
     }

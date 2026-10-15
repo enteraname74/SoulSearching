@@ -1,25 +1,25 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
-import com.github.enteraname74.soulsearching.domain.model.Collection
-import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
-import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
-import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
 import com.github.enteraname74.soulsearching.domain.model.CloudCollection
+import com.github.enteraname74.soulsearching.domain.model.Collection
+import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
+import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
 import com.github.enteraname74.soulsearching.domain.model.CollectionSyncData
+import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
 import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.repository.CollectionRepository
+import com.github.enteraname74.soulsearching.domain.repository.CoverRepository
 import com.github.enteraname74.soulsearching.repository.datasource.collection.CollectionLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.collection.CollectionRemoteDataSource
-import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
 class CollectionRepositoryImpl(
     private val collectionLocalDataSource: CollectionLocalDataSource,
     private val collectionRemoteDataSource: CollectionRemoteDataSource,
-    private val coverFileManager: CoverFileManager,
+    private val coverRepository: CoverRepository,
 ) : CollectionRepository {
     override fun getAllPaged(): Flow<PagingData<CollectionPreview>> =
         collectionLocalDataSource.getAllPaged()
@@ -114,22 +114,32 @@ class CollectionRepositoryImpl(
     override suspend fun uploadToCloud(collection: CollectionSyncData): CloudCollection =
         collectionRemoteDataSource.upload(
             collection = collection,
-            coverPath = (collection.collection.cover as? Cover.CoverFile)?.fileCoverId?.let {
-                coverFileManager.getCoverPath(it)
-            },
+            coversData = collection.collection.cover.toUploadData(),
         )
+
+    private suspend fun Cover?.toUploadData(): List<ByteArray?> = when (this) {
+        null -> emptyList()
+        is Cover.CoverFile -> listOf(coverRepository.getCoverData(this))
+        is Cover.Url -> listOf(null)
+        is Cover.Grid -> list.map { (it as? Cover.CoverFile)?.let { coverFile -> coverRepository.getCoverData(coverFile) } }
+    }
 
     override suspend fun getDeletedRemoteCollectionIds(): List<Uuid> =
         collectionRemoteDataSource.getDeletedRemoteCollectionIds(
             collectionLocalDataSource.getAllRemoteIdsPossessedByUser()
         )
 
-    override suspend fun deleteAllFromRemote(remoteIds: List<Uuid>) =
+    override suspend fun deleteAllFromRemote(remoteIds: List<Uuid>) {
         collectionLocalDataSource.deleteAllFromRemote(remoteIds)
+    }
 
-    override suspend fun deleteAllRemoteFields() = collectionLocalDataSource.deleteAllRemoteFields()
+    override suspend fun deleteAllRemoteFields() {
+        collectionLocalDataSource.deleteAllRemoteFields()
+    }
 
-    override suspend fun deleteAllEmpty() = collectionLocalDataSource.deleteAllEmpty()
+    override suspend fun deleteAllEmpty() {
+        collectionLocalDataSource.deleteAllEmpty()
+    }
 
     override suspend fun getLatestUpdatedAt(): Long? = collectionLocalDataSource.getLatestUpdatedAt()
 

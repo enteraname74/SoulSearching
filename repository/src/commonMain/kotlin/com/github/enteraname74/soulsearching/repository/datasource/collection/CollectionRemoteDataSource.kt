@@ -9,5 +9,5 @@ interface CollectionRemoteDataSource {
     suspend fun getDeletedRemoteCollectionIds(idsToCheck: List<Uuid>): List<Uuid>
     suspend fun getOfUser(lastUpdateAt: Long?, maxPerPage: Int?, page: Int?): List<CloudCollection>
     suspend fun deleteAll(ids: List<Uuid>): SoulResult<Unit>
-    suspend fun upload(collection: CollectionSyncData, coverPath: String?): CloudCollection
+    suspend fun upload(collection: CollectionSyncData, coversData: List<ByteArray?>): CloudCollection
 }

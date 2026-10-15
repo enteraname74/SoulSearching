@@ -1,6 +1,8 @@
 package com.github.enteraname74.soulsearching.remote.model.upload
 
 import com.github.enteraname74.soulsearching.domain.model.CollectionSyncData
+import com.github.enteraname74.soulsearching.domain.model.CoverMode
+import com.github.enteraname74.soulsearching.domain.model.toCoverMode
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
@@ -12,6 +14,7 @@ data class CollectionUpload(
     val isInQuickAccess: Boolean,
     val artistIds: List<Uuid>,
     val albumIds: List<Uuid>,
+    val coverMode: CoverMode? = null,
 )
 
 fun CollectionSyncData.toCollectionUpload(): CollectionUpload = CollectionUpload(
@@ -21,4 +24,5 @@ fun CollectionSyncData.toCollectionUpload(): CollectionUpload = CollectionUpload
     isInQuickAccess = collection.isInQuickAccess,
     artistIds = artistRemoteIds,
     albumIds = albumRemoteIds,
+    coverMode = collection.cover.toCoverMode(),
 )
