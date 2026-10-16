@@ -5,6 +5,7 @@ import com.github.enteraname74.soulsearching.domain.model.Release
 import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.domain.model.SortType
 import com.github.enteraname74.soulsearching.domain.model.settings.ColorThemeType
+import com.github.enteraname74.soulsearching.domain.model.settings.CloudSoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingTheme
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +15,11 @@ import kotlinx.coroutines.flow.map
 interface SettingsRepository {
     fun observeSettings(): Flow<SoulSearchingSettings>
     suspend fun getSettings(): SoulSearchingSettings
+    fun observeCloudSettings(): Flow<CloudSoulSearchingSettings>
+    suspend fun getCloudSettingsUpdatedAfter(lastUpdateAt: Long?): CloudSoulSearchingSettings?
+    suspend fun fetchCloudSettings(lastUpdateAt: Long?): CloudSoulSearchingSettings?
+    suspend fun upsertCloudSettings(settings: CloudSoulSearchingSettings): CloudSoulSearchingSettings
+    suspend fun applyCloudSettings(settings: CloudSoulSearchingSettings, lastSettingsSyncMillis: Long)
 
     fun observePlayer() = observeSettings().map { it.playerSettings }.distinctUntilChanged()
     fun observeColorTheme() = observeSettings().map { it.colorTheme }.distinctUntilChanged()

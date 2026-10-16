@@ -14,6 +14,7 @@ import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearching
 @Entity
 data class RoomSoulSearchingSettings(
     @PrimaryKey val id: String = Id,
+    val updatedAtMillis: Long = 0L,
     val hasMusicsBeenFetched: Boolean = false,
     val isMusicFileModificationOn: Boolean = true,
     @Embedded(prefix = "musicSort_") val musicSort: RoomSortSetup = RoomSortSetup(),
@@ -29,10 +30,12 @@ data class RoomSoulSearchingSettings(
     @Embedded(prefix = "release_") val release: RoomReleaseSettings = RoomReleaseSettings(),
     @Embedded(prefix = "album_") val album: RoomAlbumSettings = RoomAlbumSettings(),
 ) {
-    companion object { const val Id = "SoulSearchingSettings" }
+    companion object {
+        const val Id: String = "SoulSearchingSettings"
+    }
 
-    fun toDomain() = SoulSearchingSettings(
-        hasMusicsBeenFetched, isMusicFileModificationOn, musicSort.toDomain(), albumSort.toDomain(),
+    fun toDomain(): SoulSearchingSettings = SoulSearchingSettings(
+        updatedAtMillis, hasMusicsBeenFetched, isMusicFileModificationOn, musicSort.toDomain(), albumSort.toDomain(),
         artistSort.toDomain(), playlistSort.toDomain(), collectionSort.toDomain(), player.toDomain(),
         colorTheme.toDomain(), mainPage.toDomain(), cover.toDomain(), desktop.toDomain(),
         release.toDomain(), album.toDomain(),
@@ -40,7 +43,7 @@ data class RoomSoulSearchingSettings(
 }
 
 data class RoomSortSetup(val type: SortType = SortType.DEFAULT, val direction: SortDirection = SortDirection.DEFAULT) {
-    fun toDomain() = SoulSearchingSettings.SortSetup(type, direction)
+    fun toDomain(): SoulSearchingSettings.SortSetup = SoulSearchingSettings.SortSetup(type, direction)
 }
 
 data class RoomPlayerSettings(
@@ -51,7 +54,17 @@ data class RoomPlayerSettings(
     val playerVolume: Float = 1f,
     val isRemoteLyricsFetchEnabled: Boolean = false,
     val sharedPlayedListMusicUpdateMillis: Long = 0L,
-) { fun toDomain() = SoulSearchingSettings.PlayerSettings(isPlayerSwipeEnabled, soulMixTotalByList, isRewindEnabled, isMinimisedSongProgressionShown, playerVolume, isRemoteLyricsFetchEnabled, sharedPlayedListMusicUpdateMillis) }
+) {
+    fun toDomain(): SoulSearchingSettings.PlayerSettings = SoulSearchingSettings.PlayerSettings(
+        isPlayerSwipeEnabled,
+        soulMixTotalByList,
+        isRewindEnabled,
+        isMinimisedSongProgressionShown,
+        playerVolume,
+        isRemoteLyricsFetchEnabled,
+        sharedPlayedListMusicUpdateMillis
+    )
+}
 
 data class RoomColorThemeSettings(
     val type: ColorThemeType = ColorThemeType.DYNAMIC,
@@ -62,7 +75,18 @@ data class RoomColorThemeSettings(
     val forceLightTheme: Boolean = false,
     val usedTheme: SoulSearchingTheme = SoulSearchingTheme.MainTheme,
     val paletteSeed: String = "DarkVibrant",
-) { fun toDomain() = SoulSearchingSettings.ColorTheme(type, dynamicPlayerTheme, dynamicPlaylistTheme, dynamicOtherViewsTheme, forceDarkTheme, forceLightTheme, usedTheme, paletteSeed) }
+) {
+    fun toDomain(): SoulSearchingSettings.ColorTheme = SoulSearchingSettings.ColorTheme(
+        type,
+        dynamicPlayerTheme,
+        dynamicPlaylistTheme,
+        dynamicOtherViewsTheme,
+        forceDarkTheme,
+        forceLightTheme,
+        usedTheme,
+        paletteSeed
+    )
+}
 
 data class RoomMainPageSettings(
     val isQuickAccessShown: Boolean = true,
@@ -74,7 +98,19 @@ data class RoomMainPageSettings(
     val areMusicsByFoldersShown: Boolean = true,
     val isUsingVerticalAccessBar: Boolean = true,
     val initialTab: String = "QUICK_ACCESS",
-) { fun toDomain() = SoulSearchingSettings.MainPage(isQuickAccessShown, arePlaylistsShown, areCollectionsShown, areAlbumsShown, areArtistsShown, areMusicsByMonthsShown, areMusicsByFoldersShown, isUsingVerticalAccessBar, initialTab) }
+) {
+    fun toDomain(): SoulSearchingSettings.MainPage = SoulSearchingSettings.MainPage(
+        isQuickAccessShown,
+        arePlaylistsShown,
+        areCollectionsShown,
+        areAlbumsShown,
+        areArtistsShown,
+        areMusicsByMonthsShown,
+        areMusicsByFoldersShown,
+        isUsingVerticalAccessBar,
+        initialTab
+    )
+}
 
 data class RoomCoverSettings(
     val isActivated: Boolean = false,
@@ -86,10 +122,23 @@ data class RoomCoverSettings(
     val whiteSpaceReplacement: String = "",
     val lowerCaseRule: Boolean? = null,
     val mode: CoverFolderRetriever.DynamicMode = CoverFolderRetriever.DynamicMode.Folder,
-) { fun toDomain() = SoulSearchingSettings.Cover(CoverFolderRetriever(isActivated, folderModePath, fileModePath, coverFileName, fileExtension, CoverFolderRetriever.WhiteSpaceRule(whiteSpaceRuleActivated, whiteSpaceReplacement), lowerCaseRule, mode)) }
+) {
+    fun toDomain(): SoulSearchingSettings.Cover = SoulSearchingSettings.Cover(
+        CoverFolderRetriever(
+            isActivated,
+            folderModePath,
+            fileModePath,
+            coverFileName,
+            fileExtension,
+            CoverFolderRetriever.WhiteSpaceRule(whiteSpaceRuleActivated, whiteSpaceReplacement),
+            lowerCaseRule,
+            mode
+        )
+    )
+}
 
 data class RoomDesktopSettings(val windowHeight: Float = 600f, val windowWidth: Float = 800f, val isFullscreen: Boolean = false) {
-    fun toDomain() = SoulSearchingSettings.Desktop(windowHeight, windowWidth, isFullscreen)
+    fun toDomain(): SoulSearchingSettings.Desktop = SoulSearchingSettings.Desktop(windowHeight, windowWidth, isFullscreen)
 }
 
 data class RoomReleaseSettings(
@@ -101,7 +150,7 @@ data class RoomReleaseSettings(
     val latestReleaseGithubUrl: String? = null,
     val latestReleaseChangelog: String? = null,
 ) {
-    fun toDomain() = SoulSearchingSettings.ReleaseSettings(
+    fun toDomain(): SoulSearchingSettings.ReleaseSettings = SoulSearchingSettings.ReleaseSettings(
         isFetchReleaseFromGithubEnabled,
         shouldShowReleaseBottomEnableHint,
         latestViewedReleaseTag,
@@ -112,10 +161,11 @@ data class RoomReleaseSettings(
 }
 
 data class RoomAlbumSettings(val shouldShowTrackPositionInAlbumView: Boolean = true) {
-    fun toDomain() = SoulSearchingSettings.Album(shouldShowTrackPositionInAlbumView)
+    fun toDomain(): SoulSearchingSettings.Album = SoulSearchingSettings.Album(shouldShowTrackPositionInAlbumView)
 }
 
-fun SoulSearchingSettings.toRoom() = RoomSoulSearchingSettings(
+fun SoulSearchingSettings.toRoom(): RoomSoulSearchingSettings = RoomSoulSearchingSettings(
+    updatedAtMillis = updatedAtMillis,
     hasMusicsBeenFetched = hasMusicsBeenFetched,
     isMusicFileModificationOn = isMusicFileModificationOn,
     musicSort = RoomSortSetup(musicSortSetup.type, musicSortSetup.direction),
@@ -123,11 +173,58 @@ fun SoulSearchingSettings.toRoom() = RoomSoulSearchingSettings(
     artistSort = RoomSortSetup(artistSortSetup.type, artistSortSetup.direction),
     playlistSort = RoomSortSetup(playlistSortSetup.type, playlistSortSetup.direction),
     collectionSort = RoomSortSetup(collectionSortSetup.type, collectionSortSetup.direction),
-    player = RoomPlayerSettings(playerSettings.isPlayerSwipeEnabled, playerSettings.soulMixTotalByList, playerSettings.isRewindEnabled, playerSettings.isMinimisedSongProgressionShown, playerSettings.playerVolume, playerSettings.isRemoteLyricsFetchEnabled, playerSettings.sharedPlayedListMusicUpdateMillis),
-    colorTheme = RoomColorThemeSettings(colorTheme.type, colorTheme.dynamicPlayerTheme, colorTheme.dynamicPlaylistTheme, colorTheme.dynamicOtherViewsTheme, colorTheme.forceDarkTheme, colorTheme.forceLightTheme, colorTheme.usedTheme, colorTheme.paletteSeed),
-    mainPage = RoomMainPageSettings(mainPage.isQuickAccessShown, mainPage.arePlaylistsShown, mainPage.areCollectionsShown, mainPage.areAlbumsShown, mainPage.areArtistsShown, mainPage.areMusicsByMonthsShown, mainPage.areMusicsByFoldersShown, mainPage.isUsingVerticalAccessBar, mainPage.initialTab),
-    cover = cover.artistCoverFolderRetriever.let { RoomCoverSettings(it.isActivated, it.folderModePath, it.fileModePath, it.coverFileName, it.fileExtension, it.whiteSpaceRule.isActivated, it.whiteSpaceRule.replacement, it.lowerCaseRule, it.mode) },
+    player = RoomPlayerSettings(
+        playerSettings.isPlayerSwipeEnabled,
+        playerSettings.soulMixTotalByList,
+        playerSettings.isRewindEnabled,
+        playerSettings.isMinimisedSongProgressionShown,
+        playerSettings.playerVolume,
+        playerSettings.isRemoteLyricsFetchEnabled,
+        playerSettings.sharedPlayedListMusicUpdateMillis
+    ),
+    colorTheme = RoomColorThemeSettings(
+        colorTheme.type,
+        colorTheme.dynamicPlayerTheme,
+        colorTheme.dynamicPlaylistTheme,
+        colorTheme.dynamicOtherViewsTheme,
+        colorTheme.forceDarkTheme,
+        colorTheme.forceLightTheme,
+        colorTheme.usedTheme,
+        colorTheme.paletteSeed
+    ),
+    mainPage = RoomMainPageSettings(
+        mainPage.isQuickAccessShown,
+        mainPage.arePlaylistsShown,
+        mainPage.areCollectionsShown,
+        mainPage.areAlbumsShown,
+        mainPage.areArtistsShown,
+        mainPage.areMusicsByMonthsShown,
+        mainPage.areMusicsByFoldersShown,
+        mainPage.isUsingVerticalAccessBar,
+        mainPage.initialTab
+    ),
+    cover = cover.artistCoverFolderRetriever.let {
+        RoomCoverSettings(
+            it.isActivated,
+            it.folderModePath,
+            it.fileModePath,
+            it.coverFileName,
+            it.fileExtension,
+            it.whiteSpaceRule.isActivated,
+            it.whiteSpaceRule.replacement,
+            it.lowerCaseRule,
+            it.mode
+        )
+    },
     desktop = RoomDesktopSettings(desktop.windowHeight, desktop.windowWidth, desktop.isFullscreen),
-    release = RoomReleaseSettings(release.isFetchReleaseFromGithubEnabled, release.shouldShowReleaseBottomEnableHint, release.latestViewedReleaseTag, release.latestRelease?.name, release.latestRelease?.tag, release.latestRelease?.githubUrl, release.latestRelease?.changelog),
+    release = RoomReleaseSettings(
+        release.isFetchReleaseFromGithubEnabled,
+        release.shouldShowReleaseBottomEnableHint,
+        release.latestViewedReleaseTag,
+        release.latestRelease?.name,
+        release.latestRelease?.tag,
+        release.latestRelease?.githubUrl,
+        release.latestRelease?.changelog
+    ),
     album = RoomAlbumSettings(album.shouldShowTrackPositionInAlbumView),
 )

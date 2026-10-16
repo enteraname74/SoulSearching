@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SoulSearchingSettings(
+    val updatedAtMillis: Long = 0L,
     val hasMusicsBeenFetched: Boolean = false,
     val isMusicFileModificationOn: Boolean = true,
     val musicSortSetup: SortSetup = SortSetup(),

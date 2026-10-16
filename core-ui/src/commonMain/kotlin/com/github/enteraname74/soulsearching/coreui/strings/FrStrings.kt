@@ -379,6 +379,7 @@ object FrStrings : Strings {
     override val cloudSettingsText: String = "URL du service"
     override val cloudSettingsLastGeneralSync: String = "Dernière synchronisation globale"
     override val cloudSettingsLastStatisticsSync: String = "Dernière synchronisation des statistiques"
+    override val cloudSettingsLastSettingsSync: String = "Dernière synchronisation des paramètres"
     override val cloudSettingsNoSync: String = "Aucune synchronisation"
     override val cloudUrlFieldLabel: String = "URL du service"
 
@@ -513,6 +514,7 @@ object FrStrings : Strings {
 
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
+            SyncDataWithCloudUseCase.State.SyncingSettings -> "Synchronisation des paramètres"
             is SyncDataWithCloudUseCase.State.Failure -> "Erreur"
             SyncDataWithCloudUseCase.State.Finish -> "Fin"
             SyncDataWithCloudUseCase.State.Idle -> "En attente"
@@ -538,6 +540,7 @@ object FrStrings : Strings {
 
     override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
+            SyncDataWithCloudUseCase.State.SyncingSettings -> "Synchronisation des paramètres avec le cloud"
             is SyncDataWithCloudUseCase.State.Failure -> "Une erreur est survenue durant la synchronisation : ${state.error ?: "Error inconnue"}"
             SyncDataWithCloudUseCase.State.Finish -> "La synchronisation est terminée"
             SyncDataWithCloudUseCase.State.Idle -> "En attente de synchronisation"

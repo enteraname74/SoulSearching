@@ -17,7 +17,7 @@ internal class EndMigrationCallback(
         connection.executeSQL(
             """
             INSERT OR IGNORE INTO RoomSoulSearchingSettings (
-                id, hasMusicsBeenFetched, isMusicFileModificationOn,
+                id, updatedAtMillis, hasMusicsBeenFetched, isMusicFileModificationOn,
                 musicSort_type, musicSort_direction, albumSort_type, albumSort_direction,
                 artistSort_type, artistSort_direction, playlistSort_type, playlistSort_direction,
                 collectionSort_type, collectionSort_direction,
@@ -38,7 +38,7 @@ internal class EndMigrationCallback(
                 release_latestReleaseGithubUrl, release_latestReleaseChangelog,
                 album_shouldShowTrackPositionInAlbumView
             ) VALUES (
-                ${settings.id.sql()}, ${settings.hasMusicsBeenFetched.sql()}, ${settings.isMusicFileModificationOn.sql()},
+                ${settings.id.sql()}, ${settings.updatedAtMillis}, ${settings.hasMusicsBeenFetched.sql()}, ${settings.isMusicFileModificationOn.sql()},
                 ${settings.musicSort.type.value}, ${settings.musicSort.direction.value}, ${settings.albumSort.type.value}, ${settings.albumSort.direction.value},
                 ${settings.artistSort.type.value}, ${settings.artistSort.direction.value}, ${settings.playlistSort.type.value}, ${settings.playlistSort.direction.value},
                 ${settings.collectionSort.type.value}, ${settings.collectionSort.direction.value},

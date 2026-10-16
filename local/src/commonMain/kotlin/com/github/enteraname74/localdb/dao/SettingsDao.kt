@@ -11,6 +11,9 @@ interface SettingsDao {
     @Query("SELECT * FROM RoomSoulSearchingSettings WHERE id = 'SoulSearchingSettings'")
     fun observe(): Flow<RoomSoulSearchingSettings>
 
+    @Query("SELECT * FROM RoomSoulSearchingSettings WHERE id = 'SoulSearchingSettings'")
+    suspend fun get(): RoomSoulSearchingSettings
+
     @Upsert
     suspend fun upsert(settings: RoomSoulSearchingSettings)
 }

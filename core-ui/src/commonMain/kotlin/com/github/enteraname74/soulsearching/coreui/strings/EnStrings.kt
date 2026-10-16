@@ -379,6 +379,7 @@ object EnStrings : Strings {
     override val cloudSettingsText: String = "Host URL"
     override val cloudSettingsLastGeneralSync: String = "Last general sync"
     override val cloudSettingsLastStatisticsSync: String = "Last statistics sync"
+    override val cloudSettingsLastSettingsSync: String = "Last settings sync"
     override val cloudSettingsNoSync: String = "No sync"
     override val cloudUrlFieldLabel: String = "Host URL"
     override val cloudNameFieldLabel: String = "Username"
@@ -510,6 +511,7 @@ object EnStrings : Strings {
 
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
+            SyncDataWithCloudUseCase.State.SyncingSettings -> "Syncing settings"
             is SyncDataWithCloudUseCase.State.Failure -> "Failure"
             SyncDataWithCloudUseCase.State.Idle -> "Waiting"
             SyncDataWithCloudUseCase.State.NoMusicsToSend -> "No songs to send"
@@ -535,6 +537,7 @@ object EnStrings : Strings {
 
     override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
+            SyncDataWithCloudUseCase.State.SyncingSettings -> "Synchronizing settings with cloud"
             is SyncDataWithCloudUseCase.State.Failure -> "A failure occurred during the syncing process: ${state.error ?: "Unknown error"}"
             SyncDataWithCloudUseCase.State.Finish -> "Syncing process has finished"
             SyncDataWithCloudUseCase.State.Idle -> "Waiting for syncing to start"

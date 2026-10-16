@@ -7,4 +7,5 @@ data class CloudPreferences(
     val url: String?,
     val lastSyncMillis: Long?,
     val lastStatisticsSyncMillis: Long?,
+    val lastSettingsSyncMillis: Long?,
 )

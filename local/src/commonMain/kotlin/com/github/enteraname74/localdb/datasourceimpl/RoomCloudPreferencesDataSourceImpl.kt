@@ -61,6 +61,14 @@ class RoomCloudPreferencesDataSourceImpl(
     override suspend fun getLastStatsSyncMillis(): Long? =
         appDatabase.cloudPreferencesDao.observe().firstOrNull()?.lastStatisticsSyncMillis
 
+    override suspend fun setLastSettingsSyncMillis(millis: Long) {
+        val preferences = appDatabase.cloudPreferencesDao.get() ?: RoomCloudPreferences()
+        appDatabase.cloudPreferencesDao.upsert(preferences.copy(lastSettingsSyncMillis = millis))
+    }
+
+    override suspend fun getLastSettingsSyncMillis(): Long? =
+        appDatabase.cloudPreferencesDao.get()?.lastSettingsSyncMillis
+
     override suspend fun getLastSyncMillis(): Long? =
         appDatabase.cloudPreferencesDao.observe().firstOrNull()?.lastSyncMillis
 

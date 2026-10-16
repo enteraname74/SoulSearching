@@ -8,10 +8,12 @@ import com.github.enteraname74.soulsearching.remote.datasourceimpl.MusicRemoteDa
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.PlayerRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.PlaylistRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.ReleaseDataSourceImpl
+import com.github.enteraname74.soulsearching.remote.datasourceimpl.SettingsRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.UserInscriptionCodeRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.UserRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.utils.PlayerUserCommunication
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.SettingsRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.code.UserInscriptionCodeRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.cover.CoverRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.collection.CollectionRemoteDataSource
@@ -46,6 +48,12 @@ val remoteModule: Module = module {
         )
     }
     factoryOf(::UserRemoteDataSourceImpl) bind UserRemoteDataSource::class
+    factory<SettingsRemoteDataSource> {
+        SettingsRemoteDataSourceImpl(
+            client = get(named(HttpClientNames.CLOUD)),
+            cloudPreferencesDataSource = get(),
+        )
+    }
 
     factory<PlayerRemoteDataSource> {
         PlayerRemoteDataSourceImpl(

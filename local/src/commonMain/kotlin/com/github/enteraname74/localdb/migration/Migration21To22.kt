@@ -9,6 +9,7 @@ import com.github.enteraname74.localdb.view.ROOM_PLAYLIST_PREVIEW_QUERY_V22
 object Migration21To22 : Migration(21, 22) {
     override suspend fun migrate(connection: SQLiteConnection) {
         connection.createSettingsTable()
+        connection.executeSQL("ALTER TABLE RoomCloudPreferences ADD COLUMN lastSettingsSyncMillis INTEGER")
         connection.dropCoverViews()
         connection.migrateCoverColumns()
 
@@ -116,6 +117,7 @@ object Migration21To22 : Migration(21, 22) {
             """
             CREATE TABLE IF NOT EXISTS RoomSoulSearchingSettings (
                 id TEXT NOT NULL PRIMARY KEY,
+                updatedAtMillis INTEGER NOT NULL,
                 hasMusicsBeenFetched INTEGER NOT NULL,
                 isMusicFileModificationOn INTEGER NOT NULL,
                 musicSort_type INTEGER NOT NULL, musicSort_direction INTEGER NOT NULL,

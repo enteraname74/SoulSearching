@@ -385,6 +385,7 @@ interface Strings {
     val cloudSettingsText: String
     val cloudSettingsLastGeneralSync: String
     val cloudSettingsLastStatisticsSync: String
+    val cloudSettingsLastSettingsSync: String
     val cloudSettingsNoSync: String
     val cloudUrlFieldLabel: String
     val cloudNameFieldLabel: String
