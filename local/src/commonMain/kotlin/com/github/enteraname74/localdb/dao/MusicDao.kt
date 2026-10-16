@@ -934,10 +934,13 @@ interface MusicDao {
         """
             SELECT m.* FROM RoomMusic m 
             CROSS JOIN RoomCloudPreferences cp
-            WHERE m.scope != 'SharedPlayedList' AND m.lastUpdateMillis IS NULL
-               OR cp.lastSyncMillis IS NULL
-               OR m.lastUpdateMillis > cp.lastSyncMillis 
-               OR m.remoteId IS NULL
+            WHERE m.scope != 'SharedPlayedList'
+              AND (
+                  m.lastUpdateMillis IS NULL
+                  OR cp.lastSyncMillis IS NULL
+                  OR m.lastUpdateMillis > cp.lastSyncMillis
+                  OR m.remoteId IS NULL
+              )
         """
     )
     suspend fun getAllToSendToCloud(): List<RoomCompleteMusic>

@@ -10,6 +10,13 @@ object Migration21To22 : Migration(21, 22) {
     override suspend fun migrate(connection: SQLiteConnection) {
         connection.createSettingsTable()
         connection.executeSQL("ALTER TABLE RoomCloudPreferences ADD COLUMN lastSettingsSyncMillis INTEGER")
+        connection.executeSQL(
+            """
+            UPDATE RoomCloudPreferences
+            SET lastSyncMillis = NULL,
+                lastStatisticsSyncMillis = NULL
+            """.trimIndent()
+        )
         connection.dropCoverViews()
         connection.migrateCoverColumns()
 
