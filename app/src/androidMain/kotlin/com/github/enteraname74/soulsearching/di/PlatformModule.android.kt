@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopU
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.feature.permission.PermissionManager
 import com.github.enteraname74.soulsearching.feature.musiclink.MusicLinkHandler
+import com.github.enteraname74.soulsearching.feature.settings.aboutpage.LatestReleaseDownloader
 import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.CloudBackgroundSyncJobAndroidImpl
 import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.CloudSyncWorker
 import com.github.enteraname74.soulsearching.util.FileOperation
@@ -19,6 +20,7 @@ import org.koin.dsl.module
 actual val platformModule: Module = module {
     singleOf(::FeedbackPopUpAndroidManager) bind FeedbackPopUpManager::class
     singleOf(::MusicLinkHandler)
+    singleOf(::LatestReleaseDownloader)
     factory {
         FileOperation(get<Context>())
     }

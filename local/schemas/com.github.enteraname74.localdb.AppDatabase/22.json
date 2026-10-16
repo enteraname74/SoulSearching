@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 22,
-    "identityHash": "dd9ae5b0ab189cddc54a421068584cad",
+    "identityHash": "d4672705264334cefbd1022511efd120",
     "entities": [
       {
         "tableName": "RoomMusic",
@@ -1668,7 +1668,7 @@
       },
       {
         "tableName": "RoomSoulSearchingSettings",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `updatedAtMillis` INTEGER NOT NULL, `hasMusicsBeenFetched` INTEGER NOT NULL, `isMusicFileModificationOn` INTEGER NOT NULL, `musicSort_type` INTEGER NOT NULL, `musicSort_direction` INTEGER NOT NULL, `albumSort_type` INTEGER NOT NULL, `albumSort_direction` INTEGER NOT NULL, `artistSort_type` INTEGER NOT NULL, `artistSort_direction` INTEGER NOT NULL, `playlistSort_type` INTEGER NOT NULL, `playlistSort_direction` INTEGER NOT NULL, `collectionSort_type` INTEGER NOT NULL, `collectionSort_direction` INTEGER NOT NULL, `player_isPlayerSwipeEnabled` INTEGER NOT NULL, `player_soulMixTotalByList` INTEGER NOT NULL, `player_isRewindEnabled` INTEGER NOT NULL, `player_isMinimisedSongProgressionShown` INTEGER NOT NULL, `player_playerVolume` REAL NOT NULL, `player_isRemoteLyricsFetchEnabled` INTEGER NOT NULL, `player_sharedPlayedListMusicUpdateMillis` INTEGER NOT NULL, `colorTheme_type` INTEGER NOT NULL, `colorTheme_dynamicPlayerTheme` INTEGER NOT NULL, `colorTheme_dynamicPlaylistTheme` INTEGER NOT NULL, `colorTheme_dynamicOtherViewsTheme` INTEGER NOT NULL, `colorTheme_forceDarkTheme` INTEGER NOT NULL, `colorTheme_forceLightTheme` INTEGER NOT NULL, `colorTheme_usedTheme` TEXT NOT NULL, `colorTheme_paletteSeed` TEXT NOT NULL, `mainPage_isQuickAccessShown` INTEGER NOT NULL, `mainPage_arePlaylistsShown` INTEGER NOT NULL, `mainPage_areCollectionsShown` INTEGER NOT NULL, `mainPage_areAlbumsShown` INTEGER NOT NULL, `mainPage_areArtistsShown` INTEGER NOT NULL, `mainPage_areMusicsByMonthsShown` INTEGER NOT NULL, `mainPage_areMusicsByFoldersShown` INTEGER NOT NULL, `mainPage_isUsingVerticalAccessBar` INTEGER NOT NULL, `mainPage_initialTab` TEXT NOT NULL, `cover_isActivated` INTEGER NOT NULL, `cover_folderModePath` TEXT, `cover_fileModePath` TEXT, `cover_coverFileName` TEXT, `cover_fileExtension` TEXT, `cover_whiteSpaceRuleActivated` INTEGER NOT NULL, `cover_whiteSpaceReplacement` TEXT NOT NULL, `cover_lowerCaseRule` INTEGER, `cover_mode` TEXT NOT NULL, `desktop_windowHeight` REAL NOT NULL, `desktop_windowWidth` REAL NOT NULL, `desktop_isFullscreen` INTEGER NOT NULL, `release_isFetchReleaseFromGithubEnabled` INTEGER NOT NULL, `release_shouldShowReleaseBottomEnableHint` INTEGER NOT NULL, `release_latestViewedReleaseTag` TEXT, `release_latestReleaseName` TEXT, `release_latestReleaseTag` TEXT, `release_latestReleaseGithubUrl` TEXT, `release_latestReleaseChangelog` TEXT, `album_shouldShowTrackPositionInAlbumView` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `updatedAtMillis` INTEGER NOT NULL, `hasMusicsBeenFetched` INTEGER NOT NULL, `isMusicFileModificationOn` INTEGER NOT NULL, `musicSort_type` INTEGER NOT NULL, `musicSort_direction` INTEGER NOT NULL, `albumSort_type` INTEGER NOT NULL, `albumSort_direction` INTEGER NOT NULL, `artistSort_type` INTEGER NOT NULL, `artistSort_direction` INTEGER NOT NULL, `playlistSort_type` INTEGER NOT NULL, `playlistSort_direction` INTEGER NOT NULL, `collectionSort_type` INTEGER NOT NULL, `collectionSort_direction` INTEGER NOT NULL, `player_isPlayerSwipeEnabled` INTEGER NOT NULL, `player_soulMixTotalByList` INTEGER NOT NULL, `player_isRewindEnabled` INTEGER NOT NULL, `player_isMinimisedSongProgressionShown` INTEGER NOT NULL, `player_playerVolume` REAL NOT NULL, `player_isRemoteLyricsFetchEnabled` INTEGER NOT NULL, `player_sharedPlayedListMusicUpdateMillis` INTEGER NOT NULL, `colorTheme_type` INTEGER NOT NULL, `colorTheme_dynamicPlayerTheme` INTEGER NOT NULL, `colorTheme_dynamicPlaylistTheme` INTEGER NOT NULL, `colorTheme_dynamicOtherViewsTheme` INTEGER NOT NULL, `colorTheme_forceDarkTheme` INTEGER NOT NULL, `colorTheme_forceLightTheme` INTEGER NOT NULL, `colorTheme_usedTheme` TEXT NOT NULL, `colorTheme_paletteSeed` TEXT NOT NULL, `mainPage_isQuickAccessShown` INTEGER NOT NULL, `mainPage_arePlaylistsShown` INTEGER NOT NULL, `mainPage_areCollectionsShown` INTEGER NOT NULL, `mainPage_areAlbumsShown` INTEGER NOT NULL, `mainPage_areArtistsShown` INTEGER NOT NULL, `mainPage_areMusicsByMonthsShown` INTEGER NOT NULL, `mainPage_areMusicsByFoldersShown` INTEGER NOT NULL, `mainPage_isUsingVerticalAccessBar` INTEGER NOT NULL, `mainPage_initialTab` TEXT NOT NULL, `cover_isActivated` INTEGER NOT NULL, `cover_folderModePath` TEXT, `cover_fileModePath` TEXT, `cover_coverFileName` TEXT, `cover_fileExtension` TEXT, `cover_whiteSpaceRuleActivated` INTEGER NOT NULL, `cover_whiteSpaceReplacement` TEXT NOT NULL, `cover_lowerCaseRule` INTEGER, `cover_mode` TEXT NOT NULL, `desktop_windowHeight` REAL NOT NULL, `desktop_windowWidth` REAL NOT NULL, `desktop_isFullscreen` INTEGER NOT NULL, `release_isFetchReleaseFromGithubEnabled` INTEGER NOT NULL, `release_shouldShowReleaseBottomEnableHint` INTEGER NOT NULL, `release_latestViewedReleaseTag` TEXT, `release_latestReleaseName` TEXT, `release_latestReleaseTag` TEXT, `release_latestReleaseGithubUrl` TEXT, `release_latestReleaseChangelog` TEXT, `release_latestReleaseAssetName` TEXT, `release_latestReleaseAssetDownloadUrl` TEXT, `release_latestReleaseAssetSize` INTEGER, `release_latestReleaseAssetSha256` TEXT, `album_shouldShowTrackPositionInAlbumView` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -2003,6 +2003,26 @@
             "affinity": "TEXT"
           },
           {
+            "fieldPath": "release.latestReleaseAssetName",
+            "columnName": "release_latestReleaseAssetName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "release.latestReleaseAssetDownloadUrl",
+            "columnName": "release_latestReleaseAssetDownloadUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "release.latestReleaseAssetSize",
+            "columnName": "release_latestReleaseAssetSize",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "release.latestReleaseAssetSha256",
+            "columnName": "release_latestReleaseAssetSha256",
+            "affinity": "TEXT"
+          },
+          {
             "fieldPath": "album.shouldShowTrackPositionInAlbumView",
             "columnName": "album_shouldShowTrackPositionInAlbumView",
             "affinity": "INTEGER",
@@ -2049,7 +2069,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dd9ae5b0ab189cddc54a421068584cad')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd4672705264334cefbd1022511efd120')"
     ]
   }
 }

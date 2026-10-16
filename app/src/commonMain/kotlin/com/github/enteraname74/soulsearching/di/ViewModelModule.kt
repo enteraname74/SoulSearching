@@ -24,7 +24,7 @@ import com.github.enteraname74.soulsearching.feature.multipleartistschoice.Multi
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailViewHolder
 import com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching.AppInitSongFetchingViewHolder
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
-import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutViewModel
+import com.github.enteraname74.soulsearching.feature.settings.aboutpage.SettingsAboutViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudViewHolder
@@ -67,7 +67,7 @@ internal val viewModelModule: Module = module {
     viewModelOf(::SettingsColorSeedViewModel)
     viewModelOf(::SettingsAdvancedViewModel)
     viewModelOf(::SettingsArtistCoverMethodViewModel)
-    viewModelOf(::SettingsAboutViewModel)
+    viewModelOf(::SettingsAboutViewHolder)
     viewModelOf(::SettingsCloudViewHolder)
     viewModelOf(::SettingsCloudSettingsViewHolder)
     viewModelOf(::SettingsCloudSignInViewHolder)
