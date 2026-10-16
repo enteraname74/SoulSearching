@@ -2,13 +2,10 @@ package com.github.enteraname74.soulsearching
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.soulsearching.domain.util.LocalDatabaseVersion
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import com.github.enteraname74.soulsearching.domain.util.isWeb
 import com.github.enteraname74.soulsearching.feature.application.MainAppDestination
-import com.github.enteraname74.soulsearching.feature.migration.MigrationDestination
 import com.github.enteraname74.soulsearching.feature.musiclink.MusicLinkHandler
 import com.github.enteraname74.soulsearching.feature.onboarding.OnboardingDestination
 import com.github.enteraname74.soulsearching.feature.permission.PermissionManager
@@ -19,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ApplicationViewModel(
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
     private val musicLinkHandler: MusicLinkHandler,
     permissionManager: PermissionManager,
 ) : ViewModel() {
@@ -35,20 +32,15 @@ class ApplicationViewModel(
     init {
         viewModelScope.launch {
             val initialRoute = when {
-                settings.get(SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION) < LocalDatabaseVersion.VERSION ->
-                    MigrationDestination
                 /*
                 Onboarding is only useful for platforms with local songs (android and desktop)
                  */
-                !settings.get(SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY) && !SoulPlatformUtils.isWeb ->
+                !settingsRepository.getSettings().hasMusicsBeenFetched && !SoulPlatformUtils.isWeb ->
                     OnboardingDestination
                 else -> {
                     if (SoulPlatformUtils.isWeb) {
                         // For web platforms, we consider the fetching of musics to be already done (there is no need for one)
-                        settings.set(
-                            key = SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY.key,
-                            value = true,
-                        )
+                        settingsRepository.setHasMusicsBeenFetched(true)
                     }
                     MainAppDestination
                 }
@@ -65,9 +57,7 @@ class ApplicationViewModel(
         _state.update { it.copy(hasNotificationPermissions = granted) }
     }
 
-    private fun isApplicationReady(): Boolean =
-        settings.get(SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION) == LocalDatabaseVersion.VERSION
-            && settings.get(SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY)
+    private suspend fun isApplicationReady(): Boolean = settingsRepository.getSettings().hasMusicsBeenFetched
 
     fun handleMusicLink(link: String) {
         viewModelScope.launch {

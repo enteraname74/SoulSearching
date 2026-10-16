@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist
 
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -9,16 +8,14 @@ import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfold
 
 class ArtistCoverFolderRetrieverViewModelDelegate(
     private val commonArtistUseCase: CommonArtistUseCase,
-    settings: SoulSearchingSettings,
+    settingsRepository: SettingsRepository,
     loadingManager: LoadingManager,
     workDispatcher: WorkDispatcher,
 ): CoverFolderRetrieverViewModelDelegate(
-    settings = settings,
+    settingsRepository = settingsRepository,
     loadingManager = loadingManager,
     workDispatcher = workDispatcher,
 ) {
-    override val settingsKey: String = SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER.key
-
     override suspend fun handleToggleActivation(isActivated: Boolean) {
         commonArtistUseCase.toggleCoverFolderMode(isActivated)
     }

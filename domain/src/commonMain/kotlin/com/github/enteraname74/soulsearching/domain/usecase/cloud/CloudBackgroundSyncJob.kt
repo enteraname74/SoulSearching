@@ -8,6 +8,7 @@ interface CloudBackgroundSyncJob {
 
     suspend fun launchIfPossible(
         syncStats: Boolean,
+        onlySettings: Boolean = false,
     )
 
     suspend fun cancelIfNeeded()

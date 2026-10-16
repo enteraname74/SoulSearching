@@ -32,6 +32,10 @@ abstract class SoulTextFieldHolder(
 
     fun isValid(): Boolean = isValid(value)
 
+    fun updateValue(newValue: String) {
+        value = newValue
+    }
+
     open fun onValueChanged(newValue: String) {
         value = newValue
         onChange(newValue)

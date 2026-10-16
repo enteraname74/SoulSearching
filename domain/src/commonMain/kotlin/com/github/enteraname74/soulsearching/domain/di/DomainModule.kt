@@ -12,6 +12,8 @@ import com.github.enteraname74.soulsearching.domain.usecase.artist.DeleteArtistU
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.UploadCollectionToCloudUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.UpsertCloudCollectionUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.GetPeriodStatisticsUseCase
@@ -78,6 +80,8 @@ val domainModule: Module = module {
 
     // Collection
     factoryOf(::CommonCollectionUseCase)
+    factoryOf(::UpsertCloudCollectionUseCase)
+    factoryOf(::UploadCollectionToCloudUseCase)
 
     // ImageCover
     factoryOf(::CommonCoverUseCase)

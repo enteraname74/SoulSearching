@@ -2,32 +2,31 @@ package com.github.enteraname74.soulsearching.feature.settings.personalisation.m
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.launch
 import kotlin.math.max
 
 class SettingsMainPagePersonalisationViewModel(
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
     viewSettingsManager: ViewSettingsManager,
     workDispatcher: WorkDispatcher,
 ) : ViewModel() {
     val state: StateFlow<SettingsMainPagePersonalisationState> = combine(
         viewSettingsManager.visibleElements,
-        settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR),
-        settings.getFlowOn(ElementEnum.INITIAL_TAB_SETTINGS_KEY)
-    ) { elements, isUsingVerticalAccess, initialTab ->
-        val savedInitial: ElementEnum? = ElementEnum.fromRaw(initialTab)
+        settingsRepository.observeMainPage(),
+    ) { elements, settings ->
+        val savedInitial: ElementEnum? = ElementEnum.fromRaw(settings.initialTab)
         val selectableTabs = elements.toElementEnums()
 
         SettingsMainPagePersonalisationState.Data(
             elementsVisibility = elements,
-            isUsingVerticalAccessBar = isUsingVerticalAccess,
+            isUsingVerticalAccessBar = settings.isUsingVerticalAccessBar,
             selectableTabs = selectableTabs,
             initialTab = savedInitial?.takeIf { it in selectableTabs } ?: selectableTabs.first(),
         )
@@ -42,30 +41,21 @@ class SettingsMainPagePersonalisationViewModel(
         val elementsVisibility =
             (state.value as? SettingsMainPagePersonalisationState.Data)?.elementsVisibility ?: return
 
-        settings.set(
-            key = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN.key,
-            value = !elementsVisibility.isQuickAccessShown
-        )
+        viewModelScope.launch { settingsRepository.setQuickAccessShown(!elementsVisibility.isQuickAccessShown) }
     }
 
     fun togglePlaylistsVisibility() {
         val elementsVisibility =
             (state.value as? SettingsMainPagePersonalisationState.Data)?.elementsVisibility ?: return
 
-        settings.set(
-            key = SoulSearchingSettingsKeys.MainPage.IS_PLAYLISTS_SHOWN.key,
-            value = !elementsVisibility.arePlaylistsShown
-        )
+        viewModelScope.launch { settingsRepository.setPlaylistsShown(!elementsVisibility.arePlaylistsShown) }
     }
 
     fun toggleCollectionsVisibility() {
         val elementsVisibility =
             (state.value as? SettingsMainPagePersonalisationState.Data)?.elementsVisibility ?: return
 
-        settings.set(
-            key = SoulSearchingSettingsKeys.MainPage.ARE_COLLECTIONS_SHOWN.key,
-            value = !elementsVisibility.areCollectionsShown,
-        )
+        viewModelScope.launch { settingsRepository.setCollectionsShown(!elementsVisibility.areCollectionsShown) }
     }
 
 
@@ -73,43 +63,28 @@ class SettingsMainPagePersonalisationViewModel(
         val elementsVisibility =
             (state.value as? SettingsMainPagePersonalisationState.Data)?.elementsVisibility ?: return
 
-        settings.set(
-            key = SoulSearchingSettingsKeys.MainPage.IS_ALBUMS_SHOWN.key,
-            value = !elementsVisibility.areAlbumsShown
-        )
+        viewModelScope.launch { settingsRepository.setAlbumsShown(!elementsVisibility.areAlbumsShown) }
     }
 
     fun toggleArtistsVisibility() {
         val elementsVisibility =
             (state.value as? SettingsMainPagePersonalisationState.Data)?.elementsVisibility ?: return
 
-        settings.set(
-            key = SoulSearchingSettingsKeys.MainPage.IS_ARTISTS_SHOWN.key,
-            value = !elementsVisibility.areArtistsShown
-        )
+        viewModelScope.launch { settingsRepository.setArtistsShown(!elementsVisibility.areArtistsShown) }
     }
 
     fun toggleMusicFoldersVisibility() {
         val elementsVisibility =
             (state.value as? SettingsMainPagePersonalisationState.Data)?.elementsVisibility ?: return
 
-        settings.set(
-            key = SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_FOLDERS_SHOWN.key,
-            value = !elementsVisibility.areMusicFoldersShown
-        )
+        viewModelScope.launch { settingsRepository.setMusicsByFoldersShown(!elementsVisibility.areMusicFoldersShown) }
     }
 
     fun setShortcutAccessChoice(isVerticalAccessSelected: Boolean) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR.key,
-            value = isVerticalAccessSelected,
-        )
+        viewModelScope.launch { settingsRepository.setUsingVerticalAccessBar(isVerticalAccessSelected) }
     }
 
     fun setInitialTab(elementEnum: ElementEnum) {
-        settings.set(
-            key = ElementEnum.INITIAL_TAB_SETTINGS_KEY.key,
-            value = elementEnum.name,
-        )
+        viewModelScope.launch { settingsRepository.setInitialTab(elementEnum.name) }
     }
 }

@@ -2,8 +2,7 @@ package com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetc
 
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.domain.model.Folder
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
@@ -15,7 +14,7 @@ class AppInitSongFetchingViewHolder(
     private val musicFetcher: MusicFetcher,
     private val workDispatcher: WorkDispatcher,
     private val commonFolderUseCase: CommonFolderUseCase,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
 ) : SoulViewModelHolderV2<AppInitSongFetchingNavScope, AppInitSongFetchingState>() {
     override fun getInitialState(): AppInitSongFetchingState =
         AppInitSongFetchingState(
@@ -46,10 +45,7 @@ class AppInitSongFetchingViewHolder(
             )
 
             if (musicFetcher.optimizedCachedData.musicsByPath.isEmpty()) {
-                settings.set(
-                    SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY.key,
-                    true
-                )
+                settingsRepository.setHasMusicsBeenFetched(true)
                 navigate { toApp() }
             } else {
                 // Set folders for the manage folder screen

@@ -15,11 +15,10 @@ import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
 import com.github.enteraname74.soulsearching.domain.model.player.PlayedListState
 import com.github.enteraname74.soulsearching.domain.model.player.PlayedListType
 import com.github.enteraname74.soulsearching.domain.model.player.PlayerMode
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.user.User
 import com.github.enteraname74.soulsearching.domain.repository.LyricsRepository
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
@@ -57,7 +56,7 @@ import kotlin.uuid.Uuid
 class PlayerViewModel(
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
     private val colorThemeManager: ColorThemeManager,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     val multiSelectionManager: MultiSelectionManager,
@@ -93,20 +92,17 @@ class PlayerViewModel(
         initialValue = LyricsFetchState.FetchingLyrics
     )
 
-    val viewSettingsState: StateFlow<PlayerViewSettingsState> = combine(
-        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN),
-    ) { canSwipeCover, isMinimisedSongProgressionShown ->
+    val viewSettingsState: StateFlow<PlayerViewSettingsState> = settingsRepository.observePlayer().map { settings ->
         PlayerViewSettingsState(
-            canSwipeCover = canSwipeCover,
-            isMinimisedSongProgressionShown = isMinimisedSongProgressionShown,
+            canSwipeCover = settings.isPlayerSwipeEnabled,
+            isMinimisedSongProgressionShown = settings.isMinimisedSongProgressionShown,
         )
     }.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
         PlayerViewSettingsState(
-            canSwipeCover = SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED.defaultValue,
-            isMinimisedSongProgressionShown = SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN.defaultValue,
+            canSwipeCover = true,
+            isMinimisedSongProgressionShown = true,
         )
     )
 
@@ -117,7 +113,7 @@ class PlayerViewModel(
         playbackManager.playedList,
         _dialogState,
         commonUserUseCase.observeUser(),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME),
+        settingsRepository.observePlayer().map { it.playerVolume },
     ) { playbackMainState, playedList, dialog, user, playerVolume ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
@@ -258,10 +254,7 @@ class PlayerViewModel(
             toggleFavoriteState = { toggleFavoriteState() }.takeIf { currentMusicScope != Scope.SharedPlayedList },
             seekTo = { newPosition: Int -> seekTo(newPosition) }.takeIf { scope.isAdmin },
             setPlayerVolume = { newVolume ->
-                settings.set(
-                    key = SoulSearchingSettingsKeys.Player.PLAYER_VOLUME.key,
-                    value = newVolume,
-                )
+                viewModelScope.launch { settingsRepository.setPlayerVolume(newVolume) }
             }
         )
 

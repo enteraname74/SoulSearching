@@ -20,7 +20,6 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.ModifyPlaylistViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.managefolders.ManageFoldersViewHolder
-import com.github.enteraname74.soulsearching.feature.migration.MigrationViewModel
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceViewHolder
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailViewHolder
 import com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching.AppInitSongFetchingViewHolder
@@ -107,8 +106,6 @@ internal val viewModelModule: Module = module {
     // Other
     singleOf(::ColorThemeManager)
     singleOf(::ViewSettingsManager)
-
-    viewModelOf(::MigrationViewModel)
 
     viewModelOf(::AddToPlaylistViewHolder)
 

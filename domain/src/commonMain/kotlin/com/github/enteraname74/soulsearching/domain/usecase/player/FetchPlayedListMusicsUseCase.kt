@@ -5,8 +5,7 @@ import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.player.PlayerMusic
 import com.github.enteraname74.soulsearching.domain.model.player.PlayerMusicUser
 import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayerMusic
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
 import com.github.enteraname74.soulsearching.domain.usecase.music.CloudMusicToMusicUseCase
@@ -17,7 +16,7 @@ class FetchPlayedListMusicsUseCase(
     private val playerRepository: PlayerRepository,
     private val musicRepository: MusicRepository,
     private val cloudMusicToMusicUseCase: CloudMusicToMusicUseCase,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
 ) {
     suspend operator fun invoke(playedListId: Uuid): Pair<List<PlayerMusic>, List<PlayerMusicUser>> {
         val newUpdateTimestamp = DateUtils.now()
@@ -45,10 +44,7 @@ class FetchPlayedListMusicsUseCase(
             playerMusicUsers.add(playerMusicUser)
         }
 
-        settings.set(
-            key = SoulSearchingSettingsKeys.Player.SHARED_PLAYED_LIST_MUSIC_UPDATE_MILLIS.key,
-            value = newUpdateTimestamp,
-        )
+        settingsRepository.setSharedPlayedListMusicUpdateMillis(newUpdateTimestamp)
         return Pair(musics, playerMusicUsers)
     }
 }

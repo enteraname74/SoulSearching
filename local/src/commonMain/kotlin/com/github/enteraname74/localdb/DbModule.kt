@@ -14,6 +14,7 @@ import com.github.enteraname74.localdb.datasourceimpl.RoomMusicLocalDataSourceIm
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicPlaylistDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomPlayerLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomPlaylistLocalDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomSettingsLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomUserInscriptionCodeLocalDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomUserLocalDataSourceImpl
 import com.github.enteraname74.localdb.migration.EndMigrationCallback
@@ -23,6 +24,7 @@ import com.github.enteraname74.localdb.migration.Migration18To19
 import com.github.enteraname74.localdb.migration.Migration19To20
 import com.github.enteraname74.localdb.migration.Migration20To21
 import com.github.enteraname74.localdb.migration.Migration21To22
+import com.github.enteraname74.localdb.settings.LegacySettingsReader
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.CloudPreferencesDataSource
@@ -37,6 +39,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.listeningstat
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.SettingsLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.user.UserLocalDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.module.Module
@@ -67,7 +70,7 @@ private fun Scope.getAppDatabase(
         )
         .addCallback(
             EndMigrationCallback(
-                settings = get(),
+                legacySettingsReader = get(),
             )
         )
         .build()
@@ -99,4 +102,6 @@ val localModule: Module = module {
     singleOf(::RoomUserLocalDataSourceImpl) bind UserLocalDataSource::class
     singleOf(::RoomDeviceLocalDataSourceImpl) bind DeviceLocalDataSource::class
     singleOf(::RoomListeningStatisticsLocalDataSourceImpl) bind ListeningStatisticsLocalDataSource::class
+    singleOf(::RoomSettingsLocalDataSourceImpl) bind SettingsLocalDataSource::class
+    singleOf(::LegacySettingsReader)
 }

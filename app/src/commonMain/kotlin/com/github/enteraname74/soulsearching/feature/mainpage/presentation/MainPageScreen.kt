@@ -78,14 +78,16 @@ fun MainPageRoute(
         mainPageViewModel.consumeNavigation()
     }
 
-    MainPageScreenView(
-        mainPageViewModel = mainPageViewModel,
-        tabs = tabs,
-        currentEnumPage = currentPage,
-        isUsingVerticalAccessBar = isUsingVerticalAccessBar,
-        shouldShowNewVersionPin = shouldShowNewVersionPin,
-        searchAllState = searchAllState,
-    )
+    if (currentPage != null && tabs.isNotEmpty()) {
+        MainPageScreenView(
+            mainPageViewModel = mainPageViewModel,
+            tabs = tabs,
+            currentEnumPage = currentPage,
+            isUsingVerticalAccessBar = isUsingVerticalAccessBar,
+            shouldShowNewVersionPin = shouldShowNewVersionPin,
+            searchAllState = searchAllState,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -102,10 +104,10 @@ fun MainPageScreenView(
 ) {
     val pagerState = rememberPagerState(
         pageCount = { tabs.size },
-        initialPage = mainPageViewModel.initialPage,
+        initialPage = tabs.indexOfFirst { it.type == currentEnumPage }.coerceAtLeast(0),
     )
 
-    LaunchedEffect(currentEnumPage) {
+    LaunchedEffect(currentEnumPage, tabs) {
         val vmCurrentPage: Int = tabs.indexOfFirst { it.type == currentEnumPage }
         if (vmCurrentPage != pagerState.currentPage && vmCurrentPage != -1) {
             pagerState.animateScrollToPage(vmCurrentPage)

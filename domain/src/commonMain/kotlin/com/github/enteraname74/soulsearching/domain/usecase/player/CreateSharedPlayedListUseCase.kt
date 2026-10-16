@@ -2,8 +2,7 @@ package com.github.enteraname74.soulsearching.domain.usecase.player
 
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedList
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
 import kotlin.uuid.Uuid
 
@@ -11,7 +10,7 @@ class CreateSharedPlayedListUseCase(
     private val syncMusicForPlayerIfNeededUseCase: SyncMusicForPlayerIfNeededUseCase,
     private val fetchPlayedListMusicsUseCase: FetchPlayedListMusicsUseCase,
     private val playerRepository: PlayerRepository,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
     private val registerSharedPlayedListEventsListenerUseCase: RegisterSharedPlayedListEventsListenerUseCase,
 ) {
     suspend operator fun invoke(musicIds: List<Uuid>): SoulResult<Unit> = SoulResult.runCatching {
@@ -26,10 +25,7 @@ class CreateSharedPlayedListUseCase(
         )
 
         // We will reset the update timestamp to ensure that we fetch all elements:
-        settings.set(
-            key = SoulSearchingSettingsKeys.Player.SHARED_PLAYED_LIST_MUSIC_UPDATE_MILLIS.key,
-            value = 0L,
-        )
+        settingsRepository.setSharedPlayedListMusicUpdateMillis(0L)
 
         val data = fetchPlayedListMusicsUseCase(
             playedListId = sharedPlayedList.id,

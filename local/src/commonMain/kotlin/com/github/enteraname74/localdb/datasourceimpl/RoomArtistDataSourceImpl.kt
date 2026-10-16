@@ -10,8 +10,7 @@ import com.github.enteraname74.soulsearching.domain.model.ArtistPreview
 import com.github.enteraname74.soulsearching.domain.model.ArtistWithMusics
 import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.domain.model.SortType
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.util.DateUtils
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toArtist
@@ -31,7 +30,7 @@ import kotlin.uuid.Uuid
  */
 internal class RoomArtistDataSourceImpl(
     private val appDatabase: AppDatabase,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
 ) : ArtistDataSource {
     override suspend fun upsert(artist: Artist) {
         appDatabase.withWriteTransaction {
@@ -84,7 +83,7 @@ internal class RoomArtistDataSourceImpl(
     override suspend fun toggleCoverFolderMode(isActivated: Boolean) {
         if (isActivated) {
             appDatabase.artistDao.activateCoverFolderMode(
-                key = SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER.key
+                key = ARTIST_COVER_FOLDER_RETRIEVER_KEY
             )
         } else {
             appDatabase.artistDao.deactivateCoverFolderMode()
@@ -111,10 +110,9 @@ internal class RoomArtistDataSourceImpl(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getAllPaged(): Flow<PagingData<ArtistPreview>> =
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_DIRECTION_KEY).flatMapLatest { direction ->
-            settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_TYPE_KEY).flatMapLatest { type ->
-                val sortDirection = SortDirection.from(direction) ?: SortDirection.DEFAULT
-                val sortType = SortType.from(type) ?: SortType.DEFAULT
+        settingsRepository.observeSettings().flatMapLatest { settings ->
+                val sortDirection = settings.artistSortSetup.direction
+                val sortType = settings.artistSortSetup.type
 
                 Pager(
                     config = PagingConfig(
@@ -142,17 +140,12 @@ internal class RoomArtistDataSourceImpl(
                 ).flow.map { pagingData ->
                     pagingData.map { it.toArtistPreview() }
                 }
-            }
         }
 
     override suspend fun getAll(page: Int, pageSize: Int): List<ArtistPreview> {
-        val direction: SortDirection = SortDirection
-            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_DIRECTION_KEY))
-            ?: SortDirection.DEFAULT
-
-        val type: SortType = SortType
-            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_TYPE_KEY))
-            ?: SortType.DEFAULT
+        val sortSettings = settingsRepository.getSettings().artistSortSetup
+        val direction = sortSettings.direction
+        val type = sortSettings.type
 
         val limit = pageSize.takeIf { it > 0 } ?: DEFAULT_ANDROID_AUTO_PAGE_SIZE
         val offset = page.coerceAtLeast(0) * limit
@@ -230,7 +223,9 @@ internal class RoomArtistDataSourceImpl(
         appDatabase.artistDao.getPotentialMultipleArtists().map { it.toArtist() }
 
     override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =
-        appDatabase.playlistDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
+        appDatabase.artistDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
 }
+
+private const val ARTIST_COVER_FOLDER_RETRIEVER_KEY = "ARTIST_COVER_FOLDER_RETRIEVER"
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

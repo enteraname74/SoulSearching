@@ -53,6 +53,7 @@ kotlin {
             implementation(libs.androidx.sqlite.async)
 
             implementation(libs.kotlinx.datetime)
+            implementation(libs.multiplatform.settings)
         }
     }
 }

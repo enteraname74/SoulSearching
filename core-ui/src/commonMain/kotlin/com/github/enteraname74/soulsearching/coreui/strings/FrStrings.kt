@@ -379,6 +379,7 @@ object FrStrings : Strings {
     override val cloudSettingsText: String = "URL du service"
     override val cloudSettingsLastGeneralSync: String = "Dernière synchronisation globale"
     override val cloudSettingsLastStatisticsSync: String = "Dernière synchronisation des statistiques"
+    override val cloudSettingsLastSettingsSync: String = "Dernière synchronisation des paramètres"
     override val cloudSettingsNoSync: String = "Aucune synchronisation"
     override val cloudUrlFieldLabel: String = "URL du service"
 
@@ -513,6 +514,7 @@ object FrStrings : Strings {
 
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
+            SyncDataWithCloudUseCase.State.SyncingSettings -> "Synchronisation des paramètres"
             is SyncDataWithCloudUseCase.State.Failure -> "Erreur"
             SyncDataWithCloudUseCase.State.Finish -> "Fin"
             SyncDataWithCloudUseCase.State.Idle -> "En attente"
@@ -528,12 +530,17 @@ object FrStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Téléversement des playlists"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Sauvegarde des playlists"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Nettoyage des playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteCollections -> "Téléchargement des collections"
+            is SyncDataWithCloudUseCase.State.UploadingCollections -> "Téléversement des collections"
+            SyncDataWithCloudUseCase.State.SavingRemoteCollections -> "Sauvegarde des collections"
+            SyncDataWithCloudUseCase.State.ClearingRemoteCollectionIds -> "Nettoyage des collections"
             SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Téléchargement des statistiques d'écoutes"
             is SyncDataWithCloudUseCase.State.UploadingStats -> "Téléversement des statistiques d'écoutes"
         }
 
     override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
+            SyncDataWithCloudUseCase.State.SyncingSettings -> "Synchronisation des paramètres avec le cloud"
             is SyncDataWithCloudUseCase.State.Failure -> "Une erreur est survenue durant la synchronisation : ${state.error ?: "Error inconnue"}"
             SyncDataWithCloudUseCase.State.Finish -> "La synchronisation est terminée"
             SyncDataWithCloudUseCase.State.Idle -> "En attente de synchronisation"
@@ -549,6 +556,10 @@ object FrStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Téléversement des playlists vers le cloud"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Sauvegarde des playlists téléchargées du cloud"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Nettoyage des playlists supprimées du cloud"
+            SyncDataWithCloudUseCase.State.FetchingRemoteCollections -> "Téléchargement des collections du cloud"
+            is SyncDataWithCloudUseCase.State.UploadingCollections -> "Téléversement des collections vers le cloud"
+            SyncDataWithCloudUseCase.State.SavingRemoteCollections -> "Sauvegarde des collections téléchargées du cloud"
+            SyncDataWithCloudUseCase.State.ClearingRemoteCollectionIds -> "Nettoyage des collections supprimées du cloud"
             SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Téléchargement des statistiques d'écoutes du cloud"
             is SyncDataWithCloudUseCase.State.UploadingStats -> "Téléversement des statistiques d'écoutes vers le cloud"
         }

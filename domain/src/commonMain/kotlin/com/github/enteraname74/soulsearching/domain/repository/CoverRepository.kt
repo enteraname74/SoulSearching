@@ -15,5 +15,7 @@ interface CoverRepository {
 
     suspend fun getCoverImageBitmap(cover: Cover.Simple): ImageBitmap?
 
+    suspend fun getCoverData(cover: Cover.Simple): ByteArray?
+
     suspend fun getAllUniqueCover(covers: List<Cover.Simple>): List<ByteArray>
 }

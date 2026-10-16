@@ -1,6 +1,8 @@
 package com.github.enteraname74.soulsearching.remote.model.upload
 
+import com.github.enteraname74.soulsearching.domain.model.CoverMode
 import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.toCoverMode
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
@@ -12,6 +14,7 @@ data class PlaylistUpload(
     val nbPlayed: Int,
     val isInQuickAccess: Boolean,
     val musicIds: List<String>,
+    val coverMode: CoverMode? = null,
 )
 
 fun PlaylistWithMusics.toPlaylistUpload(): PlaylistUpload =
@@ -22,4 +25,5 @@ fun PlaylistWithMusics.toPlaylistUpload(): PlaylistUpload =
         nbPlayed = playlist.nbPlayed,
         isInQuickAccess = playlist.isInQuickAccess,
         musicIds = musics.mapNotNull { it.remoteId },
+        coverMode = playlist.cover.toCoverMode(),
     )

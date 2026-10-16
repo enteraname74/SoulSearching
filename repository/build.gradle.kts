@@ -26,6 +26,9 @@ kotlin {
                 implementation(project(":serialization"))
             }
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }
 

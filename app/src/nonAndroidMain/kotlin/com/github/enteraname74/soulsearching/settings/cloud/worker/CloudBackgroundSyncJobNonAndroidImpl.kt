@@ -21,6 +21,7 @@ class CloudBackgroundSyncJobNonAndroidImpl(
 
     override suspend fun launchIfPossible(
         syncStats: Boolean,
+        onlySettings: Boolean,
     ) {
         val hasValidCloudInformation: Boolean? = hasValidCloudInformationUseCase().firstOrNull()
 
@@ -29,7 +30,7 @@ class CloudBackgroundSyncJobNonAndroidImpl(
 
         if (job?.isActive != true) {
             job = CoroutineScope(workDispatcher.dispatcher).launch {
-                syncDataWithCloudUseCase(syncStats = syncStats)
+                syncDataWithCloudUseCase(syncStats = syncStats, onlySettings = onlySettings)
             }
         }
     }

@@ -60,7 +60,7 @@ class CoverRepositoryImpl(
             is Cover.Url -> coverRemoteDataSource.getRemoteCover(cover)?.decodeToImageBitmap()
         }
 
-    private suspend fun getCoverByteArray(cover: Cover.Simple): ByteArray? =
+    override suspend fun getCoverData(cover: Cover.Simple): ByteArray? =
         when (cover) {
             is Cover.CoverFile -> {
                 when {
@@ -83,5 +83,5 @@ class CoverRepositoryImpl(
         }
 
     override suspend fun getAllUniqueCover(covers: List<Cover.Simple>): List<ByteArray> =
-        covers.mapNotNull { getCoverByteArray(it) }.distinctBy { it.contentHashCode() }
+        covers.mapNotNull { getCoverData(it) }.distinctBy { it.contentHashCode() }
 }

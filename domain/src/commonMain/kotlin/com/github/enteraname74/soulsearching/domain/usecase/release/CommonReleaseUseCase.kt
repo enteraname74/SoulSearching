@@ -15,6 +15,10 @@ class CommonReleaseUseCase(
         releaseRepository.fetchLatestRelease()
     }
 
+    suspend fun markViewed(tag: String) {
+        releaseRepository.markReleaseViewed(tag)
+    }
+
     fun getLatest(): Flow<Release?> =
         releaseRepository.getLatestRelease()
 

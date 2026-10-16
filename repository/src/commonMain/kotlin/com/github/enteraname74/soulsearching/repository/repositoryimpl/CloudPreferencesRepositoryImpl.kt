@@ -25,6 +25,13 @@ class CloudPreferencesRepositoryImpl(
     override suspend fun getLastStatsSyncMillis(): Long? =
         dataSource.getLastStatsSyncMillis()
 
+    override suspend fun setLastSettingsSyncMillis(millis: Long) {
+        dataSource.setLastSettingsSyncMillis(millis)
+    }
+
+    override suspend fun getLastSettingsSyncMillis(): Long? =
+        dataSource.getLastSettingsSyncMillis()
+
     override suspend fun setLastSyncMillis(millis: Long) {
         dataSource.setLastSyncMillis(millis)
     }

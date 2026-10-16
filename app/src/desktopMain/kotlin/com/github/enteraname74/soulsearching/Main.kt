@@ -19,8 +19,7 @@ import com.github.enteraname74.soulsearching.coreui.keyboard.LocalGlobalKeyboard
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.ext.toKeyboardAction
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.FileKit
@@ -29,6 +28,7 @@ import org.koin.compose.KoinApplication
 import org.koin.dsl.koinConfiguration
 import java.awt.Frame
 import java.awt.Toolkit
+import kotlinx.coroutines.runBlocking
 
 fun main(): Unit = application {
     FileKit.init(appId = "io.github.enteraname74.soulsearching")
@@ -71,15 +71,16 @@ fun main(): Unit = application {
 
 @Composable
 private fun rememberSoulSearchingWindow(
-    settings: SoulSearchingSettings = injectElement(),
+    settingsRepository: SettingsRepository = injectElement(),
 ): WindowState {
+    val settings = remember { runBlocking { settingsRepository.getSettings().desktop } }
     return rememberWindowState(
         size = DpSize(
-            width = settings.get(SoulSearchingSettingsKeys.Desktop.WINDOW_WIDTH).dp,
-            height = settings.get(SoulSearchingSettingsKeys.Desktop.WINDOW_HEIGHT).dp
+            width = settings.windowWidth.dp,
+            height = settings.windowHeight.dp
                 + Toolkit.getDefaultToolkit().getScreenInsets(Frame().graphicsConfiguration).top.dp,
         ),
-        placement = if (settings.get(SoulSearchingSettingsKeys.Desktop.IS_FULLSCREEN)) {
+        placement = if (settings.isFullscreen) {
             WindowPlacement.Fullscreen
         } else {
             WindowPlacement.Floating
@@ -89,30 +90,21 @@ private fun rememberSoulSearchingWindow(
 
 @Composable
 private fun ListenToWindowSizeChange(
-    settings: SoulSearchingSettings = injectElement(),
+    settingsRepository: SettingsRepository = injectElement(),
     windowState: WindowState,
 ) {
     val windowHeight: Dp = windowState.size.height
     val windowWidth = windowState.size.width
 
     LaunchedEffect(windowHeight) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Desktop.WINDOW_HEIGHT.key,
-            value = windowHeight.value,
-        )
+        settingsRepository.setWindowHeight(windowHeight.value)
     }
 
     LaunchedEffect(windowWidth) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Desktop.WINDOW_WIDTH.key,
-            value = windowWidth.value,
-        )
+        settingsRepository.setWindowWidth(windowWidth.value)
     }
 
     LaunchedEffect(windowState.placement) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Desktop.IS_FULLSCREEN.key,
-            value = windowState.placement == WindowPlacement.Fullscreen,
-        )
+        settingsRepository.setFullscreen(windowState.placement == WindowPlacement.Fullscreen)
     }
 }

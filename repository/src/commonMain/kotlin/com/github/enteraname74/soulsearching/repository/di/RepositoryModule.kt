@@ -14,6 +14,7 @@ import com.github.enteraname74.soulsearching.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
 import com.github.enteraname74.soulsearching.domain.repository.PlaylistRepository
 import com.github.enteraname74.soulsearching.domain.repository.ReleaseRepository
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.repository.UserInscriptionCodeRepository
 import com.github.enteraname74.soulsearching.domain.repository.UserRepository
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
@@ -32,6 +33,7 @@ import com.github.enteraname74.soulsearching.repository.repositoryimpl.MusicRepo
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.PlayerRepositoryImpl
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.PlaylistRepositoryImpl
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.ReleaseRepositoryImpl
+import com.github.enteraname74.soulsearching.repository.repositoryimpl.SettingsRepositoryImpl
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.UserInscriptionCodeRepositoryImpl
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.UserRepositoryImpl
 import org.koin.core.module.Module
@@ -57,11 +59,12 @@ val repositoryModule: Module = module {
             deviceLocalDataSource = get(),
             userLocalDataSource = get(),
             musicLocalDataSource = get(),
-            settings = get()
+            settingsRepository = get()
         )
     }
     singleOf(::PlaylistRepositoryImpl) bind PlaylistRepository::class
     singleOf(::ReleaseRepositoryImpl) bind ReleaseRepository::class
+    singleOf(::SettingsRepositoryImpl) bind SettingsRepository::class
     singleOf(::UserRepositoryImpl) bind UserRepository::class
     singleOf(::CloudPreferencesRepositoryImpl) bind CloudPreferencesRepository::class
     singleOf(::LyricsLocalDataSource)

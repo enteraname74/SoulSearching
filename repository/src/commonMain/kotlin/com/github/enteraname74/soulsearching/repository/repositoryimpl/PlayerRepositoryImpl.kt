@@ -20,10 +20,9 @@ import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedLis
 import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedListUser
 import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayerMusic
 import com.github.enteraname74.soulsearching.domain.model.player.toPreview
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
 import com.github.enteraname74.soulsearching.domain.repository.SharedPlayedListListener
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.repository.datasource.DeviceLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.player.PlayerLocalDataSource
@@ -46,7 +45,7 @@ class PlayerRepositoryImpl(
     private val deviceLocalDataSource: DeviceLocalDataSource,
     private val userLocalDataSource: UserLocalDataSource,
     private val musicLocalDataSource: MusicLocalDataSource,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
     private val workScope: CoroutineContext,
 ) : PlayerRepository {
     override fun getAllPaginated(): Flow<PagingData<Music>> =
@@ -452,8 +451,7 @@ class PlayerRepositoryImpl(
             val fetchedMusics: MutableList<SharedPlayerMusic> = mutableListOf()
             while (true) {
                 val fetchedData = playerRemoteDataSource.getPlayedListMusics(
-                    lastUpdateAt = settings
-                        .get(SoulSearchingSettingsKeys.Player.SHARED_PLAYED_LIST_MUSIC_UPDATE_MILLIS)
+                    lastUpdateAt = settingsRepository.getSettings().playerSettings.sharedPlayedListMusicUpdateMillis
                         .takeIf { it > 0L },
                     maxPerPage = MAX_MUSICS_PER_PAGE,
                     page = page,

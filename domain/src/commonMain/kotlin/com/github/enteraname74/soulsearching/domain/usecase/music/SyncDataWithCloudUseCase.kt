@@ -2,10 +2,14 @@ package com.github.enteraname74.soulsearching.domain.usecase.music
 
 import com.github.enteraname74.soulsearching.domain.model.*
 import com.github.enteraname74.soulsearching.domain.repository.CloudPreferencesRepository
+import com.github.enteraname74.soulsearching.domain.repository.CollectionRepository
 import com.github.enteraname74.soulsearching.domain.repository.ListeningStatisticsRepository
 import com.github.enteraname74.soulsearching.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.domain.repository.PlaylistRepository
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.DeleteEmptyAlbumsAndArtistsUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.UploadCollectionToCloudUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.UpsertCloudCollectionUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.UploadPlaylistToCloudUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.UpsertCloudPlaylistUseCase
 import com.github.enteraname74.soulsearching.domain.util.DateUtils
@@ -31,15 +35,23 @@ class SyncDataWithCloudUseCase(
     private val uploadPlaylistToCloudUseCase: UploadPlaylistToCloudUseCase,
     private val upsertCloudPlaylistUseCase: UpsertCloudPlaylistUseCase,
     private val playlistRepository: PlaylistRepository,
+    private val collectionRepository: CollectionRepository,
+    private val uploadCollectionToCloudUseCase: UploadCollectionToCloudUseCase,
+    private val upsertCloudCollectionUseCase: UpsertCloudCollectionUseCase,
     private val listeningStatisticsRepository: ListeningStatisticsRepository,
+    private val settingsRepository: SettingsRepository,
 ) {
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Idle)
     val state: StateFlow<State> = _state.asStateFlow()
 
     suspend operator fun invoke(
         syncStats: Boolean,
+        onlySettings: Boolean = false,
     ): SoulResult<Unit> {
         val result: SoulResult<Unit> = SoulResult.runCatching {
+            syncSettings()
+            if (onlySettings) return@runCatching
+
             _state.value = State.ClearingRemoteMusicIds
             val idsNoLongerOnCloud: List<String> = musicRepository.getDeletedRemoteMusicIds()
             musicRepository.deleteAllRemoteFieldsOfIds(idsNoLongerOnCloud)
@@ -157,6 +169,10 @@ class SyncDataWithCloudUseCase(
             Choice has been made to consider playlists to always be remote first,
             to ensure maximum sync between them.
              */
+            syncCollections(
+                lastSyncMillis = lastSyncMillis,
+                mergeMode = MergeMode.RemoteFirst,
+            )
             syncPlaylists(
                 lastSyncMillis = lastSyncMillis,
                 mergeMode = MergeMode.RemoteFirst,
@@ -167,7 +183,10 @@ class SyncDataWithCloudUseCase(
             so will we check also against it.
              */
             val latestFromPlaylists = playlistRepository.getLatestUpdatedAt() ?: 0L
-            cloudPreferencesRepository.setLastSyncMillis(max(DateUtils.now(), latestFromPlaylists))
+            val latestFromCollections = collectionRepository.getLatestUpdatedAt() ?: 0L
+            cloudPreferencesRepository.setLastSyncMillis(
+                max(DateUtils.now(), max(latestFromPlaylists, latestFromCollections))
+            )
 
             if (syncStats) {
                 syncStats()
@@ -179,6 +198,25 @@ class SyncDataWithCloudUseCase(
         }
 
         return result
+    }
+
+    private suspend fun syncSettings() {
+        _state.value = State.SyncingSettings
+        val lastSyncMillis = cloudPreferencesRepository.getLastSettingsSyncMillis()
+        val remote = settingsRepository.fetchCloudSettings(lastSyncMillis)
+        val local = settingsRepository.getCloudSettingsUpdatedAfter(lastSyncMillis)
+
+        val winner = when {
+            remote == null && local == null -> null
+            remote != null && local == null -> remote
+            remote == null && local != null -> settingsRepository.upsertCloudSettings(local)
+            local != null && remote != null && local.updatedAtMillis > remote.updatedAtMillis ->
+                settingsRepository.upsertCloudSettings(local)
+            else -> remote
+        }
+        winner?.let {
+            settingsRepository.applyCloudSettings(it, it.updatedAtMillis)
+        }
     }
 
     private suspend fun syncPlaylists(
@@ -220,6 +258,28 @@ class SyncDataWithCloudUseCase(
                 playlistWithMusics = playlist,
                 mergeMode = mergeMode,
             )
+        }
+    }
+
+    private suspend fun syncCollections(
+        lastSyncMillis: Long?,
+        mergeMode: MergeMode,
+    ) {
+        _state.value = State.ClearingRemoteCollectionIds
+        val idsNoLongerOnCloud = collectionRepository.getDeletedRemoteCollectionIds()
+        collectionRepository.deleteAllFromRemote(idsNoLongerOnCloud)
+
+        _state.value = State.FetchingRemoteCollections
+        val updatedFromCloud = collectionRepository.fetchUpdatedCollectionsFromCloud(lastSyncMillis)
+        _state.value = State.SavingRemoteCollections
+        upsertCloudCollectionUseCase(updatedFromCloud, mergeMode)
+
+        val collectionsToSend = collectionRepository.getAllToSendToCloud()
+        collectionsToSend.forEachIndexed { index, collection ->
+            _state.value = State.UploadingCollections(
+                progress = buildProgress(index = index, size = collectionsToSend.size)
+            )
+            uploadCollectionToCloudUseCase(collection, mergeMode)
         }
     }
 
@@ -275,10 +335,11 @@ class SyncDataWithCloudUseCase(
         sealed interface EndState : State
 
         data object Idle : EndState
+        data object SyncingSettings : WorkingState
         data object ClearingRemoteMusicIds : WorkingState
         data object CheckingMusicsToSend : WorkingState
 
-        data object NoMusicsToSend : EndState
+        data object NoMusicsToSend : WorkingState
 
         data class UpdateMusics(override val progress: Float) : ProgressState
 
@@ -297,6 +358,14 @@ class SyncDataWithCloudUseCase(
         data object ClearingRemotePlaylistIds : WorkingState
 
         data class UploadingPlaylists(override val progress: Float) : ProgressState
+
+        data object FetchingRemoteCollections : WorkingState
+
+        data object SavingRemoteCollections : WorkingState
+
+        data object ClearingRemoteCollectionIds : WorkingState
+
+        data class UploadingCollections(override val progress: Float) : ProgressState
 
         data object FetchingRemoteStats : WorkingState
 

@@ -1,18 +1,14 @@
 package com.github.enteraname74.soulsearching.di
 
 import android.content.Context
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpAndroidManager
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.feature.permission.PermissionManager
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
 import com.github.enteraname74.soulsearching.feature.musiclink.MusicLinkHandler
 import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.CloudBackgroundSyncJobAndroidImpl
 import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.CloudSyncWorker
 import com.github.enteraname74.soulsearching.util.FileOperation
-import com.russhwolf.settings.SharedPreferencesSettings
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -22,16 +18,6 @@ import org.koin.dsl.module
 
 actual val platformModule: Module = module {
     singleOf(::FeedbackPopUpAndroidManager) bind FeedbackPopUpManager::class
-    single<SoulSearchingSettings> {
-        SoulSearchingSettingsImpl(
-            settings = SharedPreferencesSettings(
-                delegate = get<Context>().getSharedPreferences(
-                    SoulSearchingSettingsKeys.SHARED_PREF_KEY,
-                    Context.MODE_PRIVATE
-                )
-            )
-        )
-    }
     singleOf(::MusicLinkHandler)
     factory {
         FileOperation(get<Context>())

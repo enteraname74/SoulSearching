@@ -7,6 +7,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -30,6 +31,9 @@ class SettingsAboutViewModel(
     init {
         viewModelScope.launch {
             commonReleaseUseCase.fetchLatest()
+            commonReleaseUseCase.getLatest().firstOrNull()?.let { release ->
+                commonReleaseUseCase.markViewed(release.tag)
+            }
         }
     }
 }

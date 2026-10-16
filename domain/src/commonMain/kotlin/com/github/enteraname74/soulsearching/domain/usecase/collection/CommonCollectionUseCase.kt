@@ -31,8 +31,8 @@ class CommonCollectionUseCase(
 
     suspend fun create(name: String): Collection = collectionRepository.create(name.trim())
 
-    suspend fun upsertAll(collections: List<Collection>) {
-        collectionRepository.upsertAll(collections)
+    suspend fun upsertAll(collections: List<Collection>, keepUpdatedAt: Boolean = false) {
+        collectionRepository.upsertAll(collections, keepUpdatedAt)
     }
 
     suspend fun upsert(collection: Collection) {
@@ -42,12 +42,20 @@ class CommonCollectionUseCase(
     suspend fun deleteAll(collectionIds: List<Uuid>): SoulResult<Unit> =
         collectionRepository.deleteAll(collectionIds)
 
-    suspend fun addArtists(collectionIds: List<Uuid>, artistIds: List<Uuid>) {
-        collectionRepository.addArtists(collectionIds, artistIds)
+    suspend fun addArtists(
+        collectionIds: List<Uuid>,
+        artistIds: List<Uuid>,
+        keepUpdatedAt: Boolean = false,
+    ) {
+        collectionRepository.addArtists(collectionIds, artistIds, keepUpdatedAt)
     }
 
-    suspend fun addAlbums(collectionIds: List<Uuid>, albumIds: List<Uuid>) {
-        collectionRepository.addAlbums(collectionIds, albumIds)
+    suspend fun addAlbums(
+        collectionIds: List<Uuid>,
+        albumIds: List<Uuid>,
+        keepUpdatedAt: Boolean = false,
+    ) {
+        collectionRepository.addAlbums(collectionIds, albumIds, keepUpdatedAt)
     }
 
     suspend fun removeArtist(collectionId: Uuid, artistId: Uuid): SoulResult<Unit> =

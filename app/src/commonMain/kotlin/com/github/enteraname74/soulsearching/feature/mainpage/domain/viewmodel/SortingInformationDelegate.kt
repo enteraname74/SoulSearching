@@ -4,9 +4,12 @@ import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.domain.model.SortType
 import com.github.enteraname74.soulsearching.domain.model.SortingInformation
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 interface SortingInformationDelegate {
     val musicSortingInformation: Flow<SortingInformation>
@@ -29,125 +32,56 @@ interface SortingInformationDelegate {
 }
 
 class SortingInformationDelegateImpl(
-    val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
+    workDispatcher: WorkDispatcher,
 ): SortingInformationDelegate {
-    override val musicSortingInformation: Flow<SortingInformation> = combine(
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY),
-    ) { sortType, sortDirection ->
-        SortingInformation(
-            type = SortType.from(sortType) ?: SortType.DEFAULT,
-            direction = SortDirection.from(sortDirection) ?: SortDirection.DEFAULT,
-        )
-    }
+    private val scope = CoroutineScope(workDispatcher.dispatcher)
+    private fun settingsFlow(selector: (SoulSearchingSettings) -> SoulSearchingSettings.SortSetup) =
+        settingsRepository.observeSettings().map { settings -> selector(settings).let { SortingInformation(it.type, it.direction) } }
 
-    override val artistSortingInformation: Flow<SortingInformation> = combine(
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_TYPE_KEY),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_DIRECTION_KEY),
-    ) { sortType, sortDirection ->
-        SortingInformation(
-            type = SortType.from(sortType) ?: SortType.DEFAULT,
-            direction = SortDirection.from(sortDirection) ?: SortDirection.DEFAULT,
-        )
-    }
-
-    override val albumSortingInformation: Flow<SortingInformation> = combine(
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_ALBUMS_TYPE_KEY),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_ALBUMS_DIRECTION_KEY),
-    ) { sortType, sortDirection ->
-        SortingInformation(
-            type = SortType.from(sortType) ?: SortType.DEFAULT,
-            direction = SortDirection.from(sortDirection) ?: SortDirection.DEFAULT,
-        )
-    }
-
-    override val playlistSortingInformation: Flow<SortingInformation> = combine(
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_TYPE_KEY),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_DIRECTION_KEY),
-    ) { sortType, sortDirection ->
-        SortingInformation(
-            type = SortType.from(sortType) ?: SortType.DEFAULT,
-            direction = SortDirection.from(sortDirection) ?: SortDirection.DEFAULT,
-        )
-    }
-
-    override val collectionSortingInformation: Flow<SortingInformation> = combine(
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_COLLECTIONS_TYPE_KEY),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_COLLECTIONS_DIRECTION_KEY),
-    ) { sortType, sortDirection ->
-        SortingInformation(
-            type = SortType.from(sortType) ?: SortType.DEFAULT,
-            direction = SortDirection.from(sortDirection) ?: SortDirection.DEFAULT,
-        )
-    }
+    override val musicSortingInformation = settingsFlow { it.musicSortSetup }
+    override val artistSortingInformation = settingsFlow { it.artistSortSetup }
+    override val albumSortingInformation = settingsFlow { it.albumSortSetup }
+    override val playlistSortingInformation = settingsFlow { it.playlistSortSetup }
+    override val collectionSortingInformation = settingsFlow { it.collectionSortSetup }
 
     override fun setMusicSortType(type: SortType) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY.key,
-            value = type.value,
-        )
+        scope.launch { settingsRepository.setMusicSortType(type) }
     }
 
     override fun setArtistSortType(type: SortType) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_TYPE_KEY.key,
-            value = type.value,
-        )
+        scope.launch { settingsRepository.setArtistSortType(type) }
     }
 
     override fun setAlbumSortType(type: SortType) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Sort.SORT_ALBUMS_TYPE_KEY.key,
-            value = type.value,
-        )
+        scope.launch { settingsRepository.setAlbumSortType(type) }
     }
 
     override fun setPlaylistSortType(type: SortType) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_TYPE_KEY.key,
-            value = type.value,
-        )
+        scope.launch { settingsRepository.setPlaylistSortType(type) }
     }
 
     override fun setCollectionSortType(type: SortType) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Sort.SORT_COLLECTIONS_TYPE_KEY.key,
-            value = type.value,
-        )
+        scope.launch { settingsRepository.setCollectionSortType(type) }
     }
 
     override fun setMusicSortDirection(direction: SortDirection) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY.key,
-            value = direction.value,
-        )
+        scope.launch { settingsRepository.setMusicSortDirection(direction) }
     }
 
     override fun setArtistSortDirection(direction: SortDirection) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Sort.SORT_ARTISTS_DIRECTION_KEY.key,
-            value = direction.value,
-        )
+        scope.launch { settingsRepository.setArtistSortDirection(direction) }
     }
 
     override fun setAlbumSortDirection(direction: SortDirection) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Sort.SORT_ALBUMS_DIRECTION_KEY.key,
-            value = direction.value,
-        )
+        scope.launch { settingsRepository.setAlbumSortDirection(direction) }
     }
 
     override fun setPlaylistSortDirection(direction: SortDirection) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Sort.SORT_PLAYLISTS_DIRECTION_KEY.key,
-            value = direction.value,
-        )
+        scope.launch { settingsRepository.setPlaylistSortDirection(direction) }
     }
 
     override fun setCollectionSortDirection(direction: SortDirection) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Sort.SORT_COLLECTIONS_DIRECTION_KEY.key,
-            value = direction.value,
-        )
+        scope.launch { settingsRepository.setCollectionSortDirection(direction) }
     }
 }

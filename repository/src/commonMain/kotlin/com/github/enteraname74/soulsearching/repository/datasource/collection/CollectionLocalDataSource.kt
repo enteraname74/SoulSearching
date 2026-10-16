@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.github.enteraname74.soulsearching.domain.model.Collection
 import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
 import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
+import com.github.enteraname74.soulsearching.domain.model.CollectionSyncData
 import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
@@ -23,13 +24,17 @@ interface CollectionLocalDataSource {
 
     suspend fun create(name: String): Collection
 
-    suspend fun upsertAll(collections: List<Collection>)
+    suspend fun upsertAll(collections: List<Collection>, keepUpdatedAt: Boolean = false)
+
+    suspend fun getFromRemoteId(remoteId: Uuid): Collection?
+
+    suspend fun getFromName(name: String): Collection?
 
     suspend fun deleteAll(collectionIds: List<Uuid>)
 
-    suspend fun addArtists(collectionIds: List<Uuid>, artistIds: List<Uuid>)
+    suspend fun addArtists(collectionIds: List<Uuid>, artistIds: List<Uuid>, keepUpdatedAt: Boolean = false)
 
-    suspend fun addAlbums(collectionIds: List<Uuid>, albumIds: List<Uuid>)
+    suspend fun addAlbums(collectionIds: List<Uuid>, albumIds: List<Uuid>, keepUpdatedAt: Boolean = false)
 
     suspend fun removeArtist(collectionId: Uuid, artistId: Uuid)
 
@@ -44,4 +49,22 @@ interface CollectionLocalDataSource {
     suspend fun cleanAllCovers()
 
     suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid>
+
+    suspend fun getAllToSendToCloud(): List<CollectionSyncData>
+
+    suspend fun getRemoteIdsFromIds(ids: List<Uuid>): List<Uuid>
+
+    suspend fun getAllRemoteIdsPossessedByUser(): List<Uuid>
+
+    suspend fun deleteAllFromRemote(remoteIds: List<Uuid>)
+
+    suspend fun deleteAllRemoteFields()
+
+    suspend fun deleteAllEmpty()
+
+    suspend fun getLatestUpdatedAt(): Long?
+
+    suspend fun getLocalArtistIdsFromRemoteIds(remoteIds: List<Uuid>): List<Uuid>
+
+    suspend fun getLocalAlbumIdsFromRemoteIds(remoteIds: List<Uuid>): List<Uuid>
 }

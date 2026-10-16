@@ -8,6 +8,8 @@ import com.github.enteraname74.localdb.view.ROOM_PLAYLIST_PREVIEW_QUERY_V22
 
 object Migration21To22 : Migration(21, 22) {
     override suspend fun migrate(connection: SQLiteConnection) {
+        connection.createSettingsTable()
+        connection.executeSQL("ALTER TABLE RoomCloudPreferences ADD COLUMN lastSettingsSyncMillis INTEGER")
         connection.dropCoverViews()
         connection.migrateCoverColumns()
 
@@ -108,6 +110,47 @@ object Migration21To22 : Migration(21, 22) {
         )
 
         connection.createCoverViews()
+    }
+
+    private suspend fun SQLiteConnection.createSettingsTable() {
+        executeSQL(
+            """
+            CREATE TABLE IF NOT EXISTS RoomSoulSearchingSettings (
+                id TEXT NOT NULL PRIMARY KEY,
+                updatedAtMillis INTEGER NOT NULL,
+                hasMusicsBeenFetched INTEGER NOT NULL,
+                isMusicFileModificationOn INTEGER NOT NULL,
+                musicSort_type INTEGER NOT NULL, musicSort_direction INTEGER NOT NULL,
+                albumSort_type INTEGER NOT NULL, albumSort_direction INTEGER NOT NULL,
+                artistSort_type INTEGER NOT NULL, artistSort_direction INTEGER NOT NULL,
+                playlistSort_type INTEGER NOT NULL, playlistSort_direction INTEGER NOT NULL,
+                collectionSort_type INTEGER NOT NULL, collectionSort_direction INTEGER NOT NULL,
+                player_isPlayerSwipeEnabled INTEGER NOT NULL, player_soulMixTotalByList INTEGER NOT NULL,
+                player_isRewindEnabled INTEGER NOT NULL, player_isMinimisedSongProgressionShown INTEGER NOT NULL,
+                player_playerVolume REAL NOT NULL, player_isRemoteLyricsFetchEnabled INTEGER NOT NULL,
+                player_sharedPlayedListMusicUpdateMillis INTEGER NOT NULL,
+                colorTheme_type INTEGER NOT NULL, colorTheme_dynamicPlayerTheme INTEGER NOT NULL,
+                colorTheme_dynamicPlaylistTheme INTEGER NOT NULL, colorTheme_dynamicOtherViewsTheme INTEGER NOT NULL,
+                colorTheme_forceDarkTheme INTEGER NOT NULL, colorTheme_forceLightTheme INTEGER NOT NULL,
+                colorTheme_usedTheme TEXT NOT NULL,
+                colorTheme_paletteSeed TEXT NOT NULL,
+                mainPage_isQuickAccessShown INTEGER NOT NULL, mainPage_arePlaylistsShown INTEGER NOT NULL,
+                mainPage_areCollectionsShown INTEGER NOT NULL, mainPage_areAlbumsShown INTEGER NOT NULL,
+                mainPage_areArtistsShown INTEGER NOT NULL, mainPage_areMusicsByMonthsShown INTEGER NOT NULL,
+                mainPage_areMusicsByFoldersShown INTEGER NOT NULL, mainPage_isUsingVerticalAccessBar INTEGER NOT NULL,
+                mainPage_initialTab TEXT NOT NULL,
+                cover_isActivated INTEGER NOT NULL, cover_folderModePath TEXT, cover_fileModePath TEXT,
+                cover_coverFileName TEXT, cover_fileExtension TEXT, cover_whiteSpaceRuleActivated INTEGER NOT NULL,
+                cover_whiteSpaceReplacement TEXT NOT NULL, cover_lowerCaseRule INTEGER, cover_mode TEXT NOT NULL,
+                desktop_windowHeight REAL NOT NULL, desktop_windowWidth REAL NOT NULL, desktop_isFullscreen INTEGER NOT NULL,
+                release_isFetchReleaseFromGithubEnabled INTEGER NOT NULL,
+                release_shouldShowReleaseBottomEnableHint INTEGER NOT NULL,
+                release_latestViewedReleaseTag TEXT, release_latestReleaseName TEXT, release_latestReleaseTag TEXT,
+                release_latestReleaseGithubUrl TEXT, release_latestReleaseChangelog TEXT,
+                album_shouldShowTrackPositionInAlbumView INTEGER NOT NULL
+            )
+            """.trimIndent()
+        )
     }
 
     private suspend fun SQLiteConnection.dropCoverViews() {

@@ -1,18 +1,25 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
+import com.github.enteraname74.soulsearching.domain.model.CloudCollection
 import com.github.enteraname74.soulsearching.domain.model.Collection
-import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
-import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
 import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
+import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
+import com.github.enteraname74.soulsearching.domain.model.CollectionSyncData
+import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
+import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.repository.CollectionRepository
+import com.github.enteraname74.soulsearching.domain.repository.CoverRepository
 import com.github.enteraname74.soulsearching.repository.datasource.collection.CollectionLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.collection.CollectionRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
 class CollectionRepositoryImpl(
     private val collectionLocalDataSource: CollectionLocalDataSource,
+    private val collectionRemoteDataSource: CollectionRemoteDataSource,
+    private val coverRepository: CoverRepository,
 ) : CollectionRepository {
     override fun getAllPaged(): Flow<PagingData<CollectionPreview>> =
         collectionLocalDataSource.getAllPaged()
@@ -33,20 +40,36 @@ class CollectionRepositoryImpl(
 
     override suspend fun create(name: String): Collection = collectionLocalDataSource.create(name)
 
-    override suspend fun upsertAll(collections: List<Collection>) {
-        collectionLocalDataSource.upsertAll(collections)
+    override suspend fun upsertAll(collections: List<Collection>, keepUpdatedAt: Boolean) {
+        collectionLocalDataSource.upsertAll(collections, keepUpdatedAt)
     }
+
+    override suspend fun getFromRemoteId(remoteId: Uuid): Collection? =
+        collectionLocalDataSource.getFromRemoteId(remoteId)
+
+    override suspend fun getFromName(name: String): Collection? =
+        collectionLocalDataSource.getFromName(name)
 
     override suspend fun deleteAll(collectionIds: List<Uuid>): SoulResult<Unit> = SoulResult.runCatching {
+        val remoteIds = collectionLocalDataSource.getRemoteIdsFromIds(collectionIds)
         collectionLocalDataSource.deleteAll(collectionIds)
+        collectionRemoteDataSource.deleteAll(remoteIds)
     }
 
-    override suspend fun addArtists(collectionIds: List<Uuid>, artistIds: List<Uuid>) {
-        collectionLocalDataSource.addArtists(collectionIds, artistIds)
+    override suspend fun addArtists(
+        collectionIds: List<Uuid>,
+        artistIds: List<Uuid>,
+        keepUpdatedAt: Boolean,
+    ) {
+        collectionLocalDataSource.addArtists(collectionIds, artistIds, keepUpdatedAt)
     }
 
-    override suspend fun addAlbums(collectionIds: List<Uuid>, albumIds: List<Uuid>) {
-        collectionLocalDataSource.addAlbums(collectionIds, albumIds)
+    override suspend fun addAlbums(
+        collectionIds: List<Uuid>,
+        albumIds: List<Uuid>,
+        keepUpdatedAt: Boolean,
+    ) {
+        collectionLocalDataSource.addAlbums(collectionIds, albumIds, keepUpdatedAt)
     }
 
     override suspend fun removeArtist(collectionId: Uuid, artistId: Uuid): SoulResult<Unit> =
@@ -68,4 +91,61 @@ class CollectionRepositoryImpl(
     override suspend fun cleanAllCovers() {
         collectionLocalDataSource.cleanAllCovers()
     }
+
+    override suspend fun getAllToSendToCloud(): List<CollectionSyncData> =
+        collectionLocalDataSource.getAllToSendToCloud()
+
+    override suspend fun fetchUpdatedCollectionsFromCloud(lastSyncMillis: Long?): List<CloudCollection> {
+        var page = 0
+        val fetchedCollections = mutableListOf<CloudCollection>()
+        while (true) {
+            val fetchedData = collectionRemoteDataSource.getOfUser(
+                lastUpdateAt = lastSyncMillis,
+                maxPerPage = 1,
+                page = page,
+            )
+            fetchedCollections += fetchedData
+            if (fetchedData.isEmpty()) break
+            page += 1
+        }
+        return fetchedCollections
+    }
+
+    override suspend fun uploadToCloud(collection: CollectionSyncData): CloudCollection =
+        collectionRemoteDataSource.upload(
+            collection = collection,
+            coversData = collection.collection.cover.toUploadData(),
+        )
+
+    private suspend fun Cover?.toUploadData(): List<ByteArray?> = when (this) {
+        null -> emptyList()
+        is Cover.CoverFile -> listOf(coverRepository.getCoverData(this))
+        is Cover.Url -> listOf(null)
+        is Cover.Grid -> list.map { (it as? Cover.CoverFile)?.let { coverFile -> coverRepository.getCoverData(coverFile) } }
+    }
+
+    override suspend fun getDeletedRemoteCollectionIds(): List<Uuid> =
+        collectionRemoteDataSource.getDeletedRemoteCollectionIds(
+            collectionLocalDataSource.getAllRemoteIdsPossessedByUser()
+        )
+
+    override suspend fun deleteAllFromRemote(remoteIds: List<Uuid>) {
+        collectionLocalDataSource.deleteAllFromRemote(remoteIds)
+    }
+
+    override suspend fun deleteAllRemoteFields() {
+        collectionLocalDataSource.deleteAllRemoteFields()
+    }
+
+    override suspend fun deleteAllEmpty() {
+        collectionLocalDataSource.deleteAllEmpty()
+    }
+
+    override suspend fun getLatestUpdatedAt(): Long? = collectionLocalDataSource.getLatestUpdatedAt()
+
+    override suspend fun getLocalArtistIdsFromRemoteIds(remoteIds: List<Uuid>): List<Uuid> =
+        collectionLocalDataSource.getLocalArtistIdsFromRemoteIds(remoteIds)
+
+    override suspend fun getLocalAlbumIdsFromRemoteIds(remoteIds: List<Uuid>): List<Uuid> =
+        collectionLocalDataSource.getLocalAlbumIdsFromRemoteIds(remoteIds)
 }

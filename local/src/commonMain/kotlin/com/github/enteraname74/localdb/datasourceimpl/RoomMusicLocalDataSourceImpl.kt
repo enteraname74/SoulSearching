@@ -20,8 +20,7 @@ import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.MusicFolderPreview
 import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.domain.model.SortType
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.util.DateUtils
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,7 +36,7 @@ import kotlin.uuid.Uuid
  */
 internal class RoomMusicLocalDataSourceImpl(
     private val appDatabase: AppDatabase,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
 ) : MusicLocalDataSource {
     override suspend fun upsert(music: Music) {
         appDatabase.useWriterConnection {
@@ -146,13 +145,9 @@ internal class RoomMusicLocalDataSourceImpl(
         appDatabase.musicDao.getAllLocalMusic().map { it.toMusic() }
 
     override suspend fun getAllSorted(): List<Music> {
-        val direction: SortDirection = SortDirection
-            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY))
-            ?: SortDirection.DEFAULT
-
-        val type: SortType = SortType
-            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY))
-            ?: SortType.DEFAULT
+        val sortSettings = settingsRepository.getSettings().musicSortSetup
+        val direction = sortSettings.direction
+        val type = sortSettings.type
 
         return with(appDatabase.musicDao) {
             when (direction) {
@@ -176,13 +171,9 @@ internal class RoomMusicLocalDataSourceImpl(
     }
 
     override suspend fun getAllSorted(page: Int, pageSize: Int): List<Music> {
-        val direction: SortDirection = SortDirection
-            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY))
-            ?: SortDirection.DEFAULT
-
-        val type: SortType = SortType
-            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY))
-            ?: SortType.DEFAULT
+        val sortSettings = settingsRepository.getSettings().musicSortSetup
+        val direction = sortSettings.direction
+        val type = sortSettings.type
 
         val (limit, offset) = androidAutoLimitAndOffset(page = page, pageSize = pageSize)
 
@@ -214,12 +205,10 @@ internal class RoomMusicLocalDataSourceImpl(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getAllPaged(): Flow<PagingData<Music>> =
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY)
-            .flatMapLatest { direction ->
-                settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY)
-                    .flatMapLatest { type ->
-                        val sortDirection = SortDirection.from(direction) ?: SortDirection.DEFAULT
-                        val sortType = SortType.from(type) ?: SortType.DEFAULT
+        settingsRepository.observeSettings()
+            .flatMapLatest { settings ->
+                        val sortDirection = settings.musicSortSetup.direction
+                        val sortType = settings.musicSortSetup.type
 
                         Pager(
                             config = PagingConfig(
@@ -248,7 +237,6 @@ internal class RoomMusicLocalDataSourceImpl(
                         ).flow.map { pagingData ->
                             pagingData.map { it.toMusic() }
                         }
-                    }
             }
 
     override suspend fun getAllRemoteIdsPossessedByUser(): List<String> =
@@ -532,6 +520,9 @@ internal class RoomMusicLocalDataSourceImpl(
             "RoomArtist",
             "RoomPlaylist",
             "RoomMusicPlaylist",
+            "RoomCollection",
+            "RoomCollectionArtist",
+            "RoomCollectionAlbum",
             "RoomMusicArtist",
             emitInitialState = false,
         ).map { }
