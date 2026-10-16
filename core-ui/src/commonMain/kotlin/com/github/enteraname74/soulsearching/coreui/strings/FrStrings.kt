@@ -261,6 +261,8 @@ object FrStrings : Strings {
     override val aboutTitle = "À propos de Soul Searching"
     override val aboutText = "Développeurs, nom de la version de l'application"
     override val newReleaseAvailableTitle = "Nouvelle version disponible !"
+    override val downloadLatestReleaseTitle = "Télécharger la nouvelle version"
+    override val seeLatestReleaseTitle = "Voir la nouvelle version"
     override val statisticsTitle = "Statistiques"
     override val statisticsText = "Statistiques sur vos écoutes"
     override val mostPlayedSongs = "Musiques les plus écoutées (nombre de lectures)"

@@ -9,5 +9,5 @@ actual object AppVersion {
         ""
     }
 
-    actual val versionName: String = "0.16.0$suffix"
+    actual val versionName: String = "0.17.0$suffix"
 }

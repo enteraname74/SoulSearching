@@ -11,11 +11,10 @@ import kotlinx.coroutines.flow.mapLatest
 class ReleaseRepositoryImpl(
     private val releaseDataSource: ReleaseDataSource,
     private val settingsRepository: SettingsRepository,
-): ReleaseRepository {
+) : ReleaseRepository {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getLatestRelease(): Flow<Release?> =
         settingsRepository.observeRelease().mapLatest { it.latestRelease }
-
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getLatestViewedReleaseTag(): Flow<String?> =

@@ -260,6 +260,8 @@ object EnStrings : Strings {
     override val aboutTitle = "About Soul Searching"
     override val aboutText = "Developers, application's version name"
     override val newReleaseAvailableTitle = "New release available!"
+    override val downloadLatestReleaseTitle = "Download latest release"
+    override val seeLatestReleaseTitle = "See latest release"
     override val statisticsTitle = "Statistics"
     override val statisticsText = "Statistics about your plays"
     override val mostPlayedSongs = "Most played songs (number of plays)"

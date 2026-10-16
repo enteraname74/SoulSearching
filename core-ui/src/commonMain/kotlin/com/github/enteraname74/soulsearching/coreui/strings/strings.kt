@@ -267,6 +267,8 @@ interface Strings {
     val aboutTitle: String
     val aboutText: String
     val newReleaseAvailableTitle: String
+    val downloadLatestReleaseTitle: String
+    val seeLatestReleaseTitle: String
     val statisticsTitle: String
     val statisticsText: String
     val mostPlayedSongs: String
