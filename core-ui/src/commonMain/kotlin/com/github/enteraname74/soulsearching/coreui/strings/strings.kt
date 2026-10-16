@@ -269,6 +269,17 @@ interface Strings {
     val newReleaseAvailableTitle: String
     val downloadLatestReleaseTitle: String
     val seeLatestReleaseTitle: String
+    val releaseDownloadUnavailable: String
+    val releaseInstallPermissionDenied: String
+    val releaseProductionAppMissing: String
+    val releaseDownloadInProgress: String
+    val releaseDownloadFailed: String
+    val releaseDigestMismatch: String
+    val releaseWrongPackage: String
+    val releaseSignatureMismatch: String
+    val releaseNotNewer: String
+    val releaseInvalidApk: String
+    val releaseInstallerUnavailable: String
     val statisticsTitle: String
     val statisticsText: String
     val mostPlayedSongs: String

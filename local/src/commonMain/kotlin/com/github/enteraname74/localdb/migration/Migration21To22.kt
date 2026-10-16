@@ -147,6 +147,8 @@ object Migration21To22 : Migration(21, 22) {
                 release_shouldShowReleaseBottomEnableHint INTEGER NOT NULL,
                 release_latestViewedReleaseTag TEXT, release_latestReleaseName TEXT, release_latestReleaseTag TEXT,
                 release_latestReleaseGithubUrl TEXT, release_latestReleaseChangelog TEXT,
+                release_latestReleaseAssetName TEXT, release_latestReleaseAssetDownloadUrl TEXT,
+                release_latestReleaseAssetSize INTEGER, release_latestReleaseAssetSha256 TEXT,
                 album_shouldShowTrackPositionInAlbumView INTEGER NOT NULL
             )
             """.trimIndent()

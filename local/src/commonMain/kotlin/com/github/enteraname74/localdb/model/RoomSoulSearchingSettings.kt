@@ -5,6 +5,7 @@ import androidx.room3.Entity
 import androidx.room3.PrimaryKey
 import com.github.enteraname74.soulsearching.domain.model.CoverFolderRetriever
 import com.github.enteraname74.soulsearching.domain.model.Release
+import com.github.enteraname74.soulsearching.domain.model.ReleaseAsset
 import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.domain.model.SortType
 import com.github.enteraname74.soulsearching.domain.model.settings.ColorThemeType
@@ -149,13 +150,34 @@ data class RoomReleaseSettings(
     val latestReleaseTag: String? = null,
     val latestReleaseGithubUrl: String? = null,
     val latestReleaseChangelog: String? = null,
+    val latestReleaseAssetName: String? = null,
+    val latestReleaseAssetDownloadUrl: String? = null,
+    val latestReleaseAssetSize: Long? = null,
+    val latestReleaseAssetSha256: String? = null,
 ) {
     fun toDomain(): SoulSearchingSettings.ReleaseSettings = SoulSearchingSettings.ReleaseSettings(
         isFetchReleaseFromGithubEnabled,
         shouldShowReleaseBottomEnableHint,
         latestViewedReleaseTag,
         if (latestReleaseName != null && latestReleaseTag != null && latestReleaseGithubUrl != null) {
-            Release(latestReleaseName, latestReleaseTag, latestReleaseGithubUrl, latestReleaseChangelog)
+            Release(
+                name = latestReleaseName,
+                tag = latestReleaseTag,
+                githubUrl = latestReleaseGithubUrl,
+                changelog = latestReleaseChangelog,
+                apkAsset = if (
+                    latestReleaseAssetName != null &&
+                    latestReleaseAssetDownloadUrl != null &&
+                    latestReleaseAssetSize != null
+                ) {
+                    ReleaseAsset(
+                        name = latestReleaseAssetName,
+                        downloadUrl = latestReleaseAssetDownloadUrl,
+                        size = latestReleaseAssetSize,
+                        sha256 = latestReleaseAssetSha256,
+                    )
+                } else null,
+            )
         } else null,
     )
 }
@@ -224,7 +246,11 @@ fun SoulSearchingSettings.toRoom(): RoomSoulSearchingSettings = RoomSoulSearchin
         release.latestRelease?.name,
         release.latestRelease?.tag,
         release.latestRelease?.githubUrl,
-        release.latestRelease?.changelog
+        release.latestRelease?.changelog,
+        release.latestRelease?.apkAsset?.name,
+        release.latestRelease?.apkAsset?.downloadUrl,
+        release.latestRelease?.apkAsset?.size,
+        release.latestRelease?.apkAsset?.sha256,
     ),
     album = RoomAlbumSettings(album.shouldShowTrackPositionInAlbumView),
 )

@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 class SettingsAboutViewHolder(
     private val commonReleaseUseCase: CommonReleaseUseCase,
     private val feedbackPopUpManager: FeedbackPopUpManager,
+    private val latestReleaseDownloader: LatestReleaseDownloader,
 ) : SoulViewModelHolderV2<SettingsAboutNavScope, SettingsAboutState>() {
     private var clickCount: Int = 0
 
@@ -35,10 +36,18 @@ class SettingsAboutViewHolder(
                     copy(
                         mostRecentRelease = release,
                         onDownloadLatestRelease = {
-                            // TODO
+                            release?.let {
+                                viewModelScope.launch {
+                                    feedbackPopUpManager.showErrorIfAny(
+                                        latestReleaseDownloader.downloadLatestRelease(it)
+                                    )
+                                }
+                            }
+                            Unit
                         }.takeIf {
                             SoulPlatformUtils.platform == SoulPlatform.Android &&
-                                release?.isNewerThanCurrentVersion() == true
+                                release?.isNewerThanCurrentVersion() == true &&
+                                release.apkAsset != null
                         }
                     )
                 }

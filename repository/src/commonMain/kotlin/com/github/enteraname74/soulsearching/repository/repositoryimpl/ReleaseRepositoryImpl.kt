@@ -14,15 +14,21 @@ class ReleaseRepositoryImpl(
 ) : ReleaseRepository {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getLatestRelease(): Flow<Release?> =
-        settingsRepository.observeRelease().mapLatest { it.latestRelease }
+        settingsRepository.observeRelease().mapLatest { settings ->
+            settings.latestRelease.takeIf { settings.isFetchReleaseFromGithubEnabled }
+        }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getLatestViewedReleaseTag(): Flow<String?> =
         settingsRepository.observeRelease().mapLatest { it.latestViewedReleaseTag }
 
     override suspend fun fetchLatestRelease() {
+        if (!settingsRepository.getSettings().release.isFetchReleaseFromGithubEnabled) return
+
         val latestRelease: Release? = releaseDataSource.getLatestRelease()
-        settingsRepository.setLatestRelease(latestRelease)
+        if (settingsRepository.getSettings().release.isFetchReleaseFromGithubEnabled) {
+            settingsRepository.setLatestRelease(latestRelease)
+        }
     }
 
     override suspend fun markReleaseViewed(tag: String) {
