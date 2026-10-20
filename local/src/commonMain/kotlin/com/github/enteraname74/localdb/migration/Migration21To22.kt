@@ -380,8 +380,8 @@ object Migration21To22 : Migration(21, 22) {
             """.trimIndent()
         )
 
-        executeSQL("CREATE VIEW `RoomPlaylistPreview` AS $ROOM_PLAYLIST_PREVIEW_QUERY_V22")
-        executeSQL("CREATE VIEW `RoomCollectionPreview` AS $ROOM_COLLECTION_PREVIEW_QUERY_V22")
+        executeSQL("CREATE VIEW `RoomPlaylistPreview` AS ${ROOM_PLAYLIST_PREVIEW_QUERY_V22.trim()}")
+        executeSQL("CREATE VIEW `RoomCollectionPreview` AS ${ROOM_COLLECTION_PREVIEW_QUERY_V22.trim()}")
     }
 }
 
