@@ -125,6 +125,7 @@ class PlayerViewModel(
                     playbackCommandsState = buildPlaybackState(
                         scope = playbackMainState.currentScope,
                         isPlaying = playbackMainState.isPlaying,
+                        isBuffering = playbackMainState.isBuffering,
                         currentMusicScope = playbackMainState.currentMusic.scope,
                         playerVolume = playerVolume,
                     ),
@@ -241,11 +242,13 @@ class PlayerViewModel(
     private fun buildPlaybackState(
         scope: PlayedListScope,
         isPlaying: Boolean,
+        isBuffering: Boolean,
         playerVolume: Float,
         currentMusicScope: Scope,
     ): PlaybackCommandsState =
         PlaybackCommandsState(
             isPlaying = isPlaying,
+            isBuffering = isBuffering,
             playerVolume = playerVolume,
             previous = { previous() }.takeIf { scope.isAdmin },
             next = { next() }.takeIf { scope.isAdmin },

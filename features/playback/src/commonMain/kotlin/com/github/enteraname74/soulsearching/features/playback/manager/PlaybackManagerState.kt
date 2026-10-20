@@ -19,6 +19,7 @@ sealed interface PlaybackManagerState {
         val listSize: Int,
         val playerMode: PlayerMode,
         val isPlaying: Boolean,
+        val isBuffering: Boolean,
         val currentState: PlayedListState,
         val currentScope: PlayedListScope,
         val currentType: PlayedListType,

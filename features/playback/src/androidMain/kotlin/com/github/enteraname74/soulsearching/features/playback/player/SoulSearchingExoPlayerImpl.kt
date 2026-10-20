@@ -47,10 +47,12 @@ class SoulSearchingExoPlayerImpl(
     private val mediaMetadataUtils: MediaMetadataUtils,
 ) : SoulSearchingPlayer {
     private var lastReportedIsPlaying: Boolean? = null
+    private var lastReportedIsBuffering: Boolean = false
 
     private val playerListener = object : Player.Listener {
         override fun onPlayerError(error: PlaybackException) {
             playerCoroutineScope.launch {
+                reportBuffering(isBuffering = false)
                 listener?.onError()
             }
         }
@@ -65,6 +67,14 @@ class SoulSearchingExoPlayerImpl(
         }
 
         override fun onEvents(player: Player, events: Player.Events) {
+            if (events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)) {
+                playerCoroutineScope.launch {
+                    reportBuffering(
+                        isBuffering = player.playbackState == Player.STATE_BUFFERING,
+                    )
+                }
+            }
+
             if (!events.contains(Player.EVENT_IS_PLAYING_CHANGED) &&
                 !events.contains(Player.EVENT_PLAY_WHEN_READY_CHANGED) &&
                 !events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)
@@ -90,6 +100,12 @@ class SoulSearchingExoPlayerImpl(
                 }
             }
         }
+    }
+
+    private suspend fun reportBuffering(isBuffering: Boolean) {
+        if (isBuffering == lastReportedIsBuffering) return
+        lastReportedIsBuffering = isBuffering
+        listener?.onBufferingChanged(isBuffering)
     }
 
     private val httpFactory = DefaultHttpDataSource.Factory()
@@ -188,6 +204,7 @@ class SoulSearchingExoPlayerImpl(
     }
 
     override suspend fun setMusic(music: Music): SoulResult<Unit> = onPlayerThread {
+        reportBuffering(isBuffering = false)
         val timelineIndex = player.timelineIndexOf(music.musicId)
         if (timelineIndex != C.INDEX_UNSET) {
             player.seekTo(timelineIndex, 0L)
@@ -349,6 +366,7 @@ class SoulSearchingExoPlayerImpl(
 
     override suspend fun dismiss() {
         onPlayerThread {
+            reportBuffering(isBuffering = false)
             player.stop()
             player.clearMediaItems()
             lastSyncedTimelineMusicIds = emptyList()

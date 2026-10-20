@@ -113,6 +113,8 @@ class PlaybackManager(
     private val _playbackError: MutableStateFlow<PlaybackError?> = MutableStateFlow(null)
     val playbackError: StateFlow<PlaybackError?> = _playbackError.asStateFlow()
 
+    private val isPlayerBuffering: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val currentMusicFavoriteStatusState: Flow<Boolean> =
         playerRepository.getCurrentMusic().flatMapLatest { current ->
@@ -171,6 +173,7 @@ class PlaybackManager(
             playerRepository.getPreviousMusic(),
             playerRepository.observeCurrentSharedUsers(),
             playerRepository.observeFullPlayerMusicUsers(),
+            isPlayerBuffering,
         ) { array ->
             val currentMusic: Music? = (array[0] as PlayerMusic?)?.music
             val next: Music? = (array[5] as PlayerMusic?)?.music
@@ -189,6 +192,9 @@ class PlaybackManager(
                     listSize = array[2] as Int,
                     playerMode = currentPlayedList.mode,
                     isPlaying = currentPlayedList.state == PlayedListState.Playing,
+                    isBuffering = array[9] as Boolean &&
+                        currentMusic.isRemoteOnly &&
+                        currentPlayedList.state == PlayedListState.Playing,
                     currentState = currentPlayedList.state,
                     currentScope = currentPlayedList.scope,
                     currentType = currentPlayedList.type,
@@ -979,6 +985,10 @@ class PlaybackManager(
 
     override suspend fun onError() {
         onCurrentMusicError()
+    }
+
+    override suspend fun onBufferingChanged(isBuffering: Boolean) {
+        isPlayerBuffering.value = isBuffering
     }
 
     override suspend fun onPause() {

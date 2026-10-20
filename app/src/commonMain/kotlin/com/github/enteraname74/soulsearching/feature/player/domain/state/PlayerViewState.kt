@@ -54,6 +54,7 @@ sealed interface PlayerViewState {
 
 data class PlaybackCommandsState(
     val isPlaying: Boolean,
+    val isBuffering: Boolean,
     val playerVolume: Float,
     val previous: (() -> Unit)?,
     val next: (() -> Unit)?,

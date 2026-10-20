@@ -27,6 +27,7 @@ class SoulSearchingDesktopPlayerImpl(
     private var startPlayBuffered: Boolean = false
     private var startPauseBuffered: Boolean = false
     private var stopForMediaChangeBuffered: Boolean = false
+    private var lastReportedIsBuffering: Boolean = false
     private val workScope = CoroutineScope(workDispatcher.dispatcher)
 
     private var player: MediaPlayer = AudioPlayerComponent().mediaPlayer()
@@ -39,11 +40,29 @@ class SoulSearchingDesktopPlayerImpl(
     override fun finished(mediaPlayer: MediaPlayer?) {
         super.finished(mediaPlayer)
         workScope.launch {
+            reportBuffering(isBuffering = false)
             listener?.onCompletion()
         }
     }
 
+    override fun opening(mediaPlayer: MediaPlayer?) {
+        super.opening(mediaPlayer)
+        workScope.launch {
+            reportBuffering(isBuffering = true)
+        }
+    }
+
+    override fun buffering(mediaPlayer: MediaPlayer?, newCache: Float) {
+        super.buffering(mediaPlayer, newCache)
+        workScope.launch {
+            reportBuffering(isBuffering = newCache < 100f)
+        }
+    }
+
     override fun playing(mediaPlayer: MediaPlayer?) {
+        workScope.launch {
+            reportBuffering(isBuffering = false)
+        }
         if (startPlayBuffered) {
             startPlayBuffered = false
             return
@@ -55,6 +74,9 @@ class SoulSearchingDesktopPlayerImpl(
     }
 
     override fun paused(mediaPlayer: MediaPlayer?) {
+        workScope.launch {
+            reportBuffering(isBuffering = false)
+        }
         if (startPauseBuffered) {
             startPauseBuffered = false
             return
@@ -66,6 +88,9 @@ class SoulSearchingDesktopPlayerImpl(
     }
 
     override fun stopped(mediaPlayer: MediaPlayer?) {
+        workScope.launch {
+            reportBuffering(isBuffering = false)
+        }
         if (stopForMediaChangeBuffered) {
             stopForMediaChangeBuffered = false
             return
@@ -79,8 +104,15 @@ class SoulSearchingDesktopPlayerImpl(
     override fun error(mediaPlayer: MediaPlayer?) {
         super.error(mediaPlayer)
         workScope.launch {
+            reportBuffering(isBuffering = false)
             listener?.onError()
         }
+    }
+
+    private suspend fun reportBuffering(isBuffering: Boolean) {
+        if (isBuffering == lastReportedIsBuffering) return
+        lastReportedIsBuffering = isBuffering
+        listener?.onBufferingChanged(isBuffering)
     }
 
     private fun init() {
@@ -90,6 +122,7 @@ class SoulSearchingDesktopPlayerImpl(
     }
 
     override suspend fun setMusic(music: Music): SoulResult<Unit> = SoulResult.runCatching {
+        reportBuffering(isBuffering = false)
         if (player.status().state() in setOf(State.PLAYING, State.PAUSED, State.OPENING, State.BUFFERING)) {
             stopForMediaChangeBuffered = true
             player.controls().stop()
@@ -178,6 +211,7 @@ class SoulSearchingDesktopPlayerImpl(
 
     override suspend fun dismiss() {
         try {
+            reportBuffering(isBuffering = false)
             player.controls().stop()
             //            player.release()
         } catch (e: Exception) {

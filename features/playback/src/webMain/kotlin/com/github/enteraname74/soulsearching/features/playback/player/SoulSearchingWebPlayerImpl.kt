@@ -29,6 +29,7 @@ class SoulSearchingWebPlayerImpl(
     private var currentSource: String? = null
     private var sourceVersion: Int = 0
     private var suppressedPauseEvents: Int = 0
+    private var lastReportedIsBuffering: Boolean = false
 
     override var listener: SoulSearchingPlayer.Listener? = null
 
@@ -36,7 +37,33 @@ class SoulSearchingWebPlayerImpl(
         audio.preload = "auto"
         audio.addEventListener("ended") {
             workScope.launch {
+                reportBuffering(isBuffering = false)
                 listener?.onCompletion()
+            }
+        }
+        audio.addEventListener("loadstart") {
+            workScope.launch {
+                reportBuffering(isBuffering = true)
+            }
+        }
+        audio.addEventListener("waiting") {
+            workScope.launch {
+                reportBuffering(isBuffering = true)
+            }
+        }
+        audio.addEventListener("stalled") {
+            workScope.launch {
+                reportBuffering(isBuffering = true)
+            }
+        }
+        audio.addEventListener("canplay") {
+            workScope.launch {
+                reportBuffering(isBuffering = false)
+            }
+        }
+        audio.addEventListener("playing") {
+            workScope.launch {
+                reportBuffering(isBuffering = false)
             }
         }
         audio.addEventListener("play") {
@@ -45,6 +72,9 @@ class SoulSearchingWebPlayerImpl(
             }
         }
         audio.addEventListener("pause") {
+            workScope.launch {
+                reportBuffering(isBuffering = false)
+            }
             if (audio.ended || suppressedPauseEvents > 0) {
                 suppressedPauseEvents = (suppressedPauseEvents - 1).coerceAtLeast(0)
                 return@addEventListener
@@ -56,12 +86,20 @@ class SoulSearchingWebPlayerImpl(
         }
         audio.addEventListener("error") {
             workScope.launch {
+                reportBuffering(isBuffering = false)
                 listener?.onError()
             }
         }
     }
 
+    private suspend fun reportBuffering(isBuffering: Boolean) {
+        if (isBuffering == lastReportedIsBuffering) return
+        lastReportedIsBuffering = isBuffering
+        listener?.onBufferingChanged(isBuffering)
+    }
+
     override suspend fun setMusic(music: Music): SoulResult<Unit> = SoulResult.runCatching {
+        reportBuffering(isBuffering = false)
         val version = ++sourceVersion
         val token = signedPlaybackUrlProvider.getUpdatedToken(music)
 
@@ -129,6 +167,7 @@ class SoulSearchingWebPlayerImpl(
         }
 
     override suspend fun dismiss() {
+        reportBuffering(isBuffering = false)
         sourceVersion++
         pauseSilently()
         audio.removeAttribute("src")
