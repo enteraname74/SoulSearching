@@ -69,6 +69,9 @@ class MusicRepositoryImpl(
     override suspend fun getAllLocalMusic(): List<Music> =
         musicLocalDataSource.getAllLocalMusic()
 
+    override suspend fun getCloudOnlyMusicMatchingNames(musicNames: List<String>): List<Music> =
+        musicLocalDataSource.getCloudOnlyMusicMatchingNames(musicNames)
+
     override suspend fun getAllSorted(): List<Music> =
         musicLocalDataSource.getAllSorted()
 

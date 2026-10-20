@@ -26,6 +26,18 @@ interface MusicDao {
     @Upsert
     suspend fun upsertAll(roomMusics: List<RoomMusic>)
 
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic
+            WHERE localPath IS NULL
+              AND remoteId IS NOT NULL
+              AND scope != 'SharedPlayedList'
+              AND TRIM(name) COLLATE NOCASE IN (:musicNames)
+        """
+    )
+    suspend fun getCloudOnlyMusicMatchingNames(musicNames: List<String>): List<RoomCompleteMusic>
+
     @Delete
     suspend fun delete(roomMusic: RoomMusic)
 

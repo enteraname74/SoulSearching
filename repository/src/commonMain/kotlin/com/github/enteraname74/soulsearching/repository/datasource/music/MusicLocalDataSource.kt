@@ -49,6 +49,8 @@ interface MusicLocalDataSource {
 
     suspend fun getAllLocalMusic(): List<Music>
 
+    suspend fun getCloudOnlyMusicMatchingNames(musicNames: List<String>): List<Music>
+
     suspend fun getAllSorted(): List<Music>
 
     suspend fun getAllSorted(page: Int, pageSize: Int): List<Music>

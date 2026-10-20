@@ -27,6 +27,7 @@ import com.github.enteraname74.soulsearching.domain.usecase.music.CloudMusicToMu
 import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.MatchCloudOnlyMusicsUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.ObserveDataChangedForCloudSync
 import com.github.enteraname74.soulsearching.domain.usecase.music.RemoveLocallyOrDeleteMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.SaveInitialFetchedMusicsUseCase
@@ -91,6 +92,7 @@ val domainModule: Module = module {
     factoryOf(::DeleteMusicUseCase)
     factoryOf(::RemoveLocallyOrDeleteMusicUseCase)
     factoryOf(::IsMusicInFavoritePlaylistUseCase)
+    factoryOf(::MatchCloudOnlyMusicsUseCase)
     singleOf(::ObserveDataChangedForCloudSync)
     factoryOf(::ToggleMusicFavoriteStatusUseCase)
     factoryOf(::CloudMusicToMusicUseCase)

@@ -38,6 +38,10 @@ internal class RoomMusicLocalDataSourceImpl(
     private val appDatabase: AppDatabase,
     private val settingsRepository: SettingsRepository,
 ) : MusicLocalDataSource {
+    private companion object {
+        const val MUSIC_NAME_QUERY_CHUNK_SIZE = 500
+    }
+
     override suspend fun upsert(music: Music) {
         appDatabase.useWriterConnection {
             val allArtist: Set<Artist> = (music.artists + music.album.artist).toSet()
@@ -55,6 +59,8 @@ internal class RoomMusicLocalDataSourceImpl(
             appDatabase.musicArtistDao.upsertAll(
                 roomMusicArtists = music.toRoomMusicArtists()
             )
+            appDatabase.albumDao.deleteAllEmpty()
+            appDatabase.artistDao.deleteAllEmpty()
         }
     }
 
@@ -80,9 +86,14 @@ internal class RoomMusicLocalDataSourceImpl(
                     ).toRoomMusic()
                 }
             )
+            appDatabase.musicArtistDao.deleteOfMusics(
+                musicIds = musics.map { it.musicId }
+            )
             appDatabase.musicArtistDao.upsertAll(
                 roomMusicArtists = musics.flatMap { it.toRoomMusicArtists() }
             )
+            appDatabase.albumDao.deleteAllEmpty()
+            appDatabase.artistDao.deleteAllEmpty()
         }
     }
 
@@ -143,6 +154,16 @@ internal class RoomMusicLocalDataSourceImpl(
 
     override suspend fun getAllLocalMusic(): List<Music> =
         appDatabase.musicDao.getAllLocalMusic().map { it.toMusic() }
+
+    override suspend fun getCloudOnlyMusicMatchingNames(musicNames: List<String>): List<Music> =
+        musicNames
+            .distinct()
+            .chunked(MUSIC_NAME_QUERY_CHUNK_SIZE)
+            .flatMap { names ->
+                appDatabase.musicDao
+                    .getCloudOnlyMusicMatchingNames(names)
+                    .map { it.toMusic() }
+            }
 
     override suspend fun getAllSorted(): List<Music> {
         val sortSettings = settingsRepository.getSettings().musicSortSetup

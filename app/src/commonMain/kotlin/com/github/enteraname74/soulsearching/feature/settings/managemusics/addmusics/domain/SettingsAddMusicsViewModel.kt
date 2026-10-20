@@ -7,6 +7,7 @@ import com.github.enteraname74.soulsearching.domain.model.Folder
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.music.MatchCloudOnlyMusicsUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.SaveMusicsWithFoldersUseCase
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -30,6 +31,7 @@ class SettingsAddMusicsViewModel(
     private val addNewsSongsStepManager: AddNewsSongsStepManager,
     private val loadingManager: LoadingManager,
     private val saveMusicsWithFoldersUseCase: SaveMusicsWithFoldersUseCase,
+    private val matchCloudOnlyMusicsUseCase: MatchCloudOnlyMusicsUseCase,
     workDispatcher: WorkDispatcher,
 ) : ViewModel() {
     private val workScope = viewModelScope.plus(workDispatcher.dispatcher)
@@ -124,8 +126,9 @@ class SettingsAddMusicsViewModel(
             .map { it.music }
 
         loadingManager.withLoadingOnScope(workScope) {
+            val matchedMusics = matchCloudOnlyMusicsUseCase(selectedMusics)
             val musicsToSave: List<Music> = musicFetcher.cacheSelectedMusics(
-                musics = selectedMusics,
+                musics = matchedMusics,
                 onSongSaved = { },
             )
 

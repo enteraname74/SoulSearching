@@ -51,6 +51,9 @@ interface MusicRepository {
 
     suspend fun getAllLocalMusic(): List<Music>
 
+    /** Retrieves cloud-only songs whose names match one of the supplied names. */
+    suspend fun getCloudOnlyMusicMatchingNames(musicNames: List<String>): List<Music>
+
     suspend fun getAllSorted(): List<Music>
 
     suspend fun getAllSorted(page: Int, pageSize: Int): List<Music>

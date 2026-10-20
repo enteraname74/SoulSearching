@@ -145,13 +145,15 @@ internal class MusicFetcherDesktopImpl(
         hiddenFoldersPaths: List<String>
     ): List<SelectableMusicItem> {
         val newMusics = ArrayList<SelectableMusicItem>()
+        val alreadyPresentPaths = alreadyPresentMusicsPaths.toHashSet()
+        val hiddenPaths = hiddenFoldersPaths.toHashSet()
         val root = AppDirectories.music.toFile()
 
         extractMusicsFromCurrentDirectory(
             directory = root,
             updateProgress = { _, _ -> },
             onMusicFetched = { music ->
-                if (!alreadyPresentMusicsPaths.any { it == music.localPath } && !hiddenFoldersPaths.any { it == music.folder }) {
+                if (music.localPath !in alreadyPresentPaths && music.folder !in hiddenPaths) {
                     newMusics.add(
                         SelectableMusicItem(
                             music = music,
