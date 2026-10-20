@@ -228,36 +228,36 @@ internal class RoomMusicLocalDataSourceImpl(
     override fun getAllPaged(): Flow<PagingData<Music>> =
         settingsRepository.observeSettings()
             .flatMapLatest { settings ->
-                        val sortDirection = settings.musicSortSetup.direction
-                        val sortType = settings.musicSortSetup.type
+                val sortDirection = settings.musicSortSetup.direction
+                val sortType = settings.musicSortSetup.type
 
-                        Pager(
-                            config = PagingConfig(
-                                pageSize = PagingUtils.PAGE_SIZE,
-                                enablePlaceholders = false,
-                            ),
-                            pagingSourceFactory = {
-                                when (sortDirection) {
-                                    SortDirection.ASC -> {
-                                        when (sortType) {
-                                            SortType.NAME -> appDatabase.musicDao.getAllPagedByNameAsc()
-                                            SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateAsc()
-                                            SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedAsc()
-                                        }
-                                    }
-
-                                    SortDirection.DESC -> {
-                                        when (sortType) {
-                                            SortType.NAME -> appDatabase.musicDao.getAllPagedByNameDesc()
-                                            SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateDesc()
-                                            SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedDesc()
-                                        }
-                                    }
+                Pager(
+                    config = PagingConfig(
+                        pageSize = PagingUtils.PAGE_SIZE,
+                        enablePlaceholders = false,
+                    ),
+                    pagingSourceFactory = {
+                        when (sortDirection) {
+                            SortDirection.ASC -> {
+                                when (sortType) {
+                                    SortType.NAME -> appDatabase.musicDao.getAllPagedByNameAsc()
+                                    SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateAsc()
+                                    SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedAsc()
                                 }
                             }
-                        ).flow.map { pagingData ->
-                            pagingData.map { it.toMusic() }
+
+                            SortDirection.DESC -> {
+                                when (sortType) {
+                                    SortType.NAME -> appDatabase.musicDao.getAllPagedByNameDesc()
+                                    SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateDesc()
+                                    SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedDesc()
+                                }
+                            }
                         }
+                    }
+                ).flow.map { pagingData ->
+                    pagingData.map { it.toMusic() }
+                }
             }
 
     override suspend fun getAllRemoteIdsPossessedByUser(): List<String> =
