@@ -53,6 +53,7 @@
     <category>Music</category>
   </categories>
   <releases>
+    <release version="0.17.0" date="2026-10-21"/>
     <release version="0.16.0" date="2026-10-02"/>
   </releases>
   <content_rating type="oars-1.1"/>
