@@ -202,7 +202,9 @@ class SyncDataWithCloudUseCase(
 
     private suspend fun syncSettings() {
         _state.value = State.SyncingSettings
-        val lastSyncMillis = cloudPreferencesRepository.getLastSettingsSyncMillis()
+        val lastSyncMillis = cloudPreferencesRepository
+            .getLastSettingsSyncMillis()
+            ?.takeIf { it > 0L }
         val remote = settingsRepository.fetchCloudSettings(lastSyncMillis)
         val local = settingsRepository.getCloudSettingsUpdatedAfter(lastSyncMillis)
 
@@ -215,7 +217,10 @@ class SyncDataWithCloudUseCase(
             else -> remote
         }
         winner?.let {
-            settingsRepository.applyCloudSettings(it, it.updatedAtMillis)
+            settingsRepository.applyCloudSettings(
+                settings = it,
+                lastSettingsSyncMillis = max(DateUtils.now(), it.updatedAtMillis),
+            )
         }
     }
 
