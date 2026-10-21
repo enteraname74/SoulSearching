@@ -28,6 +28,7 @@ interface Strings {
     val emptyArtists: String
     val emptyPlaylists: String
     val emptyMonths: String
+    val emptyCollections: String
     val emptyMusicsExplanations: String
     val emptyAlbumsExplanations: String
     val emptyArtistsExplanations: String
@@ -35,6 +36,7 @@ interface Strings {
     val emptyPlaylistsExplanations: String
     val emptyQuickAccessExplanations: String
     val emptyMonthsExplanations: String
+    val emptyCollectionsExplanations: String
     val backButton: String
     val headerBarRightButton: String
     val image: String

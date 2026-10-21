@@ -18,6 +18,7 @@ object EnStrings : Strings {
     override val emptyArtists: String = "No artists"
     override val emptyPlaylists: String = "No playlists"
     override val emptyMonths: String = "No months"
+    override val emptyCollections: String = "No collections"
     override val emptyMonthsExplanations: String = "Add songs from the settings to see them grouped by added month here"
     override val emptyMusicsExplanations: String = "Add songs from the settings to see them here"
     override val emptyAlbumsExplanations: String = "Add songs from the settings to see your albums here"
@@ -25,7 +26,9 @@ object EnStrings : Strings {
     override val emptyFoldersExplanations: String = "Add songs from the settings to see your folders here"
     override val emptyPlaylistsExplanations: String = """Create a playlist by clicking on the "+" button"""
     override val emptyQuickAccessExplanations: String = "Add a song, album, artist, or playlist to quick access " +
-        "to see it appear here."
+        "to see it appear here"
+    override val emptyCollectionsExplanations: String = "Group similar albums and artists into a collection. " +
+        "Adding new songs to an artist or an album will automatically add them to their linked collections"
     override val cannotRetrieveSongs: String = "Cannot retrieve songs!"
     override val backButton = "Back button"
     override val createPlaylistButton = "Create playlist button"

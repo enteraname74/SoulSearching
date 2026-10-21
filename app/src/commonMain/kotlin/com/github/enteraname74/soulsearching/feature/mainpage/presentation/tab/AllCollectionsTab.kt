@@ -51,8 +51,8 @@ fun allCollectionsTab(
             sortDirection = state.sortDirection,
             key = { it?.id },
             contentType = ALL_COLLECTIONS_CONTENT_TYPE,
-            emptyTitle = null,
-            emptyDescription = "",
+            emptyTitle = strings.emptyCollections,
+            emptyDescription = strings.emptyCollectionsExplanations,
         ) { collection ->
             BigPreviewComposable(
                 modifier = Modifier.animateItem(),

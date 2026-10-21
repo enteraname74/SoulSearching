@@ -18,6 +18,7 @@ object FrStrings : Strings {
     override val emptyArtists: String = "Aucun artiste"
     override val emptyPlaylists: String = "Aucune playlist"
     override val emptyMonths: String = "Aucun mois"
+    override val emptyCollections: String = "Aucune collection"
     override val emptyMonthsExplanations: String = "Ajoutez des musiques depuis les paramètres pour les voir groupées par mois d'ajout ici"
     override val emptyMusicsExplanations: String = "Ajoutez des musiques depuis les paramètres pour les retrouver ici"
     override val emptyAlbumsExplanations: String = "Ajoutez des musiques depuis les paramètres pour retrouver vos albums ici"
@@ -25,7 +26,9 @@ object FrStrings : Strings {
     override val emptyFoldersExplanations: String = "Ajoutez des musiques depuis les paramètres pour retrouver vos dossiers ici"
     override val emptyPlaylistsExplanations: String = """Créez une liste de lecture en cliquant sur le bouton "+""""
     override val emptyQuickAccessExplanations = "Ajoutez une musique, un album, un artiste ou une playlist dans les accès rapides " +
-        "pour les voir apparaître ici."
+        "pour les voir apparaître ici"
+    override val emptyCollectionsExplanations: String = "Regroupez des albums et des artistes similaires dans une collection. " +
+        "Ajouter des musiques à des artistes ou des albums mettra directement à jour les collections liées à ces éléments"
     override val cannotRetrieveSongs = "Impossible de récupérer des musiques !"
     override val backButton = "Bouton de retour"
     override val createPlaylistButton = "Bouton pour créer une playlist"
