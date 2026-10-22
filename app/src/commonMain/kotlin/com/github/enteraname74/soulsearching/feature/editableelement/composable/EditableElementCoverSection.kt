@@ -7,20 +7,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.github.enteraname74.soulsearching.domain.model.SoulPlatform
-import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
-import com.github.enteraname74.soulsearching.composables.image.SoulByteArrayImage
-import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 
 @Composable
 fun EditableElementCoverSection(
     title: String,
-    editableElement: EditableElement,
-    onSelectImage: () -> Unit,
+    coverEditMode: CoverEditMode,
+    onSelectImage: (pos: Int) -> Unit,
+    onSwitchModeType: (new: CoverEditMode.Type) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -33,28 +29,10 @@ fun EditableElementCoverSection(
             text = title,
             color = SoulSearchingColorTheme.colorScheme.onPrimary
         )
-
-        // TODO WEB: Add support for cover update
-        if (editableElement.newCover == null) {
-            SoulImage(
-                cover = editableElement.initialCover,
-                size = UiConstants.CoverSize.huge,
-                modifier = Modifier.clickableWithHandCursor(
-                    enabled = SoulPlatformUtils.platform != SoulPlatform.Web
-                ) {
-                    onSelectImage()
-                }
-            )
-        } else {
-            SoulByteArrayImage(
-                data = editableElement.newCover,
-                size = UiConstants.CoverSize.huge,
-                modifier = Modifier.clickableWithHandCursor(
-                    enabled = SoulPlatformUtils.platform != SoulPlatform.Web
-                ) {
-                    onSelectImage()
-                }
-            )
-        }
+        CoverEditModeImage(
+            coverEditMode = coverEditMode,
+            onSelectImage = onSelectImage,
+            onSwitchModeType = onSwitchModeType,
+        )
     }
 }

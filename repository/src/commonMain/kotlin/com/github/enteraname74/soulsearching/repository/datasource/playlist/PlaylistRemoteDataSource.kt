@@ -19,6 +19,6 @@ interface PlaylistRemoteDataSource {
 
     suspend fun upload(
         playlist: PlaylistWithMusics,
-        coverPath: String?,
+        coversData: List<ByteArray?>,
     ): CloudPlaylist
 }

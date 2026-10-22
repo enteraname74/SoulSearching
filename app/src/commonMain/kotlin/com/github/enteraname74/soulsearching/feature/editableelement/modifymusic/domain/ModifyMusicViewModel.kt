@@ -3,8 +3,9 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifymusi
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.domain.model.Artist
-import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.album.GetCorrespondingAlbumUseCase
@@ -13,11 +14,10 @@ import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudI
 import com.github.enteraname74.soulsearching.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
-import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
-import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.ext.toByteArray
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditManager
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
-import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicState
@@ -56,6 +56,7 @@ class ModifyMusicViewModel(
     private val cachedCoverManager: CachedCoverManager,
     private val coverFileManager: CoverFileManager,
     private val workDispatcher: WorkDispatcher,
+    private val coverEditManager: CoverEditManager,
     hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
     destination: ModifyMusicDestination,
 ) : ViewModel() {
@@ -82,9 +83,13 @@ class ModifyMusicViewModel(
             initialMusic == null -> ModifyMusicState.Loading
             else -> ModifyMusicState.Data(
                 initialMusic = initialMusic,
-                editableElement = EditableElement(
-                    initialCover = initialMusic.cover,
-                    newCover = newCover
+                coverEditMode = CoverEditMode(
+                    simple = CoverEditMode.Simple(
+                        initialCover = initialMusic.cover,
+                        newCover = newCover
+                    ),
+                    grid = null,
+                    selectedType = CoverEditMode.Type.Simple,
                 ),
                 hasValidCloudInformation = hasValidCloudInformation,
             )
@@ -207,18 +212,9 @@ class ModifyMusicViewModel(
             val state = (state.value as? ModifyMusicState.Data) ?: return@launch
             val form = (formState.value as? ModifyMusicFormState.Data) ?: return@launch
 
-            if (!form.isFormValid()) return@launch
+            if (!form.isFormValid() || !state.coverEditMode.isValid()) return@launch
 
             loadingManager.startLoading()
-
-            val coverFile: Uuid? = state.editableElement.newCover?.let { coverData ->
-                val newCoverId: Uuid = Uuid.random()
-                commonCoverUseCase.upsert(
-                    id = newCoverId,
-                    data = coverData,
-                )
-                newCoverId
-            } ?: (state.initialMusic.cover as? Cover.CoverFile)?.fileCoverId
 
             // We remove duplicate and we trim the inputs
             val cleanedNewArtistsName: List<String> = form.getArtistsName()
@@ -231,8 +227,8 @@ class ModifyMusicViewModel(
                     legacyMusic = state.initialMusic,
                     newName = form.getMusicName().trim(),
                     newAlbumName = form.getAlbumName().trim(),
-                    newCover = (state.initialMusic.cover as? Cover.CoverFile)?.copy(
-                        fileCoverId = coverFile,
+                    newCover = coverEditManager.getSimpleCover(
+                        simpleCoverEditMode = state.coverEditMode.simple,
                     ) ?: state.initialMusic.cover,
                     newAlbumPosition = form.getAlbumPosition().trim().toIntOrNull(),
                     newAlbumArtistName = form.getAlbumArtist().trim(),

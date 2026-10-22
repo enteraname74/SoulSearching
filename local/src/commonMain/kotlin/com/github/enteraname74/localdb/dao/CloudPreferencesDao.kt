@@ -11,6 +11,9 @@ interface CloudPreferencesDao {
     @Query("SELECT * FROM RoomCloudPreferences LIMIT 1")
     fun observe(): Flow<RoomCloudPreferences?>
 
+    @Query("SELECT * FROM RoomCloudPreferences LIMIT 1")
+    suspend fun get(): RoomCloudPreferences?
+
     @Upsert
     suspend fun upsert(preferences: RoomCloudPreferences)
 
@@ -18,7 +21,8 @@ interface CloudPreferencesDao {
         """
             UPDATE RoomCloudPreferences 
             SET lastSyncMillis = NULL, 
-            lastStatisticsSyncMillis = NULL
+            lastStatisticsSyncMillis = NULL,
+            lastSettingsSyncMillis = NULL
         """
     )
     suspend fun clearSyncsMillis()

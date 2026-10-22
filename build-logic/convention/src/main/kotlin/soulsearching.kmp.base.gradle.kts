@@ -11,7 +11,11 @@ kotlin {
     jvmToolchain(21)
 
     android {
-        compileSdk = 37
+        compileSdk {
+            version = release(37) {
+                minorApiLevel = 0
+            }
+        }
         minSdk = 26
         compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
     }

@@ -12,10 +12,12 @@ interface CloudPreferencesDataSource {
 
     suspend fun setLastSyncMillis(millis: Long)
     suspend fun setLastStatsSyncMillis(millis: Long)
+    suspend fun setLastSettingsSyncMillis(millis: Long)
 
     suspend fun getLastSyncMillis(): Long?
 
     suspend fun getLastStatsSyncMillis(): Long?
+    suspend fun getLastSettingsSyncMillis(): Long?
 
     suspend fun clearSyncsMillis()
 }

@@ -15,7 +15,7 @@ data class Music(
     val name: String,
     val album: Album,
     val artists: List<Artist>,
-    val cover: Cover,
+    val cover: Cover.Simple,
     val albumPosition: Int?,
     val localPath: String?,
     val remotePath: String?,

@@ -52,15 +52,26 @@ private fun ModifyArtistScreenView(
         state is ModifyArtistState.Data && formState is ModifyArtistFormState.Data -> {
             WriteFilesCheck(
                 musicsToSave = state.initialArtist.musics,
+                conditionToAskWriteFiles = {
+                    /*
+                    We should only ask to write music file if the artist name changes.
+                    If only the cover changes, we don't care.
+                     */
+                    state.initialArtist.artist.artistName != formState.getArtistName()
+                },
                 onSave = onValidateModification,
             ) { onSave ->
                 EditableElementView(
                     title = strings.artistInformation,
                     coverSectionTitle = strings.artistCover,
-                    editableElement = state.editableElement,
+                    coverEditMode = state.coverEditMode,
                     navigateBack = navigateBack,
-                    onSelectCover = onSelectCover,
+                    onSelectCover = { onSelectCover() },
+                    onSwitchModeType = { },
                     onValidateModification = onSave,
+                    isValid = {
+                        formState.isFormValid() && state.coverEditMode.isValid()
+                    },
                     textFields = formState.textFields,
                 )
             }

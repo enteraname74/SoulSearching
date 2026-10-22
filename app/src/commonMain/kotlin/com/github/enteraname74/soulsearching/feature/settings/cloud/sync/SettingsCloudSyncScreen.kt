@@ -66,6 +66,10 @@ fun SettingsCloudSyncScreen(
                     date = state.lastSync,
                 )
                 SyncState(
+                    title = strings.cloudSettingsLastSettingsSync,
+                    date = state.lastSettingsSync,
+                )
+                SyncState(
                     title = strings.cloudSettingsLastStatisticsSync,
                     date = state.lastStatisticsSync,
                 )

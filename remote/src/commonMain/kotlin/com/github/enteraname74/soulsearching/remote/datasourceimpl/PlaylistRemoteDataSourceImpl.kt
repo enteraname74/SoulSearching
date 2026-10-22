@@ -3,8 +3,7 @@ package com.github.enteraname74.soulsearching.remote.datasourceimpl
 import com.github.enteraname74.soulsearching.domain.model.CloudPlaylist
 import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
-import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
-import com.github.enteraname74.soulsearching.remote.ext.appendCoverFile
+import com.github.enteraname74.soulsearching.remote.ext.appendCoverData
 import com.github.enteraname74.soulsearching.remote.ext.appendJson
 import com.github.enteraname74.soulsearching.remote.ext.bodyOrThrow
 import com.github.enteraname74.soulsearching.remote.ext.withUrl
@@ -29,7 +28,6 @@ import kotlin.uuid.Uuid
 class PlaylistRemoteDataSourceImpl(
     private val client: HttpClient,
     private val cloudPreferencesDataSource: CloudPreferencesDataSource,
-    private val workDispatcher: WorkDispatcher,
 ) : PlaylistRemoteDataSource {
 
     override suspend fun getDeletedRemotePlaylistIds(idsToCheck: List<Uuid>): List<Uuid> =
@@ -66,7 +64,7 @@ class PlaylistRemoteDataSourceImpl(
 
     override suspend fun upload(
         playlist: PlaylistWithMusics,
-        coverPath: String?
+        coversData: List<ByteArray?>,
     ): CloudPlaylist =
         client
             .submitFormWithBinaryData(
@@ -76,12 +74,8 @@ class PlaylistRemoteDataSourceImpl(
                         key = "metadata",
                         value = playlist.toPlaylistUpload(),
                     )
-                    coverPath?.let {
-                        appendCoverFile(
-                            key = "cover",
-                            path = it,
-                            workDispatcher = workDispatcher,
-                        )
+                    coversData.take(4).forEachIndexed { index, data ->
+                        data?.let { appendCoverData("cover$index", it) }
                     }
                 }
             ) {

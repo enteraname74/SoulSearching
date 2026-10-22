@@ -5,6 +5,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Eleme
 data class ElementsVisibility(
     val isQuickAccessShown: Boolean,
     val arePlaylistsShown: Boolean,
+    val areCollectionsShown: Boolean,
     val areAlbumsShown: Boolean,
     val areArtistsShown: Boolean,
     val areMusicFoldersShown: Boolean,
@@ -14,6 +15,7 @@ data class ElementsVisibility(
             if (isQuickAccessShown) add(ElementEnum.QUICK_ACCESS)
             add(ElementEnum.MUSICS)
             if (arePlaylistsShown) add(ElementEnum.PLAYLISTS)
+            if (areCollectionsShown) add(ElementEnum.COLLECTIONS)
             if (areAlbumsShown) add(ElementEnum.ALBUMS)
             if (areArtistsShown) add(ElementEnum.ARTISTS)
             if (areMusicFoldersShown) add(ElementEnum.FOLDERS)

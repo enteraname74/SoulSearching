@@ -8,21 +8,27 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.model.utils.AndroidUtils
 
 @Composable
 actual fun WriteFilesCheck(
     onSave: () -> Unit,
     musicsToSave: List<Music>,
-    settings: SoulSearchingSettings,
+    conditionToAskWriteFiles: () -> Boolean,
+    settingsRepository: SettingsRepository,
     content: @Composable (onSave: () -> Unit) -> Unit,
 ) {
     val context = LocalContext.current
-    val isMusicFileModificationOn: Boolean = settings.get(SoulSearchingSettingsKeys.IS_MUSIC_FILE_MODIFICATION_ON)
+    val settings by settingsRepository.observeSettings().collectAsState(
+        initial = SoulSearchingSettings(),
+    )
+    val isMusicFileModificationOn = settings.isMusicFileModificationOn
     val resultWriteFileLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { _ ->
             /*
@@ -33,7 +39,7 @@ actual fun WriteFilesCheck(
         }
 
     fun acceptWriteFile() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && isMusicFileModificationOn) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && isMusicFileModificationOn && conditionToAskWriteFiles()) {
 
             val uris = mutableListOf<Uri>()
 

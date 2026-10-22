@@ -1,10 +1,11 @@
 package com.github.enteraname74.soulsearching.theme
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.theme.color.*
+import com.github.enteraname74.soulsearching.domain.model.settings.ColorThemeType
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingTheme
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.kmpalette.palette.graphics.Palette
@@ -15,17 +16,17 @@ import kotlinx.coroutines.flow.*
  * Manage the color theme of the application.
  */
 class ColorThemeManager(
-    settings: SoulSearchingSettings,
+    settingsRepository: SettingsRepository,
     playerViewManager: PlayerViewManager,
     workDispatcher: WorkDispatcher,
 ) {
 
     private val playerPaletteGenerator: ColorPaletteGenerator = ColorPaletteGenerator(
-        settings = settings,
+        settingsRepository = settingsRepository,
         workDispatcher = workDispatcher,
     )
     private val playlistPaletteGenerator: ColorPaletteGenerator = ColorPaletteGenerator(
-        settings = settings,
+        settingsRepository = settingsRepository,
         workDispatcher = workDispatcher,
     )
     
@@ -38,40 +39,29 @@ class ColorThemeManager(
     // TODO THEME: On app launch, if user is in light mode, a blink will occurs because we default the theme to dark
     private val isInDarkTheme: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
-    val currentDefaultThemeSettings: StateFlow<DefaultThemeSettings> = combine(
-        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.USED_COLOR_THEME_ID_KEY),
-        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.FORCE_DARK_THEME_KEY),
-        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.FORCE_LIGHT_THEME_KEY),
-    ) { themeId, forceDarkTheme, forceLightTheme ->
+    val currentDefaultThemeSettings: StateFlow<DefaultThemeSettings> = settingsRepository.observeColorTheme().map { settings ->
         DefaultThemeSettings(
-            themeId = SoulSearchingTheme.from(id = themeId),
-            forceDarkTheme = forceDarkTheme,
-            forceLightTheme = forceLightTheme,
+            themeId = settings.usedTheme,
+            forceDarkTheme = settings.forceDarkTheme,
+            forceLightTheme = settings.forceLightTheme,
         )
     }.stateIn(
         scope = CoroutineScope(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = DefaultThemeSettings(
-            themeId = SoulSearchingTheme.from(
-                id = settings.get(SoulSearchingSettingsKeys.ColorTheme.USED_COLOR_THEME_ID_KEY)
-            ),
-            forceDarkTheme = settings.get(SoulSearchingSettingsKeys.ColorTheme.FORCE_DARK_THEME_KEY),
-            forceLightTheme = settings.get(SoulSearchingSettingsKeys.ColorTheme.FORCE_LIGHT_THEME_KEY),
+            themeId = SoulSearchingTheme.MainTheme,
+            forceDarkTheme = false,
+            forceLightTheme = false,
         ),
     )
 
-    val currentColorThemeSettings: StateFlow<ColorThemeSettings> = combine(
-        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.COLOR_THEME_KEY),
-        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYER_THEME),
-        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYLIST_THEME),
-        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_OTHER_VIEWS_THEME),
-    ) { colorThemeType, hasDynamicPlayer, hasDynamicPlaylists, hasDynamicOtherViews ->
-        when (colorThemeType) {
+    val currentColorThemeSettings: StateFlow<ColorThemeSettings> = settingsRepository.observeColorTheme().map { settings ->
+        when (settings.type) {
             ColorThemeType.DYNAMIC -> ColorThemeSettings.DynamicTheme
             ColorThemeType.PERSONALIZED -> ColorThemeSettings.Personalized(
-                hasDynamicPlayer = hasDynamicPlayer,
-                hasDynamicPlaylists = hasDynamicPlaylists,
-                hasDynamicOtherViews = hasDynamicOtherViews
+                hasDynamicPlayer = settings.dynamicPlayerTheme,
+                hasDynamicPlaylists = settings.dynamicPlaylistTheme,
+                hasDynamicOtherViews = settings.dynamicOtherViewsTheme,
             )
 
             else -> ColorThemeSettings.FromSystem

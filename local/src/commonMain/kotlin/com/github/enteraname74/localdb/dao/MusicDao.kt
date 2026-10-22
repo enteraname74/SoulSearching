@@ -26,6 +26,18 @@ interface MusicDao {
     @Upsert
     suspend fun upsertAll(roomMusics: List<RoomMusic>)
 
+    @Transaction
+    @Query(
+        """
+            SELECT * FROM RoomMusic
+            WHERE localPath IS NULL
+              AND remoteId IS NOT NULL
+              AND scope != 'SharedPlayedList'
+              AND TRIM(name) COLLATE NOCASE IN (:musicNames)
+        """
+    )
+    suspend fun getCloudOnlyMusicMatchingNames(musicNames: List<String>): List<RoomCompleteMusic>
+
     @Delete
     suspend fun delete(roomMusic: RoomMusic)
 
@@ -216,6 +228,96 @@ interface MusicDao {
         """
     )
     fun getAllPagedByNameAscOfArtist(artistId: Uuid): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+        SELECT music.*
+        FROM RoomMusic AS music
+        WHERE music.isHidden = 0
+          AND music.scope != 'SharedPlayedList'
+          AND (
+              EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionAlbum AS collectionAlbum
+                  WHERE collectionAlbum.collectionId = :collectionId
+                    AND collectionAlbum.albumId = music.albumId
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionArtist AS collectionArtist
+                  INNER JOIN RoomMusicArtist AS musicArtist
+                      ON musicArtist.artistId = collectionArtist.artistId
+                  WHERE collectionArtist.collectionId = :collectionId
+                    AND musicArtist.musicId = music.musicId
+              )
+          )
+        ORDER BY music.name ASC
+    """
+    )
+    fun getAllPagedOfCollection(
+        collectionId: Uuid,
+    ): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+        SELECT music.*
+        FROM RoomMusic AS music
+        WHERE music.isHidden = 0
+          AND music.scope != 'SharedPlayedList'
+          AND (
+              EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionAlbum AS collectionAlbum
+                  WHERE collectionAlbum.collectionId = :collectionId
+                    AND collectionAlbum.albumId = music.albumId
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionArtist AS collectionArtist
+                  INNER JOIN RoomMusicArtist AS musicArtist
+                      ON musicArtist.artistId = collectionArtist.artistId
+                  WHERE collectionArtist.collectionId = :collectionId
+                    AND musicArtist.musicId = music.musicId
+              )
+          )
+        ORDER BY music.name ASC
+    """
+    )
+    suspend fun getAllFromCollection(
+        collectionId: Uuid,
+    ): List<RoomCompleteMusic>
+
+    @Transaction
+    @Query(
+        """
+        SELECT music.*
+        FROM RoomMusic AS music
+        WHERE music.isHidden = 0
+          AND music.scope != 'SharedPlayedList'
+          AND (
+              EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionAlbum AS collectionAlbum
+                  WHERE collectionAlbum.collectionId = :collectionId
+                    AND collectionAlbum.albumId = music.albumId
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionArtist AS collectionArtist
+                  INNER JOIN RoomMusicArtist AS musicArtist
+                      ON musicArtist.artistId = collectionArtist.artistId
+                  WHERE collectionArtist.collectionId = :collectionId
+                    AND musicArtist.musicId = music.musicId
+              )
+          )
+        ORDER BY music.name ASC
+    """
+    )
+    fun observeAllFromCollection(
+        collectionId: Uuid,
+    ): Flow<List<RoomCompleteMusic>>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE musicId IN (:ids)")
@@ -453,6 +555,101 @@ interface MusicDao {
         search: String,
     ): Flow<List<RoomCompleteMusic>>
 
+    // TODO: Normalise with accents.
+    @Transaction
+    @Query(
+        """
+    SELECT music.*
+    FROM RoomMusic AS music
+    WHERE music.isHidden = 0
+      AND music.scope != 'SharedPlayedList'
+
+      AND (
+          EXISTS (
+              SELECT 1
+              FROM RoomCollectionAlbum AS collectionAlbum
+              WHERE collectionAlbum.collectionId = :collectionId
+                AND collectionAlbum.albumId = music.albumId
+          )
+          OR EXISTS (
+              SELECT 1
+              FROM RoomCollectionArtist AS collectionArtist
+              INNER JOIN RoomMusicArtist AS collectionMusicArtist
+                  ON collectionMusicArtist.artistId = collectionArtist.artistId
+              WHERE collectionArtist.collectionId = :collectionId
+                AND collectionMusicArtist.musicId = music.musicId
+          )
+      )
+
+      AND (
+          music.name LIKE '%' || :search || '%' COLLATE NOCASE
+
+          OR EXISTS (
+              SELECT 1
+              FROM RoomAlbum AS album
+              WHERE album.albumId = music.albumId
+                AND album.albumName LIKE '%' || :search || '%'
+                    COLLATE NOCASE
+          )
+
+          OR EXISTS (
+              SELECT 1
+              FROM RoomArtist AS artist
+              INNER JOIN RoomMusicArtist AS searchedMusicArtist
+                  ON searchedMusicArtist.artistId = artist.artistId
+              WHERE searchedMusicArtist.musicId = music.musicId
+                AND artist.artistName LIKE '%' || :search || '%'
+                    COLLATE NOCASE
+          )
+      )
+
+    ORDER BY music.name COLLATE NOCASE ASC, music.musicId ASC
+    """
+    )
+    fun searchFromCollection(
+        collectionId: Uuid,
+        search: String,
+    ): Flow<List<RoomCompleteMusic>>
+
+    @Transaction
+    @Query(
+        """
+        SELECT music.*
+        FROM RoomMusic AS music
+        WHERE music.isHidden = 0
+          AND music.scope != 'SharedPlayedList'
+          AND NOT EXISTS (
+              SELECT 1
+              FROM RoomMusicPlaylist AS musicPlaylist
+              WHERE musicPlaylist.musicId = music.musicId
+                AND musicPlaylist.playlistId = :playlistId
+          )
+          AND (
+              :search = ''
+              OR music.name LIKE '%' || :search || '%' COLLATE NOCASE
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomAlbum AS album
+                  WHERE album.albumId = music.albumId
+                    AND album.albumName LIKE '%' || :search || '%' COLLATE NOCASE
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomArtist AS artist
+                  INNER JOIN RoomMusicArtist AS musicArtist
+                      ON musicArtist.artistId = artist.artistId
+                  WHERE musicArtist.musicId = music.musicId
+                    AND artist.artistName LIKE '%' || :search || '%' COLLATE NOCASE
+              )
+          )
+        ORDER BY music.name ASC
+    """
+    )
+    fun availableSongsForPlaylist(
+        playlistId: Uuid,
+        search: String,
+    ): PagingSource<Int, RoomCompleteMusic>
+
     @Query(
         """
             SELECT COALESCE(SUM(music.duration), 0) FROM RoomMusic AS music
@@ -464,6 +661,32 @@ interface MusicDao {
         """
     )
     fun getPlaylistDuration(playlistId: Uuid): Flow<Long>
+
+    @Query(
+        """
+        SELECT COALESCE(SUM(music.duration), 0)
+        FROM RoomMusic AS music
+        WHERE music.isHidden = 0
+          AND music.scope != 'SharedPlayedList'
+          AND (
+              EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionAlbum AS collectionAlbum
+                  WHERE collectionAlbum.collectionId = :collectionId
+                    AND collectionAlbum.albumId = music.albumId
+              )
+              OR EXISTS (
+                  SELECT 1
+                  FROM RoomCollectionArtist AS collectionArtist
+                  INNER JOIN RoomMusicArtist AS musicArtist
+                      ON musicArtist.artistId = collectionArtist.artistId
+                  WHERE collectionArtist.collectionId = :collectionId
+                    AND musicArtist.musicId = music.musicId
+              )
+          )
+        """
+    )
+    fun getCollectionDuration(collectionId: Uuid): Flow<Long>
 
     @Transaction
     @Query(
@@ -629,7 +852,7 @@ interface MusicDao {
     @Query("UPDATE RoomMusic SET albumId = :newAlbumId WHERE albumId = :legacyAlbumId")
     suspend fun updateMusicsAlbum(newAlbumId: Uuid, legacyAlbumId: Uuid)
 
-    @Query("UPDATE RoomMusic SET coverId = NULL")
+    @Query("UPDATE RoomMusic SET cover_fileCoverId = NULL")
     suspend fun cleanAllMusicCovers()
 
     @Query("SELECT localPath FROM RoomMusic WHERE localPath IS NOT NULL AND isHidden = 0 AND scope != 'SharedPlayedList'")
@@ -723,10 +946,13 @@ interface MusicDao {
         """
             SELECT m.* FROM RoomMusic m 
             CROSS JOIN RoomCloudPreferences cp
-            WHERE m.scope != 'SharedPlayedList' AND m.lastUpdateMillis IS NULL
-               OR cp.lastSyncMillis IS NULL
-               OR m.lastUpdateMillis > cp.lastSyncMillis 
-               OR m.remoteId IS NULL
+            WHERE m.scope != 'SharedPlayedList'
+              AND (
+                  m.lastUpdateMillis IS NULL
+                  OR cp.lastSyncMillis IS NULL
+                  OR m.lastUpdateMillis > cp.lastSyncMillis
+                  OR m.remoteId IS NULL
+              )
         """
     )
     suspend fun getAllToSendToCloud(): List<RoomCompleteMusic>
@@ -738,10 +964,10 @@ interface MusicDao {
         albumId: Uuid,
     ): RoomCompleteMusic?
 
-    @Query("UPDATE RoomMusic SET remoteId = NULL, coverUrl = NULL WHERE remoteId IN (:remoteIds)")
+    @Query("UPDATE RoomMusic SET remoteId = NULL, cover_url = NULL WHERE remoteId IN (:remoteIds)")
     suspend fun deleteAllRemoteFieldsOfIds(remoteIds: List<String>)
 
-    @Query("UPDATE RoomMusic SET remoteId = NULL, coverUrl = NULL")
+    @Query("UPDATE RoomMusic SET remoteId = NULL, cover_url = NULL")
     suspend fun deleteAllRemoteFields()
 
     @Query("DELETE FROM RoomMusic WHERE localPath IS NULL AND remoteId IS NULL")

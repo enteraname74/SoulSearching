@@ -17,7 +17,7 @@ data class Artist(
     val artistId: Uuid = Uuid.random(),
     val remoteId: Uuid? = null,
     val artistName: String,
-    val cover: Cover? = null,
+    val cover: Cover.Simple? = null,
     @Serializable(with = InstantSerializer::class)
     val addedDate: Instant = Clock.System.now(),
     val nbPlayed: Int = 0,

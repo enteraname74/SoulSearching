@@ -32,7 +32,9 @@ class SettingsCloudSyncViewHolder(
                         lastSync = preferences.lastSyncMillis?.let { DateUiUtils.formatToReadableDateTime(it) }
                             ?: strings.cloudSettingsNoSync,
                         lastStatisticsSync = preferences.lastStatisticsSyncMillis?.let { DateUiUtils.formatToReadableDateTime(it) }
-                            ?: strings.cloudSettingsNoSync
+                            ?: strings.cloudSettingsNoSync,
+                        lastSettingsSync = preferences.lastSettingsSyncMillis?.let { DateUiUtils.formatToReadableDateTime(it) }
+                            ?: strings.cloudSettingsNoSync,
                     )
                 }
             }
@@ -50,6 +52,7 @@ class SettingsCloudSyncViewHolder(
         SettingsCloudSyncState(
             lastSync = strings.cloudSettingsNoSync,
             lastStatisticsSync = strings.cloudSettingsNoSync,
+            lastSettingsSync = strings.cloudSettingsNoSync,
             syncingState = SyncDataWithCloudUseCase.State.Idle,
             navigateBack = { navigate { navigateBack() } },
             launchSync = ::launchSync,

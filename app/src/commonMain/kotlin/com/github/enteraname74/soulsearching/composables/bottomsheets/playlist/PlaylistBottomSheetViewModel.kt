@@ -2,15 +2,6 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.soulsearching.domain.model.Music
-import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
-import com.github.enteraname74.soulsearching.domain.model.Scope
-import com.github.enteraname74.soulsearching.domain.model.SoulResult
-import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
-import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetTopInformation
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiPlaylistDialog
@@ -22,12 +13,22 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.domain.ext.gridCoverWithEmpty
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.domain.model.Scope
+import com.github.enteraname74.soulsearching.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
+import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
@@ -40,11 +41,10 @@ class PlaylistBottomSheetViewModel(
     private val navScope: PlaylistBottomSheetNavScope,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
-    settings: SoulSearchingSettings,
+    settingsRepository: SettingsRepository,
     params: PlaylistBottomSheetDestination,
 ) : ViewModel() {
     private val playlistIds: List<Uuid> = params.playlistIds
-
     private val dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
 
     @Suppress("UNCHECKED_CAST")
@@ -52,9 +52,7 @@ class PlaylistBottomSheetViewModel(
         commonPlaylistUseCase.getFromIds(playlistIds),
         playbackManager.playedList,
         dialogState,
-        settings.getFlowOn(
-            settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
-        ),
+        settingsRepository.observeMainPage().map { it.isQuickAccessShown },
         hasValidCloudInformationUseCase(),
         playbackManager.currentScope,
     ) { data ->
@@ -96,6 +94,7 @@ class PlaylistBottomSheetViewModel(
         val hasUserMusics: Boolean = playlists.any { playlist ->
             playlist.musics.any { it.scope == Scope.User }
         }
+        val hasMusics: Boolean = playlists.any { it.musics.isNotEmpty() }
         val showDelete: Boolean = if (playlists.size == 1) {
             !playlists.first().playlist.isFavorite
         } else {
@@ -131,11 +130,13 @@ class PlaylistBottomSheetViewModel(
             add(BottomSheetRowSpec.addToPlaylist(::addToPlaylists))
         }
 
-        if (playedListScope?.isRemote != true) {
+        if (hasMusics && playedListScope?.isRemote != true) {
             add(BottomSheetRowSpec.playNext(::playNext))
         }
 
-        add(BottomSheetRowSpec.addToQueue(::addToQueue))
+        if (hasMusics) {
+            add(BottomSheetRowSpec.addToQueue(::addToQueue))
+        }
 
         if (hasValidCloudInformation && hasUserMusics && playedListScope?.isRemote != true) {
             add(BottomSheetRowSpec.startSharedPlayedList(::startSharedPlayedList))
@@ -183,7 +184,7 @@ class PlaylistBottomSheetViewModel(
             BottomSheetTopInformation(
                 title = strings.multipleSelection,
                 subTitle = strings.selectedElements(total = playlists.size),
-                cover = null,
+                cover = playlists.gridCoverWithEmpty(),
             )
         }
 

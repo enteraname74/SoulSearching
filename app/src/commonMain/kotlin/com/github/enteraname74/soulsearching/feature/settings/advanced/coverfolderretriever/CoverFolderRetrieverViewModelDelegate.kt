@@ -1,8 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever
 
 import com.github.enteraname74.soulsearching.domain.model.CoverFolderRetriever
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -10,22 +9,21 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldDefau
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
-import com.github.enteraname74.soulsearching.features.serialization.SerializationUtils
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 abstract class CoverFolderRetrieverViewModelDelegate(
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
     private val loadingManager: LoadingManager,
     private val workDispatcher: WorkDispatcher,
 ): CoverFolderRetrieverActions {
 
     var coverFolderRetriever: CoverFolderRetriever = CoverFolderRetriever.default
-    abstract val settingsKey: String
+    private val scope = CoroutineScope(workDispatcher.dispatcher)
 
     override val whiteSpaceReplacementTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
         id = REPLACEMENT_ID,
-        initialValue = deserializeCoverFolderRetriever(settings.get(SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER))
-            .whiteSpaceRule.replacement,
+        initialValue = CoverFolderRetriever.default.whiteSpaceRule.replacement,
         getLabel = { strings.coverFolderRetrieverRulesReplacement },
         getError = { null },
         onChange = { updateWhiteSpaceReplacement(it) },
@@ -36,8 +34,7 @@ abstract class CoverFolderRetrieverViewModelDelegate(
 
     override val coverFileNameTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
         id = COVER_FILE_NAME_ID,
-        initialValue = deserializeCoverFolderRetriever(settings.get(SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER))
-            .coverFileName.orEmpty(),
+        initialValue = CoverFolderRetriever.default.coverFileName.orEmpty(),
         getLabel = { strings.coverFolderRetrieverDynamicFileTitle },
         getError = { strings.fieldCannotBeEmpty },
         onChange = { updateCoverFileName(it) },
@@ -48,8 +45,7 @@ abstract class CoverFolderRetrieverViewModelDelegate(
 
     override val extensionTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
         id = EXTENSION_ID,
-        initialValue = deserializeCoverFolderRetriever(settings.get(SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER))
-            .fileExtension.orEmpty(),
+        initialValue = CoverFolderRetriever.default.fileExtension.orEmpty(),
         getLabel = { strings.coverFolderRetrieverFileExtension },
         getError = { strings.fieldCannotBeEmpty },
         onChange = { updateFileExtension(it) },
@@ -58,121 +54,63 @@ abstract class CoverFolderRetrieverViewModelDelegate(
         getColors = { SoulTextFieldDefaults.primaryColors() },
     )
 
-    fun deserializeCoverFolderRetriever(json: String): CoverFolderRetriever =
-        json.takeIf { it.isNotBlank() }?.let {
-            SerializationUtils.deserialize(it)
-        } ?: CoverFolderRetriever.default
-
     abstract suspend fun handleToggleActivation(isActivated: Boolean)
+
+    private suspend fun save(value: CoverFolderRetriever) {
+        coverFolderRetriever = value
+        settingsRepository.setArtistCoverFolderRetriever(value)
+    }
+
+    fun sync(value: CoverFolderRetriever) {
+        coverFolderRetriever = value
+        whiteSpaceReplacementTextField.updateValue(value.whiteSpaceRule.replacement)
+        coverFileNameTextField.updateValue(value.coverFileName.orEmpty())
+        extensionTextField.updateValue(value.fileExtension.orEmpty())
+    }
 
     override fun onToggleActivation() {
         loadingManager.withLoadingOnScope(CoroutineScope(workDispatcher.dispatcher)) {
             val newIsActivated = !coverFolderRetriever.isActivated
-            settings.set(
-                key = settingsKey,
-                value = SerializationUtils.serialize(
-                    coverFolderRetriever.copy(
-                        isActivated = newIsActivated,
-                    )
-                )
-            )
+            save(coverFolderRetriever.copy(isActivated = newIsActivated))
             handleToggleActivation(newIsActivated)
         }
     }
 
     override fun updateFolderModePath(newPath: String) {
-        settings.set(
-            key = settingsKey,
-            value = SerializationUtils.serialize(
-                coverFolderRetriever.copy(
-                    folderModePath = newPath,
-                )
-            )
-        )
+        scope.launch { save(coverFolderRetriever.copy(folderModePath = newPath)) }
     }
 
     override fun updateFileModePath(newPath: String) {
-        settings.set(
-            key = settingsKey,
-            value = SerializationUtils.serialize(
-                coverFolderRetriever.copy(
-                    fileModePath = newPath,
-                )
-            )
-        )
+        scope.launch { save(coverFolderRetriever.copy(fileModePath = newPath)) }
     }
 
     override fun updateCoverFileName(newName: String) {
-        settings.set(
-            key = settingsKey,
-            value = SerializationUtils.serialize(
-                coverFolderRetriever.copy(
-                    coverFileName = newName,
-                )
-            )
-        )
+        scope.launch { save(coverFolderRetriever.copy(coverFileName = newName)) }
     }
 
     override fun updateFileExtension(newExtension: String) {
-        settings.set(
-            key = settingsKey,
-            value = SerializationUtils.serialize(
-                coverFolderRetriever.copy(
-                    fileExtension = newExtension,
-                )
-            )
-        )
+        scope.launch { save(coverFolderRetriever.copy(fileExtension = newExtension)) }
     }
 
     override fun toggleWhiteSpace() {
-        settings.set(
-            key = settingsKey,
-            value = SerializationUtils.serialize(
-                coverFolderRetriever.copy(
-                    whiteSpaceRule = coverFolderRetriever.whiteSpaceRule.copy(
-                        isActivated = !coverFolderRetriever.whiteSpaceRule.isActivated,
-                    )
-                )
-            )
-        )
+        scope.launch { save(coverFolderRetriever.copy(whiteSpaceRule = coverFolderRetriever.whiteSpaceRule.copy(isActivated = !coverFolderRetriever.whiteSpaceRule.isActivated))) }
     }
 
     override fun updateWhiteSpaceReplacement(replacement: String) {
-        settings.set(
-            key = settingsKey,
-            value = SerializationUtils.serialize(
-                coverFolderRetriever.copy(
-                    whiteSpaceRule = coverFolderRetriever.whiteSpaceRule.copy(
-                        replacement = replacement,
-                    ),
-                )
-            )
-        )
+        scope.launch { save(coverFolderRetriever.copy(whiteSpaceRule = coverFolderRetriever.whiteSpaceRule.copy(replacement = replacement))) }
     }
 
     override fun updateLowerCase(isLowerCase: Boolean?) {
-        settings.set(
-            key = settingsKey,
-            value = SerializationUtils.serialize(
-                coverFolderRetriever.copy(
-                    lowerCaseRule = isLowerCase,
-                )
-            )
-        )
+        scope.launch { save(coverFolderRetriever.copy(lowerCaseRule = isLowerCase)) }
     }
 
     override fun toggleMode() {
-        settings.set(
-            key = settingsKey,
-            value = SerializationUtils.serialize(
-                coverFolderRetriever.copy(
-                    mode = when(coverFolderRetriever.mode) {
-                        CoverFolderRetriever.DynamicMode.Folder -> CoverFolderRetriever.DynamicMode.File
-                        CoverFolderRetriever.DynamicMode.File -> CoverFolderRetriever.DynamicMode.Folder
-                    }
-                )
-            )
-        )
+        scope.launch {
+            save(coverFolderRetriever.copy(mode = when(coverFolderRetriever.mode) {
+                CoverFolderRetriever.DynamicMode.Folder -> CoverFolderRetriever.DynamicMode.File
+                CoverFolderRetriever.DynamicMode.File -> CoverFolderRetriever.DynamicMode.Folder
+            }))
+        }
     }
 
     private companion object {

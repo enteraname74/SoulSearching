@@ -12,7 +12,7 @@ import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingDarkLightThemes
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingTheme
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingTheme
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain.SettingsThemeSelectionViewModel
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.composable.SettingsThemeItem
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage

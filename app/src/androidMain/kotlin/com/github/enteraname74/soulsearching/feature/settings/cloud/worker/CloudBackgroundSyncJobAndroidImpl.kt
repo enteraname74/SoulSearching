@@ -22,6 +22,7 @@ class CloudBackgroundSyncJobAndroidImpl(
 
     override suspend fun launchIfPossible(
         syncStats: Boolean,
+        onlySettings: Boolean,
     ) {
         val hasValidCloudInformation: Boolean? = hasValidCloudInformationUseCase().firstOrNull()
 
@@ -30,7 +31,10 @@ class CloudBackgroundSyncJobAndroidImpl(
 
         val workRequest = OneTimeWorkRequestBuilder<CloudSyncWorker>()
             .setInputData(
-                workDataOf(CloudSyncWorker.SYNC_STATS_INPUT_KEY to syncStats)
+                workDataOf(
+                    CloudSyncWorker.SYNC_STATS_INPUT_KEY to syncStats,
+                    CloudSyncWorker.ONLY_SETTINGS_INPUT_KEY to onlySettings,
+                )
             )
             .setConstraints(
                 Constraints

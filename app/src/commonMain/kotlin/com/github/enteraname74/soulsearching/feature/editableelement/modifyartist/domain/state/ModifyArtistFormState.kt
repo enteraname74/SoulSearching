@@ -29,7 +29,7 @@ sealed interface ModifyArtistFormState {
 
         fun isFormValid(): Boolean = textFields.all { it.isValid() }
 
-        fun getArtistName(): String = textFields.first().value
+        fun getArtistName(): String = textFields.first().value.trim()
 
         companion object {
             private const val ARTIST_NAME = "ARTIST_NAME"

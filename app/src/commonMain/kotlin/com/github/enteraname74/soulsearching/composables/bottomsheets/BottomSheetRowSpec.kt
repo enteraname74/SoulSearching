@@ -15,6 +15,7 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_playlist_play
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_playlist_remove
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_queue_music
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_library_music
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_quick_access_filled
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
@@ -76,6 +77,13 @@ data class BottomSheetRowSpec(
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_playlist_add,
                 title = strings.addToPlaylist,
+                onClick = onClick,
+            )
+
+        fun addToCollection(onClick: () -> Unit): BottomSheetRowSpec =
+            BottomSheetRowSpec(
+                icon = CoreRes.drawable.ic_library_music,
+                title = strings.addToCollection,
                 onClick = onClick,
             )
 

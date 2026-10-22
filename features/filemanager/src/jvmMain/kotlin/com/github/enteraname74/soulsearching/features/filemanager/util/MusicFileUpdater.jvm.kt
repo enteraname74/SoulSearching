@@ -2,8 +2,7 @@ package com.github.enteraname74.soulsearching.features.filemanager.util
 
 import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.domain.model.Music
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
@@ -14,7 +13,7 @@ import java.io.File
 
 actual class MusicFileUpdater actual constructor() : KoinComponent {
 
-    private val settings by inject<SoulSearchingSettings>()
+    private val settingsRepository by inject<SettingsRepository>()
     private val coverFileManager by inject<CoverFileManager>()
 
     /**
@@ -22,7 +21,7 @@ actual class MusicFileUpdater actual constructor() : KoinComponent {
      * Does nothing if the user has not accepted files to be modified.
      */
     actual suspend fun updateMusic(music: Music) {
-        if (!settings.get(SoulSearchingSettingsKeys.IS_MUSIC_FILE_MODIFICATION_ON)) return
+        if (!settingsRepository.getSettings().isMusicFileModificationOn) return
         try {
             val musicFile = music.localPath
                 ?.let { File(it) }

@@ -6,18 +6,25 @@ import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.developers.SettingsDevelopersDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
+import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
-data object SettingsAboutDestination: SettingPage {
+data object SettingsAboutDestination : SettingPage {
     fun register(
         entryProviderScope: EntryProviderScope<NavKey>,
         navigator: Navigator,
     ) {
         entryProviderScope.entry<SettingsAboutDestination> {
-            SettingsAboutRoute(
-                navigateBack = { navigator.pop() },
-                toDevelopers = {
-                    navigator.push(SettingsDevelopersDestination)
+            val holder: SettingsAboutViewHolder = koinViewModel()
+            holder.Screen(
+                navigation = object : SettingsAboutNavScope {
+                    override fun navigateBack() {
+                        navigator.pop()
+                    }
+
+                    override fun toDevelopers() {
+                        navigator.push(SettingsDevelopersDestination)
+                    }
                 }
             )
         }

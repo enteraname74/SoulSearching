@@ -1,51 +1,36 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain
 
 import androidx.lifecycle.ViewModel
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingTheme
-import com.github.enteraname74.soulsearching.coreui.theme.color.USED_COLOR_THEME_ID_KEY
+import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingTheme
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.DefaultThemeSettings
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class SettingsThemeSelectionViewModel(
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
     colorThemeManager: ColorThemeManager,
 ) : ViewModel() {
 
     val state: StateFlow<DefaultThemeSettings> = colorThemeManager.currentDefaultThemeSettings
 
     fun selectTheme(themeId: SoulSearchingTheme) {
-        settings.set(
-            key = SoulSearchingSettingsKeys.ColorTheme.USED_COLOR_THEME_ID_KEY.key,
-            value = themeId.value,
-        )
+        viewModelScope.launch { settingsRepository.setUsedTheme(themeId) }
     }
 
     fun forceDarkTheme(isForcing: Boolean) {
         if (isForcing) {
-            settings.set(
-                key = SoulSearchingSettingsKeys.ColorTheme.FORCE_LIGHT_THEME_KEY.key,
-                value = false,
-            )
+            viewModelScope.launch { settingsRepository.setForceLightTheme(false) }
         }
-        settings.set(
-            key = SoulSearchingSettingsKeys.ColorTheme.FORCE_DARK_THEME_KEY.key,
-            value = isForcing,
-        )
+        viewModelScope.launch { settingsRepository.setForceDarkTheme(isForcing) }
     }
 
     fun forceLightTheme(isForcing: Boolean) {
         if (isForcing) {
-            settings.set(
-                key = SoulSearchingSettingsKeys.ColorTheme.FORCE_DARK_THEME_KEY.key,
-                value = false,
-            )
+            viewModelScope.launch { settingsRepository.setForceDarkTheme(false) }
         }
-        settings.set(
-            key = SoulSearchingSettingsKeys.ColorTheme.FORCE_LIGHT_THEME_KEY.key,
-            value = isForcing,
-        )
+        viewModelScope.launch { settingsRepository.setForceLightTheme(isForcing) }
     }
 }

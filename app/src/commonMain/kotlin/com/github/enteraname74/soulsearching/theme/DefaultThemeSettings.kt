@@ -4,7 +4,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingTheme
+import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 
 data class DefaultThemeSettings(

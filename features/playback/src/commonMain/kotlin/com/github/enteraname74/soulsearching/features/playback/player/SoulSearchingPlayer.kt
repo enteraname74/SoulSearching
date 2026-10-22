@@ -75,6 +75,7 @@ interface SoulSearchingPlayer {
          */
         suspend fun onCompletion()
         suspend fun onError()
+        suspend fun onBufferingChanged(isBuffering: Boolean)
 
         /**
          * Called when loosing playing capability (other app is playing an audio)

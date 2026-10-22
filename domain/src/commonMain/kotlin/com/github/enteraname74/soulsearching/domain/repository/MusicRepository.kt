@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 import kotlin.time.Duration
 
+
+// TODO PERFORMANCE: Search function should return a PagingSource
 interface MusicRepository {
 
     /**
@@ -49,6 +51,9 @@ interface MusicRepository {
 
     suspend fun getAllLocalMusic(): List<Music>
 
+    /** Retrieves cloud-only songs whose names match one of the supplied names. */
+    suspend fun getCloudOnlyMusicMatchingNames(musicNames: List<String>): List<Music>
+
     suspend fun getAllSorted(): List<Music>
 
     suspend fun getAllSorted(page: Int, pageSize: Int): List<Music>
@@ -67,6 +72,8 @@ interface MusicRepository {
 
     fun getAllPagedByNameAscOfArtist(artistId: Uuid): Flow<PagingData<Music>>
 
+    fun getAllPagedOfCollection(collectionId: Uuid): Flow<PagingData<Music>>
+
     /**
      * Retrieves all musics of an Album.
      */
@@ -81,6 +88,11 @@ interface MusicRepository {
 
     fun searchFromPlaylist(
         playlistId: Uuid,
+        search: String,
+    ): Flow<List<Music>>
+
+    fun searchFromCollection(
+        collectionId: Uuid,
         search: String,
     ): Flow<List<Music>>
 
@@ -103,11 +115,18 @@ interface MusicRepository {
         search: String,
     ): Flow<List<Music>>
 
+    fun availableSongsForPlaylist(
+        playlistId: Uuid,
+        search: String,
+    ): Flow<PagingData<Music>>
+
     suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music>
 
     suspend fun getAllMusicFromArtist(artistId: Uuid, page: Int, pageSize: Int): List<Music>
 
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music>
+
+    suspend fun getAllMusicsFromCollection(collectionId: Uuid): List<Music>
 
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid, page: Int, pageSize: Int): List<Music>
 
@@ -115,11 +134,12 @@ interface MusicRepository {
 
     suspend fun getAllMusicFromFolder(folder: String): List<Music>
 
-    suspend fun getAllMusicFromFolder(folder: String, page: Int, pageSize: Int) : List<Music>
+    suspend fun getAllMusicFromFolder(folder: String, page: Int, pageSize: Int): List<Music>
 
     fun getAlbumDuration(albumId: Uuid): Flow<Duration>
     fun getArtistDuration(artistId: Uuid): Flow<Duration>
     fun getPlaylistDuration(playlistId: Uuid): Flow<Duration>
+    fun getCollectionDuration(collectionId: Uuid): Flow<Duration>
     fun getMonthMusicsDuration(month: String): Flow<Duration>
     fun getFolderMusicsDuration(folder: String): Flow<Duration>
 

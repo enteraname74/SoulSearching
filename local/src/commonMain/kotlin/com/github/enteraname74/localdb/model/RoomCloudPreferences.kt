@@ -10,6 +10,7 @@ data class RoomCloudPreferences(
     val url: String = "",
     val lastSyncMillis: Long? = null,
     val lastStatisticsSyncMillis: Long? = null,
+    val lastSettingsSyncMillis: Long? = null,
 ) {
     companion object {
         const val Id: String = "RoomCloudPreferencesId"
@@ -20,6 +21,7 @@ data class RoomCloudPreferences(
             url = url,
             lastSyncMillis = lastSyncMillis,
             lastStatisticsSyncMillis = lastStatisticsSyncMillis,
+            lastSettingsSyncMillis = lastSettingsSyncMillis,
         )
 }
 
@@ -29,4 +31,5 @@ fun CloudPreferences.toRoomCloudPreferences(): RoomCloudPreferences =
         url = url.orEmpty(),
         lastSyncMillis = lastSyncMillis,
         lastStatisticsSyncMillis = lastStatisticsSyncMillis,
+        lastSettingsSyncMillis = lastSettingsSyncMillis,
     )

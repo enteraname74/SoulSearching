@@ -7,7 +7,7 @@ data class ArtistPreview(
     val remoteId: Uuid?,
     val name: String,
     val totalMusics: Int,
-    val cover: Cover?,
+    val cover: Cover.Simple?,
     val nbPlayed: Int,
     override val isInQuickAccess: Boolean
 ) : QuickAccessible

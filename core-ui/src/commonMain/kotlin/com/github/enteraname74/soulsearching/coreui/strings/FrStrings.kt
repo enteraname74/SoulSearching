@@ -18,6 +18,7 @@ object FrStrings : Strings {
     override val emptyArtists: String = "Aucun artiste"
     override val emptyPlaylists: String = "Aucune playlist"
     override val emptyMonths: String = "Aucun mois"
+    override val emptyCollections: String = "Aucune collection"
     override val emptyMonthsExplanations: String = "Ajoutez des musiques depuis les paramètres pour les voir groupées par mois d'ajout ici"
     override val emptyMusicsExplanations: String = "Ajoutez des musiques depuis les paramètres pour les retrouver ici"
     override val emptyAlbumsExplanations: String = "Ajoutez des musiques depuis les paramètres pour retrouver vos albums ici"
@@ -25,7 +26,9 @@ object FrStrings : Strings {
     override val emptyFoldersExplanations: String = "Ajoutez des musiques depuis les paramètres pour retrouver vos dossiers ici"
     override val emptyPlaylistsExplanations: String = """Créez une liste de lecture en cliquant sur le bouton "+""""
     override val emptyQuickAccessExplanations = "Ajoutez une musique, un album, un artiste ou une playlist dans les accès rapides " +
-        "pour les voir apparaître ici."
+        "pour les voir apparaître ici"
+    override val emptyCollectionsExplanations: String = "Regroupez des albums et des artistes similaires dans une collection. " +
+        "Ajouter des musiques à des artistes ou des albums mettra directement à jour les collections liées à ces éléments"
     override val cannotRetrieveSongs = "Impossible de récupérer des musiques !"
     override val backButton = "Bouton de retour"
     override val createPlaylistButton = "Bouton pour créer une playlist"
@@ -40,6 +43,7 @@ object FrStrings : Strings {
         "Vous devez accepter toutes les permissions de l'application pour que cette dernière fonctionne correctement."
     override val playedList = "Liste jouée"
     override val currentSong = "Musique courante"
+    override val inThisCollection = "Dans cette collection"
     override val lyrics = "Paroles"
     override val activateRemoteLyricsFetchTitle = "Activer la récupération des paroles à distance"
     override val activateRemoteLyricsFetchText by lazy {
@@ -90,32 +94,44 @@ object FrStrings : Strings {
     override val removeFromQuickAccess = "Retirer des accès rapides"
     override val removeFromPlaylist = "Retirer de la playlist"
     override val removeFromPlayedList = "Retirer de la liste jouée"
+    override val removeFromCollection = "Retirer de la collection"
     override val addToQuickAccess = "Ajouter aux accès rapides"
     override val addToPlaylist = "Ajouter à une playlist"
+    override val addToCollection = "Ajouter à une collection"
 
     override val create = "Créer"
     override val cancel = "Annuler"
     override val delete = "Supprimer"
+    override val remove = "Retirer"
 
     override val soulMixInfoDialogText = "Écoutez un mélange de musiques de chacun de vos dossiers !\nVous pouvez " +
         "définir le nombre de musiques récupérées de chaque dossier dans les paramètres."
 
     override val createPlaylistDialogTitle = "Créer une nouvelle playlist"
+    override val createCollectionDialogTitle = "Créer une nouvelle collection"
     override val playlistName = "Nom de la playlist"
+    override val collectionName = "Nom de la collection"
+    override val nameAlreadyExists = "Ce nom existe déjà"
     override val musicName = "Nom de la musique"
     override val musicAlbumPosition = "Position dans l'album"
     override val albumName = "Nom de l'album"
     override val albumArtistName = "Nom de l'artiste de l'album"
     override val artistName = "Nom de l'artiste"
     override val playlistCover = "Couverture de la playlist"
+    override val collectionCover = "Couverture de la collection"
     override val albumCover = "Couverture de l'album"
     override val artistCover = "Couverture de l'artiste"
     override val playlistInformation = "Informations de la playlist"
+    override val collectionInformation = "Informations de la collection"
     override val musicInformation = "Informations de la musique"
     override val musicPath = "Chemin de la musique :"
     override val musicFileCover = "Couverture du fichier"
     override val musicAppCover = "Couverture de l'application"
     override val coverSelection = "Sélection d'une couverture"
+    override val selectTopStartCoverImage = "Sélectionner l'image de couverture en haut à gauche"
+    override val selectTopEndCoverImage = "Sélectionner l'image de couverture en haut à droite"
+    override val selectBottomStartCoverImage = "Sélectionner l'image de couverture en bas à gauche"
+    override val selectBottomEndCoverImage = "Sélectionner l'image de couverture en bas à droite"
     override val artistInformation = "Informations de l'artiste"
     override val albumInformation = "Informations de l'album"
 
@@ -125,6 +141,7 @@ object FrStrings : Strings {
     override val deleteMusicDialogText = "Elle sera supprimée de l'application."
     override val deleteAlbumDialogTitle = "Voulez-vous vraiment supprimer cet album ?"
     override val deletePlaylistDialogTitle = "Voulez-vous vraiment supprimer cette playlist ?"
+    override val deleteCollectionDialogTitle = "Voulez-vous vraiment supprimer cette collection ?"
     override val deleteArtistDialogTitle = "Voulez-vous vraiment supprimer cet artiste ?"
 
     override val deleteSelectedMusicsDialogTitle = "Voulez-vous vraiment supprimer ces musiques ?"
@@ -142,6 +159,7 @@ object FrStrings : Strings {
     override val deleteSelectedAlbumsDialogTitle = "Voulez-vous vraiment supprimer ces albums ?"
     override val deleteSelectedArtistsDialogTitle = "Voulez-vous vraiment supprimer ces artistes ?"
     override val deleteSelectedPlaylistsDialogTitle = "Voulez-vous vraiment supprimer ces playlists ?"
+    override val deleteSelectedCollectionsDialogTitle = "Voulez-vous vraiment supprimer ces collections ?"
 
     override val removeMusicFromPlaylistTitle = "Voulez-vous vraiment supprimer cette musique de cette playlist ?"
     override val removeMusicFromPlaylistText =
@@ -150,14 +168,20 @@ object FrStrings : Strings {
         "Voulez-vous vraiment supprimer les musiques sélectionnées de cette playlist ?"
     override val removeSelectedMusicFromPlaylistText = "" +
         "Elles seront retirées de cette playlist mais ne seront pas supprimées de l'application."
+    override val removeArtistFromCollectionTitle = "Retirer cet artiste de la collection ?"
+    override val removeArtistFromCollectionText = "L'artiste sera retiré de cette collection mais ne sera pas supprimé de l'application."
+    override val removeAlbumFromCollectionTitle = "Retirer cet album de la collection ?"
+    override val removeAlbumFromCollectionText = "L'album sera retiré de cette collection mais ne sera pas supprimé de l'application."
 
     override val modifyAlbum = "Modifier cet album"
     override val modifyArtist = "Modifier cet artiste"
     override val modifyMusic = "Modifier cette musique"
     override val modifyPlaylist = "Modifier cette playlist"
+    override val modifyCollection = "Modifier cette collection"
     override val coversOfTheAlbum = "Couvertures des musiques de l'album"
     override val coversOfTheArtist = "Couvertures des musiques de l'artiste"
     override val coversOfThePlaylist = "Couvertures des musiques de la playlist"
+    override val coversOfTheCollection = "Couvertures des musiques de la collection"
     override val coversOfSongAlbum = "Couvertures présentes dans l'album de la musique"
     override val noAvailableCovers = "Aucune couverture disponible"
 
@@ -165,9 +189,11 @@ object FrStrings : Strings {
     override val deleteArtist = "Supprimer cet artiste"
     override val deleteMusic = "Supprimer cette musique"
     override val deletePlaylist = "Supprimer cette playlist"
+    override val deleteCollection = "Supprimer cette collection"
     override val deleteSelectedAlbums = "Supprimer les albums sélectionnés"
     override val deleteSelectedArtists = "Supprimer les artistes sélectionnés"
     override val deleteSelectedPlaylists = "Supprimer les playlists sélectionnées"
+    override val deleteSelectedCollections = "Supprimer les collections sélectionnées"
     override val deleteSelectedMusics = "Supprimer les musiques sélectionnées"
     override val deleteFolderMusics = "Supprimer le dossier"
     override val deleteSelectedFoldersMusics = "Supprimer les dossiers sélectionnés"
@@ -190,6 +216,7 @@ object FrStrings : Strings {
     override val reloadCoversText = "Recharger les images depuis les informations des fichiers"
     override val reloadMusicsCovers = "Recharger les images des musiques"
     override val deletePlaylistsCovers = "Supprimer les images des playlists"
+    override val deleteCollectionsCovers = "Supprimer les images des collections"
     override val reloadAlbumsCovers = "Recharger les images des albums"
     override val reloadArtistsCovers = "Recharger les images des artistes"
 
@@ -237,6 +264,19 @@ object FrStrings : Strings {
     override val aboutTitle = "À propos de Soul Searching"
     override val aboutText = "Développeurs, nom de la version de l'application"
     override val newReleaseAvailableTitle = "Nouvelle version disponible !"
+    override val downloadLatestReleaseTitle = "Télécharger la nouvelle version"
+    override val seeLatestReleaseTitle = "Voir la nouvelle version"
+    override val releaseDownloadUnavailable = "Aucun APK téléchargeable n’est disponible pour cette version"
+    override val releaseInstallPermissionDenied = "Autorisez Soul Searching à installer des applications, puis réessayez"
+    override val releaseProductionAppMissing = "Installez la version de production de Soul Searching avant de la mettre à jour depuis cette version"
+    override val releaseDownloadInProgress = "Cette mise à jour est déjà en cours de téléchargement"
+    override val releaseDownloadFailed = "La mise à jour n’a pas pu être téléchargée"
+    override val releaseDigestMismatch = "Le contrôle d’intégrité de la mise à jour téléchargée a échoué"
+    override val releaseWrongPackage = "L’APK téléchargé n’est pas une version de production de Soul Searching"
+    override val releaseSignatureMismatch = "La signature de la mise à jour téléchargée est incompatible"
+    override val releaseNotNewer = "L’APK téléchargé n’est pas plus récent que la version de production installée"
+    override val releaseInvalidApk = "La mise à jour téléchargée n’est pas un APK valide"
+    override val releaseInstallerUnavailable = "Android n’a pas pu ouvrir le programme d’installation de la mise à jour"
     override val statisticsTitle = "Statistiques"
     override val statisticsText = "Statistiques sur vos écoutes"
     override val mostPlayedSongs = "Musiques les plus écoutées (nombre de lectures)"
@@ -263,6 +303,8 @@ object FrStrings : Strings {
     override val mainPageText = "Gérer la vue de la page principale"
     override val showQuickAccess = "Afficher les accès rapides"
     override val showPlaylists = "Afficher les playlists"
+    override val showCollections = "Afficher les collections"
+    override val collections = "Collections"
     override val showAlbums = "Afficher les albums"
     override val showArtists = "Afficher les artistes"
     override val manageMusicsViewText = "Gérer la vue des musiques"
@@ -329,6 +371,7 @@ object FrStrings : Strings {
     override val albumDoesNotExists = "L'album n'existe pas"
     override val artistDoesNotExists = "L'artiste n'existe pas"
     override val playlistDoesNotExists = "La playlist n'existe pas"
+    override val collectionDoesNotExists = "La collection n'existe pas"
     override val folderDoesNotExists = "Le dossier n'existe pas"
     override val monthPlaylistDoesNotExists = "La playlist de mois n'existe pas"
 
@@ -352,6 +395,7 @@ object FrStrings : Strings {
     override val cloudSettingsText: String = "URL du service"
     override val cloudSettingsLastGeneralSync: String = "Dernière synchronisation globale"
     override val cloudSettingsLastStatisticsSync: String = "Dernière synchronisation des statistiques"
+    override val cloudSettingsLastSettingsSync: String = "Dernière synchronisation des paramètres"
     override val cloudSettingsNoSync: String = "Aucune synchronisation"
     override val cloudUrlFieldLabel: String = "URL du service"
 
@@ -477,8 +521,16 @@ object FrStrings : Strings {
 
     override val playbackErrorPlayerError: String = "Impossible de lire la musique sélectionnée"
 
+    override val simpleCoverType: String = "Simple"
+    override val gridCoverType: String = "Grille"
+    override val addToPlaylistScreenTitle: String = "Ajouter à la playlist"
+    override val addToPlaylistSearchPlaceholder: String = "Rechercher des musiques à ajouter dans la playlist"
+    override val addToPlaylistEmptyTitle: String = "Aucune musique"
+    override val addToPlaylistEmptyText: String = "Aucune musique trouvée à ajouter dans la playlist"
+
     override fun cloudSyncNotificationTitle(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
+            SyncDataWithCloudUseCase.State.SyncingSettings -> "Synchronisation des paramètres"
             is SyncDataWithCloudUseCase.State.Failure -> "Erreur"
             SyncDataWithCloudUseCase.State.Finish -> "Fin"
             SyncDataWithCloudUseCase.State.Idle -> "En attente"
@@ -494,12 +546,17 @@ object FrStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Téléversement des playlists"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Sauvegarde des playlists"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Nettoyage des playlists"
+            SyncDataWithCloudUseCase.State.FetchingRemoteCollections -> "Téléchargement des collections"
+            is SyncDataWithCloudUseCase.State.UploadingCollections -> "Téléversement des collections"
+            SyncDataWithCloudUseCase.State.SavingRemoteCollections -> "Sauvegarde des collections"
+            SyncDataWithCloudUseCase.State.ClearingRemoteCollectionIds -> "Nettoyage des collections"
             SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Téléchargement des statistiques d'écoutes"
             is SyncDataWithCloudUseCase.State.UploadingStats -> "Téléversement des statistiques d'écoutes"
         }
 
     override fun cloudSyncNotificationText(state: SyncDataWithCloudUseCase.State): String =
         when (state) {
+            SyncDataWithCloudUseCase.State.SyncingSettings -> "Synchronisation des paramètres avec le cloud"
             is SyncDataWithCloudUseCase.State.Failure -> "Une erreur est survenue durant la synchronisation : ${state.error ?: "Error inconnue"}"
             SyncDataWithCloudUseCase.State.Finish -> "La synchronisation est terminée"
             SyncDataWithCloudUseCase.State.Idle -> "En attente de synchronisation"
@@ -515,6 +572,10 @@ object FrStrings : Strings {
             is SyncDataWithCloudUseCase.State.UploadingPlaylists -> "Téléversement des playlists vers le cloud"
             SyncDataWithCloudUseCase.State.SavingRemotePlaylists -> "Sauvegarde des playlists téléchargées du cloud"
             SyncDataWithCloudUseCase.State.ClearingRemotePlaylistIds -> "Nettoyage des playlists supprimées du cloud"
+            SyncDataWithCloudUseCase.State.FetchingRemoteCollections -> "Téléchargement des collections du cloud"
+            is SyncDataWithCloudUseCase.State.UploadingCollections -> "Téléversement des collections vers le cloud"
+            SyncDataWithCloudUseCase.State.SavingRemoteCollections -> "Sauvegarde des collections téléchargées du cloud"
+            SyncDataWithCloudUseCase.State.ClearingRemoteCollectionIds -> "Nettoyage des collections supprimées du cloud"
             SyncDataWithCloudUseCase.State.FetchingRemoteStats -> "Téléchargement des statistiques d'écoutes du cloud"
             is SyncDataWithCloudUseCase.State.UploadingStats -> "Téléversement des statistiques d'écoutes vers le cloud"
         }
@@ -570,6 +631,13 @@ object FrStrings : Strings {
             0 -> "Aucun élément sélectionné"
             1 -> "Un élément sélectionné"
             else -> "$total éléments sélectionnés"
+        }
+
+    override fun selectedMusics(total: Int): String =
+        when (total) {
+            0 -> "Aucune musique sélectionnée"
+            1 -> "Une musique sélectionnée"
+            else -> "$total musiques sélectionnées"
         }
 
     override fun newReleaseAvailableText(releaseName: String): String =

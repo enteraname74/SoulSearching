@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.di
 
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditManager
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
@@ -35,4 +36,5 @@ val appModule: Module = module {
     singleOf(::MultiSelectionManager)
 
     singleOf(::ShouldInformOfNewReleaseUseCase)
+    factoryOf(::CoverEditManager)
 }

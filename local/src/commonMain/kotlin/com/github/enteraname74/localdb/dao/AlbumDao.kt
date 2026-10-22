@@ -54,6 +54,18 @@ interface AlbumDao {
     @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId AND scope != 'SharedPlayedList'")
     fun getAllAlbumsWithMusicsFromArtist(artistId: Uuid): Flow<List<RoomCompleteAlbumWithMusics>>
 
+    @Query(
+        """
+            SELECT preview.*
+            FROM RoomAlbumPreview AS preview
+            INNER JOIN RoomAlbum AS album ON album.albumId = preview.id
+            WHERE album.artistId = :artistId
+              AND album.scope != 'SharedPlayedList'
+            ORDER BY preview.name ASC, preview.id ASC
+        """
+    )
+    fun getAlbumPreviewsFromArtist(artistId: Uuid): Flow<List<RoomAlbumPreview>>
+
     @Transaction
     @Query(
         """
@@ -193,7 +205,7 @@ interface AlbumDao {
     )
     fun getAllFromQuickAccess(): Flow<List<RoomAlbumPreview>>
 
-    @Query("UPDATE RoomAlbum SET coverId = NULL")
+    @Query("UPDATE RoomAlbum SET cover_fileCoverId = NULL")
     suspend fun cleanAllCovers()
 
     @Transaction

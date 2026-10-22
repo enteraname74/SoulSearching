@@ -128,10 +128,14 @@ private fun ModifyMusicScreenView(
                 EditableElementView(
                     title = strings.musicInformation,
                     coverSectionTitle = strings.albumCover,
-                    editableElement = state.editableElement,
+                    coverEditMode = state.coverEditMode,
                     navigateBack = navigateBack,
-                    onSelectCover = onSelectCover,
+                    onSelectCover = { onSelectCover() },
+                    onSwitchModeType = { },
                     onValidateModification = onSave,
+                    isValid = {
+                        formState.isFormValid() && state.coverEditMode.isValid()
+                    },
                     textFields = formState.textFields,
                     extraFormBottomContent = {
                         EditableElementAddArtist(

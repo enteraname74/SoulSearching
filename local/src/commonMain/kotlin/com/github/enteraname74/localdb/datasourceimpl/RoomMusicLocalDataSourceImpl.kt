@@ -6,15 +6,6 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.map
 import androidx.room3.useWriterConnection
-import com.github.enteraname74.soulsearching.domain.model.Artist
-import com.github.enteraname74.soulsearching.domain.model.MonthMusicsPreview
-import com.github.enteraname74.soulsearching.domain.model.Music
-import com.github.enteraname74.soulsearching.domain.model.MusicFolderPreview
-import com.github.enteraname74.soulsearching.domain.model.SortDirection
-import com.github.enteraname74.soulsearching.domain.model.SortType
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.soulsearching.domain.util.DateUtils
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.dao.MusicDao
 import com.github.enteraname74.localdb.ext.toRoomMusicArtists
@@ -23,22 +14,34 @@ import com.github.enteraname74.localdb.model.toRoomAlbum
 import com.github.enteraname74.localdb.model.toRoomArtist
 import com.github.enteraname74.localdb.model.toRoomMusic
 import com.github.enteraname74.localdb.utils.PagingUtils
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.MonthMusicsPreview
+import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.domain.model.MusicFolderPreview
+import com.github.enteraname74.soulsearching.domain.model.SortDirection
+import com.github.enteraname74.soulsearching.domain.model.SortType
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
+import com.github.enteraname74.soulsearching.domain.util.DateUtils
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlin.uuid.Uuid
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.uuid.Uuid
 
 /**
  * Implementation of the MusicDataSource with Room's DAO.
  */
 internal class RoomMusicLocalDataSourceImpl(
     private val appDatabase: AppDatabase,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
 ) : MusicLocalDataSource {
+    private companion object {
+        const val MUSIC_NAME_QUERY_CHUNK_SIZE = 500
+    }
+
     override suspend fun upsert(music: Music) {
         appDatabase.useWriterConnection {
             val allArtist: Set<Artist> = (music.artists + music.album.artist).toSet()
@@ -56,6 +59,8 @@ internal class RoomMusicLocalDataSourceImpl(
             appDatabase.musicArtistDao.upsertAll(
                 roomMusicArtists = music.toRoomMusicArtists()
             )
+            appDatabase.albumDao.deleteAllEmpty()
+            appDatabase.artistDao.deleteAllEmpty()
         }
     }
 
@@ -81,9 +86,14 @@ internal class RoomMusicLocalDataSourceImpl(
                     ).toRoomMusic()
                 }
             )
+            appDatabase.musicArtistDao.deleteOfMusics(
+                musicIds = musics.map { it.musicId }
+            )
             appDatabase.musicArtistDao.upsertAll(
                 roomMusicArtists = musics.flatMap { it.toRoomMusicArtists() }
             )
+            appDatabase.albumDao.deleteAllEmpty()
+            appDatabase.artistDao.deleteAllEmpty()
         }
     }
 
@@ -145,14 +155,20 @@ internal class RoomMusicLocalDataSourceImpl(
     override suspend fun getAllLocalMusic(): List<Music> =
         appDatabase.musicDao.getAllLocalMusic().map { it.toMusic() }
 
-    override suspend fun getAllSorted(): List<Music> {
-        val direction: SortDirection = SortDirection
-            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY))
-            ?: SortDirection.DEFAULT
+    override suspend fun getCloudOnlyMusicMatchingNames(musicNames: List<String>): List<Music> =
+        musicNames
+            .distinct()
+            .chunked(MUSIC_NAME_QUERY_CHUNK_SIZE)
+            .flatMap { names ->
+                appDatabase.musicDao
+                    .getCloudOnlyMusicMatchingNames(names)
+                    .map { it.toMusic() }
+            }
 
-        val type: SortType = SortType
-            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY))
-            ?: SortType.DEFAULT
+    override suspend fun getAllSorted(): List<Music> {
+        val sortSettings = settingsRepository.getSettings().musicSortSetup
+        val direction = sortSettings.direction
+        val type = sortSettings.type
 
         return with(appDatabase.musicDao) {
             when (direction) {
@@ -176,13 +192,9 @@ internal class RoomMusicLocalDataSourceImpl(
     }
 
     override suspend fun getAllSorted(page: Int, pageSize: Int): List<Music> {
-        val direction: SortDirection = SortDirection
-            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY))
-            ?: SortDirection.DEFAULT
-
-        val type: SortType = SortType
-            .from(settings.get(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY))
-            ?: SortType.DEFAULT
+        val sortSettings = settingsRepository.getSettings().musicSortSetup
+        val direction = sortSettings.direction
+        val type = sortSettings.type
 
         val (limit, offset) = androidAutoLimitAndOffset(page = page, pageSize = pageSize)
 
@@ -214,41 +226,38 @@ internal class RoomMusicLocalDataSourceImpl(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getAllPaged(): Flow<PagingData<Music>> =
-        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY)
-            .flatMapLatest { direction ->
-                settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY)
-                    .flatMapLatest { type ->
-                        val sortDirection = SortDirection.from(direction) ?: SortDirection.DEFAULT
-                        val sortType = SortType.from(type) ?: SortType.DEFAULT
+        settingsRepository.observeSettings()
+            .flatMapLatest { settings ->
+                val sortDirection = settings.musicSortSetup.direction
+                val sortType = settings.musicSortSetup.type
 
-                        Pager(
-                            config = PagingConfig(
-                                pageSize = PagingUtils.PAGE_SIZE,
-                                enablePlaceholders = false,
-                            ),
-                            pagingSourceFactory = {
-                                when (sortDirection) {
-                                    SortDirection.ASC -> {
-                                        when (sortType) {
-                                            SortType.NAME -> appDatabase.musicDao.getAllPagedByNameAsc()
-                                            SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateAsc()
-                                            SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedAsc()
-                                        }
-                                    }
-
-                                    SortDirection.DESC -> {
-                                        when (sortType) {
-                                            SortType.NAME -> appDatabase.musicDao.getAllPagedByNameDesc()
-                                            SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateDesc()
-                                            SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedDesc()
-                                        }
-                                    }
+                Pager(
+                    config = PagingConfig(
+                        pageSize = PagingUtils.PAGE_SIZE,
+                        enablePlaceholders = false,
+                    ),
+                    pagingSourceFactory = {
+                        when (sortDirection) {
+                            SortDirection.ASC -> {
+                                when (sortType) {
+                                    SortType.NAME -> appDatabase.musicDao.getAllPagedByNameAsc()
+                                    SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateAsc()
+                                    SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedAsc()
                                 }
                             }
-                        ).flow.map { pagingData ->
-                            pagingData.map { it.toMusic() }
+
+                            SortDirection.DESC -> {
+                                when (sortType) {
+                                    SortType.NAME -> appDatabase.musicDao.getAllPagedByNameDesc()
+                                    SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateDesc()
+                                    SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedDesc()
+                                }
+                            }
                         }
                     }
+                ).flow.map { pagingData ->
+                    pagingData.map { it.toMusic() }
+                }
             }
 
     override suspend fun getAllRemoteIdsPossessedByUser(): List<String> =
@@ -271,6 +280,9 @@ internal class RoomMusicLocalDataSourceImpl(
 
     override fun getAllPagedByNameAscOfArtist(artistId: Uuid): Flow<PagingData<Music>> =
         withPaging { getAllPagedByNameAscOfArtist(artistId) }
+
+    override fun getAllPagedOfCollection(collectionId: Uuid): Flow<PagingData<Music>> =
+        withPaging { getAllPagedOfCollection(collectionId) }
 
     override suspend fun getAllMusicFromAlbum(albumId: Uuid): List<Music> =
         appDatabase.musicDao.getAllMusicFromAlbum(
@@ -308,6 +320,17 @@ internal class RoomMusicLocalDataSourceImpl(
     ): Flow<List<Music>> =
         appDatabase.musicDao.searchFromPlaylist(
             playlistId = playlistId,
+            search = search,
+        ).map { list ->
+            list.map { it.toMusic() }
+        }
+
+    override fun searchFromCollection(
+        collectionId: Uuid,
+        search: String,
+    ): Flow<List<Music>> =
+        appDatabase.musicDao.searchFromCollection(
+            collectionId = collectionId,
             search = search,
         ).map { list ->
             list.map { it.toMusic() }
@@ -351,6 +374,12 @@ internal class RoomMusicLocalDataSourceImpl(
             list.map { it.toMusic() }
         }
 
+    override fun availableSongsForPlaylist(
+        playlistId: Uuid,
+        search: String,
+    ): Flow<PagingData<Music>> =
+        withPaging { appDatabase.musicDao.availableSongsForPlaylist(playlistId, search) }
+
     override suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music> =
         appDatabase.musicDao.getAllMusicFromArtist(artistId).map { it.toMusic() }
 
@@ -370,6 +399,9 @@ internal class RoomMusicLocalDataSourceImpl(
 
     override suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music> =
         appDatabase.musicDao.getAllMusicFromPlaylist(playlistId).map { it.toMusic() }
+
+    override suspend fun getAllMusicsFromCollection(collectionId: Uuid): List<Music> =
+        appDatabase.musicDao.getAllFromCollection(collectionId).map { it.toMusic() }
 
     override suspend fun getAllMusicFromPlaylist(
         playlistId: Uuid,
@@ -413,6 +445,9 @@ internal class RoomMusicLocalDataSourceImpl(
 
     override fun getPlaylistDuration(playlistId: Uuid): Flow<Duration> =
         appDatabase.musicDao.getPlaylistDuration(playlistId).map { it.milliseconds }
+
+    override fun getCollectionDuration(collectionId: Uuid): Flow<Duration> =
+        appDatabase.musicDao.getCollectionDuration(collectionId).map { it.milliseconds }
 
     override fun getMonthMusicsDuration(month: String): Flow<Duration> =
         appDatabase.musicDao.getMonthMusicsDuration(month).map { it.milliseconds }
@@ -506,6 +541,9 @@ internal class RoomMusicLocalDataSourceImpl(
             "RoomArtist",
             "RoomPlaylist",
             "RoomMusicPlaylist",
+            "RoomCollection",
+            "RoomCollectionArtist",
+            "RoomCollectionAlbum",
             "RoomMusicArtist",
             emitInitialState = false,
         ).map { }

@@ -1,13 +1,16 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.domain.model.player.PlayerMode
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
@@ -147,23 +151,38 @@ private fun PlayerControls(
             tint = SoulSearchingColorTheme.colorScheme.onPrimary.disabledIfNoAction(playbackCommandsState.previous)
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
-        Icon(
-            painter = painterResource(
-                if (playbackCommandsState.isPlaying) {
-                    CoreRes.drawable.ic_pause_filled
-                } else {
-                    CoreRes.drawable.ic_play_filled
-                }
-            ),
-            contentDescription = null,
-            modifier = Modifier
-                .weight(MainIconWeight)
-                .clip(CircleShape)
-                .height(UiConstants.Player.playerPlayerButtonSize)
-                .widthIn(max = UiConstants.Player.playerPlayerButtonSize)
-                .optionalClickable(playbackCommandsState.togglePlayPause),
-            tint = SoulSearchingColorTheme.colorScheme.onPrimary.disabledIfNoAction(playbackCommandsState.togglePlayPause)
-        )
+        if (playbackCommandsState.isBuffering) {
+            Box(
+                modifier = Modifier
+                    .weight(MainIconWeight)
+                    .height(UiConstants.Player.playerPlayerButtonSize)
+                    .widthIn(max = UiConstants.Player.playerPlayerButtonSize),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(40.dp),
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                )
+            }
+        } else {
+            Icon(
+                painter = painterResource(
+                    if (playbackCommandsState.isPlaying) {
+                        CoreRes.drawable.ic_pause_filled
+                    } else {
+                        CoreRes.drawable.ic_play_filled
+                    }
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .weight(MainIconWeight)
+                    .clip(CircleShape)
+                    .height(UiConstants.Player.playerPlayerButtonSize)
+                    .widthIn(max = UiConstants.Player.playerPlayerButtonSize)
+                    .optionalClickable(playbackCommandsState.togglePlayPause),
+                tint = SoulSearchingColorTheme.colorScheme.onPrimary.disabledIfNoAction(playbackCommandsState.togglePlayPause)
+            )
+        }
         Spacer(modifier = Modifier.weight(SpacerWeight))
         Icon(
             painter = painterResource(CoreRes.drawable.ic_skip_next_filled),

@@ -3,10 +3,10 @@ package com.github.enteraname74.soulsearching.feature.settings.advanced
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.soulsearching.domain.usecase.collection.CommonCollectionUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.release.CommonReleaseUseCase
@@ -33,9 +33,10 @@ class SettingsAdvancedViewModel(
     private val commonAlbumUseCase: CommonAlbumUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
+    private val commonCollectionUseCase: CommonCollectionUseCase,
     private val commonReleaseUseCase: CommonReleaseUseCase,
     private val loadingManager: LoadingManager,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
     private val workDispatcher: WorkDispatcher,
     destination: SettingsAdvancedDestination
 ) : ViewModel() {
@@ -48,19 +49,19 @@ class SettingsAdvancedViewModel(
     val state: StateFlow<SettingsAdvancedState> = _state.asStateFlow()
 
     val permissionState: StateFlow<SettingsAdvancedPermissionState> = combine(
-        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED),
-    ) { lyricsPermission, githubPermission ->
+        settingsRepository.observePlayer(),
+        settingsRepository.observeRelease(),
+    ) { player, release ->
         SettingsAdvancedPermissionState(
-            isLyricsPermissionEnabled = lyricsPermission,
-            isGitHubReleaseFetchPermissionEnabled = githubPermission,
+            isLyricsPermissionEnabled = player.isRemoteLyricsFetchEnabled,
+            isGitHubReleaseFetchPermissionEnabled = release.isFetchReleaseFromGithubEnabled,
         )
     }.stateIn(
         scope = viewModelScope.plus(workDispatcher.dispatcher),
         started = SharingStarted.Eagerly,
         initialValue = SettingsAdvancedPermissionState(
-            isLyricsPermissionEnabled = settings.get(SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED),
-            isGitHubReleaseFetchPermissionEnabled = settings.get(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED),
+            isLyricsPermissionEnabled = false,
+            isGitHubReleaseFetchPermissionEnabled = false,
         ),
     )
 
@@ -114,6 +115,10 @@ class SettingsAdvancedViewModel(
                 toggleDeletePlaylistsCovers()
             }
 
+            SettingsAdvancedAction.ToggleCollectionsCovers -> {
+                toggleDeleteCollectionsCovers()
+            }
+
             SettingsAdvancedAction.ToggleGithubReleaseFetchPermission -> {
                 toggleGitHubReleasePermission()
             }
@@ -133,19 +138,16 @@ class SettingsAdvancedViewModel(
     }
 
     private fun toggleLyricsPermission() {
-        settings.set(
-            key = SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED.key,
-            value = !settings.get(SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED)
-        )
+        viewModelScope.launch {
+            val enabled = settingsRepository.getSettings().playerSettings.isRemoteLyricsFetchEnabled
+            settingsRepository.setRemoteLyricsFetchEnabled(!enabled)
+        }
     }
 
     private fun toggleGitHubReleasePermission() {
         CoroutineScope(workDispatcher.dispatcher).launch {
-            val newState = !settings.get(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED)
-            settings.set(
-                key = SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED.key,
-                value = newState
-            )
+            val newState = !settingsRepository.getSettings().release.isFetchReleaseFromGithubEnabled
+            settingsRepository.setFetchReleaseFromGithubEnabled(newState)
             if (!newState) {
                 commonReleaseUseCase.deleteLatest()
             } else {
@@ -209,6 +211,7 @@ class SettingsAdvancedViewModel(
                 checkAndReloadArtists()
                 checkAndReloadAlbums()
                 checkAndReloadPlaylists()
+                checkAndReloadCollections()
                 _state.value = SettingsAdvancedState(
                     focusedElement = focusedElement,
                 )
@@ -240,6 +243,12 @@ class SettingsAdvancedViewModel(
         )
     }
 
+    private fun toggleDeleteCollectionsCovers() {
+        _state.value = _state.value.copy(
+            shouldDeleteCollectionsCovers = !_state.value.shouldDeleteCollectionsCovers,
+        )
+    }
+
     private suspend fun checkAndReloadSongs() {
         if (_state.value.shouldReloadSongsCovers) {
             commonMusicUseCase.cleanAllMusicCovers()
@@ -249,6 +258,12 @@ class SettingsAdvancedViewModel(
     private suspend fun checkAndReloadPlaylists() {
         if (_state.value.shouldDeletePlaylistsCovers) {
             commonPlaylistUseCase.cleanAllCovers()
+        }
+    }
+
+    private suspend fun checkAndReloadCollections() {
+        if (_state.value.shouldDeleteCollectionsCovers) {
+            commonCollectionUseCase.cleanAllCovers()
         }
     }
 

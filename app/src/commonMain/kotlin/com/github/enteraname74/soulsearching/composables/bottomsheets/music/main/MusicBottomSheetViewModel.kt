@@ -6,8 +6,7 @@ import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.Scope
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.model.player.PlayedListScope
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.HasValidCloudInformationUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.DeleteMusicUseCase
@@ -24,6 +23,8 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.domain.ext.gridCoverIfPossible
+import com.github.enteraname74.soulsearching.domain.ext.gridCoverWithEmpty
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
@@ -33,6 +34,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
@@ -49,7 +51,7 @@ class MusicBottomSheetViewModel(
     private val loadingManager: LoadingManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     hasValidCloudInformationUseCase: HasValidCloudInformationUseCase,
-    settings: SoulSearchingSettings,
+    settingsRepository: SettingsRepository,
     params: InnerMusicDestination,
 ) : ViewModel() {
     private val musicIds: List<Uuid> = params.musicIds
@@ -63,9 +65,7 @@ class MusicBottomSheetViewModel(
         playbackManager.playedList,
         playbackManager.state,
         dialogState,
-        settings.getFlowOn(
-            settingElement = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN
-        ),
+        settingsRepository.observeMainPage().map { it.isQuickAccessShown },
         hasValidCloudInformationUseCase(),
         playbackManager.currentScope,
     ) { data ->
@@ -243,7 +243,7 @@ class MusicBottomSheetViewModel(
             BottomSheetTopInformation(
                 title = strings.multipleSelection,
                 subTitle = strings.selectedElements(total = musics.size),
-                cover = null,
+                cover = musics.gridCoverWithEmpty(),
             )
         }
 

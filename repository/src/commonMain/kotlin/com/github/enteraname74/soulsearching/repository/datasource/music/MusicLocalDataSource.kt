@@ -49,6 +49,8 @@ interface MusicLocalDataSource {
 
     suspend fun getAllLocalMusic(): List<Music>
 
+    suspend fun getCloudOnlyMusicMatchingNames(musicNames: List<String>): List<Music>
+
     suspend fun getAllSorted(): List<Music>
 
     suspend fun getAllSorted(page: Int, pageSize: Int): List<Music>
@@ -73,6 +75,8 @@ interface MusicLocalDataSource {
 
     fun getAllPagedByNameAscOfArtist(artistId: Uuid): Flow<PagingData<Music>>
 
+    fun getAllPagedOfCollection(collectionId: Uuid): Flow<PagingData<Music>>
+
     /**
      * Retrieves all musics of an Album.
      */
@@ -87,6 +91,11 @@ interface MusicLocalDataSource {
 
     fun searchFromPlaylist(
         playlistId: Uuid,
+        search: String,
+    ): Flow<List<Music>>
+
+    fun searchFromCollection(
+        collectionId: Uuid,
         search: String,
     ): Flow<List<Music>>
 
@@ -109,23 +118,31 @@ interface MusicLocalDataSource {
         search: String,
     ): Flow<List<Music>>
 
+    fun availableSongsForPlaylist(
+        playlistId: Uuid,
+        search: String,
+    ): Flow<PagingData<Music>>
+
     suspend fun getAllMusicFromArtist(artistId: Uuid): List<Music>
 
     suspend fun getAllMusicFromArtist(artistId: Uuid, page: Int, pageSize: Int): List<Music>
 
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid): List<Music>
 
+    suspend fun getAllMusicsFromCollection(collectionId: Uuid): List<Music>
+
     suspend fun getAllMusicFromPlaylist(playlistId: Uuid, page: Int, pageSize: Int): List<Music>
 
-    suspend fun getAllMusicFromMonth(month: String) : List<Music>
+    suspend fun getAllMusicFromMonth(month: String): List<Music>
 
-    suspend fun getAllMusicFromFolder(folder: String) : List<Music>
+    suspend fun getAllMusicFromFolder(folder: String): List<Music>
 
-    suspend fun getAllMusicFromFolder(folder: String, page: Int, pageSize: Int) : List<Music>
+    suspend fun getAllMusicFromFolder(folder: String, page: Int, pageSize: Int): List<Music>
 
     fun getAlbumDuration(albumId: Uuid): Flow<Duration>
     fun getArtistDuration(artistId: Uuid): Flow<Duration>
     fun getPlaylistDuration(playlistId: Uuid): Flow<Duration>
+    fun getCollectionDuration(collectionId: Uuid): Flow<Duration>
     fun getMonthMusicsDuration(month: String): Flow<Duration>
     fun getFolderMusicsDuration(folder: String): Flow<Duration>
 

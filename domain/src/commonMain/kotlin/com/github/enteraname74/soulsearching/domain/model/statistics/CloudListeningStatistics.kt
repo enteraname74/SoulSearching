@@ -15,6 +15,7 @@ data class CloudListeningStatistics(
     val playlistId: Uuid?,
     val albumId: Uuid?,
     val artistId: Uuid?,
+    val collectionId: Uuid?,
 )
 
 fun ListeningStatistics.toCloud(): CloudListeningStatistics =
@@ -28,6 +29,7 @@ fun ListeningStatistics.toCloud(): CloudListeningStatistics =
         playlistId = (this as? ListeningStatistics.PlaylistStats)?.playlist?.remoteId,
         albumId = (this as? ListeningStatistics.AlbumStats)?.album?.remoteId,
         artistId = (this as? ListeningStatistics.ArtistStats)?.artist?.remoteId,
+        collectionId = (this as? ListeningStatistics.CollectionStats)?.collection?.remoteId,
     )
 
 private fun ListeningStatistics.buildCloudId(): String = when (this) {
@@ -35,5 +37,5 @@ private fun ListeningStatistics.buildCloudId(): String = when (this) {
     is ListeningStatistics.ArtistStats -> "$localMonthYear-${artist.remoteId}"
     is ListeningStatistics.MusicStats -> "$localMonthYear-${music.remoteId}"
     is ListeningStatistics.PlaylistStats -> "$localMonthYear-${playlist.remoteId}"
+    is ListeningStatistics.CollectionStats -> "$localMonthYear-${collection.remoteId}"
 }
-

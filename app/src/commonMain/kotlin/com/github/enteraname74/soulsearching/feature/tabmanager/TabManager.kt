@@ -1,17 +1,21 @@
 package com.github.enteraname74.soulsearching.feature.tabmanager
 
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlin.math.max
+import kotlinx.coroutines.launch
 
 class TabManager(
     viewSettingsManager: ViewSettingsManager,
-    settings: SoulSearchingSettings,
+    settingsRepository: SettingsRepository,
+    workDispatcher: WorkDispatcher,
 ) {
     private var _currentPage: MutableStateFlow<ElementEnum?> = MutableStateFlow(null)
     val currentPage: Flow<ElementEnum?> = _currentPage
@@ -21,15 +25,14 @@ class TabManager(
         it.toElementEnums()
     }
 
-    val savedInitial: ElementEnum? = ElementEnum.fromRaw(
-        settings.get(ElementEnum.INITIAL_TAB_SETTINGS_KEY)
-    ).also {
-        it?.let { setCurrentPage(it) }
+    init {
+        CoroutineScope(workDispatcher.dispatcher).launch {
+            val visibleElements = tabs.first()
+            val savedInitial = ElementEnum.fromRaw(settingsRepository.getSettings().mainPage.initialTab)
+                ?.takeIf { it in visibleElements }
+            _currentPage.value = savedInitial ?: visibleElements.firstOrNull()
+        }
     }
-    val initialPage: Int = max(
-        viewSettingsManager.getElementVisibility().toElementEnums().indexOf(savedInitial),
-        0
-    )
 
     fun setCurrentPage(page: ElementEnum) {
         _currentPage.value = page

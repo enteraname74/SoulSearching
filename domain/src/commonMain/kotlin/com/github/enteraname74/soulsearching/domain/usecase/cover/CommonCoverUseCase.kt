@@ -33,9 +33,12 @@ class CommonCoverUseCase(
         }
     }
 
-    suspend fun getCoverImageBitmap(cover: Cover): ImageBitmap? =
+    suspend fun getCoverImageBitmap(cover: Cover.Simple): ImageBitmap? =
         coverRepository.getCoverImageBitmap(cover)
 
-    suspend fun getAllUniqueCover(covers: List<Cover>): List<ByteArray> =
+    suspend fun getCoverData(cover: Cover.Simple): ByteArray? =
+        coverRepository.getCoverData(cover)
+
+    suspend fun getAllUniqueCover(covers: List<Cover.Simple>): List<ByteArray> =
         coverRepository.getAllUniqueCover(covers)
 }

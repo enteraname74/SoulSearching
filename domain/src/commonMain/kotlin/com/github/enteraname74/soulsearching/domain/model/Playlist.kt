@@ -28,12 +28,12 @@ data class Playlist(
         return when (mergeMode) {
             MergeMode.LocalFirst -> copy(
                 remoteId = cloudPlaylistInfo.id,
-                cover = buildNewCover(cloudCoverPath = cloudPlaylistInfo.coverPath),
+                cover = buildNewCover(remoteCover = cloudPlaylistInfo.cover),
             )
             MergeMode.RemoteFirst -> copy(
                 remoteId = cloudPlaylistInfo.id,
                 name = cloudPlaylistInfo.name,
-                cover = buildNewCover(cloudCoverPath = cloudPlaylistInfo.coverPath),
+                cover = buildNewCover(remoteCover = cloudPlaylistInfo.cover),
                 isFavorite = cloudPlaylistInfo.isFavorite,
                 nbPlayed = max(nbPlayed, cloudPlaylistInfo.nbPlayed),
                 isInQuickAccess = cloudPlaylistInfo.isInQuickAccess,
@@ -43,12 +43,12 @@ data class Playlist(
     }
 
     private fun buildNewCover(
-        cloudCoverPath: String?
+        remoteCover: RemoteCover?,
     ): Cover? =
         when {
             // If the saved cover is already an Url, we will always overwrite it with latest cloud info
-            cover is Cover.Url -> cloudCoverPath?.let { Cover.Url(it, null) }
+            (cover is Cover.Url) || ((cover as? Cover.Grid)?.list?.all { it is Cover.Url } == true) -> remoteCover?.toCover()
             cover?.isEmpty() == false -> cover
-            else -> cloudCoverPath?.let { Cover.Url(it, null) }
+            else -> remoteCover?.toCover()
         }
 }

@@ -1,9 +1,11 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,18 +59,31 @@ fun MinimisedPlayerControlsComposable(
                 .optionalClickable(playbackCommandsState.previous.takeIf { isMinimised }),
             color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.previous)
         )
-        SoulIcon(
-            icon = if (playbackCommandsState.isPlaying) {
-                CoreRes.drawable.ic_pause_filled
-            } else {
-                CoreRes.drawable.ic_play_filled
-            },
-            modifier = Modifier
-                .size(MAIN_ICON_SIZE)
-                .clip(CircleShape)
-                .optionalClickable(playbackCommandsState.togglePlayPause.takeIf { isMinimised }),
-            color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.togglePlayPause)
-        )
+        if (playbackCommandsState.isBuffering) {
+            Box(
+                modifier = Modifier
+                    .size(MAIN_ICON_SIZE),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(LOADING_SIZE),
+                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                )
+            }
+        } else {
+            SoulIcon(
+                icon = if (playbackCommandsState.isPlaying) {
+                    CoreRes.drawable.ic_pause_filled
+                } else {
+                    CoreRes.drawable.ic_play_filled
+                },
+                modifier = Modifier
+                    .size(MAIN_ICON_SIZE)
+                    .clip(CircleShape)
+                    .optionalClickable(playbackCommandsState.togglePlayPause.takeIf { isMinimised }),
+                color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.togglePlayPause)
+            )
+        }
         SoulIcon(
             icon = CoreRes.drawable.ic_skip_next_filled,
             modifier = Modifier
@@ -95,4 +110,5 @@ fun MinimisedPlayerControlsComposable(
 }
 
 private val MAIN_ICON_SIZE: Dp = 40.dp
+private val LOADING_SIZE: Dp = 30.dp
 private val OPTIONAL_ICON_SIZE: Dp = 22.dp

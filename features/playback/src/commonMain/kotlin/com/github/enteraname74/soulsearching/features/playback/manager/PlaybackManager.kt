@@ -15,9 +15,8 @@ import com.github.enteraname74.soulsearching.domain.model.player.PlayerMode
 import com.github.enteraname74.soulsearching.domain.model.player.PlayerMusic
 import com.github.enteraname74.soulsearching.domain.model.player.PlayerPlayedList
 import com.github.enteraname74.soulsearching.domain.model.player.SharedPlayedListUser
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.repository.PlayerRepository
+import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementMusicListeningTimeUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementMusicNbPlayedUseCase
@@ -75,7 +74,7 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 class PlaybackManager(
     private val playerRepository: PlayerRepository,
-    private val settings: SoulSearchingSettings,
+    private val settingsRepository: SettingsRepository,
     private val commonMusicUseCase: CommonMusicUseCase,
     private val deleteMusicUseCase: DeleteMusicUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
@@ -113,6 +112,8 @@ class PlaybackManager(
 
     private val _playbackError: MutableStateFlow<PlaybackError?> = MutableStateFlow(null)
     val playbackError: StateFlow<PlaybackError?> = _playbackError.asStateFlow()
+
+    private val isPlayerBuffering: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val currentMusicFavoriteStatusState: Flow<Boolean> =
@@ -172,6 +173,7 @@ class PlaybackManager(
             playerRepository.getPreviousMusic(),
             playerRepository.observeCurrentSharedUsers(),
             playerRepository.observeFullPlayerMusicUsers(),
+            isPlayerBuffering,
         ) { array ->
             val currentMusic: Music? = (array[0] as PlayerMusic?)?.music
             val next: Music? = (array[5] as PlayerMusic?)?.music
@@ -190,6 +192,9 @@ class PlaybackManager(
                     listSize = array[2] as Int,
                     playerMode = currentPlayedList.mode,
                     isPlaying = currentPlayedList.state == PlayedListState.Playing,
+                    isBuffering = array[9] as Boolean &&
+                        currentMusic.isRemoteOnly &&
+                        currentPlayedList.state == PlayedListState.Playing,
                     currentState = currentPlayedList.state,
                     currentScope = currentPlayedList.scope,
                     currentType = currentPlayedList.type,
@@ -283,9 +288,9 @@ class PlaybackManager(
 
     private fun listenPlayerVolume() {
         workScope.launch {
-            settings.getFlowOn(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME)
-                .collectLatest { volume ->
-                    player.setPlayerVolume(volume)
+            settingsRepository.observePlayer()
+                .collectLatest { settings ->
+                    player.setPlayerVolume(settings.playerVolume)
                 }
         }
     }
@@ -689,24 +694,20 @@ class PlaybackManager(
      * Up the volume by a step (0.1) if possible
      */
     fun volumeUp() {
-        val currentVolume = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME)
-        val newVolume = min(currentVolume + 0.1f, 1f)
-        settings.set(
-            key = SoulSearchingSettingsKeys.Player.PLAYER_VOLUME.key,
-            value = newVolume,
-        )
+        workScope.launch {
+            val currentVolume = settingsRepository.getSettings().playerSettings.playerVolume
+            settingsRepository.setPlayerVolume(min(currentVolume + 0.1f, 1f))
+        }
     }
 
     /**
      * Lower the volume by a step (0.1) if possible
      */
     fun volumeDown() {
-        val currentVolume = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME)
-        val newVolume = max(currentVolume - 0.1f, 0f)
-        settings.set(
-            key = SoulSearchingSettingsKeys.Player.PLAYER_VOLUME.key,
-            value = newVolume,
-        )
+        workScope.launch {
+            val currentVolume = settingsRepository.getSettings().playerSettings.playerVolume
+            settingsRepository.setPlayerVolume(max(currentVolume - 0.1f, 0f))
+        }
     }
 
     suspend fun toggleFavorite() {
@@ -755,6 +756,7 @@ class PlaybackManager(
 
                 ensureReadyForPlayback()
                 player.seekToPosition(0)
+                player.play()
                 playerRepository.setPlayedListState(PlayedListState.Playing)
                 launchMusicCount(currentMusic.musicId)
             } else {
@@ -771,7 +773,7 @@ class PlaybackManager(
             val playerMode: PlayerMode = playerRepository.getCurrentMode().firstOrNull() ?: return@withAdminRight
             val size: Int = playerRepository.getSize().firstOrNull() ?: return@withAdminRight
             val shouldRewind =
-                settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getPlayerProgress() > REWIND_THRESHOLD && !skipRewind
+                settingsRepository.getSettings().playerSettings.isRewindEnabled && getPlayerProgress() > REWIND_THRESHOLD && !skipRewind
 
             if (shouldRewind || playerMode == PlayerMode.Loop || size == 1) {
                 val currentMusicId: Uuid =
@@ -779,6 +781,7 @@ class PlaybackManager(
 
                 ensureReadyForPlayback()
                 player.seekToPosition(0)
+                player.play()
                 updateNotification()
                 playerRepository.setPlayedListState(PlayedListState.Playing)
                 launchMusicCount(currentMusicId)
@@ -900,8 +903,7 @@ class PlaybackManager(
     }
 
     suspend fun playSoulMix(): SoulResult<Boolean> = SoulResult.runCatching {
-        val totalByFolder: Int =
-            settings.get(SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST)
+        val totalByFolder = settingsRepository.getSettings().playerSettings.soulMixTotalByList
 
         val musicList: List<Music> = commonMusicUseCase.getSoulMixMusics(totalByFolder)
 
@@ -983,6 +985,10 @@ class PlaybackManager(
 
     override suspend fun onError() {
         onCurrentMusicError()
+    }
+
+    override suspend fun onBufferingChanged(isBuffering: Boolean) {
+        isPlayerBuffering.value = isBuffering
     }
 
     override suspend fun onPause() {

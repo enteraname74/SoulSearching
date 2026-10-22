@@ -8,7 +8,7 @@ import com.github.enteraname74.soulsearching.domain.usecase.music.SyncDataWithCl
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 import kotlin.time.Duration
 
-val strings = when (Locale.current.language) {
+val strings: Strings = when (Locale.current.language) {
     "fr" -> FrStrings
     else -> EnStrings
 }
@@ -28,6 +28,7 @@ interface Strings {
     val emptyArtists: String
     val emptyPlaylists: String
     val emptyMonths: String
+    val emptyCollections: String
     val emptyMusicsExplanations: String
     val emptyAlbumsExplanations: String
     val emptyArtistsExplanations: String
@@ -35,6 +36,7 @@ interface Strings {
     val emptyPlaylistsExplanations: String
     val emptyQuickAccessExplanations: String
     val emptyMonthsExplanations: String
+    val emptyCollectionsExplanations: String
     val backButton: String
     val headerBarRightButton: String
     val image: String
@@ -47,6 +49,7 @@ interface Strings {
     val favorite: String
     val playlists: String get() = "Playlists"
     val albums: String get() = "Albums"
+    val inThisCollection: String
     val folders: String
     val artists: String
     val byFolders: String
@@ -101,33 +104,45 @@ interface Strings {
     val removeFromQuickAccess: String
     val removeFromPlaylist: String
     val removeFromPlayedList: String
+    val removeFromCollection: String
     val addToQuickAccess: String
     val addToPlaylist: String
+    val addToCollection: String
 
     val create: String
     val cancel: String
     val delete: String
+    val remove: String
     val ok: String get() = "Ok"
 
     val soulMixInfoDialogTitle: String get() = "Soul Mix"
     val soulMixInfoDialogText: String
 
     val createPlaylistDialogTitle: String
+    val createCollectionDialogTitle: String
     val playlistName: String
+    val collectionName: String
+    val nameAlreadyExists: String
     val musicName: String
     val musicAlbumPosition: String
     val albumName: String
     val albumArtistName: String
     val artistName: String
     val playlistCover: String
+    val collectionCover: String
     val albumCover: String
     val artistCover: String
     val playlistInformation: String
+    val collectionInformation: String
     val musicInformation: String
     val musicPath: String
     val musicFileCover: String
     val musicAppCover: String
     val coverSelection: String
+    val selectTopStartCoverImage: String
+    val selectTopEndCoverImage: String
+    val selectBottomStartCoverImage: String
+    val selectBottomEndCoverImage: String
     val artistInformation: String
     val albumInformation: String
 
@@ -137,6 +152,7 @@ interface Strings {
     val deleteMusicDialogText: String
     val deleteAlbumDialogTitle: String
     val deletePlaylistDialogTitle: String
+    val deleteCollectionDialogTitle: String
     val deleteArtistDialogTitle: String
 
     val deleteSelectedMusicsDialogTitle: String
@@ -152,19 +168,26 @@ interface Strings {
     val deleteSelectedAlbumsDialogTitle: String
     val deleteSelectedArtistsDialogTitle: String
     val deleteSelectedPlaylistsDialogTitle: String
+    val deleteSelectedCollectionsDialogTitle: String
 
     val removeMusicFromPlaylistTitle: String
     val removeMusicFromPlaylistText: String
     val removeSelectedMusicFromPlaylistTitle: String
     val removeSelectedMusicFromPlaylistText: String
+    val removeArtistFromCollectionTitle: String
+    val removeArtistFromCollectionText: String
+    val removeAlbumFromCollectionTitle: String
+    val removeAlbumFromCollectionText: String
 
     val modifyAlbum: String
     val modifyArtist: String
     val modifyMusic: String
     val modifyPlaylist: String
+    val modifyCollection: String
     val coversOfTheAlbum: String
     val coversOfTheArtist: String
     val coversOfThePlaylist: String
+    val coversOfTheCollection: String
     val coversOfSongAlbum: String
     val noAvailableCovers: String
 
@@ -172,9 +195,11 @@ interface Strings {
     val deleteArtist: String
     val deleteMusic: String
     val deletePlaylist: String
+    val deleteCollection: String
     val deleteSelectedAlbums: String
     val deleteSelectedArtists: String
     val deleteSelectedPlaylists: String
+    val deleteSelectedCollections: String
     val deleteSelectedMusics: String
     val deleteFolderMusics: String
     val deleteSelectedFoldersMusics: String
@@ -197,6 +222,7 @@ interface Strings {
     val reloadCoversText: String
     val reloadMusicsCovers: String
     val deletePlaylistsCovers: String
+    val deleteCollectionsCovers: String
     val reloadAlbumsCovers: String
     val reloadArtistsCovers: String
 
@@ -243,6 +269,19 @@ interface Strings {
     val aboutTitle: String
     val aboutText: String
     val newReleaseAvailableTitle: String
+    val downloadLatestReleaseTitle: String
+    val seeLatestReleaseTitle: String
+    val releaseDownloadUnavailable: String
+    val releaseInstallPermissionDenied: String
+    val releaseProductionAppMissing: String
+    val releaseDownloadInProgress: String
+    val releaseDownloadFailed: String
+    val releaseDigestMismatch: String
+    val releaseWrongPackage: String
+    val releaseSignatureMismatch: String
+    val releaseNotNewer: String
+    val releaseInvalidApk: String
+    val releaseInstallerUnavailable: String
     val statisticsTitle: String
     val statisticsText: String
     val mostPlayedSongs: String
@@ -273,6 +312,8 @@ interface Strings {
     val mainPageText: String
     val showQuickAccess: String
     val showPlaylists: String
+    val showCollections: String
+    val collections: String
     val showAlbums: String
     val showArtists: String
     val manageMusicsViewText: String
@@ -331,10 +372,12 @@ interface Strings {
     val albumDoesNotExists: String
     val artistDoesNotExists: String
     val playlistDoesNotExists: String
+    val collectionDoesNotExists: String
     val folderDoesNotExists: String
     val monthPlaylistDoesNotExists: String
 
     val playlistDetailTitle: String get() = "Playlist"
+    val collectionDetailTitle: String get() = "Collection"
     val artistDetailTitle: String
     val albumDetailTitle: String get() = "Album"
     val monthDetailTitle: String
@@ -357,6 +400,7 @@ interface Strings {
     val cloudSettingsText: String
     val cloudSettingsLastGeneralSync: String
     val cloudSettingsLastStatisticsSync: String
+    val cloudSettingsLastSettingsSync: String
     val cloudSettingsNoSync: String
     val cloudUrlFieldLabel: String
     val cloudNameFieldLabel: String
@@ -460,6 +504,13 @@ interface Strings {
 
     val playbackErrorPlayerError: String
 
+    val simpleCoverType: String
+    val gridCoverType: String
+    val addToPlaylistScreenTitle: String
+    val addToPlaylistSearchPlaceholder: String
+    val addToPlaylistEmptyTitle: String
+    val addToPlaylistEmptyText: String
+
     fun sharedListPreviewUsers(preview: SharedPlayedListPreview): String
     fun sharedListPreviewConnectedUsers(preview: SharedPlayedListPreview): String
 
@@ -492,6 +543,8 @@ interface Strings {
      * Shows a text indicating the total of selected elements.
      */
     fun selectedElements(total: Int): String
+
+    fun selectedMusics(total: Int): String
 
     /**
      * Shows a text indicating the detail of the new latest release of Soul Searching

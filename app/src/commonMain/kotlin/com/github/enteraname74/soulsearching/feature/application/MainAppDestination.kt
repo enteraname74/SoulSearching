@@ -12,6 +12,7 @@ import androidx.savedstate.serialization.SavedStateConfiguration
 import com.github.enteraname74.soulsearching.PlayerViewScaffold
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.collection.CollectionBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.folder.FolderBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.month.MonthBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
@@ -102,6 +103,14 @@ private fun MainAppRoute(
                         navigator.push(
                             PlaylistBottomSheetDestination(
                                 playlistIds = navigationState.playlistIds,
+                            )
+                        )
+                    }
+
+                    is MultiSelectionNavigationState.ToCollectionBottomSheet -> {
+                        navigator.push(
+                            CollectionBottomSheetDestination(
+                                collectionIds = navigationState.collectionIds,
                             )
                         )
                     }

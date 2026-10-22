@@ -10,12 +10,14 @@ import androidx.room3.paging.PagingSourceDaoReturnTypeConverter
 import com.github.enteraname74.soulsearching.domain.util.LocalDatabaseVersion
 import com.github.enteraname74.localdb.converters.DurationConverters
 import com.github.enteraname74.localdb.converters.InstantConverters
+import com.github.enteraname74.localdb.converters.SettingsConverters
 import com.github.enteraname74.localdb.converters.StorageTypeConverters
 import com.github.enteraname74.localdb.converters.UserTypeConverters
 import com.github.enteraname74.localdb.converters.UuidTypeConverters
 import com.github.enteraname74.localdb.dao.AlbumDao
 import com.github.enteraname74.localdb.dao.ArtistDao
 import com.github.enteraname74.localdb.dao.CloudPreferencesDao
+import com.github.enteraname74.localdb.dao.CollectionDao
 import com.github.enteraname74.localdb.dao.CoverDao
 import com.github.enteraname74.localdb.dao.DeviceIdDao
 import com.github.enteraname74.localdb.dao.FolderDao
@@ -31,6 +33,7 @@ import com.github.enteraname74.localdb.dao.PlaylistDao
 import com.github.enteraname74.localdb.dao.SharedPlayedListPreviewDao
 import com.github.enteraname74.localdb.dao.SharedPlayedListUserDao
 import com.github.enteraname74.localdb.dao.SimpleUserDao
+import com.github.enteraname74.localdb.dao.SettingsDao
 import com.github.enteraname74.localdb.dao.UserDao
 import com.github.enteraname74.localdb.dao.UserInscriptionCodeDao
 import com.github.enteraname74.localdb.model.RoomAlbum
@@ -43,9 +46,13 @@ import com.github.enteraname74.localdb.model.RoomMusicArtist
 import com.github.enteraname74.localdb.model.RoomMusicPlaylist
 import com.github.enteraname74.localdb.model.RoomPlaylist
 import com.github.enteraname74.localdb.model.RoomSimpleUser
+import com.github.enteraname74.localdb.model.RoomSoulSearchingSettings
 import com.github.enteraname74.localdb.model.RoomUser
 import com.github.enteraname74.localdb.model.RoomUserInscriptionCode
 import com.github.enteraname74.localdb.model.RoomUserStorage
+import com.github.enteraname74.localdb.model.collection.RoomCollection
+import com.github.enteraname74.localdb.model.collection.RoomCollectionAlbum
+import com.github.enteraname74.localdb.model.collection.RoomCollectionArtist
 import com.github.enteraname74.localdb.model.listeningstatistics.RoomListeningStatistics
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusic
 import com.github.enteraname74.localdb.model.player.RoomPlayerMusicProgress
@@ -56,6 +63,7 @@ import com.github.enteraname74.localdb.model.player.RoomSharedPlayedListUser
 import com.github.enteraname74.localdb.view.CurrentPlayerMusicsView
 import com.github.enteraname74.localdb.view.RoomAlbumPreview
 import com.github.enteraname74.localdb.view.RoomArtistPreview
+import com.github.enteraname74.localdb.view.RoomCollectionPreview
 import com.github.enteraname74.localdb.view.RoomMonthMusicPreview
 import com.github.enteraname74.localdb.view.RoomMusicFolderPreview
 import com.github.enteraname74.localdb.view.RoomPlaylistPreview
@@ -83,6 +91,10 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
         RoomSharedPlayedListPreview::class,
         RoomUserStorage::class,
         RoomListeningStatistics::class,
+        RoomCollection::class,
+        RoomCollectionAlbum::class,
+        RoomCollectionArtist::class,
+        RoomSoulSearchingSettings::class,
     ],
     views = [
         CurrentPlayerMusicsView::class,
@@ -91,6 +103,7 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
         RoomAlbumPreview::class,
         RoomArtistPreview::class,
         RoomPlaylistPreview::class,
+        RoomCollectionPreview::class,
     ]
 )
 @ConstructedBy(AppDatabaseConstructor::class)
@@ -100,6 +113,7 @@ import com.github.enteraname74.localdb.view.RoomPlaylistPreview
     UuidTypeConverters::class,
     StorageTypeConverters::class,
     DurationConverters::class,
+    SettingsConverters::class,
 )
 @DaoReturnTypeConverters(PagingSourceDaoReturnTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -123,6 +137,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val playerMusicUserDao: PlayerMusicUserDao
     abstract val sharedPlayedListPreviewDao: SharedPlayedListPreviewDao
     abstract val listeningStatisticsDao: ListeningStatisticsDao
+    abstract val collectionDao: CollectionDao
+    abstract val settingsDao: SettingsDao
 }
 
 // The Room compiler generates the `actual` implementations.

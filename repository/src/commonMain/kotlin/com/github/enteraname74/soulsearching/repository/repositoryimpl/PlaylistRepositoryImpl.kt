@@ -8,7 +8,7 @@ import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.repository.PlaylistRepository
-import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
+import com.github.enteraname74.soulsearching.domain.repository.CoverRepository
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistRemoteDataSource
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +20,7 @@ import kotlin.uuid.Uuid
 class PlaylistRepositoryImpl(
     private val playlistLocalDataSource: PlaylistLocalDataSource,
     private val playlistRemoteDataSource: PlaylistRemoteDataSource,
-    private val coverFileManager: CoverFileManager,
+    private val coverRepository: CoverRepository,
 ) : PlaylistRepository {
     override suspend fun upsert(playlist: Playlist) {
         playlistLocalDataSource.upsert(
@@ -121,10 +121,15 @@ class PlaylistRepositoryImpl(
     override suspend fun uploadToCloud(playlistWithMusics: PlaylistWithMusics): CloudPlaylist =
         playlistRemoteDataSource.upload(
             playlist = playlistWithMusics,
-            coverPath = (playlistWithMusics.playlist.cover as? Cover.CoverFile)?.fileCoverId?.let { coverId ->
-                coverFileManager.getCoverPath(coverId)
-            },
+            coversData = playlistWithMusics.playlist.cover.toUploadData(),
         )
+
+    private suspend fun Cover?.toUploadData(): List<ByteArray?> = when (this) {
+        null -> emptyList()
+        is Cover.CoverFile -> listOf(coverRepository.getCoverData(this))
+        is Cover.Url -> listOf(null)
+        is Cover.Grid -> list.map { (it as? Cover.CoverFile)?.let { coverFile -> coverRepository.getCoverData(coverFile) } }
+    }
 
     override suspend fun getDeletedRemotePlaylistIds(): List<Uuid> {
         val allRemoteIds: List<Uuid> = playlistLocalDataSource.getAllRemoteIdsPossessedByUser()

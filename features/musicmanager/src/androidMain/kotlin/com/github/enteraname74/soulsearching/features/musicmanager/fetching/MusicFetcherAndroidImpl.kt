@@ -87,6 +87,8 @@ internal class MusicFetcherAndroidImpl(
         hiddenFoldersPaths: List<String>
     ): List<SelectableMusicItem> {
         val newMusics = ArrayList<SelectableMusicItem>()
+        val alreadyPresentPaths = alreadyPresentMusicsPaths.toHashSet()
+        val hiddenPaths = hiddenFoldersPaths.toHashSet()
         val cursor = buildMusicCursor()
 
         when (cursor?.count) {
@@ -102,7 +104,7 @@ internal class MusicFetcherAndroidImpl(
                 while (cursor.moveToNext()) {
                     val musicPath = cursor.getString(4)
                     val musicFolder = File(musicPath).parent ?: ""
-                    if (!alreadyPresentMusicsPaths.any { it == musicPath } && !hiddenFoldersPaths.any { it == musicFolder }) {
+                    if (musicPath !in alreadyPresentPaths && musicFolder !in hiddenPaths) {
                         try {
                             val music: Music? = cursor.toMusic()
                             music?.let {

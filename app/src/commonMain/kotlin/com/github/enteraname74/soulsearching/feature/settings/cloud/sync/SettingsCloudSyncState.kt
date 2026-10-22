@@ -6,6 +6,7 @@ data class SettingsCloudSyncState(
     val syncingState: SyncDataWithCloudUseCase.State,
     val lastSync: String,
     val lastStatisticsSync: String,
+    val lastSettingsSync: String,
     val navigateBack: () -> Unit,
     val launchSync: () -> Unit,
 )

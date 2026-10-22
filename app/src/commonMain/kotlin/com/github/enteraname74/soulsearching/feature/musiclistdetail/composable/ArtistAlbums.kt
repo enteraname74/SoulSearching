@@ -60,24 +60,24 @@ fun ArtistAlbums(
             ) {
                 items(
                     items = spec.albums,
-                    key = { it.album.albumId },
+                    key = { it.id },
                     contentType = { ARTIST_ALBUM_CONTENT_TYPE },
                 ) { element ->
                     BigPreviewComposable(
                         modifier = Modifier
                             .animateItem(),
                         cover = element.cover,
-                        title = element.album.albumName,
+                        title = element.name,
                         onClick = {
-                            spec.onClick(element.album.albumId)
+                            spec.onClick(element.id)
                         },
                         imageSize = if (canShowColumnLayout) {
                             LARGE_COVER_SIZE
                         } else {
                             UiConstants.ImageSize.veryLarge
                         },
-                        onLongClick = { spec.onLongClick(element.album.albumId) },
-                        isSelected = multiSelectionState.selectedIds.contains(element.album.albumId.toString()),
+                        onLongClick = { spec.onLongClick(element.id) },
+                        isSelected = multiSelectionState.selectedIds.contains(element.id.toString()),
                         isSelectionModeOn = multiSelectionState.totalSelected > 0,
                     )
                 }

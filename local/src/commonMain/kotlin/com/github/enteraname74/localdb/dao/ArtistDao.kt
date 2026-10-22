@@ -39,10 +39,10 @@ interface ArtistDao {
     )
     suspend fun deleteAllEmpty()
 
-    @Query("UPDATE RoomArtist SET coverFolderKey = :key")
+    @Query("UPDATE RoomArtist SET cover_devicePathSpecKey = :key")
     suspend fun activateCoverFolderMode(key: String)
 
-    @Query("UPDATE RoomArtist SET coverFolderKey = NULL")
+    @Query("UPDATE RoomArtist SET cover_devicePathSpecKey = NULL")
     suspend fun deactivateCoverFolderMode()
 
     @Query("SELECT artistName FROM RoomArtist WHERE LOWER(artistName) LIKE LOWER('%' || :search || '%') AND scope != 'SharedPlayedList'")
@@ -222,7 +222,7 @@ interface ArtistDao {
     )
     fun getArtistsWithMostMusics(): PagingSource<Int, RoomArtistPreview>
 
-    @Query("UPDATE RoomArtist SET coverId = NULL")
+    @Query("UPDATE RoomArtist SET cover_fileCoverId = NULL")
     suspend fun cleanAllCovers()
 
     @Transaction

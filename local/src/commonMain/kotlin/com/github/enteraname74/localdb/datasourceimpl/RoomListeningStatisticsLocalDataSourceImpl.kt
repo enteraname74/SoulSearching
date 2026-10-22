@@ -65,6 +65,16 @@ class RoomListeningStatisticsLocalDataSourceImpl(
             month = localMonthYear.month,
         )?.toPlaylistStats()
 
+    override suspend fun getCollectionStatistics(
+        collectionId: Uuid,
+        localMonthYear: LocalMonthYear,
+    ): ListeningStatistics.CollectionStats? =
+        appDatabase.listeningStatisticsDao.getCollectionStatistics(
+            collectionId = collectionId,
+            year = localMonthYear.year,
+            month = localMonthYear.month,
+        )?.toCollectionStats()
+
     override fun getPeriodStatistics(period: Period): PeriodStatistics =
         when (period) {
             Period.All -> getAllPeriodStatistics()

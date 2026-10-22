@@ -12,16 +12,18 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationActio
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
-import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 
 @Composable
 fun EditableElementView(
     title: String,
     coverSectionTitle: String,
-    editableElement: EditableElement,
+    coverEditMode: CoverEditMode,
     navigateBack: () -> Unit,
-    onSelectCover: () -> Unit,
+    onSelectCover: (pos: Int) -> Unit,
+    onSwitchModeType: (new: CoverEditMode.Type) -> Unit,
     onValidateModification: () -> Unit,
+    isValid: () -> Boolean,
     textFields: List<SoulTextFieldHolder>,
     extraFormBottomContent: @Composable (() -> Unit)? = null,
     extraFormTopContent: @Composable (() -> Unit)? = null,
@@ -41,27 +43,30 @@ fun EditableElementView(
                 ),
                 rightAction = TopBarValidateAction(
                     onClick = onValidateModification,
+                    isEnabled = isValid(),
                 )
             )
             when (windowSize) {
                 WindowSize.Small -> EditableElementColumnView(
-                    editableElement = editableElement,
+                    coverEditMode = coverEditMode,
                     onSelectImage = onSelectCover,
                     focusManager = focusManager,
                     textFields = textFields,
                     coverSectionTitle = coverSectionTitle,
                     extraFormTopContent = extraFormTopContent,
                     extraFormBottomContent = extraFormBottomContent,
+                    onSwitchModeType = onSwitchModeType,
                 )
 
                 else -> EditableElementRowView(
-                    editableElement = editableElement,
+                    coverEditMode = coverEditMode,
                     onSelectImage = onSelectCover,
                     focusManager = focusManager,
                     textFields = textFields,
                     coverSectionTitle = coverSectionTitle,
                     extraFormTopContent = extraFormTopContent,
                     extraFormBottomContent = extraFormBottomContent,
+                    onSwitchModeType = onSwitchModeType,
                 )
             }
         }

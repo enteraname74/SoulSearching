@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -129,6 +130,7 @@ fun AllMusicsComposable(
             ) {
                 EmptyCard(
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(
                             end = UiConstants.Spacing.medium,
                         ),
