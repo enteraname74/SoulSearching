@@ -11,13 +11,4 @@ data class Release(
     val tag: String,
     val githubUrl: String,
     val changelog: String?,
-    val apkAsset: ReleaseAsset? = null,
-)
-
-@Serializable
-data class ReleaseAsset(
-    val name: String,
-    val downloadUrl: String,
-    val size: Long,
-    val sha256: String?,
 )

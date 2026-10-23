@@ -1,5 +1,5 @@
 package com.github.enteraname74.soulsearching.domain
 
 actual object AppVersion {
-    actual val versionName: String = "0.17.0"
+    actual val versionName: String = "0.17.1"
 }

@@ -3,11 +3,9 @@ package com.github.enteraname74.soulsearching.feature.settings.aboutpage
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -23,12 +21,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.composable.SoulChip
-import com.github.enteraname74.soulsearching.coreui.composable.SoulChipColors
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_download
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_open_in_new
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_release_alert_filled
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuExpand
@@ -64,7 +60,6 @@ fun SettingsAboutScreen(
                     modifier = Modifier
                         .animateItem(),
                     release = state.mostRecentRelease,
-                    onDownloadLatestRelease = state.onDownloadLatestRelease
                 )
             }
         }
@@ -129,30 +124,22 @@ fun SettingsAboutScreen(
 @Composable
 private fun LatestReleaseSection(
     release: Release,
-    onDownloadLatestRelease: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
-    ) {
-        LatestReleaseCard(release)
-        LatestReleaseCardOptions(release, onDownloadLatestRelease)
-    }
+    LatestReleaseCard(release, modifier)
 }
 
 @Composable
 private fun LatestReleaseCard(
     release: Release,
+    modifier: Modifier = Modifier,
 ) {
+    val uriHandler = LocalUriHandler.current
+
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(
-                top = UiConstants.Spacing.large,
-                start = UiConstants.Spacing.large,
-                end = UiConstants.Spacing.large,
-            ),
+            .padding(UiConstants.Spacing.large),
         contentAlignment = Alignment.Center,
     ) {
         Card(
@@ -168,6 +155,9 @@ private fun LatestReleaseCard(
         ) {
             Column(
                 modifier = Modifier
+                    .clickableWithHandCursor {
+                        uriHandler.openUri(release.githubUrl)
+                    }
                     .fillMaxWidth()
                     .padding(UiConstants.Spacing.large),
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
@@ -193,39 +183,6 @@ private fun LatestReleaseCard(
                     style = UiConstants.Typography.body,
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun LatestReleaseCardOptions(
-    release: Release,
-    onDownloadLatestRelease: (() -> Unit)?,
-) {
-    val uriHandler = LocalUriHandler.current
-
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
-        contentPadding = PaddingValues(horizontal = UiConstants.Spacing.large),
-    ) {
-        onDownloadLatestRelease?.let {
-            item {
-                SoulChip(
-                    title = strings.downloadLatestReleaseTitle,
-                    leadingIcon = CoreRes.drawable.ic_download,
-                    onClick = onDownloadLatestRelease,
-                    colors = SoulChipColors.default(),
-                )
-            }
-        }
-        item {
-            SoulChip(
-                title = strings.seeLatestReleaseTitle,
-                leadingIcon = CoreRes.drawable.ic_open_in_new,
-                onClick = {
-                    uriHandler.openUri(release.githubUrl)
-                }
-            )
         }
     }
 }

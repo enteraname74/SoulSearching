@@ -36,8 +36,6 @@ internal class EndMigrationCallback(
                 release_isFetchReleaseFromGithubEnabled, release_shouldShowReleaseBottomEnableHint,
                 release_latestViewedReleaseTag, release_latestReleaseName, release_latestReleaseTag,
                 release_latestReleaseGithubUrl, release_latestReleaseChangelog,
-                release_latestReleaseAssetName, release_latestReleaseAssetDownloadUrl,
-                release_latestReleaseAssetSize, release_latestReleaseAssetSha256,
                 album_shouldShowTrackPositionInAlbumView
             ) VALUES (
                 ${settings.id.sql()}, ${settings.updatedAtMillis}, ${settings.hasMusicsBeenFetched.sql()}, ${settings.isMusicFileModificationOn.sql()},
@@ -59,8 +57,6 @@ internal class EndMigrationCallback(
                 ${release.isFetchReleaseFromGithubEnabled.sql()}, ${release.shouldShowReleaseBottomEnableHint.sql()},
                 ${release.latestViewedReleaseTag.sql()}, ${release.latestReleaseName.sql()}, ${release.latestReleaseTag.sql()},
                 ${release.latestReleaseGithubUrl.sql()}, ${release.latestReleaseChangelog.sql()},
-                ${release.latestReleaseAssetName.sql()}, ${release.latestReleaseAssetDownloadUrl.sql()},
-                ${release.latestReleaseAssetSize.sql()}, ${release.latestReleaseAssetSha256.sql()},
                 ${settings.album.shouldShowTrackPositionInAlbumView.sql()}
             )
             """.trimIndent()
@@ -72,4 +68,3 @@ internal class EndMigrationCallback(
 private fun Boolean.sql() = if (this) "1" else "0"
 private fun Boolean?.sqlNullable() = this?.sql() ?: "NULL"
 private fun String?.sql() = this?.let { "'${it.replace("'", "''")}'" } ?: "NULL"
-private fun Long?.sql() = this?.toString() ?: "NULL"

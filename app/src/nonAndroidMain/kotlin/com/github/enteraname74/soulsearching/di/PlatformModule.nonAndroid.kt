@@ -4,7 +4,6 @@ import com.github.enteraname74.soulsearching.domain.usecase.cloud.CloudBackgroun
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpNonAndroidManager
 import com.github.enteraname74.soulsearching.feature.permission.PermissionManager
-import com.github.enteraname74.soulsearching.feature.settings.aboutpage.LatestReleaseDownloader
 import com.github.enteraname74.soulsearching.settings.cloud.worker.CloudBackgroundSyncJobNonAndroidImpl
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -18,5 +17,4 @@ actual val platformModule: Module = module {
     singleOf(::CloudBackgroundSyncJobNonAndroidImpl) bind CloudBackgroundSyncJob::class
     singleOf(::FeedbackPopUpNonAndroidManager) bind FeedbackPopUpManager::class
     factoryOf(::PermissionManager)
-    singleOf(::LatestReleaseDownloader)
 }
