@@ -136,7 +136,14 @@ fun PlayerPanelDraggableView(
                 selectedIconColors = SoulSelectedIconDefaults.primary(),
                 onActivateRemoteLyrics = onActivateRemoteLyrics,
                 onSwiped = onSwiped,
-                onClickOnMusic = onClickOnMusic,
+                onClickOnMusic = if (onClickOnMusic != null) {
+                    {
+                        onClickOnMusic(it)
+                        playerMusicListViewManager.closeIfPossible()
+                    }
+                } else {
+                    null
+                },
             )
         }
     }
