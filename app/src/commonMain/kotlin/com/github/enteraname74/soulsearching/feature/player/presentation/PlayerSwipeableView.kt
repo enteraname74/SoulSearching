@@ -9,6 +9,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
@@ -140,6 +143,10 @@ fun PlayerDraggableView(
             isUsingDarkIcons = !SoulSearchingColorTheme.colorScheme.primary.isDark()
         )
 
+        var enableSwipe by rememberSaveable {
+            mutableStateOf(true)
+        }
+
         Box(
             modifier = Modifier
                 .offset {
@@ -154,7 +161,8 @@ fun PlayerDraggableView(
                         (maxHeight - PlayerMinimisedHeight) to BottomSheetStates.MINIMISED,
                         maxHeight to BottomSheetStates.COLLAPSED,
                         0f to BottomSheetStates.EXPANDED
-                    )
+                    ),
+                    enabled = enableSwipe,
                 )
         ) {
             when (state) {
@@ -218,6 +226,7 @@ fun PlayerDraggableView(
                         onClickOnMusic = ifAdmin(dataState) {
                             { playerViewModel.onClickOnMusic(it) }
                         },
+                        onEnableSwipe = { enableSwipe = it },
                     )
 
                     /*

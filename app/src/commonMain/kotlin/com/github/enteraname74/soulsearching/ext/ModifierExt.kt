@@ -11,10 +11,12 @@ import com.github.enteraname74.soulsearching.feature.swipeableview.SwipeableView
 fun Modifier.swipeableView(
     swipeableViewManager: SwipeableViewManager,
     anchors: Map<Float, BottomSheetStates>,
+    enabled: Boolean = true,
 ): Modifier =
     this
         .swipeable(
             state = swipeableViewManager.draggableState,
             orientation = Orientation.Vertical,
             anchors = anchors,
+            enabled = enabled,
         )

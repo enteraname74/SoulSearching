@@ -1,9 +1,22 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.screen
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -12,13 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
-import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -38,6 +49,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.state.Playbac
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMinimisedMainInfo
+import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMorphingMinimisedSongProgression
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMusicCover
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerTopInformation
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.ExpandedPlayerControlsComposable
@@ -62,6 +74,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
     onClickOnMusic: ((Music) -> Unit)?,
     multiSelectionState: MultiSelectionState,
     onActivateRemoteLyrics: () -> Unit,
+    onEnableSwipe: (enabled: Boolean) -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
@@ -100,30 +113,13 @@ fun BoxScope.PlayerSwipeableDataScreen(
         var playerTopInformationHeight by rememberSaveable { mutableIntStateOf(0) }
 
 
-        AnimatedVisibility(
-            visible = settingsState.isMinimisedSongProgressionShown && playbackCommandsState.seekTo != null
-        ) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(1f - alphaTransition)
-                    .height(SONG_PROGRESSION_HEIGHT),
-                progress = {
-                    (currentMusicProgression.toFloat() / state.currentMusic.duration.toFloat()).coerceIn(
-                        0f,
-                        1f
-                    )
-                },
-                color = SoulSearchingColorTheme.colorScheme.onSecondary,
-                trackColor = SoulSearchingColorTheme.colorScheme.subSecondaryText.blend(
-                    other = SoulSearchingColorTheme.colorScheme.primary,
-                    ratio = 0.5f,
-                ),
-                drawStopIndicator = {},
-                strokeCap = StrokeCap.Square,
-                gapSize = 0.dp,
-            )
-        }
+        PlayerMorphingMinimisedSongProgression(
+            settingsState = settingsState,
+            playbackCommandsState = playbackCommandsState,
+            currentMusicProgression = currentMusicProgression.toFloat(),
+            currentMusicDuration = state.currentMusic.duration.toFloat(),
+            onEnableSwipe = onEnableSwipe,
+        )
 
         PlayerTopInformation(
             modifier = Modifier
@@ -361,5 +357,3 @@ fun BoxWithConstraintsScope.getSidePanelWidth(playerControlsWidth: Dp): Dp {
         maximumValue = MaxPlayerSidePanelWidth,
     )
 }
-
-private val SONG_PROGRESSION_HEIGHT: Dp = 2.dp
