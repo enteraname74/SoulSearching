@@ -61,7 +61,7 @@ modules:
       - type: git
         url: https://github.com/enteraname74/SoulSearching.git
         # Uncomment once tag is created
-        # tag: v0.17.0
+        # tag: v0.17.1
         commit: 021df61f4bf9a124056dc7bc3b3af06c0f51f8cb
       - type: archive
         url: https://services.gradle.org/distributions/gradle-9.5.1-bin.zip

@@ -7,5 +7,4 @@ data class SettingsAboutState(
     val onClickOnVersionName: () -> Unit,
     val navigateBack: () -> Unit,
     val toDevelopers: () -> Unit,
-    val onDownloadLatestRelease: (() -> Unit)?,
 )

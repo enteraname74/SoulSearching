@@ -814,6 +814,13 @@ class PlaybackManager(
 
     suspend fun setAndPlayMusicFromCurrentPlayedList(music: Music) {
         ensureReadyForPlayback()
+
+        /*
+        We should do nothing if we click on the same music.
+        We also don't need to check for playlist equality as it is always the played list in this case.
+         */
+        if (playerRepository.getCurrentMusic().firstOrNull()?.music?.musicId == music.musicId) return
+
         playbackProgressJob.releaseDurationJob()
         playerRepository.setCurrent(music.musicId)
         playerRepository.setProgress(Duration.ZERO)
