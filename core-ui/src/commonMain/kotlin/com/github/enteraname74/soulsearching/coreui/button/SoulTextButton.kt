@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.coreui.button
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,10 +10,12 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 @Composable
 fun SoulTextButton(
-    text: String,
+    text: SoulTextSpec,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -34,7 +35,7 @@ fun SoulTextButton(
         ),
         contentPadding = contentPadding,
     ) {
-        Text(
+        SoulText(
             text = text,
             color = colors.contentColor,
             style = UiConstants.Typography.body,

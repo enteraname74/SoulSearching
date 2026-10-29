@@ -21,7 +21,6 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetH
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add_photo_alternate_filled
 import com.github.enteraname74.soulsearching.coreui.list.LazyVerticalGridCompat
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
@@ -37,6 +36,8 @@ import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.DrawableResource
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class MusicCoversBottomSheet(
     private val musicCover: Cover.Simple,
@@ -73,7 +74,7 @@ class MusicCoversBottomSheet(
                     cover = Cover.CoverFile(
                         initialCoverPath = initialCoverPath,
                     ),
-                    title = strings.musicFileCover,
+                    title = CoreRes.string.music_file_cover.toTextSpec(),
                     onClick = {
                         closeWithAnim {
                             onMusicFileCoverSelected(initialCoverPath)
@@ -89,7 +90,7 @@ class MusicCoversBottomSheet(
                     cover = Cover.CoverFile(
                         fileCoverId = fileCoverId,
                     ),
-                    title = strings.musicAppCover,
+                    title = CoreRes.string.music_app_cover.toTextSpec(),
                     onClick = {
                         closeWithAnim {
                             onFileCoverSelected(fileCoverId)
@@ -107,7 +108,7 @@ class MusicCoversBottomSheet(
         item {
             EditableElementCoverSelectionItem(
                 cover = cover,
-                title = strings.musicAppCover,
+                title = CoreRes.string.music_app_cover.toTextSpec(),
                 onClick = {
                     closeWithAnim {
                         // TODO CLOUD: Select URL image on song update
@@ -152,7 +153,7 @@ class MusicCoversBottomSheet(
                 )
             ) {
                 SoulTopBar(
-                    title = strings.coverSelection,
+                    title = CoreRes.string.cover_selection.toTextSpec(),
                     colors = SoulTopBarDefaults.secondary(),
                     withStatusBarPadding = bottomSheetHeight > windowHeightBeforeBarPadding,
                     leftAction = TopBarNavigationAction(
@@ -188,7 +189,7 @@ class MusicCoversBottomSheet(
                                 onAlbumCoverSelected(it)
                             }
                         },
-                        sectionTitle = strings.coversOfSongAlbum,
+                        sectionTitle = CoreRes.string.covers_of_song_album.toTextSpec(),
                     )
                 }
             }

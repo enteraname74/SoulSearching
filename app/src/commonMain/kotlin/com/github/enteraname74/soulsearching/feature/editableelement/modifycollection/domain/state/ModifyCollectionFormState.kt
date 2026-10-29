@@ -1,9 +1,10 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifycollection.domain.state
 
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.domain.model.Collection
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 sealed interface ModifyCollectionFormState {
     data object NoData : ModifyCollectionFormState
@@ -16,8 +17,8 @@ sealed interface ModifyCollectionFormState {
                 id = COLLECTION_NAME,
                 initialValue = initialCollection.name,
                 isValid = { it.isNotBlank() },
-                getLabel = { strings.collectionName },
-                getError = { strings.fieldCannotBeEmpty },
+                getLabel = { CoreRes.string.collection_name.toTextSpec() },
+                getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
             )
         )
 

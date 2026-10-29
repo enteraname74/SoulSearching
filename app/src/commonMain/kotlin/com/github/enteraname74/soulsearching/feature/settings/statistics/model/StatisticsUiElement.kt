@@ -2,13 +2,15 @@ package com.github.enteraname74.soulsearching.feature.settings.statistics.model
 
 import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.domain.model.statistics.ListeningStatistics
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 data class StatisticsUiElement(
     val id: String,
-    val title: String,
-    val text: String,
+    val title: SoulTextSpec,
+    val text: SoulTextSpec,
     val onClick: (() -> Unit)?,
     val cover: Cover?,
 )
@@ -18,8 +20,8 @@ fun ListeningStatistics.AlbumStats.toStatisticsUiElement(
 ): StatisticsUiElement =
     StatisticsUiElement(
         id = id,
-        title = album.name,
-        text = strings.plays(nbPlayed),
+        title = album.name.toTextSpec(),
+        text = SoulTexts.plays(nbPlayed),
         onClick = onClick,
         cover = album.cover,
     )
@@ -29,8 +31,8 @@ fun ListeningStatistics.ArtistStats.toStatisticsUiElement(
 ): StatisticsUiElement =
     StatisticsUiElement(
         id = id,
-        title = artist.name,
-        text = strings.plays(nbPlayed),
+        title = artist.name.toTextSpec(),
+        text = SoulTexts.plays(nbPlayed),
         onClick = onClick,
         cover = artist.cover,
     )
@@ -40,8 +42,8 @@ fun ListeningStatistics.ArtistStats.toStatisticsUiMostSongsElement(
 ): StatisticsUiElement =
     StatisticsUiElement(
         id = id,
-        title = artist.name,
-        text = strings.musics(artist.totalMusics),
+        title = artist.name.toTextSpec(),
+        text = SoulTexts.musics(artist.totalMusics),
         onClick = onClick,
         cover = artist.cover,
     )
@@ -51,8 +53,8 @@ fun ListeningStatistics.PlaylistStats.toStatisticsUiElement(
 ): StatisticsUiElement =
     StatisticsUiElement(
         id = id,
-        title = playlist.name,
-        text = strings.plays(nbPlayed),
+        title = playlist.name.toTextSpec(),
+        text = SoulTexts.plays(nbPlayed),
         onClick = onClick,
         cover = playlist.cover,
     )
@@ -60,8 +62,8 @@ fun ListeningStatistics.PlaylistStats.toStatisticsUiElement(
 fun ListeningStatistics.MusicStats.toStatisticsUiElement(): StatisticsUiElement =
     StatisticsUiElement(
         id = id,
-        title = music.name,
-        text = strings.plays(nbPlayed),
+        title = music.name.toTextSpec(),
+        text = SoulTexts.plays(nbPlayed),
         onClick = null,
         cover = music.cover,
     )
@@ -69,8 +71,8 @@ fun ListeningStatistics.MusicStats.toStatisticsUiElement(): StatisticsUiElement 
 fun ListeningStatistics.MusicStats.toStatisticsUiListenedElement(): StatisticsUiElement =
     StatisticsUiElement(
         id = id,
-        title = music.name,
-        text = strings.duration(timeListened),
+        title = music.name.toTextSpec(),
+        text = SoulTexts.duration(timeListened),
         onClick = null,
         cover = music.cover,
     )

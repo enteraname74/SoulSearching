@@ -1,10 +1,11 @@
 package com.github.enteraname74.soulsearching.feature.application
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationRowSpec
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
@@ -49,7 +50,7 @@ class MainAppViewModel(
     init {
         viewModelScope.launch {
             playbackManager.playbackError.filterNotNull().collectLatest {
-                feedbackPopUpManager.showFeedback(strings.playbackErrorPlayerError)
+                feedbackPopUpManager.showFeedback(CoreRes.string.playback_error_player_error.toTextSpec())
                 playbackManager.consumeError()
             }
         }

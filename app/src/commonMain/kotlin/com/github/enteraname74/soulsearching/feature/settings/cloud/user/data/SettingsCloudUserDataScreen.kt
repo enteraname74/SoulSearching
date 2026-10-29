@@ -8,9 +8,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.cloud.user.data.composable.SettingsCloudUserDataUserStorageView
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 internal fun SettingsCloudUserDataScreen(
@@ -20,7 +22,7 @@ internal fun SettingsCloudUserDataScreen(
 
     SettingPage(
         navigateBack = state.onNavigateBack,
-        title = strings.userStorageTitle,
+        title = CoreRes.string.user_storage_title.toTextSpec(),
         verticalPadding = UiConstants.Spacing.large,
         contentPadding = PaddingValues(all = UiConstants.Spacing.large)
     ) {
@@ -45,7 +47,7 @@ internal fun SettingsCloudUserDataScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 SoulFilledButton(
-                    text = strings.clearUserStorageButton,
+                    text = CoreRes.string.clear_user_storage_button.toTextSpec(),
                     onClick = state.onClearData,
                 )
             }

@@ -1,9 +1,10 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,8 +18,8 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun BottomSheetElementInformation(
     cover: Cover?,
-    title: String,
-    subTitle: String?,
+    title: SoulTextSpec,
+    subTitle: SoulTextSpec?,
 ) {
     Column {
         Row(
@@ -46,7 +47,7 @@ fun BottomSheetElementInformation(
                         .weight(1f),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
+                    SoulText(
                         text = title,
                         color = SoulSearchingColorTheme.colorScheme.onSecondary,
                         style = MaterialTheme.typography.labelLarge,
@@ -54,7 +55,7 @@ fun BottomSheetElementInformation(
                         overflow = TextOverflow.Ellipsis,
                     )
                     subTitle?.let {
-                        Text(
+                        SoulText(
                             text = it,
                             color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                             style = MaterialTheme.typography.labelLarge,

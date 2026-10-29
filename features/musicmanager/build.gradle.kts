@@ -14,6 +14,7 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":domain"))
             implementation(project(":core-ui"))
+            implementation(libs.compose.resources)
             implementation(libs.koin.core)
             implementation(libs.jaudiotagger)
             implementation(libs.coroutines.core)

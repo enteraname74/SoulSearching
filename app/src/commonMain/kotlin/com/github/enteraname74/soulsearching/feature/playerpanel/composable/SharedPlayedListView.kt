@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,10 +30,16 @@ import com.github.enteraname74.soulsearching.coreui.ext.disableIf
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.list.ShapeListStyle
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.feature.player.domain.state.SharedListState
 import com.github.enteraname74.soulsearching.util.rememberClipboardController
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.shared_list_code_description
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.shared_list_code_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.shared_list_guests
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.shared_list_host
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 @Composable
 fun SharedPlayedListView(
@@ -63,7 +68,7 @@ fun SharedPlayedListView(
         state.host?.let {
             stickyHeader {
                 SectionTitle(
-                    title = strings.sharedListHost,
+                    title = CoreRes.string.shared_list_host.toTextSpec(),
                     containerColor = containerColor,
                     contentColor = contentColor,
                 )
@@ -80,7 +85,7 @@ fun SharedPlayedListView(
         if (state.guests.isNotEmpty()) {
             stickyHeader {
                 SectionTitle(
-                    title = strings.sharedListGuests,
+                    title = CoreRes.string.shared_list_guests.toTextSpec(),
                     containerColor = containerColor,
                     contentColor = contentColor,
                 )
@@ -125,18 +130,18 @@ private fun InvitationCode(
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            text = strings.sharedListCodeTitle,
+        SoulText(
+            text = CoreRes.string.shared_list_code_title.toTextSpec(),
             style = UiConstants.Typography.bodyTitle,
             color = contentColor,
         )
-        Text(
-            text = code,
+        SoulText(
+            text = code.toTextSpec(),
             style = UiConstants.Typography.titleBig,
             color = contentColor,
         )
-        Text(
-            text = strings.sharedListCodeDescription,
+        SoulText(
+            text = CoreRes.string.shared_list_code_description.toTextSpec(),
             style = UiConstants.Typography.bodySmall,
             color = contentColor,
             textAlign = TextAlign.Center,
@@ -146,11 +151,11 @@ private fun InvitationCode(
 
 @Composable
 private fun SectionTitle(
-    title: String,
+    title: SoulTextSpec,
     containerColor: Color,
     contentColor: Color,
 ) {
-    Text(
+    SoulText(
         modifier = Modifier
             .background(color = containerColor)
             .padding(
@@ -186,10 +191,10 @@ private fun UserRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
     ) {
-        Text(
+        SoulText(
             modifier = Modifier
                 .weight(1f),
-            text = user.username,
+            text = user.username.toTextSpec(),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = UiConstants.Typography.bodyLarge,

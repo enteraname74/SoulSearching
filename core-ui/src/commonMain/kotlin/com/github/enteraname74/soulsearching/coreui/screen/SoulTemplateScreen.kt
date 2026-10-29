@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +20,8 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
@@ -30,9 +31,9 @@ import org.jetbrains.compose.resources.DrawableResource
 fun SoulTemplateScreen(
     leftAction: TopBarActionSpec,
     icon: DrawableResource,
-    text: String,
+    text: SoulTextSpec,
     buttonSpec: TemplateScreenButtonSpec?,
-    title: String? = null,
+    title: SoulTextSpec? = null,
     rightAction: TopBarActionSpec? = null,
 ) {
     SoulScreen(
@@ -62,7 +63,7 @@ fun SoulTemplateScreen(
 @Composable
 fun SoulTemplateComposable(
     icon: DrawableResource,
-    text: String,
+    text: SoulTextSpec,
     modifier: Modifier = Modifier,
     iconSize: Dp = UiConstants.ImageSize.veryLarge,
     buttonSpec: TemplateScreenButtonSpec?,
@@ -84,7 +85,7 @@ fun SoulTemplateComposable(
                 icon = icon,
                 size = iconSize,
             )
-            Text(
+            SoulText(
                 text = text,
                 textAlign = TextAlign.Center,
                 color = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -94,7 +95,7 @@ fun SoulTemplateComposable(
                     onClick = spec.onClick,
                     colors = spec.colors(),
                 ) {
-                    Text(
+                    SoulText(
                         text = spec.text,
                         textAlign = TextAlign.Center,
                         color = SoulSearchingColorTheme.colorScheme.onSecondary,
@@ -107,7 +108,7 @@ fun SoulTemplateComposable(
 }
 
 data class TemplateScreenButtonSpec(
-    val text: String,
+    val text: SoulTextSpec,
     val onClick: () -> Unit,
     val colors: @Composable () -> SoulButtonColors = { SoulButtonDefaults.secondaryColors() },
 )

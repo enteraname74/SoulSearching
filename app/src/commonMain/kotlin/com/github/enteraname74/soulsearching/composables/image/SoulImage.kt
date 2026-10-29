@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.composables.image
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -37,7 +39,6 @@ import androidx.compose.ui.unit.DpSize
 import coil3.request.ImageRequest
 import com.github.enteraname74.soulsearching.app.generated.resources.Res
 import com.github.enteraname74.soulsearching.app.generated.resources.app_logo_uni_xml
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.Cover
@@ -425,7 +426,7 @@ fun TemplateImage(
     Image(
         modifier = modifier,
         painter = painterResource(Res.drawable.app_logo_uni_xml),
-        contentDescription = strings.image,
+        contentDescription = CoreRes.string.image.toTextSpec().string,
         contentScale = contentScale,
         colorFilter = ColorFilter.tint(tint)
     )

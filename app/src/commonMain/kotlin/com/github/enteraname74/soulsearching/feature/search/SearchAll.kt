@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.search
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -16,7 +19,6 @@ import com.github.enteraname74.soulsearching.domain.model.PlaylistPreview
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.SearchAllState
@@ -58,7 +60,7 @@ fun SearchAll(
                 SearchType(
                     modifier = Modifier
                         .animateItem(),
-                    title = strings.playlists,
+                    title = CoreRes.string.playlists.toTextSpec(),
                 )
             }
             items(
@@ -69,8 +71,8 @@ fun SearchAll(
                 LinearPreviewComposable(
                     modifier = Modifier
                         .animateItem(),
-                    title = playlistPreview.name,
-                    text = strings.musics(playlistPreview.totalMusics),
+                    title = playlistPreview.name.toTextSpec(),
+                    text = SoulTexts.musics(playlistPreview.totalMusics),
                     onClick = {
                         focusManager.clearFocus()
                         navigateToPlaylist(playlistPreview.id)
@@ -91,7 +93,7 @@ fun SearchAll(
                 SearchType(
                     modifier = Modifier
                         .animateItem(),
-                    title = strings.artists,
+                    title = CoreRes.string.artists.toTextSpec(),
                 )
             }
             items(
@@ -102,8 +104,8 @@ fun SearchAll(
                 LinearPreviewComposable(
                     modifier = Modifier
                         .animateItem(),
-                    title = artistPreview.name,
-                    text = strings.musics(artistPreview.totalMusics),
+                    title = artistPreview.name.toTextSpec(),
+                    text = SoulTexts.musics(artistPreview.totalMusics),
                     onClick = {
                         focusManager.clearFocus()
                         navigateToArtist(artistPreview.id)
@@ -124,7 +126,7 @@ fun SearchAll(
                 SearchType(
                     modifier = Modifier
                         .animateItem(),
-                    title = strings.albums,
+                    title = CoreRes.string.albums.toTextSpec(),
                 )
             }
             items(
@@ -135,8 +137,8 @@ fun SearchAll(
                 LinearPreviewComposable(
                     modifier = Modifier
                         .animateItem(),
-                    title = albumPreview.name,
-                    text = albumPreview.artist,
+                    title = albumPreview.name.toTextSpec(),
+                    text = albumPreview.artist.toTextSpec(),
                     onClick = {
                         focusManager.clearFocus()
                         navigateToAlbum(albumPreview.id)
@@ -159,7 +161,7 @@ fun SearchAll(
                 SearchType(
                     modifier = Modifier
                         .animateItem(),
-                    title = strings.musics,
+                    title = CoreRes.string.musics.toTextSpec(),
                 )
             }
             items(

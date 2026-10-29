@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel
 
 //noinspection UsingMaterialAndMaterial3Libraries
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -36,7 +37,6 @@ import com.github.enteraname74.soulsearching.composables.dialog.CreateCollection
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
@@ -415,7 +415,7 @@ class MainPageViewModel(
 
             if (deleteCount > 0) {
                 feedbackPopUpManager.showFeedback(
-                    feedback = strings.deletedMusicsAutomatically(total = deleteCount)
+                    feedback = SoulTexts.deletedMusicsAutomatically(total = deleteCount)
                 )
             }
         }

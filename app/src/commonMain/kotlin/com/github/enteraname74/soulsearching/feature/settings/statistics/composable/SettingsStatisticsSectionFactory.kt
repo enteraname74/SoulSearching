@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.statistics.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -8,18 +9,20 @@ import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
 import com.github.enteraname74.soulsearching.feature.search.composable.LinearPreviewComposable
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodUiStatistics
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.StatisticsUiElement
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 object SettingsStatisticsSectionFactory {
     @OptIn(ExperimentalFoundationApi::class)
-    fun LazyListScope.title(title: String) {
+    fun LazyListScope.title(title: SoulTextSpec) {
         stickyHeader(
-            key = title,
+            key = "$SECTION_TITLE_CONTENT_TYPE-${title.hashCode()}",
             contentType = SECTION_TITLE_CONTENT_TYPE,
         ) {
             SettingsStatisticsSectionTitle(title = title)
@@ -31,7 +34,7 @@ object SettingsStatisticsSectionFactory {
             contentType = EMPTY_CONTENT_CONTENT_TYPE
         ) {
             NoElementView(
-                text = strings.noDataOnThisPeriod,
+                text = CoreRes.string.no_data_on_this_period.toTextSpec(),
             )
         }
     }

@@ -1,12 +1,13 @@
 package com.github.enteraname74.soulsearching.composables.dialog
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 class DeleteCollectionDialog(
     private val onDelete: () -> Unit,
@@ -17,13 +18,13 @@ class DeleteCollectionDialog(
         SoulAlertDialog(
             confirmAction = onDelete,
             dismissAction = onClose,
-            title = strings.deleteCollectionDialogTitle,
-            confirmText = strings.delete,
-            dismissText = strings.cancel,
+            title = CoreRes.string.delete_collection_dialog_title.toTextSpec(),
+            confirmText = CoreRes.string.delete.toTextSpec(),
+            dismissText = CoreRes.string.cancel.toTextSpec(),
             icon = {
                 SoulIcon(
                     icon = CoreRes.drawable.ic_delete_filled,
-                    contentDescription = strings.delete,
+                    contentDescription = CoreRes.string.delete.toTextSpec().string,
                 )
             },
         )

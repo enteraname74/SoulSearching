@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.user.data.composable
 
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.RichTooltip
-import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
@@ -33,9 +33,11 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_info_outlined
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import kotlinx.coroutines.launch
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 internal fun SettingsCloudUserDataUserStorageView(
@@ -59,8 +61,8 @@ private fun SectionTitle(
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = strings.userStorageSectionTitle,
+        SoulText(
+            text = CoreRes.string.user_storage_section_title.toTextSpec(),
             style = UiConstants.Typography.bodyTitle,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
         )
@@ -79,27 +81,27 @@ private fun Total(
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.Bottom,
     ) {
-        Text(
+        SoulText(
             modifier = Modifier
                 .offset(y = 4.dp),
-            text = "${userStorage.current}",
+            text = "${userStorage.current}".toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.titleBig,
         )
-        Text(
-            text = " ${strings.gigabyteAbbreviation}",
+        SoulText(
+            text = " ${stringResource(CoreRes.string.gigabyte_abbreviation)}".toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.bodyLarge,
         )
-        Text(
+        SoulText(
             modifier = Modifier
                 .padding(horizontal = UiConstants.Spacing.medium),
-            text = "/",
+            text = "/".toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.body,
         )
-        Text(
-            text = "${userStorage.max.total} ${strings.gigabyteAbbreviation}",
+        SoulText(
+            text = "${userStorage.max.total} ${stringResource(CoreRes.string.gigabyte_abbreviation)}".toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.bodyLarge,
         )
@@ -125,10 +127,10 @@ private fun MoreInfoButton(
                 ),
                 caretShape = TooltipDefaults.caretShape(),
             ) {
-                Text(
+                SoulText(
                     text = when (storageType) {
-                        is UserStorage.StorageType.AllAvailable -> strings.userStorageAllAvailableInfo
-                        is UserStorage.StorageType.Reduced -> strings.userStorageReducedInfo
+                        is UserStorage.StorageType.AllAvailable -> CoreRes.string.user_storage_all_available_info.toTextSpec()
+                        is UserStorage.StorageType.Reduced -> CoreRes.string.user_storage_reduced_info.toTextSpec()
                     },
                     color = SoulSearchingColorTheme.colorScheme.onSecondary,
                     style = UiConstants.Typography.bodySmall,

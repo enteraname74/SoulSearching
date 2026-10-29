@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,7 +39,6 @@ import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuExpand
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuLeadingIconSpec
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedNavigationState
@@ -50,6 +48,9 @@ import com.github.enteraname74.soulsearching.feature.settings.presentation.compo
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import kotlin.time.Duration.Companion.milliseconds
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Serializable
 enum class SettingsAdvancedScreenFocusedElement {
@@ -110,7 +111,7 @@ private fun SettingsAdvancedComposable(
 
     SettingPage(
         navigateBack = { onAction(SettingsAdvancedAction.NavigateBack) },
-        title = strings.advancedSettingsTitle,
+        title = CoreRes.string.advanced_settings_title.toTextSpec(),
     ) {
         item {
             SoulMenuExpand(
@@ -120,8 +121,8 @@ private fun SettingsAdvancedComposable(
                     )
                     .clip(RoundedCornerShape(size = 10.dp))
                     .background(color = SoulSearchingColorTheme.colorScheme.secondary),
-                title = strings.reloadCoversTitle,
-                subTitle = strings.reloadCoversText,
+                title = CoreRes.string.reload_covers_title.toTextSpec(),
+                subTitle = CoreRes.string.reload_covers_text.toTextSpec(),
                 clickAction = { onAction(SettingsAdvancedAction.ToggleExpandReloadImage) },
                 isExpanded = state.isImageReloadPanelExpanded,
             ) {
@@ -133,8 +134,8 @@ private fun SettingsAdvancedComposable(
         }
         item {
             SoulMenuElement(
-                title = strings.splitMultipleArtistsTitle,
-                subTitle = strings.splitMultipleArtistsText,
+                title = CoreRes.string.split_multiple_artists_title.toTextSpec(),
+                subTitle = CoreRes.string.split_multiple_artists_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_groups_filled,
                 onClick = { onAction(SettingsAdvancedAction.ToMultipleArtists) },
             )
@@ -142,8 +143,8 @@ private fun SettingsAdvancedComposable(
         if (SoulPlatformUtils.platform != SoulPlatform.Web) {
             item {
                 SoulMenuElement(
-                    title = strings.artistCoverMethodTitle,
-                    subTitle = strings.artistCoverMethodText,
+                    title = CoreRes.string.artist_cover_method_title.toTextSpec(),
+                    subTitle = CoreRes.string.artist_cover_method_text.toTextSpec(),
                     leadIcon = CoreRes.drawable.ic_image_filled,
                     onClick = { onAction(SettingsAdvancedAction.ToArtistCoverMethod) },
                 )
@@ -160,7 +161,7 @@ private fun SettingsAdvancedComposable(
                     }
             ) {
                 SoulMenuSwitch(
-                    title = strings.activateRemoteLyricsFetchTitle,
+                    title = CoreRes.string.activate_remote_lyrics_fetch_title.toTextSpec(),
                     toggleAction = { onAction(SettingsAdvancedAction.ToggleLyricsPermission) },
                     isChecked = permissionState.isLyricsPermissionEnabled,
                     maxLines = Int.MAX_VALUE,
@@ -182,7 +183,7 @@ private fun SettingsAdvancedComposable(
                     }
             ) {
                 SoulMenuSwitch(
-                    title = strings.activateGithubReleaseFetchTitle,
+                    title = CoreRes.string.activate_github_release_fetch_title.toTextSpec(),
                     toggleAction = { onAction(SettingsAdvancedAction.ToggleGithubReleaseFetchPermission) },
                     isChecked = permissionState.isGitHubReleaseFetchPermissionEnabled,
                     maxLines = Int.MAX_VALUE,
@@ -210,7 +211,7 @@ private fun ReloadImagesContent(
         SoulMenuSwitch(
             titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
             textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-            title = strings.reloadMusicsCovers,
+            title = CoreRes.string.reload_musics_covers.toTextSpec(),
             toggleAction = { onAction(SettingsAdvancedAction.ToggleMusicsCover) },
             isChecked = state.shouldReloadSongsCovers,
             padding = PaddingValues(
@@ -222,7 +223,7 @@ private fun ReloadImagesContent(
         SoulMenuSwitch(
             titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
             textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-            title = strings.deletePlaylistsCovers,
+            title = CoreRes.string.delete_playlists_covers.toTextSpec(),
             toggleAction = { onAction(SettingsAdvancedAction.TogglePlaylistsCovers) },
             isChecked = state.shouldDeletePlaylistsCovers,
             padding = PaddingValues(
@@ -234,7 +235,7 @@ private fun ReloadImagesContent(
         SoulMenuSwitch(
             titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
             textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-            title = strings.deleteCollectionsCovers,
+            title = CoreRes.string.delete_collections_covers.toTextSpec(),
             toggleAction = { onAction(SettingsAdvancedAction.ToggleCollectionsCovers) },
             isChecked = state.shouldDeleteCollectionsCovers,
             padding = PaddingValues(
@@ -246,7 +247,7 @@ private fun ReloadImagesContent(
         SoulMenuSwitch(
             titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
             textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-            title = strings.reloadAlbumsCovers,
+            title = CoreRes.string.reload_albums_covers.toTextSpec(),
             toggleAction = { onAction(SettingsAdvancedAction.ToggleAlbumsCovers) },
             isChecked = state.shouldReloadAlbumsCovers,
             padding = PaddingValues(
@@ -258,7 +259,7 @@ private fun ReloadImagesContent(
         SoulMenuSwitch(
             titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
             textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-            title = strings.reloadArtistsCovers,
+            title = CoreRes.string.reload_artists_covers.toTextSpec(),
             toggleAction = { onAction(SettingsAdvancedAction.ToggleArtistsCovers) },
             isChecked = state.shouldReloadArtistsCovers,
             padding = PaddingValues(
@@ -279,8 +280,8 @@ private fun ReloadImagesContent(
                 onClick = { onAction(SettingsAdvancedAction.ReloadImages) },
                 colors = SoulButtonDefaults.primaryColors(),
             ) {
-                Text(
-                    text = strings.reloadCoversTitle,
+                SoulText(
+                    text = CoreRes.string.reload_covers_title.toTextSpec(),
                     textAlign = TextAlign.Center,
                     color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     fontSize = 15.sp

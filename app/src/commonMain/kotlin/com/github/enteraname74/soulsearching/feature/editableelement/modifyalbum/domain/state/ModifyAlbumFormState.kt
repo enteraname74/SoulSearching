@@ -5,10 +5,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.github.enteraname74.soulsearching.domain.model.AlbumWithMusics
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 sealed interface ModifyAlbumFormState {
     data object NoData : ModifyAlbumFormState
@@ -25,9 +26,9 @@ sealed interface ModifyAlbumFormState {
                 initialValue = initialAlbum.album.albumName,
                 updateProposedValues = updateFoundAlbums,
                 workDispatcher = workDispatcher,
-                getLabel = { strings.albumName },
+                getLabel = { CoreRes.string.album_name.toTextSpec() },
                 style = SoulTextFieldStyle.Top,
-                getError = { strings.fieldCannotBeEmpty },
+                getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next,
@@ -39,9 +40,9 @@ sealed interface ModifyAlbumFormState {
                 initialValue = initialAlbum.album.artist.artistName,
                 updateProposedValues = updateFoundArtists,
                 workDispatcher = workDispatcher,
-                getLabel = { strings.artistName },
+                getLabel = { CoreRes.string.artist_name.toTextSpec() },
                 style = SoulTextFieldStyle.Bottom,
-                getError = { strings.fieldCannotBeEmpty },
+                getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
             ),
         )
 

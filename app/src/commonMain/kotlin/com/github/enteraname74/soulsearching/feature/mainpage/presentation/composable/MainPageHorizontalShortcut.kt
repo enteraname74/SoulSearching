@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -39,7 +39,7 @@ fun MainPageHorizontalShortcut(
             val isCurrentPosition = pos == currentPage ||
                     ((pos == visibleElements.size - 1) && (currentPage >= pos))
 
-            Text(
+            SoulText(
                 modifier = Modifier
                     .clickableWithHandCursor {
                         switchPageAction(pos)

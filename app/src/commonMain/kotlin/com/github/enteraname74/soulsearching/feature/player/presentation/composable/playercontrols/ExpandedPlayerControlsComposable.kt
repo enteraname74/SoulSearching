@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +41,8 @@ import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerV
 import com.github.enteraname74.soulsearching.feature.player.ext.disabledIfNoAction
 import com.github.enteraname74.soulsearching.feature.player.ext.icon
 import org.jetbrains.compose.resources.painterResource
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun ExpandedPlayerControlsComposable(
@@ -102,13 +103,13 @@ private fun SliderMusicPositionAndDuration(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = Utils.convertDuration(currentMusicPosition),
+        SoulText(
+            text = Utils.convertDuration(currentMusicPosition).toTextSpec(),
             color = contentColor,
             style = MaterialTheme.typography.labelLarge,
         )
-        Text(
-            text = Utils.convertDuration(currentMusicDuration),
+        SoulText(
+            text = Utils.convertDuration(currentMusicDuration).toTextSpec(),
             color = contentColor,
             style = MaterialTheme.typography.labelLarge,
         )

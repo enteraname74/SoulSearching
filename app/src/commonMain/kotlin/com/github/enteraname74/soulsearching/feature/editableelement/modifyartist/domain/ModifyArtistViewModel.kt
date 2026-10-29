@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.ArtistWithMusics
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.cover.CommonCoverUseCase
@@ -33,6 +32,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class ModifyArtistViewModel(
     private val commonArtistUseCase: CommonArtistUseCase,
@@ -127,7 +128,7 @@ class ModifyArtistViewModel(
 
     fun showCoversBottomSheet() {
         _bottomSheetState.value = EditableElementCoversBottomSheet(
-            title = { strings.coversOfTheArtist },
+            title = CoreRes.string.covers_of_the_artist.toTextSpec(),
             coverStateFlow = artistAllMusicCovers,
             onCoverSelected = { cover ->
                 newCover.value = cover

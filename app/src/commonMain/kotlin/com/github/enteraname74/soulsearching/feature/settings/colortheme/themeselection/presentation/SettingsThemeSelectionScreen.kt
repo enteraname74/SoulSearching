@@ -10,7 +10,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_colorize_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingDarkLightThemes
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingTheme
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain.SettingsThemeSelectionViewModel
@@ -18,6 +17,8 @@ import com.github.enteraname74.soulsearching.feature.settings.colortheme.themese
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import com.github.enteraname74.soulsearching.theme.DefaultThemeSettings
 import org.koin.compose.viewmodel.koinViewModel
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsThemeSelectionRoute(
@@ -48,19 +49,19 @@ private fun DataScreen(
 ) {
     SettingPage(
         navigateBack = navigateBack,
-        title = strings.themeSelectionTitle
+        title = CoreRes.string.theme_selection_title.toTextSpec()
     ) {
         item {
             SoulMenuElement(
-                title = strings.extractedColorTitle,
-                subTitle = strings.extractedColorText,
+                title = CoreRes.string.extracted_color_title.toTextSpec(),
+                subTitle = CoreRes.string.extracted_color_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_colorize_filled,
                 onClick = navigateToSeed,
             )
         }
         item {
             SoulMenuSwitch(
-                title = strings.forceLightThemeTitle,
+                title = CoreRes.string.force_light_theme_title.toTextSpec(),
                 isChecked = defaultThemeSettings.forceLightTheme,
                 toggleAction = {
                     setForceLightTheme(!defaultThemeSettings.forceLightTheme)
@@ -73,7 +74,7 @@ private fun DataScreen(
         }
         item {
             SoulMenuSwitch(
-                title = strings.forceDarkThemeTitle,
+                title = CoreRes.string.force_dark_theme_title.toTextSpec(),
                 isChecked = defaultThemeSettings.forceDarkTheme,
                 toggleAction = {
                     setForceDarkTheme(!defaultThemeSettings.forceDarkTheme)

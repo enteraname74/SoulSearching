@@ -51,6 +51,7 @@ dependencies {
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
+    implementation(libs.compose.resources)
     implementation(libs.compose.ui)
     implementation(libs.coroutines.core)
     implementation(libs.jaudiotagger)

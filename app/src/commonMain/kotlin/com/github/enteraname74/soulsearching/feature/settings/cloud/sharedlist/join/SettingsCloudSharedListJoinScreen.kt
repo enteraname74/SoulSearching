@@ -11,10 +11,12 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsCloudSharedListJoinScreen(
@@ -26,7 +28,7 @@ fun SettingsCloudSharedListJoinScreen(
 
         Column {
             SoulTopBar(
-                title = strings.cloudSharedListTitle,
+                title = CoreRes.string.cloud_shared_list_title.toTextSpec(),
                 leftAction = TopBarNavigationAction(
                     onClick = actions::navigateBack,
                 ),
@@ -51,7 +53,7 @@ fun SettingsCloudSharedListJoinScreen(
                     focusManager = focusManager,
                 )
                 SoulFilledButton(
-                    text = strings.joinSharedListButton,
+                    text = CoreRes.string.join_shared_list_button.toTextSpec(),
                     enabled = state.codeField.value.isNotBlank(),
                     onClick = {
                         focusManager.clearFocus()

@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.album
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.domain.model.AlbumWithMusics
@@ -23,7 +26,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.ext.gridCoverWithEmpty
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -125,7 +127,7 @@ class AlbumBottomSheetViewModel(
             add(
                 BottomSheetRowSpec(
                     icon = CoreRes.drawable.ic_edit_filled,
-                    title = strings.modifyAlbum,
+                    title = CoreRes.string.modify_album.toTextSpec(),
                     onClick = ::toModifyAlbum,
                 )
             )
@@ -159,7 +161,7 @@ class AlbumBottomSheetViewModel(
             add(
                 BottomSheetRowSpec(
                     icon = CoreRes.drawable.ic_delete_filled,
-                    title = strings.removeFromCollection,
+                    title = CoreRes.string.remove_from_collection.toTextSpec(),
                     onClick = ::showRemoveFromCollectionDialog,
                 )
             )
@@ -169,9 +171,9 @@ class AlbumBottomSheetViewModel(
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_delete_filled,
                 title = if (albums.size == 1) {
-                    strings.deleteAlbum
+                    CoreRes.string.delete_album.toTextSpec()
                 } else {
-                    strings.deleteSelectedAlbums
+                    CoreRes.string.delete_selected_albums.toTextSpec()
                 },
                 onClick = ::showDeleteDialog,
             )
@@ -191,14 +193,14 @@ class AlbumBottomSheetViewModel(
         if (albums.size == 1) {
             val album = albums.first()
             BottomSheetTopInformation(
-                title = album.album.albumName,
-                subTitle = strings.musics(total = album.musics.filter { !it.isHidden }.size),
+                title = album.album.albumName.toTextSpec(),
+                subTitle = SoulTexts.musics(total = album.musics.filter { !it.isHidden }.size),
                 cover = album.cover,
             )
         } else {
             BottomSheetTopInformation(
-                title = strings.multipleSelection,
-                subTitle = strings.selectedElements(total = albums.size),
+                title = CoreRes.string.multiple_selection.toTextSpec(),
+                subTitle = SoulTexts.selectedElements(total = albums.size),
                 cover = albums.gridCoverWithEmpty(),
             )
         }
@@ -219,8 +221,8 @@ class AlbumBottomSheetViewModel(
 
     private fun showRemoveFromCollectionDialog() {
         dialogState.value = RemoveFromCollectionDialog(
-            title = strings.removeAlbumFromCollectionTitle,
-            text = strings.removeAlbumFromCollectionText,
+            title = CoreRes.string.remove_album_from_collection_title.toTextSpec(),
+            text = CoreRes.string.remove_album_from_collection_text.toTextSpec(),
             onConfirm = ::removeFromCollection,
             onClose = { dialogState.value = null },
         )

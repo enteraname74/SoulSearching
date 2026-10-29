@@ -14,11 +14,14 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.list.LazyRowCompat
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailState
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.in_this_collection
 
 @Composable
 fun CollectionElements(
@@ -32,7 +35,7 @@ fun CollectionElements(
         modifier = Modifier.fillMaxWidth().padding(bottom = UiConstants.Spacing.veryLarge),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
     ) {
-        PlaylistPartTitle(title = strings.inThisCollection)
+        PlaylistPartTitle(title = CoreRes.string.in_this_collection.toTextSpec())
         LazyRowCompat(
             state = lazyListState,
             modifier = Modifier.fillMaxWidth(),
@@ -51,10 +54,10 @@ fun CollectionElements(
                 BigPreviewComposable(
                     modifier = Modifier.animateItem(),
                     cover = element.cover,
-                    title = element.name,
+                    title = element.name.toTextSpec(),
                     text = when (element) {
-                        is CollectionElementPreview.Album -> element.preview.artist
-                        is CollectionElementPreview.Artist -> strings.musics(element.preview.totalMusics)
+                        is CollectionElementPreview.Album -> element.preview.artist.toTextSpec()
+                        is CollectionElementPreview.Artist -> SoulTexts.musics(element.preview.totalMusics)
                     },
                     onClick = { spec.onClick(element) },
                     imageSize = if (canShowColumnLayout) LARGE_COVER_SIZE else UiConstants.ImageSize.veryLarge,

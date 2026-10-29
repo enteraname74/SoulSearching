@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import kotlin.uuid.Uuid
 
@@ -10,9 +11,9 @@ data class SettingsCloudSharedListState(
 
 data class UiListPreview(
     val id: Uuid,
-    val date: String,
-    val allUsers: String,
-    val connectedUsers: String,
+    val date: SoulTextSpec,
+    val allUsers: SoulTextSpec,
+    val connectedUsers: SoulTextSpec,
     val onDelete: (() -> Unit)?,
     val onJoin: () -> Unit,
 )

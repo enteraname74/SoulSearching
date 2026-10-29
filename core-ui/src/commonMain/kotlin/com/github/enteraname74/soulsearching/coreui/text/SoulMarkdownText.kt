@@ -7,6 +7,7 @@ import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.mikepenz.markdown.m3.Markdown
 import com.mikepenz.markdown.m3.markdownColor
@@ -14,13 +15,13 @@ import com.mikepenz.markdown.m3.markdownTypography
 
 @Composable
 fun SoulMarkdownText(
-    text: String,
+    text: SoulTextSpec,
     modifier: Modifier = Modifier,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
     Markdown(
         modifier = modifier,
-        content = text,
+        content = text.string,
         colors = markdownColor(
             text = textColor
         ),

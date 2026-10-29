@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.composables.dialog
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
@@ -45,10 +46,10 @@ class CreatePlaylistDialog(
                 focusRequester.freeFocus()
                 onDismiss()
             },
-            confirmText = strings.create,
+            confirmText = CoreRes.string.create.toTextSpec(),
             isConfirmButtonEnabled = playlistName.isNotBlank(),
-            dismissText = strings.cancel,
-            title = strings.createPlaylistDialogTitle,
+            dismissText = CoreRes.string.cancel.toTextSpec(),
+            title = CoreRes.string.create_playlist_dialog_title.toTextSpec(),
             content = {
                 val baseHeight: Dp = 10.dp
                 var textFieldHeight: Float by rememberSaveable { mutableFloatStateOf(0f) }
@@ -66,7 +67,7 @@ class CreatePlaylistDialog(
                             },
                         value = playlistName,
                         onValueChange = { playlistName = it },
-                        labelName = strings.playlistName,
+                        labelName = CoreRes.string.playlist_name.toTextSpec(),
                         focusManager = focusManager,
                         keyboardActions = KeyboardActions(
                             onDone = {
@@ -76,7 +77,7 @@ class CreatePlaylistDialog(
                             }
                         ),
                         style = SoulTextFieldStyle.Unique,
-                        error = strings.fieldCannotBeEmpty,
+                        error = CoreRes.string.field_cannot_be_empty.toTextSpec(),
                         isInError = playlistName.isBlank(),
                         isReadOnly = false,
                     )

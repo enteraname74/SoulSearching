@@ -8,8 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun PersonalizedColorThemeCard(
@@ -25,8 +27,8 @@ fun PersonalizedColorThemeCard(
 ) {
     ColorCard(
         modifier = modifier,
-        title = strings.personalizedThemeTitle,
-        text = strings.personalizedThemeText,
+        title = CoreRes.string.personalized_theme_title.toTextSpec(),
+        text = CoreRes.string.personalized_theme_text.toTextSpec(),
         onClick = onClick,
         isSelected = isSelected,
     ) {
@@ -36,7 +38,7 @@ fun PersonalizedColorThemeCard(
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
         ) {
             SoulMenuSwitch(
-                title = strings.dynamicPlayerView,
+                title = CoreRes.string.dynamic_player_view.toTextSpec(),
                 toggleAction = { if (isSelected) togglePersonalizedDynamicPlayerTheme() },
                 isChecked = hasPlayerTheme,
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
@@ -47,7 +49,7 @@ fun PersonalizedColorThemeCard(
                 ),
             )
             SoulMenuSwitch(
-                title = strings.dynamicPlaylistView,
+                title = CoreRes.string.dynamic_playlist_view.toTextSpec(),
                 toggleAction = { if (isSelected) togglePersonalizedDynamicPlaylistTheme() },
                 isChecked = hasPlaylistTheme,
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
@@ -58,7 +60,7 @@ fun PersonalizedColorThemeCard(
                 ),
             )
             SoulMenuSwitch(
-                title = strings.dynamicOtherView,
+                title = CoreRes.string.dynamic_other_view.toTextSpec(),
                 toggleAction = { if (isSelected) togglePersonalizedDynamicOtherViewsTheme() },
                 isChecked = hasOtherViewsTheme,
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,

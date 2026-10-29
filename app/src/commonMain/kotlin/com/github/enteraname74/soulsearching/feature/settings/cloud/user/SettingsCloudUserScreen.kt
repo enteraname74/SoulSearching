@@ -14,8 +14,9 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_data_table
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_key
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsCloudUserScreen(
@@ -24,13 +25,13 @@ fun SettingsCloudUserScreen(
 ) {
     SettingPage(
         navigateBack = actions::navigateBack,
-        title = strings.cloudUserSettings,
+        title = CoreRes.string.cloud_user_settings.toTextSpec(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
             SoulMenuElement(
-                title = strings.userStorageTitle,
-                subTitle = strings.userStorageText,
+                title = CoreRes.string.user_storage_title.toTextSpec(),
+                subTitle = CoreRes.string.user_storage_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_data_table,
                 onClick = actions::toUserData,
             )
@@ -38,8 +39,8 @@ fun SettingsCloudUserScreen(
         if (state.user?.type == UserType.Admin) {
             item {
                 SoulMenuElement(
-                    title = strings.inscriptionCodeSettingsTitle,
-                    subTitle = strings.inscriptionCodeSettingsText,
+                    title = CoreRes.string.inscription_code_settings_title.toTextSpec(),
+                    subTitle = CoreRes.string.inscription_code_settings_text.toTextSpec(),
                     leadIcon = CoreRes.drawable.ic_key,
                     onClick = actions::toCode,
                 )
@@ -56,7 +57,7 @@ fun SettingsCloudUserScreen(
                 exit = shrinkVertically()
             ) {
                 SoulFilledButton(
-                    text = strings.disconnect,
+                    text = CoreRes.string.disconnect.toTextSpec(),
                     onClick = actions::disconnect
                 )
             }

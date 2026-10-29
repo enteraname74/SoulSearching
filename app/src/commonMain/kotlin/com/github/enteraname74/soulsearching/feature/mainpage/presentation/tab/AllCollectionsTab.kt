@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -9,7 +12,6 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
@@ -32,12 +34,12 @@ fun allCollectionsTab(
 
         MainPageListPaged(
             list = collections,
-            title = strings.collections,
+            title = CoreRes.string.collections.toTextSpec(),
             rightComposable = {
                 SoulIconButton(
                     onClick = mainPageViewModel::showCreateCollectionDialog,
                     icon = CoreRes.drawable.ic_add,
-                    contentDescription = strings.createCollectionDialogTitle,
+                    contentDescription = CoreRes.string.create_collection_dialog_title.toTextSpec().string,
                     size = UiConstants.ImageSize.medium,
                 )
             },
@@ -51,14 +53,14 @@ fun allCollectionsTab(
             sortDirection = state.sortDirection,
             key = { it?.id },
             contentType = ALL_COLLECTIONS_CONTENT_TYPE,
-            emptyTitle = strings.emptyCollections,
-            emptyDescription = strings.emptyCollectionsExplanations,
+            emptyTitle = CoreRes.string.empty_collections.toTextSpec(),
+            emptyDescription = CoreRes.string.empty_collections_explanations.toTextSpec(),
         ) { collection ->
             BigPreviewComposable(
                 modifier = Modifier.animateItem(),
                 cover = collection.cover,
-                title = collection.name,
-                text = strings.musics(collection.totalMusics),
+                title = collection.name.toTextSpec(),
+                text = SoulTexts.musics(collection.totalMusics),
                 imageSize = null,
                 onClick = { navigateToCollection(collection.id) },
                 onLongClick = {

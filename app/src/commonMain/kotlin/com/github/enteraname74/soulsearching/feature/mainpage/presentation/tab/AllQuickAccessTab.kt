@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -7,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.AlbumPreview
 import com.github.enteraname74.soulsearching.domain.model.ArtistPreview
@@ -37,12 +39,12 @@ fun allQuickAccessTab(
 
         MainPageList(
             list = quickAccessState.allQuickAccess,
-            title = strings.quickAccess,
+            title = CoreRes.string.quick_access.toTextSpec(),
             isUsingSort = false,
             key = null,
             contentType = { ALL_QUICK_ACCESS_CONTENT_TYPE },
-            emptyTitle = strings.emptyQuickAccess,
-            emptyDescription = strings.emptyQuickAccessExplanations,
+            emptyTitle = CoreRes.string.empty_quick_access.toTextSpec(),
+            emptyDescription = CoreRes.string.empty_quick_access_explanations.toTextSpec(),
         ) { element ->
             element.ToPreview(
                 modifier = Modifier
@@ -70,8 +72,8 @@ private fun QuickAccessible.ToPreview(
             BigPreviewComposable(
                 modifier = modifier,
                 cover = this.cover,
-                title = this.name,
-                text = this.artist,
+                title = this.name.toTextSpec(),
+                text = this.artist.toTextSpec(),
                 imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }
@@ -82,8 +84,8 @@ private fun QuickAccessible.ToPreview(
             BigPreviewComposable(
                 modifier = modifier,
                 cover = this.cover,
-                title = this.name,
-                text = strings.musics(total = this.totalMusics),
+                title = this.name.toTextSpec(),
+                text = SoulTexts.musics(total = this.totalMusics),
                 imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }
@@ -94,8 +96,8 @@ private fun QuickAccessible.ToPreview(
             BigPreviewComposable(
                 modifier = modifier,
                 cover = cover,
-                title = name,
-                text = strings.musics(total = totalMusics),
+                title = name.toTextSpec(),
+                text = SoulTexts.musics(total = totalMusics),
                 imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) },
@@ -106,8 +108,8 @@ private fun QuickAccessible.ToPreview(
             BigPreviewComposable(
                 modifier = modifier,
                 cover = cover,
-                title = name,
-                text = album.albumName,
+                title = name.toTextSpec(),
+                text = album.albumName.toTextSpec(),
                 imageSize = null,
                 onClick = {
                     val musicListSingleton = arrayListOf(this@ToPreview)
@@ -130,8 +132,8 @@ private fun QuickAccessible.ToPreview(
             BigPreviewComposable(
                 modifier = modifier,
                 cover = this.cover,
-                title = this.name,
-                text = strings.musics(total = this.totalMusics),
+                title = this.name.toTextSpec(),
+                text = SoulTexts.musics(total = this.totalMusics),
                 imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }

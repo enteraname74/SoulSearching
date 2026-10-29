@@ -14,7 +14,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -38,16 +37,19 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.keyboard.blockGlobalKeyboardShortcutsWhileFocused
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SoulTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    error: String?,
+    error: SoulTextSpec?,
     isInError: Boolean,
     isReadOnly: Boolean,
-    labelName: String?,
+    labelName: SoulTextSpec?,
     focusManager: FocusManager,
     modifier: Modifier = Modifier,
     colors: SoulTextFieldColors = SoulTextFieldDefaults.secondaryColors(),
@@ -143,9 +145,10 @@ fun SoulTextField(
                                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
                             ) {
                                 labelName?.let {
-                                    Text(
+                                    SoulText(
                                         text = it,
-                                        style = UiConstants.Typography.bodyVerySmall.copy(color = colors.labelColor),
+                                        color = colors.labelColor,
+                                        style = UiConstants.Typography.bodyVerySmall,
                                     )
                                 }
                                 innerTextField()
@@ -154,9 +157,10 @@ fun SoulTextField(
                                     exit = slideOutVertically(),
                                     visible = isInError,
                                 ) {
-                                    Text(
-                                        text = error.orEmpty(),
-                                        style = UiConstants.Typography.bodyVerySmall.copy(color = colors.labelColor),
+                                    SoulText(
+                                        text = error ?: "".toTextSpec(),
+                                        color = colors.labelColor,
+                                        style = UiConstants.Typography.bodyVerySmall,
                                     )
                                 }
                             }
@@ -208,8 +212,8 @@ class SoulTextFieldHolderImpl(
     id: String,
     initialValue: String = "",
     isValid: (value: String) -> Boolean = { true },
-    getLabel: @Composable () -> String?,
-    getError: @Composable () -> String?,
+    getLabel: @Composable () -> SoulTextSpec?,
+    getError: @Composable () -> SoulTextSpec?,
     getColors: @Composable () -> SoulTextFieldColors = { SoulTextFieldDefaults.secondaryColors() },
     private val isReadOnly: Boolean = false,
     private val leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,

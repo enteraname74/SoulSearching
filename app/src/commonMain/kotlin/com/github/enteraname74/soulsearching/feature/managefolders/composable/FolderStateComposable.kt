@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.managefolders.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,10 +11,12 @@ import com.github.enteraname74.soulsearching.coreui.image.SoulSearchingLogo
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 @Composable
 fun FolderStateComposable(
-    stateTitle: String
+    stateTitle: SoulTextSpec
 ) {
     val windowSize = rememberWindowSize()
     when {
@@ -28,7 +29,7 @@ fun FolderStateComposable(
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 SoulSearchingLogo()
-                Text(
+                SoulText(
                     text = stateTitle,
                     color = SoulSearchingColorTheme.colorScheme.onPrimary
                 )
@@ -46,7 +47,7 @@ fun FolderStateComposable(
                     SoulSearchingLogo()
                 }
                 Box(modifier = Modifier.align(Alignment.Center)) {
-                    Text(
+                    SoulText(
                         textAlign = TextAlign.Center,
                         text = stateTitle,
                         color = SoulSearchingColorTheme.colorScheme.onPrimary

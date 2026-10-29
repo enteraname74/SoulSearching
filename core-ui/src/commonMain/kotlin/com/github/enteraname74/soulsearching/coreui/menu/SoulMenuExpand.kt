@@ -21,12 +21,13 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_arrow_dropdown_filled
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SoulMenuExpand(
-    title: String,
-    subTitle: String,
+    title: SoulTextSpec,
+    subTitle: SoulTextSpec,
     clickAction: () -> Unit,
     modifier: Modifier = Modifier,
     clickEnabled: Boolean = true,

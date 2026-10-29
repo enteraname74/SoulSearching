@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,7 +53,6 @@ import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
@@ -72,6 +70,13 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import org.jetbrains.compose.resources.DrawableResource
 import kotlin.time.Duration
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_edit
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_play
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_shuffle
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_titles
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 @Composable
 fun PlaylistLargeView(
@@ -140,7 +145,7 @@ fun PlaylistLargeView(
         }
         if (musics.itemCount > 0) {
             item {
-                PlaylistPartTitle(title = strings.elementDetailTitles)
+                PlaylistPartTitle(title = CoreRes.string.element_detail_titles.toTextSpec())
             }
         }
         items(
@@ -231,7 +236,7 @@ private fun Header(
                         .fillMaxHeight()
                         .padding(horizontal = UiConstants.Spacing.large),
                 ) {
-                    Text(
+                    SoulText(
                         modifier = Modifier.padding(
                             bottom = UiConstants.Spacing.medium,
                         ),
@@ -242,7 +247,7 @@ private fun Header(
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 15.sp
                     )
-                    Text(
+                    SoulText(
                         color = SoulSearchingColorTheme.colorScheme.onPrimary,
                         text = data.title,
                         maxLines = 2,
@@ -251,7 +256,7 @@ private fun Header(
                         fontSize = PLAYLIST_TITLE_SIZE,
                         lineHeight = PLAYLIST_TITLE_LINE_HEIGHT,
                     )
-                    Text(
+                    SoulText(
                         modifier = Modifier.optionalClickable(data.onSubtitleClicked),
                         color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                         text = data.subTitle,
@@ -285,7 +290,7 @@ private fun Actions(
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
     ) {
         Button(
-            title = strings.elementDetailPlay,
+            title = CoreRes.string.element_detail_play.toTextSpec(),
             icon = CoreRes.drawable.ic_play_filled,
             action = { data.onPlay(null) },
             colors = SoulButtonDefaults.colors(
@@ -294,13 +299,13 @@ private fun Actions(
             )
         )
         Button(
-            title = strings.elementDetailShuffle,
+            title = CoreRes.string.element_detail_shuffle.toTextSpec(),
             icon = CoreRes.drawable.ic_shuffle,
             action = data.onShuffle,
         )
         data.onEdit?.let {
             Button(
-                title = strings.elementDetailEdit,
+                title = CoreRes.string.element_detail_edit.toTextSpec(),
                 icon = CoreRes.drawable.ic_edit_filled,
                 action = it,
             )
@@ -310,7 +315,7 @@ private fun Actions(
 
 @Composable
 private fun Button(
-    title: String,
+    title: SoulTextSpec,
     icon: DrawableResource,
     action: () -> Unit,
     colors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
@@ -331,7 +336,7 @@ private fun Button(
                 icon = icon,
                 color = colors.contentColor
             )
-            Text(
+            SoulText(
                 text = title,
                 style = UiConstants.Typography.body.copy(
                     fontWeight = FontWeight.Medium,

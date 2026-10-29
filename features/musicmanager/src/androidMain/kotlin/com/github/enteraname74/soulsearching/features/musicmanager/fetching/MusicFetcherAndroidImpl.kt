@@ -7,7 +7,6 @@ import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.Playlist
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.features.musicmanager.ext.toMusic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +14,9 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cannot_retrieve_songs
 
 /**
  * Class handling music fetching for Android devices.
@@ -57,7 +59,7 @@ internal class MusicFetcherAndroidImpl(
         when (cursor?.count) {
             null -> {
                 feedbackPopUpManager.showFeedback(
-                    feedback = strings.cannotRetrieveSongs
+                    feedback = CoreRes.string.cannot_retrieve_songs.toTextSpec()
                 )
             }
 
@@ -95,7 +97,7 @@ internal class MusicFetcherAndroidImpl(
             null -> {
                 CoroutineScope(Dispatchers.Main).launch {
                     feedbackPopUpManager.showFeedback(
-                        feedback = strings.cannotRetrieveSongs
+                        feedback = CoreRes.string.cannot_retrieve_songs.toTextSpec()
                     )
                 }
             }

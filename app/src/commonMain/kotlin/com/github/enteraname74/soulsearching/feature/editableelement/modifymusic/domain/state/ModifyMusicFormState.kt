@@ -8,9 +8,10 @@ import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.*
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 sealed interface ModifyMusicFormState {
     data object NoData : ModifyMusicFormState
@@ -30,9 +31,9 @@ sealed interface ModifyMusicFormState {
                     id = MUSIC_NAME,
                     initialValue = savedData[MUSIC_NAME] ?: initialMusic.name,
                     isValid = { it.isNotBlank() },
-                    getLabel = { strings.musicName },
+                    getLabel = { CoreRes.string.music_name.toTextSpec() },
                     style = SoulTextFieldStyle.Top,
-                    getError = { strings.fieldCannotBeEmpty },
+                    getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
                     onChange = {
                         onFieldChange(MUSIC_NAME, it)
                     },
@@ -49,9 +50,9 @@ sealed interface ModifyMusicFormState {
                     initialValue = savedData[ALBUM_NAME] ?: initialMusic.album.albumName,
                     updateProposedValues = updateFoundAlbums,
                     workDispatcher = workDispatcher,
-                    getLabel = { strings.albumName },
+                    getLabel = { CoreRes.string.album_name.toTextSpec() },
                     style = SoulTextFieldStyle.Body,
-                    getError = { strings.fieldCannotBeEmpty },
+                    getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
                     onChange = {
                         onFieldChange(ALBUM_NAME, it)
                     },
@@ -66,9 +67,9 @@ sealed interface ModifyMusicFormState {
                     id = POSITION_IN_ALBUM,
                     isValid = { it.toIntOrNull() != null || it.isBlank() },
                     initialValue = savedData[POSITION_IN_ALBUM] ?: initialMusic.albumPosition?.toString().orEmpty(),
-                    getLabel = { strings.musicAlbumPosition },
+                    getLabel = { CoreRes.string.music_album_position.toTextSpec() },
                     style = SoulTextFieldStyle.Body,
-                    getError = { strings.fieldMustBeANumber },
+                    getError = { CoreRes.string.field_must_be_anumber.toTextSpec() },
                     onChange = {
                         onFieldChange(POSITION_IN_ALBUM, it)
                     },
@@ -82,7 +83,7 @@ sealed interface ModifyMusicFormState {
                 SoulDropdownTextFieldHolderImpl(
                     id = ALBUM_ARTIST,
                     initialValue = savedData[ALBUM_ARTIST] ?: initialMusic.album.artist.artistName,
-                    getLabel = { strings.albumArtistName },
+                    getLabel = { CoreRes.string.album_artist_name.toTextSpec() },
                     style = SoulTextFieldStyle.Body,
                     getError = { null },
                     onChange = {
@@ -107,7 +108,7 @@ sealed interface ModifyMusicFormState {
                         initialValue = savedData[artistId] ?: artist.artistName,
                         updateProposedValues = updateFoundArtists,
                         workDispatcher = workDispatcher,
-                        getLabel = { strings.artistName },
+                        getLabel = { CoreRes.string.artist_name.toTextSpec() },
                         style = if (index == artistsOfMusic.lastIndex) {
                             SoulTextFieldStyle.Bottom
                         } else {
@@ -124,7 +125,7 @@ sealed interface ModifyMusicFormState {
                                 imeAction = ImeAction.Next,
                             )
                         },
-                        getError = { strings.fieldCannotBeEmpty },
+                        getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
                         leadingIconSpec = if (artistsOfMusic.size == 1) {
                             null
                         } else {

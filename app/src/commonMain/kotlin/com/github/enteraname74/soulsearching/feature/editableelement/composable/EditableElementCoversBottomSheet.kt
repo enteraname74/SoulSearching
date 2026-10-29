@@ -31,10 +31,11 @@ import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.DrawableResource
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 class EditableElementCoversBottomSheet(
     private val coverStateFlow: StateFlow<CoverListState>,
-    private val title: @Composable () -> String,
+    private val title: SoulTextSpec,
     private val onCoverSelected: (ByteArray) -> Unit,
     private val onCoverFromStorageSelected: (imageFile: PlatformFile) -> Unit,
     private val onClose: () -> Unit,
@@ -75,7 +76,7 @@ class EditableElementCoversBottomSheet(
                 )
             ) {
                 SoulTopBar(
-                    title = title(),
+                    title = title,
                     colors = SoulTopBarDefaults.secondary(),
                     withStatusBarPadding = bottomSheetHeight > windowHeightBeforeBarPadding,
                     leftAction = TopBarNavigationAction(
