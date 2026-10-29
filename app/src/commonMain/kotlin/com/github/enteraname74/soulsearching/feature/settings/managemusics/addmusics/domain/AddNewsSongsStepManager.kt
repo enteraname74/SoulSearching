@@ -14,11 +14,10 @@ class AddNewsSongsStepManager {
 }
 
 sealed interface AddNewsSongsStepState {
-    data object Fetching: AddNewsSongsStepState
-    data object SongsSaved:
-       AddNewsSongsStepState
+    data object Fetching : AddNewsSongsStepState
+    data object SongsSaved : AddNewsSongsStepState
 
     data class Data(
         val fetchedMusics: List<SelectableMusicItem>,
-    ): AddNewsSongsStepState
+    ) : AddNewsSongsStepState
 }

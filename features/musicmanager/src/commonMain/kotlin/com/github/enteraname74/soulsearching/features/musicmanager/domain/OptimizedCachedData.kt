@@ -21,7 +21,7 @@ data class OptimizedCachedData(
             musicsByPath = commonMusicUseCase
                 .getAll()
                 .first()
-                .associateBy { it.localPath }
+                .associateBy { it.path }
                 .filterKeys { it != null }
                 as HashMap<String, Music>,
         )
