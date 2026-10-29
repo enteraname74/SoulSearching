@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Values shared by every language (interface defaults in Strings) -->
+
+    <string name="playlists">歌单</string>
+    <string name="albums">专辑</string>
+    <string name="ok">确定</string>
+    <string name="glacier_theme">冰川</string>
+    <string name="passion_theme">激情</string>
+    <string name="playlist_detail_title">歌单</string>
+    <string name="collection_detail_title">合集</string>
+    <string name="album_detail_title">专辑</string>
+
+    <string name="app_logo">应用图标</string>
+    <string name="cannot_retrieve_songs">无法获取歌曲！</string>
+    <string name="no_elements">暂无内容</string>
+    <string name="empty_quick_access">快捷访问中暂无内容</string>
+    <string name="empty_folders">暂无文件夹</string>
+    <string name="empty_albums">暂无专辑</string>
+    <string name="empty_musics">暂无歌曲</string>
+    <string name="empty_artists">暂无艺人</string>
+    <string name="empty_playlists">暂无歌单</string>
+    <string name="empty_months">暂无月份</string>
+    <string name="empty_collections">暂无合集</string>
+    <string name="empty_musics_explanations">在设置中添加歌曲后即可在此查看</string>
+    <string name="empty_albums_explanations">在设置中添加歌曲后即可在此查看你的专辑</string>
+    <string name="empty_artists_explanations">在设置中添加歌曲后即可在此查看你的艺人</string>
+    <string name="empty_folders_explanations">在设置中添加歌曲后即可在此查看你的文件夹</string>
+    <string name="empty_playlists_explanations">点击“+”按钮创建歌单</string>
+    <string name="empty_quick_access_explanations">将歌曲、专辑、艺人或歌单添加到快捷访问后即会显示在此处</string>
+    <string name="empty_months_explanations">在设置中添加歌曲后即可在此按添加月份分组查看</string>
+    <string name="empty_collections_explanations">将相似的专辑和艺人归入一个合集。为艺人或专辑添加新歌曲时，这些歌曲会自动加入其关联的合集</string>
+    <string name="back_button">返回按钮</string>
+    <string name="header_bar_right_button">标题栏右侧按钮</string>
+    <string name="image">图片</string>
+    <string name="more_button">更多按钮</string>
+    <string name="more">更多</string>
+    <string name="settings_access_button">设置入口按钮</string>
+    <string name="create_playlist_button">创建歌单按钮</string>
+    <string name="shuffle_button">随机播放按钮</string>
+    <string name="favorite">收藏</string>
+    <string name="in_this_collection">此合集中</string>
+    <string name="folders">文件夹</string>
+    <string name="artists">艺人</string>
+    <string name="by_folders">按文件夹</string>
+    <string name="by_months">按月份</string>
+    <string name="musics">歌曲</string>
+    <string name="quick_access">快捷访问</string>
+    <string name="missing_permissions">你必须授予应用所需的全部权限，应用才能正常运行。</string>
+    <string name="played_list">播放列表</string>
+    <string name="current_song">当前歌曲</string>
+    <string name="lyrics">歌词</string>
+    <string name="activate_remote_lyrics_fetch_title">启用在线歌词获取</string>
+    <!-- %1$s: lyrics_provider_name -->
+    <string name="activate_remote_lyrics_fetch_text">当歌曲文件中没有歌词时，应用需要你的许可才能通过外部服务（%1$s）搜索当前歌曲的歌词。</string>
+    <!-- %1$s: lyrics_provider_name -->
+    <string name="activate_remote_lyrics_fetch_hint">当歌曲文件中没有歌词时，应用会根据歌曲名、专辑和艺人从在线来源（%1$s）查找歌词。</string>
+    <string name="no_lyrics_found">未找到此歌曲的歌词</string>
+    <string name="local_lyrics_provider">来自音乐文件元数据的歌词</string>
+    <string name="remote_lyrics_provider">由 LrcLib 提供的歌词</string>
+    <string name="complete_application_title">功能完整的音乐应用</string>
+    <string name="complete_application_text">畅听你的所有歌曲、专辑、艺人和歌单。</string>
+    <string name="quick_access_title">把最爱放在手边。</string>
+    <string name="quick_access_text">通过快捷访问，你可以轻松打开最喜欢的专辑或歌曲等。</string>
+    <string name="modify_elements_title">编辑你的音乐信息</string>
+    <string name="modify_elements_text">你可以编辑专辑、歌曲、艺人等的信息…</string>
+    <string name="dynamic_theme_feature_title">动态主题</string>
+    <string name="dynamic_theme_feature_text">Soul Searching 可以根据当前播放的歌曲为你提供动态主题。</string>
+    <string name="manage_folders_title">管理使用的文件夹</string>
+    <string name="manage_folders_text">管理用于获取歌曲的文件夹。</string>
+    <string name="add_new_musics_title">添加新歌曲</string>
+    <string name="add_new_musics_text">你可以轻松从设备中添加新歌曲。</string>
+    <string name="personalize_main_page_title">按你的心意定制</string>
+    <string name="personalize_main_page_text">不需要快捷访问？还是想要一个帮助你快速跳转到主页各部分的导航栏？你可以在应用设置中实现这些愿望。</string>
+    <string name="manage_album_view_title">专辑视图</string>
+    <string name="manage_album_view_text">管理专辑视图</string>
+    <string name="manage_player_title">播放器</string>
+    <string name="manage_player_text">管理播放器</string>
+    <string name="player_swipe_title">滑动歌曲封面以在播放列表中切换上一首或下一首</string>
+    <string name="player_rewind_title">播放上一首前先将当前歌曲重新播放</string>
+    <string name="player_minimised_progression_title">在迷你播放器上显示当前歌曲的播放进度</string>
+    <string name="soul_mix_settings_title">Soul Mix 从每个文件夹获取的歌曲数量</string>
+    <string name="searching_songs_from_your_device">正在搜索设备中的歌曲…</string>
+    <string name="search_for_musics">搜索歌曲</string>
+    <string name="search_all">搜索歌曲、艺人、专辑、歌单…</string>
+    <string name="sort_by_added_date">添加日期</string>
+    <string name="sort_by_most_listened">最常收听</string>
+    <string name="sort_by_name">字母顺序</string>
+    <string name="remove_from_quick_access">从快捷访问中移除</string>
+    <string name="remove_from_playlist">从歌单中移除</string>
+    <string name="remove_from_played_list">从播放列表中移除</string>
+    <string name="remove_from_collection">从合集中移除</string>
+    <string name="add_to_quick_access">添加到快捷访问</string>
+    <string name="add_to_playlist">添加到歌单</string>
+    <string name="add_to_collection">添加到合集</string>
+    <string name="create">创建</string>
+    <string name="cancel">取消</string>
+    <string name="delete">删除</string>
+    <string name="remove">移除</string>
+    <string name="soul_mix_info_dialog_text">收听从你的每个文件夹中选取的歌曲混合！\n你可以在设置中设定从每个文件夹获取的歌曲数量。</string>
+    <string name="create_playlist_dialog_title">新建歌单</string>
+    <string name="create_collection_dialog_title">新建合集</string>
+    <string name="playlist_name">歌单名称</string>
+    <string name="collection_name">合集名称</string>
+    <string name="name_already_exists">该名称已存在</string>
+    <string name="music_name">歌曲名称</string>
+    <string name="music_album_position">在专辑中的位置</string>
+    <string name="album_name">专辑名称</string>
+    <string name="album_artist_name">专辑艺人名称</string>
+    <string name="artist_name">艺人名称</string>
+    <string name="playlist_cover">歌单封面</string>
+    <string name="collection_cover">合集封面</string>
+    <string name="album_cover">专辑封面</string>
+    <string name="artist_cover">艺人封面</string>
+    <string name="playlist_information">歌单信息</string>
+    <string name="collection_information">合集信息</string>
+    <string name="music_information">歌曲信息</string>
+    <string name="music_path">歌曲路径：</string>
+    <string name="music_file_cover">文件封面</string>
+    <string name="music_app_cover">应用封面</string>
+    <string name="cover_selection">选择封面</string>
+    <string name="select_top_start_cover_image">选择左上角封面图片</string>
+    <string name="select_top_end_cover_image">选择右上角封面图片</string>
+    <string name="select_bottom_start_cover_image">选择左下角封面图片</string>
+    <string name="select_bottom_end_cover_image">选择右下角封面图片</string>
+    <string name="artist_information">艺人信息</string>
+    <string name="album_information">专辑信息</string>
+    <string name="add_artist">添加艺人</string>
+    <string name="delete_music_dialog_title">确定要删除这首歌曲吗？</string>
+    <string name="delete_music_dialog_text">它将从应用中移除。</string>
+    <string name="delete_album_dialog_title">确定要删除这张专辑吗？</string>
+    <string name="delete_playlist_dialog_title">确定要删除这个歌单吗？</string>
+    <string name="delete_collection_dialog_title">确定要删除这个合集吗？</string>
+    <string name="delete_artist_dialog_title">确定要删除这位艺人吗？</string>
+    <string name="delete_selected_musics_dialog_title">确定要删除所选歌曲吗？</string>
+    <string name="delete_selected_musics_dialog_text">它们将从应用中移除。</string>
+    <string name="delete_folder_musics_dialog_title">确定要删除这个文件夹吗？</string>
+    <string name="delete_folder_musics_dialog_text">此文件夹中的所有歌曲都将从应用中移除，且以后获取歌曲时将不再使用此文件夹。</string>
+    <string name="delete_selected_folders_musics_dialog_title">确定要删除所选文件夹吗？</string>
+    <string name="delete_selected_folders_musics_dialog_text">这些文件夹中的所有歌曲都将从应用中移除，且以后获取歌曲时将不再使用这些文件夹。</string>
+    <string name="delete_month_musics_dialog_title">确定要删除这个月份的歌曲吗？</string>
+    <string name="delete_month_musics_dialog_text">这个月份的所有歌曲都将从应用中移除。</string>
+    <string name="delete_selected_months_musics_dialog_title">确定要删除所选月份的歌曲吗？</string>
+    <string name="delete_selected_months_musics_dialog_text">这些月份的所有歌曲都将从应用中移除。</string>
+    <string name="delete_selected_albums_dialog_title">确定要删除所选专辑吗？</string>
+    <string name="delete_selected_artists_dialog_title">确定要删除所选艺人吗？</string>
+    <string name="delete_selected_playlists_dialog_title">确定要删除所选歌单吗？</string>
+    <string name="delete_selected_collections_dialog_title">确定要删除所选合集吗？</string>
+    <string name="remove_music_from_playlist_title">确定要从此歌单中移除这首歌曲吗？</string>
+    <string name="remove_music_from_playlist_text">这首歌曲将从此歌单中移除，但不会从应用中删除。</string>
+    <string name="remove_selected_music_from_playlist_title">确定要从此歌单中移除所选歌曲吗？</string>
+    <string name="remove_selected_music_from_playlist_text">所选歌曲将从此歌单中移除，但不会从应用中删除。</string>
+    <string name="remove_artist_from_collection_title">要从合集中移除这位艺人吗？</string>
+    <string name="remove_artist_from_collection_text">这位艺人将从此合集中移除，但不会从应用中删除。</string>
+    <string name="remove_album_from_collection_title">要从合集中移除这张专辑吗？</string>
+    <string name="remove_album_from_collection_text">这张专辑将从此合集中移除，但不会从应用中删除。</string>
+    <string name="modify_album">编辑此专辑</string>
+    <string name="modify_artist">编辑此艺人</string>
+    <string name="modify_music">编辑此歌曲</string>
+    <string name="modify_playlist">编辑此歌单</string>
+    <string name="modify_collection">编辑此合集</string>
+    <string name="covers_of_the_album">专辑内歌曲的封面</string>
+    <string name="covers_of_the_artist">艺人歌曲的封面</string>
+    <string name="covers_of_the_playlist">歌单内歌曲的封面</string>
+    <string name="covers_of_the_collection">合集内歌曲的封面</string>
+    <string name="covers_of_song_album">歌曲所属专辑中的封面</string>
+    <string name="no_available_covers">暂无可用封面</string>
+    <string name="delete_album">删除此专辑</string>
+    <string name="delete_artist">删除此艺人</string>
+    <string name="delete_music">删除此歌曲</string>
+    <string name="delete_playlist">删除此歌单</string>
+    <string name="delete_collection">删除此合集</string>
+    <string name="delete_selected_albums">删除所选专辑</string>
+    <string name="delete_selected_artists">删除所选艺人</string>
+    <string name="delete_selected_playlists">删除所选歌单</string>
+    <string name="delete_selected_collections">删除所选合集</string>
+    <string name="delete_selected_musics">删除所选歌曲</string>
+    <string name="delete_folder_musics">删除文件夹</string>
+    <string name="delete_selected_folders_musics">删除所选文件夹</string>
+    <string name="delete_month_musics">删除该月份</string>
+    <string name="delete_selected_months_musics">删除所选月份</string>
+    <string name="play_next">下一首播放</string>
+    <string name="add_to_queue">加入播放列表</string>
+    <string name="personalized_theme_title">个性化主题</string>
+    <string name="personalized_theme_text">在以下位置应用动态主题：</string>
+    <string name="dynamic_player_view">播放器界面</string>
+    <string name="dynamic_playlist_view">歌单、专辑、艺人、月份和文件夹界面</string>
+    <string name="dynamic_other_view">其他界面</string>
+    <string name="settings">设置</string>
+    <string name="advanced_settings_title">高级设置</string>
+    <string name="advanced_settings_text">管理应用中使用的封面</string>
+    <string name="reload_covers_title">重新加载封面</string>
+    <string name="reload_covers_text">从文件数据重新加载封面</string>
+    <string name="reload_musics_covers">重新加载歌曲封面</string>
+    <string name="delete_playlists_covers">删除歌单封面</string>
+    <string name="delete_collections_covers">删除合集封面</string>
+    <string name="reload_albums_covers">重新加载专辑封面</string>
+    <string name="reload_artists_covers">重新加载艺人封面</string>
+    <string name="split_multiple_artists_title">拆分艺人</string>
+    <string name="split_multiple_artists_text">选择并拆分由多位艺人组成的艺人</string>
+    <string name="artist_cover_method_title">艺人封面来源</string>
+    <string name="artist_cover_method_text">选择艺人封面的获取方式</string>
+    <string name="activate_artist_cover_method">启用按路径获取</string>
+    <string name="artist_cover_method_dynamic_name_title">艺人名称处理</string>
+    <string name="cover_folder_retriever_path_selection_title">选择上级文件夹</string>
+    <string name="cover_folder_retriever_path_selection_no_path_selected">未选择文件夹</string>
+    <string name="cover_folder_retriever_file_extension">图片扩展名</string>
+    <string name="cover_folder_retriever_folder_title">动态文件夹</string>
+    <string name="cover_folder_retriever_folder_text">文件夹名称与艺人名称一致</string>
+    <string name="cover_folder_retriever_folder_incomplete">所需数据不完整</string>
+    <string name="cover_folder_retriever_rules_white_space">替换空格</string>
+    <string name="cover_folder_retriever_rules_replacement">替换为</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_uppercase">大写</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_no_treatment">不处理</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_lowercase">小写</string>
+    <string name="cover_folder_retriever_file_title">动态封面文件</string>
+    <string name="cover_folder_retriever_file_text">图片文件名与艺人名称一致</string>
+    <string name="cover_folder_retriever_dynamic_file_title">封面文件名</string>
+    <string name="activate_github_release_fetch_title">启用从 GitHub 检查新版本</string>
+    <string name="activate_github_release_fetch_text">当 GitHub 上有新版本时，是否要在应用内收到通知？</string>
+    <string name="activate_github_release_fetch_hint">当 GitHub 上有新版本时，你将在应用内收到通知。</string>
+    <string name="go_to_settings">前往设置</string>
+    <string name="manage_musics_title">管理歌曲</string>
+    <string name="manage_musics_text">编辑和添加新歌曲，管理使用的文件夹</string>
+    <string name="modify_music_file_title">修改设备上的文件</string>
+    <string name="modify_music_file_text">编辑歌曲信息时会同时修改设备上文件的元数据</string>
+    <string name="color_theme_title">颜色主题</string>
+    <string name="color_theme_text">动态主题、个性化主题</string>
+    <string name="personalization_title">个性化</string>
+    <string name="personalization_text">管理播放器和主页视图</string>
+    <string name="about_title">关于 Soul Searching</string>
+    <string name="about_text">开发者、应用版本名称</string>
+    <string name="new_release_available_title">有新版本可用！</string>
+    <string name="statistics_title">统计</string>
+    <string name="statistics_text">你的播放统计</string>
+    <string name="most_played_songs">最常播放的歌曲（播放次数）</string>
+    <string name="most_listened_songs">最常播放的歌曲（收听时长）</string>
+    <string name="listening_time">总收听时长</string>
+    <string name="no_data_on_this_period">该时间段内暂无数据</string>
+    <string name="most_played_albums">最常播放的专辑</string>
+    <string name="most_played_artists">最常播放的艺人</string>
+    <string name="artists_with_most_songs">歌曲最多的艺人</string>
+    <string name="most_played_playlists">最常播放的歌单</string>
+    <string name="theme_selection_title">主题</string>
+    <string name="theme_selection_text">选择应用的主题</string>
+    <string name="force_dark_theme_title">强制深色主题</string>
+    <string name="force_light_theme_title">强制浅色主题</string>
+    <string name="steel_theme">钢铁</string>
+    <string name="dusk_theme">黄昏</string>
+    <string name="greenery_theme">绿野</string>
+    <string name="tree_bark_theme">树皮</string>
+    <string name="extracted_color_title">从封面提取的颜色</string>
+    <string name="extracted_color_text">设置用于生成动态颜色主题的种子颜色</string>
+    <string name="extracted_color_info">如果无法提取所选颜色，将使用主色调。</string>
+    <string name="main_page_title">主页</string>
+    <string name="main_page_text">管理主页视图</string>
+    <string name="show_quick_access">显示快捷访问</string>
+    <string name="show_playlists">显示歌单</string>
+    <string name="show_collections">显示合集</string>
+    <string name="collections">合集</string>
+    <string name="show_albums">显示专辑</string>
+    <string name="show_artists">显示艺人</string>
+    <string name="manage_musics_view_text">管理歌曲视图</string>
+    <string name="show_musics_by_folders">按文件夹显示歌曲</string>
+    <string name="show_musics_by_months">按月份显示歌曲</string>
+    <string name="show_album_track_number">显示曲目编号</string>
+    <string name="initial_section_title">启动时显示的分区</string>
+    <string name="initial_section_text">选择应用启动时显示的分区</string>
+    <string name="use_vertical_access_bar_title">使用垂直导航栏</string>
+    <string name="use_horizontal_access_bar_text">使用水平导航栏</string>
+    <string name="used_folders_title">使用的文件夹</string>
+    <string name="used_folders_text">设置应用中使用的文件夹</string>
+    <string name="fetching_folders">正在获取文件夹</string>
+    <string name="add_musics_title">添加歌曲</string>
+    <string name="add_musics_text">将设备中的新歌曲添加到应用</string>
+    <string name="deleting_musics_from_unselected_folders">正在删除未选文件夹中的歌曲…</string>
+    <string name="dynamic_theme_title">动态主题</string>
+    <string name="dynamic_theme_text">根据当前播放歌曲的专辑封面生成全局颜色主题</string>
+    <string name="system_theme_title">系统主题</string>
+    <string name="system_theme_text">根据系统颜色模式设置全局颜色主题</string>
+    <string name="lead_developer">首席开发者</string>
+    <string name="developers_title">开发者</string>
+    <string name="developers_text">Soul Searching 项目背后的开发者</string>
+    <string name="changelog_title">最新更新</string>
+    <string name="changelog_text">新功能、问题修复</string>
+    <string name="changelog_update_required">更新应用以体验最新功能！</string>
+    <string name="version_name_title">应用版本名称</string>
+    <string name="project_site_title">项目网站和源代码</string>
+    <string name="project_site_text">源代码、提交建议</string>
+    <string name="no_new_musics">没有可添加的新歌曲！</string>
+    <string name="saving_new_musics">正在保存新歌曲…</string>
+    <string name="songs_saved">歌曲保存成功！</string>
+    <string name="search_for_new_songs">搜索新歌曲</string>
+    <string name="app_migration">正在更新应用数据</string>
+    <string name="multiple_artists_title">含多位艺人的歌曲</string>
+    <string name="multiple_artists_text">应用发现了含多位艺人的歌曲。请选择将这些艺人拆分为多位艺人，还是保留为一位艺人。</string>
+    <string name="multiple_artists_selection_title">要拆分的已选艺人：</string>
+    <string name="no_multiple_artists">没有需要拆分的艺人</string>
+    <string name="multiple_selection">多选</string>
+    <string name="field_cannot_be_empty">此字段不能为空</string>
+    <string name="field_must_be_anumber">此字段必须为数字</string>
+    <string name="player_volume">播放器音量</string>
+    <string name="an_error_occurred">发生错误</string>
+    <string name="album_does_not_exists">该专辑不存在</string>
+    <string name="artist_does_not_exists">该艺人不存在</string>
+    <string name="playlist_does_not_exists">该歌单不存在</string>
+    <string name="collection_does_not_exists">该合集不存在</string>
+    <string name="folder_does_not_exists">该文件夹不存在</string>
+    <string name="month_playlist_does_not_exists">该月份列表不存在</string>
+    <string name="artist_detail_title">艺人</string>
+    <string name="month_detail_title">月份</string>
+    <string name="folder_detail_title">文件夹</string>
+    <string name="element_detail_edit">编辑</string>
+    <string name="element_detail_play">播放</string>
+    <string name="element_detail_shuffle">随机播放</string>
+    <string name="element_detail_titles">曲目</string>
+    <string name="and">和</string>
+    <string name="continue_played_list_title">从上次中断处继续</string>
+    <string name="continue_played_list_action">继续</string>
+    <string name="saved_changes">更改已保存</string>
+    <string name="cloud_text">与 Cloudy 同步你的歌曲</string>
+    <string name="cloud_settings_title">设置</string>
+    <string name="cloud_settings_text">服务器地址</string>
+    <string name="cloud_settings_last_general_sync">上次整体同步</string>
+    <string name="cloud_settings_last_statistics_sync">上次统计同步</string>
+    <string name="cloud_settings_last_settings_sync">上次设置同步</string>
+    <string name="cloud_settings_no_sync">尚未同步</string>
+    <string name="cloud_url_field_label">服务器地址</string>
+    <string name="cloud_name_field_label">用户名</string>
+    <string name="cloud_password_field_label">密码</string>
+    <string name="cloud_sign_up">注册</string>
+    <string name="cloud_no_account">我还没有账号</string>
+    <string name="cloud_connection">登录</string>
+    <string name="cloud_sign_in">登录</string>
+    <string name="cloud_registration_code">注册码</string>
+    <string name="cloud_user_settings">用户设置</string>
+    <string name="disconnect">退出登录</string>
+    <string name="inscription_code_settings_title">注册码</string>
+    <string name="generate_code_button">生成注册码</string>
+    <string name="inscription_code_settings_text">管理你的邀请码，为新用户生成一次性注册码</string>
+    <string name="generated_code">已生成的注册码</string>
+    <string name="cloud_sync_title">同步</string>
+    <string name="cloud_sync_text">管理应用与 Cloudy 之间的同步</string>
+    <string name="cloud_sync_button">与云端同步</string>
+    <string name="music_channel_notification_name">正在播放的音乐通知</string>
+    <string name="music_channel_notification_description">用于控制当前正在播放的歌曲</string>
+    <string name="cloud_sync_channel_notification_name">Cloudy 同步通知</string>
+    <string name="cloud_sync_channel_notification_description">用于在应用与 Cloudy 之间同步数据</string>
+    <string name="start_shared_played_list">开始共享播放列表</string>
+    <string name="shared_list_title">共享列表</string>
+    <string name="shared_list_host">主持人</string>
+    <string name="shared_list_guests">访客</string>
+    <string name="shared_list_code_title">邀请码</string>
+    <string name="shared_list_code_description">将此邀请码分享给好友，邀请他们加入这个共享播放列表！</string>
+    <string name="shared_list_remove_user_title">从共享列表中移除用户</string>
+    <string name="shared_list_remove_user_text">移除此用户后，其添加的歌曲也会从播放列表中移除</string>
+    <string name="shared_list_remove_user_button">移除</string>
+    <string name="shared_list_code_label">邀请码</string>
+    <string name="cloud_shared_list_title">共享播放列表</string>
+    <string name="cloud_shared_list_text">加入并管理共享播放列表</string>
+    <string name="cloud_shared_list_join_title">加入播放列表</string>
+    <string name="cloud_sharedlist_join_text">使用邀请码加入共享播放列表</string>
+    <string name="join_shared_list_button">加入</string>
+    <string name="cloud_users_title">Cloudy 用户</string>
+    <string name="cloud_users_text">查看此 Cloudy 实例上的所有用户</string>
+    <string name="cloud_users_delete_dialog_title">删除用户</string>
+    <string name="cloud_users_delete_dialog_text">确定要删除此用户吗？</string>
+    <string name="cloud_alpha_warning_text">Cloudy 处于 Alpha 阶段，应用中的部分功能可能无法与 Cloudy 正常配合使用</string>
+    <string name="cloud_explanations_title">为 Soul Searching 打造的云端</string>
+    <string name="cloud_explanations_text">Cloudy 是为 Soul Searching 设计的自托管云系统，适用于以下场景：\n- 在多台设备上访问你的歌曲\n- 与多位用户共享播放列表\n- 管理用户（家人、朋友等）\n\n如需自行部署 Cloudy，请参阅其文档。</string>
+    <string name="cloud_explanations_redirect">Cloudy 文档</string>
+    <string name="cloud_add_url_to_shared_list_title">通过链接添加歌曲</string>
+    <string name="add">添加</string>
+    <string name="shared_list_delete_title">删除此共享播放列表</string>
+    <string name="shared_list_delete_text">用户将与列表断开连接，列表将被删除</string>
+    <string name="music_synced_on_cloud">歌曲已同步到云端</string>
+    <string name="music_remote_only">来自云端的歌曲</string>
+    <string name="music_local_only">歌曲尚未上传到云端</string>
+    <string name="shortcuts_title">快捷键</string>
+    <string name="shortcuts_text">查看应用的快捷键</string>
+    <string name="shortcut_player_category">播放器快捷键</string>
+    <string name="shortcut_toggle_play_pause_description">播放/暂停</string>
+    <string name="shortcut_previous_description">上一首</string>
+    <string name="shortcut_next_description">下一首</string>
+    <string name="shortcut_seek_forward_description">快进</string>
+    <string name="shortcut_seek_backward_description">快退</string>
+    <string name="shortcut_volume_up_description">增大音量</string>
+    <string name="shortcut_volume_down_description">减小音量</string>
+    <string name="shortcut_toggle_favorite_description">收藏/取消收藏当前歌曲</string>
+    <string name="gigabyte_abbreviation">GB</string>
+    <string name="user_storage_title">用户数据</string>
+    <string name="user_storage_text">管理存储在 Cloudy 上的用户数据</string>
+    <string name="user_storage_section_title">存储空间</string>
+    <string name="user_storage_all_available_info">作为管理员，你的最大可用存储空间等于此 Cloudy 实例的可用存储空间</string>
+    <string name="user_storage_reduced_info">作为普通用户，你的最大可用存储空间由此 Cloudy 实例的管理员设定。如需了解更多信息，请联系管理员</string>
+    <string name="clear_user_storage_button">清除我的所有数据</string>
+    <string name="clear_user_storage_dialog_text">你的所有数据都将从 Cloudy 中删除，但你的账号不会被删除</string>
+    <string name="statistics_all_period_label">全部时间</string>
+    <string name="statistics_year_period_label">按年</string>
+    <string name="statistics_month_period_label">按月</string>
+    <string name="playback_error_player_error">无法播放所选歌曲</string>
+    <string name="simple_cover_type">单张</string>
+    <string name="grid_cover_type">网格</string>
+    <string name="add_to_playlist_screen_title">添加到歌单</string>
+    <string name="add_to_playlist_search_placeholder">搜索要添加到歌单的歌曲</string>
+    <string name="add_to_playlist_empty_title">暂无歌曲</string>
+    <string name="add_to_playlist_empty_text">没有找到可添加到歌单的歌曲</string>
+
+    <!-- Keyboard shortcuts commands -->
+    <string-array name="shortcut_toggle_play_pause_commands">
+        <item>空格键</item>
+    </string-array>
+    <string-array name="shortcut_previous_commands">
+        <item>Shift</item>
+        <item>左方向键</item>
+    </string-array>
+    <string-array name="shortcut_next_commands">
+        <item>Shift</item>
+        <item>右方向键</item>
+    </string-array>
+    <string-array name="shortcut_seek_forward_commands">
+        <item>右方向键</item>
+    </string-array>
+    <string-array name="shortcut_seek_backward_commands">
+        <item>左方向键</item>
+    </string-array>
+    <string-array name="shortcut_volume_up_commands">
+        <item>上方向键</item>
+    </string-array>
+    <string-array name="shortcut_volume_down_commands">
+        <item>下方向键</item>
+    </string-array>
+    <string-array name="shortcut_toggle_favorite_commands">
+        <item>F</item>
+    </string-array>
+
+    <!-- cloudSyncNotificationTitle(state) -->
+    <string name="cloud_sync_notification_title_syncing_settings">正在同步设置</string>
+    <string name="cloud_sync_notification_title_failure">失败</string>
+    <string name="cloud_sync_notification_title_idle">等待中</string>
+    <string name="cloud_sync_notification_title_no_musics_to_send">没有要上传的歌曲</string>
+    <string name="cloud_sync_notification_title_checking_musics_to_send">正在检查</string>
+    <string name="cloud_sync_notification_title_cleaning">正在清理歌曲</string>
+    <string name="cloud_sync_notification_title_clearing_remote_music_ids">正在清理歌曲</string>
+    <string name="cloud_sync_notification_title_fetching_from_remote">正在获取歌曲</string>
+    <string name="cloud_sync_notification_title_saving_remote">正在保存歌曲</string>
+    <string name="cloud_sync_notification_title_update_musics">正在更新歌曲</string>
+    <string name="cloud_sync_notification_title_upload_musics">正在上传歌曲</string>
+    <string name="cloud_sync_notification_title_fetching_remote_playlists">正在获取歌单</string>
+    <string name="cloud_sync_notification_title_uploading_playlists">正在上传歌单</string>
+    <string name="cloud_sync_notification_title_saving_remote_playlists">正在保存歌单</string>
+    <string name="cloud_sync_notification_title_finish">完成</string>
+    <string name="cloud_sync_notification_title_clearing_remote_playlist_ids">正在清理歌单</string>
+    <string name="cloud_sync_notification_title_fetching_remote_collections">正在获取合集</string>
+    <string name="cloud_sync_notification_title_uploading_collections">正在上传合集</string>
+    <string name="cloud_sync_notification_title_saving_remote_collections">正在保存合集</string>
+    <string name="cloud_sync_notification_title_clearing_remote_collection_ids">正在清理合集</string>
+    <string name="cloud_sync_notification_title_fetching_remote_stats">正在获取收听统计</string>
+    <string name="cloud_sync_notification_title_uploading_stats">正在上传收听统计</string>
+
+    <!-- cloudSyncNotificationText(state) -->
+    <string name="cloud_sync_notification_text_syncing_settings">正在与云端同步设置</string>
+    <string name="cloud_sync_notification_text_failure">同步过程中发生错误：%1$s</string>
+    <string name="cloud_sync_notification_text_idle">等待同步开始</string>
+    <string name="cloud_sync_notification_text_no_musics_to_send">没有要上传到云端的本地歌曲</string>
+    <string name="cloud_sync_notification_text_checking_musics_to_send">正在检查要上传到云端的歌曲</string>
+    <string name="cloud_sync_notification_text_cleaning">同步后正在清理旧的本地歌曲</string>
+    <string name="cloud_sync_notification_text_clearing_remote_music_ids">同步前正在清理已删除的云端歌曲</string>
+    <string name="cloud_sync_notification_text_fetching_from_remote">正在从云端获取歌曲</string>
+    <string name="cloud_sync_notification_text_saving_remote">正在保存从云端获取的信息</string>
+    <string name="cloud_sync_notification_text_update_musics">正在更新云端已有的歌曲</string>
+    <string name="cloud_sync_notification_text_upload_musics">正在将歌曲上传到云端</string>
+    <string name="cloud_sync_notification_text_fetching_remote_playlists">正在从云端获取歌单</string>
+    <string name="cloud_sync_notification_text_uploading_playlists">正在将歌单上传到云端</string>
+    <string name="cloud_sync_notification_text_saving_remote_playlists">正在保存来自云端的歌单</string>
+    <string name="cloud_sync_notification_text_finish">同步已完成</string>
+    <string name="cloud_sync_notification_text_clearing_remote_playlist_ids">正在清理已删除的云端歌单</string>
+    <string name="cloud_sync_notification_text_fetching_remote_collections">正在从云端获取合集</string>
+    <string name="cloud_sync_notification_text_uploading_collections">正在将合集上传到云端</string>
+    <string name="cloud_sync_notification_text_saving_remote_collections">正在保存来自云端的合集</string>
+    <string name="cloud_sync_notification_text_clearing_remote_collection_ids">正在清理已删除的云端合集</string>
+    <string name="cloud_sync_notification_text_fetching_remote_stats">正在从云端获取收听统计</string>
+    <string name="cloud_sync_notification_text_uploading_stats">正在将收听统计上传到云端</string>
+    <string name="cloud_sync_notification_unknown_error">未知错误</string>
+
+    <!-- userType(type) -->
+    <string name="user_type_user">用户</string>
+    <string name="user_type_admin">管理员</string>
+    <string name="user_type_unknown">无身份</string>
+
+    <!-- colorPaletteSeed(seed) -->
+    <string name="color_palette_seed_dark_vibrant">深色鲜艳</string>
+    <string name="color_palette_seed_dark_muted">深色柔和</string>
+    <string name="color_palette_seed_light_muted">浅色柔和</string>
+    <string name="color_palette_seed_light_vibrant">浅色鲜艳</string>
+    <string name="color_palette_seed_dominant">主色调</string>
+    <string name="color_palette_seed_muted">柔和</string>
+    <string name="color_palette_seed_vibrant">鲜艳</string>
+
+    <!-- month(monthNumber) -->
+    <string name="month_january">一月</string>
+    <string name="month_february">二月</string>
+    <string name="month_march">三月</string>
+    <string name="month_april">四月</string>
+    <string name="month_may">五月</string>
+    <string name="month_june">六月</string>
+    <string name="month_july">七月</string>
+    <string name="month_august">八月</string>
+    <string name="month_september">九月</string>
+    <string name="month_october">十月</string>
+    <string name="month_november">十一月</string>
+    <string name="month_december">十二月</string>
+
+    <!-- Simple formatted functions -->
+    <string name="fetching_musics_from">正在获取歌曲：%1$s</string>
+    <string name="new_release_available_text">有新版本可供下载：%1$s</string>
+    <string name="artist_cover_method_example_title">以艺人 %1$s 为例的路径：</string>
+
+    <!-- duration(duration): e.g. "2 hours and 3 minutes" -->
+    <string name="duration_format">%1$s%2$s</string>
+    <!-- period(period) for Period.Month: "<month> <year>" -->
+    <string name="period_month_format">%2$d年%1$s</string>
+
+    <!-- Counting functions. Plural categories cannot express a dedicated "zero" text in English or
+         French (French "one" also covers 0), so each one has a companion *_zero string. -->
+    <string name="musics_count_zero">暂无歌曲</string>
+    <plurals name="musics_count">
+        <item quantity="other">%1$d 首歌曲</item>
+    </plurals>
+    <string name="deleted_musics_automatically_zero">没有歌曲被删除</string>
+    <plurals name="deleted_musics_automatically">
+        <item quantity="other">%1$d 首歌曲已不在设备上，因此已被删除</item>
+    </plurals>
+    <string name="plays_zero">暂无播放</string>
+    <plurals name="plays">
+        <item quantity="other">播放 %1$d 次</item>
+    </plurals>
+    <string name="selected_elements_zero">未选择任何项目</string>
+    <plurals name="selected_elements">
+        <item quantity="other">已选择 %1$d 项</item>
+    </plurals>
+    <string name="selected_musics_zero">未选择任何歌曲</string>
+    <plurals name="selected_musics">
+        <item quantity="other">已选择 %1$d 首歌曲</item>
+    </plurals>
+    <string name="shared_list_preview_users_zero">暂无用户</string>
+    <plurals name="shared_list_preview_users">
+        <item quantity="other">%1$d 位用户</item>
+    </plurals>
+    <string name="shared_list_preview_connected_users_zero">暂无在线用户</string>
+    <plurals name="shared_list_preview_connected_users">
+        <item quantity="other">%1$d 位在线用户</item>
+    </plurals>
+
+    <!-- hours(hours) / minutes(minutes) / seconds(seconds) -->
+    <plurals name="hours">
+        <item quantity="other">%1$d 小时</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="other">%1$d 分钟</item>
+    </plurals>
+    <plurals name="seconds">
+        <item quantity="other">%1$d 秒</item>
+    </plurals>
+</resources>

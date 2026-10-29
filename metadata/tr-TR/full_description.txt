@@ -1,0 +1,37 @@
+Soul Searching, cihazınızdaki müzikleri dinlemeniz için eksiksiz, güçlü ve özelleştirilebilir bir müzik uygulamasıdır.
+
+Eksiksiz bir uygulama:
+- Çalma listesi ve koleksiyon oluşturma
+- Birden fazla çalma sırası desteği
+- Çalma sırası yönetimi (çalma modu, ekleme, silme vb.)
+- Hızlı erişim sistemi
+- Dinleme istatistikleri (aylık, yıllık ve tüm zamanlar)
+- Senkronize şarkı sözleri (ses dosyasından veya harici bir kaynaktan)
+- Albüm, sanatçı ve şarkı düzenleme (ses dosyası meta verilerine yazılır)
+- Aynı şarkı için birden fazla sanatçı desteği
+- Arama ve sıralama
+- Klasör yönetimi
+- Çalar ses düzeyini ayarlama
+- Android Auto desteği
+
+Yüksek performanslı bir uygulama:
+- Çok sayıda şarkıda bile akıcı çalışır
+- Karmaşık işlemleri hızla gerçekleştirmek için optimize edilmiş mantık
+
+Tarzınızı yansıtan bir uygulama:
+- Birkaç varsayılan renk teması
+- Koyu veya açık temayı zorlama seçeneği
+- Çalan şarkının albüm kapağı rengine dayalı dinamik tema
+- Dinamik temanın hangi ekranlarda uygulanacağını özelleştirme seçeneği
+- Dinamik temayı oluşturmak için kullanılan temel rengi seçme
+- Çalar özelleştirme (kaydırarak şarkı değiştirme, küçültülmüş modda ilerleme gösterimi vb.)
+- Ana sayfa özelleştirme (açılışta gösterilecek sekme, görünür sekmeler, görünüm stili vb.)
+
+Bulut desteği:
+Not: Cloudy yeni kullanıma sunuldu ve hâlâ alfa aşamasında.
+
+Cloudy ile şarkılarınızı, Soul Searching için özel olarak geliştirilmiş, kendi barındırdığınız bir bulutta saklayın!
+Şarkılarınıza Desktop, Web ve Android gibi farklı platformlardan erişin.
+Cloudy ayrıca şu özellikleri de sunar:
+- birden fazla kullanıcıyı yönetme
+- Spotify'daki gibi, birden fazla kullanıcıyla ortak çalma sırası başlatma

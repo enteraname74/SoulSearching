@@ -53,7 +53,7 @@ You can have a theme that depends on your system settings or the current music c
 ## Features
 
 ### A complete application:
-- Playlist creation
+- Playlist and collection creation
 - Support for **multiple played list**
 - Played list management (play mode, adding, deleting, etc.)
 - Playlist creation

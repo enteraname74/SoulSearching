@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Values shared by every language (interface defaults in Strings) -->
+
+    <string name="playlists">Playlisty</string>
+    <string name="albums">Albumy</string>
+    <string name="ok">OK</string>
+    <string name="glacier_theme">Lodowiec</string>
+    <string name="passion_theme">Pasja</string>
+    <string name="playlist_detail_title">Playlista</string>
+    <string name="collection_detail_title">Kolekcja</string>
+    <string name="album_detail_title">Album</string>
+
+    <string name="app_logo">Logo aplikacji</string>
+    <string name="cannot_retrieve_songs">Nie można pobrać utworów!</string>
+    <string name="no_elements">Brak elementów</string>
+    <string name="empty_quick_access">Brak elementów w szybkim dostępie</string>
+    <string name="empty_folders">Brak folderów</string>
+    <string name="empty_albums">Brak albumów</string>
+    <string name="empty_musics">Brak utworów</string>
+    <string name="empty_artists">Brak wykonawców</string>
+    <string name="empty_playlists">Brak playlist</string>
+    <string name="empty_months">Brak miesięcy</string>
+    <string name="empty_collections">Brak kolekcji</string>
+    <string name="empty_musics_explanations">Dodaj utwory w ustawieniach, aby zobaczyć je tutaj</string>
+    <string name="empty_albums_explanations">Dodaj utwory w ustawieniach, aby zobaczyć tutaj swoje albumy</string>
+    <string name="empty_artists_explanations">Dodaj utwory w ustawieniach, aby zobaczyć tutaj swoich wykonawców</string>
+    <string name="empty_folders_explanations">Dodaj utwory w ustawieniach, aby zobaczyć tutaj swoje foldery</string>
+    <string name="empty_playlists_explanations">Utwórz playlistę, klikając przycisk „+”</string>
+    <string name="empty_quick_access_explanations">Dodaj utwór, album, wykonawcę lub playlistę do szybkiego dostępu, aby pojawiły się tutaj</string>
+    <string name="empty_months_explanations">Dodaj utwory w ustawieniach, aby zobaczyć je tutaj pogrupowane według miesiąca dodania</string>
+    <string name="empty_collections_explanations">Grupuj podobne albumy i wykonawców w kolekcje. Nowe utwory dodane do wykonawcy lub albumu zostaną automatycznie dodane do powiązanych kolekcji</string>
+    <string name="back_button">Przycisk Wstecz</string>
+    <string name="header_bar_right_button">Prawy przycisk paska nagłówka</string>
+    <string name="image">Obraz</string>
+    <string name="more_button">Przycisk Więcej</string>
+    <string name="more">Więcej</string>
+    <string name="settings_access_button">Przycisk dostępu do ustawień</string>
+    <string name="create_playlist_button">Przycisk tworzenia playlisty</string>
+    <string name="shuffle_button">Przycisk odtwarzania losowego</string>
+    <string name="favorite">Ulubione</string>
+    <string name="in_this_collection">W tej kolekcji</string>
+    <string name="folders">Foldery</string>
+    <string name="artists">Wykonawcy</string>
+    <string name="by_folders">Według folderów</string>
+    <string name="by_months">Według miesięcy</string>
+    <string name="musics">Utwory</string>
+    <string name="quick_access">Szybki dostęp</string>
+    <string name="missing_permissions">Aby aplikacja działała poprawnie, musisz przyznać wszystkie wymagane uprawnienia.</string>
+    <string name="played_list">Kolejka odtwarzania</string>
+    <string name="current_song">Bieżący utwór</string>
+    <string name="lyrics">Tekst</string>
+    <string name="activate_remote_lyrics_fetch_title">Włącz pobieranie tekstów z internetu</string>
+    <!-- %1$s: lyrics_provider_name -->
+    <string name="activate_remote_lyrics_fetch_text">Aplikacja potrzebuje Twojej zgody na wyszukiwanie tekstu bieżącego utworu w zewnętrznej usłudze (%1$s), gdy plik utworu nie zawiera tekstu.</string>
+    <!-- %1$s: lyrics_provider_name -->
+    <string name="activate_remote_lyrics_fetch_hint">Gdy plik utworu nie zawiera tekstu, aplikacja użyje tytułu, albumu i wykonawcy, aby wyszukać go w zewnętrznym źródle (%1$s).</string>
+    <string name="no_lyrics_found">Nie znaleziono tekstu tego utworu</string>
+    <string name="local_lyrics_provider">Tekst z metadanych pliku muzycznego</string>
+    <string name="remote_lyrics_provider">Tekst dostarczony przez LrcLib</string>
+    <string name="complete_application_title">Kompletna aplikacja muzyczna</string>
+    <string name="complete_application_text">Słuchaj wszystkich swoich utworów, albumów, wykonawców i playlist.</string>
+    <string name="quick_access_title">Miej to, co kochasz najbardziej, zawsze pod ręką.</string>
+    <string name="quick_access_text">Dzięki szybkiemu dostępowi łatwo dotrzesz na przykład do ulubionego albumu lub ulubionych utworów.</string>
+    <string name="modify_elements_title">Edytuj swoją muzykę</string>
+    <string name="modify_elements_text">Możesz edytować informacje o albumie, utworze, wykonawcy…</string>
+    <string name="dynamic_theme_feature_title">Motyw dynamiczny</string>
+    <string name="dynamic_theme_feature_text">Soul Searching oferuje motyw dynamiczny, dopasowany do aktualnie odtwarzanego utworu.</string>
+    <string name="manage_folders_title">Zarządzaj używanymi folderami</string>
+    <string name="manage_folders_text">Wybierz foldery, z których pobierane są utwory.</string>
+    <string name="add_new_musics_title">Dodaj nowe utwory</string>
+    <string name="add_new_musics_text">Łatwo dodasz nowe utwory ze swojego urządzenia.</string>
+    <string name="personalize_main_page_title">Dopasuj aplikację do siebie</string>
+    <string name="personalize_main_page_text">Nie potrzebujesz szybkiego dostępu albo chcesz mieć pasek ułatwiający przechodzenie do sekcji strony głównej? Możesz to ustawić w ustawieniach aplikacji.</string>
+    <string name="manage_album_view_title">Widok albumu</string>
+    <string name="manage_album_view_text">Zarządzaj widokiem albumu</string>
+    <string name="manage_player_title">Odtwarzacz</string>
+    <string name="manage_player_text">Zarządzaj odtwarzaczem</string>
+    <string name="player_swipe_title">Przesuń okładkę utworu, aby przejść dalej lub cofnąć się w kolejce odtwarzania</string>
+    <string name="player_rewind_title">Przewiń bieżący utwór do początku przed odtworzeniem poprzedniego</string>
+    <string name="player_minimised_progression_title">Pokaż postęp bieżącego utworu w zminimalizowanym odtwarzaczu</string>
+    <string name="soul_mix_settings_title">Liczba utworów pobieranych z każdego folderu do Soul Mix</string>
+    <string name="searching_songs_from_your_device">Wyszukiwanie utworów na urządzeniu…</string>
+    <string name="search_for_musics">Szukaj utworu</string>
+    <string name="search_all">Szukaj utworu, wykonawcy, albumu, playlisty…</string>
+    <string name="sort_by_added_date">Data dodania</string>
+    <string name="sort_by_most_listened">Najczęściej słuchane</string>
+    <string name="sort_by_name">Alfabetycznie</string>
+    <string name="remove_from_quick_access">Usuń z szybkiego dostępu</string>
+    <string name="remove_from_playlist">Usuń z playlisty</string>
+    <string name="remove_from_played_list">Usuń z kolejki odtwarzania</string>
+    <string name="remove_from_collection">Usuń z kolekcji</string>
+    <string name="add_to_quick_access">Dodaj do szybkiego dostępu</string>
+    <string name="add_to_playlist">Dodaj do playlisty</string>
+    <string name="add_to_collection">Dodaj do kolekcji</string>
+    <string name="create">Utwórz</string>
+    <string name="cancel">Anuluj</string>
+    <string name="delete">Usuń</string>
+    <string name="remove">Usuń</string>
+    <string name="soul_mix_info_dialog_text">Słuchaj miksu utworów pobranych z każdego z Twoich folderów!\nLiczbę utworów pobieranych z każdego folderu możesz ustawić w ustawieniach.</string>
+    <string name="create_playlist_dialog_title">Utwórz nową playlistę</string>
+    <string name="create_collection_dialog_title">Utwórz nową kolekcję</string>
+    <string name="playlist_name">Nazwa playlisty</string>
+    <string name="collection_name">Nazwa kolekcji</string>
+    <string name="name_already_exists">Ta nazwa już istnieje</string>
+    <string name="music_name">Tytuł utworu</string>
+    <string name="music_album_position">Pozycja w albumie</string>
+    <string name="album_name">Nazwa albumu</string>
+    <string name="album_artist_name">Wykonawca albumu</string>
+    <string name="artist_name">Nazwa wykonawcy</string>
+    <string name="playlist_cover">Okładka playlisty</string>
+    <string name="collection_cover">Okładka kolekcji</string>
+    <string name="album_cover">Okładka albumu</string>
+    <string name="artist_cover">Okładka wykonawcy</string>
+    <string name="playlist_information">Informacje o playliście</string>
+    <string name="collection_information">Informacje o kolekcji</string>
+    <string name="music_information">Informacje o utworze</string>
+    <string name="music_path">Ścieżka utworu:</string>
+    <string name="music_file_cover">Okładka z pliku</string>
+    <string name="music_app_cover">Okładka z aplikacji</string>
+    <string name="cover_selection">Wybór okładki</string>
+    <string name="select_top_start_cover_image">Wybierz lewą górną okładkę</string>
+    <string name="select_top_end_cover_image">Wybierz prawą górną okładkę</string>
+    <string name="select_bottom_start_cover_image">Wybierz lewą dolną okładkę</string>
+    <string name="select_bottom_end_cover_image">Wybierz prawą dolną okładkę</string>
+    <string name="artist_information">Informacje o wykonawcy</string>
+    <string name="album_information">Informacje o albumie</string>
+    <string name="add_artist">Dodaj wykonawcę</string>
+    <string name="delete_music_dialog_title">Czy na pewno chcesz usunąć ten utwór?</string>
+    <string name="delete_music_dialog_text">Zostanie on usunięty z aplikacji.</string>
+    <string name="delete_album_dialog_title">Czy na pewno chcesz usunąć ten album?</string>
+    <string name="delete_playlist_dialog_title">Czy na pewno chcesz usunąć tę playlistę?</string>
+    <string name="delete_collection_dialog_title">Czy na pewno chcesz usunąć tę kolekcję?</string>
+    <string name="delete_artist_dialog_title">Czy na pewno chcesz usunąć tego wykonawcę?</string>
+    <string name="delete_selected_musics_dialog_title">Czy na pewno chcesz usunąć wybrane utwory?</string>
+    <string name="delete_selected_musics_dialog_text">Zostaną one usunięte z aplikacji.</string>
+    <string name="delete_folder_musics_dialog_title">Czy na pewno chcesz usunąć ten folder?</string>
+    <string name="delete_folder_musics_dialog_text">Wszystkie utwory z tego folderu zostaną usunięte z aplikacji. Folder zostanie też wykluczony z kolejnych wyszukiwań.</string>
+    <string name="delete_selected_folders_musics_dialog_title">Czy na pewno chcesz usunąć wybrane foldery?</string>
+    <string name="delete_selected_folders_musics_dialog_text">Wszystkie utwory z tych folderów zostaną usunięte z aplikacji. Foldery zostaną też wykluczone z kolejnych wyszukiwań.</string>
+    <string name="delete_month_musics_dialog_title">Czy na pewno chcesz usunąć ten miesiąc?</string>
+    <string name="delete_month_musics_dialog_text">Wszystkie utwory z tego miesiąca zostaną usunięte z aplikacji.</string>
+    <string name="delete_selected_months_musics_dialog_title">Czy na pewno chcesz usunąć wybrane miesiące?</string>
+    <string name="delete_selected_months_musics_dialog_text">Wszystkie utwory z tych miesięcy zostaną usunięte z aplikacji.</string>
+    <string name="delete_selected_albums_dialog_title">Czy na pewno chcesz usunąć wybrane albumy?</string>
+    <string name="delete_selected_artists_dialog_title">Czy na pewno chcesz usunąć wybranych wykonawców?</string>
+    <string name="delete_selected_playlists_dialog_title">Czy na pewno chcesz usunąć wybrane playlisty?</string>
+    <string name="delete_selected_collections_dialog_title">Czy na pewno chcesz usunąć wybrane kolekcje?</string>
+    <string name="remove_music_from_playlist_title">Czy na pewno chcesz usunąć ten utwór z playlisty?</string>
+    <string name="remove_music_from_playlist_text">Utwór zostanie usunięty z tej playlisty, ale pozostanie w aplikacji.</string>
+    <string name="remove_selected_music_from_playlist_title">Czy na pewno chcesz usunąć wybrane utwory z playlisty?</string>
+    <string name="remove_selected_music_from_playlist_text">Wybrane utwory zostaną usunięte z tej playlisty, ale pozostaną w aplikacji.</string>
+    <string name="remove_artist_from_collection_title">Usunąć tego wykonawcę z kolekcji?</string>
+    <string name="remove_artist_from_collection_text">Wykonawca zostanie usunięty z tej kolekcji, ale pozostanie w aplikacji.</string>
+    <string name="remove_album_from_collection_title">Usunąć ten album z kolekcji?</string>
+    <string name="remove_album_from_collection_text">Album zostanie usunięty z tej kolekcji, ale pozostanie w aplikacji.</string>
+    <string name="modify_album">Edytuj album</string>
+    <string name="modify_artist">Edytuj wykonawcę</string>
+    <string name="modify_music">Edytuj utwór</string>
+    <string name="modify_playlist">Edytuj playlistę</string>
+    <string name="modify_collection">Edytuj kolekcję</string>
+    <string name="covers_of_the_album">Okładki utworów z albumu</string>
+    <string name="covers_of_the_artist">Okładki utworów wykonawcy</string>
+    <string name="covers_of_the_playlist">Okładki utworów z playlisty</string>
+    <string name="covers_of_the_collection">Okładki utworów z kolekcji</string>
+    <string name="covers_of_song_album">Okładki z albumu utworu</string>
+    <string name="no_available_covers">Brak dostępnych okładek</string>
+    <string name="delete_album">Usuń album</string>
+    <string name="delete_artist">Usuń wykonawcę</string>
+    <string name="delete_music">Usuń utwór</string>
+    <string name="delete_playlist">Usuń playlistę</string>
+    <string name="delete_collection">Usuń kolekcję</string>
+    <string name="delete_selected_albums">Usuń wybrane albumy</string>
+    <string name="delete_selected_artists">Usuń wybranych wykonawców</string>
+    <string name="delete_selected_playlists">Usuń wybrane playlisty</string>
+    <string name="delete_selected_collections">Usuń wybrane kolekcje</string>
+    <string name="delete_selected_musics">Usuń wybrane utwory</string>
+    <string name="delete_folder_musics">Usuń folder</string>
+    <string name="delete_selected_folders_musics">Usuń wybrane foldery</string>
+    <string name="delete_month_musics">Usuń miesiąc</string>
+    <string name="delete_selected_months_musics">Usuń wybrane miesiące</string>
+    <string name="play_next">Odtwórz jako następny</string>
+    <string name="add_to_queue">Dodaj do kolejki</string>
+    <string name="personalized_theme_title">Motyw niestandardowy</string>
+    <string name="personalized_theme_text">Zastosuj motyw dynamiczny w:</string>
+    <string name="dynamic_player_view">Widok odtwarzacza</string>
+    <string name="dynamic_playlist_view">Widok playlisty, albumu, wykonawcy, miesiąca i folderu</string>
+    <string name="dynamic_other_view">Pozostałe widoki</string>
+    <string name="settings">Ustawienia</string>
+    <string name="advanced_settings_title">Ustawienia zaawansowane</string>
+    <string name="advanced_settings_text">Zarządzaj okładkami używanymi w aplikacji</string>
+    <string name="reload_covers_title">Odśwież okładki</string>
+    <string name="reload_covers_text">Odśwież okładki na podstawie danych z plików</string>
+    <string name="reload_musics_covers">Odśwież okładki utworów</string>
+    <string name="delete_playlists_covers">Usuń okładki playlist</string>
+    <string name="delete_collections_covers">Usuń okładki kolekcji</string>
+    <string name="reload_albums_covers">Odśwież okładki albumów</string>
+    <string name="reload_artists_covers">Odśwież okładki wykonawców</string>
+    <string name="split_multiple_artists_title">Rozdziel wykonawców</string>
+    <string name="split_multiple_artists_text">Wybierz i rozdziel wykonawców złożonych z kilku wykonawców</string>
+    <string name="artist_cover_method_title">Źródło okładek wykonawców</string>
+    <string name="artist_cover_method_text">Wybierz sposób pobierania okładek wykonawców</string>
+    <string name="activate_artist_cover_method">Włącz pobieranie według ścieżki</string>
+    <string name="artist_cover_method_dynamic_name_title">Przetwarzanie nazwy wykonawcy</string>
+    <string name="cover_folder_retriever_path_selection_title">Wybierz folder nadrzędny</string>
+    <string name="cover_folder_retriever_path_selection_no_path_selected">Nie wybrano folderu</string>
+    <string name="cover_folder_retriever_file_extension">Rozszerzenie obrazu</string>
+    <string name="cover_folder_retriever_folder_title">Folder dynamiczny</string>
+    <string name="cover_folder_retriever_folder_text">Nazwa folderu odpowiada nazwie wykonawcy</string>
+    <string name="cover_folder_retriever_folder_incomplete">Wymagane dane są niekompletne</string>
+    <string name="cover_folder_retriever_rules_white_space">Zastąp spacje</string>
+    <string name="cover_folder_retriever_rules_replacement">Zamiennik</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_uppercase">Wielkie litery</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_no_treatment">Bez zmian</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_lowercase">Małe litery</string>
+    <string name="cover_folder_retriever_file_title">Dynamiczny plik okładki</string>
+    <string name="cover_folder_retriever_file_text">Nazwa pliku obrazu odpowiada nazwie wykonawcy</string>
+    <string name="cover_folder_retriever_dynamic_file_title">Nazwa pliku okładki</string>
+    <string name="activate_github_release_fetch_title">Włącz sprawdzanie nowych wersji w serwisie GitHub</string>
+    <string name="activate_github_release_fetch_text">Czy chcesz otrzymywać powiadomienie w aplikacji, gdy w serwisie GitHub pojawi się nowa wersja aplikacji?</string>
+    <string name="activate_github_release_fetch_hint">Otrzymasz powiadomienie w aplikacji, gdy w serwisie GitHub pojawi się nowa wersja aplikacji.</string>
+    <string name="go_to_settings">Przejdź do ustawień</string>
+    <string name="manage_musics_title">Zarządzaj utworami</string>
+    <string name="manage_musics_text">Edytuj i dodawaj utwory, zarządzaj używanymi folderami</string>
+    <string name="modify_music_file_title">Modyfikuj pliki na urządzeniu</string>
+    <string name="modify_music_file_text">Edycja informacji o utworze zmieni metadane pliku na Twoim urządzeniu</string>
+    <string name="color_theme_title">Motyw kolorystyczny</string>
+    <string name="color_theme_text">Motyw dynamiczny, motyw niestandardowy</string>
+    <string name="personalization_title">Personalizacja</string>
+    <string name="personalization_text">Zarządzaj widokiem odtwarzacza i strony głównej</string>
+    <string name="about_title">O aplikacji Soul Searching</string>
+    <string name="about_text">Twórcy, wersja aplikacji</string>
+    <string name="new_release_available_title">Dostępna nowa wersja!</string>
+    <string name="statistics_title">Statystyki</string>
+    <string name="statistics_text">Statystyki Twoich odtworzeń</string>
+    <string name="most_played_songs">Najczęściej odtwarzane utwory (liczba odtworzeń)</string>
+    <string name="most_listened_songs">Najczęściej odtwarzane utwory (czas słuchania)</string>
+    <string name="listening_time">Łączny czas słuchania</string>
+    <string name="no_data_on_this_period">Brak danych z tego okresu</string>
+    <string name="most_played_albums">Najczęściej odtwarzane albumy</string>
+    <string name="most_played_artists">Najczęściej odtwarzani wykonawcy</string>
+    <string name="artists_with_most_songs">Wykonawcy z największą liczbą utworów</string>
+    <string name="most_played_playlists">Najczęściej odtwarzane playlisty</string>
+    <string name="theme_selection_title">Motyw główny</string>
+    <string name="theme_selection_text">Wybierz główny motyw aplikacji</string>
+    <string name="force_dark_theme_title">Wymuś ciemny motyw</string>
+    <string name="force_light_theme_title">Wymuś jasny motyw</string>
+    <string name="steel_theme">Stal</string>
+    <string name="dusk_theme">Zmierzch</string>
+    <string name="greenery_theme">Zieleń</string>
+    <string name="tree_bark_theme">Kora</string>
+    <string name="extracted_color_title">Kolor wyodrębniony z okładki</string>
+    <string name="extracted_color_text">Określ kolor bazowy używany do generowania dynamicznego motywu</string>
+    <string name="extracted_color_info">Jeśli nie uda się wyodrębnić wybranego koloru, zostanie użyty kolor dominujący.</string>
+    <string name="main_page_title">Strona główna</string>
+    <string name="main_page_text">Zarządzaj widokiem strony głównej</string>
+    <string name="show_quick_access">Pokaż szybki dostęp</string>
+    <string name="show_playlists">Pokaż playlisty</string>
+    <string name="show_collections">Pokaż kolekcje</string>
+    <string name="collections">Kolekcje</string>
+    <string name="show_albums">Pokaż albumy</string>
+    <string name="show_artists">Pokaż wykonawców</string>
+    <string name="manage_musics_view_text">Zarządzaj widokiem utworów</string>
+    <string name="show_musics_by_folders">Pokaż utwory według folderów</string>
+    <string name="show_musics_by_months">Pokaż utwory według miesięcy</string>
+    <string name="show_album_track_number">Pokaż numery utworów</string>
+    <string name="initial_section_title">Sekcja startowa</string>
+    <string name="initial_section_text">Wybierz sekcję wyświetlaną po uruchomieniu aplikacji</string>
+    <string name="use_vertical_access_bar_title">Użyj pionowego paska nawigacji</string>
+    <string name="use_horizontal_access_bar_text">Użyj poziomego paska nawigacji</string>
+    <string name="used_folders_title">Używane foldery</string>
+    <string name="used_folders_text">Określ foldery używane w aplikacji</string>
+    <string name="fetching_folders">Pobieranie folderów</string>
+    <string name="add_musics_title">Dodaj utwory</string>
+    <string name="add_musics_text">Dodaj do aplikacji nowe utwory ze swojego urządzenia</string>
+    <string name="deleting_musics_from_unselected_folders">Usuwanie utworów z niewybranych folderów…</string>
+    <string name="dynamic_theme_title">Motyw dynamiczny</string>
+    <string name="dynamic_theme_text">Globalny motyw kolorystyczny oparty na okładce albumu aktualnie odtwarzanego utworu</string>
+    <string name="system_theme_title">Motyw systemowy</string>
+    <string name="system_theme_text">Globalny motyw kolorystyczny oparty na trybie kolorów systemu</string>
+    <string name="lead_developer">Główny programista</string>
+    <string name="developers_title">Twórcy</string>
+    <string name="developers_text">Twórcy projektu Soul Searching</string>
+    <string name="changelog_title">Ostatnia aktualizacja</string>
+    <string name="changelog_text">Nowe funkcje, poprawki błędów</string>
+    <string name="changelog_update_required">Zaktualizuj aplikację, aby korzystać z najnowszych funkcji!</string>
+    <string name="version_name_title">Wersja aplikacji</string>
+    <string name="project_site_title">Strona projektu i kod źródłowy</string>
+    <string name="project_site_text">Kod źródłowy, zgłoś sugestię</string>
+    <string name="no_new_musics">Brak nowych utworów do dodania!</string>
+    <string name="saving_new_musics">Zapisywanie nowych utworów…</string>
+    <string name="songs_saved">Utwory zostały zapisane!</string>
+    <string name="search_for_new_songs">Wyszukaj nowe utwory</string>
+    <string name="app_migration">Aktualizowanie danych aplikacji</string>
+    <string name="multiple_artists_title">Utwory z wieloma wykonawcami</string>
+    <string name="multiple_artists_text">Aplikacja znalazła utwory z wieloma wykonawcami. Zdecyduj, czy chcesz rozdzielić ich na osobnych wykonawców, czy zachować jako jednego.</string>
+    <string name="multiple_artists_selection_title">Wykonawcy wybrani do rozdzielenia:</string>
+    <string name="no_multiple_artists">Brak wykonawców do rozdzielenia</string>
+    <string name="multiple_selection">Wybór wielu elementów</string>
+    <string name="field_cannot_be_empty">Pole nie może być puste</string>
+    <string name="field_must_be_anumber">Pole musi zawierać liczbę</string>
+    <string name="player_volume">Głośność odtwarzacza</string>
+    <string name="an_error_occurred">Wystąpił błąd</string>
+    <string name="album_does_not_exists">Ten album nie istnieje</string>
+    <string name="artist_does_not_exists">Ten wykonawca nie istnieje</string>
+    <string name="playlist_does_not_exists">Ta playlista nie istnieje</string>
+    <string name="collection_does_not_exists">Ta kolekcja nie istnieje</string>
+    <string name="folder_does_not_exists">Ten folder nie istnieje</string>
+    <string name="month_playlist_does_not_exists">Ta playlista miesiąca nie istnieje</string>
+    <string name="artist_detail_title">Wykonawca</string>
+    <string name="month_detail_title">Miesiąc</string>
+    <string name="folder_detail_title">Folder</string>
+    <string name="element_detail_edit">Edytuj</string>
+    <string name="element_detail_play">Odtwórz</string>
+    <string name="element_detail_shuffle">Losowo</string>
+    <string name="element_detail_titles">Utwory</string>
+    <string name="and">i</string>
+    <string name="continue_played_list_title">Wróć tam, gdzie skończyłeś</string>
+    <string name="continue_played_list_action">Wznów</string>
+    <string name="saved_changes">Zmiany zapisane</string>
+    <string name="cloud_text">Synchronizuj utwory z Cloudy</string>
+    <string name="cloud_settings_title">Ustawienia</string>
+    <string name="cloud_settings_text">Adres URL serwera</string>
+    <string name="cloud_settings_last_general_sync">Ostatnia pełna synchronizacja</string>
+    <string name="cloud_settings_last_statistics_sync">Ostatnia synchronizacja statystyk</string>
+    <string name="cloud_settings_last_settings_sync">Ostatnia synchronizacja ustawień</string>
+    <string name="cloud_settings_no_sync">Brak synchronizacji</string>
+    <string name="cloud_url_field_label">Adres URL serwera</string>
+    <string name="cloud_name_field_label">Nazwa użytkownika</string>
+    <string name="cloud_password_field_label">Hasło</string>
+    <string name="cloud_sign_up">Zarejestruj się</string>
+    <string name="cloud_no_account">Nie mam konta</string>
+    <string name="cloud_connection">Logowanie</string>
+    <string name="cloud_sign_in">Zaloguj się</string>
+    <string name="cloud_registration_code">Kod rejestracyjny</string>
+    <string name="cloud_user_settings">Ustawienia użytkownika</string>
+    <string name="disconnect">Wyloguj się</string>
+    <string name="inscription_code_settings_title">Kody rejestracyjne</string>
+    <string name="generate_code_button">Wygeneruj kod</string>
+    <string name="inscription_code_settings_text">Zarządzaj kodami zaproszeń, wygeneruj jednorazowy kod dla nowego użytkownika</string>
+    <string name="generated_code">Wygenerowany kod</string>
+    <string name="cloud_sync_title">Synchronizacja</string>
+    <string name="cloud_sync_text">Zarządzaj synchronizacją między aplikacją a Cloudy</string>
+    <string name="cloud_sync_button">Synchronizuj z chmurą</string>
+    <string name="music_channel_notification_name">Powiadomienie o odtwarzanym utworze</string>
+    <string name="music_channel_notification_description">Służy do sterowania aktualnie odtwarzanym utworem</string>
+    <string name="cloud_sync_channel_notification_name">Powiadomienie o synchronizacji z Cloudy</string>
+    <string name="cloud_sync_channel_notification_description">Służy do synchronizacji danych między aplikacją a Cloudy</string>
+    <string name="start_shared_played_list">Rozpocznij wspólną kolejkę odtwarzania</string>
+    <string name="shared_list_title">Wspólna kolejka</string>
+    <string name="shared_list_host">Gospodarz</string>
+    <string name="shared_list_guests">Goście</string>
+    <string name="shared_list_code_title">Kod zaproszenia</string>
+    <string name="shared_list_code_description">Udostępnij ten kod znajomym, aby mogli dołączyć do tej wspólnej kolejki odtwarzania!</string>
+    <string name="shared_list_remove_user_title">Usuń użytkownika ze wspólnej kolejki</string>
+    <string name="shared_list_remove_user_text">Usunięcie tego użytkownika usunie też jego utwory z kolejki odtwarzania</string>
+    <string name="shared_list_remove_user_button">Usuń</string>
+    <string name="shared_list_code_label">Kod zaproszenia</string>
+    <string name="cloud_shared_list_title">Wspólna kolejka odtwarzania</string>
+    <string name="cloud_shared_list_text">Dołączaj do wspólnych kolejek odtwarzania i zarządzaj nimi</string>
+    <string name="cloud_shared_list_join_title">Dołącz do kolejki odtwarzania</string>
+    <string name="cloud_sharedlist_join_text">Dołącz do wspólnej kolejki odtwarzania za pomocą kodu</string>
+    <string name="join_shared_list_button">Dołącz</string>
+    <string name="cloud_users_title">Użytkownicy Cloudy</string>
+    <string name="cloud_users_text">Zobacz wszystkich użytkowników instancji Cloudy</string>
+    <string name="cloud_users_delete_dialog_title">Usuń użytkownika</string>
+    <string name="cloud_users_delete_dialog_text">Czy na pewno chcesz usunąć tego użytkownika?</string>
+    <string name="cloud_alpha_warning_text">Cloudy jest w wersji alfa i nie wszystkie funkcje aplikacji mogą działać z nim poprawnie</string>
+    <string name="cloud_explanations_title">Chmura dla Soul Searching</string>
+    <string name="cloud_explanations_text">Cloudy to samodzielnie hostowana chmura dla Soul Searching, zaprojektowana do:\n- dostępu do utworów z wielu urządzeń\n- uruchamiania wspólnej kolejki odtwarzania dla wielu użytkowników\n- zarządzania użytkownikami (rodzina, znajomi…)\n\nAby samodzielnie hostować Cloudy, zapoznaj się z jego dokumentacją.</string>
+    <string name="cloud_explanations_redirect">Dokumentacja Cloudy</string>
+    <string name="cloud_add_url_to_shared_list_title">Dodaj utwór z adresu URL</string>
+    <string name="add">Dodaj</string>
+    <string name="shared_list_delete_title">Usuń tę wspólną kolejkę odtwarzania</string>
+    <string name="shared_list_delete_text">Użytkownicy zostaną odłączeni od kolejki, a ona sama zostanie usunięta</string>
+    <string name="music_synced_on_cloud">Utwór zsynchronizowany z chmurą</string>
+    <string name="music_remote_only">Utwór pochodzący z chmury</string>
+    <string name="music_local_only">Utwór nieprzesłany do chmury</string>
+    <string name="shortcuts_title">Skróty</string>
+    <string name="shortcuts_text">Zobacz skróty klawiszowe aplikacji</string>
+    <string name="shortcut_player_category">Skróty odtwarzacza</string>
+    <string name="shortcut_toggle_play_pause_description">Odtwórz/wstrzymaj</string>
+    <string name="shortcut_previous_description">Poprzedni</string>
+    <string name="shortcut_next_description">Następny</string>
+    <string name="shortcut_seek_forward_description">Przewiń do przodu</string>
+    <string name="shortcut_seek_backward_description">Przewiń do tyłu</string>
+    <string name="shortcut_volume_up_description">Zwiększ głośność</string>
+    <string name="shortcut_volume_down_description">Zmniejsz głośność</string>
+    <string name="shortcut_toggle_favorite_description">Dodaj/usuń odtwarzany utwór z ulubionych</string>
+    <string name="gigabyte_abbreviation">GB</string>
+    <string name="user_storage_title">Dane użytkownika</string>
+    <string name="user_storage_text">Zarządzaj danymi użytkownika przechowywanymi w Cloudy</string>
+    <string name="user_storage_section_title">Miejsce na dane</string>
+    <string name="user_storage_all_available_info">Jako administrator możesz wykorzystać całe miejsce dostępne w instancji Cloudy</string>
+    <string name="user_storage_reduced_info">Jako użytkownik masz limit miejsca ustalony przez administratora tej instancji Cloudy. Aby dowiedzieć się więcej, skontaktuj się z administratorem</string>
+    <string name="clear_user_storage_button">Usuń wszystkie moje dane</string>
+    <string name="clear_user_storage_dialog_text">Wszystkie Twoje dane zostaną usunięte z Cloudy. Twoje konto nie zostanie usunięte</string>
+    <string name="statistics_all_period_label">Cały okres</string>
+    <string name="statistics_year_period_label">Według roku</string>
+    <string name="statistics_month_period_label">Według miesiąca</string>
+    <string name="playback_error_player_error">Nie można odtworzyć wybranego utworu</string>
+    <string name="simple_cover_type">Prosta</string>
+    <string name="grid_cover_type">Siatka</string>
+    <string name="add_to_playlist_screen_title">Dodaj do playlisty</string>
+    <string name="add_to_playlist_search_placeholder">Szukaj utworów do dodania do playlisty</string>
+    <string name="add_to_playlist_empty_title">Brak utworów</string>
+    <string name="add_to_playlist_empty_text">Nie znaleziono utworów do dodania do playlisty</string>
+
+    <!-- Keyboard shortcuts commands -->
+    <string-array name="shortcut_toggle_play_pause_commands">
+        <item>Spacja</item>
+    </string-array>
+    <string-array name="shortcut_previous_commands">
+        <item>Shift</item>
+        <item>Strzałka w lewo</item>
+    </string-array>
+    <string-array name="shortcut_next_commands">
+        <item>Shift</item>
+        <item>Strzałka w prawo</item>
+    </string-array>
+    <string-array name="shortcut_seek_forward_commands">
+        <item>Strzałka w prawo</item>
+    </string-array>
+    <string-array name="shortcut_seek_backward_commands">
+        <item>Strzałka w lewo</item>
+    </string-array>
+    <string-array name="shortcut_volume_up_commands">
+        <item>Strzałka w górę</item>
+    </string-array>
+    <string-array name="shortcut_volume_down_commands">
+        <item>Strzałka w dół</item>
+    </string-array>
+    <string-array name="shortcut_toggle_favorite_commands">
+        <item>F</item>
+    </string-array>
+
+    <!-- cloudSyncNotificationTitle(state) -->
+    <string name="cloud_sync_notification_title_syncing_settings">Synchronizacja ustawień</string>
+    <string name="cloud_sync_notification_title_failure">Niepowodzenie</string>
+    <string name="cloud_sync_notification_title_idle">Oczekiwanie</string>
+    <string name="cloud_sync_notification_title_no_musics_to_send">Brak utworów do wysłania</string>
+    <string name="cloud_sync_notification_title_checking_musics_to_send">Sprawdzanie</string>
+    <string name="cloud_sync_notification_title_cleaning">Porządkowanie utworów</string>
+    <string name="cloud_sync_notification_title_clearing_remote_music_ids">Porządkowanie utworów</string>
+    <string name="cloud_sync_notification_title_fetching_from_remote">Pobieranie utworów</string>
+    <string name="cloud_sync_notification_title_saving_remote">Zapisywanie utworów</string>
+    <string name="cloud_sync_notification_title_update_musics">Aktualizowanie utworów</string>
+    <string name="cloud_sync_notification_title_upload_musics">Przesyłanie utworów</string>
+    <string name="cloud_sync_notification_title_fetching_remote_playlists">Pobieranie playlist</string>
+    <string name="cloud_sync_notification_title_uploading_playlists">Przesyłanie playlist</string>
+    <string name="cloud_sync_notification_title_saving_remote_playlists">Zapisywanie playlist</string>
+    <string name="cloud_sync_notification_title_finish">Zakończono</string>
+    <string name="cloud_sync_notification_title_clearing_remote_playlist_ids">Porządkowanie playlist</string>
+    <string name="cloud_sync_notification_title_fetching_remote_collections">Pobieranie kolekcji</string>
+    <string name="cloud_sync_notification_title_uploading_collections">Przesyłanie kolekcji</string>
+    <string name="cloud_sync_notification_title_saving_remote_collections">Zapisywanie kolekcji</string>
+    <string name="cloud_sync_notification_title_clearing_remote_collection_ids">Porządkowanie kolekcji</string>
+    <string name="cloud_sync_notification_title_fetching_remote_stats">Pobieranie statystyk słuchania</string>
+    <string name="cloud_sync_notification_title_uploading_stats">Przesyłanie statystyk słuchania</string>
+
+    <!-- cloudSyncNotificationText(state) -->
+    <string name="cloud_sync_notification_text_syncing_settings">Synchronizowanie ustawień z chmurą</string>
+    <string name="cloud_sync_notification_text_failure">Podczas synchronizacji wystąpił błąd: %1$s</string>
+    <string name="cloud_sync_notification_text_idle">Oczekiwanie na rozpoczęcie synchronizacji</string>
+    <string name="cloud_sync_notification_text_no_musics_to_send">Brak lokalnych utworów do wysłania do chmury</string>
+    <string name="cloud_sync_notification_text_checking_musics_to_send">Sprawdzanie utworów do wysłania do chmury</string>
+    <string name="cloud_sync_notification_text_cleaning">Usuwanie starych lokalnych utworów po synchronizacji</string>
+    <string name="cloud_sync_notification_text_clearing_remote_music_ids">Usuwanie utworów skasowanych w chmurze przed synchronizacją</string>
+    <string name="cloud_sync_notification_text_fetching_from_remote">Pobieranie utworów z chmury</string>
+    <string name="cloud_sync_notification_text_saving_remote">Zapisywanie informacji pobranych z chmury</string>
+    <string name="cloud_sync_notification_text_update_musics">Aktualizowanie istniejących utworów w chmurze</string>
+    <string name="cloud_sync_notification_text_upload_musics">Przesyłanie utworów do chmury</string>
+    <string name="cloud_sync_notification_text_fetching_remote_playlists">Pobieranie playlist z chmury</string>
+    <string name="cloud_sync_notification_text_uploading_playlists">Przesyłanie playlist do chmury</string>
+    <string name="cloud_sync_notification_text_saving_remote_playlists">Zapisywanie playlist z chmury</string>
+    <string name="cloud_sync_notification_text_finish">Synchronizacja zakończona</string>
+    <string name="cloud_sync_notification_text_clearing_remote_playlist_ids">Usuwanie playlist skasowanych w chmurze</string>
+    <string name="cloud_sync_notification_text_fetching_remote_collections">Pobieranie kolekcji z chmury</string>
+    <string name="cloud_sync_notification_text_uploading_collections">Przesyłanie kolekcji do chmury</string>
+    <string name="cloud_sync_notification_text_saving_remote_collections">Zapisywanie kolekcji z chmury</string>
+    <string name="cloud_sync_notification_text_clearing_remote_collection_ids">Usuwanie kolekcji skasowanych w chmurze</string>
+    <string name="cloud_sync_notification_text_fetching_remote_stats">Pobieranie statystyk słuchania z chmury</string>
+    <string name="cloud_sync_notification_text_uploading_stats">Przesyłanie statystyk słuchania do chmury</string>
+    <string name="cloud_sync_notification_unknown_error">Nieznany błąd</string>
+
+    <!-- userType(type) -->
+    <string name="user_type_user">Użytkownik</string>
+    <string name="user_type_admin">Administrator</string>
+    <string name="user_type_unknown">Brak statusu</string>
+
+    <!-- colorPaletteSeed(seed) -->
+    <string name="color_palette_seed_dark_vibrant">Ciemny żywy</string>
+    <string name="color_palette_seed_dark_muted">Ciemny stonowany</string>
+    <string name="color_palette_seed_light_muted">Jasny stonowany</string>
+    <string name="color_palette_seed_light_vibrant">Jasny żywy</string>
+    <string name="color_palette_seed_dominant">Dominujący</string>
+    <string name="color_palette_seed_muted">Stonowany</string>
+    <string name="color_palette_seed_vibrant">Żywy</string>
+
+    <!-- month(monthNumber) -->
+    <string name="month_january">Styczeń</string>
+    <string name="month_february">Luty</string>
+    <string name="month_march">Marzec</string>
+    <string name="month_april">Kwiecień</string>
+    <string name="month_may">Maj</string>
+    <string name="month_june">Czerwiec</string>
+    <string name="month_july">Lipiec</string>
+    <string name="month_august">Sierpień</string>
+    <string name="month_september">Wrzesień</string>
+    <string name="month_october">Październik</string>
+    <string name="month_november">Listopad</string>
+    <string name="month_december">Grudzień</string>
+
+    <!-- Simple formatted functions -->
+    <string name="fetching_musics_from">Pobieranie utworów z: %1$s</string>
+    <string name="new_release_available_text">Dostępna jest nowa wersja gotowa do pobrania: %1$s</string>
+    <string name="artist_cover_method_example_title">Przykładowa ścieżka dla wykonawcy %1$s:</string>
+
+    <!-- duration(duration): e.g. "2 hours and 3 minutes" -->
+    <string name="duration_format">%1$s i %2$s</string>
+    <!-- period(period) for Period.Month: "<month> <year>" -->
+    <string name="period_month_format">%1$s %2$d</string>
+
+    <!-- Counting functions. Plural categories cannot express a dedicated "zero" text in English or
+         French (French "one" also covers 0), so each one has a companion *_zero string. -->
+    <string name="musics_count_zero">Brak utworów</string>
+    <plurals name="musics_count">
+        <item quantity="one">%1$d utwór</item>
+        <item quantity="few">%1$d utwory</item>
+        <item quantity="many">%1$d utworów</item>
+        <item quantity="other">%1$d utworu</item>
+    </plurals>
+    <string name="deleted_musics_automatically_zero">Nie usunięto żadnych utworów</string>
+    <plurals name="deleted_musics_automatically">
+        <item quantity="one">Usunięto %1$d utwór, ponieważ nie istnieje już na urządzeniu</item>
+        <item quantity="few">Usunięto %1$d utwory, ponieważ nie istnieją już na urządzeniu</item>
+        <item quantity="many">Usunięto %1$d utworów, ponieważ nie istnieją już na urządzeniu</item>
+        <item quantity="other">Usunięto %1$d utworu, ponieważ nie istnieją już na urządzeniu</item>
+    </plurals>
+    <string name="plays_zero">Brak odtworzeń</string>
+    <plurals name="plays">
+        <item quantity="one">%1$d odtworzenie</item>
+        <item quantity="few">%1$d odtworzenia</item>
+        <item quantity="many">%1$d odtworzeń</item>
+        <item quantity="other">%1$d odtworzenia</item>
+    </plurals>
+    <string name="selected_elements_zero">Brak wybranych elementów</string>
+    <plurals name="selected_elements">
+        <item quantity="one">%1$d wybrany element</item>
+        <item quantity="few">%1$d wybrane elementy</item>
+        <item quantity="many">%1$d wybranych elementów</item>
+        <item quantity="other">%1$d wybranego elementu</item>
+    </plurals>
+    <string name="selected_musics_zero">Brak wybranych utworów</string>
+    <plurals name="selected_musics">
+        <item quantity="one">%1$d wybrany utwór</item>
+        <item quantity="few">%1$d wybrane utwory</item>
+        <item quantity="many">%1$d wybranych utworów</item>
+        <item quantity="other">%1$d wybranego utworu</item>
+    </plurals>
+    <string name="shared_list_preview_users_zero">Brak użytkowników</string>
+    <plurals name="shared_list_preview_users">
+        <item quantity="one">%1$d użytkownik</item>
+        <item quantity="few">%1$d użytkowników</item>
+        <item quantity="many">%1$d użytkowników</item>
+        <item quantity="other">%1$d użytkownika</item>
+    </plurals>
+    <string name="shared_list_preview_connected_users_zero">Brak połączonych użytkowników</string>
+    <plurals name="shared_list_preview_connected_users">
+        <item quantity="one">%1$d połączony użytkownik</item>
+        <item quantity="few">%1$d połączonych użytkowników</item>
+        <item quantity="many">%1$d połączonych użytkowników</item>
+        <item quantity="other">%1$d połączonego użytkownika</item>
+    </plurals>
+
+    <!-- hours(hours) / minutes(minutes) / seconds(seconds) -->
+    <plurals name="hours">
+        <item quantity="one">%1$d godzina</item>
+        <item quantity="few">%1$d godziny</item>
+        <item quantity="many">%1$d godzin</item>
+        <item quantity="other">%1$d godziny</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$d minuta</item>
+        <item quantity="few">%1$d minuty</item>
+        <item quantity="many">%1$d minut</item>
+        <item quantity="other">%1$d minuty</item>
+    </plurals>
+    <plurals name="seconds">
+        <item quantity="one">%1$d sekunda</item>
+        <item quantity="few">%1$d sekundy</item>
+        <item quantity="many">%1$d sekund</item>
+        <item quantity="other">%1$d sekundy</item>
+    </plurals>
+</resources>

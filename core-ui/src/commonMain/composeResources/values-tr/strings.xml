@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Values shared by every language (interface defaults in Strings) -->
+
+    <string name="playlists">Çalma listeleri</string>
+    <string name="albums">Albümler</string>
+    <string name="ok">Tamam</string>
+    <string name="glacier_theme">Buzul</string>
+    <string name="passion_theme">Tutku</string>
+    <string name="playlist_detail_title">Çalma listesi</string>
+    <string name="collection_detail_title">Koleksiyon</string>
+    <string name="album_detail_title">Albüm</string>
+
+    <string name="app_logo">Uygulama logosu</string>
+    <string name="cannot_retrieve_songs">Şarkılar alınamıyor!</string>
+    <string name="no_elements">Öğe yok</string>
+    <string name="empty_quick_access">Hızlı erişimde öğe yok</string>
+    <string name="empty_folders">Klasör yok</string>
+    <string name="empty_albums">Albüm yok</string>
+    <string name="empty_musics">Şarkı yok</string>
+    <string name="empty_artists">Sanatçı yok</string>
+    <string name="empty_playlists">Çalma listesi yok</string>
+    <string name="empty_months">Ay yok</string>
+    <string name="empty_collections">Koleksiyon yok</string>
+    <string name="empty_musics_explanations">Şarkıları burada görmek için ayarlardan şarkı ekleyin</string>
+    <string name="empty_albums_explanations">Albümlerinizi burada görmek için ayarlardan şarkı ekleyin</string>
+    <string name="empty_artists_explanations">Sanatçılarınızı burada görmek için ayarlardan şarkı ekleyin</string>
+    <string name="empty_folders_explanations">Klasörlerinizi burada görmek için ayarlardan şarkı ekleyin</string>
+    <string name="empty_playlists_explanations">"+" düğmesine tıklayarak bir çalma listesi oluşturun</string>
+    <string name="empty_quick_access_explanations">Burada görünmesi için hızlı erişime bir şarkı, albüm, sanatçı veya çalma listesi ekleyin</string>
+    <string name="empty_months_explanations">Şarkıları eklenme ayına göre gruplanmış olarak burada görmek için ayarlardan şarkı ekleyin</string>
+    <string name="empty_collections_explanations">Benzer albümleri ve sanatçıları bir koleksiyonda toplayın. Bir sanatçıya veya albüme eklenen yeni şarkılar, bağlı oldukları koleksiyonlara otomatik olarak eklenir</string>
+    <string name="back_button">Geri düğmesi</string>
+    <string name="header_bar_right_button">Başlık çubuğu sağ düğmesi</string>
+    <string name="image">Görsel</string>
+    <string name="more_button">Daha fazla düğmesi</string>
+    <string name="more">Daha fazla</string>
+    <string name="settings_access_button">Ayarlara erişim düğmesi</string>
+    <string name="create_playlist_button">Çalma listesi oluşturma düğmesi</string>
+    <string name="shuffle_button">Karıştırma düğmesi</string>
+    <string name="favorite">Favoriler</string>
+    <string name="in_this_collection">Bu koleksiyonda</string>
+    <string name="folders">Klasörler</string>
+    <string name="artists">Sanatçılar</string>
+    <string name="by_folders">Klasöre göre</string>
+    <string name="by_months">Aya göre</string>
+    <string name="musics">Şarkılar</string>
+    <string name="quick_access">Hızlı erişim</string>
+    <string name="missing_permissions">Uygulamanın düzgün çalışması için gerekli tüm izinleri vermeniz gerekir.</string>
+    <string name="played_list">Çalma sırası</string>
+    <string name="current_song">Çalan şarkı</string>
+    <string name="lyrics">Şarkı sözleri</string>
+    <string name="activate_remote_lyrics_fetch_title">Şarkı sözlerini internetten almayı etkinleştir</string>
+    <!-- %1$s: lyrics_provider_name -->
+    <string name="activate_remote_lyrics_fetch_text">Şarkının dosyasında söz bulunamadığında, uygulamanın çalan şarkının sözlerini harici bir hizmette (%1$s) araması için izninize ihtiyacı var.</string>
+    <!-- %1$s: lyrics_provider_name -->
+    <string name="activate_remote_lyrics_fetch_hint">Şarkının dosyasında söz bulunamadığında uygulama, sözleri harici bir kaynakta (%1$s) bulmak için şarkının adını, albümünü ve sanatçısını kullanır.</string>
+    <string name="no_lyrics_found">Bu şarkı için söz bulunamadı</string>
+    <string name="local_lyrics_provider">Müzik dosyasının meta verilerinden alınan sözler</string>
+    <string name="remote_lyrics_provider">LrcLib tarafından sağlanan sözler</string>
+    <string name="complete_application_title">Eksiksiz bir müzik uygulaması</string>
+    <string name="complete_application_text">Tüm şarkılarınızı, albümlerinizi, sanatçılarınızı ve çalma listelerinizi dinleyin.</string>
+    <string name="quick_access_title">En sevdiklerinizi hep yakınınızda tutun.</string>
+    <string name="quick_access_text">Hızlı erişim sayesinde örneğin favori albümünüze veya en sevdiğiniz şarkılara kolayca ulaşabilirsiniz.</string>
+    <string name="modify_elements_title">Müziğinizi düzenleyin</string>
+    <string name="modify_elements_text">Bir albümün, şarkının, sanatçının bilgilerini düzenleyebilirsiniz…</string>
+    <string name="dynamic_theme_feature_title">Dinamik tema</string>
+    <string name="dynamic_theme_feature_text">Soul Searching, çalan şarkıya göre değişen dinamik bir tema kullanma imkânı sunar.</string>
+    <string name="manage_folders_title">Kullanılan klasörleri yönetin</string>
+    <string name="manage_folders_text">Şarkıların hangi klasörlerden alınacağını yönetin.</string>
+    <string name="add_new_musics_title">Yeni şarkılar ekleyin</string>
+    <string name="add_new_musics_text">Cihazınızdan kolayca yeni şarkılar ekleyebilirsiniz.</string>
+    <string name="personalize_main_page_title">Tam istediğiniz gibi</string>
+    <string name="personalize_main_page_text">Hızlı erişimi istemiyor musunuz ya da ana sayfanın bölümlerine ulaşmanızı kolaylaştıran bir çubuk mu istiyorsunuz? Bunları uygulama ayarlarından yapabilirsiniz.</string>
+    <string name="manage_album_view_title">Albüm görünümü</string>
+    <string name="manage_album_view_text">Albüm görünümünü yönet</string>
+    <string name="manage_player_title">Müzik çalar</string>
+    <string name="manage_player_text">Müzik çaları yönet</string>
+    <string name="player_swipe_title">Çalma sırasında ileri veya geri gitmek için şarkı kapağını kaydırın</string>
+    <string name="player_rewind_title">Önceki şarkıyı çalmadan önce çalan şarkıyı başa sar</string>
+    <string name="player_minimised_progression_title">Küçültülmüş çalar görünümünde şarkının ilerlemesini göster</string>
+    <string name="soul_mix_settings_title">Soul Mix için her klasörden alınacak şarkı sayısı</string>
+    <string name="searching_songs_from_your_device">Cihazınızdaki şarkılar aranıyor…</string>
+    <string name="search_for_musics">Şarkı ara</string>
+    <string name="search_all">Şarkı, sanatçı, albüm, çalma listesi ara…</string>
+    <string name="sort_by_added_date">Eklenme tarihi</string>
+    <string name="sort_by_most_listened">En çok dinlenen</string>
+    <string name="sort_by_name">Alfabetik</string>
+    <string name="remove_from_quick_access">Hızlı erişimden kaldır</string>
+    <string name="remove_from_playlist">Çalma listesinden kaldır</string>
+    <string name="remove_from_played_list">Çalma sırasından kaldır</string>
+    <string name="remove_from_collection">Koleksiyondan kaldır</string>
+    <string name="add_to_quick_access">Hızlı erişime ekle</string>
+    <string name="add_to_playlist">Çalma listesine ekle</string>
+    <string name="add_to_collection">Koleksiyona ekle</string>
+    <string name="create">Oluştur</string>
+    <string name="cancel">İptal</string>
+    <string name="delete">Sil</string>
+    <string name="remove">Kaldır</string>
+    <string name="soul_mix_info_dialog_text">Her klasörünüzden alınan şarkılardan oluşan bir karışımı dinleyin!\nHer klasörden alınacak şarkı sayısını ayarlardan belirleyebilirsiniz.</string>
+    <string name="create_playlist_dialog_title">Yeni çalma listesi oluştur</string>
+    <string name="create_collection_dialog_title">Yeni koleksiyon oluştur</string>
+    <string name="playlist_name">Çalma listesi adı</string>
+    <string name="collection_name">Koleksiyon adı</string>
+    <string name="name_already_exists">Bu ad zaten kullanılıyor</string>
+    <string name="music_name">Şarkı adı</string>
+    <string name="music_album_position">Albümdeki sırası</string>
+    <string name="album_name">Albüm adı</string>
+    <string name="album_artist_name">Albüm sanatçısı</string>
+    <string name="artist_name">Sanatçı adı</string>
+    <string name="playlist_cover">Çalma listesi kapağı</string>
+    <string name="collection_cover">Koleksiyon kapağı</string>
+    <string name="album_cover">Albüm kapağı</string>
+    <string name="artist_cover">Sanatçı kapağı</string>
+    <string name="playlist_information">Çalma listesi bilgileri</string>
+    <string name="collection_information">Koleksiyon bilgileri</string>
+    <string name="music_information">Şarkı bilgileri</string>
+    <string name="music_path">Şarkının yolu:</string>
+    <string name="music_file_cover">Dosya kapağı</string>
+    <string name="music_app_cover">Uygulama kapağı</string>
+    <string name="cover_selection">Kapak seçimi</string>
+    <string name="select_top_start_cover_image">Sol üst kapak görselini seç</string>
+    <string name="select_top_end_cover_image">Sağ üst kapak görselini seç</string>
+    <string name="select_bottom_start_cover_image">Sol alt kapak görselini seç</string>
+    <string name="select_bottom_end_cover_image">Sağ alt kapak görselini seç</string>
+    <string name="artist_information">Sanatçı bilgileri</string>
+    <string name="album_information">Albüm bilgileri</string>
+    <string name="add_artist">Sanatçı ekle</string>
+    <string name="delete_music_dialog_title">Bu şarkıyı silmek istediğinizden emin misiniz?</string>
+    <string name="delete_music_dialog_text">Şarkı uygulamadan kaldırılacak.</string>
+    <string name="delete_album_dialog_title">Bu albümü silmek istediğinizden emin misiniz?</string>
+    <string name="delete_playlist_dialog_title">Bu çalma listesini silmek istediğinizden emin misiniz?</string>
+    <string name="delete_collection_dialog_title">Bu koleksiyonu silmek istediğinizden emin misiniz?</string>
+    <string name="delete_artist_dialog_title">Bu sanatçıyı silmek istediğinizden emin misiniz?</string>
+    <string name="delete_selected_musics_dialog_title">Seçili şarkıları silmek istediğinizden emin misiniz?</string>
+    <string name="delete_selected_musics_dialog_text">Şarkılar uygulamadan kaldırılacak.</string>
+    <string name="delete_folder_musics_dialog_title">Bu klasörü silmek istediğinizden emin misiniz?</string>
+    <string name="delete_folder_musics_dialog_text">Bu klasördeki tüm şarkılar uygulamadan kaldırılacak. Klasör, sonraki şarkı taramalarında da devre dışı bırakılacak.</string>
+    <string name="delete_selected_folders_musics_dialog_title">Seçili klasörleri silmek istediğinizden emin misiniz?</string>
+    <string name="delete_selected_folders_musics_dialog_text">Bu klasörlerdeki tüm şarkılar uygulamadan kaldırılacak. Bu klasörler, sonraki şarkı taramalarında da devre dışı bırakılacak.</string>
+    <string name="delete_month_musics_dialog_title">Bu ay seçimini silmek istediğinizden emin misiniz?</string>
+    <string name="delete_month_musics_dialog_text">Bu aya ait tüm şarkılar uygulamadan kaldırılacak.</string>
+    <string name="delete_selected_months_musics_dialog_title">Seçili ay seçimlerini silmek istediğinizden emin misiniz?</string>
+    <string name="delete_selected_months_musics_dialog_text">Bu aylara ait tüm şarkılar uygulamadan kaldırılacak.</string>
+    <string name="delete_selected_albums_dialog_title">Seçili albümleri silmek istediğinizden emin misiniz?</string>
+    <string name="delete_selected_artists_dialog_title">Seçili sanatçıları silmek istediğinizden emin misiniz?</string>
+    <string name="delete_selected_playlists_dialog_title">Seçili çalma listelerini silmek istediğinizden emin misiniz?</string>
+    <string name="delete_selected_collections_dialog_title">Seçili koleksiyonları silmek istediğinizden emin misiniz?</string>
+    <string name="remove_music_from_playlist_title">Bu şarkıyı bu çalma listesinden kaldırmak istediğinizden emin misiniz?</string>
+    <string name="remove_music_from_playlist_text">Bu şarkı çalma listesinden kaldırılacak ancak uygulamadan silinmeyecek.</string>
+    <string name="remove_selected_music_from_playlist_title">Seçili şarkıları bu çalma listesinden kaldırmak istediğinizden emin misiniz?</string>
+    <string name="remove_selected_music_from_playlist_text">Seçili şarkılar bu çalma listesinden kaldırılacak ancak uygulamadan silinmeyecek.</string>
+    <string name="remove_artist_from_collection_title">Bu sanatçı koleksiyondan kaldırılsın mı?</string>
+    <string name="remove_artist_from_collection_text">Sanatçı bu koleksiyondan kaldırılacak ancak uygulamadan silinmeyecek.</string>
+    <string name="remove_album_from_collection_title">Bu albüm koleksiyondan kaldırılsın mı?</string>
+    <string name="remove_album_from_collection_text">Albüm bu koleksiyondan kaldırılacak ancak uygulamadan silinmeyecek.</string>
+    <string name="modify_album">Bu albümü düzenle</string>
+    <string name="modify_artist">Bu sanatçıyı düzenle</string>
+    <string name="modify_music">Bu şarkıyı düzenle</string>
+    <string name="modify_playlist">Bu çalma listesini düzenle</string>
+    <string name="modify_collection">Bu koleksiyonu düzenle</string>
+    <string name="covers_of_the_album">Albümdeki şarkıların kapakları</string>
+    <string name="covers_of_the_artist">Sanatçının şarkılarının kapakları</string>
+    <string name="covers_of_the_playlist">Çalma listesindeki şarkıların kapakları</string>
+    <string name="covers_of_the_collection">Koleksiyondaki şarkıların kapakları</string>
+    <string name="covers_of_song_album">Şarkının albümündeki kapaklar</string>
+    <string name="no_available_covers">Kullanılabilir kapak yok</string>
+    <string name="delete_album">Bu albümü sil</string>
+    <string name="delete_artist">Bu sanatçıyı sil</string>
+    <string name="delete_music">Bu şarkıyı sil</string>
+    <string name="delete_playlist">Bu çalma listesini sil</string>
+    <string name="delete_collection">Bu koleksiyonu sil</string>
+    <string name="delete_selected_albums">Seçili albümleri sil</string>
+    <string name="delete_selected_artists">Seçili sanatçıları sil</string>
+    <string name="delete_selected_playlists">Seçili çalma listelerini sil</string>
+    <string name="delete_selected_collections">Seçili koleksiyonları sil</string>
+    <string name="delete_selected_musics">Seçili şarkıları sil</string>
+    <string name="delete_folder_musics">Klasörü sil</string>
+    <string name="delete_selected_folders_musics">Seçili klasörleri sil</string>
+    <string name="delete_month_musics">Ay seçimini sil</string>
+    <string name="delete_selected_months_musics">Seçili ay seçimlerini sil</string>
+    <string name="play_next">Sonra çal</string>
+    <string name="add_to_queue">Sıraya ekle</string>
+    <string name="personalized_theme_title">Özel tema</string>
+    <string name="personalized_theme_text">Dinamik temayı şuralarda uygula:</string>
+    <string name="dynamic_player_view">Çalar görünümü</string>
+    <string name="dynamic_playlist_view">Çalma listesi, albüm, sanatçı, ay ve klasör görünümü</string>
+    <string name="dynamic_other_view">Diğer görünümler</string>
+    <string name="settings">Ayarlar</string>
+    <string name="advanced_settings_title">Gelişmiş ayarlar</string>
+    <string name="advanced_settings_text">Uygulamada kullanılan kapakları yönet</string>
+    <string name="reload_covers_title">Kapakları yeniden yükle</string>
+    <string name="reload_covers_text">Kapakları dosya verilerinden yeniden yükle</string>
+    <string name="reload_musics_covers">Şarkı kapaklarını yeniden yükle</string>
+    <string name="delete_playlists_covers">Çalma listesi kapaklarını sil</string>
+    <string name="delete_collections_covers">Koleksiyon kapaklarını sil</string>
+    <string name="reload_albums_covers">Albüm kapaklarını yeniden yükle</string>
+    <string name="reload_artists_covers">Sanatçı kapaklarını yeniden yükle</string>
+    <string name="split_multiple_artists_title">Sanatçıları ayır</string>
+    <string name="split_multiple_artists_text">Birden fazla sanatçıdan oluşan sanatçıları seçip ayırın</string>
+    <string name="artist_cover_method_title">Sanatçı kapaklarının kaynağı</string>
+    <string name="artist_cover_method_text">Sanatçı kapaklarının alınma yöntemini seçin</string>
+    <string name="activate_artist_cover_method">Yola göre almayı etkinleştir</string>
+    <string name="artist_cover_method_dynamic_name_title">Sanatçı adının işlenmesi</string>
+    <string name="cover_folder_retriever_path_selection_title">Üst klasörü seç</string>
+    <string name="cover_folder_retriever_path_selection_no_path_selected">Klasör seçilmedi</string>
+    <string name="cover_folder_retriever_file_extension">Görsel uzantısı</string>
+    <string name="cover_folder_retriever_folder_title">Dinamik klasör</string>
+    <string name="cover_folder_retriever_folder_text">Klasör adı sanatçının adına karşılık gelir</string>
+    <string name="cover_folder_retriever_folder_incomplete">Gerekli veriler eksik</string>
+    <string name="cover_folder_retriever_rules_white_space">Boşlukları değiştir</string>
+    <string name="cover_folder_retriever_rules_replacement">Yerine konacak karakter</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_uppercase">Büyük harf</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_no_treatment">Değişiklik yok</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_lowercase">Küçük harf</string>
+    <string name="cover_folder_retriever_file_title">Dinamik kapak dosyası</string>
+    <string name="cover_folder_retriever_file_text">Görsel dosyasının adı sanatçının adına karşılık gelir</string>
+    <string name="cover_folder_retriever_dynamic_file_title">Kapak dosyası adı</string>
+    <string name="activate_github_release_fetch_title">GitHub'da yeni sürümleri denetlemeyi etkinleştir</string>
+    <string name="activate_github_release_fetch_text">Uygulamanın yeni bir sürümü GitHub'da yayımlandığında uygulama içi bildirim almak ister misiniz?</string>
+    <string name="activate_github_release_fetch_hint">Uygulamanın yeni bir sürümü GitHub'da yayımlandığında uygulama içi bildirim alacaksınız.</string>
+    <string name="go_to_settings">Ayarlara git</string>
+    <string name="manage_musics_title">Şarkıları yönet</string>
+    <string name="manage_musics_text">Şarkıları düzenleyin ve yenilerini ekleyin, kullanılan klasörleri yönetin</string>
+    <string name="modify_music_file_title">Cihazdaki dosyaları değiştir</string>
+    <string name="modify_music_file_text">Şarkı bilgilerini düzenlemek, cihazınızdaki dosyanın meta verilerini de değiştirir</string>
+    <string name="color_theme_title">Renk teması</string>
+    <string name="color_theme_text">Dinamik tema, özel tema</string>
+    <string name="personalization_title">Kişiselleştirme</string>
+    <string name="personalization_text">Çalar ve ana sayfa görünümünü yönet</string>
+    <string name="about_title">Soul Searching hakkında</string>
+    <string name="about_text">Geliştiriciler, uygulama sürümü</string>
+    <string name="new_release_available_title">Yeni sürüm mevcut!</string>
+    <string name="statistics_title">İstatistikler</string>
+    <string name="statistics_text">Dinlemelerinizle ilgili istatistikler</string>
+    <string name="most_played_songs">En çok çalınan şarkılar (çalma sayısı)</string>
+    <string name="most_listened_songs">En çok çalınan şarkılar (dinleme süresi)</string>
+    <string name="listening_time">Toplam dinleme süresi</string>
+    <string name="no_data_on_this_period">Bu döneme ait veri yok</string>
+    <string name="most_played_albums">En çok çalınan albümler</string>
+    <string name="most_played_artists">En çok çalınan sanatçılar</string>
+    <string name="artists_with_most_songs">En çok şarkısı olan sanatçılar</string>
+    <string name="most_played_playlists">En çok çalınan çalma listeleri</string>
+    <string name="theme_selection_title">Ana tema</string>
+    <string name="theme_selection_text">Uygulamanın ana temasını seçin</string>
+    <string name="force_dark_theme_title">Koyu temayı zorla</string>
+    <string name="force_light_theme_title">Açık temayı zorla</string>
+    <string name="steel_theme">Çelik</string>
+    <string name="dusk_theme">Alacakaranlık</string>
+    <string name="greenery_theme">Yeşillik</string>
+    <string name="tree_bark_theme">Ağaç kabuğu</string>
+    <string name="extracted_color_title">Kapaktan çıkarılan renk</string>
+    <string name="extracted_color_text">Dinamik renk temasını oluşturmak için kullanılan temel rengi belirleyin</string>
+    <string name="extracted_color_info">Seçilen renk çıkarılamazsa baskın renk kullanılır.</string>
+    <string name="main_page_title">Ana sayfa</string>
+    <string name="main_page_text">Ana sayfa görünümünü yönet</string>
+    <string name="show_quick_access">Hızlı erişimi göster</string>
+    <string name="show_playlists">Çalma listelerini göster</string>
+    <string name="show_collections">Koleksiyonları göster</string>
+    <string name="collections">Koleksiyonlar</string>
+    <string name="show_albums">Albümleri göster</string>
+    <string name="show_artists">Sanatçıları göster</string>
+    <string name="manage_musics_view_text">Şarkı görünümünü yönet</string>
+    <string name="show_musics_by_folders">Şarkıları klasöre göre göster</string>
+    <string name="show_musics_by_months">Şarkıları aya göre göster</string>
+    <string name="show_album_track_number">Parça numaralarını göster</string>
+    <string name="initial_section_title">Açılış bölümü</string>
+    <string name="initial_section_text">Uygulama açıldığında gösterilecek bölümü seçin</string>
+    <string name="use_vertical_access_bar_title">Dikey erişim çubuğunu kullan</string>
+    <string name="use_horizontal_access_bar_text">Yatay erişim çubuğunu kullan</string>
+    <string name="used_folders_title">Kullanılan klasörler</string>
+    <string name="used_folders_text">Uygulamada kullanılan klasörleri belirleyin</string>
+    <string name="fetching_folders">Klasörler alınıyor</string>
+    <string name="add_musics_title">Şarkı ekle</string>
+    <string name="add_musics_text">Cihazınızdan uygulamaya yeni şarkılar ekleyin</string>
+    <string name="deleting_musics_from_unselected_folders">Seçilmemiş klasörlerdeki şarkılar siliniyor…</string>
+    <string name="dynamic_theme_title">Dinamik tema</string>
+    <string name="dynamic_theme_text">Çalan şarkının albüm kapağına dayalı genel renk teması</string>
+    <string name="system_theme_title">Sistem teması</string>
+    <string name="system_theme_text">Sisteminizin renk moduna dayalı genel renk teması</string>
+    <string name="lead_developer">Baş geliştirici</string>
+    <string name="developers_title">Geliştiriciler</string>
+    <string name="developers_text">Soul Searching projesinin arkasındaki geliştiriciler</string>
+    <string name="changelog_title">Son güncelleme</string>
+    <string name="changelog_text">Yeni özellikler, hata düzeltmeleri</string>
+    <string name="changelog_update_required">En yeni özelliklerin keyfini çıkarmak için uygulamayı güncelleyin!</string>
+    <string name="version_name_title">Uygulama sürümü</string>
+    <string name="project_site_title">Proje web sitesi ve kaynak kodu</string>
+    <string name="project_site_text">Kaynak kodu, öneri gönderin</string>
+    <string name="no_new_musics">Eklenecek yeni şarkı yok!</string>
+    <string name="saving_new_musics">Yeni şarkılar kaydediliyor…</string>
+    <string name="songs_saved">Şarkılar başarıyla kaydedildi!</string>
+    <string name="search_for_new_songs">Yeni şarkıları ara</string>
+    <string name="app_migration">Uygulama verileri güncelleniyor</string>
+    <string name="multiple_artists_title">Birden fazla sanatçılı şarkılar</string>
+    <string name="multiple_artists_text">Uygulama, birden fazla sanatçısı olan şarkılar buldu. Bu sanatçıları ayrı sanatçılara ayırmak mı yoksa tek sanatçı olarak tutmak mı istediğinizi seçin.</string>
+    <string name="multiple_artists_selection_title">Ayrılacak seçili sanatçılar:</string>
+    <string name="no_multiple_artists">Ayrılacak sanatçı yok</string>
+    <string name="multiple_selection">Çoklu seçim</string>
+    <string name="field_cannot_be_empty">Alan boş bırakılamaz</string>
+    <string name="field_must_be_anumber">Alan bir sayı olmalıdır</string>
+    <string name="player_volume">Çalar ses düzeyi</string>
+    <string name="an_error_occurred">Bir hata oluştu</string>
+    <string name="album_does_not_exists">Bu albüm mevcut değil</string>
+    <string name="artist_does_not_exists">Bu sanatçı mevcut değil</string>
+    <string name="playlist_does_not_exists">Bu çalma listesi mevcut değil</string>
+    <string name="collection_does_not_exists">Bu koleksiyon mevcut değil</string>
+    <string name="folder_does_not_exists">Bu klasör mevcut değil</string>
+    <string name="month_playlist_does_not_exists">Bu aylık çalma listesi mevcut değil</string>
+    <string name="artist_detail_title">Sanatçı</string>
+    <string name="month_detail_title">Ay</string>
+    <string name="folder_detail_title">Klasör</string>
+    <string name="element_detail_edit">Düzenle</string>
+    <string name="element_detail_play">Çal</string>
+    <string name="element_detail_shuffle">Karıştır</string>
+    <string name="element_detail_titles">Şarkılar</string>
+    <string name="and">ve</string>
+    <string name="continue_played_list_title">Kaldığınız yerden devam edin</string>
+    <string name="continue_played_list_action">Devam et</string>
+    <string name="saved_changes">Değişiklikler kaydedildi</string>
+    <string name="cloud_text">Şarkılarınızı Cloudy ile eşitleyin</string>
+    <string name="cloud_settings_title">Ayarlar</string>
+    <string name="cloud_settings_text">Sunucu URL'si</string>
+    <string name="cloud_settings_last_general_sync">Son genel eşitleme</string>
+    <string name="cloud_settings_last_statistics_sync">Son istatistik eşitlemesi</string>
+    <string name="cloud_settings_last_settings_sync">Son ayar eşitlemesi</string>
+    <string name="cloud_settings_no_sync">Eşitleme yok</string>
+    <string name="cloud_url_field_label">Sunucu URL'si</string>
+    <string name="cloud_name_field_label">Kullanıcı adı</string>
+    <string name="cloud_password_field_label">Şifre</string>
+    <string name="cloud_sign_up">Kaydol</string>
+    <string name="cloud_no_account">Hesabım yok</string>
+    <string name="cloud_connection">Bağlantı</string>
+    <string name="cloud_sign_in">Giriş yap</string>
+    <string name="cloud_registration_code">Kayıt kodu</string>
+    <string name="cloud_user_settings">Kullanıcı ayarları</string>
+    <string name="disconnect">Çıkış yap</string>
+    <string name="inscription_code_settings_title">Kayıt kodları</string>
+    <string name="generate_code_button">Kod oluştur</string>
+    <string name="inscription_code_settings_text">Davet kodlarınızı yönetin, yeni bir kullanıcı için tek kullanımlık kod oluşturun</string>
+    <string name="generated_code">Oluşturulan kod</string>
+    <string name="cloud_sync_title">Eşitleme</string>
+    <string name="cloud_sync_text">Uygulama ile Cloudy arasındaki eşitlemeyi yönetin</string>
+    <string name="cloud_sync_button">Bulutla eşitle</string>
+    <string name="music_channel_notification_name">Çalan şarkı bildirimi</string>
+    <string name="music_channel_notification_description">Çalmakta olan şarkıyı kontrol etmek için kullanılır</string>
+    <string name="cloud_sync_channel_notification_name">Cloudy eşitleme bildirimi</string>
+    <string name="cloud_sync_channel_notification_description">Uygulama ile Cloudy arasında veri eşitlemek için kullanılır</string>
+    <string name="start_shared_played_list">Ortak çalma sırası başlat</string>
+    <string name="shared_list_title">Ortak sıra</string>
+    <string name="shared_list_host">Ev sahibi</string>
+    <string name="shared_list_guests">Konuklar</string>
+    <string name="shared_list_code_title">Davet kodu</string>
+    <string name="shared_list_code_description">Arkadaşlarınızın bu ortak çalma sırasına katılabilmesi için bu kodu onlarla paylaşın!</string>
+    <string name="shared_list_remove_user_title">Kullanıcıyı ortak sıradan çıkar</string>
+    <string name="shared_list_remove_user_text">Bu kullanıcıyı çıkarmak, şarkılarını da çalma sırasından kaldırır</string>
+    <string name="shared_list_remove_user_button">Çıkar</string>
+    <string name="shared_list_code_label">Davet kodu</string>
+    <string name="cloud_shared_list_title">Ortak çalma sırası</string>
+    <string name="cloud_shared_list_text">Ortak çalma sıralarına katılın ve bunları yönetin</string>
+    <string name="cloud_shared_list_join_title">Bir çalma sırasına katıl</string>
+    <string name="cloud_sharedlist_join_text">Bir kodla ortak çalma sırasına katılın</string>
+    <string name="join_shared_list_button">Katıl</string>
+    <string name="cloud_users_title">Cloudy kullanıcıları</string>
+    <string name="cloud_users_text">Cloudy sunucusundaki tüm kullanıcıları görün</string>
+    <string name="cloud_users_delete_dialog_title">Kullanıcıyı sil</string>
+    <string name="cloud_users_delete_dialog_text">Bu kullanıcıyı silmek istediğinizden emin misiniz?</string>
+    <string name="cloud_alpha_warning_text">Cloudy alfa aşamasındadır ve uygulamadaki tüm özellikler Cloudy ile düzgün çalışmayabilir</string>
+    <string name="cloud_explanations_title">Soul Searching için bir bulut</string>
+    <string name="cloud_explanations_text">Cloudy, Soul Searching için kendi sunucunuzda barındırabileceğiniz bir bulut sistemidir ve şu kullanımlar için tasarlanmıştır:\n- şarkılarınıza birden fazla cihazdan erişmek\n- birden fazla kullanıcı arasında ortak bir çalma sırası başlatmak\n- kullanıcıları yönetmek (aile, arkadaşlar...)\n\nCloudy'yi kendi sunucunuzda barındırmak için lütfen belgelerine bakın.</string>
+    <string name="cloud_explanations_redirect">Cloudy belgeleri</string>
+    <string name="cloud_add_url_to_shared_list_title">URL'den şarkı ekle</string>
+    <string name="add">Ekle</string>
+    <string name="shared_list_delete_title">Bu ortak çalma sırasını sil</string>
+    <string name="shared_list_delete_text">Kullanıcıların sıra ile bağlantısı kesilecek ve sıra silinecek</string>
+    <string name="music_synced_on_cloud">Şarkı bulutla eşitlendi</string>
+    <string name="music_remote_only">Buluttan gelen şarkı</string>
+    <string name="music_local_only">Buluta yüklenmemiş şarkı</string>
+    <string name="shortcuts_title">Kısayollar</string>
+    <string name="shortcuts_text">Uygulamanın kısayollarını görün</string>
+    <string name="shortcut_player_category">Çalar kısayolları</string>
+    <string name="shortcut_toggle_play_pause_description">Oynat/duraklat</string>
+    <string name="shortcut_previous_description">Önceki</string>
+    <string name="shortcut_next_description">Sonraki</string>
+    <string name="shortcut_seek_forward_description">İleri sar</string>
+    <string name="shortcut_seek_backward_description">Geri sar</string>
+    <string name="shortcut_volume_up_description">Sesi aç</string>
+    <string name="shortcut_volume_down_description">Sesi kıs</string>
+    <string name="shortcut_toggle_favorite_description">Çalan şarkıyı favorilere ekle/çıkar</string>
+    <string name="gigabyte_abbreviation">GB</string>
+    <string name="user_storage_title">Kullanıcı verileri</string>
+    <string name="user_storage_text">Cloudy'de depolanan kullanıcı verilerini yönetin</string>
+    <string name="user_storage_section_title">Depolama</string>
+    <string name="user_storage_all_available_info">Yönetici olarak kullanabileceğiniz en fazla depolama alanı, Cloudy sunucusundaki kullanılabilir alana eşittir</string>
+    <string name="user_storage_reduced_info">Kullanıcı olarak kullanabileceğiniz en fazla depolama alanı, bu Cloudy sunucusunun yöneticisinin belirlediği kurala bağlıdır. Daha fazla bilgi için yöneticinize başvurun</string>
+    <string name="clear_user_storage_button">Tüm verilerimi temizle</string>
+    <string name="clear_user_storage_dialog_text">Tüm verileriniz Cloudy'den silinecek. Hesabınız silinmeyecek</string>
+    <string name="statistics_all_period_label">Tüm zamanlar</string>
+    <string name="statistics_year_period_label">Yıla göre</string>
+    <string name="statistics_month_period_label">Aya göre</string>
+    <string name="playback_error_player_error">Seçilen şarkı çalınamıyor</string>
+    <string name="simple_cover_type">Basit</string>
+    <string name="grid_cover_type">Izgara</string>
+    <string name="add_to_playlist_screen_title">Çalma listesine ekle</string>
+    <string name="add_to_playlist_search_placeholder">Çalma listesine eklenecek şarkıları ara</string>
+    <string name="add_to_playlist_empty_title">Şarkı yok</string>
+    <string name="add_to_playlist_empty_text">Çalma listesine eklenecek şarkı bulunamadı</string>
+
+    <!-- Keyboard shortcuts commands -->
+    <string-array name="shortcut_toggle_play_pause_commands">
+        <item>Boşluk</item>
+    </string-array>
+    <string-array name="shortcut_previous_commands">
+        <item>Shift</item>
+        <item>Sol ok</item>
+    </string-array>
+    <string-array name="shortcut_next_commands">
+        <item>Shift</item>
+        <item>Sağ ok</item>
+    </string-array>
+    <string-array name="shortcut_seek_forward_commands">
+        <item>Sağ ok</item>
+    </string-array>
+    <string-array name="shortcut_seek_backward_commands">
+        <item>Sol ok</item>
+    </string-array>
+    <string-array name="shortcut_volume_up_commands">
+        <item>Yukarı ok</item>
+    </string-array>
+    <string-array name="shortcut_volume_down_commands">
+        <item>Aşağı ok</item>
+    </string-array>
+    <string-array name="shortcut_toggle_favorite_commands">
+        <item>F</item>
+    </string-array>
+
+    <!-- cloudSyncNotificationTitle(state) -->
+    <string name="cloud_sync_notification_title_syncing_settings">Ayarlar eşitleniyor</string>
+    <string name="cloud_sync_notification_title_failure">Başarısız</string>
+    <string name="cloud_sync_notification_title_idle">Bekleniyor</string>
+    <string name="cloud_sync_notification_title_no_musics_to_send">Gönderilecek şarkı yok</string>
+    <string name="cloud_sync_notification_title_checking_musics_to_send">Denetleniyor</string>
+    <string name="cloud_sync_notification_title_cleaning">Şarkılar temizleniyor</string>
+    <string name="cloud_sync_notification_title_clearing_remote_music_ids">Şarkılar temizleniyor</string>
+    <string name="cloud_sync_notification_title_fetching_from_remote">Şarkılar alınıyor</string>
+    <string name="cloud_sync_notification_title_saving_remote">Şarkılar kaydediliyor</string>
+    <string name="cloud_sync_notification_title_update_musics">Şarkılar güncelleniyor</string>
+    <string name="cloud_sync_notification_title_upload_musics">Şarkılar yükleniyor</string>
+    <string name="cloud_sync_notification_title_fetching_remote_playlists">Çalma listeleri alınıyor</string>
+    <string name="cloud_sync_notification_title_uploading_playlists">Çalma listeleri yükleniyor</string>
+    <string name="cloud_sync_notification_title_saving_remote_playlists">Çalma listeleri kaydediliyor</string>
+    <string name="cloud_sync_notification_title_finish">Tamamlandı</string>
+    <string name="cloud_sync_notification_title_clearing_remote_playlist_ids">Çalma listeleri temizleniyor</string>
+    <string name="cloud_sync_notification_title_fetching_remote_collections">Koleksiyonlar alınıyor</string>
+    <string name="cloud_sync_notification_title_uploading_collections">Koleksiyonlar yükleniyor</string>
+    <string name="cloud_sync_notification_title_saving_remote_collections">Koleksiyonlar kaydediliyor</string>
+    <string name="cloud_sync_notification_title_clearing_remote_collection_ids">Koleksiyonlar temizleniyor</string>
+    <string name="cloud_sync_notification_title_fetching_remote_stats">Dinleme istatistikleri alınıyor</string>
+    <string name="cloud_sync_notification_title_uploading_stats">Dinleme istatistikleri yükleniyor</string>
+
+    <!-- cloudSyncNotificationText(state) -->
+    <string name="cloud_sync_notification_text_syncing_settings">Ayarlar bulutla eşitleniyor</string>
+    <string name="cloud_sync_notification_text_failure">Eşitleme sırasında bir hata oluştu: %1$s</string>
+    <string name="cloud_sync_notification_text_idle">Eşitlemenin başlaması bekleniyor</string>
+    <string name="cloud_sync_notification_text_no_musics_to_send">Buluta gönderilecek yerel şarkı yok</string>
+    <string name="cloud_sync_notification_text_checking_musics_to_send">Buluta gönderilecek şarkılar denetleniyor</string>
+    <string name="cloud_sync_notification_text_cleaning">Eşitlemeden sonra eski yerel şarkılar temizleniyor</string>
+    <string name="cloud_sync_notification_text_clearing_remote_music_ids">Eşitlemeden önce buluttan silinen şarkılar temizleniyor</string>
+    <string name="cloud_sync_notification_text_fetching_from_remote">Şarkılar buluttan alınıyor</string>
+    <string name="cloud_sync_notification_text_saving_remote">Buluttan alınan bilgiler kaydediliyor</string>
+    <string name="cloud_sync_notification_text_update_musics">Buluttaki mevcut şarkılar güncelleniyor</string>
+    <string name="cloud_sync_notification_text_upload_musics">Şarkılar buluta yükleniyor</string>
+    <string name="cloud_sync_notification_text_fetching_remote_playlists">Çalma listeleri buluttan alınıyor</string>
+    <string name="cloud_sync_notification_text_uploading_playlists">Çalma listeleri buluta yükleniyor</string>
+    <string name="cloud_sync_notification_text_saving_remote_playlists">Buluttaki çalma listeleri kaydediliyor</string>
+    <string name="cloud_sync_notification_text_finish">Eşitleme tamamlandı</string>
+    <string name="cloud_sync_notification_text_clearing_remote_playlist_ids">Buluttan silinen çalma listeleri temizleniyor</string>
+    <string name="cloud_sync_notification_text_fetching_remote_collections">Koleksiyonlar buluttan alınıyor</string>
+    <string name="cloud_sync_notification_text_uploading_collections">Koleksiyonlar buluta yükleniyor</string>
+    <string name="cloud_sync_notification_text_saving_remote_collections">Buluttaki koleksiyonlar kaydediliyor</string>
+    <string name="cloud_sync_notification_text_clearing_remote_collection_ids">Buluttan silinen koleksiyonlar temizleniyor</string>
+    <string name="cloud_sync_notification_text_fetching_remote_stats">Dinleme istatistikleri buluttan alınıyor</string>
+    <string name="cloud_sync_notification_text_uploading_stats">Dinleme istatistikleri buluta yükleniyor</string>
+    <string name="cloud_sync_notification_unknown_error">Bilinmeyen hata</string>
+
+    <!-- userType(type) -->
+    <string name="user_type_user">Kullanıcı</string>
+    <string name="user_type_admin">Yönetici</string>
+    <string name="user_type_unknown">Durum yok</string>
+
+    <!-- colorPaletteSeed(seed) -->
+    <string name="color_palette_seed_dark_vibrant">Koyu canlı</string>
+    <string name="color_palette_seed_dark_muted">Koyu soluk</string>
+    <string name="color_palette_seed_light_muted">Açık soluk</string>
+    <string name="color_palette_seed_light_vibrant">Açık canlı</string>
+    <string name="color_palette_seed_dominant">Baskın</string>
+    <string name="color_palette_seed_muted">Soluk</string>
+    <string name="color_palette_seed_vibrant">Canlı</string>
+
+    <!-- month(monthNumber) -->
+    <string name="month_january">Ocak</string>
+    <string name="month_february">Şubat</string>
+    <string name="month_march">Mart</string>
+    <string name="month_april">Nisan</string>
+    <string name="month_may">Mayıs</string>
+    <string name="month_june">Haziran</string>
+    <string name="month_july">Temmuz</string>
+    <string name="month_august">Ağustos</string>
+    <string name="month_september">Eylül</string>
+    <string name="month_october">Ekim</string>
+    <string name="month_november">Kasım</string>
+    <string name="month_december">Aralık</string>
+
+    <!-- Simple formatted functions -->
+    <string name="fetching_musics_from">Şarkılar alınıyor: %1$s</string>
+    <string name="new_release_available_text">Yeni bir sürüm indirilmeye hazır: %1$s</string>
+    <string name="artist_cover_method_example_title">%1$s sanatçısı için örnek yol:</string>
+
+    <!-- duration(duration): e.g. "2 hours and 3 minutes" -->
+    <string name="duration_format">%1$s %2$s</string>
+    <!-- period(period) for Period.Month: "<month> <year>" -->
+    <string name="period_month_format">%1$s %2$d</string>
+
+    <!-- Counting functions. Plural categories cannot express a dedicated "zero" text in English or
+         French (French "one" also covers 0), so each one has a companion *_zero string. -->
+    <string name="musics_count_zero">Şarkı yok</string>
+    <plurals name="musics_count">
+        <item quantity="one">%1$d şarkı</item>
+        <item quantity="other">%1$d şarkı</item>
+    </plurals>
+    <string name="deleted_musics_automatically_zero">Hiçbir şarkı silinmedi</string>
+    <plurals name="deleted_musics_automatically">
+        <item quantity="one">Cihazda artık bulunmadığı için %1$d şarkı silindi</item>
+        <item quantity="other">Cihazda artık bulunmadıkları için %1$d şarkı silindi</item>
+    </plurals>
+    <string name="plays_zero">Hiç çalınmadı</string>
+    <plurals name="plays">
+        <item quantity="one">%1$d kez çalındı</item>
+        <item quantity="other">%1$d kez çalındı</item>
+    </plurals>
+    <string name="selected_elements_zero">Seçili öğe yok</string>
+    <plurals name="selected_elements">
+        <item quantity="one">%1$d öğe seçildi</item>
+        <item quantity="other">%1$d öğe seçildi</item>
+    </plurals>
+    <string name="selected_musics_zero">Seçili şarkı yok</string>
+    <plurals name="selected_musics">
+        <item quantity="one">%1$d şarkı seçildi</item>
+        <item quantity="other">%1$d şarkı seçildi</item>
+    </plurals>
+    <string name="shared_list_preview_users_zero">Kullanıcı yok</string>
+    <plurals name="shared_list_preview_users">
+        <item quantity="one">%1$d kullanıcı</item>
+        <item quantity="other">%1$d kullanıcı</item>
+    </plurals>
+    <string name="shared_list_preview_connected_users_zero">Bağlı kullanıcı yok</string>
+    <plurals name="shared_list_preview_connected_users">
+        <item quantity="one">%1$d bağlı kullanıcı</item>
+        <item quantity="other">%1$d bağlı kullanıcı</item>
+    </plurals>
+
+    <!-- hours(hours) / minutes(minutes) / seconds(seconds) -->
+    <plurals name="hours">
+        <item quantity="one">%1$d saat</item>
+        <item quantity="other">%1$d saat</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$d dakika</item>
+        <item quantity="other">%1$d dakika</item>
+    </plurals>
+    <plurals name="seconds">
+        <item quantity="one">%1$d saniye</item>
+        <item quantity="other">%1$d saniye</item>
+    </plurals>
+</resources>
