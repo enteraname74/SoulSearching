@@ -102,6 +102,10 @@ object UiConstants {
             fontWeight = FontWeight.ExtraBold,
             fontSize = 36.sp
         )
+        val title: TextStyle = TextStyle(
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 30.sp
+        )
         val titleSmall: TextStyle = TextStyle(
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp

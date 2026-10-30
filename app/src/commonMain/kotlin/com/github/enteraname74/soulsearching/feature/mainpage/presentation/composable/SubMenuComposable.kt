@@ -1,7 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
-import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,11 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanelUiUtils
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.utils.isLargeWindow
 import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.domain.model.SortType
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SubMenuComposable(
@@ -29,7 +29,7 @@ fun SubMenuComposable(
     sortDirection: SortDirection,
     isUsingSort: Boolean = true,
 ) {
-    val paddingValues = if (NavigationPanelUiUtils.canShowPanel()) {
+    val paddingValues = if (isLargeWindow()) {
         PaddingValues(
             top = UiConstants.Spacing.veryLarge,
             start = UiConstants.Spacing.huge,
@@ -57,7 +57,11 @@ fun SubMenuComposable(
                 .weight(1f, fill = false),
             text = title,
             color = SoulSearchingColorTheme.colorScheme.text,
-            style = UiConstants.Typography.titleSmall,
+            style = if (isLargeWindow()) {
+                UiConstants.Typography.title
+            } else {
+                UiConstants.Typography.titleSmall
+            },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
