@@ -42,6 +42,7 @@ import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
 fun MultiSelectionScaffold(
+    modifier: Modifier = Modifier,
     multiSelectionManager: MultiSelectionManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
     onNavigationState: (MultiSelectionNavigationState) -> Unit,
@@ -68,7 +69,7 @@ fun MultiSelectionScaffold(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize(),
     ) {
 

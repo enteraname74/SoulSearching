@@ -1,9 +1,13 @@
 package com.github.enteraname74.soulsearching.feature.application
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
@@ -19,6 +23,9 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanelUiUtils
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.chainIf
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isComingFromPlaylistDetails
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
@@ -85,6 +92,19 @@ private fun MainAppRoute(
         }
 
         MultiSelectionScaffold(
+            modifier = Modifier
+                .chainIf(NavigationPanelUiUtils.canShowPanel()) {
+                    Modifier
+                        .background(
+                            SoulSearchingColorTheme.colorScheme.surface
+                        )
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = UiConstants.Spacing.large,
+                                bottomStart = UiConstants.Spacing.large,
+                            )
+                        )
+                },
             onNavigationState = { navigationState ->
                 when (navigationState) {
                     MultiSelectionNavigationState.Idle -> {
