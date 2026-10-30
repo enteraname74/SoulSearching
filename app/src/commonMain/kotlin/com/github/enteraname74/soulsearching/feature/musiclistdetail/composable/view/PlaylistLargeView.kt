@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
@@ -224,7 +226,7 @@ private fun Header(
                     contentScale = ContentScale.Crop,
                     cover = data.cover,
                     size = PLAYLIST_COVER_SIZE,
-                    roundedPercent = 5,
+                    shape = RoundedCornerShape(percent = 5),
                     onSuccess = data.onCoverLoaded,
                 )
             }
@@ -360,7 +362,7 @@ private fun BlurredBackground(
         val windowWidth: Dp = rememberWindowWidthDp()
 
         SoulImage(
-            roundedPercent = 0,
+            shape = RectangleShape,
             cover = cover,
             size = windowWidth,
             modifier = Modifier

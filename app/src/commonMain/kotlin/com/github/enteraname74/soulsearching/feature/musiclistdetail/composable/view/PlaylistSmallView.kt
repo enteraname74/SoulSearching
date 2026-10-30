@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.coerceIn
@@ -240,7 +241,7 @@ private fun BlurredBackground(
         val windowWidth: Dp = rememberWindowWidthDp()
 
         SoulImage(
-            roundedPercent = 0,
+            shape = RectangleShape,
             cover = cover,
             size = windowWidth,
             modifier = Modifier

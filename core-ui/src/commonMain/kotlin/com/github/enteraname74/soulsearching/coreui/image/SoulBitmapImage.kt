@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
@@ -23,15 +23,15 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SoulBitmapImage(
-    bitmap : ImageBitmap?,
-    size : Dp,
+    bitmap: ImageBitmap?,
+    size: Dp,
     modifier: Modifier = Modifier,
-    roundedPercent : Int = 10,
+    shape: Shape = RoundedCornerShape(percent = 10),
     tint: Color = SoulSearchingColorTheme.colorScheme.text
 ) {
     val modifierBase = Modifier
         .size(size)
-        .clip(RoundedCornerShape(percent = roundedPercent))
+        .clip(shape)
         .then(modifier)
 
     if (bitmap != null) {

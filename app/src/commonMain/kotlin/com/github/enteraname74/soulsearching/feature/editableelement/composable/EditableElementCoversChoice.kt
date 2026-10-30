@@ -22,7 +22,6 @@ import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
-
 fun LazyGridScope.editableElementCoversChoice(
     coverState: CoverListState,
     onCoverSelected: (ByteArray) -> Unit,

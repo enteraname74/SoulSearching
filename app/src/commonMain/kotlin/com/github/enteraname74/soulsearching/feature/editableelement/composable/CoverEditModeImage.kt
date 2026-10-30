@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -204,14 +205,14 @@ private fun GridCell(
             is GridUpdatedCells.ExistingCell -> SoulImage(
                 cover = cell.cover,
                 size = imageSize,
-                roundedPercent = 0,
+                shape = RectangleShape,
                 modifier = Modifier.fillMaxSize(),
             )
 
             is GridUpdatedCells.NewCell -> SoulByteArrayImage(
                 data = cell.byteArray,
                 size = imageSize,
-                roundedPercent = 0,
+                shape = RectangleShape,
                 modifier = Modifier.fillMaxSize(),
             )
 

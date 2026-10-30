@@ -1,7 +1,5 @@
 package com.github.enteraname74.soulsearching.composables.image
 
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -31,6 +29,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -39,6 +38,9 @@ import androidx.compose.ui.unit.DpSize
 import coil3.request.ImageRequest
 import com.github.enteraname74.soulsearching.app.generated.resources.Res
 import com.github.enteraname74.soulsearching.app.generated.resources.app_logo_uni_xml
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.image
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.Cover
@@ -59,7 +61,7 @@ fun SoulImage(
     cover: Cover?,
     size: Dp?,
     modifier: Modifier = Modifier,
-    roundedPercent: Int = 10,
+    shape: Shape = RoundedCornerShape(percent = 10),
     tint: Color = SoulSearchingColorTheme.colorScheme.text,
     contentScale: ContentScale = ContentScale.Crop,
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
@@ -72,7 +74,7 @@ fun SoulImage(
         } else {
             Modifier
         }
-            .clip(RoundedCornerShape(percent = roundedPercent))
+            .clip(shape)
             .then(modifier),
         tint = tint,
         contentScale = contentScale,
@@ -86,7 +88,7 @@ fun SoulImage(
     cover: Cover?,
     size: DpSize?,
     modifier: Modifier = Modifier,
-    roundedPercent: Int = 10,
+    shape: Shape = RoundedCornerShape(percent = 10),
     tint: Color = SoulSearchingColorTheme.colorScheme.text,
     contentScale: ContentScale = ContentScale.Crop,
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
@@ -99,7 +101,7 @@ fun SoulImage(
         } else {
             Modifier
         }
-            .clip(RoundedCornerShape(percent = roundedPercent))
+            .clip(shape)
             .then(modifier),
         tint = tint,
         contentScale = contentScale,

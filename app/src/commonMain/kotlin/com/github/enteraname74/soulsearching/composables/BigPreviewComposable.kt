@@ -1,7 +1,5 @@
 package com.github.enteraname74.soulsearching.composables
 
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
-import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -18,20 +16,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_favorite_filled
 import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.domain.model.Cover
 
 @Composable
 fun BigPreviewComposable(
@@ -46,7 +47,6 @@ fun BigPreviewComposable(
     textStyle: TextStyle = MaterialTheme.typography.labelSmall,
     contentColor: Color = SoulSearchingColorTheme.colorScheme.text,
     selectionColor: Color = SoulSearchingColorTheme.colorScheme.text,
-    roundedPercent: Int = 4,
     isFavoritePlaylist: Boolean = false,
     isSelected: Boolean = false,
     isSelectionModeOn: Boolean = false,
@@ -66,13 +66,19 @@ fun BigPreviewComposable(
         ),
     )
 
+    val roundedCorners = RoundedCornerShape(percent = 8)
+
     Column(
         modifier = modifier
             .border(
                 width = borderWidth,
                 color = borderColor,
+                shape = roundedCorners,
+            )
+            .clip(
                 shape = RoundedCornerShape(
-                    roundedPercent
+                    topStartPercent = 8,
+                    topEndPercent = 8,
                 )
             )
             .combinedClickableWithRightClick(
@@ -105,7 +111,7 @@ fun BigPreviewComposable(
             modifier = imageModifier,
             cover = cover,
             size = imageSize,
-            roundedPercent = roundedPercent,
+            shape = roundedCorners,
             tint = contentColor,
         )
         Row(

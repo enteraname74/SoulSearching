@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -207,7 +208,7 @@ private fun BlurredBackground(
         val height: Dp = this.maxHeight
 
         SoulImage(
-            roundedPercent = 0,
+            shape = RectangleShape,
             cover = cover,
             size = max(width, height),
             modifier = Modifier

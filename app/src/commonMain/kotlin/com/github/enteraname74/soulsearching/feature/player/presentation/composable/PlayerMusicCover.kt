@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -129,8 +130,10 @@ private fun MusicCover(
         modifier = modifier,
         cover = cover,
         size = size,
-        roundedPercent = (offset / 100).roundToInt()
-            .coerceIn(3, 10),
+        shape = RoundedCornerShape(
+            percent = (offset / 100).roundToInt()
+                .coerceIn(3, 10)
+        ),
         builderOptions = {
             this.size(CoverUtils.IMAGE_SIZE)
         }

@@ -1,21 +1,24 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
-import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
-import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.artists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.empty_artists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.empty_artists_explanations
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageListPaged
+import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import kotlin.uuid.Uuid
 
 fun allArtistsTab(

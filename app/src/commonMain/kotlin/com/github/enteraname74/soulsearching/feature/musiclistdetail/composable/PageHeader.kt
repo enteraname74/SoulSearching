@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +41,7 @@ fun PageHeader(
                 contentScale = ContentScale.Crop,
                 cover = data.cover,
                 size = UiConstants.ImageSize.huge,
-                roundedPercent = 5,
+                shape = RoundedCornerShape(percent = 5),
                 onSuccess = data.onCoverLoaded,
             )
             Column(
@@ -85,7 +86,7 @@ fun PageHeader(
                 } else {
                     225.dp
                 },
-                roundedPercent = 5,
+                shape = RoundedCornerShape(percent = 5),
                 onSuccess = data.onCoverLoaded,
             )
             Column(
