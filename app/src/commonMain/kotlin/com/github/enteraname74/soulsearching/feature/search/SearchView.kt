@@ -45,7 +45,7 @@ fun SearchView(
     maxHeight: Float,
     searchViewManager: SwipeableViewManager,
     placeholder: SoulTextSpec,
-    primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.background,
     focusRequester: FocusRequester,
     onSearch: (String) -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),

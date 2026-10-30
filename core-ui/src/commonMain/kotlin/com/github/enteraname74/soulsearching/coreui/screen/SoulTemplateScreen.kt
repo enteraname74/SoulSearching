@@ -88,7 +88,7 @@ fun SoulTemplateComposable(
             SoulText(
                 text = text,
                 textAlign = TextAlign.Center,
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.text,
             )
             buttonSpec?.let { spec ->
                 SoulButton(
@@ -98,7 +98,7 @@ fun SoulTemplateComposable(
                     SoulText(
                         text = spec.text,
                         textAlign = TextAlign.Center,
-                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                        color = SoulSearchingColorTheme.colorScheme.text,
                         fontSize = 14.sp
                     )
                 }

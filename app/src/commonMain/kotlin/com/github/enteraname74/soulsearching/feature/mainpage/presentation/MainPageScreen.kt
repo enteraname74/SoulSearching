@@ -121,7 +121,7 @@ fun MainPageScreenView(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = SoulSearchingColorTheme.colorScheme.primary)
+            .background(color = SoulSearchingColorTheme.colorScheme.background)
     ) {
         val constraintsScope = this
         val maxHeight = with(LocalDensity.current) {
@@ -133,7 +133,7 @@ fun MainPageScreenView(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = SoulSearchingColorTheme.colorScheme.primary)
+                .background(color = SoulSearchingColorTheme.colorScheme.background)
         ) {
             MainMenuHeaderComposable(
                 shouldShowNewReleasePin = shouldShowNewVersionPin,

@@ -166,7 +166,7 @@ fun PlaylistLargeView(
                     onMoreClicked = {
                         data.showMusicBottomSheet(music.musicId)
                     },
-                    textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    textColor = SoulSearchingColorTheme.colorScheme.text,
                     isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                     isSelected = multiSelectionState.selectedIds.contains(music.musicId.toString()),
                     isSelectionModeOn = multiSelectionState.totalSelected > 0,
@@ -240,7 +240,7 @@ private fun Header(
                         modifier = Modifier.padding(
                             bottom = UiConstants.Spacing.medium,
                         ),
-                        color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                        color = SoulSearchingColorTheme.colorScheme.textSecondary,
                         text = data.type,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -248,7 +248,7 @@ private fun Header(
                         fontSize = 15.sp
                     )
                     SoulText(
-                        color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                        color = SoulSearchingColorTheme.colorScheme.text,
                         text = data.title,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
@@ -258,7 +258,7 @@ private fun Header(
                     )
                     SoulText(
                         modifier = Modifier.optionalClickable(data.onSubtitleClicked),
-                        color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                        color = SoulSearchingColorTheme.colorScheme.textSecondary,
                         text = data.subTitle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -294,8 +294,8 @@ private fun Actions(
             icon = CoreRes.drawable.ic_play_filled,
             action = { data.onPlay(null) },
             colors = SoulButtonDefaults.colors(
-                contentColor = SoulSearchingColorTheme.colorScheme.secondary,
-                containerColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                contentColor = SoulSearchingColorTheme.colorScheme.surface,
+                containerColor = SoulSearchingColorTheme.colorScheme.text,
             )
         )
         Button(
@@ -373,8 +373,8 @@ private fun BlurredBackground(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            SoulSearchingColorTheme.colorScheme.primary.copy(alpha = 0.3f),
-                            SoulSearchingColorTheme.colorScheme.primary,
+                            SoulSearchingColorTheme.colorScheme.background.copy(alpha = 0.3f),
+                            SoulSearchingColorTheme.colorScheme.background,
                         ),
                     )
                 ),

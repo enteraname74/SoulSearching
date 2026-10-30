@@ -93,12 +93,12 @@ private fun SyncingStateView(
     ) {
         SoulText(
             text = SoulTexts.cloudSyncNotificationTitle(state),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.bodyTitle
         )
         SoulText(
             text = SoulTexts.cloudSyncNotificationText(state),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.body
         )
         (state as? SyncDataWithCloudUseCase.State.ProgressState)?.progress?.let { progress ->
@@ -112,8 +112,8 @@ private fun SyncingStateView(
                 modifier = Modifier
                     .fillMaxWidth(),
                 progress = { animatedProgress },
-                color = SoulSearchingColorTheme.colorScheme.onSecondary,
-                trackColor = SoulSearchingColorTheme.colorScheme.secondary,
+                color = SoulSearchingColorTheme.colorScheme.text,
+                trackColor = SoulSearchingColorTheme.colorScheme.surface,
                 drawStopIndicator = {},
             )
         }
@@ -132,12 +132,12 @@ private fun SyncState(
     ) {
         SoulText(
             text = title,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.bodyTitle
         )
         SoulText(
             text = date,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.body
         )
     }

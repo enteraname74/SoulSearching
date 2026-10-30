@@ -79,8 +79,8 @@ fun SettingsAboutScreen(
                     subTitle = CoreRes.string.changelog_text.toTextSpec(),
                     clickAction = { isChangelogExpanded = !isChangelogExpanded },
                     isExpanded = isChangelogExpanded,
-                    textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    subTextColor = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                    textColor = SoulSearchingColorTheme.colorScheme.text,
+                    subTextColor = SoulSearchingColorTheme.colorScheme.textSecondary,
                 ) {
                     Column(
                         modifier = Modifier
@@ -151,8 +151,8 @@ private fun LatestReleaseCard(
                     max = CardMaxWidth,
                 ),
             colors = CardDefaults.cardColors(
-                contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                containerColor = SoulSearchingColorTheme.colorScheme.secondary
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
+                containerColor = SoulSearchingColorTheme.colorScheme.surface
             )
         ) {
             Column(
@@ -168,11 +168,11 @@ private fun LatestReleaseCard(
                 SoulIcon(
                     icon = CoreRes.drawable.ic_release_alert_filled,
                     size = UiConstants.ImageSize.mediumPlus,
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                 )
                 SoulText(
                     text = CoreRes.string.new_release_available_title.toTextSpec(),
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     textAlign = TextAlign.Center,
                     style = UiConstants.Typography.bodyTitle,
                 )
@@ -180,7 +180,7 @@ private fun LatestReleaseCard(
                     text = SoulTexts.newReleaseAvailableText(
                         releaseName = release.name,
                     ),
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     textAlign = TextAlign.Center,
                     style = UiConstants.Typography.body,
                 )
@@ -195,15 +195,15 @@ private fun ChangelogUpdateCard() {
         modifier = Modifier
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-            containerColor = SoulSearchingColorTheme.colorScheme.secondary
+            contentColor = SoulSearchingColorTheme.colorScheme.text,
+            containerColor = SoulSearchingColorTheme.colorScheme.surface
         )
     ) {
         SoulText(
             modifier = Modifier
                 .padding(UiConstants.Spacing.large),
             text = CoreRes.string.changelog_update_required.toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             textAlign = TextAlign.Center,
             style = UiConstants.Typography.body,
         )

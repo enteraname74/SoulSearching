@@ -25,7 +25,7 @@ fun PlaylistSelectableComposable(
     playlistWithMusics: PlaylistWithMusics,
     onClick: () -> Unit,
     isSelected: Boolean,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.text,
 ) {
     Row(
         modifier = modifier

@@ -46,7 +46,7 @@ private fun Data(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = SoulSearchingColorTheme.colorScheme.secondary,
+                color = SoulSearchingColorTheme.colorScheme.surface,
                 shape = RoundedCornerShape(size = RoundedCorners),
             )
             .padding(all = UiConstants.Spacing.medium),
@@ -54,12 +54,12 @@ private fun Data(
     ) {
         SoulText(
             text = SoulTexts.artistCoverMethodExampleTitle(artist = EXAMPLE_ARTIST_NAME),
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.bodyTitle,
         )
         SoulText(
             text = path.toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.body,
         )
     }
@@ -78,7 +78,7 @@ private fun Error() {
         SoulText(
             text = CoreRes.string.cover_folder_retriever_folder_incomplete.toTextSpec(),
             style = UiConstants.Typography.body,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
         )
     }
 }

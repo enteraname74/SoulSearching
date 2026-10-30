@@ -64,7 +64,7 @@ private fun SectionTitle(
         SoulText(
             text = CoreRes.string.user_storage_section_title.toTextSpec(),
             style = UiConstants.Typography.bodyTitle,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
         )
         MoreInfoButton(
             storageType = type,
@@ -85,24 +85,24 @@ private fun Total(
             modifier = Modifier
                 .offset(y = 4.dp),
             text = "${userStorage.current}".toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.titleBig,
         )
         SoulText(
             text = " ${stringResource(CoreRes.string.gigabyte_abbreviation)}".toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.bodyLarge,
         )
         SoulText(
             modifier = Modifier
                 .padding(horizontal = UiConstants.Spacing.medium),
             text = "/".toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.body,
         )
         SoulText(
             text = "${userStorage.max.total} ${stringResource(CoreRes.string.gigabyte_abbreviation)}".toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.bodyLarge,
         )
     }
@@ -123,7 +123,7 @@ private fun MoreInfoButton(
         tooltip = {
             RichTooltip(
                 colors = TooltipDefaults.richTooltipColors(
-                    containerColor = SoulSearchingColorTheme.colorScheme.secondary,
+                    containerColor = SoulSearchingColorTheme.colorScheme.surface,
                 ),
                 caretShape = TooltipDefaults.caretShape(),
             ) {
@@ -132,7 +132,7 @@ private fun MoreInfoButton(
                         is UserStorage.StorageType.AllAvailable -> CoreRes.string.user_storage_all_available_info.toTextSpec()
                         is UserStorage.StorageType.Reduced -> CoreRes.string.user_storage_reduced_info.toTextSpec()
                     },
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     style = UiConstants.Typography.bodySmall,
                 )
             }
@@ -164,7 +164,7 @@ private fun Bars(
         val usedSpaceBarWidth = (maxWidth * userStorage.current.toFloat()) / userStorage.max.total.toFloat()
         StorageBar(
             width = usedSpaceBarWidth,
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
         )
     }
 }
@@ -180,7 +180,7 @@ private fun StorageBar(
             .height(16.dp)
             .clip(shape = RoundedCornerShape(percent = 50))
             .background(
-                color = SoulSearchingColorTheme.colorScheme.secondary,
+                color = SoulSearchingColorTheme.colorScheme.surface,
             )
     ) {
         Box(

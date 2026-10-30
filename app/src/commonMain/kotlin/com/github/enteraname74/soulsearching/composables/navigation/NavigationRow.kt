@@ -38,12 +38,12 @@ fun NavigationRow(
     ) {
         SoulIcon(
             icon = navigationRowSpec.icon(isSelected),
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             contentDescription = null,
         )
         SoulText(
             text = navigationRowSpec.title,
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = if (isSelected) {
                 FontWeight.Black
@@ -53,7 +53,7 @@ fun NavigationRow(
         )
         if ((navigationRowSpec as? NavigationRowSpec.Settings)?.isBadged == true) {
             Badge(
-                containerColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                containerColor = SoulSearchingColorTheme.colorScheme.text,
             )
         }
     }

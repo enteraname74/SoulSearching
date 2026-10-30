@@ -114,7 +114,7 @@ private fun SettingsPlayerPersonalisationScreenView(
                 SoulText(
                     text = CoreRes.string.soul_mix_settings_title.toTextSpec(),
                     style = UiConstants.Typography.bodyTitle,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                 )
                 soulMixTextField.TextField(
                     focusManager = focusManager,
@@ -137,7 +137,7 @@ private fun SettingsPlayerPersonalisationScreenView(
                 SoulText(
                     text = CoreRes.string.player_volume.toTextSpec(),
                     style = UiConstants.Typography.bodyTitle,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -147,7 +147,7 @@ private fun SettingsPlayerPersonalisationScreenView(
                 ) {
                     SoulText(
                         text = "${uiVolume.toInt()}".toTextSpec(),
-                        color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                        color = SoulSearchingColorTheme.colorScheme.text,
                         style = UiConstants.Typography.body,
                     )
                     SoulSlider(

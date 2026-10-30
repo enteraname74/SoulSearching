@@ -22,7 +22,7 @@ fun SoulIcon(
     modifier: Modifier = Modifier,
     badgeColor: Color? = null,
     contentDescription: String? = null,
-    color: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    color: Color = SoulSearchingColorTheme.colorScheme.text,
     size: Dp = UiConstants.ImageSize.smallPlus,
 ) {
     BadgedBox(

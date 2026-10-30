@@ -40,8 +40,8 @@ fun CoverFolderRetrieverRules(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = SoulSearchingColorTheme.colorScheme.secondary,
-            contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+            containerColor = SoulSearchingColorTheme.colorScheme.surface,
+            contentColor = SoulSearchingColorTheme.colorScheme.text,
         )
     ) {
         Column(
@@ -52,7 +52,7 @@ fun CoverFolderRetrieverRules(
             SoulText(
                 text = title,
                 style = UiConstants.Typography.bodyTitle,
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.text,
             )
             WhiteSpaceRule(
                 whiteSpaceRule = coverFolderRetriever.whiteSpaceRule,
@@ -88,7 +88,7 @@ private fun WhiteSpaceRule(
             SoulText(
                 modifier = Modifier.weight(1f),
                 text = CoreRes.string.cover_folder_retriever_rules_white_space.toTextSpec(),
-                color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 style = UiConstants.Typography.bodyLarge,
             )
             SoulSwitch(

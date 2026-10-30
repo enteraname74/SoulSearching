@@ -45,8 +45,8 @@ sealed interface PlayerViewState {
 
             return UserTag(
                 username = correspondingUser.username,
-                contentColor = theme.onSecondary,
-                containerColor = theme.secondary.blend(Color.Black, 0.2f)
+                contentColor = theme.text,
+                containerColor = theme.surface.blend(Color.Black, 0.2f)
             )
         }
     }

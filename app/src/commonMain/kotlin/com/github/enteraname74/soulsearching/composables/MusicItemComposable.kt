@@ -52,7 +52,7 @@ fun MusicItemComposable(
     music: Music,
     onClick: ((Music) -> Unit)?,
     onMoreClicked: (() -> Unit)?,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.text,
     selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
     isPlayedMusic: Boolean,
     onLongClick: (() -> Unit)? = null,

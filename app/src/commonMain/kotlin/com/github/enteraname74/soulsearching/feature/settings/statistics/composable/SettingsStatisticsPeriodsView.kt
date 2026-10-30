@@ -129,7 +129,7 @@ private fun PeriodButton(
             durationMillis = UiConstants.AnimationDuration.short,
         ),
     )
-    val contentColor = SoulSearchingColorTheme.colorScheme.onPrimary.copy(
+    val contentColor = SoulSearchingColorTheme.colorScheme.text.copy(
         alpha = contentColorAlpha,
     )
 
@@ -158,13 +158,13 @@ private fun PeriodButton(
         }
         DropdownMenu(
             expanded = isExpanded,
-            containerColor = SoulSearchingColorTheme.colorScheme.secondary,
+            containerColor = SoulSearchingColorTheme.colorScheme.surface,
             onDismissRequest = { isExpanded = false },
         ) {
 
             MenuItem(
                 title = CoreRes.string.statistics_all_period_label.toTextSpec(),
-                contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
                 onClick = {
                     onPeriodTypeChange(PeriodType.All)
                     isExpanded = false
@@ -172,7 +172,7 @@ private fun PeriodButton(
             )
             MenuItem(
                 title = CoreRes.string.statistics_year_period_label.toTextSpec(),
-                contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
                 onClick = {
                     onPeriodTypeChange(PeriodType.Year)
                     isExpanded = false
@@ -180,7 +180,7 @@ private fun PeriodButton(
             )
             MenuItem(
                 title = CoreRes.string.statistics_month_period_label.toTextSpec(),
-                contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
                 onClick = {
                     onPeriodTypeChange(PeriodType.Month)
                     isExpanded = false
@@ -188,14 +188,14 @@ private fun PeriodButton(
             )
             if (allPeriods.isNotEmpty()) {
                 SoulDivider(
-                    color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                    color = SoulSearchingColorTheme.colorScheme.textSecondary,
                     padding = PaddingValues.Zero,
                 )
             }
             allPeriods.forEach { period ->
                 MenuItem(
                     title = SoulTexts.period(period),
-                    contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    contentColor = SoulSearchingColorTheme.colorScheme.text,
                     onClick = {
                         onPeriodChange(period)
                         isExpanded = false

@@ -46,9 +46,9 @@ fun MainPageHorizontalShortcut(
                     },
                 text = visibleElement.text(),
                 color = if (isCurrentPosition) {
-                    SoulSearchingColorTheme.colorScheme.onPrimary
+                    SoulSearchingColorTheme.colorScheme.text
                 } else {
-                    SoulSearchingColorTheme.colorScheme.subPrimaryText
+                    SoulSearchingColorTheme.colorScheme.textSecondary
                 },
                 fontWeight = if (isCurrentPosition) {
                     FontWeight.ExtraBold

@@ -81,7 +81,7 @@ private fun CodeView(
         modifier = Modifier
             .fillMaxWidth()
             .clip(style.shape())
-            .background(SoulSearchingColorTheme.colorScheme.secondary)
+            .background(SoulSearchingColorTheme.colorScheme.surface)
             .clickableWithHandCursor { clipboard.copy(code.code.toString()) }
             .padding(all = UiConstants.Spacing.large),
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
@@ -92,7 +92,7 @@ private fun CodeView(
                 .weight(1f),
             text = code.code.toString().toTextSpec(),
             style = UiConstants.Typography.bodyLarge,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
         )
         SoulIconButton(
             icon = CoreRes.drawable.ic_delete_filled,

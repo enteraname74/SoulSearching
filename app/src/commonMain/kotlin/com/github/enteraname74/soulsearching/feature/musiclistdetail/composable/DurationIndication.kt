@@ -24,7 +24,7 @@ internal fun DurationIndication(
             .fillMaxWidth()
             .padding(UiConstants.Spacing.medium),
         textAlign = TextAlign.Center,
-        color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+        color = SoulSearchingColorTheme.colorScheme.textSecondary,
         text = SoulTexts.duration(duration = duration),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,

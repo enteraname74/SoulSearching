@@ -34,8 +34,8 @@ fun EmptyCard(
                     max = 700.dp,
                 ),
             colors = CardDefaults.cardColors(
-                contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                containerColor = SoulSearchingColorTheme.colorScheme.secondary
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
+                containerColor = SoulSearchingColorTheme.colorScheme.surface
             )
         ) {
             Column(
@@ -49,13 +49,13 @@ fun EmptyCard(
             ) {
                 SoulText(
                     text = title,
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     textAlign = TextAlign.Center,
                     style = UiConstants.Typography.bodyTitle,
                 )
                 SoulText(
                     text = description,
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     textAlign = TextAlign.Center,
                     style = UiConstants.Typography.body,
                 )

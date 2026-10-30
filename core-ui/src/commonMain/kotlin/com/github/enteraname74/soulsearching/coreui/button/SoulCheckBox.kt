@@ -13,7 +13,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 fun SoulCheckBox(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    color: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    color: Color = SoulSearchingColorTheme.colorScheme.text,
 ) {
     Checkbox(
         modifier = Modifier

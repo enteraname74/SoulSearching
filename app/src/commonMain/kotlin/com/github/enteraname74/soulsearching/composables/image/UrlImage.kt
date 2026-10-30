@@ -23,7 +23,7 @@ import com.github.enteraname74.soulsearching.di.injectElement
 internal fun UrlImage(
     urlCover: Cover.Url,
     modifier: Modifier = Modifier,
-    tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+    tint: Color = SoulSearchingColorTheme.colorScheme.text,
     contentScale: ContentScale = ContentScale.Crop,
     contentDescription: String?,
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,

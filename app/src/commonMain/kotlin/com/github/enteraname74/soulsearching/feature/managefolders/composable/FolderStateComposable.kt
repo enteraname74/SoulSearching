@@ -24,14 +24,14 @@ fun FolderStateComposable(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = SoulSearchingColorTheme.colorScheme.primary),
+                    .background(color = SoulSearchingColorTheme.colorScheme.background),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 SoulSearchingLogo()
                 SoulText(
                     text = stateTitle,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary
+                    color = SoulSearchingColorTheme.colorScheme.text
                 )
             }
         }
@@ -40,7 +40,7 @@ fun FolderStateComposable(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
+                    .background(color = SoulSearchingColorTheme.colorScheme.background)
                     .padding(top = UiConstants.Spacing.large),
             ) {
                 Box(modifier = Modifier.align(Alignment.TopCenter)) {
@@ -50,7 +50,7 @@ fun FolderStateComposable(
                     SoulText(
                         textAlign = TextAlign.Center,
                         text = stateTitle,
-                        color = SoulSearchingColorTheme.colorScheme.onPrimary
+                        color = SoulSearchingColorTheme.colorScheme.text
                     )
                 }
             }

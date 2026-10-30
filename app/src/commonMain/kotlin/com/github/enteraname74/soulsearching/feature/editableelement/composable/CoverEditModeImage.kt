@@ -78,17 +78,17 @@ internal fun CoverEditModeImage(
                             count = CoverEditMode.Type.entries.size
                         ),
                         colors = SegmentedButtonDefaults.colors(
-                            activeBorderColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                            activeContainerColor = SoulSearchingColorTheme.colorScheme.secondary,
-                            activeContentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                            inactiveContainerColor = SoulSearchingColorTheme.colorScheme.secondary,
+                            activeBorderColor = SoulSearchingColorTheme.colorScheme.text,
+                            activeContainerColor = SoulSearchingColorTheme.colorScheme.surface,
+                            activeContentColor = SoulSearchingColorTheme.colorScheme.text,
+                            inactiveContainerColor = SoulSearchingColorTheme.colorScheme.surface,
                             inactiveContentColor = Color.Transparent,
-                            inactiveBorderColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                            inactiveBorderColor = SoulSearchingColorTheme.colorScheme.text,
                         ),
                         label = {
                             SoulText(
                                 text = type.label(),
-                                color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                                color = SoulSearchingColorTheme.colorScheme.text,
                                 style = UiConstants.Typography.bodySmall,
                             )
                         },
@@ -228,12 +228,12 @@ private fun EmptyGridCell(
     rowIndex: Int,
     columnIndex: Int,
 ) {
-    val borderColor = SoulSearchingColorTheme.colorScheme.onSecondary
+    val borderColor = SoulSearchingColorTheme.colorScheme.text
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(SoulSearchingColorTheme.colorScheme.secondary)
+            .background(SoulSearchingColorTheme.colorScheme.surface)
             .drawBehind {
                 val strokeWidth = 1.dp.toPx()
                 val halfStroke = strokeWidth / 2f
@@ -274,7 +274,7 @@ private fun EmptyGridCell(
     ) {
         SoulIcon(
             icon = CoreRes.drawable.ic_add_photo_alternate_filled,
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             size = UiConstants.ImageSize.medium,
         )
     }

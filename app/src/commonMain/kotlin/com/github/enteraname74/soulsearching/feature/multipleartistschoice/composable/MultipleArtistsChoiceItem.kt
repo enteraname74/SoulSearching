@@ -30,7 +30,7 @@ fun MultipleArtistsChoiceItem(
             modifier = Modifier
                 .weight(1f),
             text = artistChoice.artist.artistName.toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = MaterialTheme.typography.labelLarge,
             overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight.Normal

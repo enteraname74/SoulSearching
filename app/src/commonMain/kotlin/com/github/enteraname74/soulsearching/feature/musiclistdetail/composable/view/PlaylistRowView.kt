@@ -220,8 +220,8 @@ private fun BlurredBackground(
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
-                            SoulSearchingColorTheme.colorScheme.primary.copy(0.2f),
-                            SoulSearchingColorTheme.colorScheme.primary,
+                            SoulSearchingColorTheme.colorScheme.background.copy(0.2f),
+                            SoulSearchingColorTheme.colorScheme.background,
                         ),
                         startX = 0f,
                         endX = width.toPx(),

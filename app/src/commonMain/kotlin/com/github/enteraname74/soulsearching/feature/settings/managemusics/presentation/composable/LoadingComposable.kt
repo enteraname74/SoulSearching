@@ -25,7 +25,7 @@ fun LoadingComposable(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
+                    .background(color = SoulSearchingColorTheme.colorScheme.background)
                     .padding(UiConstants.Spacing.medium),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -55,7 +55,7 @@ fun LoadingComposable(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
+                    .background(color = SoulSearchingColorTheme.colorScheme.background)
                     .padding(top = UiConstants.Spacing.large),
             ) {
                 Box(modifier = Modifier.align(Alignment.TopCenter)) {

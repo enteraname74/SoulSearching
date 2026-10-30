@@ -84,7 +84,7 @@ fun MusicListDetailDataScreen(
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
-                .background(SoulSearchingColorTheme.colorScheme.primary)
+                .background(SoulSearchingColorTheme.colorScheme.background)
         ) {
             val constraintsScope = this
             val maxHeight = with(LocalDensity.current) {

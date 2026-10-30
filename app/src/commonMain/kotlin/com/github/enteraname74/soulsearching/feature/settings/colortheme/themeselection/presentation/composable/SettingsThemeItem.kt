@@ -43,11 +43,11 @@ fun SettingsThemeItem(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large),
         ) {
             ThemeIndicator(
-                color = theme.palette(isInDarkTheme = isInDarkTheme()).secondary
+                color = theme.palette(isInDarkTheme = isInDarkTheme()).surface
             )
             SoulText(
                 text = theme.name,
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
             )
@@ -56,8 +56,8 @@ fun SettingsThemeItem(
             selected = isSelected,
             onClick = onClick,
             colors = RadioButtonDefaults.colors(
-                selectedColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                unselectedColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                selectedColor = SoulSearchingColorTheme.colorScheme.text,
+                unselectedColor = SoulSearchingColorTheme.colorScheme.text,
             )
         )
     }
@@ -71,7 +71,7 @@ private fun ThemeIndicator(
         modifier = Modifier
             .size(THEME_INDICATOR_SIZE)
             .background(
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 shape = CircleShape
             )
             .padding(2.dp)

@@ -24,8 +24,8 @@ object SoulButtonDefaults {
 
     @Composable
     fun colors(
-        contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-        containerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.text,
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.surface,
     ): SoulButtonColors = SoulButtonColors(
         containerColor = containerColor,
         contentColor = contentColor,
@@ -33,8 +33,8 @@ object SoulButtonDefaults {
 
     @Composable
     fun primaryColors(
-        contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
-        containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.text,
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.background,
     ): SoulButtonColors = SoulButtonColors(
         contentColor = contentColor,
         containerColor = containerColor,
@@ -42,8 +42,8 @@ object SoulButtonDefaults {
 
     @Composable
     fun secondaryColors(
-        contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-        containerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.text,
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.surface,
     ): SoulButtonColors = SoulButtonColors(
         contentColor = contentColor,
         containerColor = containerColor,
@@ -51,7 +51,7 @@ object SoulButtonDefaults {
 
     @Composable
     fun primaryTint(): SoulButtonColors = SoulButtonColors(
-        contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+        contentColor = SoulSearchingColorTheme.colorScheme.text,
         containerColor = Color.Transparent,
     )
 }

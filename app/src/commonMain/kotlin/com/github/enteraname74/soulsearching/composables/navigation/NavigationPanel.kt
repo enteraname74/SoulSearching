@@ -25,7 +25,7 @@ fun NavigationPanel(
     Column(
         modifier = Modifier
             .zIndex(1f)
-            .background(color = SoulSearchingColorTheme.colorScheme.secondary)
+            .background(color = SoulSearchingColorTheme.colorScheme.surface)
             .fillMaxHeight()
             .statusBarsPadding()
             .width(NavigationPanelUiUtils.PanelWidth)

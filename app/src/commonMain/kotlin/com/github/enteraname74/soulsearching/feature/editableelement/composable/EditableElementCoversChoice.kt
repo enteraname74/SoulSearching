@@ -35,7 +35,7 @@ fun LazyGridScope.editableElementCoversChoice(
             SoulText(
                 text = title,
                 maxLines = 2,
-                color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 style = UiConstants.Typography.bodyMediumTitle,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -72,7 +72,7 @@ fun LazyGridScope.editableElementCoversChoice(
                     ) {
                         SoulText(
                             text = CoreRes.string.no_available_covers.toTextSpec(),
-                            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                            color = SoulSearchingColorTheme.colorScheme.text,
                             style = UiConstants.Typography.body,
                         )
                     }

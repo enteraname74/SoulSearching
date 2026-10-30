@@ -17,7 +17,7 @@ import com.mikepenz.markdown.m3.markdownTypography
 fun SoulMarkdownText(
     text: SoulTextSpec,
     modifier: Modifier = Modifier,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.text
 ) {
     Markdown(
         modifier = modifier,

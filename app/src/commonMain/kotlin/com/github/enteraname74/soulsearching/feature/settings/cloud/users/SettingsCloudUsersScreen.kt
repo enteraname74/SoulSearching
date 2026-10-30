@@ -60,14 +60,14 @@ private fun SimpleUserView(
         modifier = Modifier
             .fillMaxWidth()
             .clip(style.shape())
-            .background(SoulSearchingColorTheme.colorScheme.secondary)
+            .background(SoulSearchingColorTheme.colorScheme.surface)
             .padding(all = UiConstants.Spacing.large),
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SoulIcon(
             icon = CoreRes.drawable.ic_person_filled,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             size = UiConstants.ImageSize.medium,
         )
         SoulText(
@@ -77,7 +77,7 @@ private fun SimpleUserView(
             style = UiConstants.Typography.bodyLarge,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
         )
         user.onDelete?.let {
             SoulIconButton(

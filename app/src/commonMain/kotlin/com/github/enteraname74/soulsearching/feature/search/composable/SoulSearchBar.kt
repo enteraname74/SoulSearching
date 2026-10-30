@@ -52,7 +52,7 @@ fun SoulSearchBar(
                 contentDescription = CoreRes.string.cancel.toTextSpec().string,
                 onClick = onClose,
                 colors = SoulButtonDefaults.colors(
-                    contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    contentColor = SoulSearchingColorTheme.colorScheme.text,
                     containerColor = Color.Transparent
                 )
             )
@@ -77,7 +77,7 @@ fun SoulSearchBar(
                     SoulIcon(
                         icon = CoreRes.drawable.ic_cancel_filled,
                         contentDescription = CoreRes.string.cancel.toTextSpec().string,
-                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                        color = SoulSearchingColorTheme.colorScheme.text,
                         modifier = Modifier
                             .clickableWithHandCursor {
                                 updateTextMethod("")
@@ -87,7 +87,7 @@ fun SoulSearchBar(
                     SoulIcon(
                         icon = CoreRes.drawable.ic_search,
                         contentDescription = CoreRes.string.cancel.toTextSpec().string,
-                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                        color = SoulSearchingColorTheme.colorScheme.text,
                     )
                 }
             },
@@ -95,21 +95,21 @@ fun SoulSearchBar(
             shape = RoundedCornerShape(percent = 50),
             colors = with(SoulSearchingColorTheme.colorScheme) {
                 TextFieldDefaults.colors(
-                    unfocusedContainerColor = secondary,
-                    focusedTextColor = onSecondary,
-                    cursorColor = onSecondary,
+                    unfocusedContainerColor = surface,
+                    focusedTextColor = text,
+                    cursorColor = text,
                     focusedIndicatorColor = Color.Transparent,
-                    focusedLabelColor = onSecondary,
-                    unfocusedTextColor = onSecondary,
-                    focusedContainerColor = secondary,
+                    focusedLabelColor = text,
+                    unfocusedTextColor = text,
+                    focusedContainerColor = surface,
                     selectionColors = TextSelectionColors(
-                        handleColor = onPrimary,
-                        backgroundColor = primary.blend(Color.Black, 0.2f),
+                        handleColor = text,
+                        backgroundColor = background.blend(Color.Black, 0.2f),
                     ),
                     unfocusedIndicatorColor = Color.Transparent,
-                    unfocusedLabelColor = onSecondary,
-                    focusedPlaceholderColor = onSecondary,
-                    unfocusedPlaceholderColor = onSecondary
+                    unfocusedLabelColor = text,
+                    focusedPlaceholderColor = text,
+                    unfocusedPlaceholderColor = text
                 )
             },
             keyboardActions = KeyboardActions(

@@ -47,7 +47,7 @@ fun PageHeader(
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
             ) {
                 SoulText(
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     text = data.title,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -56,7 +56,7 @@ fun PageHeader(
                 )
                 SoulText(
                     modifier = Modifier.optionalClickable(data.onSubtitleClicked),
-                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                    color = SoulSearchingColorTheme.colorScheme.textSecondary,
                     text = data.subTitle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -94,7 +94,7 @@ fun PageHeader(
             ) {
                 SoulText(
                     textAlign = TextAlign.Center,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     text = data.title,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
@@ -104,7 +104,7 @@ fun PageHeader(
                 SoulText(
                     modifier = Modifier.optionalClickable(data.onSubtitleClicked),
                     textAlign = TextAlign.Center,
-                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                    color = SoulSearchingColorTheme.colorScheme.textSecondary,
                     text = data.subTitle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

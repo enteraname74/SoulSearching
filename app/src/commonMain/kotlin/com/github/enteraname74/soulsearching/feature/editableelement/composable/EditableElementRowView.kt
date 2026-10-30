@@ -34,7 +34,7 @@ fun EditableElementRowView(
         modifier = Modifier
             .fillMaxSize()
             .padding(UiConstants.Spacing.medium)
-            .background(SoulSearchingColorTheme.colorScheme.primary)
+            .background(SoulSearchingColorTheme.colorScheme.background)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {

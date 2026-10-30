@@ -35,7 +35,7 @@ fun MusicMonthsHorizontalList(
             modifier = Modifier
                 .padding(start = UiConstants.Spacing.medium),
             text = CoreRes.string.by_months.toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.titleSmall,
         )
         if (months.isNotEmpty()) {

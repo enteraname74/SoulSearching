@@ -22,12 +22,12 @@ internal fun SettingsStatisticsOptionalContent(
     ) {
         SoulText(
             text = optionalContent.title,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.bodyTitle,
         )
         SoulText(
             text = text,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.body,
         )
     }

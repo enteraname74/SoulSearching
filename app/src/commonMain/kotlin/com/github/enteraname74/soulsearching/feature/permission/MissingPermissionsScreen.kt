@@ -42,7 +42,7 @@ fun MissingPermissionsScreen() {
                     SoulText(
                         text = CoreRes.string.missing_permissions.toTextSpec(),
                         textAlign = TextAlign.Center,
-                        color = SoulSearchingColorTheme.colorScheme.onPrimary
+                        color = SoulSearchingColorTheme.colorScheme.text
                     )
                 }
             }
@@ -64,7 +64,7 @@ fun MissingPermissionsScreen() {
                         SoulText(
                             text = CoreRes.string.missing_permissions.toTextSpec(),
                             textAlign = TextAlign.Center,
-                            color = SoulSearchingColorTheme.colorScheme.onPrimary
+                            color = SoulSearchingColorTheme.colorScheme.text
                         )
                     }
                 }

@@ -28,7 +28,7 @@ fun EditableElementCoverSection(
         SoulText(
             modifier = Modifier.padding(bottom = UiConstants.Spacing.medium),
             text = title,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary
+            color = SoulSearchingColorTheme.colorScheme.text
         )
         CoverEditModeImage(
             coverEditMode = coverEditMode,

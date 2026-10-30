@@ -48,7 +48,7 @@ fun MinimisedPlayerControlsComposable(
                     .size(OPTIONAL_ICON_SIZE)
                     .clip(CircleShape)
                     .optionalClickable(playbackCommandsState.changePlayerMode.takeIf { isMinimised }),
-                color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.previous)
+                color = SoulSearchingColorTheme.colorScheme.text.disabledIfNoAction(playbackCommandsState.previous)
             )
         }
         SoulIcon(
@@ -57,7 +57,7 @@ fun MinimisedPlayerControlsComposable(
                 .size(MAIN_ICON_SIZE)
                 .clip(CircleShape)
                 .optionalClickable(playbackCommandsState.previous.takeIf { isMinimised }),
-            color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.previous)
+            color = SoulSearchingColorTheme.colorScheme.text.disabledIfNoAction(playbackCommandsState.previous)
         )
         if (playbackCommandsState.isBuffering) {
             Box(
@@ -67,7 +67,7 @@ fun MinimisedPlayerControlsComposable(
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(LOADING_SIZE),
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                 )
             }
         } else {
@@ -81,7 +81,7 @@ fun MinimisedPlayerControlsComposable(
                     .size(MAIN_ICON_SIZE)
                     .clip(CircleShape)
                     .optionalClickable(playbackCommandsState.togglePlayPause.takeIf { isMinimised }),
-                color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.togglePlayPause)
+                color = SoulSearchingColorTheme.colorScheme.text.disabledIfNoAction(playbackCommandsState.togglePlayPause)
             )
         }
         SoulIcon(
@@ -90,7 +90,7 @@ fun MinimisedPlayerControlsComposable(
                 .size(MAIN_ICON_SIZE)
                 .clip(CircleShape)
                 .optionalClickable(playbackCommandsState.next.takeIf { isMinimised }),
-            color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.next)
+            color = SoulSearchingColorTheme.colorScheme.text.disabledIfNoAction(playbackCommandsState.next)
         )
         if (PlayerUiUtils.canShowSidePanel()) {
             SoulIcon(
@@ -103,7 +103,7 @@ fun MinimisedPlayerControlsComposable(
                     .size(OPTIONAL_ICON_SIZE)
                     .clip(CircleShape)
                     .optionalClickable(playbackCommandsState.toggleFavoriteState.takeIf { isMinimised }),
-                color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.previous)
+                color = SoulSearchingColorTheme.colorScheme.text.disabledIfNoAction(playbackCommandsState.previous)
             )
         }
     }

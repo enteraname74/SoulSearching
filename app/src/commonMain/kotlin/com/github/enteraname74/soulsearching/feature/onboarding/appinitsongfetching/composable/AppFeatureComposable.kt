@@ -26,8 +26,8 @@ fun AppFeatureComposable(
     Card(
         modifier = Modifier.fillMaxSize(),
         colors = CardDefaults.cardColors(
-            contentColor = SoulSearchingColorTheme.colorScheme.secondary,
-            containerColor = SoulSearchingColorTheme.colorScheme.secondary
+            contentColor = SoulSearchingColorTheme.colorScheme.surface,
+            containerColor = SoulSearchingColorTheme.colorScheme.surface
         )
     ) {
         Column(
@@ -38,14 +38,14 @@ fun AppFeatureComposable(
         ) {
             SoulText(
                 text = title,
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 fontSize = 18.sp,
                 fontWeight = FontWeight(500),
                 overflow = TextOverflow.Ellipsis
             )
             SoulText(
                 text = description,
-                color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                color = SoulSearchingColorTheme.colorScheme.textSecondary,
                 style = MaterialTheme.typography.bodyMedium,
                 overflow = TextOverflow.Ellipsis
             )

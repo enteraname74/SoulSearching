@@ -29,8 +29,8 @@ fun SoulMenuSwitch(
     trailingIcon: SoulMenuLeadingIconSpec? = null,
     maxLines: Int = 2,
     withClickIndication: Boolean = true,
-    titleColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+    titleColor: Color = SoulSearchingColorTheme.colorScheme.text,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.textSecondary,
     padding: PaddingValues = PaddingValues(
         horizontal = UiConstants.Spacing.large,
         vertical = UiConstants.Spacing.veryLarge,

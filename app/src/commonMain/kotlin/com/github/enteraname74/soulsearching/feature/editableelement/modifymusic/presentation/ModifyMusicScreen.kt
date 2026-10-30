@@ -67,7 +67,7 @@ private fun CloudStatus(music: Music) {
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
     ) {
         SoulIcon(
-            color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+            color = SoulSearchingColorTheme.colorScheme.textSecondary,
             icon = when {
                 music.isRemoteOnly -> CoreRes.drawable.ic_cloud_download
                 music.isLocalOnly -> CoreRes.drawable.ic_cloud_alert
@@ -81,7 +81,7 @@ private fun CloudStatus(music: Music) {
                 else -> CoreRes.string.music_synced_on_cloud.toTextSpec()
             },
             style = UiConstants.Typography.bodyVerySmall,
-            color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+            color = SoulSearchingColorTheme.colorScheme.textSecondary,
         )
     }
 }
@@ -98,12 +98,12 @@ fun MusicPathFooter(
         SoulText(
             text = CoreRes.string.music_path.toTextSpec(),
             style = UiConstants.Typography.bodyVerySmall,
-            color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+            color = SoulSearchingColorTheme.colorScheme.textSecondary,
         )
         SoulText(
             text = musicPath.toTextSpec(),
             style = UiConstants.Typography.bodyVerySmall,
-            color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+            color = SoulSearchingColorTheme.colorScheme.textSecondary,
         )
     }
 }

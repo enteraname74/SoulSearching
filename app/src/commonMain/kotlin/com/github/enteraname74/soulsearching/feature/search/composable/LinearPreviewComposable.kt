@@ -62,14 +62,14 @@ fun LinearPreviewComposable(
             ) {
                 SoulText(
                     text = title,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 SoulText(
                     text = text,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

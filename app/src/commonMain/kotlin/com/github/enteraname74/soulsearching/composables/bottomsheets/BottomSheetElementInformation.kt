@@ -39,7 +39,7 @@ fun BottomSheetElementInformation(
                 SoulImage(
                     cover = cover,
                     size = UiConstants.CoverSize.small,
-                    tint = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    tint = SoulSearchingColorTheme.colorScheme.text,
                 )
                 Column(
                     modifier = Modifier
@@ -49,7 +49,7 @@ fun BottomSheetElementInformation(
                 ) {
                     SoulText(
                         text = title,
-                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                        color = SoulSearchingColorTheme.colorScheme.text,
                         style = MaterialTheme.typography.labelLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -57,7 +57,7 @@ fun BottomSheetElementInformation(
                     subTitle?.let {
                         SoulText(
                             text = it,
-                            color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                            color = SoulSearchingColorTheme.colorScheme.textSecondary,
                             style = MaterialTheme.typography.labelLarge,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -69,7 +69,7 @@ fun BottomSheetElementInformation(
         }
         HorizontalDivider(
             thickness = 1.dp,
-            color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+            color = SoulSearchingColorTheme.colorScheme.textSecondary,
         )
     }
 }

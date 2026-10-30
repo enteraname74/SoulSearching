@@ -24,8 +24,8 @@ fun SoulAlertDialog(
     icon: @Composable (() -> Unit)? = null,
     confirmText: SoulTextSpec = CoreRes.string.ok.toTextSpec(),
     dismissText: SoulTextSpec? = null,
-    backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-    contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
+    backgroundColor: Color = SoulSearchingColorTheme.colorScheme.background,
+    contentColor: Color = SoulSearchingColorTheme.colorScheme.text
 ) {
     AlertDialog(
         onDismissRequest = dismissAction,
@@ -80,8 +80,8 @@ fun SoulAlertDialog(
     confirmText: SoulTextSpec = CoreRes.string.ok.toTextSpec(),
     isConfirmButtonEnabled: Boolean = true,
     dismissText: SoulTextSpec = CoreRes.string.cancel.toTextSpec(),
-    backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-    contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
+    backgroundColor: Color = SoulSearchingColorTheme.colorScheme.background,
+    contentColor: Color = SoulSearchingColorTheme.colorScheme.text
 ) {
     AlertDialog(
         onDismissRequest = dismissAction,

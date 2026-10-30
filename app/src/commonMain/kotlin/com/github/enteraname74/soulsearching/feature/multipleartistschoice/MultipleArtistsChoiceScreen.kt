@@ -108,7 +108,7 @@ private fun UserActionScreen(
                     ) {
                         SoulText(
                             text = CoreRes.string.multiple_artists_selection_title.toTextSpec(),
-                            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                            color = SoulSearchingColorTheme.colorScheme.text,
                             style = UiConstants.Typography.bodyTitle,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,

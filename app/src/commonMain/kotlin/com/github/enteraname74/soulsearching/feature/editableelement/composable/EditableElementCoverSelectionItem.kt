@@ -22,6 +22,6 @@ fun LazyGridItemScope.EditableElementCoverSelectionItem(
         cover = cover,
         title = title,
         onClick = onClick,
-        contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+        contentColor = SoulSearchingColorTheme.colorScheme.text,
     )
 }

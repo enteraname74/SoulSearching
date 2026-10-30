@@ -68,7 +68,7 @@ private fun PreviewCard(
             .fillMaxWidth()
             .padding(horizontal = UiConstants.Spacing.large)
             .clip(style.shape())
-            .background(SoulSearchingColorTheme.colorScheme.secondary)
+            .background(SoulSearchingColorTheme.colorScheme.surface)
             .padding(all = UiConstants.Spacing.large),
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         verticalAlignment = Alignment.CenterVertically,
@@ -80,7 +80,7 @@ private fun PreviewCard(
         )
         SoulChoiceIconButton(
             buttonColors = SoulButtonColors(
-                contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
                 containerColor = Color.Transparent,
             ),
             onClick = { it.invoke() },
@@ -117,17 +117,17 @@ private fun CardContent(
     ) {
         SoulText(
             text = preview.date,
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.titleSmall,
         )
         SoulText(
             text = preview.allUsers,
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.body,
         )
         SoulText(
             text = preview.connectedUsers,
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.body.copy(fontWeight = FontWeight.Bold),
         )
     }

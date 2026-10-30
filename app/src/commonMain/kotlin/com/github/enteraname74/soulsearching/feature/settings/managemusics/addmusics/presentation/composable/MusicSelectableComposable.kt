@@ -26,7 +26,7 @@ fun MusicSelectableComposable(
     music: Music,
     onClick: () -> Unit,
     isSelected: Boolean,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.text
 ) {
     InnerContent(
         music = music,
@@ -48,7 +48,7 @@ private fun InnerContent(
     coverType: CoverType,
     onClick: () -> Unit,
     isSelected: Boolean,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.text
 ) {
     Row(
         modifier = Modifier

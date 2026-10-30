@@ -33,8 +33,8 @@ fun CoverFolderRetrieverExpander(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = SoulSearchingColorTheme.colorScheme.secondary,
-            contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+            containerColor = SoulSearchingColorTheme.colorScheme.surface,
+            contentColor = SoulSearchingColorTheme.colorScheme.text,
         )
     ) {
         Column {
@@ -58,16 +58,16 @@ fun CoverFolderRetrieverExpander(
                         modifier = Modifier.fillMaxWidth(),
                         title = title,
                         text = subTitle,
-                        titleColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                        textColor = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                        titleColor = SoulSearchingColorTheme.colorScheme.text,
+                        textColor = SoulSearchingColorTheme.colorScheme.textSecondary,
                     )
                 }
                 RadioButton(
                     selected = isExpanded,
                     onClick = onClick,
                     colors = RadioButtonDefaults.colors(
-                        selectedColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                        unselectedColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                        selectedColor = SoulSearchingColorTheme.colorScheme.text,
+                        unselectedColor = SoulSearchingColorTheme.colorScheme.text,
                     )
                 )
             }

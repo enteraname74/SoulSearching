@@ -61,7 +61,7 @@ fun SettingsStatisticsSectionHeader(
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
             ) {
                 SoulText(
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     text = element.title,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -69,7 +69,7 @@ fun SettingsStatisticsSectionHeader(
                     fontSize = 24.sp
                 )
                 SoulText(
-                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                    color = SoulSearchingColorTheme.colorScheme.textSecondary,
                     text = element.text,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

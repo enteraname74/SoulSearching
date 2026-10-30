@@ -30,7 +30,7 @@ fun SubMenuComposable(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = SoulSearchingColorTheme.colorScheme.primary)
+            .background(color = SoulSearchingColorTheme.colorScheme.background)
             .padding(horizontal = UiConstants.Spacing.medium)
             .padding(bottom = UiConstants.Spacing.medium),
         verticalAlignment = Alignment.CenterVertically,
@@ -40,7 +40,7 @@ fun SubMenuComposable(
             modifier = Modifier
                 .weight(1f, fill = false),
             text = title,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.titleSmall,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

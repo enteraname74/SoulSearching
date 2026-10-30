@@ -10,20 +10,36 @@ object AnimatedColorPaletteBuilder {
     @Composable
     fun animate(palette: SoulSearchingPalette): SoulSearchingPalette =
         SoulSearchingPalette(
-            primary = palette.primary.animated(label = PRIMARY_COLOR_LABEL),
-            secondary = palette.secondary.animated(label = SECONDARY_COLOR_LABEL),
-            onPrimary = palette.onPrimary.animated(label = ON_PRIMARY_COLOR_LABEL),
-            onSecondary = palette.onSecondary.animated(label = ON_SECONDARY_COLOR_LABEL),
-            subSecondaryText = palette.subSecondaryText.animated(label = SUB_SECONDARY_TEXT_COLOR_LABEL),
-            subPrimaryText = palette.subPrimaryText.animated(label = SUB_PRIMARY_TEXT_COLOR_LABEL),
+            background = palette.background.animated(label = BACKGROUND_COLOR_LABEL),
+            surfaceLow = palette.surfaceLow.animated(label = SURFACE_LOW_COLOR_LABEL),
+            surface = palette.surface.animated(label = SURFACE_COLOR_LABEL),
+            surfaceHigh = palette.surfaceHigh.animated(label = SURFACE_HIGH_COLOR_LABEL),
+            outline = palette.outline.animated(label = OUTLINE_COLOR_LABEL),
+            text = palette.text.animated(label = TEXT_COLOR_LABEL),
+            textSecondary = palette.textSecondary.animated(label = TEXT_SECONDARY_COLOR_LABEL),
+            textTertiary = palette.textTertiary.animated(label = TEXT_TERTIARY_COLOR_LABEL),
+            accent = palette.accent.animated(label = ACCENT_COLOR_LABEL),
+            onAccent = palette.onAccent.animated(label = ON_ACCENT_COLOR_LABEL),
+            danger = palette.danger.animated(label = DANGER_COLOR_LABEL),
+            onDanger = palette.onDanger.animated(label = ON_DANGER_COLOR_LABEL),
+            warning = palette.warning.animated(label = WARNING_COLOR_LABEL),
+            onWarning = palette.onWarning.animated(label = ON_WARNING_COLOR_LABEL),
         )
 
-    private const val PRIMARY_COLOR_LABEL = "PRIMARY_COLOR_LABEL"
-    private const val ON_PRIMARY_COLOR_LABEL = "ON_PRIMARY_COLOR_LABEL"
-    private const val SECONDARY_COLOR_LABEL = "SECONDARY_COLOR_LABEL"
-    private const val ON_SECONDARY_COLOR_LABEL = "ON_SECONDARY_COLOR_LABEL"
-    private const val SUB_PRIMARY_TEXT_COLOR_LABEL = "SUB_PRIMARY_TEXT_COLOR_LABEL"
-    private const val SUB_SECONDARY_TEXT_COLOR_LABEL = "SUB_SECONDARY_TEXT_COLOR_LABEL"
+    private const val BACKGROUND_COLOR_LABEL = "BACKGROUND_COLOR_LABEL"
+    private const val SURFACE_LOW_COLOR_LABEL = "SURFACE_LOW_COLOR_LABEL"
+    private const val SURFACE_COLOR_LABEL = "SURFACE_COLOR_LABEL"
+    private const val SURFACE_HIGH_COLOR_LABEL = "SURFACE_HIGH_COLOR_LABEL"
+    private const val OUTLINE_COLOR_LABEL = "OUTLINE_COLOR_LABEL"
+    private const val TEXT_COLOR_LABEL = "TEXT_COLOR_LABEL"
+    private const val TEXT_SECONDARY_COLOR_LABEL = "TEXT_SECONDARY_COLOR_LABEL"
+    private const val TEXT_TERTIARY_COLOR_LABEL = "TEXT_TERTIARY_COLOR_LABEL"
+    private const val ACCENT_COLOR_LABEL = "ACCENT_COLOR_LABEL"
+    private const val ON_ACCENT_COLOR_LABEL = "ON_ACCENT_COLOR_LABEL"
+    private const val DANGER_COLOR_LABEL = "DANGER_COLOR_LABEL"
+    private const val ON_DANGER_COLOR_LABEL = "ON_DANGER_COLOR_LABEL"
+    private const val WARNING_COLOR_LABEL = "WARNING_COLOR_LABEL"
+    private const val ON_WARNING_COLOR_LABEL = "ON_WARNING_COLOR_LABEL"
 }
 
 @Composable

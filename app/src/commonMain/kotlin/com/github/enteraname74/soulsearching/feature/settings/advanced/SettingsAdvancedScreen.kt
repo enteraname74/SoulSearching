@@ -107,7 +107,7 @@ private fun SettingsAdvancedComposable(
         shouldAnimate = true
     }
 
-    val focusedColor = SoulSearchingColorTheme.colorScheme.secondary
+    val focusedColor = SoulSearchingColorTheme.colorScheme.surface
 
     SettingPage(
         navigateBack = { onAction(SettingsAdvancedAction.NavigateBack) },
@@ -120,7 +120,7 @@ private fun SettingsAdvancedComposable(
                         horizontal = UiConstants.Spacing.large,
                     )
                     .clip(RoundedCornerShape(size = 10.dp))
-                    .background(color = SoulSearchingColorTheme.colorScheme.secondary),
+                    .background(color = SoulSearchingColorTheme.colorScheme.surface),
                 title = CoreRes.string.reload_covers_title.toTextSpec(),
                 subTitle = CoreRes.string.reload_covers_text.toTextSpec(),
                 clickAction = { onAction(SettingsAdvancedAction.ToggleExpandReloadImage) },
@@ -209,8 +209,8 @@ private fun ReloadImagesContent(
             )
     ) {
         SoulMenuSwitch(
-            titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-            textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+            titleColor = SoulSearchingColorTheme.colorScheme.text,
+            textColor = SoulSearchingColorTheme.colorScheme.textSecondary,
             title = CoreRes.string.reload_musics_covers.toTextSpec(),
             toggleAction = { onAction(SettingsAdvancedAction.ToggleMusicsCover) },
             isChecked = state.shouldReloadSongsCovers,
@@ -221,8 +221,8 @@ private fun ReloadImagesContent(
             ),
         )
         SoulMenuSwitch(
-            titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-            textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+            titleColor = SoulSearchingColorTheme.colorScheme.text,
+            textColor = SoulSearchingColorTheme.colorScheme.textSecondary,
             title = CoreRes.string.delete_playlists_covers.toTextSpec(),
             toggleAction = { onAction(SettingsAdvancedAction.TogglePlaylistsCovers) },
             isChecked = state.shouldDeletePlaylistsCovers,
@@ -233,8 +233,8 @@ private fun ReloadImagesContent(
             ),
         )
         SoulMenuSwitch(
-            titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-            textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+            titleColor = SoulSearchingColorTheme.colorScheme.text,
+            textColor = SoulSearchingColorTheme.colorScheme.textSecondary,
             title = CoreRes.string.delete_collections_covers.toTextSpec(),
             toggleAction = { onAction(SettingsAdvancedAction.ToggleCollectionsCovers) },
             isChecked = state.shouldDeleteCollectionsCovers,
@@ -245,8 +245,8 @@ private fun ReloadImagesContent(
             ),
         )
         SoulMenuSwitch(
-            titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-            textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+            titleColor = SoulSearchingColorTheme.colorScheme.text,
+            textColor = SoulSearchingColorTheme.colorScheme.textSecondary,
             title = CoreRes.string.reload_albums_covers.toTextSpec(),
             toggleAction = { onAction(SettingsAdvancedAction.ToggleAlbumsCovers) },
             isChecked = state.shouldReloadAlbumsCovers,
@@ -257,8 +257,8 @@ private fun ReloadImagesContent(
             ),
         )
         SoulMenuSwitch(
-            titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-            textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+            titleColor = SoulSearchingColorTheme.colorScheme.text,
+            textColor = SoulSearchingColorTheme.colorScheme.textSecondary,
             title = CoreRes.string.reload_artists_covers.toTextSpec(),
             toggleAction = { onAction(SettingsAdvancedAction.ToggleArtistsCovers) },
             isChecked = state.shouldReloadArtistsCovers,
@@ -283,7 +283,7 @@ private fun ReloadImagesContent(
                 SoulText(
                     text = CoreRes.string.reload_covers_title.toTextSpec(),
                     textAlign = TextAlign.Center,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     fontSize = 15.sp
                 )
             }

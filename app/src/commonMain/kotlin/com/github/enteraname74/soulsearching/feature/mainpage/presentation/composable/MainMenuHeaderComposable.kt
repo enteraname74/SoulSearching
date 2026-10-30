@@ -54,12 +54,12 @@ fun MainMenuHeaderComposable(
                 icon = CoreRes.drawable.ic_settings_filled,
                 contentDescription = CoreRes.string.settings_access_button.toTextSpec().string,
                 badgeColor = if (shouldShowNewReleasePin) {
-                    SoulSearchingColorTheme.colorScheme.onPrimary
+                    SoulSearchingColorTheme.colorScheme.text
                 } else {
                     null
                 },
                 colors = SoulButtonDefaults.colors(
-                    contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    contentColor = SoulSearchingColorTheme.colorScheme.text,
                     containerColor = Color.Transparent,
                 ),
                 onClick = settingsAction,
@@ -74,7 +74,7 @@ fun MainMenuHeaderComposable(
 
         SoulText(
             text = CoreRes.string.app_name.toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.titleSmall,
             fontWeight = FontWeight.Bold
         )
@@ -82,7 +82,7 @@ fun MainMenuHeaderComposable(
             icon = CoreRes.drawable.ic_search,
             contentDescription = CoreRes.string.search_all.toTextSpec().string,
             colors = SoulButtonDefaults.colors(
-                contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
                 containerColor = Color.Transparent,
             ),
             onClick = searchAction,

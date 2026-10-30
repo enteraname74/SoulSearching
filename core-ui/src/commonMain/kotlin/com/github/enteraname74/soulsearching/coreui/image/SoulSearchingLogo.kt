@@ -28,11 +28,11 @@ fun SoulSearchingLogo() {
             modifier = Modifier.size(UiConstants.ImageSize.veryLarge),
             painter = painterResource(CoreRes.drawable.app_icon),
             contentDescription = stringResource(CoreRes.string.app_logo),
-            colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onPrimary)
+            colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.text)
         )
         SoulText(
             text = CoreRes.string.app_name.toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.titleSmall,
             fontWeight = FontWeight.Bold
         )

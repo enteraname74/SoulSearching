@@ -50,7 +50,7 @@ private fun CoverFolderRetrieverFolderSelectionContent(
     ) {
         SoulText(
             text = CoreRes.string.cover_folder_retriever_path_selection_title.toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.body.copy(
                 fontWeight = FontWeight.Bold,
             ),
@@ -68,9 +68,9 @@ private fun CoverFolderRetrieverFolderSelectionContent(
                 modifier = Modifier.weight(1f),
                 text = currentFolder?.toTextSpec() ?: CoreRes.string.cover_folder_retriever_path_selection_no_path_selected.toTextSpec(),
                 color = if (currentFolder != null) {
-                    SoulSearchingColorTheme.colorScheme.onPrimary
+                    SoulSearchingColorTheme.colorScheme.text
                 } else {
-                    SoulSearchingColorTheme.colorScheme.subPrimaryText
+                    SoulSearchingColorTheme.colorScheme.textSecondary
                 },
                 style = UiConstants.Typography.body,
             )

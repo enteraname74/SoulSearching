@@ -34,8 +34,8 @@ internal fun PlaylistContinueCard(
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = SoulSearchingColorTheme.colorScheme.secondary,
-            contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+            containerColor = SoulSearchingColorTheme.colorScheme.surface,
+            contentColor = SoulSearchingColorTheme.colorScheme.text,
         )
     ) {
         Column(
@@ -71,7 +71,7 @@ private fun TopInformation(
             modifier = Modifier
                 .weight(1f),
             text = CoreRes.string.continue_played_list_title.toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.bodyTitle,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
@@ -81,7 +81,7 @@ private fun TopInformation(
             onClick = onDelete,
             colors = SoulButtonDefaults.colors(
                 containerColor = Color.Transparent,
-                contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
             )
         )
     }
@@ -103,14 +103,14 @@ private fun CurrentMusicInfo(
         ) {
             SoulText(
                 text = currentMusic.name.toTextSpec(),
-                color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 style = MaterialTheme.typography.labelLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             SoulText(
                 text = currentMusic.artists.toTextSpec(),
-                color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                color = SoulSearchingColorTheme.colorScheme.textSecondary,
                 style = MaterialTheme.typography.labelLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -120,8 +120,8 @@ private fun CurrentMusicInfo(
             icon = CoreRes.drawable.ic_play_filled,
             onClick = onContinue,
             colors = SoulButtonDefaults.colors(
-                containerColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                contentColor = SoulSearchingColorTheme.colorScheme.secondary,
+                containerColor = SoulSearchingColorTheme.colorScheme.text,
+                contentColor = SoulSearchingColorTheme.colorScheme.surface,
             )
         )
     }

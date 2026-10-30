@@ -82,9 +82,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
 
     val animatedBackgroundColor =
         if (playerViewManager.targetValue == BottomSheetStates.EXPANDED) {
-            SoulSearchingColorTheme.colorScheme.primary
+            SoulSearchingColorTheme.colorScheme.background
         } else {
-            SoulSearchingColorTheme.colorScheme.secondary
+            SoulSearchingColorTheme.colorScheme.surface
         }.animated(label = PlayerUiUtils.PLAYER_BACKGROUND_COLOR_LABEL)
 
     BoxWithConstraints(
@@ -254,9 +254,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
                         playerState = state,
                         lyricsState = lyricsState,
                         onMoreClickedOnMusic = showMusicBottomSheet,
-                        contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                        contentColor = SoulSearchingColorTheme.colorScheme.text,
                         containerColor = animatedBackgroundColor,
-                        subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                        subTextColor = SoulSearchingColorTheme.colorScheme.textSecondary,
                         isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
                         buttonColors = SoulButtonDefaults.secondaryColors(),
                         modifier = Modifier
@@ -286,9 +286,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 playerState = state,
                 lyricsState = lyricsState,
                 onMoreClickedOnMusic = showMusicBottomSheet,
-                containerColor = SoulSearchingColorTheme.colorScheme.secondary,
-                textColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                containerColor = SoulSearchingColorTheme.colorScheme.surface,
+                textColor = SoulSearchingColorTheme.colorScheme.text,
+                subTextColor = SoulSearchingColorTheme.colorScheme.textSecondary,
                 buttonColors = SoulButtonDefaults.primaryColors(),
                 multiSelectionState = multiSelectionState,
                 onLongSelectOnMusic = onLongSelectOnMusic,
@@ -311,9 +311,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
                     playerState = state,
                     lyricsState = lyricsState,
                     onMoreClickedOnMusic = showMusicBottomSheet,
-                    contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    contentColor = SoulSearchingColorTheme.colorScheme.text,
                     containerColor = animatedBackgroundColor,
-                    subTextColor = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                    subTextColor = SoulSearchingColorTheme.colorScheme.textSecondary,
                     isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
                     buttonColors = SoulButtonDefaults.secondaryColors(),
                     modifier = Modifier

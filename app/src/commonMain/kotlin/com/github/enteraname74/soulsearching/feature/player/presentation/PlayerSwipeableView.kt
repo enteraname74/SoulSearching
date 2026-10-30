@@ -140,7 +140,7 @@ fun PlayerDraggableView(
         SoulSearchingContext.setSystemBarsColor(
             statusBarColor = Color.Transparent,
             navigationBarColor = Color.Transparent,
-            isUsingDarkIcons = !SoulSearchingColorTheme.colorScheme.primary.isDark()
+            isUsingDarkIcons = !SoulSearchingColorTheme.colorScheme.background.isDark()
         )
 
         var enableSwipe by rememberSaveable {

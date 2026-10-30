@@ -43,7 +43,7 @@ fun AddToCollectionBottomSheetScreen(viewModel: AddToCollectionBottomSheetViewMo
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SoulSearchingColorTheme.colorScheme.secondary)
+            .background(SoulSearchingColorTheme.colorScheme.surface)
             .padding(UiConstants.Spacing.medium),
     ) {
         SoulTopBar(
@@ -53,7 +53,7 @@ fun AddToCollectionBottomSheetScreen(viewModel: AddToCollectionBottomSheetViewMo
             rightAction = TopBarValidateAction(onClick = viewModel::confirm),
             colors = SoulTopBarDefaults.primary(
                 containerColor = Color.Transparent,
-                contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
             ),
         )
         LazyColumnCompat(modifier = Modifier.fillMaxWidth()) {
@@ -68,12 +68,12 @@ fun AddToCollectionBottomSheetScreen(viewModel: AddToCollectionBottomSheetViewMo
                 ) {
                     SoulIcon(
                         icon = CoreRes.drawable.ic_add,
-                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                        color = SoulSearchingColorTheme.colorScheme.text,
                         size = UiConstants.ImageSize.medium,
                     )
                     SoulText(
                         text = CoreRes.string.create_collection_dialog_title.toTextSpec(),
-                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                        color = SoulSearchingColorTheme.colorScheme.text,
                         style = UiConstants.Typography.bodyTitle,
                     )
                 }
@@ -96,7 +96,7 @@ private fun CollectionSelectable(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
-    val color = SoulSearchingColorTheme.colorScheme.onSecondary
+    val color = SoulSearchingColorTheme.colorScheme.text
     Row(
         modifier = Modifier
             .fillMaxWidth()

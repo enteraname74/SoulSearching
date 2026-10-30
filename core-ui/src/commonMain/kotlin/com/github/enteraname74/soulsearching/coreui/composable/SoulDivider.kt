@@ -12,7 +12,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 
 @Composable
 fun SoulDivider(
-    color: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+    color: Color = SoulSearchingColorTheme.colorScheme.textSecondary,
     padding: PaddingValues = PaddingValues(vertical = UiConstants.Spacing.large),
 ) {
     HorizontalDivider(

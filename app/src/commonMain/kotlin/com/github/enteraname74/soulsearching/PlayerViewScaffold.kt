@@ -38,7 +38,7 @@ fun PlayerViewScaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                color = SoulSearchingColorTheme.colorScheme.primary
+                color = SoulSearchingColorTheme.colorScheme.background
             )
     ) {
         val constraintsScope = this

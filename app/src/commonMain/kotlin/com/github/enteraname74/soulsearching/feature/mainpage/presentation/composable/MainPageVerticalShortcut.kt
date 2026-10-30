@@ -68,7 +68,7 @@ fun MainPageVerticalShortcut(
                             }
                         ),
                     size = UiConstants.ImageSize.medium,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     icon = it.filledIcon(),
                 )
                 SoulText(
@@ -77,9 +77,9 @@ fun MainPageVerticalShortcut(
                         .vertical(),
                     text = it.text(),
                     color = if (isCurrentPosition) {
-                        SoulSearchingColorTheme.colorScheme.onPrimary
+                        SoulSearchingColorTheme.colorScheme.text
                     } else {
-                        SoulSearchingColorTheme.colorScheme.subPrimaryText
+                        SoulSearchingColorTheme.colorScheme.textSecondary
                     },
                     fontWeight = if (isCurrentPosition) {
                         FontWeight.ExtraBold

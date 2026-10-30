@@ -44,7 +44,7 @@ fun AddToPlaylistBottomSheetScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SoulSearchingColorTheme.colorScheme.secondary)
+            .background(SoulSearchingColorTheme.colorScheme.surface)
             .padding(UiConstants.Spacing.medium)
     ) {
         SoulTopBar(
@@ -58,7 +58,7 @@ fun AddToPlaylistBottomSheetScreen(
             ),
             colors = SoulTopBarDefaults.primary(
                 containerColor = Color.Transparent,
-                contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
             ),
         )
         LazyColumnCompat(
@@ -80,7 +80,7 @@ fun AddToPlaylistBottomSheetScreen(
                     isSelected = state
                         .selectedPlaylistIds
                         .contains(playlistWithMusics.playlist.playlistId),
-                    textColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    textColor = SoulSearchingColorTheme.colorScheme.text,
                 )
             }
 
@@ -112,12 +112,12 @@ private fun LazyListScope.createPlaylistItem(
         ) {
             SoulIcon(
                 icon = CoreRes.drawable.ic_add,
-                color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 size = UiConstants.ImageSize.medium,
             )
             SoulText(
                 text = CoreRes.string.create_playlist_dialog_title.toTextSpec(),
-                color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 style = UiConstants.Typography.bodyTitle,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

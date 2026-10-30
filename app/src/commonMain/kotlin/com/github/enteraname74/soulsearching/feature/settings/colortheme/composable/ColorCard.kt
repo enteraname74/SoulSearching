@@ -27,8 +27,8 @@ fun ColorCard(
         modifier = modifier
             .alpha(if (isSelected) 1.0f else 0.60f),
         colors = CardDefaults.cardColors(
-            contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-            containerColor = SoulSearchingColorTheme.colorScheme.secondary
+            contentColor = SoulSearchingColorTheme.colorScheme.text,
+            containerColor = SoulSearchingColorTheme.colorScheme.surface
         )
     ) {
         Column {
@@ -44,8 +44,8 @@ fun ColorCard(
                 clickAction = onClick,
                 isSelected = isSelected,
                 padding = PaddingValues.Absolute(),
-                textColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                textColor = SoulSearchingColorTheme.colorScheme.text,
+                subTextColor = SoulSearchingColorTheme.colorScheme.textSecondary,
             )
             subComposable?.invoke()
         }

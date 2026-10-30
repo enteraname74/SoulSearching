@@ -33,11 +33,11 @@ fun SettingsShortcutsScreen(
             SoulText(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(SoulSearchingColorTheme.colorScheme.primary)
+                    .background(SoulSearchingColorTheme.colorScheme.background)
                     .padding(all = UiConstants.Spacing.large),
                 text = CoreRes.string.shortcut_player_category.toTextSpec(),
                 style = UiConstants.Typography.bodyTitle,
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.text,
             )
         }
         items(
@@ -59,8 +59,8 @@ private fun ShortcutView(shortcut: SettingsShortcutsState.Shortcut) {
         commands.forEachIndexed { index, command ->
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = SoulSearchingColorTheme.colorScheme.secondary,
-                    contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    containerColor = SoulSearchingColorTheme.colorScheme.surface,
+                    contentColor = SoulSearchingColorTheme.colorScheme.text,
                 )
             ) {
                 SoulText(
@@ -68,7 +68,7 @@ private fun ShortcutView(shortcut: SettingsShortcutsState.Shortcut) {
                         .padding(UiConstants.Spacing.large),
                     text = command.toTextSpec(),
                     style = UiConstants.Typography.body,
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                 )
             }
 
@@ -78,7 +78,7 @@ private fun ShortcutView(shortcut: SettingsShortcutsState.Shortcut) {
                         .padding(UiConstants.Spacing.large),
                     text = "+".toTextSpec(),
                     style = UiConstants.Typography.body,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                 )
             }
         }
@@ -89,7 +89,7 @@ private fun ShortcutView(shortcut: SettingsShortcutsState.Shortcut) {
             style = UiConstants.Typography.body.copy(
                 fontWeight = FontWeight.Bold,
             ),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
         )
     }
 }

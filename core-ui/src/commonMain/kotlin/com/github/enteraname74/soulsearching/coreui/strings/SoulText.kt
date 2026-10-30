@@ -19,7 +19,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 fun SoulText(
     text: SoulTextSpec,
     modifier: Modifier = Modifier,
-    color: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    color: Color = SoulSearchingColorTheme.colorScheme.text,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,

@@ -33,7 +33,7 @@ fun EditableElementAddArtist(
         )
         SoulText(
             text = CoreRes.string.add_artist.toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.bodyLarge,
         )
     }

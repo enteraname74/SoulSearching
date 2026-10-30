@@ -123,8 +123,8 @@ private fun AlphaWarningCard() {
                     max = CardMaxWidth
                 ),
             colors = CardDefaults.cardColors(
-                contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                containerColor = SoulSearchingColorTheme.colorScheme.secondary
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
+                containerColor = SoulSearchingColorTheme.colorScheme.surface
             )
         ) {
             Column(
@@ -137,11 +137,11 @@ private fun AlphaWarningCard() {
                 SoulIcon(
                     icon = CoreRes.drawable.ic_warning_filled,
                     size = UiConstants.ImageSize.mediumPlus,
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                 )
                 SoulText(
                     text = CoreRes.string.cloud_alpha_warning_text.toTextSpec(),
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     textAlign = TextAlign.Center,
                     style = UiConstants.Typography.body,
                 )

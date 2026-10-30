@@ -39,8 +39,8 @@ data class SoulSwitchColors(
 object SoulSwitchDefaults {
     @Composable
     fun colors(
-        outer: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-        inner: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+        outer: Color = SoulSearchingColorTheme.colorScheme.textSecondary,
+        inner: Color = SoulSearchingColorTheme.colorScheme.text,
     ): SoulSwitchColors = SoulSwitchColors(
         outer = outer,
         inner = inner,

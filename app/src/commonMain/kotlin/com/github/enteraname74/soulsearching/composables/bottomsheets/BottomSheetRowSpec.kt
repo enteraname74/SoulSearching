@@ -49,11 +49,11 @@ data class BottomSheetRowSpec(
                 size = UiConstants.ImageSize.medium,
                 icon = icon,
                 contentDescription = title.string,
-                color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                color = SoulSearchingColorTheme.colorScheme.text,
             )
             SoulText(
                 text = title,
-                color = SoulSearchingColorTheme.colorScheme.onSecondary
+                color = SoulSearchingColorTheme.colorScheme.text
             )
         }
     }

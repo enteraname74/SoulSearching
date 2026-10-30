@@ -17,8 +17,8 @@ actual fun SoulVerticalGridScrollBar(
         modifier = modifier,
         adapter = ScrollbarAdapter(scrollState = lazyGridState),
         style = defaultScrollbarStyle().copy(
-            unhoverColor = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-            hoverColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+            unhoverColor = SoulSearchingColorTheme.colorScheme.textSecondary,
+            hoverColor = SoulSearchingColorTheme.colorScheme.text,
         )
     )
 }

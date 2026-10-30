@@ -45,7 +45,7 @@ fun SoulMenuElement(
                 size = UiConstants.ImageSize.medium,
                 icon = it,
                 badgeColor = if (isBadged) {
-                    SoulSearchingColorTheme.colorScheme.onPrimary
+                    SoulSearchingColorTheme.colorScheme.text
                 } else {
                     null
                 },
@@ -61,7 +61,7 @@ fun SoulMenuElement(
                 size = UiConstants.ImageSize.smallPlus,
                 icon = it,
                 badgeColor = if (isBadged) {
-                    SoulSearchingColorTheme.colorScheme.onPrimary
+                    SoulSearchingColorTheme.colorScheme.text
                 } else {
                     null
                 },

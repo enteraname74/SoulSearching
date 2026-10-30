@@ -39,8 +39,8 @@ fun MultipleArtistsWarningCard() {
                     max = CardMaxWidth
                 ),
             colors = CardDefaults.cardColors(
-                contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                containerColor = SoulSearchingColorTheme.colorScheme.secondary
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
+                containerColor = SoulSearchingColorTheme.colorScheme.surface
             )
         ) {
             Column(
@@ -53,11 +53,11 @@ fun MultipleArtistsWarningCard() {
                 SoulIcon(
                     icon = CoreRes.drawable.ic_groups_filled,
                     size = UiConstants.ImageSize.mediumPlus,
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                 )
                 SoulText(
                     text = CoreRes.string.multiple_artists_text.toTextSpec(),
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     textAlign = TextAlign.Center,
                     style = UiConstants.Typography.body,
                 )

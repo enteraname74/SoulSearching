@@ -23,8 +23,8 @@ fun <T>SoulMenuDropdown(
     selectedChoiceName: SoulTextSpec,
     onChoice: (T) -> Unit,
     padding: PaddingValues = PaddingValues(UiConstants.Spacing.veryLarge),
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
-    subTextColor: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.text,
+    subTextColor: Color = SoulSearchingColorTheme.colorScheme.textSecondary,
 ) {
     Row(
         modifier = Modifier

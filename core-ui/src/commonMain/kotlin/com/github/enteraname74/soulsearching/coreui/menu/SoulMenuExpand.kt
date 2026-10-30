@@ -36,8 +36,8 @@ fun SoulMenuExpand(
         horizontal = UiConstants.Spacing.large,
         vertical = UiConstants.Spacing.veryLarge,
     ),
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-    subTextColor: Color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.text,
+    subTextColor: Color = SoulSearchingColorTheme.colorScheme.textSecondary,
     content: @Composable () -> Unit,
 ) {
     val rotation by animateFloatAsState(targetValue = if (isExpanded) 180f else 0f)

@@ -105,7 +105,7 @@ fun PlaylistSmallView(
     val backgroundColor: @Composable () -> Color by remember(lazyListState) {
         derivedStateOf {
             if (lazyListState.firstVisibleItemIndex >= 1) {
-                { SoulSearchingColorTheme.colorScheme.primary }
+                { SoulSearchingColorTheme.colorScheme.background }
             } else {
                 { Color.Transparent }
             }
@@ -211,7 +211,7 @@ fun PlaylistSmallView(
                         onMoreClicked = {
                             data.showMusicBottomSheet(music.musicId)
                         },
-                        textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                        textColor = SoulSearchingColorTheme.colorScheme.text,
                         isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                         isSelected = multiSelectionState.selectedIds.contains(music.musicId.toString()),
                         isSelectionModeOn = multiSelectionState.totalSelected > 0,
@@ -253,10 +253,10 @@ private fun BlurredBackground(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            SoulSearchingColorTheme.colorScheme.primary.copy(
+                            SoulSearchingColorTheme.colorScheme.background.copy(
                                 alpha = max(backgroundAlpha, 0.2f)
                             ),
-                            SoulSearchingColorTheme.colorScheme.primary,
+                            SoulSearchingColorTheme.colorScheme.background,
                         ),
                         startY = 0f,
                         endY = rememberWindowWidth(),

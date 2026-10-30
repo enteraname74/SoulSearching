@@ -38,8 +38,8 @@ internal fun PlayerMorphingMinimisedSongProgression(
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
 
-    val trackColor = SoulSearchingColorTheme.colorScheme.subSecondaryText.blend(
-        other = SoulSearchingColorTheme.colorScheme.primary,
+    val trackColor = SoulSearchingColorTheme.colorScheme.textSecondary.blend(
+        other = SoulSearchingColorTheme.colorScheme.background,
         ratio = 0.5f,
     )
 
@@ -67,10 +67,10 @@ internal fun PlayerMorphingMinimisedSongProgression(
                             onEnableSwipe(it == null)
                         },
                         sliderColors = SliderDefaults.colors(
-                            thumbColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                            activeTrackColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                            thumbColor = SoulSearchingColorTheme.colorScheme.text,
+                            activeTrackColor = SoulSearchingColorTheme.colorScheme.text,
                             inactiveTrackColor = trackColor,
-                            activeTickColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                            activeTickColor = SoulSearchingColorTheme.colorScheme.text,
                             inactiveTickColor = trackColor,
                         )
                     )
@@ -88,7 +88,7 @@ internal fun PlayerMorphingMinimisedSongProgression(
                         1f
                     )
                 },
-                color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 trackColor = trackColor,
                 drawStopIndicator = {},
                 strokeCap = StrokeCap.Square,

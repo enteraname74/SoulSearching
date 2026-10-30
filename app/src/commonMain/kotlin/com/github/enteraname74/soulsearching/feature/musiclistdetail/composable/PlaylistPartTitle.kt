@@ -32,7 +32,7 @@ fun PlaylistPartTitle(
                 }
             ),
         text = title,
-        color = SoulSearchingColorTheme.colorScheme.onPrimary,
+        color = SoulSearchingColorTheme.colorScheme.text,
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp
     )

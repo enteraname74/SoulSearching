@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
@@ -311,7 +312,7 @@ private fun DeletionIndicator(
     val actualContainerColor: Color by animateColorAsState(
         targetValue = if (isInDeletionZone) {
             containerColor.blend(
-                other = Color.Red,
+                other = SoulSearchingColorTheme.colorScheme.danger,
                 ratio = DELETION_ZONE_CONTENT_COLOR_RATIO,
             )
         } else {

@@ -63,7 +63,7 @@ fun PlayerMinimisedMainInfo(
         ) {
             SoulText(
                 text = currentMusic.name.toTextSpec(),
-                color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 maxLines = 1,
                 fontSize = 15.sp,
                 lineHeight = 15.sp,
@@ -72,7 +72,7 @@ fun PlayerMinimisedMainInfo(
             )
             SoulText(
                 text = currentMusic.artistsNames.toTextSpec(),
-                color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                color = SoulSearchingColorTheme.colorScheme.textSecondary,
                 fontSize = 13.sp,
                 lineHeight = 13.sp,
                 maxLines = 1,

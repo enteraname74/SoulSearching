@@ -33,8 +33,8 @@ fun SearchMusics(
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
     onSelectedMusicForBottomSheet: (musicId: Uuid) -> Unit,
-    primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.background,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.text,
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
 ) {

@@ -26,9 +26,9 @@ import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDe
 fun PlaylistPanel(
     data: MusicListDetailState.Data,
     modifier: Modifier = Modifier,
-    containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-    secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
-    tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
+    containerColor: Color = SoulSearchingColorTheme.colorScheme.background,
+    secondaryColor: Color = SoulSearchingColorTheme.colorScheme.surface,
+    tint: Color = SoulSearchingColorTheme.colorScheme.text
 ) {
     Row(
         modifier = modifier
@@ -57,8 +57,8 @@ private fun ImagesButton(
     playAction: () -> Unit,
     shuffleAction: () -> Unit,
     addToList: (() -> Unit)?,
-    primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
-    tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.surface,
+    tint: Color = SoulSearchingColorTheme.colorScheme.text
 ) {
     SoulSegmentedButton(
         colors = SoulButtonDefaults.colors(

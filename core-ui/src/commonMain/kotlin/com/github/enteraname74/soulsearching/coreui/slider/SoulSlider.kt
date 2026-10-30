@@ -31,11 +31,11 @@ fun SoulSlider(
     minValue: Float = 0f,
     steps: Int = 0,
     sliderColors: SliderColors = SliderDefaults.colors(
-        thumbColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-        activeTrackColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-        inactiveTrackColor = SoulSearchingColorTheme.colorScheme.secondary,
-        activeTickColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-        inactiveTickColor = SoulSearchingColorTheme.colorScheme.secondary,
+        thumbColor = SoulSearchingColorTheme.colorScheme.text,
+        activeTrackColor = SoulSearchingColorTheme.colorScheme.text,
+        inactiveTrackColor = SoulSearchingColorTheme.colorScheme.surface,
+        activeTickColor = SoulSearchingColorTheme.colorScheme.text,
+        inactiveTickColor = SoulSearchingColorTheme.colorScheme.surface,
     )
 ) {
     val fixedMin = max(0f, minValue)

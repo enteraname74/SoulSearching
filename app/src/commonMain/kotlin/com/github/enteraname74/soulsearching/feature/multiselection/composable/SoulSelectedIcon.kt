@@ -46,8 +46,8 @@ data class SoulSelectedIconColors(
 object SoulSelectedIconDefaults {
     @Composable
     fun secondary(
-        containerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
-        contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.surface,
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.text,
     ): SoulSelectedIconColors = SoulSelectedIconColors(
         containerColor = containerColor,
         contentColor = contentColor,
@@ -55,8 +55,8 @@ object SoulSelectedIconDefaults {
 
     @Composable
     fun primary(
-        containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-        contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.background,
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.text,
     ): SoulSelectedIconColors = SoulSelectedIconColors(
         containerColor = containerColor,
         contentColor = contentColor,

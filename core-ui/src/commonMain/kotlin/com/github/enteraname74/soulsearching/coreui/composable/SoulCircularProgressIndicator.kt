@@ -7,6 +7,6 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun SoulCircularProgressIndicator() {
     CircularProgressIndicator(
-        color = SoulSearchingColorTheme.colorScheme.onPrimary,
+        color = SoulSearchingColorTheme.colorScheme.text,
     )
 }

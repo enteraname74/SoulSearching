@@ -43,7 +43,7 @@ fun SoulLoadingScreen(
                                 top = UiConstants.Spacing.medium,
                             ),
                         text = it,
-                        color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                        color = SoulSearchingColorTheme.colorScheme.text,
                         textAlign = TextAlign.Center,
                     )
                 }
@@ -70,7 +70,7 @@ fun SoulLoadingScreen(
                             top = UiConstants.Spacing.medium,
                         ),
                     text = it,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     textAlign = TextAlign.Center,
                 )
             }

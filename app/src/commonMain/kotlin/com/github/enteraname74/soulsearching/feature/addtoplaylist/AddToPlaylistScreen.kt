@@ -90,7 +90,7 @@ internal fun AddToPlaylistScreen(
                         bottom = UiConstants.Spacing.mediumPlus,
                     ),
                 text = SoulTexts.selectedMusics(state.selectedMusicIds.size),
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 style = UiConstants.Typography.body,
             )
             LazyColumnCompat(
@@ -128,7 +128,7 @@ internal fun AddToPlaylistScreen(
                             music = music,
                             onClick = { state.onToggleSelection(it.musicId) },
                             onMoreClicked = null,
-                            textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                            textColor = SoulSearchingColorTheme.colorScheme.text,
                             isPlayedMusic = false,
                             hideMoreIcon = true,
                             isSelected = state.selectedMusicIds.contains(music.musicId),

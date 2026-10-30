@@ -27,7 +27,7 @@ fun SoulBitmapImage(
     size : Dp,
     modifier: Modifier = Modifier,
     roundedPercent : Int = 10,
-    tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
+    tint: Color = SoulSearchingColorTheme.colorScheme.text
 ) {
     val modifierBase = Modifier
         .size(size)

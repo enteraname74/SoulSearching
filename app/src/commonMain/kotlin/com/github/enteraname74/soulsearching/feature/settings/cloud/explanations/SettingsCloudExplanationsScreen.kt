@@ -32,12 +32,12 @@ fun SettingsCloudExplanationsScreen() {
     ) {
         SoulText(
             text = CoreRes.string.cloud_explanations_title.toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.titleSmall,
         )
         SoulText(
             text = CoreRes.string.cloud_explanations_text.toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.body,
         )
         AlphaWarningCard()
@@ -61,8 +61,8 @@ private fun AlphaWarningCard() {
                 }
                 .fillMaxWidth(),
             colors = CardDefaults.cardColors(
-                contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                containerColor = SoulSearchingColorTheme.colorScheme.primary
+                contentColor = SoulSearchingColorTheme.colorScheme.text,
+                containerColor = SoulSearchingColorTheme.colorScheme.background
             )
         ) {
             Row(
@@ -78,13 +78,13 @@ private fun AlphaWarningCard() {
                     modifier = Modifier
                         .weight(1f),
                     text = CoreRes.string.cloud_explanations_redirect.toTextSpec(),
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                     style = UiConstants.Typography.body,
                 )
                 SoulIcon(
                     icon = CoreRes.drawable.ic_open_in_new,
                     size = UiConstants.ImageSize.medium,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.text,
                 )
             }
         }

@@ -89,8 +89,8 @@ private fun BottomSheet(
 object SoulBottomSheetDefaults {
     @Composable
     fun colors(): SoulBottomSheetColors = SoulBottomSheetColors(
-        containerColor = SoulSearchingColorTheme.colorScheme.secondary,
-        contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+        containerColor = SoulSearchingColorTheme.colorScheme.surface,
+        contentColor = SoulSearchingColorTheme.colorScheme.text,
     )
 }
 

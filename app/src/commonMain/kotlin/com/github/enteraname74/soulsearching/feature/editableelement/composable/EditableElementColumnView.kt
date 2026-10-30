@@ -37,7 +37,7 @@ fun EditableElementColumnView(
     ) {
         LazyColumnCompat(
             modifier = Modifier
-                .background(SoulSearchingColorTheme.colorScheme.primary)
+                .background(SoulSearchingColorTheme.colorScheme.background)
                 .padding(
                     top = UiConstants.Spacing.small,
                     start = UiConstants.Spacing.medium,

@@ -92,7 +92,7 @@ fun PlayerTopInformation(
         ) {
             SoulText(
                 text = state.currentMusic.name.toTextSpec(),
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 maxLines = 1,
                 textAlign = TextAlign.Center,
                 fontSize = 18.sp,
@@ -119,7 +119,7 @@ fun PlayerTopInformation(
 
                     SoulText(
                         text = formattedText.toTextSpec(),
-                        color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                        color = SoulSearchingColorTheme.colorScheme.textSecondary,
                         fontSize = 15.sp,
                         maxLines = 1,
                         textAlign = TextAlign.Center,
@@ -139,7 +139,7 @@ fun PlayerTopInformation(
             }
             SoulText(
                 text = state.currentMusic.album.albumName.toTextSpec(),
-                color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                color = SoulSearchingColorTheme.colorScheme.textSecondary,
                 fontSize = 15.sp,
                 maxLines = 1,
                 textAlign = TextAlign.Center,
@@ -173,7 +173,7 @@ fun PlayerTopInformation(
                         onSongInfoClicked.takeIf { isExpanded }?.invoke()
                     },
                 size = UiConstants.ImageSize.medium,
-                color = SoulSearchingColorTheme.colorScheme.onPrimary.disabledIfNoAction(onSongInfoClicked)
+                color = SoulSearchingColorTheme.colorScheme.text.disabledIfNoAction(onSongInfoClicked)
             )
         }
     }

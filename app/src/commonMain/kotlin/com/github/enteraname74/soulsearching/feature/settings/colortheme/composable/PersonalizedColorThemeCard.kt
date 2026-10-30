@@ -41,8 +41,8 @@ fun PersonalizedColorThemeCard(
                 title = CoreRes.string.dynamic_player_view.toTextSpec(),
                 toggleAction = { if (isSelected) togglePersonalizedDynamicPlayerTheme() },
                 isChecked = hasPlayerTheme,
-                titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                titleColor = SoulSearchingColorTheme.colorScheme.text,
+                textColor = SoulSearchingColorTheme.colorScheme.textSecondary,
                 padding = PaddingValues(
                     horizontal = UiConstants.Spacing.large,
                     vertical = UiConstants.Spacing.small,
@@ -52,8 +52,8 @@ fun PersonalizedColorThemeCard(
                 title = CoreRes.string.dynamic_playlist_view.toTextSpec(),
                 toggleAction = { if (isSelected) togglePersonalizedDynamicPlaylistTheme() },
                 isChecked = hasPlaylistTheme,
-                titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                titleColor = SoulSearchingColorTheme.colorScheme.text,
+                textColor = SoulSearchingColorTheme.colorScheme.textSecondary,
                 padding = PaddingValues(
                     horizontal = UiConstants.Spacing.large,
                     vertical = UiConstants.Spacing.small,
@@ -63,8 +63,8 @@ fun PersonalizedColorThemeCard(
                 title = CoreRes.string.dynamic_other_view.toTextSpec(),
                 toggleAction = { if (isSelected) togglePersonalizedDynamicOtherViewsTheme() },
                 isChecked = hasOtherViewsTheme,
-                titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                titleColor = SoulSearchingColorTheme.colorScheme.text,
+                textColor = SoulSearchingColorTheme.colorScheme.textSecondary,
                 padding = PaddingValues(
                     horizontal = UiConstants.Spacing.large,
                     vertical = UiConstants.Spacing.small,

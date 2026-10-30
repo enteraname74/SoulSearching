@@ -58,8 +58,8 @@ private fun InformationCard() {
             )
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-            containerColor = SoulSearchingColorTheme.colorScheme.secondary
+            contentColor = SoulSearchingColorTheme.colorScheme.text,
+            containerColor = SoulSearchingColorTheme.colorScheme.surface
         )
     ) {
         SoulText(
@@ -68,7 +68,7 @@ private fun InformationCard() {
                     all = UiConstants.Spacing.large,
                 ),
             text = CoreRes.string.extracted_color_info.toTextSpec(),
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.body,
             textAlign = TextAlign.Center,
         )
@@ -97,13 +97,13 @@ private fun SeedRow(
             selected = isSelected,
             onClick = null,
             colors = RadioButtonDefaults.colors(
-                selectedColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                unselectedColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                selectedColor = SoulSearchingColorTheme.colorScheme.text,
+                unselectedColor = SoulSearchingColorTheme.colorScheme.text,
             )
         )
         SoulText(
             text = SoulTexts.colorPaletteSeed(seed = colorPaletteSeed),
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.body,
         )
     }

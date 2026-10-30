@@ -22,8 +22,8 @@ actual fun SoulVerticalScrollBar(
         modifier = modifier,
         adapter = ScrollbarAdapter(scrollState = lazyListState),
         style = defaultScrollbarStyle().copy(
-            unhoverColor = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-            hoverColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+            unhoverColor = SoulSearchingColorTheme.colorScheme.textSecondary,
+            hoverColor = SoulSearchingColorTheme.colorScheme.text,
         )
     )
 }

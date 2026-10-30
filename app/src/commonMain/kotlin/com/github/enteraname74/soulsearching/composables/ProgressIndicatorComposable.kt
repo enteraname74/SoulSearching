@@ -27,20 +27,20 @@ fun ProgressIndicatorComposable(
         SoulText(
             modifier = Modifier.padding(UiConstants.Spacing.medium),
             text = progressMessage,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             textAlign = TextAlign.Center
         )
         LinearProgressIndicator(
             progress = { progress },
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
-            trackColor = SoulSearchingColorTheme.colorScheme.secondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
+            trackColor = SoulSearchingColorTheme.colorScheme.surface,
             drawStopIndicator = {},
         )
         subText?.let {
             SoulText(
                 modifier = Modifier.padding(UiConstants.Spacing.medium),
                 text = SoulTexts.fetchingMusicsFrom(path = it),
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 textAlign = TextAlign.Center
             )
         }

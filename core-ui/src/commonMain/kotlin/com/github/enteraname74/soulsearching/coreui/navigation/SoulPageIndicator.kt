@@ -24,15 +24,15 @@ fun SoulPageIndicator(
             .clip(CircleShape)
             .clickableWithHandCursor { onClick() }
             .background(
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.text,
                 shape = CircleShape,
             )
             .padding(all = RING_SIZE)
             .background(
                 color = if (isSelected) {
-                    SoulSearchingColorTheme.colorScheme.onPrimary
+                    SoulSearchingColorTheme.colorScheme.text
                 } else {
-                    SoulSearchingColorTheme.colorScheme.primary
+                    SoulSearchingColorTheme.colorScheme.background
                 },
                 shape = CircleShape,
             )

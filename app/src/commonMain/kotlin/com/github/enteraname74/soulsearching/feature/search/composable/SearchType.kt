@@ -17,8 +17,8 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun SearchType(
     title: SoulTextSpec,
-    primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.background,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.text,
     modifier: Modifier = Modifier,
 ) {
     Row(

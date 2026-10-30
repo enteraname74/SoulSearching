@@ -116,10 +116,10 @@ fun SoulTopBar(
 object SoulTopBarDefaults {
     @Composable
     fun primary(
-        containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-        contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
-        elevatedContentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-        elevatedContainerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.background,
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.text,
+        elevatedContentColor: Color = SoulSearchingColorTheme.colorScheme.text,
+        elevatedContainerColor: Color = SoulSearchingColorTheme.colorScheme.surface,
     ): TopBarColors =
         TopBarColors(
             contentColor = contentColor,
@@ -130,10 +130,10 @@ object SoulTopBarDefaults {
 
     @Composable
     fun secondary(
-        containerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
-        contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-        elevatedContentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
-        elevatedContainerColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.surface,
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.text,
+        elevatedContentColor: Color = SoulSearchingColorTheme.colorScheme.text,
+        elevatedContainerColor: Color = SoulSearchingColorTheme.colorScheme.text,
     ): TopBarColors =
         TopBarColors(
             contentColor = contentColor,

@@ -28,7 +28,7 @@ fun PlayerVolume(
         horizontalArrangement = Arrangement.End,
     ) {
         SoulIcon(
-            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            color = SoulSearchingColorTheme.colorScheme.text,
             icon = when {
                 playbackCommandsState.playerVolume == 0f -> CoreRes.drawable.ic_volume_mute
                 playbackCommandsState.playerVolume <= 0.5f -> CoreRes.drawable.ic_volume_down
@@ -42,11 +42,11 @@ fun PlayerVolume(
             maxValue = 10f,
             value = playbackCommandsState.playerVolume * 10,
             sliderColors = SliderDefaults.colors(
-                thumbColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                activeTrackColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                inactiveTrackColor = SoulSearchingColorTheme.colorScheme.primary,
-                activeTickColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                inactiveTickColor = SoulSearchingColorTheme.colorScheme.primary,
+                thumbColor = SoulSearchingColorTheme.colorScheme.text,
+                activeTrackColor = SoulSearchingColorTheme.colorScheme.text,
+                inactiveTrackColor = SoulSearchingColorTheme.colorScheme.background,
+                activeTickColor = SoulSearchingColorTheme.colorScheme.text,
+                inactiveTickColor = SoulSearchingColorTheme.colorScheme.background,
             ),
             onThumbDragged = { playerVolume ->
                 playerVolume?.let {

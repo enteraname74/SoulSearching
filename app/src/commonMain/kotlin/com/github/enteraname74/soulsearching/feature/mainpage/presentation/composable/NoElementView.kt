@@ -31,7 +31,7 @@ fun NoElementView(
         SoulText(
             text = text,
             fontSize = 15.sp,
-            color = SoulSearchingColorTheme.colorScheme.subPrimaryText
+            color = SoulSearchingColorTheme.colorScheme.textSecondary
         )
     }
 }

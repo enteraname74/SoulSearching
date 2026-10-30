@@ -19,8 +19,8 @@ fun SoulMenuBody(
     modifier: Modifier = Modifier,
     titleMaxLines: Int = 1,
     textMaxLines: Int = 2,
-    titleColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+    titleColor: Color = SoulSearchingColorTheme.colorScheme.text,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.textSecondary,
 ) {
     Column(
         modifier = modifier,

@@ -15,10 +15,10 @@ fun SettingsStatisticsSectionTitle(title: SoulTextSpec) {
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = SoulSearchingColorTheme.colorScheme.primary,
+                color = SoulSearchingColorTheme.colorScheme.background,
             ),
         text = title,
-        color = SoulSearchingColorTheme.colorScheme.onPrimary,
+        color = SoulSearchingColorTheme.colorScheme.text,
         style = UiConstants.Typography.titleSmall,
     )
 }
