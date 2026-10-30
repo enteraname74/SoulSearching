@@ -482,6 +482,8 @@
     <string name="cloud_sync_notification_text_fetching_remote_stats">クラウドから再生統計を取得しています</string>
     <string name="cloud_sync_notification_text_uploading_stats">再生統計をクラウドにアップロードしています</string>
     <string name="cloud_sync_notification_unknown_error">不明なエラー</string>
+    <string name="search">検索</string>
+    <string name="all">すべて</string>
 
     <!-- userType(type) -->
     <string name="user_type_user">ユーザー</string>

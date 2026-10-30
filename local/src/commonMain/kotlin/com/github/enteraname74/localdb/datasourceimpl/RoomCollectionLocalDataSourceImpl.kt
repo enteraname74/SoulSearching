@@ -109,6 +109,11 @@ internal class RoomCollectionLocalDataSourceImpl(
             previews.map { it.toCollectionPreview() }
         }
 
+    override fun searchAll(search: String): Flow<List<CollectionPreview>> =
+        appDatabase.collectionDao.searchAll(search).map { previews ->
+            previews.map { it.toCollectionPreview() }
+        }
+
     override suspend fun create(name: String): Collection =
         Collection(name = name.trim()).also {
             appDatabase.collectionDao.upsert(it.toRoomCollection())

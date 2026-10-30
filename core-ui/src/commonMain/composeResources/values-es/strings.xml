@@ -482,6 +482,8 @@
     <string name="cloud_sync_notification_text_fetching_remote_stats">Obteniendo estadísticas de escucha de la nube</string>
     <string name="cloud_sync_notification_text_uploading_stats">Subiendo estadísticas de escucha a la nube</string>
     <string name="cloud_sync_notification_unknown_error">Error desconocido</string>
+    <string name="search">Buscar</string>
+    <string name="all">Todo</string>
 
     <!-- userType(type) -->
     <string name="user_type_user">Usuario</string>

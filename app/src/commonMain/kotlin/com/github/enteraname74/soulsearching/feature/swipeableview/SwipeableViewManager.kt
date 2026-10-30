@@ -19,11 +19,11 @@ open class SwipeableViewManager {
 
     private val _state: MutableStateFlow<BottomSheetStates> =
         MutableStateFlow(BottomSheetStates.COLLAPSED)
-    val state = _state.asStateFlow()
+    val state: StateFlow<BottomSheetStates> = _state.asStateFlow()
 
     private val _targetState: MutableStateFlow<BottomSheetStates> =
         MutableStateFlow(BottomSheetStates.COLLAPSED)
-    val targetState = _targetState.asStateFlow()
+    val targetState: StateFlow<BottomSheetStates> = _targetState.asStateFlow()
 
     private val _previousState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
     val previousState: StateFlow<BottomSheetStates?> = _previousState.asStateFlow()

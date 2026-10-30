@@ -482,6 +482,8 @@
     <string name="cloud_sync_notification_text_fetching_remote_stats">Hörstatistiken werden aus der Cloud abgerufen</string>
     <string name="cloud_sync_notification_text_uploading_stats">Hörstatistiken werden in die Cloud hochgeladen</string>
     <string name="cloud_sync_notification_unknown_error">Unbekannter Fehler</string>
+    <string name="search">Suchen</string>
+    <string name="all">Alle</string>
 
     <!-- userType(type) -->
     <string name="user_type_user">Benutzer</string>

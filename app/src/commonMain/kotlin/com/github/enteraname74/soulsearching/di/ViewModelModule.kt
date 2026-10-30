@@ -24,6 +24,7 @@ import com.github.enteraname74.soulsearching.feature.multipleartistschoice.Multi
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailViewHolder
 import com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching.AppInitSongFetchingViewHolder
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
+import com.github.enteraname74.soulsearching.feature.search.all.SearchAllViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.SettingsAboutViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
@@ -51,7 +52,9 @@ import com.github.enteraname74.soulsearching.feature.settings.statistics.Setting
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 internal val viewModelModule: Module = module {
@@ -108,6 +111,19 @@ internal val viewModelModule: Module = module {
     singleOf(::ViewSettingsManager)
 
     viewModelOf(::AddToPlaylistViewHolder)
+
+    viewModel {
+        SearchAllViewHolder(
+            commonMusicUseCase = get(),
+            commonArtistUseCase = get(),
+            commonAlbumUseCase = get(),
+            commonPlaylistUseCase = get(),
+            commonCollectionUseCase = get(),
+            focusRequester = get(named(DiConstants.SearchAllFocusRequester)),
+            playbackManager = get(),
+            playerViewManager = get(),
+        )
+    }
 
     // Bottom sheets
     viewModelOf(::MusicBottomSheetViewModel)

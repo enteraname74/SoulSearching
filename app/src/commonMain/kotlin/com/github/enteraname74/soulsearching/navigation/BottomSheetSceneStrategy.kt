@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.navigation
 
-
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
@@ -55,7 +54,7 @@ internal class BottomSheetScene<T : Any>(
         key.hashCode()
 }
 
-val LocalBottomSheetCloseWithAnimAction: ProvidableCompositionLocal<(()->Unit) -> Unit> = compositionLocalOf { {} }
+val LocalBottomSheetCloseWithAnimAction: ProvidableCompositionLocal<(() -> Unit) -> Unit> = compositionLocalOf { {} }
 
 /**
  * A [SceneStrategy] that displays entries that have added [bottomSheet] to their [NavEntry.metadata]

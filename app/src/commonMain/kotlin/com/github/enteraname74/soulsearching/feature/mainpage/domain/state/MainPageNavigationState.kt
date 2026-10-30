@@ -21,4 +21,6 @@ sealed interface MainPageNavigationState {
     data class ToAdvancedSettings(
         val focusedElement: SettingsAdvancedScreenFocusedElement?,
     ) : MainPageNavigationState
+
+    data object ToSearch : MainPageNavigationState
 }

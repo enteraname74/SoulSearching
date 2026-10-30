@@ -93,6 +93,14 @@ class MainAppViewModel(
         totalCollections: Int,
     ): List<NavigationRowSpec> = buildList {
         add(
+            NavigationRowSpec.Search(
+                onClick = {
+                    playerViewManager.minimiseIfPossible()
+                    navScope.toSearch()
+                },
+            )
+        )
+        add(
             NavigationRowSpec.Settings(
                 onClick = {
                     playerViewManager.minimiseIfPossible()

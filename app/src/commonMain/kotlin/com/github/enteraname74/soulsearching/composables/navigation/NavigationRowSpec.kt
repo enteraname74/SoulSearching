@@ -36,6 +36,15 @@ sealed interface NavigationRowSpec {
         override val outlinedIcon: DrawableResource = CoreRes.drawable.ic_settings
     }
 
+    data class Search(
+        override val onClick: () -> Unit,
+    ) : NavigationRowSpec {
+        override val title: SoulTextSpec = CoreRes.string.search.toTextSpec()
+        override val filledIcon: DrawableResource = CoreRes.drawable.ic_search
+        override val outlinedIcon: DrawableResource = CoreRes.drawable.ic_search
+        override val trailingText: SoulTextSpec? = null
+    }
+
     data class MainTabElement(
         private val element: ElementEnum,
         override val trailingText: SoulTextSpec?,

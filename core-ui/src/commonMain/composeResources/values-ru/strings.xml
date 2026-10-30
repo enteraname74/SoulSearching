@@ -482,6 +482,8 @@
     <string name="cloud_sync_notification_text_fetching_remote_stats">Получение статистики прослушиваний из облака</string>
     <string name="cloud_sync_notification_text_uploading_stats">Отправка статистики прослушиваний в облако</string>
     <string name="cloud_sync_notification_unknown_error">Неизвестная ошибка</string>
+    <string name="search">Поиск</string>
+    <string name="all">Все</string>
 
     <!-- userType(type) -->
     <string name="user_type_user">Пользователь</string>

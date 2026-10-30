@@ -482,6 +482,8 @@
     <string name="cloud_sync_notification_text_fetching_remote_stats">Отримання статистики прослуховувань із хмари</string>
     <string name="cloud_sync_notification_text_uploading_stats">Надсилання статистики прослуховувань у хмару</string>
     <string name="cloud_sync_notification_unknown_error">Невідома помилка</string>
+    <string name="search">Пошук</string>
+    <string name="all">Усе</string>
 
     <!-- userType(type) -->
     <string name="user_type_user">Користувач</string>

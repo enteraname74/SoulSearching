@@ -23,6 +23,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainP
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceNavScope
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailDestination
+import com.github.enteraname74.soulsearching.feature.search.all.SearchAllDestination
 import com.github.enteraname74.soulsearching.feature.settings.SettingsNavigationHandler
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 
@@ -33,15 +34,21 @@ fun MainAppNavigationHandler(
     loadingManager: LoadingManager = injectElement(),
     colorThemeManager: ColorThemeManager = injectElement(),
 ) {
-    val entryProvider = buildEntryProvider(navigator = navigator)
+    val entryProvider = buildEntryProvider(
+        navigator = navigator,
+    )
     val isLoading: Boolean by loadingManager.state.collectAsStateWithLifecycle()
     val bottomSheetStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
+    val overlaySceneStrategy = remember { OverlaySceneStrategy<NavKey>() }
 
     NavDisplay(
         modifier = Modifier
             .fillMaxSize(),
         backStack = backStack,
-        sceneStrategies = listOf(bottomSheetStrategy),
+        sceneStrategies = listOf(
+            bottomSheetStrategy,
+            overlaySceneStrategy,
+        ),
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
@@ -107,6 +114,11 @@ private fun buildEntryProvider(
     )
 
     AddToPlaylistDestination.register(
+        entryProviderScope = this,
+        navigator = navigator,
+    )
+
+    SearchAllDestination.register(
         entryProviderScope = this,
         navigator = navigator,
     )

@@ -29,6 +29,9 @@ class CommonCollectionUseCase(
     fun getAllFromQuickAccess(): Flow<List<CollectionPreview>> =
         collectionRepository.getAllFromQuickAccess()
 
+    fun searchAll(search: String): Flow<List<CollectionPreview>> =
+        collectionRepository.searchAll(search)
+
     suspend fun create(name: String): Collection = collectionRepository.create(name.trim())
 
     suspend fun upsertAll(collections: List<Collection>, keepUpdatedAt: Boolean = false) {

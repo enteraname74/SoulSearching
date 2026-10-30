@@ -640,6 +640,12 @@ class MainPageViewModel(
         )
     }
 
+    fun openSearch() {
+        navigateAndClearSelection(
+            MainPageNavigationState.ToSearch
+        )
+    }
+
     fun onMusicClicked(music: Music) {
         coroutineScope.launch {
             // TODO OPTIMIZATION: find a way to not directly fetch all songs

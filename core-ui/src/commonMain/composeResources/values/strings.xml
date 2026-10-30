@@ -490,6 +490,8 @@
     <string name="cloud_sync_notification_text_fetching_remote_stats">Fetching listening statistics from cloud</string>
     <string name="cloud_sync_notification_text_uploading_stats">Uploading listening statistics to cloud</string>
     <string name="cloud_sync_notification_unknown_error">Unknown error</string>
+    <string name="search">Search</string>
+    <string name="all">All</string>
 
     <!-- userType(type) -->
     <string name="user_type_user">User</string>

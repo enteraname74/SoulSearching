@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.di
 
+import androidx.compose.ui.focus.FocusRequester
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditManager
@@ -9,11 +10,14 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.search.PlaylistSearchViewManager
 import com.github.enteraname74.soulsearching.feature.search.SearchAllViewManager
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddNewsSongsStepManager
+import com.github.enteraname74.soulsearching.feature.swipeableview.SwipeableViewManager
 import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
 import com.github.enteraname74.soulsearching.shareddi.mainModule
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val appModule: Module = module {
@@ -37,4 +41,12 @@ val appModule: Module = module {
 
     singleOf(::ShouldInformOfNewReleaseUseCase)
     factoryOf(::CoverEditManager)
+
+    single(named(DiConstants.SearchAllFocusRequester)) {
+        FocusRequester()
+    }
+}
+
+enum class DiConstants {
+    SearchAllFocusRequester
 }

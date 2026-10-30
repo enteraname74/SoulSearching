@@ -482,6 +482,8 @@
     <string name="cloud_sync_notification_text_fetching_remote_stats">클라우드에서 청취 통계를 가져오는 중</string>
     <string name="cloud_sync_notification_text_uploading_stats">클라우드에 청취 통계를 업로드하는 중</string>
     <string name="cloud_sync_notification_unknown_error">알 수 없는 오류</string>
+    <string name="search">검색</string>
+    <string name="all">전체</string>
 
     <!-- userType(type) -->
     <string name="user_type_user">사용자</string>

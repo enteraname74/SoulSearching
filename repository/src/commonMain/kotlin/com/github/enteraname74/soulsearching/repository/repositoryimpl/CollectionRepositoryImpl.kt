@@ -38,6 +38,9 @@ class CollectionRepositoryImpl(
     override fun getAllFromQuickAccess(): Flow<List<CollectionPreview>> =
         collectionLocalDataSource.getAllFromQuickAccess()
 
+    override fun searchAll(search: String): Flow<List<CollectionPreview>> =
+        collectionLocalDataSource.searchAll(search)
+
     override suspend fun create(name: String): Collection = collectionLocalDataSource.create(name)
 
     override suspend fun upsertAll(collections: List<Collection>, keepUpdatedAt: Boolean) {

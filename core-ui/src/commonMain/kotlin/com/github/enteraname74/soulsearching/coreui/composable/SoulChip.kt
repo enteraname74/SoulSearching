@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
@@ -25,11 +26,12 @@ fun SoulChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isSelected: Boolean,
+    baseColors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
 ) {
     val colors = if (isSelected) {
         SoulButtonDefaults.accentColors()
     } else {
-        SoulButtonDefaults.secondaryColors()
+        baseColors
     }
 
     Row(

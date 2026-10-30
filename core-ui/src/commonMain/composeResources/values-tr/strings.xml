@@ -482,6 +482,8 @@
     <string name="cloud_sync_notification_text_fetching_remote_stats">Dinleme istatistikleri buluttan alınıyor</string>
     <string name="cloud_sync_notification_text_uploading_stats">Dinleme istatistikleri buluta yükleniyor</string>
     <string name="cloud_sync_notification_unknown_error">Bilinmeyen hata</string>
+    <string name="search">Ara</string>
+    <string name="all">Tümü</string>
 
     <!-- userType(type) -->
     <string name="user_type_user">Kullanıcı</string>

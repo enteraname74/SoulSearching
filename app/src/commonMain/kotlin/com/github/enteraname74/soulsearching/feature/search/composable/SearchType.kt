@@ -13,11 +13,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.utils.isLargeWindow
 
 @Composable
 fun SearchType(
     title: SoulTextSpec,
-    primaryColor: Color = SoulSearchingColorTheme.colorScheme.background,
+    primaryColor: Color = if (isLargeWindow()) {
+        SoulSearchingColorTheme.colorScheme.surface
+    } else {
+        SoulSearchingColorTheme.colorScheme.background
+    },
     textColor: Color = SoulSearchingColorTheme.colorScheme.text,
     modifier: Modifier = Modifier,
 ) {

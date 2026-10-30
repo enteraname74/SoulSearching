@@ -13,6 +13,7 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistDestination
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageNavigationState
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailDestination
+import com.github.enteraname74.soulsearching.feature.search.all.SearchAllDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
@@ -107,6 +108,10 @@ data object MainPageDestination : NavKey {
                             navigator.push(
                                 ArtistBottomSheetDestination(it.artistIds)
                             )
+                        }
+
+                        is MainPageNavigationState.ToSearch -> {
+                            navigator.push(SearchAllDestination)
                         }
                     }
                 }

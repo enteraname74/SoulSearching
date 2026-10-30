@@ -482,6 +482,8 @@
     <string name="cloud_sync_notification_text_fetching_remote_stats">正在从云端获取收听统计</string>
     <string name="cloud_sync_notification_text_uploading_stats">正在将收听统计上传到云端</string>
     <string name="cloud_sync_notification_unknown_error">未知错误</string>
+    <string name="search">搜索</string>
+    <string name="all">全部</string>
 
     <!-- userType(type) -->
     <string name="user_type_user">用户</string>

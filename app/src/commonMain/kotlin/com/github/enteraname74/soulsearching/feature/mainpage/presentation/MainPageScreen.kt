@@ -3,8 +3,6 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation
 
 //noinspection UsingMaterialAndMaterial3Libraries
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -21,30 +19,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanelUiUtils
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
-import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageNavigationState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.SearchAllState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainMenuHeaderComposable
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageHorizontalShortcut
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageVerticalShortcut
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.search.SearchAll
-import com.github.enteraname74.soulsearching.feature.search.SearchAllViewManager
-import com.github.enteraname74.soulsearching.feature.search.SearchView
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -55,8 +46,6 @@ fun MainPageRoute(
     onNavigation: (MainPageNavigationState) -> Unit,
 ) {
     val playerViewManager: PlayerViewManager = injectElement()
-
-    val searchAllState: SearchAllState by mainPageViewModel.searchAllState.collectAsStateWithLifecycle()
 
     val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsStateWithLifecycle()
     val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsStateWithLifecycle()
@@ -87,7 +76,6 @@ fun MainPageRoute(
             currentEnumPage = currentPage,
             isUsingVerticalAccessBar = isUsingVerticalAccessBar,
             shouldShowNewVersionPin = shouldShowNewVersionPin,
-            searchAllState = searchAllState,
         )
     }
 }
@@ -97,12 +85,10 @@ fun MainPageRoute(
 @Suppress("Deprecation")
 fun MainPageScreenView(
     mainPageViewModel: MainPageViewModel,
-    searchAllState: SearchAllState,
     tabs: List<PagerScreen>,
     shouldShowNewVersionPin: Boolean,
     currentEnumPage: ElementEnum?,
     isUsingVerticalAccessBar: Boolean,
-    searchAllViewManager: SearchAllViewManager = injectElement(),
 ) {
     val pagerState = rememberPagerState(
         pageCount = { tabs.size },
@@ -116,7 +102,6 @@ fun MainPageScreenView(
         }
     }
 
-    val searchBarFocusRequester = remember { FocusRequester() }
     val currentPage by remember { derivedStateOf { pagerState.currentPage } }
 
     BoxWithConstraints(
@@ -124,11 +109,6 @@ fun MainPageScreenView(
             .fillMaxSize()
             .background(color = SoulSearchingColorTheme.colorScheme.background)
     ) {
-        val constraintsScope = this
-        val maxHeight = with(LocalDensity.current) {
-            constraintsScope.maxHeight.toPx() + getNavigationBarPadding()
-        }
-
         val coroutineScope = rememberCoroutineScope()
 
         Column(
@@ -141,12 +121,7 @@ fun MainPageScreenView(
                     shouldShowNewReleasePin = shouldShowNewVersionPin,
                     settingsAction = mainPageViewModel::toSettings,
                     searchAction = {
-                        searchAllViewManager.animateTo(
-                            newState = BottomSheetStates.EXPANDED,
-                            onExpanded = {
-                                searchBarFocusRequester.requestFocus()
-                            }
-                        )
+                        mainPageViewModel.openSearch()
                     }
                 )
             }
@@ -218,36 +193,6 @@ fun MainPageScreenView(
                     }
                 }
             }
-        }
-
-        SearchView(
-            searchViewManager = searchAllViewManager,
-            placeholder = CoreRes.string.search_all.toTextSpec(),
-            maxHeight = maxHeight,
-            focusRequester = searchBarFocusRequester,
-            onSearch = mainPageViewModel::onSearch,
-        ) { focusManager, lazyListState ->
-            SearchAll(
-                lazyListState = lazyListState,
-                searchAllState = searchAllState,
-                onSelectedMusicForBottomSheet = {
-                    mainPageViewModel.showMusicBottomSheet(listOf(it))
-                },
-                onSelectedAlbumForBottomSheet = {
-                    mainPageViewModel.showAlbumBottomSheet(listOf(it.id))
-                },
-                onSelectedPlaylistForBottomSheet = {
-                    mainPageViewModel.showPlaylistBottomSheet(listOf(it.id))
-                },
-                onSelectedArtistForBottomSheet = {
-                    mainPageViewModel.showArtistBottomSheet(listOf(it.id))
-                },
-                navigateToPlaylist = mainPageViewModel::toPlaylist,
-                navigateToArtist = mainPageViewModel::toArtist,
-                navigateToAlbum = mainPageViewModel::toAlbum,
-                isMainPlaylist = false,
-                focusManager = focusManager,
-            )
         }
     }
 }

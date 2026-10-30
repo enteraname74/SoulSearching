@@ -482,6 +482,8 @@
     <string name="cloud_sync_notification_text_fetching_remote_stats">Pobieranie statystyk słuchania z chmury</string>
     <string name="cloud_sync_notification_text_uploading_stats">Przesyłanie statystyk słuchania do chmury</string>
     <string name="cloud_sync_notification_unknown_error">Nieznany błąd</string>
+    <string name="search">Szukaj</string>
+    <string name="all">Wszystko</string>
 
     <!-- userType(type) -->
     <string name="user_type_user">Użytkownik</string>

@@ -480,6 +480,8 @@
     <string name="cloud_sync_notification_text_fetching_remote_stats">Téléchargement des statistiques d'écoutes du cloud</string>
     <string name="cloud_sync_notification_text_uploading_stats">Téléversement des statistiques d'écoutes vers le cloud</string>
     <string name="cloud_sync_notification_unknown_error">Erreur inconnue</string>
+    <string name="search">Rechercher</string>
+    <string name="all">Tout</string>
 
     <!-- userType(type) -->
     <string name="user_type_user">Utilisateur</string>

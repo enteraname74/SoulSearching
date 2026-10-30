@@ -40,6 +40,15 @@ interface CollectionDao {
     @Query("SELECT * FROM RoomCollectionPreview WHERE isInQuickAccess = 1")
     fun getAllFromQuickAccess(): Flow<List<RoomCollectionPreview>>
 
+    // TODO: Normalise with accents.
+    @Query(
+        """
+            SELECT * FROM RoomCollectionPreview 
+            WHERE name LIKE '%' || :search || '%' COLLATE NOCASE 
+        """
+    )
+    fun searchAll(search: String): Flow<List<RoomCollectionPreview>>
+
     @Query("SELECT * FROM RoomCollectionPreview ORDER BY name ASC, id ASC")
     fun getAllPagedByNameAsc(): PagingSource<Int, RoomCollectionPreview>
 

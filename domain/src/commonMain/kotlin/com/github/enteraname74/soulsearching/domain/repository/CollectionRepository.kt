@@ -24,6 +24,8 @@ interface CollectionRepository {
 
     fun getAllFromQuickAccess(): Flow<List<CollectionPreview>>
 
+    fun searchAll(search: String): Flow<List<CollectionPreview>>
+
     suspend fun create(name: String): Collection
 
     suspend fun upsertAll(collections: List<Collection>, keepUpdatedAt: Boolean = false)

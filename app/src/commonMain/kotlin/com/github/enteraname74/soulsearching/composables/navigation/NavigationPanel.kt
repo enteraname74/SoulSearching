@@ -10,8 +10,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -22,6 +20,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
+import com.github.enteraname74.soulsearching.feature.search.all.SearchAllDestination
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 
 @Composable
@@ -77,6 +76,7 @@ private fun isRowSelected(
     when (row) {
         is NavigationRowSpec.MainTabElement -> row.isCurrentPage && currentRoute is MainPageDestination
         is NavigationRowSpec.Settings -> currentRoute is SettingPage
+        is NavigationRowSpec.Search -> false
     }
 
 private const val NAVIGATION_CONTENT_TYPE = "NAVIGATION_CONTENT_TYPE"

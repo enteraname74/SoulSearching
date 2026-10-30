@@ -31,6 +31,7 @@ import com.github.enteraname74.soulsearching.ext.isComingFromPlaylistDetails
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionScaffold
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionNavigationState
+import com.github.enteraname74.soulsearching.feature.search.all.SearchAllDestination
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsDestination
 import com.github.enteraname74.soulsearching.navigation.MainAppNavigationHandler
 import com.github.enteraname74.soulsearching.navigation.MainAppSerializerModule
@@ -77,6 +78,12 @@ private fun MainAppRoute(
                     if (navigator.currentRoute != MainPageDestination) {
                         navigator.push(MainPageDestination)
                     }
+                }
+                override val toSearch: () -> Unit = {
+                    if (navigator.isComingFromPlaylistDetails()) {
+                        colorThemeManager.removePlaylistTheme()
+                    }
+                    navigator.push(SearchAllDestination)
                 }
             }
         )
