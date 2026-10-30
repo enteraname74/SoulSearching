@@ -50,6 +50,12 @@ object SoulButtonDefaults {
     )
 
     @Composable
+    fun accentColors(): SoulButtonColors = SoulButtonColors(
+        contentColor = SoulSearchingColorTheme.colorScheme.onAccent,
+        containerColor = SoulSearchingColorTheme.colorScheme.accent,
+    )
+
+    @Composable
     fun primaryTint(): SoulButtonColors = SoulButtonColors(
         contentColor = SoulSearchingColorTheme.colorScheme.text,
         containerColor = Color.Transparent,

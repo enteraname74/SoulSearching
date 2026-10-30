@@ -36,16 +36,16 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.github.enteraname74.soulsearching.domain.model.Cover
-import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.button.SoulButton
-import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
-import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
+import com.github.enteraname74.soulsearching.coreui.composable.SoulChip
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_edit
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_play
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_shuffle
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_titles
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_search
@@ -53,8 +53,9 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.ext.blurCompat
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
-import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
@@ -62,6 +63,8 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailState
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.DurationIndication
@@ -72,13 +75,6 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import org.jetbrains.compose.resources.DrawableResource
 import kotlin.time.Duration
 import kotlin.uuid.Uuid
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_edit
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_play
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_shuffle
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_titles
-import com.github.enteraname74.soulsearching.coreui.strings.SoulText
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 @Composable
 fun PlaylistLargeView(
@@ -291,59 +287,24 @@ private fun Actions(
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
     ) {
-        Button(
+        SoulChip(
             title = CoreRes.string.element_detail_play.toTextSpec(),
-            icon = CoreRes.drawable.ic_play_filled,
-            action = { data.onPlay(null) },
-            colors = SoulButtonDefaults.colors(
-                contentColor = SoulSearchingColorTheme.colorScheme.surface,
-                containerColor = SoulSearchingColorTheme.colorScheme.text,
-            )
+            leadingIcon = CoreRes.drawable.ic_play_filled,
+            onClick = { data.onPlay(null) },
+            isSelected = true,
         )
-        Button(
+        SoulChip(
             title = CoreRes.string.element_detail_shuffle.toTextSpec(),
-            icon = CoreRes.drawable.ic_shuffle,
-            action = data.onShuffle,
+            leadingIcon = CoreRes.drawable.ic_shuffle,
+            onClick = data.onShuffle,
+            isSelected = false,
         )
         data.onEdit?.let {
-            Button(
+            SoulChip(
                 title = CoreRes.string.element_detail_edit.toTextSpec(),
-                icon = CoreRes.drawable.ic_edit_filled,
-                action = it,
-            )
-        }
-    }
-}
-
-@Composable
-private fun Button(
-    title: SoulTextSpec,
-    icon: DrawableResource,
-    action: () -> Unit,
-    colors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
-) {
-    SoulButton(
-        onClick = action,
-        colors = colors,
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(
-                    vertical = UiConstants.Spacing.small,
-                ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
-        ) {
-            SoulIcon(
-                icon = icon,
-                color = colors.contentColor
-            )
-            SoulText(
-                text = title,
-                style = UiConstants.Typography.body.copy(
-                    fontWeight = FontWeight.Medium,
-                    color = colors.contentColor,
-                )
+                leadingIcon = CoreRes.drawable.ic_edit_filled,
+                onClick = it,
+                isSelected = false,
             )
         }
     }
