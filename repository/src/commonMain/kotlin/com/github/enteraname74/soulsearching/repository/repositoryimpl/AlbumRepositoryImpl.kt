@@ -114,4 +114,7 @@ class AlbumRepositoryImpl(
 
     override suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics> =
         albumDataSource.getAlbumsOfArtistName(artistName)
+
+    override fun getTotal(): Flow<Int> =
+        albumDataSource.getTotal()
 }

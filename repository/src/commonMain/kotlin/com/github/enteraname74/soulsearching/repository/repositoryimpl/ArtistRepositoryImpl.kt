@@ -113,4 +113,7 @@ class ArtistRepositoryImpl(
 
     override suspend fun getPotentialMultipleArtists(): List<Artist> =
         artistDataSource.getPotentialMultipleArtists()
+
+    override fun getTotal(): Flow<Int> =
+        artistDataSource.getTotal()
 }

@@ -78,4 +78,9 @@ interface AlbumRepository {
     fun searchAll(search: String): Flow<List<AlbumPreview>>
 
     suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics>
+
+    /**
+     * Retrieves a flow of the total of albums shown in the library.
+     */
+    fun getTotal(): Flow<Int>
 }

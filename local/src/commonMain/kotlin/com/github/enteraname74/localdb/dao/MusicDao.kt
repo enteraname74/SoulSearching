@@ -1012,4 +1012,10 @@ interface MusicDao {
 
     @Query("SELECT musicId, remoteId FROM RoomMusic WHERE remoteId IS NOT NULL")
     suspend fun getAllRemoteToLocalIds(): List<MusicIdToRemoteId>
+
+    @Query("SELECT COUNT(*) FROM RoomMusic WHERE isHidden = 0 AND scope != 'SharedPlayedList'")
+    fun getTotal(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM RoomMusicFolderPreview")
+    fun getTotalMusicFolders(): Flow<Int>
 }

@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
 import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.SortType
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
+import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanelUiUtils
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
@@ -53,7 +55,7 @@ fun AllMusicsComposable(
 
     LazyColumnCompat(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
     ) {
         if (viewSettingsManager.areMusicsByMonthsShown) {
             item(
@@ -110,6 +112,16 @@ fun AllMusicsComposable(
                             coroutineScope.launch {
                                 onMoreClick(elt)
                             }
+                        },
+                        padding = if (NavigationPanelUiUtils.canShowPanel()) {
+                            PaddingValues(
+                                horizontal = UiConstants.Spacing.huge,
+                                vertical = UiConstants.Spacing.medium,
+                            )
+                        } else {
+                            PaddingValues(
+                                all = UiConstants.Spacing.medium,
+                            )
                         },
                         onLongClick = { onLongClick(elt) },
                         isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,

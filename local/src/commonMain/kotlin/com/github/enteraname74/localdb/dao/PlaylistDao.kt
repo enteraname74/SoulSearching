@@ -292,4 +292,7 @@ interface PlaylistDao {
 
     @Query("SELECT playlistId AS localId, remoteId FROM RoomPlaylist WHERE remoteId IS NOT NULL")
     suspend fun getAllRemoteToLocalIds(): List<GenericLocalIdToRemoteId>
+
+    @Query("SELECT COUNT(*) FROM RoomPlaylistPreview")
+    fun getTotal(): Flow<Int>
 }

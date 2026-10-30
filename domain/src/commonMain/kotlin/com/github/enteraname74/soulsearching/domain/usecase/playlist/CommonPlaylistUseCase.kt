@@ -67,4 +67,7 @@ class CommonPlaylistUseCase(
 
     fun searchAll(search: String): Flow<List<PlaylistPreview>> =
         playlistRepository.searchAll(search)
+
+    fun getTotal(): Flow<Int> =
+        playlistRepository.getTotal()
 }

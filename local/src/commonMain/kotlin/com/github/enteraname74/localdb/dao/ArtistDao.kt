@@ -268,4 +268,7 @@ interface ArtistDao {
 
     @Query("SELECT artistId AS localId, remoteId FROM RoomArtist WHERE remoteId IS NOT NULL")
     suspend fun getAllRemoteToLocalIds(): List<GenericLocalIdToRemoteId>
+
+    @Query("SELECT COUNT(*) FROM RoomArtistPreview")
+    fun getTotal(): Flow<Int>
 }

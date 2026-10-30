@@ -272,4 +272,10 @@ class CommonMusicUseCase(
 
     fun observeDataChanged(): Flow<Unit> =
         musicRepository.observeDataChanged()
+
+    fun getTotal(): Flow<Int> =
+        musicRepository.getTotal()
+
+    fun getTotalMusicFolders(): Flow<Int> =
+        musicRepository.getTotalMusicFolders()
 }

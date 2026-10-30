@@ -146,4 +146,7 @@ class PlaylistRepositoryImpl(
 
     override suspend fun getLatestUpdatedAt(): Long? =
         playlistLocalDataSource.getLatestUpdatedAt()
+
+    override fun getTotal(): Flow<Int> =
+        playlistLocalDataSource.getTotal()
 }

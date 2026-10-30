@@ -75,4 +75,9 @@ interface PlaylistLocalDataSource {
     suspend fun getLatestUpdatedAt(): Long?
 
     suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid>
+
+    /**
+     * Retrieves a flow of the total of playlists shown in the library.
+     */
+    fun getTotal(): Flow<Int>
 }

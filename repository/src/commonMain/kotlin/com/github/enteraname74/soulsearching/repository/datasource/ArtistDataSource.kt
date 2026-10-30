@@ -78,4 +78,9 @@ interface ArtistDataSource {
     suspend fun getPotentialMultipleArtists(): List<Artist>
 
     suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid>
+
+    /**
+     * Retrieves a flow of the total of artists shown in the library.
+     */
+    fun getTotal(): Flow<Int>
 }

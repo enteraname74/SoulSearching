@@ -96,7 +96,7 @@ private fun MainAppRoute(
                 .chainIf(NavigationPanelUiUtils.canShowPanel()) {
                     Modifier
                         .background(
-                            SoulSearchingColorTheme.colorScheme.surface
+                            SoulSearchingColorTheme.colorScheme.surfaceLow
                         )
                         .clip(
                             RoundedCornerShape(

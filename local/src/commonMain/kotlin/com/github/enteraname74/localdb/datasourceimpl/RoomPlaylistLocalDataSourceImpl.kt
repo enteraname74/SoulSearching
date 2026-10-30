@@ -204,6 +204,9 @@ internal class RoomPlaylistLocalDataSourceImpl(
 
     override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =
         appDatabase.playlistDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
+
+    override fun getTotal(): Flow<Int> =
+        appDatabase.playlistDao.getTotal()
 }
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

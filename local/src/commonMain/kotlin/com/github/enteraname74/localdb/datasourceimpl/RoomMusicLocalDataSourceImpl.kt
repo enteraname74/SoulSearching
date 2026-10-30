@@ -574,6 +574,12 @@ internal class RoomMusicLocalDataSourceImpl(
 
     override suspend fun getAllRemoteToLocalIds(): Map<String, Uuid> =
         appDatabase.musicDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.musicId) }
+
+    override fun getTotal(): Flow<Int> =
+        appDatabase.musicDao.getTotal()
+
+    override fun getTotalMusicFolders(): Flow<Int> =
+        appDatabase.musicDao.getTotalMusicFolders()
 }
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

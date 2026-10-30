@@ -328,4 +328,10 @@ class MusicRepositoryImpl(
 
     override fun observeDataChanged(): Flow<Unit> =
         musicLocalDataSource.observeDataChanged()
+
+    override fun getTotal(): Flow<Int> =
+        musicLocalDataSource.getTotal()
+
+    override fun getTotalMusicFolders(): Flow<Int> =
+        musicLocalDataSource.getTotalMusicFolders()
 }

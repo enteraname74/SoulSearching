@@ -179,4 +179,14 @@ interface MusicLocalDataSource {
     fun observeDataChanged(): Flow<Unit>
 
     suspend fun getAllRemoteToLocalIds(): Map<String, Uuid>
+
+    /**
+     * Retrieves a flow of the total of songs shown in the library (hidden songs excluded).
+     */
+    fun getTotal(): Flow<Int>
+
+    /**
+     * Retrieves a flow of the total of music folders shown in the library.
+     */
+    fun getTotalMusicFolders(): Flow<Int>
 }

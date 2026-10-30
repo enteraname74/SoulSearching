@@ -240,6 +240,9 @@ internal class RoomAlbumDataSourceImpl(
 
     override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =
         appDatabase.albumDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
+
+    override fun getTotal(): Flow<Int> =
+        appDatabase.albumDao.getTotal()
 }
 
 private const val DEFAULT_ANDROID_AUTO_PAGE_SIZE: Int = 50

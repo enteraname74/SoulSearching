@@ -79,4 +79,9 @@ interface PlaylistRepository {
     suspend fun deleteAllEmptyExceptFavorite()
 
     suspend fun getLatestUpdatedAt(): Long?
+
+    /**
+     * Retrieves a flow of the total of playlists shown in the library.
+     */
+    fun getTotal(): Flow<Int>
 }

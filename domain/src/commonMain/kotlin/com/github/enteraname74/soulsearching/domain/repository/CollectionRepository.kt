@@ -77,4 +77,9 @@ interface CollectionRepository {
     suspend fun getLocalArtistIdsFromRemoteIds(remoteIds: List<Uuid>): List<Uuid>
 
     suspend fun getLocalAlbumIdsFromRemoteIds(remoteIds: List<Uuid>): List<Uuid>
+
+    /**
+     * Retrieves a flow of the total of collections shown in the library.
+     */
+    fun getTotal(): Flow<Int>
 }

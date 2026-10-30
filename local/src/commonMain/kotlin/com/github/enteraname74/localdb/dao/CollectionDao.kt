@@ -224,4 +224,7 @@ interface CollectionDao {
 
     @Query("DELETE FROM RoomCollection WHERE collectionId IN (:collectionIds)")
     suspend fun deleteAll(collectionIds: List<Uuid>)
+
+    @Query("SELECT COUNT(*) FROM RoomCollectionPreview")
+    fun getTotal(): Flow<Int>
 }

@@ -198,4 +198,14 @@ interface MusicRepository {
      * Observe data changes in tables that will need a backend sync
      */
     fun observeDataChanged(): Flow<Unit>
+
+    /**
+     * Retrieves a flow of the total of songs shown in the library (hidden songs excluded).
+     */
+    fun getTotal(): Flow<Int>
+
+    /**
+     * Retrieves a flow of the total of music folders shown in the library.
+     */
+    fun getTotalMusicFolders(): Flow<Int>
 }

@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanelUiUtils
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -135,18 +136,20 @@ fun MainPageScreenView(
                 .fillMaxSize()
                 .background(color = SoulSearchingColorTheme.colorScheme.background)
         ) {
-            MainMenuHeaderComposable(
-                shouldShowNewReleasePin = shouldShowNewVersionPin,
-                settingsAction = mainPageViewModel::toSettings,
-                searchAction = {
-                    searchAllViewManager.animateTo(
-                        newState = BottomSheetStates.EXPANDED,
-                        onExpanded = {
-                            searchBarFocusRequester.requestFocus()
-                        }
-                    )
-                }
-            )
+            if (!NavigationPanelUiUtils.canShowPanel()) {
+                MainMenuHeaderComposable(
+                    shouldShowNewReleasePin = shouldShowNewVersionPin,
+                    settingsAction = mainPageViewModel::toSettings,
+                    searchAction = {
+                        searchAllViewManager.animateTo(
+                            newState = BottomSheetStates.EXPANDED,
+                            onExpanded = {
+                                searchBarFocusRequester.requestFocus()
+                            }
+                        )
+                    }
+                )
+            }
 
             if (isUsingVerticalAccessBar) {
                 Row(

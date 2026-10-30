@@ -70,4 +70,9 @@ interface ArtistRepository {
     fun searchAll(search: String): Flow<List<ArtistPreview>>
 
     suspend fun getPotentialMultipleArtists(): List<Artist>
+
+    /**
+     * Retrieves a flow of the total of artists shown in the library.
+     */
+    fun getTotal(): Flow<Int>
 }

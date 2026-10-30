@@ -224,6 +224,9 @@ internal class RoomArtistDataSourceImpl(
 
     override suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid> =
         appDatabase.artistDao.getAllRemoteToLocalIds().associate { Pair(it.remoteId, it.localId) }
+
+    override fun getTotal(): Flow<Int> =
+        appDatabase.artistDao.getTotal()
 }
 
 private const val ARTIST_COVER_FOLDER_RETRIEVER_KEY = "ARTIST_COVER_FOLDER_RETRIEVER"

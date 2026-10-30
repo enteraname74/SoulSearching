@@ -304,4 +304,7 @@ interface AlbumDao {
 
     @Query("SELECT albumId AS localId, remoteId FROM RoomAlbum WHERE remoteId IS NOT NULL")
     suspend fun getAllRemoteToLocalIds(): List<GenericLocalIdToRemoteId>
+
+    @Query("SELECT COUNT(*) FROM RoomAlbumPreview")
+    fun getTotal(): Flow<Int>
 }

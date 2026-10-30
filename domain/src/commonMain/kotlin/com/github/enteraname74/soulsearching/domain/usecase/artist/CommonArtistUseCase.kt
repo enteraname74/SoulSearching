@@ -101,4 +101,7 @@ class CommonArtistUseCase(
 
     suspend fun getPotentialMultipleArtists(): List<Artist> =
         artistRepository.getPotentialMultipleArtists()
+
+    fun getTotal(): Flow<Int> =
+        artistRepository.getTotal()
 }

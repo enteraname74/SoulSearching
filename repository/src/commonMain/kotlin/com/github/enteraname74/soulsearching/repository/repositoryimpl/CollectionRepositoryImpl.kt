@@ -148,4 +148,7 @@ class CollectionRepositoryImpl(
 
     override suspend fun getLocalAlbumIdsFromRemoteIds(remoteIds: List<Uuid>): List<Uuid> =
         collectionLocalDataSource.getLocalAlbumIdsFromRemoteIds(remoteIds)
+
+    override fun getTotal(): Flow<Int> =
+        collectionLocalDataSource.getTotal()
 }

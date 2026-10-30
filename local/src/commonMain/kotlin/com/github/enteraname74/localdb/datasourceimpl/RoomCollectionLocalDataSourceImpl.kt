@@ -237,4 +237,7 @@ internal class RoomCollectionLocalDataSourceImpl(
             appDatabase.collectionDao.touch(collectionIds, DateUtils.now())
         }
     }
+
+    override fun getTotal(): Flow<Int> =
+        appDatabase.collectionDao.getTotal()
 }

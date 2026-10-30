@@ -73,4 +73,7 @@ class CommonCollectionUseCase(
     suspend fun cleanAllCovers() {
         collectionRepository.cleanAllCovers()
     }
+
+    fun getTotal(): Flow<Int> =
+        collectionRepository.getTotal()
 }

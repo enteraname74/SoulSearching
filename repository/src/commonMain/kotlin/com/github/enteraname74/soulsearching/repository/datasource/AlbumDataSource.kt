@@ -84,4 +84,9 @@ interface AlbumDataSource {
     suspend fun getAlbumsOfArtistName(artistName: String): List<AlbumWithMusics>
 
     suspend fun getAllRemoteToLocalIds(): Map<Uuid, Uuid>
+
+    /**
+     * Retrieves a flow of the total of albums shown in the library.
+     */
+    fun getTotal(): Flow<Int>
 }

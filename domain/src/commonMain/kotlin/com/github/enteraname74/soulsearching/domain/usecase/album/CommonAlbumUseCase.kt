@@ -89,4 +89,7 @@ class CommonAlbumUseCase(
             albumName = albumName,
             artistName = artistName,
         )
+
+    fun getTotal(): Flow<Int> =
+        albumRepository.getTotal()
 }
