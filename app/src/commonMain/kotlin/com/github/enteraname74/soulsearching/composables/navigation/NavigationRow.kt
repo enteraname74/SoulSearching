@@ -65,11 +65,20 @@ fun NavigationRow(
                 contentDescription = null,
             )
             SoulText(
+                modifier = Modifier.weight(1f),
                 text = navigationRowSpec.title,
                 color = SoulSearchingColorTheme.colorScheme.text,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
             )
+            navigationRowSpec.trailingText?.let {
+                SoulText(
+                    text = it,
+                    color = SoulSearchingColorTheme.colorScheme.textTertiary,
+                    style = UiConstants.Typography.body,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
             if ((navigationRowSpec as? NavigationRowSpec.Settings)?.isBadged == true) {
                 Badge(
                     containerColor = SoulSearchingColorTheme.colorScheme.text,
