@@ -311,6 +311,7 @@
     <string name="element_detail_edit">Modifier</string>
     <string name="element_detail_play">Lire</string>
     <string name="element_detail_shuffle">Aléatoire</string>
+    <string name="element_detail_add_to_playlist">Ajouter</string>
     <string name="element_detail_titles">Titres</string>
     <string name="and">et</string>
     <string name="continue_played_list_title">Reprendre où vous vous êtes arrêté</string>
@@ -518,6 +519,11 @@
 
     <!-- duration(duration): e.g. "2 hours and 3 minutes" -->
     <string name="duration_format">%1$s et %2$s</string>
+    <!-- compactDuration(duration): abbreviated units, e.g. "1 h 32 min" -->
+    <string name="duration_compact_format">%1$s %2$s</string>
+    <string name="duration_compact_hours">%1$d h</string>
+    <string name="duration_compact_minutes">%1$d min</string>
+    <string name="duration_compact_seconds">%1$d s</string>
     <!-- period(period) for Period.Month: "<month> <year>" -->
     <string name="period_month_format">%1$s %2$d</string>
 

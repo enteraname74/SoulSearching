@@ -8,6 +8,8 @@ import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainP
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceMode
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailDestination
+import com.github.enteraname74.soulsearching.feature.search.all.SearchAllDestination
+import com.github.enteraname74.soulsearching.feature.search.musics.SearchMusicsDestination
 import com.github.enteraname74.soulsearching.feature.settings.SettingsNavigationHandler
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -18,6 +20,8 @@ internal val MainAppSerializerModule = SerializersModule {
         subclass(MultipleArtistsChoiceDestination::class, MultipleArtistsChoiceDestination.serializer())
         subclass(MusicListDetailDestination::class, MusicListDetailDestination.serializer())
         subclass(AddToPlaylistDestination::class, AddToPlaylistDestination.serializer())
+        subclass(SearchAllDestination::class, SearchAllDestination.serializer())
+        subclass(SearchMusicsDestination::class, SearchMusicsDestination.serializer())
 
         ModifyElementNavigationHandler.serializerModule(
             polymorphicModuleBuilder = this,

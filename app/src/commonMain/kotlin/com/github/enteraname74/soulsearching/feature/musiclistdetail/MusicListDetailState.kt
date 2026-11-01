@@ -37,12 +37,12 @@ sealed interface MusicListDetailState {
         val navigateBack: () -> Unit,
         val onSubtitleClicked: (() -> Unit)?,
         val onCloseSelection: () -> Unit,
+        val openSearch: () -> Unit,
         val onLongClickOnMusic: (musicId: Uuid) -> Unit,
         val onShuffle: () -> Unit,
         val onPlay: (music: Music?) -> Unit,
         val onEdit: (() -> Unit)?,
         val onAddToList: (() -> Unit)?,
-        val onSearch: (search: String) -> Unit,
         val showMusicBottomSheet: (musicId: Uuid) -> Unit,
         val onCoverLoaded: (ImageBitmap?) -> Unit,
     ) : MusicListDetailState {

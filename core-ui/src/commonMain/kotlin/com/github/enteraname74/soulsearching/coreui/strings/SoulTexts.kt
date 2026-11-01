@@ -147,6 +147,23 @@ object SoulTexts {
         }
     }
 
+    fun compactDuration(duration: Duration): SoulTextSpec {
+        val hours = duration.inWholeHours
+        val minutes = duration.inWholeMinutes
+
+        return when {
+            hours > 0 -> CoreRes.string.duration_compact_format.toTextSpec(
+                CoreRes.string.duration_compact_hours.toTextSpec(hours),
+                CoreRes.string.duration_compact_minutes.toTextSpec(minutes.mod(60).toLong()),
+            )
+            minutes > 0 -> CoreRes.string.duration_compact_format.toTextSpec(
+                CoreRes.string.duration_compact_minutes.toTextSpec(minutes),
+                CoreRes.string.duration_compact_seconds.toTextSpec(duration.inWholeSeconds.mod(60).toLong()),
+            )
+            else -> CoreRes.string.duration_compact_seconds.toTextSpec(duration.inWholeSeconds)
+        }
+    }
+
     fun hours(hours: Long): SoulTextSpec =
         CoreRes.plurals.hours.toTextSpec(hours.toInt(), hours)
 

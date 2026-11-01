@@ -84,7 +84,7 @@ class SearchAllViewHolder(
     }
 
     override fun getInitialState(): SearchAllState = SearchAllState(
-        search = "",
+        search = search.value,
         musics = emptyList(),
         albums = emptyList(),
         playlists = emptyList(),

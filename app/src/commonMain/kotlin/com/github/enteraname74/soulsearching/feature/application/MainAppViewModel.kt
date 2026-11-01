@@ -16,7 +16,6 @@ import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUse
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.search.SearchAllViewManager
 import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,7 +31,6 @@ class MainAppViewModel(
     private val tabManager: TabManager,
     private val playerViewManager: PlayerViewManager,
     private val navScope: MainAppNavScope,
-    private val searchAllViewManager: SearchAllViewManager,
     private val playbackManager: PlaybackManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     commonMusicUseCase: CommonMusicUseCase,
@@ -129,7 +127,6 @@ class MainAppViewModel(
                     isCurrentPage = pageCheck,
                     trailingText = totalForUi?.let { SoulTextSpec.Raw(it.toString()) },
                     onClick = {
-                        searchAllViewManager.closeIfPossible()
                         playerViewManager.minimiseIfPossible()
                         navScope.toMainPageDestinationIfNeeded()
                         tabManager.setCurrentPage(tab)

@@ -313,6 +313,7 @@
     <string name="element_detail_edit">编辑</string>
     <string name="element_detail_play">播放</string>
     <string name="element_detail_shuffle">随机播放</string>
+    <string name="element_detail_add_to_playlist">添加</string>
     <string name="element_detail_titles">曲目</string>
     <string name="and">和</string>
     <string name="continue_played_list_title">从上次中断处继续</string>
@@ -520,6 +521,11 @@
 
     <!-- duration(duration): e.g. "2 hours and 3 minutes" -->
     <string name="duration_format">%1$s%2$s</string>
+    <!-- compactDuration(duration): abbreviated units, e.g. "1 h 32 min" -->
+    <string name="duration_compact_format">%1$s%2$s</string>
+    <string name="duration_compact_hours">%1$d小时</string>
+    <string name="duration_compact_minutes">%1$d分钟</string>
+    <string name="duration_compact_seconds">%1$d秒</string>
     <!-- period(period) for Period.Month: "<month> <year>" -->
     <string name="period_month_format">%2$d年%1$s</string>
 

@@ -25,6 +25,7 @@ import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDe
 import com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching.AppInitSongFetchingViewHolder
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.search.all.SearchAllViewHolder
+import com.github.enteraname74.soulsearching.feature.search.musics.SearchMusicsViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.SettingsAboutViewHolder
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
@@ -122,6 +123,16 @@ internal val viewModelModule: Module = module {
             focusRequester = get(named(DiConstants.SearchAllFocusRequester)),
             playbackManager = get(),
             playerViewManager = get(),
+        )
+    }
+
+    viewModel {
+        SearchMusicsViewHolder(
+            commonMusicUseCase = get(),
+            params = get(),
+            focusRequester = get(named(DiConstants.SearchMusicsFocusRequester)),
+            playerViewManager = get(),
+            playbackManager = get(),
         )
     }
 

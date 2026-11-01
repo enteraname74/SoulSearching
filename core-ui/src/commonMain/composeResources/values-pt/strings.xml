@@ -313,6 +313,7 @@
     <string name="element_detail_edit">Editar</string>
     <string name="element_detail_play">Tocar</string>
     <string name="element_detail_shuffle">Aleatório</string>
+    <string name="element_detail_add_to_playlist">Adicionar</string>
     <string name="element_detail_titles">Faixas</string>
     <string name="and">e</string>
     <string name="continue_played_list_title">Continue de onde parou</string>
@@ -520,6 +521,11 @@
 
     <!-- duration(duration): e.g. "2 hours and 3 minutes" -->
     <string name="duration_format">%1$s e %2$s</string>
+    <!-- compactDuration(duration): abbreviated units, e.g. "1 h 32 min" -->
+    <string name="duration_compact_format">%1$s %2$s</string>
+    <string name="duration_compact_hours">%1$d h</string>
+    <string name="duration_compact_minutes">%1$d min</string>
+    <string name="duration_compact_seconds">%1$d s</string>
     <!-- period(period) for Period.Month: "<month> <year>" -->
     <string name="period_month_format">%1$s de %2$d</string>
 

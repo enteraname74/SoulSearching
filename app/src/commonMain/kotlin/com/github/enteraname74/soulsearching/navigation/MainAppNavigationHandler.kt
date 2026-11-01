@@ -24,6 +24,7 @@ import com.github.enteraname74.soulsearching.feature.multipleartistschoice.Multi
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceNavScope
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailDestination
 import com.github.enteraname74.soulsearching.feature.search.all.SearchAllDestination
+import com.github.enteraname74.soulsearching.feature.search.musics.SearchMusicsDestination
 import com.github.enteraname74.soulsearching.feature.settings.SettingsNavigationHandler
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 
@@ -119,6 +120,11 @@ private fun buildEntryProvider(
     )
 
     SearchAllDestination.register(
+        entryProviderScope = this,
+        navigator = navigator,
+    )
+
+    SearchMusicsDestination.register(
         entryProviderScope = this,
         navigator = navigator,
     )

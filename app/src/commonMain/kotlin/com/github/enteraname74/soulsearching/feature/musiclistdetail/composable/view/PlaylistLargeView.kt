@@ -126,8 +126,7 @@ fun PlaylistLargeView(
                         .widthIn(max = 500.dp)
                         .fillMaxWidth()
                         .padding(
-                            start = UiConstants.Spacing.medium,
-                            end = UiConstants.Spacing.medium,
+                            start = UiConstants.Spacing.huge,
                             bottom = UiConstants.Spacing.mediumPlus,
                         )
                         .animateItem(
@@ -240,7 +239,7 @@ private fun Header(
                         modifier = Modifier.padding(
                             bottom = UiConstants.Spacing.medium,
                         ),
-                        color = SoulSearchingColorTheme.colorScheme.textSecondary,
+                        color = SoulSearchingColorTheme.colorScheme.accent,
                         text = data.type,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -258,12 +257,12 @@ private fun Header(
                     )
                     SoulText(
                         modifier = Modifier.optionalClickable(data.onSubtitleClicked),
-                        color = SoulSearchingColorTheme.colorScheme.textSecondary,
+                        color = SoulSearchingColorTheme.colorScheme.text,
                         text = data.subTitle,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 15.sp
+                        style = UiConstants.Typography.body.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                        ),
                     )
                     Actions(
                         modifier = Modifier

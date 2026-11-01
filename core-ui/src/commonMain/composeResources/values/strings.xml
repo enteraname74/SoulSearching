@@ -529,6 +529,11 @@
 
     <!-- duration(duration): e.g. "2 hours and 3 minutes" -->
     <string name="duration_format">%1$s and %2$s</string>
+    <!-- compactDuration(duration): abbreviated units, e.g. "1 h 32 min" -->
+    <string name="duration_compact_format">%1$s %2$s</string>
+    <string name="duration_compact_hours">%1$d h</string>
+    <string name="duration_compact_minutes">%1$d min</string>
+    <string name="duration_compact_seconds">%1$d s</string>
     <!-- period(period) for Period.Month: "<month> <year>" -->
     <string name="period_month_format">%1$s %2$d</string>
 

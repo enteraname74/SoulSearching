@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.search
+package com.github.enteraname74.soulsearching.feature.search.all.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues

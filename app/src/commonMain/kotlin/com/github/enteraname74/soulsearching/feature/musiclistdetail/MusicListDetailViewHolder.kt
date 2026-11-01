@@ -5,10 +5,31 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.github.enteraname74.soulsearching.domain.model.Music
+import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
+import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.album_detail_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.album_does_not_exists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.artist_detail_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.artist_does_not_exists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.collection_detail_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.collection_does_not_exists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.folder_detail_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.folder_does_not_exists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.month_detail_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.month_playlist_does_not_exists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.playlist_detail_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.playlist_does_not_exists
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.domain.model.CachedPlayedListUiSpec
 import com.github.enteraname74.soulsearching.domain.model.CollectionElementPreview
+import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.MusicListDetailId
 import com.github.enteraname74.soulsearching.domain.model.player.PlayedListToContinue
+import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistUseCase
@@ -19,12 +40,6 @@ import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.
 import com.github.enteraname74.soulsearching.domain.usecase.listeningstatistics.IncrementPlaylistNbPlayedUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
-import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
-import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
-import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
-import com.github.enteraname74.soulsearching.domain.model.CachedPlayedListUiSpec
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.addtoplaylist.AddToPlaylistDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistDestination
@@ -34,7 +49,7 @@ import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelecti
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.search.PlaylistSearchViewManager
+import com.github.enteraname74.soulsearching.feature.search.musics.SearchMusicsDestination
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.PlaylistDetailCover
@@ -53,21 +68,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.album_detail_title
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.album_does_not_exists
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.artist_detail_title
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.artist_does_not_exists
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.collection_detail_title
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.collection_does_not_exists
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.folder_detail_title
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.folder_does_not_exists
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.month_detail_title
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.month_playlist_does_not_exists
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.playlist_detail_title
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.playlist_does_not_exists
 
 class MusicListDetailViewHolder(
     private val commonAlbumUseCase: CommonAlbumUseCase,
@@ -78,7 +78,6 @@ class MusicListDetailViewHolder(
     private val playbackManager: PlaybackManager,
     private val playerViewManager: PlayerViewManager,
     private val multiSelectionManager: MultiSelectionManager,
-    val playlistSearchViewManager: PlaylistSearchViewManager,
     private val settingsRepository: SettingsRepository,
     private val detailId: MusicListDetailId,
     private val colorThemeManager: ColorThemeManager,
@@ -138,7 +137,6 @@ class MusicListDetailViewHolder(
         MusicListDetailScreen(
             state = state,
             multiSelectionStateFlow = multiSelectionState,
-            playlistSearchViewManager = playlistSearchViewManager,
         )
     }
 
@@ -187,7 +185,7 @@ class MusicListDetailViewHolder(
                     },
                     onCloseSelection = ::onCloseSelection,
                     onLongClickOnMusic = ::onLongClickOnMusic,
-                    onSearch = ::onSearch,
+                    openSearch = ::openSearch,
                     showMusicBottomSheet = ::showMusicBottomSheet,
                     onPlay = ::onPlay,
                     onShuffle = ::onShuffle,
@@ -245,7 +243,7 @@ class MusicListDetailViewHolder(
                     onSubtitleClicked = null,
                     onCloseSelection = ::onCloseSelection,
                     onLongClickOnMusic = ::onLongClickOnMusic,
-                    onSearch = ::onSearch,
+                    openSearch = ::openSearch,
                     showMusicBottomSheet = ::showMusicBottomSheet,
                     onPlay = ::onPlay,
                     onShuffle = ::onShuffle,
@@ -289,7 +287,7 @@ class MusicListDetailViewHolder(
                     onSubtitleClicked = null,
                     onCloseSelection = ::onCloseSelection,
                     onLongClickOnMusic = ::onLongClickOnMusic,
-                    onSearch = ::onSearch,
+                    openSearch = ::openSearch,
                     showMusicBottomSheet = ::showMusicBottomSheet,
                     onPlay = ::onPlay,
                     onShuffle = ::onShuffle,
@@ -370,7 +368,7 @@ class MusicListDetailViewHolder(
                     onSubtitleClicked = null,
                     onCloseSelection = ::onCloseSelection,
                     onLongClickOnMusic = ::onLongClickOnMusic,
-                    onSearch = ::onSearch,
+                    openSearch = ::openSearch,
                     showMusicBottomSheet = ::showMusicBottomSheet,
                     onPlay = ::onPlay,
                     onShuffle = ::onShuffle,
@@ -414,7 +412,7 @@ class MusicListDetailViewHolder(
                     onSubtitleClicked = null,
                     onCloseSelection = ::onCloseSelection,
                     onLongClickOnMusic = ::onLongClickOnMusic,
-                    onSearch = ::onSearch,
+                    openSearch = ::openSearch,
                     showMusicBottomSheet = ::showMusicBottomSheet,
                     onPlay = ::onPlay,
                     onShuffle = ::onShuffle,
@@ -454,7 +452,7 @@ class MusicListDetailViewHolder(
                     onSubtitleClicked = null,
                     onCloseSelection = ::onCloseSelection,
                     onLongClickOnMusic = ::onLongClickOnMusic,
-                    onSearch = ::onSearch,
+                    openSearch = ::openSearch,
                     showMusicBottomSheet = ::showMusicBottomSheet,
                     onPlay = ::onPlay,
                     onShuffle = ::onShuffle,
@@ -480,8 +478,14 @@ class MusicListDetailViewHolder(
         }
     }
 
-    private fun onSearch(search: String) {
-        _searchQuery.value = search
+    private fun openSearch() {
+        navigate {
+            toDestination(
+                SearchMusicsDestination(
+                    musicListDetailId = detailId,
+                )
+            )
+        }
     }
 
     private fun onLongClickOnMusic(musicId: Uuid) {

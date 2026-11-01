@@ -7,14 +7,12 @@ import com.github.enteraname74.soulsearching.feature.editableelement.domain.Cove
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.search.PlaylistSearchViewManager
-import com.github.enteraname74.soulsearching.feature.search.SearchAllViewManager
+import com.github.enteraname74.soulsearching.feature.search.all.SearchAllViewManager
+import com.github.enteraname74.soulsearching.feature.search.musics.PlaylistSearchViewManager
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddNewsSongsStepManager
-import com.github.enteraname74.soulsearching.feature.swipeableview.SwipeableViewManager
 import com.github.enteraname74.soulsearching.feature.tabmanager.TabManager
 import com.github.enteraname74.soulsearching.shareddi.mainModule
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
@@ -45,8 +43,12 @@ val appModule: Module = module {
     single(named(DiConstants.SearchAllFocusRequester)) {
         FocusRequester()
     }
+    single(named(DiConstants.SearchMusicsFocusRequester)) {
+        FocusRequester()
+    }
 }
 
 enum class DiConstants {
-    SearchAllFocusRequester
+    SearchAllFocusRequester,
+    SearchMusicsFocusRequester
 }
