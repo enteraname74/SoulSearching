@@ -161,7 +161,6 @@ private fun SearchableElements(
                 state.onSearchInAllElements()
             },
             baseColors = SoulButtonDefaults.surfaceHigh(),
-            leadingIcon = null,
         )
         LazyRowCompat(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
@@ -176,7 +175,6 @@ private fun SearchableElements(
                         state.onToggleSearchableElement(element)
                     },
                     baseColors = SoulButtonDefaults.surfaceHigh(),
-                    leadingIcon = null,
                 )
             }
         }

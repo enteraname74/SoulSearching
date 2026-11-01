@@ -282,6 +282,10 @@ private fun Actions(
     modifier: Modifier = Modifier,
     data: MusicListDetailState.Data
 ) {
+    val chipPadding = PaddingValues(
+        vertical = UiConstants.Spacing.mediumPlus,
+        horizontal = UiConstants.Spacing.veryLarge,
+    )
     FlowRow(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
@@ -292,12 +296,14 @@ private fun Actions(
             leadingIcon = CoreRes.drawable.ic_play_filled,
             onClick = { data.onPlay(null) },
             isSelected = true,
+            contentPadding = chipPadding,
         )
         SoulChip(
             title = CoreRes.string.element_detail_shuffle.toTextSpec(),
             leadingIcon = CoreRes.drawable.ic_shuffle,
             onClick = data.onShuffle,
             isSelected = false,
+            contentPadding = chipPadding,
         )
         data.onEdit?.let {
             SoulChip(
@@ -305,6 +311,7 @@ private fun Actions(
                 leadingIcon = CoreRes.drawable.ic_edit_filled,
                 onClick = it,
                 isSelected = false,
+                contentPadding = chipPadding,
             )
         }
     }

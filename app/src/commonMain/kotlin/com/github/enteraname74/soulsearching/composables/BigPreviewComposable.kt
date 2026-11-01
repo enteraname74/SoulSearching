@@ -138,7 +138,7 @@ fun BigPreviewComposable(
                 text?.let {
                     SoulText(
                         text = it,
-                        color = contentColor,
+                        color = SoulSearchingColorTheme.colorScheme.textSecondary,
                         style = textStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis

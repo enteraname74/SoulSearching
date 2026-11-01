@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.coreui.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -10,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
@@ -22,11 +24,15 @@ import org.jetbrains.compose.resources.DrawableResource
 @Composable
 fun SoulChip(
     title: SoulTextSpec,
-    leadingIcon: DrawableResource?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    leadingIcon: DrawableResource? = null,
     isSelected: Boolean,
     baseColors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
+    contentPadding: PaddingValues = PaddingValues(
+        vertical = 10.dp,
+        horizontal = UiConstants.Spacing.large,
+    ),
 ) {
     val colors = if (isSelected) {
         SoulButtonDefaults.accentColors()
@@ -41,10 +47,7 @@ fun SoulChip(
                 onClick()
             }
             .background(colors.containerColor)
-            .padding(
-                vertical = UiConstants.Spacing.mediumPlus,
-                horizontal = UiConstants.Spacing.veryLarge,
-            ),
+            .padding(contentPadding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
     ) {
@@ -58,7 +61,7 @@ fun SoulChip(
             text = title,
             color = colors.contentColor,
             style = UiConstants.Typography.body.copy(
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.SemiBold,
             )
         )
     }

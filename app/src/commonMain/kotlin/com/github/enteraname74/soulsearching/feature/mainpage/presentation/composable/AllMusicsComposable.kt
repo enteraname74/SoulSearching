@@ -145,7 +145,7 @@ fun AllMusicsComposable(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
-                            end = UiConstants.Spacing.medium,
+                            horizontal = UiConstants.Spacing.medium,
                         ),
                     title = CoreRes.string.empty_musics.toTextSpec(),
                     description = CoreRes.string.empty_musics_explanations.toTextSpec(),
