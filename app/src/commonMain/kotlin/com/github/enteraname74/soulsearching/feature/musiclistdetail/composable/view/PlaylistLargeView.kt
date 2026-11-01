@@ -42,12 +42,14 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.composable.SoulChip
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_add_to_playlist
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_edit
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_play
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_shuffle
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.element_detail_titles
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_edit_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_playlist_add
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_search
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_shuffle
 import com.github.enteraname74.soulsearching.coreui.ext.blurCompat
@@ -305,6 +307,15 @@ private fun Actions(
             isSelected = false,
             contentPadding = chipPadding,
         )
+        data.onAddToList?.let {
+            SoulChip(
+                title = CoreRes.string.element_detail_add_to_playlist.toTextSpec(),
+                leadingIcon = CoreRes.drawable.ic_playlist_add,
+                onClick = it,
+                isSelected = false,
+                contentPadding = chipPadding,
+            )
+        }
         data.onEdit?.let {
             SoulChip(
                 title = CoreRes.string.element_detail_edit.toTextSpec(),

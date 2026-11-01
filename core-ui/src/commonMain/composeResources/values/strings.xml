@@ -321,6 +321,7 @@
     <string name="element_detail_edit">Edit</string>
     <string name="element_detail_play">Play</string>
     <string name="element_detail_shuffle">Shuffle</string>
+    <string name="element_detail_add_to_playlist">Add</string>
     <string name="element_detail_titles">Title</string>
     <string name="and">and</string>
     <string name="continue_played_list_title">Resume where you left off</string>
