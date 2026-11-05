@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,7 +20,7 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationActio
 @Composable
 fun SettingPage(
     navigateBack: () -> Unit,
-    title: String,
+    title: SoulTextSpec,
     modifier: Modifier = Modifier,
     verticalPadding: Dp = 0.dp,
     rightAction: TopBarActionSpec? = null,

@@ -6,7 +6,6 @@ import androidx.paging.map
 import com.github.enteraname74.soulsearching.domain.model.statistics.Period
 import com.github.enteraname74.soulsearching.domain.model.statistics.PeriodStatistics
 import com.github.enteraname74.soulsearching.domain.repository.ListeningStatisticsRepository
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodType
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodUiStatistics
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.toStatisticsUiElement
@@ -18,6 +17,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 
 class SettingsStatisticsViewHolder(
     private val listeningStatisticsRepository: ListeningStatisticsRepository,
@@ -95,23 +98,23 @@ class SettingsStatisticsViewHolder(
             period = period,
             stats = listOfNotNull(
                 PeriodUiStatistics.Stats(
-                    title = strings.mostPlayedSongs,
+                    title = CoreRes.string.most_played_songs.toTextSpec(),
                     data = mostPlayedMusics.map { pagingData ->
                         pagingData.map { it.toStatisticsUiElement() }
                     },
                 ),
                 PeriodUiStatistics.Stats(
-                    title = strings.mostListenedSongs,
+                    title = CoreRes.string.most_listened_songs.toTextSpec(),
                     optionalContent = PeriodUiStatistics.Stats.OptionalContent(
-                        title = strings.listeningTime,
-                        flow = listeningTime.map { strings.duration(it) },
+                        title = CoreRes.string.listening_time.toTextSpec(),
+                        flow = listeningTime.map { SoulTexts.duration(it) },
                     ),
                     data = mostListenedMusics.map { pagingData ->
                         pagingData.map { it.toStatisticsUiListenedElement() }
                     }
                 ),
                 PeriodUiStatistics.Stats(
-                    title = strings.mostPlayedArtists,
+                    title = CoreRes.string.most_played_artists.toTextSpec(),
                     data = mostPlayedArtists.map { pagingData ->
                         pagingData.map {
                             it.toStatisticsUiElement(
@@ -122,7 +125,7 @@ class SettingsStatisticsViewHolder(
                 ),
                 (this as? PeriodStatistics.All)?.let {
                     PeriodUiStatistics.Stats(
-                        title = strings.artistsWithMostSongs,
+                        title = CoreRes.string.artists_with_most_songs.toTextSpec(),
                         data = artistsWithMostMusics.map { pagingData ->
                             pagingData.map {
                                 it.toStatisticsUiMostSongsElement(
@@ -133,7 +136,7 @@ class SettingsStatisticsViewHolder(
                     )
                 },
                 PeriodUiStatistics.Stats(
-                    title = strings.mostPlayedAlbums,
+                    title = CoreRes.string.most_played_albums.toTextSpec(),
                     data = mostPlayedAlbums.map { pagingData ->
                         pagingData.map {
                             it.toStatisticsUiElement(
@@ -143,7 +146,7 @@ class SettingsStatisticsViewHolder(
                     },
                 ),
                 PeriodUiStatistics.Stats(
-                    title = strings.mostPlayedPlaylists,
+                    title = CoreRes.string.most_played_playlists.toTextSpec(),
                     data = mostPlayedPlaylists.map { pagingData ->
                         pagingData.map {
                             it.toStatisticsUiElement(

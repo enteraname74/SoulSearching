@@ -17,10 +17,11 @@ import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 @Composable
 fun EditableElementColumnView(
-    coverSectionTitle: String,
+    coverSectionTitle: SoulTextSpec,
     coverEditMode: CoverEditMode,
     onSelectImage: (pos: Int) -> Unit,
     onSwitchModeType: (new: CoverEditMode.Type) -> Unit,

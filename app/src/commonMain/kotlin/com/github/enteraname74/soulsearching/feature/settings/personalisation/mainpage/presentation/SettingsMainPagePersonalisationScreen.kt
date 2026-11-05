@@ -11,13 +11,15 @@ import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuAction
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuDropdown
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.ext.filledIcon
 import com.github.enteraname74.soulsearching.ext.text
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationState
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import org.koin.compose.viewmodel.koinViewModel
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsMainPagePersonalisationRoute(
@@ -63,14 +65,14 @@ private fun Data(
 ) {
     SettingPage(
         navigateBack = navigateBack,
-        title = strings.mainPageTitle,
+        title = CoreRes.string.main_page_title.toTextSpec(),
         contentPadding = PaddingValues(
             vertical = UiConstants.Spacing.large,
         )
     ) {
         item {
             SoulMenuSwitch(
-                title = strings.showQuickAccess,
+                title = CoreRes.string.show_quick_access.toTextSpec(),
                 toggleAction = { viewModel.toggleQuickAccessVisibility() },
                 isChecked = state.elementsVisibility.isQuickAccessShown,
                 padding = PaddingValues(
@@ -81,7 +83,7 @@ private fun Data(
         }
         item {
             SoulMenuSwitch(
-                title = strings.showPlaylists,
+                title = CoreRes.string.show_playlists.toTextSpec(),
                 toggleAction = { viewModel.togglePlaylistsVisibility() },
                 isChecked = state.elementsVisibility.arePlaylistsShown,
                 padding = PaddingValues(
@@ -92,7 +94,7 @@ private fun Data(
         }
         item {
             SoulMenuSwitch(
-                title = strings.showCollections,
+                title = CoreRes.string.show_collections.toTextSpec(),
                 toggleAction = { viewModel.toggleCollectionsVisibility() },
                 isChecked = state.elementsVisibility.areCollectionsShown,
                 padding = PaddingValues(
@@ -103,7 +105,7 @@ private fun Data(
         }
         item {
             SoulMenuSwitch(
-                title = strings.showAlbums,
+                title = CoreRes.string.show_albums.toTextSpec(),
                 toggleAction = { viewModel.toggleAlbumsVisibility() },
                 isChecked = state.elementsVisibility.areAlbumsShown,
                 padding = PaddingValues(
@@ -114,7 +116,7 @@ private fun Data(
         }
         item {
             SoulMenuSwitch(
-                title = strings.showArtists,
+                title = CoreRes.string.show_artists.toTextSpec(),
                 toggleAction = { viewModel.toggleArtistsVisibility() },
                 isChecked = state.elementsVisibility.areArtistsShown,
                 padding = PaddingValues(
@@ -125,7 +127,7 @@ private fun Data(
         }
         item {
             SoulMenuSwitch(
-                title = strings.showMusicsByFolders,
+                title = CoreRes.string.show_musics_by_folders.toTextSpec(),
                 toggleAction = { viewModel.toggleMusicFoldersVisibility() },
                 isChecked = state.elementsVisibility.areMusicFoldersShown,
                 padding = PaddingValues(
@@ -136,8 +138,8 @@ private fun Data(
         }
         item {
             SoulMenuDropdown(
-                title = strings.initialSectionTitle,
-                subTitle = strings.initialSectionText,
+                title = CoreRes.string.initial_section_title.toTextSpec(),
+                subTitle = CoreRes.string.initial_section_text.toTextSpec(),
                 padding = PaddingValues(
                     horizontal = UiConstants.Spacing.large,
                     vertical = UiConstants.Spacing.medium,
@@ -158,7 +160,7 @@ private fun Data(
         }
         item {
             SoulMenuAction(
-                title = strings.useVerticalAccessBarTitle,
+                title = CoreRes.string.use_vertical_access_bar_title.toTextSpec(),
                 subTitle = null,
                 clickAction = { setShortcutAccessChoice(true) },
                 isSelected = state.isUsingVerticalAccessBar,
@@ -170,7 +172,7 @@ private fun Data(
         }
         item {
             SoulMenuAction(
-                title = strings.useHorizontalAccessBarText,
+                title = CoreRes.string.use_horizontal_access_bar_text.toTextSpec(),
                 subTitle = null,
                 clickAction = { setShortcutAccessChoice(false) },
                 isSelected = !state.isUsingVerticalAccessBar,

@@ -23,7 +23,6 @@ import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.main.MusicBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetDestination
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetDestination
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.CachedPlayedListUiSpec
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.addtoplaylist.AddToPlaylistDestination
@@ -54,6 +53,21 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.album_detail_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.album_does_not_exists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.artist_detail_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.artist_does_not_exists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.collection_detail_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.collection_does_not_exists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.folder_detail_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.folder_does_not_exists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.month_detail_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.month_playlist_does_not_exists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.playlist_detail_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.playlist_does_not_exists
 
 class MusicListDetailViewHolder(
     private val commonAlbumUseCase: CommonAlbumUseCase,
@@ -140,14 +154,14 @@ class MusicListDetailViewHolder(
         ) { albumPreview, duration, searchMusics, showTrackPosition, cachedPlaylist ->
             when {
                 albumPreview == null -> MusicListDetailState.Error(
-                    error = strings.albumDoesNotExists,
+                    error = CoreRes.string.album_does_not_exists.toTextSpec(),
                     navigateBack = { navigate { navigateBack() } },
                 )
                 else -> MusicListDetailState.Data(
                     cachedPlayedListUiSpec = cachedPlaylist?.toUiSpec(),
-                    type = strings.albumDetailTitle,
-                    title = albumPreview.name,
-                    subTitle = albumPreview.artist,
+                    type = CoreRes.string.album_detail_title.toTextSpec(),
+                    title = albumPreview.name.toTextSpec(),
+                    subTitle = albumPreview.artist.toTextSpec(),
                     cover = albumPreview.cover,
                     musics = musics,
                     duration = duration,
@@ -200,14 +214,14 @@ class MusicListDetailViewHolder(
         ) { albums, artistPreview, duration, searchMusics, cachedPlaylist ->
             when {
                 artistPreview == null -> MusicListDetailState.Error(
-                    error = strings.artistDoesNotExists,
+                    error = CoreRes.string.artist_does_not_exists.toTextSpec(),
                     navigateBack = { navigate { navigateBack() } },
                 )
                 else -> MusicListDetailState.Data(
                     cachedPlayedListUiSpec = cachedPlaylist?.toUiSpec(),
-                    type = strings.artistDetailTitle,
-                    title = artistPreview.name,
-                    subTitle = strings.musics(artistPreview.totalMusics),
+                    type = CoreRes.string.artist_detail_title.toTextSpec(),
+                    title = artistPreview.name.toTextSpec(),
+                    subTitle = SoulTexts.musics(artistPreview.totalMusics),
                     cover = artistPreview.cover,
                     musics = musics,
                     duration = duration,
@@ -257,14 +271,14 @@ class MusicListDetailViewHolder(
         ) { duration, playlistPreview, searchMusics, cachedPlaylist ->
             when {
                 playlistPreview == null -> MusicListDetailState.Error(
-                    error = strings.playlistDoesNotExists,
+                    error = CoreRes.string.playlist_does_not_exists.toTextSpec(),
                     navigateBack = { navigate { navigateBack() } },
                 )
                 else -> MusicListDetailState.Data(
                     cachedPlayedListUiSpec = cachedPlaylist?.toUiSpec(),
-                    type = strings.playlistDetailTitle,
-                    title = playlistPreview.name,
-                    subTitle = strings.musics(playlistPreview.totalMusics),
+                    type = CoreRes.string.playlist_detail_title.toTextSpec(),
+                    title = playlistPreview.name.toTextSpec(),
+                    subTitle = SoulTexts.musics(playlistPreview.totalMusics),
                     cover = playlistPreview.cover,
                     musics = musics,
                     duration = duration,
@@ -306,14 +320,14 @@ class MusicListDetailViewHolder(
         ) { duration, collectionPreview, elements, searchMusics, cachedPlaylist ->
             when {
                 collectionPreview == null -> MusicListDetailState.Error(
-                    error = strings.collectionDoesNotExists,
+                    error = CoreRes.string.collection_does_not_exists.toTextSpec(),
                     navigateBack = { navigate { navigateBack() } },
                 )
                 else -> MusicListDetailState.Data(
                     cachedPlayedListUiSpec = cachedPlaylist?.toUiSpec(),
-                    type = strings.collectionDetailTitle,
-                    title = collectionPreview.name,
-                    subTitle = strings.musics(collectionPreview.totalMusics),
+                    type = CoreRes.string.collection_detail_title.toTextSpec(),
+                    title = collectionPreview.name.toTextSpec(),
+                    subTitle = SoulTexts.musics(collectionPreview.totalMusics),
                     cover = collectionPreview.cover,
                     musics = musics,
                     duration = duration,
@@ -382,14 +396,14 @@ class MusicListDetailViewHolder(
         ) { monthMusicPreview, duration, searchMusics, cachedPlaylist ->
             when {
                 monthMusicPreview == null -> MusicListDetailState.Error(
-                    error = strings.monthPlaylistDoesNotExists,
+                    error = CoreRes.string.month_playlist_does_not_exists.toTextSpec(),
                     navigateBack = { navigate { navigateBack() } },
                 )
                 else -> MusicListDetailState.Data(
                     cachedPlayedListUiSpec = cachedPlaylist?.toUiSpec(),
-                    type = strings.monthDetailTitle,
-                    title = monthMusicPreview.month,
-                    subTitle = strings.musics(monthMusicPreview.totalMusics),
+                    type = CoreRes.string.month_detail_title.toTextSpec(),
+                    title = monthMusicPreview.month.toTextSpec(),
+                    subTitle = SoulTexts.musics(monthMusicPreview.totalMusics),
                     cover = monthMusicPreview.cover,
                     musics = musics,
                     duration = duration,
@@ -422,14 +436,14 @@ class MusicListDetailViewHolder(
         ) { musicFolderPreview, duration, searchMusics, cachedPlaylist ->
             when {
                 musicFolderPreview == null -> MusicListDetailState.Error(
-                    error = strings.folderDoesNotExists,
+                    error = CoreRes.string.folder_does_not_exists.toTextSpec(),
                     navigateBack = { navigate { navigateBack() } },
                 )
                 else -> MusicListDetailState.Data(
                     cachedPlayedListUiSpec = cachedPlaylist?.toUiSpec(),
-                    type = strings.folderDetailTitle,
-                    title = musicFolderPreview.name,
-                    subTitle = strings.musics(musicFolderPreview.totalMusics),
+                    type = CoreRes.string.folder_detail_title.toTextSpec(),
+                    title = musicFolderPreview.name.toTextSpec(),
+                    subTitle = SoulTexts.musics(musicFolderPreview.totalMusics),
                     cover = musicFolderPreview.cover,
                     musics = musics,
                     duration = duration,

@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.month
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
@@ -10,7 +13,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.ext.gridCoverWithEmpty
 import com.github.enteraname74.soulsearching.domain.model.MonthMusicsPreview
 import com.github.enteraname74.soulsearching.domain.model.Music
@@ -141,9 +143,9 @@ class MonthBottomSheetViewModel(
                 BottomSheetRowSpec(
                     icon = CoreRes.drawable.ic_delete_filled,
                     title = if (months.size == 1) {
-                        strings.deleteMonthMusics
+                        CoreRes.string.delete_month_musics.toTextSpec()
                     } else {
-                        strings.deleteSelectedMonthsMusics
+                        CoreRes.string.delete_selected_months_musics.toTextSpec()
                     },
                     onClick = ::showDeleteDialog,
                 )
@@ -155,14 +157,14 @@ class MonthBottomSheetViewModel(
         if (months.size == 1) {
             val month = months.first()
             BottomSheetTopInformation(
-                title = month.month,
-                subTitle = strings.musics(total = month.totalMusics),
+                title = month.month.toTextSpec(),
+                subTitle = SoulTexts.musics(total = month.totalMusics),
                 cover = month.cover,
             )
         } else {
             BottomSheetTopInformation(
-                title = strings.multipleSelection,
-                subTitle = strings.selectedElements(total = months.size),
+                title = CoreRes.string.multiple_selection.toTextSpec(),
+                subTitle = SoulTexts.selectedElements(total = months.size),
                 cover = months.gridCoverWithEmpty(),
             )
         }
@@ -241,14 +243,14 @@ class MonthBottomSheetViewModel(
             onDelete = ::deleteMusics,
             onClose = { dialogState.value = null },
             title = if (isSingleMonthSelection) {
-                strings.deleteMonthMusicsDialogTitle
+                CoreRes.string.delete_month_musics_dialog_title.toTextSpec()
             } else {
-                strings.deleteSelectedMonthsMusicsDialogTitle
+                CoreRes.string.delete_selected_months_musics_dialog_title.toTextSpec()
             },
             text = if (isSingleMonthSelection) {
-                strings.deleteMonthMusicsDialogText
+                CoreRes.string.delete_month_musics_dialog_text.toTextSpec()
             } else {
-                strings.deleteSelectedMonthsMusicsDialogText
+                CoreRes.string.delete_selected_months_musics_dialog_text.toTextSpec()
             },
         )
     }

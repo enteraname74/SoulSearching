@@ -11,10 +11,11 @@ import com.github.enteraname74.soulsearching.domain.model.Music
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Duration
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 sealed interface MusicListDetailState {
     data class Error(
-        val error: String,
+        val error: SoulTextSpec,
         val navigateBack: () -> Unit,
     ) : MusicListDetailState
 
@@ -24,9 +25,9 @@ sealed interface MusicListDetailState {
 
     data class Data(
         val cachedPlayedListUiSpec: CachedPlayedListUiSpec?,
-        val type: String,
-        val title: String,
-        val subTitle: String,
+        val type: SoulTextSpec,
+        val title: SoulTextSpec,
+        val subTitle: SoulTextSpec,
         val cover: Cover?,
         val musics: Flow<PagingData<Music>>,
         val duration: Duration,

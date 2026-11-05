@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +23,6 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_search
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_settings_filled
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
@@ -51,7 +52,7 @@ fun MainMenuHeaderComposable(
         if (windowSize != WindowSize.Large) {
             SoulIconButton(
                 icon = CoreRes.drawable.ic_settings_filled,
-                contentDescription = strings.settingsAccessButton,
+                contentDescription = CoreRes.string.settings_access_button.toTextSpec().string,
                 badgeColor = if (shouldShowNewReleasePin) {
                     SoulSearchingColorTheme.colorScheme.onPrimary
                 } else {
@@ -71,15 +72,15 @@ fun MainMenuHeaderComposable(
             )
         }
 
-        Text(
-            text = strings.appName,
+        SoulText(
+            text = CoreRes.string.app_name.toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.titleSmall,
             fontWeight = FontWeight.Bold
         )
         SoulIconButton(
             icon = CoreRes.drawable.ic_search,
-            contentDescription = strings.searchAll,
+            contentDescription = CoreRes.string.search_all.toTextSpec().string,
             colors = SoulButtonDefaults.colors(
                 contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                 containerColor = Color.Transparent,

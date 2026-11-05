@@ -11,7 +11,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateScreen
 import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonSpec
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
@@ -19,6 +18,8 @@ import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmu
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.composable.MusicSelectableComposable
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.SelectableMusicItem
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsAddMusicsDataScreen(
@@ -37,16 +38,16 @@ fun SettingsAddMusicsDataScreen(
             SoulTemplateScreen(
                 leftAction = TopBarNavigationAction(onClick = navigateBack),
                 icon = CoreRes.drawable.ic_download_done,
-                title = strings.addMusicsTitle,
-                text = strings.noNewMusics,
+                title = CoreRes.string.add_musics_title.toTextSpec(),
+                text = CoreRes.string.no_new_musics.toTextSpec(),
                 buttonSpec = TemplateScreenButtonSpec(
-                    text = strings.searchForNewSongs,
+                    text = CoreRes.string.search_for_new_songs.toTextSpec(),
                     onClick = fetchSongs,
                 ),
             )
         } else {
             SoulTopBar(
-                title = strings.addMusicsTitle,
+                title = CoreRes.string.add_musics_title.toTextSpec(),
                 leftAction = TopBarNavigationAction(onClick = navigateBack),
                 rightAction = TopBarValidateAction(onClick = saveSelectedSongs),
             )

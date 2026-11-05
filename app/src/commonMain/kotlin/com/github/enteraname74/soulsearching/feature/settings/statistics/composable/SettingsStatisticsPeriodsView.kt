@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.statistics.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
@@ -11,7 +12,6 @@ import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,10 +32,14 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.composable.SoulDivider
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodType
 import kotlinx.coroutines.launch
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 
 @Composable
 internal fun SettingsStatisticsPeriodsView(
@@ -145,8 +149,8 @@ private fun PeriodButton(
                 containerColor = Color.Transparent,
             ),
         ) {
-            Text(
-                text = strings.period(currentPeriod),
+            SoulText(
+                text = SoulTexts.period(currentPeriod),
                 color = contentColor,
                 style = UiConstants.Typography.bodyTitle,
                 textAlign = TextAlign.Center
@@ -159,7 +163,7 @@ private fun PeriodButton(
         ) {
 
             MenuItem(
-                title = strings.statisticsAllPeriodLabel,
+                title = CoreRes.string.statistics_all_period_label.toTextSpec(),
                 contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 onClick = {
                     onPeriodTypeChange(PeriodType.All)
@@ -167,7 +171,7 @@ private fun PeriodButton(
                 },
             )
             MenuItem(
-                title = strings.statisticsYearPeriodLabel,
+                title = CoreRes.string.statistics_year_period_label.toTextSpec(),
                 contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 onClick = {
                     onPeriodTypeChange(PeriodType.Year)
@@ -175,7 +179,7 @@ private fun PeriodButton(
                 },
             )
             MenuItem(
-                title = strings.statisticsMonthPeriodLabel,
+                title = CoreRes.string.statistics_month_period_label.toTextSpec(),
                 contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 onClick = {
                     onPeriodTypeChange(PeriodType.Month)
@@ -190,7 +194,7 @@ private fun PeriodButton(
             }
             allPeriods.forEach { period ->
                 MenuItem(
-                    title = strings.period(period),
+                    title = SoulTexts.period(period),
                     contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                     onClick = {
                         onPeriodChange(period)
@@ -204,7 +208,7 @@ private fun PeriodButton(
 
 @Composable
 private fun MenuItem(
-    title: String,
+    title: SoulTextSpec,
     onClick: () -> Unit,
     contentColor: Color,
 ) {
@@ -212,7 +216,7 @@ private fun MenuItem(
         modifier = Modifier
             .pointerHoverIcon(PointerIcon.Hand),
         text = {
-            Text(
+            SoulText(
                 text = title,
                 color = contentColor,
                 style = UiConstants.Typography.body,

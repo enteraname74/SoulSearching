@@ -9,11 +9,13 @@ import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolder
 import kotlinx.coroutines.launch
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class SettingsCloudSignInViewHolder(
     private val commonUserUseCase: CommonUserUseCase,
@@ -28,8 +30,8 @@ class SettingsCloudSignInViewHolder(
     initialState = SettingsCloudSignInState(
         nameField = SoulTextFieldHolderImpl(
             id = NAME_FIELD_ID,
-            getLabel = { strings.cloudNameFieldLabel },
-            getError = { strings.fieldCannotBeEmpty },
+            getLabel = { CoreRes.string.cloud_name_field_label.toTextSpec() },
+            getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
             isValid = { it.isNotBlank() },
             style = SoulTextFieldStyle.Top,
             initialValue = savedStateHandle.get<String>(NAME_FIELD_ID).orEmpty(),
@@ -42,8 +44,8 @@ class SettingsCloudSignInViewHolder(
         ),
         passwordField = SoulTextFieldHolderImpl(
             id = PASSWORD_FIELD_ID,
-            getLabel = { strings.cloudPasswordFieldLabel },
-            getError = { strings.fieldCannotBeEmpty },
+            getLabel = { CoreRes.string.cloud_password_field_label.toTextSpec() },
+            getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
             isValid = { it.isNotBlank() },
             isPassword = true,
             initialValue = savedStateHandle.get<String>(PASSWORD_FIELD_ID).orEmpty(),

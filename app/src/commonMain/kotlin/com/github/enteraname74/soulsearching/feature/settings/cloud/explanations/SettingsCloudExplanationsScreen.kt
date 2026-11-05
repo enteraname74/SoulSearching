@@ -1,11 +1,11 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.explanations
 
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,8 +16,10 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_open_in_new
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsCloudExplanationsScreen() {
@@ -28,13 +30,13 @@ fun SettingsCloudExplanationsScreen() {
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.mediumPlus)
     ) {
-        Text(
-            text = strings.cloudExplanationsTitle,
+        SoulText(
+            text = CoreRes.string.cloud_explanations_title.toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.titleSmall,
         )
-        Text(
-            text = strings.cloudExplanationsText,
+        SoulText(
+            text = CoreRes.string.cloud_explanations_text.toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.body,
         )
@@ -45,6 +47,7 @@ fun SettingsCloudExplanationsScreen() {
 @Composable
 private fun AlphaWarningCard() {
     val uriHandler = LocalUriHandler.current
+    val documentationUrl = stringResource(CoreRes.string.cloud_documentation_url)
 
     Box(
         modifier = Modifier
@@ -54,7 +57,7 @@ private fun AlphaWarningCard() {
         Card(
             modifier = Modifier
                 .clickableWithHandCursor {
-                    uriHandler.openUri(strings.cloudDocumentationURL)
+                    uriHandler.openUri(documentationUrl)
                 }
                 .fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -71,10 +74,10 @@ private fun AlphaWarningCard() {
                     space = UiConstants.Spacing.large,
                 )
             ) {
-                Text(
+                SoulText(
                     modifier = Modifier
                         .weight(1f),
-                    text = strings.cloudExplanationsRedirect,
+                    text = CoreRes.string.cloud_explanations_redirect.toTextSpec(),
                     color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     style = UiConstants.Typography.body,
                 )

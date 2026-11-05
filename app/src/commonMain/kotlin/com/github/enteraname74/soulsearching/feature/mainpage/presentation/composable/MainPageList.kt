@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -20,7 +21,7 @@ import kotlin.uuid.Uuid
 @Composable
 fun <T> MainPageList(
     list: List<T>,
-    title: String,
+    title: SoulTextSpec,
     rightComposable: @Composable () -> Unit = {},
     innerComposable: @Composable (() -> Unit)? = null,
     setSortType: (SortType) -> Unit = {},
@@ -30,8 +31,8 @@ fun <T> MainPageList(
     isUsingSort: Boolean = true,
     key: ((T) -> Any)?,
     contentType: (T) -> Any,
-    emptyTitle: String,
-    emptyDescription: String,
+    emptyTitle: SoulTextSpec,
+    emptyDescription: SoulTextSpec,
     item: @Composable LazyGridItemScope.(element: T) -> Unit,
 ) {
 
@@ -87,7 +88,7 @@ fun <T> MainPageList(
 @Composable
 fun <T : Any> MainPageListPaged(
     list: LazyPagingItems<T>,
-    title: String,
+    title: SoulTextSpec,
     rightComposable: @Composable () -> Unit = {},
     innerComposable: @Composable (() -> Unit)? = null,
     setSortType: (SortType) -> Unit = {},
@@ -97,8 +98,8 @@ fun <T : Any> MainPageListPaged(
     isUsingSort: Boolean = true,
     key: ((T?) -> Any?)?,
     contentType: Any,
-    emptyTitle: String?,
-    emptyDescription: String,
+    emptyTitle: SoulTextSpec?,
+    emptyDescription: SoulTextSpec,
     item: @Composable LazyGridItemScope.(element: T) -> Unit,
 ) {
 

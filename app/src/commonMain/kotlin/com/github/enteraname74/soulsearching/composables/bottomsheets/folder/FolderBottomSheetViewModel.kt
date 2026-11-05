@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.folder
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.domain.model.Folder
@@ -20,7 +23,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.ext.gridCoverWithEmpty
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -145,9 +147,9 @@ class FolderBottomSheetViewModel(
                 BottomSheetRowSpec(
                     icon = CoreRes.drawable.ic_delete_filled,
                     title = if (folders.size == 1) {
-                        strings.deleteFolderMusics
+                        CoreRes.string.delete_folder_musics.toTextSpec()
                     } else {
-                        strings.deleteSelectedFoldersMusics
+                        CoreRes.string.delete_selected_folders_musics.toTextSpec()
                     },
                     onClick = ::showDeleteDialog,
                 )
@@ -159,14 +161,14 @@ class FolderBottomSheetViewModel(
         if (folders.size == 1) {
             val folder = folders.first()
             BottomSheetTopInformation(
-                title = folder.name,
-                subTitle = strings.musics(total = folder.totalMusics),
+                title = folder.name.toTextSpec(),
+                subTitle = SoulTexts.musics(total = folder.totalMusics),
                 cover = folder.cover,
             )
         } else {
             BottomSheetTopInformation(
-                title = strings.multipleSelection,
-                subTitle = strings.selectedElements(total = folders.size),
+                title = CoreRes.string.multiple_selection.toTextSpec(),
+                subTitle = SoulTexts.selectedElements(total = folders.size),
                 cover = folders.gridCoverWithEmpty(),
             )
         }
@@ -245,14 +247,14 @@ class FolderBottomSheetViewModel(
             onDelete = ::deleteMusics,
             onClose = { dialogState.value = null },
             title = if (isSingleFolderSelection) {
-                strings.deleteFolderMusicsDialogTitle
+                CoreRes.string.delete_folder_musics_dialog_title.toTextSpec()
             } else {
-                strings.deleteSelectedFoldersMusicsDialogTitle
+                CoreRes.string.delete_selected_folders_musics_dialog_title.toTextSpec()
             },
             text = if (isSingleFolderSelection) {
-                strings.deleteFolderMusicsDialogText
+                CoreRes.string.delete_folder_musics_dialog_text.toTextSpec()
             } else {
-                strings.deleteSelectedFoldersMusicsDialogText
+                CoreRes.string.delete_selected_folders_musics_dialog_text.toTextSpec()
             },
         )
     }

@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.users
 
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.domain.usecase.user.CommonUserUseCase
@@ -10,12 +11,13 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolder
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class SettingsCloudUsersViewHolder(
     private val commonUserUseCase: CommonUserUseCase,
@@ -75,14 +77,14 @@ class SettingsCloudUsersViewHolder(
                         SoulAlertDialog(
                             confirmAction = { deleteUser(userId) },
                             dismissAction = { updateState { copy(dialog = null) } },
-                            confirmText = strings.delete,
-                            dismissText = strings.cancel,
-                            title = strings.cloudUsersDeleteDialogTitle,
-                            text = strings.cloudUsersDeleteDialogText,
+                            confirmText = CoreRes.string.delete.toTextSpec(),
+                            dismissText = CoreRes.string.cancel.toTextSpec(),
+                            title = CoreRes.string.cloud_users_delete_dialog_title.toTextSpec(),
+                            text = CoreRes.string.cloud_users_delete_dialog_text.toTextSpec(),
                             icon = {
                                 SoulIcon(
                                     icon = CoreRes.drawable.ic_delete_filled,
-                                    contentDescription = strings.delete,
+                                    contentDescription = stringResource(CoreRes.string.delete),
                                 )
                             }
                         )

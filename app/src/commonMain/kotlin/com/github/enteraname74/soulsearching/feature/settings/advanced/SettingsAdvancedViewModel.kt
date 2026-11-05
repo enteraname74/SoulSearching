@@ -14,7 +14,6 @@ import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedNavigationState
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedPermissionState
 import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedState
@@ -27,6 +26,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 
 class SettingsAdvancedViewModel(
     private val commonMusicUseCase: CommonMusicUseCase,
@@ -161,7 +164,7 @@ class SettingsAdvancedViewModel(
             @Composable
             override fun Dialog() {
                 SoulAlertDialog(
-                    text = strings.activateGithubReleaseFetchHint,
+                    text = CoreRes.string.activate_github_release_fetch_hint.toTextSpec(),
                     confirmAction = {
                         _dialogState.value = null
                     },
@@ -186,7 +189,7 @@ class SettingsAdvancedViewModel(
             @Composable
             override fun Dialog() {
                 SoulAlertDialog(
-                    text = strings.activateRemoteLyricsFetchHint,
+                    text = SoulTexts.activateRemoteLyricsFetchHint(),
                     confirmAction = {
                         _dialogState.value = null
                     },

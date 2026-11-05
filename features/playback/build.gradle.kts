@@ -37,6 +37,7 @@ kotlin {
             //            implementation(libs.ffmpeg)
 
             implementation(project(":core-ui"))
+            implementation(libs.compose.resources)
         }
     }
 }

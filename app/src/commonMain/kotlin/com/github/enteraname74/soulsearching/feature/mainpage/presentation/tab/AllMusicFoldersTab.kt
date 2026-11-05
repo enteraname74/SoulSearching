@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,7 +17,6 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedIconButt
 import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedTextButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_info_filled
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicFoldersState
@@ -38,7 +40,7 @@ fun allMusicFoldersTab(
 
         MainPageList(
             list = folderState.allMusicFolders,
-            title = strings.folders,
+            title = CoreRes.string.folders.toTextSpec(),
             rightComposable = {
                 SoulMixButton(
                     allMusicFolders = folderState.allMusicFolders,
@@ -49,16 +51,16 @@ fun allMusicFoldersTab(
             key = { it.folder },
             contentType = { ALL_MUSIC_FOLDERS_CONTENT_TYPE },
             isUsingSort = false,
-            emptyTitle = strings.emptyFolders,
-            emptyDescription = strings.emptyFoldersExplanations,
+            emptyTitle = CoreRes.string.empty_folders.toTextSpec(),
+            emptyDescription = CoreRes.string.empty_folders_explanations.toTextSpec(),
         ) { element ->
             BigPreviewComposable(
                 modifier = Modifier
                     .animateItem(),
                 cover = element.cover,
-                title = element.name,
+                title = element.name.toTextSpec(),
                 imageSize = null,
-                text = strings.musics(total = element.totalMusics),
+                text = SoulTexts.musics(total = element.totalMusics),
                 onClick = {
                     navigateToFolder(element.folder)
                 },
@@ -81,7 +83,7 @@ private fun SoulMixButton(
     SoulSegmentedButton(
         buttons = listOf(
             SoulSegmentedTextButton(
-                data = strings.soulMix,
+                data = CoreRes.string.soul_mix.toTextSpec(),
                 contentPadding = SoulButtonDefaults.contentPadding(
                     horizontal = UiConstants.Spacing.medium,
                 ),

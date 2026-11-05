@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,12 +35,16 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add_photo_alternate_filled
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.model.SoulPlatform
 import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.GridUpdatedCells
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun CoverEditModeImage(
@@ -83,7 +86,7 @@ internal fun CoverEditModeImage(
                             inactiveBorderColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                         ),
                         label = {
-                            Text(
+                            SoulText(
                                 text = type.label(),
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
                                 style = UiConstants.Typography.bodySmall,
@@ -279,16 +282,18 @@ private fun EmptyGridCell(
 
 @Composable
 private fun gridCellContentDescription(index: Int): String =
-    when (index) {
-        0 -> strings.selectTopStartCoverImage
-        1 -> strings.selectTopEndCoverImage
-        2 -> strings.selectBottomStartCoverImage
-        3 -> strings.selectBottomEndCoverImage
-        else -> error("Unsupported grid cell index: $index")
-    }
+    stringResource(
+        when (index) {
+            0 -> CoreRes.string.select_top_start_cover_image
+            1 -> CoreRes.string.select_top_end_cover_image
+            2 -> CoreRes.string.select_bottom_start_cover_image
+            3 -> CoreRes.string.select_bottom_end_cover_image
+            else -> error("Unsupported grid cell index: $index")
+        }
+    )
 
-private fun CoverEditMode.Type.label(): String =
+private fun CoverEditMode.Type.label(): SoulTextSpec =
     when (this) {
-        CoverEditMode.Type.Simple -> strings.simpleCoverType
-        CoverEditMode.Type.Grid -> strings.gridCoverType
+        CoverEditMode.Type.Simple -> CoreRes.string.simple_cover_type.toTextSpec()
+        CoverEditMode.Type.Grid -> CoreRes.string.grid_cover_type.toTextSpec()
     }

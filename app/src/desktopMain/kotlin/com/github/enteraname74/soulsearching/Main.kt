@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -16,7 +18,6 @@ import com.github.enteraname74.soulsearching.app.generated.resources.Res
 import com.github.enteraname74.soulsearching.app.generated.resources.app_icon
 import com.github.enteraname74.soulsearching.coreui.keyboard.GlobalKeyboardShortcutState
 import com.github.enteraname74.soulsearching.coreui.keyboard.LocalGlobalKeyboardShortcutState
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
@@ -45,7 +46,7 @@ fun main(): Unit = application {
         Window(
             state = windowState,
             onCloseRequest = ::exitApplication,
-            title = strings.appName,
+            title = CoreRes.string.app_name.toTextSpec().string,
             icon = painterResource(Res.drawable.app_icon),
             onPreviewKeyEvent = {
                 if (keyboardShortcutState.isBlocked) {

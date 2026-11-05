@@ -14,10 +14,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.app_icon
-import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.image
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -37,14 +38,14 @@ fun SoulBitmapImage(
         Image(
             modifier = modifierBase,
             bitmap = bitmap,
-            contentDescription = strings.image,
+            contentDescription = stringResource(CoreRes.string.image),
             contentScale = ContentScale.Crop
         )
     } else {
         Image(
             modifier = modifierBase,
             painter = painterResource(CoreRes.drawable.app_icon),
-            contentDescription = strings.image,
+            contentDescription = stringResource(CoreRes.string.image),
             contentScale = ContentScale.Crop,
             colorFilter = ColorFilter.tint(tint)
         )

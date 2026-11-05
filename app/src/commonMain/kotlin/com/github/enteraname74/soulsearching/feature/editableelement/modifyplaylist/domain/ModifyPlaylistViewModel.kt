@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.domain.model.SoulResult
@@ -34,6 +33,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class ModifyPlaylistViewModel(
     private val commonPlaylistUseCase: CommonPlaylistUseCase,
@@ -130,7 +131,7 @@ class ModifyPlaylistViewModel(
 
     fun showCoversBottomSheet(pos: Int) {
         _bottomSheetState.value = EditableElementCoversBottomSheet(
-            title = { strings.coversOfThePlaylist },
+            title = CoreRes.string.covers_of_the_playlist.toTextSpec(),
             coverStateFlow = playlistCovers,
             onCoverSelected = { cover ->
                 viewModelScope.launch {

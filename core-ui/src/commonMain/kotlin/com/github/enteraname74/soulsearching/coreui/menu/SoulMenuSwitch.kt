@@ -15,16 +15,17 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulSwitch
 import com.github.enteraname74.soulsearching.coreui.button.SoulSwitchDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
 fun SoulMenuSwitch(
-    title: String,
+    title: SoulTextSpec,
     toggleAction: () -> Unit,
     isChecked: Boolean,
     modifier: Modifier = Modifier,
-    subTitle: String? = null,
+    subTitle: SoulTextSpec? = null,
     trailingIcon: SoulMenuLeadingIconSpec? = null,
     maxLines: Int = 2,
     withClickIndication: Boolean = true,

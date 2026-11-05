@@ -3,10 +3,12 @@ package com.github.enteraname74.soulsearching.feature.settings.personalisation.m
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsMusicViewPersonalisationRoute(
@@ -25,12 +27,12 @@ private fun SettingsMusicViewPersonalisationScreenView(
 ) {
     SettingPage(
         navigateBack = navigateBack,
-        title = strings.musics,
+        title = CoreRes.string.musics.toTextSpec(),
         verticalPadding = UiConstants.Spacing.large,
     ) {
         item {
             SoulMenuSwitch(
-                title = strings.showMusicsByMonths,
+                title = CoreRes.string.show_musics_by_months.toTextSpec(),
                 toggleAction = { viewSettingsManager.toggleMusicsByMonthsVisibility() },
                 isChecked = viewSettingsManager.areMusicsByMonthsShown
             )

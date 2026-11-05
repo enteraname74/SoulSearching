@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +29,8 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.MinimisedPlayerControlsComposable
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -60,8 +61,8 @@ fun PlayerMinimisedMainInfo(
                 .weight(1f, fill = PlayerUiUtils.canShowSidePanel()),
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(
-                text = currentMusic.name,
+            SoulText(
+                text = currentMusic.name.toTextSpec(),
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 maxLines = 1,
                 fontSize = 15.sp,
@@ -69,8 +70,8 @@ fun PlayerMinimisedMainInfo(
                 fontWeight = FontWeight.Medium,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = currentMusic.artistsNames,
+            SoulText(
+                text = currentMusic.artistsNames.toTextSpec(),
                 color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 fontSize = 13.sp,
                 lineHeight = 13.sp,

@@ -13,9 +13,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -26,8 +29,8 @@ fun SoulDropdownTextField(
     values: List<String>,
     value: String,
     onValueChange: (String) -> Unit,
-    labelName: String?,
-    error: String?,
+    labelName: SoulTextSpec?,
+    error: SoulTextSpec?,
     isReadOnly: Boolean,
     isInError: Boolean,
     modifier: Modifier = Modifier,
@@ -110,7 +113,7 @@ fun SoulDropdownTextField(
             ) {
                 values.forEach { value ->
                     DropdownMenuItem(
-                        text = { Text(text = value) },
+                        text = { SoulText(text = value.toTextSpec()) },
                         onClick = { onValueChange(value) },
                         colors = MenuDefaults.itemColors(
                             textColor = colors.contentColor,
@@ -126,8 +129,8 @@ class SoulDropdownTextFieldHolderImpl(
     id: String,
     initialValue: String = "",
     isValid: (value: String) -> Boolean = { true },
-    getLabel: @Composable () -> String?,
-    getError: @Composable () -> String?,
+    getLabel: @Composable () -> SoulTextSpec?,
+    getError: @Composable () -> SoulTextSpec?,
     getColors: @Composable () -> SoulTextFieldColors = { SoulTextFieldDefaults.secondaryColors() },
     private val isReadOnly: Boolean = false,
     private val leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,

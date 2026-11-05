@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.sharedlist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,9 +16,11 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_groups_filled
 import com.github.enteraname74.soulsearching.coreui.list.ShapeListStyle
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsCloudSharedListScreen(
@@ -29,14 +30,14 @@ fun SettingsCloudSharedListScreen(
     state.dialog?.Dialog()
 
     SettingPage(
-        title = strings.cloudSharedListTitle,
+        title = CoreRes.string.cloud_shared_list_title.toTextSpec(),
         navigateBack = actions::navigateBack,
         verticalPadding = UiConstants.Spacing.small,
     ) {
         item {
             SoulMenuElement(
-                title = strings.cloudSharedListJoinTitle,
-                subTitle = strings.cloudSharedlistJoinText,
+                title = CoreRes.string.cloud_shared_list_join_title.toTextSpec(),
+                subTitle = CoreRes.string.cloud_sharedlist_join_text.toTextSpec(),
                 onClick = actions::toJoin,
                 leadIcon = CoreRes.drawable.ic_groups_filled,
             )
@@ -88,7 +89,7 @@ private fun PreviewCard(
                     SoulChoiceButtonData(
                         icon = null,
                         data = preview.onJoin,
-                        title = strings.joinSharedListButton,
+                        title = CoreRes.string.join_shared_list_button.toTextSpec(),
                     )
                 )
                 preview.onDelete?.let {
@@ -96,7 +97,7 @@ private fun PreviewCard(
                         SoulChoiceButtonData(
                             icon = null,
                             data = it,
-                            title = strings.delete,
+                            title = CoreRes.string.delete.toTextSpec(),
                         )
                     )
                 }
@@ -114,17 +115,17 @@ private fun CardContent(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
     ) {
-        Text(
+        SoulText(
             text = preview.date,
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             style = UiConstants.Typography.titleSmall,
         )
-        Text(
+        SoulText(
             text = preview.allUsers,
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             style = UiConstants.Typography.body,
         )
-        Text(
+        SoulText(
             text = preview.connectedUsers,
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             style = UiConstants.Typography.body.copy(fontWeight = FontWeight.Bold),

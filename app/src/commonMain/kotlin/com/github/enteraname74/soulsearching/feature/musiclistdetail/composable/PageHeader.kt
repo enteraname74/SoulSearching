@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +22,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailState
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 
 @Composable
 fun PageHeader(
@@ -46,7 +46,7 @@ fun PageHeader(
             Column(
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
             ) {
-                Text(
+                SoulText(
                     color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     text = data.title,
                     maxLines = 2,
@@ -54,7 +54,7 @@ fun PageHeader(
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 24.sp
                 )
-                Text(
+                SoulText(
                     modifier = Modifier.optionalClickable(data.onSubtitleClicked),
                     color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                     text = data.subTitle,
@@ -92,7 +92,7 @@ fun PageHeader(
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
+                SoulText(
                     textAlign = TextAlign.Center,
                     color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     text = data.title,
@@ -101,7 +101,7 @@ fun PageHeader(
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 26.sp
                 )
-                Text(
+                SoulText(
                     modifier = Modifier.optionalClickable(data.onSubtitleClicked),
                     textAlign = TextAlign.Center,
                     color = SoulSearchingColorTheme.colorScheme.subPrimaryText,

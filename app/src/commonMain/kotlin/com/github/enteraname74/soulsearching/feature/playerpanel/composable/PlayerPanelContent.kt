@@ -17,7 +17,6 @@ import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.TabData
@@ -31,6 +30,11 @@ import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerV
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.lyrics
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.played_list
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.shared_list_title
 
 @Composable
 fun PlayerPanelContent(
@@ -56,7 +60,7 @@ fun PlayerPanelContent(
 
     val pages = listOfNotNull(
         TabData(
-            title = strings.playedList,
+            title = CoreRes.string.played_list.toTextSpec(),
             screen = {
                 PlayerListView(
                     playbackManager = playbackManager,
@@ -77,7 +81,7 @@ fun PlayerPanelContent(
             }
         ),
         TabData(
-            title = strings.lyrics,
+            title = CoreRes.string.lyrics.toTextSpec(),
             screen = {
                 MusicLyricsView(
                     contentColor = contentColor,
@@ -91,7 +95,7 @@ fun PlayerPanelContent(
         ),
         playerState.sharedListState?.let {
             TabData(
-                title = strings.sharedListTitle,
+                title = CoreRes.string.shared_list_title.toTextSpec(),
                 screen = {
                     SharedPlayedListView(
                         state = it,

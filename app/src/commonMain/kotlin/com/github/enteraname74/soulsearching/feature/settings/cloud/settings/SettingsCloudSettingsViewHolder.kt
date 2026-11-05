@@ -4,13 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.user.LogoutFromCloudUseCase
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolderV2
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class SettingsCloudSettingsViewHolder(
     private val savedStateHandle: SavedStateHandle,
@@ -41,8 +43,8 @@ class SettingsCloudSettingsViewHolder(
             urlField = SoulTextFieldHolderImpl(
                 id = URL_FIELD_ID,
                 isValid = { savedStateHandle.get<String>(URL_FIELD_ID)?.isBlank() != true },
-                getLabel = { strings.cloudUrlFieldLabel },
-                getError = { strings.fieldCannotBeEmpty },
+                getLabel = { CoreRes.string.cloud_url_field_label.toTextSpec() },
+                getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
                 onChange = {
                     savedStateHandle[URL_FIELD_ID] = it
                 },

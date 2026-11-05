@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.CloudBackgroundSyncJob
 import com.github.enteraname74.soulsearching.domain.usecase.cloud.CommonCloudPreferencesUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.music.SyncDataWithCloudUseCase
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.utils.DateUiUtils
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolderV2
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class SettingsCloudSyncViewHolder(
     private val cloudBackgroundSyncJob: CloudBackgroundSyncJob,
@@ -29,12 +31,12 @@ class SettingsCloudSyncViewHolder(
             commonCloudPreferencesUseCase.observe().collectLatest { preferences ->
                 updateState {
                     copy(
-                        lastSync = preferences.lastSyncMillis?.let { DateUiUtils.formatToReadableDateTime(it) }
-                            ?: strings.cloudSettingsNoSync,
-                        lastStatisticsSync = preferences.lastStatisticsSyncMillis?.let { DateUiUtils.formatToReadableDateTime(it) }
-                            ?: strings.cloudSettingsNoSync,
-                        lastSettingsSync = preferences.lastSettingsSyncMillis?.let { DateUiUtils.formatToReadableDateTime(it) }
-                            ?: strings.cloudSettingsNoSync,
+                        lastSync = preferences.lastSyncMillis?.let { DateUiUtils.formatToReadableDateTime(it).toTextSpec() }
+                            ?: CoreRes.string.cloud_settings_no_sync.toTextSpec(),
+                        lastStatisticsSync = preferences.lastStatisticsSyncMillis?.let { DateUiUtils.formatToReadableDateTime(it).toTextSpec() }
+                            ?: CoreRes.string.cloud_settings_no_sync.toTextSpec(),
+                        lastSettingsSync = preferences.lastSettingsSyncMillis?.let { DateUiUtils.formatToReadableDateTime(it).toTextSpec() }
+                            ?: CoreRes.string.cloud_settings_no_sync.toTextSpec(),
                     )
                 }
             }
@@ -50,9 +52,9 @@ class SettingsCloudSyncViewHolder(
 
     override fun getInitialState(): SettingsCloudSyncState =
         SettingsCloudSyncState(
-            lastSync = strings.cloudSettingsNoSync,
-            lastStatisticsSync = strings.cloudSettingsNoSync,
-            lastSettingsSync = strings.cloudSettingsNoSync,
+            lastSync = CoreRes.string.cloud_settings_no_sync.toTextSpec(),
+            lastStatisticsSync = CoreRes.string.cloud_settings_no_sync.toTextSpec(),
+            lastSettingsSync = CoreRes.string.cloud_settings_no_sync.toTextSpec(),
             syncingState = SyncDataWithCloudUseCase.State.Idle,
             navigateBack = { navigate { navigateBack() } },
             launchSync = ::launchSync,

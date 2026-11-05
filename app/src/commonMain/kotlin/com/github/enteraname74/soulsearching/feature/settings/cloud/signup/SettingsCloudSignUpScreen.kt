@@ -17,10 +17,12 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsCloudSignUpScreen(
@@ -33,7 +35,7 @@ fun SettingsCloudSignUpScreen(
 
         Column {
             SoulTopBar(
-                title = strings.cloudSignUp,
+                title = CoreRes.string.cloud_sign_up.toTextSpec(),
                 leftAction = TopBarNavigationAction(
                     onClick = actions::navigateBack,
                 ),
@@ -80,7 +82,7 @@ fun SettingsCloudSignUpScreen(
                         .padding(
                             top = UiConstants.Spacing.mediumPlus,
                         ),
-                    text = strings.cloudSignUp,
+                    text = CoreRes.string.cloud_sign_up.toTextSpec(),
                     enabled = state.isValid(),
                     onClick = {
                         focusManager.clearFocus()

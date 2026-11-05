@@ -22,11 +22,12 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.isDark
 import com.github.enteraname74.soulsearching.coreui.image.SoulSearchingLogo
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.onboarding.appinitsongfetching.composable.FetchingMusicTabLayoutComposable
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun AppInitSongFetchingScreen(
@@ -75,7 +76,7 @@ fun AppInitSongFetchingScreen(
                             modifier = Modifier
                                 .weight(1f),
                             progress = animatedProgress,
-                            progressMessage = strings.searchingSongsFromYourDevice,
+                            progressMessage = CoreRes.string.searching_songs_from_your_device.toTextSpec(),
                             subText = state.currentFolder,
                         )
                     }
@@ -97,7 +98,7 @@ fun AppInitSongFetchingScreen(
                     SoulSearchingLogo()
                     ProgressIndicatorComposable(
                         progress = animatedProgress,
-                        progressMessage = strings.searchingSongsFromYourDevice,
+                        progressMessage = CoreRes.string.searching_songs_from_your_device.toTextSpec(),
                         subText = state.currentFolder,
                     )
                     FetchingMusicTabLayoutComposable()

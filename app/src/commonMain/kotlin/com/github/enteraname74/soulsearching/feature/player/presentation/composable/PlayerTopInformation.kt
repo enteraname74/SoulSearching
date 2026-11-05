@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +36,8 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerM
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.ext.disabledIfNoAction
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -89,8 +90,8 @@ fun PlayerTopInformation(
                 },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = state.currentMusic.name,
+            SoulText(
+                text = state.currentMusic.name.toTextSpec(),
                 color = SoulSearchingColorTheme.colorScheme.onPrimary,
                 maxLines = 1,
                 textAlign = TextAlign.Center,
@@ -116,8 +117,8 @@ fun PlayerTopInformation(
                         "${artist.artistName}, "
                     }
 
-                    Text(
-                        text = formattedText,
+                    SoulText(
+                        text = formattedText.toTextSpec(),
                         color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                         fontSize = 15.sp,
                         maxLines = 1,
@@ -136,8 +137,8 @@ fun PlayerTopInformation(
                     )
                 }
             }
-            Text(
-                text = state.currentMusic.album.albumName,
+            SoulText(
+                text = state.currentMusic.album.albumName.toTextSpec(),
                 color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                 fontSize = 15.sp,
                 maxLines = 1,

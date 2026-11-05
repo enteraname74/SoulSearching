@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -9,7 +12,6 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
@@ -33,12 +35,12 @@ fun allPlaylistsTab(
             val playlists = playlistState.playlists.collectAsLazyPagingItems()
             MainPageListPaged(
                 list = playlists,
-                title = strings.playlists,
+                title = CoreRes.string.playlists.toTextSpec(),
                 rightComposable = {
                     SoulIconButton(
                         onClick = mainPageViewModel::showCreatePlaylistDialog,
                         icon = CoreRes.drawable.ic_add,
-                        contentDescription = strings.createPlaylistButton,
+                        contentDescription = CoreRes.string.create_playlist_button.toTextSpec().string,
                         size = UiConstants.ImageSize.medium,
                     )
                 },
@@ -55,15 +57,15 @@ fun allPlaylistsTab(
                 sortDirection = playlistState.sortDirection,
                 key = { it?.id },
                 contentType = ALL_PLAYLISTS_CONTENT_TYPE,
-                emptyTitle = strings.emptyPlaylists,
-                emptyDescription = strings.emptyPlaylistsExplanations,
+                emptyTitle = CoreRes.string.empty_playlists.toTextSpec(),
+                emptyDescription = CoreRes.string.empty_playlists_explanations.toTextSpec(),
             ) { element ->
                 BigPreviewComposable(
                     modifier = Modifier
                         .animateItem(),
                     cover = element.cover,
-                    title = element.name,
-                    text = strings.musics(element.totalMusics),
+                    title = element.name.toTextSpec(),
+                    text = SoulTexts.musics(element.totalMusics),
                     imageSize = null,
                     onClick = {
                         navigateToPlaylist(element.id)

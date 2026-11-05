@@ -10,12 +10,12 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.github.enteraname74.soulsearching.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.ext.toWorkerResult
-import com.github.enteraname74.soulsearching.coreui.strings.StringsUtils
 import com.github.enteraname74.soulsearching.sharedapp.R
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 
 class CloudSyncWorker(
     context: Context,
@@ -49,7 +49,7 @@ class CloudSyncWorker(
         result.toWorkerResult()
     }
 
-    private fun setForegroundInfo(
+    private suspend fun setForegroundInfo(
         state: SyncDataWithCloudUseCase.State,
     ) =
         if (Build.VERSION.SDK_INT >= 29) {
@@ -62,14 +62,12 @@ class CloudSyncWorker(
             ForegroundInfo(NOTIFICATION_ID, createNotification(state))
         }
 
-    private fun createNotification(
+    private suspend fun createNotification(
         state: SyncDataWithCloudUseCase.State,
     ): Notification {
-        val strings = StringsUtils.getStrings(applicationContext)
-
         return NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setContentTitle(strings.cloudSyncNotificationTitle(state))
-            .setContentText(strings.cloudSyncNotificationText(state))
+            .setContentTitle(SoulTexts.cloudSyncNotificationTitle(state).suspendedString())
+            .setContentText(SoulTexts.cloudSyncNotificationText(state).suspendedString())
             .setSmallIcon(R.drawable.app_logo_uni_xml)
             .apply {
                 (state as? SyncDataWithCloudUseCase.State.ProgressState)?.progress?.let { progress ->

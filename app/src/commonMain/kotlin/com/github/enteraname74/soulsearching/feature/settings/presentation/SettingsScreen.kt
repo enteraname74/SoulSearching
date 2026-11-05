@@ -16,9 +16,10 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_palette_filled
 import com.github.enteraname74.soulsearching.coreui.ext.isMouseAndKeyboardOnly
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import org.koin.compose.viewmodel.koinViewModel
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsRoute(
@@ -39,13 +40,13 @@ fun SettingsRoute(
 
     SettingPage(
         navigateBack = navigateBack,
-        title = strings.settings,
+        title = CoreRes.string.settings.toTextSpec(),
     ) {
         if (SoulPlatformUtils.platform != SoulPlatform.Web) {
             item {
                 SoulMenuElement(
-                    title = strings.manageMusicsTitle,
-                    subTitle = strings.manageMusicsText,
+                    title = CoreRes.string.manage_musics_title.toTextSpec(),
+                    subTitle = CoreRes.string.manage_musics_text.toTextSpec(),
                     leadIcon = CoreRes.drawable.ic_music_note_filled,
                     onClick = toManageMusics
                 )
@@ -53,32 +54,32 @@ fun SettingsRoute(
         }
         item {
             SoulMenuElement(
-                title = strings.colorThemeTitle,
-                subTitle = strings.colorThemeText,
+                title = CoreRes.string.color_theme_title.toTextSpec(),
+                subTitle = CoreRes.string.color_theme_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_palette_filled,
                 onClick = toColorTheme
             )
         }
         item {
             SoulMenuElement(
-                title = strings.personalizationTitle,
-                subTitle = strings.personalizationText,
+                title = CoreRes.string.personalization_title.toTextSpec(),
+                subTitle = CoreRes.string.personalization_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_edit_filled,
                 onClick = toPersonalisation
             )
         }
         item {
             SoulMenuElement(
-                title = strings.statisticsTitle,
-                subTitle = strings.statisticsText,
+                title = CoreRes.string.statistics_title.toTextSpec(),
+                subTitle = CoreRes.string.statistics_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_bar_chart,
                 onClick = toStatistics
             )
         }
         item {
             SoulMenuElement(
-                title = strings.advancedSettingsTitle,
-                subTitle = strings.advancedSettingsText,
+                title = CoreRes.string.advanced_settings_title.toTextSpec(),
+                subTitle = CoreRes.string.advanced_settings_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_handyman_filled,
                 onClick = toAdvancedSettings,
             )
@@ -86,8 +87,8 @@ fun SettingsRoute(
         if (isMouseAndKeyboardOnly) {
             item {
                 SoulMenuElement(
-                    title = strings.shortcutsTitle,
-                    subTitle = strings.shortcutsText,
+                    title = CoreRes.string.shortcuts_title.toTextSpec(),
+                    subTitle = CoreRes.string.shortcuts_text.toTextSpec(),
                     leadIcon = CoreRes.drawable.ic_keyboard,
                     onClick = toShortcuts,
                 )
@@ -95,16 +96,16 @@ fun SettingsRoute(
         }
         item {
             SoulMenuElement(
-                title = strings.cloudTitle,
-                subTitle = strings.cloudText,
+                title = CoreRes.string.cloud_title.toTextSpec(),
+                subTitle = CoreRes.string.cloud_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_cloud_filled,
                 onClick = toCloudSettings,
             )
         }
         item {
             SoulMenuElement(
-                title = strings.aboutTitle,
-                subTitle = strings.aboutText,
+                title = CoreRes.string.about_title.toTextSpec(),
+                subTitle = CoreRes.string.about_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_info_filled,
                 onClick = toAbout,
                 isBadged = shouldShowNewVersionPin,

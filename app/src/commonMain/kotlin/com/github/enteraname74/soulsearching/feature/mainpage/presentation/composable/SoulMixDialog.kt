@@ -1,9 +1,10 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 class SoulMixDialog(
     private val onDismiss: () -> Unit,
@@ -13,9 +14,9 @@ class SoulMixDialog(
         SoulAlertDialog(
             confirmAction = onDismiss,
             dismissAction = onDismiss,
-            title = strings.soulMixInfoDialogTitle,
-            text = strings.soulMixInfoDialogText,
-            confirmText = strings.ok,
+            title = CoreRes.string.soul_mix_info_dialog_title.toTextSpec(),
+            text = CoreRes.string.soul_mix_info_dialog_text.toTextSpec(),
+            confirmText = CoreRes.string.ok.toTextSpec(),
         )
     }
 }

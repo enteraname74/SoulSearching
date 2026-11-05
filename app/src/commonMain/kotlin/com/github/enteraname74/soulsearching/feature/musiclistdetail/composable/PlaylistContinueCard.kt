@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,9 +20,11 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_close
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.model.CachedPlayedListUiSpec
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.continue_played_list_title
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 
 @Composable
 internal fun PlaylistContinueCard(
@@ -66,10 +67,10 @@ private fun TopInformation(
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
+        SoulText(
             modifier = Modifier
                 .weight(1f),
-            text = strings.continuePlayedListTitle,
+            text = CoreRes.string.continue_played_list_title.toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             style = UiConstants.Typography.bodyTitle,
             maxLines = 2,
@@ -100,15 +101,15 @@ private fun CurrentMusicInfo(
             modifier = Modifier
                 .weight(1f),
         ) {
-            Text(
-                text = currentMusic.name,
+            SoulText(
+                text = currentMusic.name.toTextSpec(),
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 style = MaterialTheme.typography.labelLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Text(
-                text = currentMusic.artists,
+            SoulText(
+                text = currentMusic.artists.toTextSpec(),
                 color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 style = MaterialTheme.typography.labelLarge,
                 maxLines = 1,

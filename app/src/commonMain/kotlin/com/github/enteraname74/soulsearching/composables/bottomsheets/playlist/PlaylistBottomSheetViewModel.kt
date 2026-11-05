@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
@@ -12,7 +15,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.ext.gridCoverWithEmpty
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.domain.model.PlaylistWithMusics
@@ -120,7 +122,7 @@ class PlaylistBottomSheetViewModel(
             add(
                 BottomSheetRowSpec(
                     icon = CoreRes.drawable.ic_edit_filled,
-                    title = strings.modifyPlaylist,
+                    title = CoreRes.string.modify_playlist.toTextSpec(),
                     onClick = ::toModifyPlaylist,
                 )
             )
@@ -153,9 +155,9 @@ class PlaylistBottomSheetViewModel(
                 BottomSheetRowSpec(
                     icon = CoreRes.drawable.ic_delete_filled,
                     title = if (playlists.size == 1) {
-                        strings.deletePlaylist
+                        CoreRes.string.delete_playlist.toTextSpec()
                     } else {
-                        strings.deleteSelectedPlaylists
+                        CoreRes.string.delete_selected_playlists.toTextSpec()
                     },
                     onClick = ::showDeleteDialog,
                 )
@@ -176,14 +178,14 @@ class PlaylistBottomSheetViewModel(
         if (playlists.size == 1) {
             val playlist = playlists.first()
             BottomSheetTopInformation(
-                title = playlist.playlist.name,
-                subTitle = strings.musics(total = playlist.musics.filter { !it.isHidden }.size),
+                title = playlist.playlist.name.toTextSpec(),
+                subTitle = SoulTexts.musics(total = playlist.musics.filter { !it.isHidden }.size),
                 cover = playlist.cover,
             )
         } else {
             BottomSheetTopInformation(
-                title = strings.multipleSelection,
-                subTitle = strings.selectedElements(total = playlists.size),
+                title = CoreRes.string.multiple_selection.toTextSpec(),
+                subTitle = SoulTexts.selectedElements(total = playlists.size),
                 cover = playlists.gridCoverWithEmpty(),
             )
         }

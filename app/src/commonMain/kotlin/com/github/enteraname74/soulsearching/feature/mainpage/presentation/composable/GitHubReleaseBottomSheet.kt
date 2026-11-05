@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +23,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_release_alert_filled
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateComposable
 import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonSpec
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
@@ -60,7 +61,7 @@ class GitHubReleaseBottomSheet(
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             ) {
                 SoulTopBar(
-                    title = strings.activateGithubReleaseFetchTitle,
+                    title = CoreRes.string.activate_github_release_fetch_title.toTextSpec(),
                     leftAction = object : TopBarActionSpec {
                         override val icon = CoreRes.drawable.ic_cancel_filled
                         override val onClick = { closeWithAnim { } }
@@ -71,9 +72,9 @@ class GitHubReleaseBottomSheet(
                 SoulTemplateComposable(
                     icon = CoreRes.drawable.ic_release_alert_filled,
                     iconSize = UiConstants.ImageSize.large,
-                    text = strings.activateGithubReleaseFetchText,
+                    text = CoreRes.string.activate_github_release_fetch_text.toTextSpec(),
                     buttonSpec = TemplateScreenButtonSpec(
-                        text = strings.goToSettings,
+                        text = CoreRes.string.go_to_settings.toTextSpec(),
                         onClick = {
                             closeWithAnim {
                                 onNavigateToGithubReleasePermission()

@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.statistics.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -48,7 +49,7 @@ fun SettingsStatisticsSection(
 
 @Composable
 private fun SmallScreen(
-    title: String,
+    title: SoulTextSpec,
     optionalContent: PeriodUiStatistics.Stats.OptionalContent?,
     elements: LazyPagingItems<StatisticsUiElement>,
 ) {
@@ -77,7 +78,7 @@ private fun SmallScreen(
 
 @Composable
 private fun LargeScreen(
-    title: String,
+    title: SoulTextSpec,
     optionalContent: PeriodUiStatistics.Stats.OptionalContent?,
     elements: LazyPagingItems<StatisticsUiElement>,
 ) {

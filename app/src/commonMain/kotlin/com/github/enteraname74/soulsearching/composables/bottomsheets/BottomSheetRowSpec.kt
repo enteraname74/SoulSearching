@@ -1,10 +1,13 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,13 +22,12 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_quick_access_filled
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import org.jetbrains.compose.resources.DrawableResource
 
 data class BottomSheetRowSpec(
     val icon: DrawableResource,
-    val title: String,
+    val title: SoulTextSpec,
     val onClick: () -> Unit,
 ) {
     @Composable
@@ -46,10 +48,10 @@ data class BottomSheetRowSpec(
             SoulIcon(
                 size = UiConstants.ImageSize.medium,
                 icon = icon,
-                contentDescription = title,
+                contentDescription = title.string,
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
             )
-            Text(
+            SoulText(
                 text = title,
                 color = SoulSearchingColorTheme.colorScheme.onSecondary
             )
@@ -64,9 +66,9 @@ data class BottomSheetRowSpec(
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_quick_access_filled,
                 title = if (isInQuickAccess) {
-                    strings.removeFromQuickAccess
+                    CoreRes.string.remove_from_quick_access.toTextSpec()
                 } else {
-                    strings.addToQuickAccess
+                    CoreRes.string.add_to_quick_access.toTextSpec()
                 },
                 onClick = onClick,
             )
@@ -76,14 +78,14 @@ data class BottomSheetRowSpec(
         ): BottomSheetRowSpec =
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_playlist_add,
-                title = strings.addToPlaylist,
+                title = CoreRes.string.add_to_playlist.toTextSpec(),
                 onClick = onClick,
             )
 
         fun addToCollection(onClick: () -> Unit): BottomSheetRowSpec =
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_library_music,
-                title = strings.addToCollection,
+                title = CoreRes.string.add_to_collection.toTextSpec(),
                 onClick = onClick,
             )
 
@@ -92,7 +94,7 @@ data class BottomSheetRowSpec(
         ): BottomSheetRowSpec =
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_playlist_play,
-                title = strings.playNext,
+                title = CoreRes.string.play_next.toTextSpec(),
                 onClick = onClick,
             )
 
@@ -101,7 +103,7 @@ data class BottomSheetRowSpec(
         ): BottomSheetRowSpec =
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_queue_music,
-                title = strings.addToQueue,
+                title = CoreRes.string.add_to_queue.toTextSpec(),
                 onClick = onClick,
             )
 
@@ -110,7 +112,7 @@ data class BottomSheetRowSpec(
         ): BottomSheetRowSpec =
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_playlist_remove,
-                title = strings.removeFromPlayedList,
+                title = CoreRes.string.remove_from_played_list.toTextSpec(),
                 onClick = onClick,
             )
 
@@ -119,7 +121,7 @@ data class BottomSheetRowSpec(
         ) : BottomSheetRowSpec =
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_cloud_filled,
-                title = strings.startSharedPlayedList,
+                title = CoreRes.string.start_shared_played_list.toTextSpec(),
                 onClick = onClick,
             )
     }

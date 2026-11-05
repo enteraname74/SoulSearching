@@ -4,9 +4,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.domain.model.Artist
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 sealed interface ModifyArtistFormState {
     data object NoData: ModifyArtistFormState
@@ -22,8 +23,8 @@ sealed interface ModifyArtistFormState {
                 initialValue = initialArtist.artistName,
                 updateProposedValues = updateFoundArtists,
                 workDispatcher = workDispatcher,
-                getLabel = { strings.artistName },
-                getError = { strings.fieldCannotBeEmpty },
+                getLabel = { CoreRes.string.artist_name.toTextSpec() },
+                getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
             ),
         )
 

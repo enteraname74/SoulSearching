@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.music.main
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.domain.model.Music
@@ -22,7 +25,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.ext.gridCoverIfPossible
 import com.github.enteraname74.soulsearching.domain.ext.gridCoverWithEmpty
 import com.github.enteraname74.soulsearching.feature.multiselection.MultiSelectionManager
@@ -181,7 +183,7 @@ class MusicBottomSheetViewModel(
             add(
                 BottomSheetRowSpec(
                     icon = CoreRes.drawable.ic_edit_filled,
-                    title = strings.modifyMusic,
+                    title = CoreRes.string.modify_music.toTextSpec(),
                     onClick = ::toModifyMusic,
                 )
             )
@@ -210,7 +212,7 @@ class MusicBottomSheetViewModel(
             add(
                 BottomSheetRowSpec(
                     icon = CoreRes.drawable.ic_delete_filled,
-                    title = strings.removeFromPlaylist,
+                    title = CoreRes.string.remove_from_playlist.toTextSpec(),
                     onClick = ::showRemoveFromPlaylistDialog,
                 )
             )
@@ -221,9 +223,9 @@ class MusicBottomSheetViewModel(
                 BottomSheetRowSpec(
                     icon = CoreRes.drawable.ic_delete_filled,
                     title = if (musics.size == 1) {
-                        strings.deleteMusic
+                        CoreRes.string.delete_music.toTextSpec()
                     } else {
-                        strings.deleteSelectedMusics
+                        CoreRes.string.delete_selected_musics.toTextSpec()
                     },
                     onClick = ::showDeleteDialog,
                 )
@@ -235,14 +237,14 @@ class MusicBottomSheetViewModel(
         if (musics.size == 1) {
             val music = musics.first()
             BottomSheetTopInformation(
-                title = music.name,
-                subTitle = music.informationText,
+                title = music.name.toTextSpec(),
+                subTitle = music.informationText.toTextSpec(),
                 cover = music.cover,
             )
         } else {
             BottomSheetTopInformation(
-                title = strings.multipleSelection,
-                subTitle = strings.selectedElements(total = musics.size),
+                title = CoreRes.string.multiple_selection.toTextSpec(),
+                subTitle = SoulTexts.selectedElements(total = musics.size),
                 cover = musics.gridCoverWithEmpty(),
             )
         }
@@ -313,15 +315,15 @@ class MusicBottomSheetViewModel(
             DeleteMusicsDialog(
                 onDelete = { deleteMusics() },
                 onClose = { dialogState.value = null },
-                title = strings.deleteMusicDialogTitle,
-                text = strings.deleteMusicDialogText,
+                title = CoreRes.string.delete_music_dialog_title.toTextSpec(),
+                text = CoreRes.string.delete_music_dialog_text.toTextSpec(),
             )
         } else {
             DeleteMusicsDialog(
                 onDelete = { deleteMusics() },
                 onClose = { dialogState.value = null },
-                title = strings.deleteSelectedMusicsDialogTitle,
-                text = strings.deleteSelectedMusicsDialogText,
+                title = CoreRes.string.delete_selected_musics_dialog_title.toTextSpec(),
+                text = CoreRes.string.delete_selected_musics_dialog_text.toTextSpec(),
             )
         }
     }

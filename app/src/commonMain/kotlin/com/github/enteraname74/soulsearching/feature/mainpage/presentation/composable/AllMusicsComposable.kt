@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,7 +22,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_shuffle
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
@@ -73,7 +74,7 @@ fun AllMusicsComposable(
             contentType = ALL_MUSICS_STICKY_CONTENT_TYPE,
         ) {
             SubMenuComposable(
-                title = strings.musics,
+                title = CoreRes.string.musics.toTextSpec(),
                 setSortType = setSortType,
                 toggleSortDirection = toggleSortDirection,
                 sortType = musicState.sortType,
@@ -82,7 +83,7 @@ fun AllMusicsComposable(
                 rightComposable = {
                     SoulIconButton(
                         icon = CoreRes.drawable.ic_shuffle,
-                        contentDescription = strings.shuffleButton,
+                        contentDescription = CoreRes.string.shuffle_button.toTextSpec().string,
                         enabled = musics.itemCount != 0,
                         onClick = {
                             if (musics.itemCount != 0) {
@@ -134,8 +135,8 @@ fun AllMusicsComposable(
                         .padding(
                             end = UiConstants.Spacing.medium,
                         ),
-                    title = strings.emptyMusics,
-                    description = strings.emptyMusicsExplanations,
+                    title = CoreRes.string.empty_musics.toTextSpec(),
+                    description = CoreRes.string.empty_musics_explanations.toTextSpec(),
                 )
             }
         }

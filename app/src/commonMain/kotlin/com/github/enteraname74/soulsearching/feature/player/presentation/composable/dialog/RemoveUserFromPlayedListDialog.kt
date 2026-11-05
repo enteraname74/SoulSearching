@@ -6,7 +6,12 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cancel
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.delete
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.shared_list_remove_user_button
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.shared_list_remove_user_text
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.shared_list_remove_user_title
 
 class RemoveUserFromPlayedListDialog(
     private val onRemove: () -> Unit,
@@ -18,14 +23,14 @@ class RemoveUserFromPlayedListDialog(
         SoulAlertDialog(
             confirmAction = onRemove,
             dismissAction = onClose,
-            confirmText = strings.sharedListRemoveUserButton,
-            dismissText = strings.cancel,
-            title = strings.sharedListRemoveUserTitle,
-            text = strings.sharedListRemoveUserText,
+            confirmText = CoreRes.string.shared_list_remove_user_button.toTextSpec(),
+            dismissText = CoreRes.string.cancel.toTextSpec(),
+            title = CoreRes.string.shared_list_remove_user_title.toTextSpec(),
+            text = CoreRes.string.shared_list_remove_user_text.toTextSpec(),
             icon = {
                 SoulIcon(
                     icon = CoreRes.drawable.ic_person_remove,
-                    contentDescription = strings.delete,
+                    contentDescription = CoreRes.string.delete.toTextSpec().string,
                 )
             }
         )

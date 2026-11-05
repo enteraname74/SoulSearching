@@ -9,11 +9,13 @@ import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.usecase.user.CommonUserUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolder
 import kotlinx.coroutines.launch
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class SettingsCloudSignUpViewHolder(
     private val commonUserUseCase: CommonUserUseCase,
@@ -29,8 +31,8 @@ class SettingsCloudSignUpViewHolder(
         initialState = SettingsCloudSignUpState(
             nameField = SoulTextFieldHolderImpl(
                 id = NAME_FIELD_ID,
-                getLabel = { strings.cloudNameFieldLabel },
-                getError = { strings.fieldCannotBeEmpty },
+                getLabel = { CoreRes.string.cloud_name_field_label.toTextSpec() },
+                getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
                 isValid = { it.isNotBlank() },
                 style = SoulTextFieldStyle.Top,
                 initialValue = savedStateHandle.get<String>(NAME_FIELD_ID).orEmpty(),
@@ -43,8 +45,8 @@ class SettingsCloudSignUpViewHolder(
             ),
             passwordField = SoulTextFieldHolderImpl(
                 id = PASSWORD_FIELD_ID,
-                getLabel = { strings.cloudPasswordFieldLabel },
-                getError = { strings.fieldCannotBeEmpty },
+                getLabel = { CoreRes.string.cloud_password_field_label.toTextSpec() },
+                getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
                 isValid = { it.isNotBlank() },
                 isPassword = true,
                 initialValue = savedStateHandle.get<String>(PASSWORD_FIELD_ID).orEmpty(),
@@ -58,8 +60,8 @@ class SettingsCloudSignUpViewHolder(
             ),
             codeField = SoulTextFieldHolderImpl(
                 id = CODE_FIELD_ID,
-                getLabel = { strings.cloudRegistrationCode },
-                getError = { strings.fieldCannotBeEmpty },
+                getLabel = { CoreRes.string.cloud_registration_code.toTextSpec() },
+                getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
                 isValid = { it.isNotBlank() },
                 isPassword = true,
                 initialValue = savedStateHandle.get<String>(CODE_FIELD_ID).orEmpty(),

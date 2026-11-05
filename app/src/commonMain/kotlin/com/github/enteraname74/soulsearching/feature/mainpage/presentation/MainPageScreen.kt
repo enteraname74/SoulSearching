@@ -3,6 +3,8 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation
 
 //noinspection UsingMaterialAndMaterial3Libraries
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -24,7 +26,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
@@ -218,7 +219,7 @@ fun MainPageScreenView(
 
         SearchView(
             searchViewManager = searchAllViewManager,
-            placeholder = strings.searchAll,
+            placeholder = CoreRes.string.search_all.toTextSpec(),
             maxHeight = maxHeight,
             focusRequester = searchBarFocusRequester,
             onSearch = mainPageViewModel::onSearch,

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,11 +27,14 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_warning_filled
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import org.jetbrains.compose.resources.DrawableResource
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 
 @Composable
 fun SettingsCloudScreen(
@@ -45,7 +47,7 @@ fun SettingsCloudScreen(
             override val icon: DrawableResource = CoreRes.drawable.ic_info_outlined
             override val onClick: () -> Unit = actions::toExplanations
         },
-        title = strings.cloudTitle,
+        title = CoreRes.string.cloud_title.toTextSpec(),
     ) {
         item {
             AlphaWarningCard()
@@ -53,11 +55,11 @@ fun SettingsCloudScreen(
         item {
             SoulMenuElement(
                 title = if (state.user == null) {
-                    strings.cloudSignIn
+                    CoreRes.string.cloud_sign_in.toTextSpec()
                 } else {
-                    state.user.username
+                    state.user.username.toTextSpec()
                 },
-                subTitle = state.user?.let { strings.userType(it.type) },
+                subTitle = state.user?.let { SoulTexts.userType(it.type) },
                 onClick = actions::onUserClick,
                 leadIcon = CoreRes.drawable.ic_person_filled,
                 trailIcon = CoreRes.drawable.ic_chevron_right,
@@ -66,8 +68,8 @@ fun SettingsCloudScreen(
 
         item {
             SoulMenuElement(
-                title = strings.cloudSettingsTitle,
-                subTitle = strings.cloudSettingsText,
+                title = CoreRes.string.cloud_settings_title.toTextSpec(),
+                subTitle = CoreRes.string.cloud_settings_text.toTextSpec(),
                 onClick = actions::toSettings,
                 leadIcon = CoreRes.drawable.ic_settings_filled,
                 trailIcon = CoreRes.drawable.ic_warning_filled.takeIf { state.hasUrl == false },
@@ -77,8 +79,8 @@ fun SettingsCloudScreen(
         item {
             SoulMenuElement(
                 enabled = state.connectedFeaturesEnabled,
-                title = strings.cloudUsersTitle,
-                subTitle = strings.cloudUsersText,
+                title = CoreRes.string.cloud_users_title.toTextSpec(),
+                subTitle = CoreRes.string.cloud_users_text.toTextSpec(),
                 onClick = actions::toUsers,
                 leadIcon = CoreRes.drawable.ic_groups_filled,
             )
@@ -87,8 +89,8 @@ fun SettingsCloudScreen(
         item {
             SoulMenuElement(
                 enabled = state.connectedFeaturesEnabled,
-                title = strings.cloudSyncTitle,
-                subTitle = strings.cloudSyncText,
+                title = CoreRes.string.cloud_sync_title.toTextSpec(),
+                subTitle = CoreRes.string.cloud_sync_text.toTextSpec(),
                 onClick = actions::toSync,
                 leadIcon = CoreRes.drawable.ic_sync_alt,
             )
@@ -97,8 +99,8 @@ fun SettingsCloudScreen(
         item {
             SoulMenuElement(
                 enabled = state.connectedFeaturesEnabled,
-                title = strings.cloudSharedListTitle,
-                subTitle = strings.cloudSharedListText,
+                title = CoreRes.string.cloud_shared_list_title.toTextSpec(),
+                subTitle = CoreRes.string.cloud_shared_list_text.toTextSpec(),
                 onClick = actions::toSharedList,
                 leadIcon = CoreRes.drawable.ic_play_filled,
             )
@@ -137,8 +139,8 @@ private fun AlphaWarningCard() {
                     size = UiConstants.ImageSize.mediumPlus,
                     color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 )
-                Text(
-                    text = strings.cloudAlphaWarningText,
+                SoulText(
+                    text = CoreRes.string.cloud_alpha_warning_text.toTextSpec(),
                     color = SoulSearchingColorTheme.colorScheme.onSecondary,
                     textAlign = TextAlign.Center,
                     style = UiConstants.Typography.body,

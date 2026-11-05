@@ -6,13 +6,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementView
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.ModifyPlaylistViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistState
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun ModifyPlaylistRoute(
@@ -53,8 +54,8 @@ private fun ModifyPlaylistScreenView(
     when {
         state is ModifyPlaylistState.Data && formState is ModifyPlaylistFormState.Data -> {
             EditableElementView(
-                title = strings.playlistInformation,
-                coverSectionTitle = strings.playlistCover,
+                title = CoreRes.string.playlist_information.toTextSpec(),
+                coverSectionTitle = CoreRes.string.playlist_cover.toTextSpec(),
                 coverEditMode = state.coverEditMode,
                 navigateBack = navigateBack,
                 onSelectCover = onSelectCover,

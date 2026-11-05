@@ -2,10 +2,11 @@ package com.github.enteraname74.soulsearching.coreui.topbar
 
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.back_button
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_arrow_back
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_check
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.stringResource
 
 interface TopBarActionSpec {
     val icon: DrawableResource
@@ -25,7 +26,7 @@ data class TopBarNavigationAction(
     override val isEnabled: Boolean = true
     override val contentDescription: String
         @Composable
-        get() = strings.backButton
+        get() = stringResource(CoreRes.string.back_button)
 }
 
 data class TopBarValidateAction(
