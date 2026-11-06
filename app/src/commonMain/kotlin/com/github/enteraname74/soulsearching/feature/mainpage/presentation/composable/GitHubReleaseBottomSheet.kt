@@ -1,7 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,13 +17,18 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.activate_github_release_fetch_text
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.activate_github_release_fetch_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.go_to_settings
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cancel_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_release_alert_filled
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateComposable
 import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonSpec
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulAdaptiveTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeight
 
@@ -60,14 +63,15 @@ class GitHubReleaseBottomSheet(
                     },
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             ) {
-                SoulTopBar(
+                SoulAdaptiveTopBar(
                     title = CoreRes.string.activate_github_release_fetch_title.toTextSpec(),
-                    leftAction = object : TopBarActionSpec {
-                        override val icon = CoreRes.drawable.ic_cancel_filled
-                        override val onClick = { closeWithAnim { } }
-                    },
+                    leftAction = SoulTopBarAction.icon(
+                        icon = CoreRes.drawable.ic_cancel_filled,
+                        onClick = { closeWithAnim { } },
+                    ),
                     withStatusBarPadding = shouldUseStatusBar,
                     colors = SoulTopBarDefaults.secondary(),
+                    bigOnWindowSize = WindowSize.Large,
                 )
                 SoulTemplateComposable(
                     icon = CoreRes.drawable.ic_release_alert_filled,

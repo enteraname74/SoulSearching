@@ -1,8 +1,5 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.collection.add
 
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.strings.SoulText
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,15 +21,19 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.add_to_collection
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.create_collection_dialog_title
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulAdaptiveTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.domain.model.CollectionPreview
 
 @Composable
@@ -46,15 +47,16 @@ fun AddToCollectionBottomSheetScreen(viewModel: AddToCollectionBottomSheetViewMo
             .background(SoulSearchingColorTheme.colorScheme.surface)
             .padding(UiConstants.Spacing.medium),
     ) {
-        SoulTopBar(
+        SoulAdaptiveTopBar(
             withStatusBarPadding = false,
             title = CoreRes.string.add_to_collection.toTextSpec(),
-            leftAction = TopBarNavigationAction(onClick = viewModel::navigateBack),
-            rightAction = TopBarValidateAction(onClick = viewModel::confirm),
+            leftAction = SoulTopBarAction.navigation(onClick = viewModel::navigateBack),
+            rightAction = SoulTopBarAction.validate(onClick = viewModel::confirm),
             colors = SoulTopBarDefaults.primary(
                 containerColor = Color.Transparent,
                 contentColor = SoulSearchingColorTheme.colorScheme.text,
             ),
+            bigOnWindowSize = WindowSize.Large,
         )
         LazyColumnCompat(modifier = Modifier.fillMaxWidth()) {
             item {

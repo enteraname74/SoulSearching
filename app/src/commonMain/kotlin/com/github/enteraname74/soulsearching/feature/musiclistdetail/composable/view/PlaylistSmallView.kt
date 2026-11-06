@@ -25,8 +25,6 @@ import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.github.enteraname74.soulsearching.domain.model.Cover
-import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -38,12 +36,13 @@ import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidth
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.Cover
+import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailState
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.DurationIndication
@@ -52,7 +51,6 @@ import com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.PlaylistPanel
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.ext.Content
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import org.jetbrains.compose.resources.DrawableResource
 import kotlin.math.max
 import kotlin.time.Duration
 import kotlin.uuid.Uuid
@@ -133,11 +131,11 @@ fun PlaylistSmallView(
                 },
             title = data.title,
             showTitle = shouldShowTopBarTitle,
-            leftAction = TopBarNavigationAction(onClick = data.navigateBack),
-            rightAction = object : TopBarActionSpec {
-                override val icon: DrawableResource = CoreRes.drawable.ic_search
-                override val onClick: () -> Unit = openSearchView
-            },
+            leftAction = SoulTopBarAction.navigation(onClick = data.navigateBack),
+            rightAction = SoulTopBarAction.icon(
+                icon = CoreRes.drawable.ic_search,
+                onClick = openSearchView,
+            ),
             colors = SoulTopBarDefaults.primary(
                 containerColor = backgroundColor(),
             )

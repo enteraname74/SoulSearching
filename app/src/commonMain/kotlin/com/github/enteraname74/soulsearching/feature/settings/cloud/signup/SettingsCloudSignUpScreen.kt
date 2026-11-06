@@ -15,14 +15,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_sign_up
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulAdaptiveTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
+import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 
 @Composable
 fun SettingsCloudSignUpScreen(
@@ -34,9 +34,9 @@ fun SettingsCloudSignUpScreen(
         val focusManager = LocalFocusManager.current
 
         Column {
-            SoulTopBar(
+            SoulAdaptiveTopBar(
                 title = CoreRes.string.cloud_sign_up.toTextSpec(),
-                leftAction = TopBarNavigationAction(
+                leftAction = SoulTopBarAction.navigation(
                     onClick = actions::navigateBack,
                 ),
             )

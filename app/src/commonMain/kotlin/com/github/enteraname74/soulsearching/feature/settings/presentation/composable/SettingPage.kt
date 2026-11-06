@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.settings.presentation.composable
 
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,17 +12,19 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulAdaptiveTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 
 @Composable
 fun SettingPage(
     navigateBack: () -> Unit,
     title: SoulTextSpec,
     modifier: Modifier = Modifier,
+    subTitle: SoulTextSpec? = null,
+    description: SoulTextSpec? = null,
     verticalPadding: Dp = 0.dp,
-    rightAction: TopBarActionSpec? = null,
+    rightAction: SoulTopBarAction? = null,
     contentPadding: PaddingValues = PaddingValues(
         all = 0.dp
     ),
@@ -34,9 +35,11 @@ fun SettingPage(
         modifier = modifier,
     ) {
         Column {
-            SoulTopBar(
+            SoulAdaptiveTopBar(
                 title = title,
-                leftAction = TopBarNavigationAction(
+                subTitle = subTitle,
+                description = description,
+                leftAction = SoulTopBarAction.navigation(
                     onClick = navigateBack,
                 ),
                 rightAction = rightAction,

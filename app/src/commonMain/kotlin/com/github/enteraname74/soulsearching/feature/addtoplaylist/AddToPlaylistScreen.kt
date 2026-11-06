@@ -1,9 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.addtoplaylist
 
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
-import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,18 +16,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.add_to_playlist_empty_text
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.add_to_playlist_empty_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.add_to_playlist_screen_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.add_to_playlist_search_placeholder
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulAdaptiveTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.EmptyCard
 import com.github.enteraname74.soulsearching.feature.search.composable.SoulSearchBar
@@ -55,14 +58,15 @@ internal fun AddToPlaylistScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            SoulTopBar(
+            SoulAdaptiveTopBar(
                 title = CoreRes.string.add_to_playlist_screen_title.toTextSpec(),
-                leftAction = TopBarNavigationAction(
+                leftAction = SoulTopBarAction.navigation(
                     onClick = state.navigateBack,
                 ),
-                rightAction = TopBarValidateAction(
+                rightAction = SoulTopBarAction.validate(
                     onClick = state.onSave,
-                )
+                ),
+                bigOnWindowSize = WindowSize.Large
             )
             SoulSearchBar(
                 modifier = Modifier

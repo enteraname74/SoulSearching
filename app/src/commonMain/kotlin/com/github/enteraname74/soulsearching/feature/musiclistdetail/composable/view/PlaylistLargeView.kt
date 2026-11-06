@@ -60,9 +60,8 @@ import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.Cover
@@ -74,7 +73,6 @@ import com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.composable.PlaylistPartTitle
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.ext.Content
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import org.jetbrains.compose.resources.DrawableResource
 import kotlin.time.Duration
 import kotlin.uuid.Uuid
 
@@ -197,13 +195,13 @@ private fun Header(
             colors = SoulTopBarDefaults.primary(
                 containerColor = Color.Transparent,
             ),
-            leftAction = TopBarNavigationAction(
+            leftAction = SoulTopBarAction.navigation(
                 onClick = data.navigateBack,
             ),
-            rightAction = object : TopBarActionSpec {
-                override val icon: DrawableResource = CoreRes.drawable.ic_search
-                override val onClick: () -> Unit = openSearchView
-            }
+            rightAction = SoulTopBarAction.icon(
+                icon = CoreRes.drawable.ic_search,
+                onClick = openSearchView
+            ),
         )
         Row(
             modifier = Modifier

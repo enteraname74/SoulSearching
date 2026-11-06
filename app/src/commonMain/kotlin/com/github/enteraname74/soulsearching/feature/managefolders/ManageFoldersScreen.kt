@@ -8,15 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.used_folders_title
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
 import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulAdaptiveTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 
 @Composable
 fun ManageFoldersScreen(
@@ -27,12 +27,12 @@ fun ManageFoldersScreen(
     }
     SoulScreen {
         Column {
-            SoulTopBar(
+            SoulAdaptiveTopBar(
                 title = CoreRes.string.used_folders_title.toTextSpec(),
                 leftAction = state.navigateBack?.let {
-                    TopBarNavigationAction(onClick = it)
+                    SoulTopBarAction.navigation(onClick = it)
                 },
-                rightAction = TopBarValidateAction(onClick = state.onDone),
+                rightAction = SoulTopBarAction.validate(onClick = state.onDone),
             )
             if (state.folders.isNotEmpty()) {
                 LazyColumnCompat(

@@ -23,18 +23,18 @@ import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulAdaptiveTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
 fun SoulTemplateScreen(
-    leftAction: TopBarActionSpec,
+    leftAction: SoulTopBarAction,
     icon: DrawableResource,
     text: SoulTextSpec,
     buttonSpec: TemplateScreenButtonSpec?,
     title: SoulTextSpec? = null,
-    rightAction: TopBarActionSpec? = null,
+    rightAction: SoulTopBarAction? = null,
 ) {
     SoulScreen(
         modifier = Modifier
@@ -44,7 +44,7 @@ fun SoulTemplateScreen(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-            SoulTopBar(
+            SoulAdaptiveTopBar(
                 title = title,
                 leftAction = leftAction,
                 rightAction = rightAction,

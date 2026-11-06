@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.soulsearching.coreui.screen.SoulErrorScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import kotlinx.coroutines.flow.StateFlow
 
@@ -24,7 +24,7 @@ internal fun MusicListDetailScreen(
             )
         }
         is MusicListDetailState.Error -> SoulErrorScreen(
-            leftAction = TopBarNavigationAction(state.navigateBack),
+            leftAction = SoulTopBarAction.navigation(state.navigateBack),
             text = state.error,
         )
         is MusicListDetailState.Loading ->

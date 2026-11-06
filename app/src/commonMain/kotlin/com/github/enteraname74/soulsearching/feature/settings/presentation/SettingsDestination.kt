@@ -2,6 +2,10 @@ package com.github.enteraname74.soulsearching.feature.settings.presentation
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.settings
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.SettingsAboutDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
@@ -16,6 +20,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object SettingsDestination : SettingPage {
+    override val title: SoulTextSpec? = CoreRes.string.settings.toTextSpec()
+
     fun register(
         entryProviderScope: EntryProviderScope<NavKey>,
         navigator: Navigator,

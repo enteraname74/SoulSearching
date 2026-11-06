@@ -13,8 +13,8 @@ import com.github.enteraname74.soulsearching.coreui.composable.SoulCircularProgr
 import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulAdaptiveTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 
 @Composable
 fun SoulLoadingScreen(
@@ -24,8 +24,8 @@ fun SoulLoadingScreen(
 ) {
     SoulScreen {
         Column {
-            SoulTopBar(
-                leftAction = TopBarNavigationAction(
+            SoulAdaptiveTopBar(
+                leftAction = SoulTopBarAction.navigation(
                     onClick = navigateBack,
                 ),
                 title = title,

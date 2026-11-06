@@ -14,36 +14,31 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
-import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.ext.chainIf
 import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
 import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SoulTopBar(
     modifier: Modifier = Modifier,
     title: SoulTextSpec? = null,
     showTitle: Boolean = true,
-    leftAction: TopBarActionSpec?,
-    rightAction: TopBarActionSpec? = null,
-    isElevated: Boolean = false,
+    leftAction: SoulTopBarAction?,
+    rightAction: SoulTopBarAction? = null,
     withStatusBarPadding: Boolean = true,
-    colors: TopBarColors = SoulTopBarDefaults.primary(),
+    colors: SoulTopBarColors = SoulTopBarDefaults.primary(),
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .disableFocus()
-            .background(colors.containerColorWithElevation(isElevated))
+            .background(colors.containerColor)
             .chainIf(withStatusBarPadding) {
                 Modifier.statusBarsPadding()
             },
@@ -51,16 +46,7 @@ fun SoulTopBar(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         if (leftAction != null) {
-            SoulIconButton(
-                icon = leftAction.icon,
-                contentDescription = leftAction.contentDescription,
-                colors = SoulButtonDefaults.colors(
-                    contentColor = colors.contentColorWithElevation(isElevated),
-                    containerColor = Color.Transparent,
-                ),
-                onClick = leftAction.onClick,
-                enabled = leftAction.isEnabled
-            )
+            leftAction.content()
         } else {
             Spacer(modifier = Modifier.size(TOP_BAR_BUTTON_SIZE))
         }
@@ -83,7 +69,7 @@ fun SoulTopBar(
                     text = it,
                     maxLines = 2,
                     style = UiConstants.Typography.bodyMediumTitle,
-                    color = colors.contentColorWithElevation(isElevated),
+                    color = colors.contentColor,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,
                 )
@@ -91,69 +77,11 @@ fun SoulTopBar(
         }
 
         if (rightAction != null) {
-            SoulIconButton(
-                icon = rightAction.icon,
-                contentDescription = rightAction.contentDescription,
-                colors = SoulButtonDefaults.colors(
-                    contentColor = colors.contentColorWithElevation(isElevated).copy(
-                        alpha = if (rightAction.isEnabled) {
-                            1f
-                        } else {
-                            UiConstants.ALPHA_DISABLED
-                        }
-                    ),
-                    containerColor = Color.Transparent,
-                ),
-                onClick = rightAction.onClick,
-                enabled = rightAction.isEnabled
-            )
+            rightAction.content()
         } else {
             Spacer(modifier = Modifier.size(TOP_BAR_BUTTON_SIZE))
         }
     }
-}
-
-object SoulTopBarDefaults {
-    @Composable
-    fun primary(
-        containerColor: Color = SoulSearchingColorTheme.colorScheme.background,
-        contentColor: Color = SoulSearchingColorTheme.colorScheme.text,
-        elevatedContentColor: Color = SoulSearchingColorTheme.colorScheme.text,
-        elevatedContainerColor: Color = SoulSearchingColorTheme.colorScheme.surface,
-    ): TopBarColors =
-        TopBarColors(
-            contentColor = contentColor,
-            containerColor = containerColor,
-            elevatedContainerColor = elevatedContainerColor,
-            elevatedContentColor = elevatedContentColor,
-        )
-
-    @Composable
-    fun secondary(
-        containerColor: Color = SoulSearchingColorTheme.colorScheme.surface,
-        contentColor: Color = SoulSearchingColorTheme.colorScheme.text,
-        elevatedContentColor: Color = SoulSearchingColorTheme.colorScheme.text,
-        elevatedContainerColor: Color = SoulSearchingColorTheme.colorScheme.text,
-    ): TopBarColors =
-        TopBarColors(
-            contentColor = contentColor,
-            containerColor = containerColor,
-            elevatedContainerColor = elevatedContainerColor,
-            elevatedContentColor = elevatedContentColor,
-        )
-}
-
-data class TopBarColors(
-    val containerColor: Color,
-    val contentColor: Color,
-    val elevatedContainerColor: Color,
-    val elevatedContentColor: Color,
-) {
-    fun contentColorWithElevation(isElevated: Boolean): Color =
-        if (isElevated) elevatedContentColor else contentColor
-
-    fun containerColorWithElevation(isElevated: Boolean): Color =
-        if (isElevated) elevatedContainerColor else containerColor
 }
 
 private val TOP_BAR_BUTTON_SIZE: Dp = 48.dp

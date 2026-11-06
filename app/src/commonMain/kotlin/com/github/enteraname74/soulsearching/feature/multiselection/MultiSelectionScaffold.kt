@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.multiselection
 
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -9,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -19,8 +16,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_close
@@ -28,17 +23,17 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.multiselection.LocalMultiSelectionTopBarHeight
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarColors
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarColors
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionNavigationState
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
 fun MultiSelectionScaffold(
@@ -111,20 +106,20 @@ fun MultiSelectionScaffold(
 @Composable
 private fun MultiSelectionTopBar(
     total: Int,
-    topBarColors: TopBarColors,
+    topBarColors: SoulTopBarColors,
     onCancel: () -> Unit,
     onMore: () -> Unit,
 ) {
     SoulTopBar(
         colors = topBarColors,
         title = SoulTexts.selectedElements(total = total),
-        leftAction = object : TopBarActionSpec {
-            override val icon: DrawableResource = CoreRes.drawable.ic_close
-            override val onClick: () -> Unit = onCancel
-        },
-        rightAction = object : TopBarActionSpec {
-            override val icon: DrawableResource = CoreRes.drawable.ic_more_vertical
-            override val onClick: () -> Unit = onMore
-        }
+        leftAction = SoulTopBarAction.icon(
+            icon = CoreRes.drawable.ic_close,
+            onClick = onCancel,
+        ),
+        rightAction = SoulTopBarAction.icon(
+            icon = CoreRes.drawable.ic_more_vertical,
+            onClick = onMore,
+        ),
     )
 }

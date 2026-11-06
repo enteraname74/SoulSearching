@@ -14,19 +14,23 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
-import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cover_selection
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.covers_of_song_album
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add_photo_alternate_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.music_app_cover
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.music_file_cover
 import com.github.enteraname74.soulsearching.coreui.list.LazyVerticalGridCompat
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeight
+import com.github.enteraname74.soulsearching.domain.model.Cover
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementCoverSelectionItem
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.editableElementCoversChoice
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
@@ -34,10 +38,7 @@ import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import kotlinx.coroutines.flow.StateFlow
-import org.jetbrains.compose.resources.DrawableResource
 import kotlin.uuid.Uuid
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class MusicCoversBottomSheet(
     private val musicCover: Cover.Simple,
@@ -156,15 +157,15 @@ class MusicCoversBottomSheet(
                     title = CoreRes.string.cover_selection.toTextSpec(),
                     colors = SoulTopBarDefaults.secondary(),
                     withStatusBarPadding = bottomSheetHeight > windowHeightBeforeBarPadding,
-                    leftAction = TopBarNavigationAction(
+                    leftAction = SoulTopBarAction.navigation(
                         onClick = { closeWithAnim { } },
                     ),
-                    rightAction = object : TopBarActionSpec {
-                        override val icon: DrawableResource = CoreRes.drawable.ic_add_photo_alternate_filled
-                        override val onClick: () -> Unit = {
+                    rightAction = SoulTopBarAction.icon(
+                        icon = CoreRes.drawable.ic_add_photo_alternate_filled,
+                        onClick = {
                             imagePickerLauncher.launch()
                         }
-                    }
+                    )
                 )
                 ImageList {
                     when (musicCover) {

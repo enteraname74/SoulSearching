@@ -15,20 +15,21 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_download_done
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.multiple_artists_selection_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.multiple_artists_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.no_multiple_artists
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateScreen
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulAdaptiveTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.composable.MultipleArtistsChoiceItem
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.composable.MultipleArtistsWarningCard
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
-import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 
 @Composable
 fun MultipleArtistsChoiceScreen(
@@ -60,7 +61,7 @@ fun MultipleArtistsChoiceScreen(
 
         is MultipleArtistChoiceState.NoMultipleArtists -> {
             SoulTemplateScreen(
-                leftAction = TopBarNavigationAction(
+                leftAction = SoulTopBarAction.navigation(
                     onClick = state.navigateBack,
                 ),
                 icon = CoreRes.drawable.ic_download_done,
@@ -77,13 +78,13 @@ private fun UserActionScreen(
 ) {
     SoulScreen {
         Column {
-            SoulTopBar(
+            SoulAdaptiveTopBar(
                 title = CoreRes.string.multiple_artists_title.toTextSpec(),
-                rightAction = TopBarValidateAction(
+                rightAction = SoulTopBarAction.navigation(
                     onClick = state.onSaveSelection,
                 ),
                 leftAction = state.navigateBack?.let {
-                    TopBarNavigationAction(onClick = it)
+                    SoulTopBarAction.navigation(onClick = it)
                 },
             )
             LazyColumnCompat(

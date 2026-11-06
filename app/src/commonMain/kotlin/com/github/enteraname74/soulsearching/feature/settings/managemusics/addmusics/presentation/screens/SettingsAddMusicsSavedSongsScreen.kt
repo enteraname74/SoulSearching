@@ -2,12 +2,14 @@ package com.github.enteraname74.soulsearching.feature.settings.managemusics.addm
 
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.add_musics_title
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_download_done
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.search_for_new_songs
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.songs_saved
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateScreen
 import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonSpec
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
 import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 
 @Composable
 fun SettingsAddMusicsSavedSongsScreen(
@@ -15,7 +17,7 @@ fun SettingsAddMusicsSavedSongsScreen(
     fetchSongs: () -> Unit,
 ) {
     SoulTemplateScreen(
-        leftAction = TopBarNavigationAction(onClick = navigateBack),
+        leftAction = SoulTopBarAction.navigation(onClick = navigateBack),
         icon = CoreRes.drawable.ic_download_done,
         title = CoreRes.string.add_musics_title.toTextSpec(),
         text = CoreRes.string.songs_saved.toTextSpec(),

@@ -19,10 +19,10 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetH
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add_photo_alternate_filled
 import com.github.enteraname74.soulsearching.coreui.list.LazyVerticalGridCompat
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeight
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
@@ -30,8 +30,6 @@ import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import kotlinx.coroutines.flow.StateFlow
-import org.jetbrains.compose.resources.DrawableResource
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 class EditableElementCoversBottomSheet(
     private val coverStateFlow: StateFlow<CoverListState>,
@@ -79,15 +77,15 @@ class EditableElementCoversBottomSheet(
                     title = title,
                     colors = SoulTopBarDefaults.secondary(),
                     withStatusBarPadding = bottomSheetHeight > windowHeightBeforeBarPadding,
-                    leftAction = TopBarNavigationAction(
+                    leftAction = SoulTopBarAction.navigation(
                         onClick = { closeWithAnim { } },
                     ),
-                    rightAction = object : TopBarActionSpec {
-                        override val icon: DrawableResource = CoreRes.drawable.ic_add_photo_alternate_filled
-                        override val onClick: () -> Unit = {
+                    rightAction = SoulTopBarAction.icon(
+                        icon = CoreRes.drawable.ic_add_photo_alternate_filled,
+                        onClick = {
                             imagePickerLauncher.launch()
                         }
-                    }
+                    )
                 )
 
                 LazyVerticalGridCompat(

@@ -41,9 +41,8 @@ import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulBigTopBar
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulBigTopBarAction
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import com.github.enteraname74.soulsearching.coreui.utils.isSmallWindow
 import com.github.enteraname74.soulsearching.domain.model.statistics.Period
 import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.SettingsStatisticsView
@@ -76,7 +75,7 @@ private fun Header(
         ) {
             SoulTopBar(
                 title = CoreRes.string.statistics_title.toTextSpec(),
-                leftAction = TopBarNavigationAction(state.navigateBack),
+                leftAction = SoulTopBarAction.navigation(state.navigateBack),
             )
             PeriodButton(
                 modifier = Modifier
@@ -95,8 +94,8 @@ private fun Header(
         SoulBigTopBar(
             subTitle = null,
             title = CoreRes.string.statistics_title.toTextSpec(),
-            leftAction = SoulBigTopBarAction.navigation { state.navigateBack() },
-            rightAction = object : SoulBigTopBarAction {
+            leftAction = SoulTopBarAction.navigation(onClick = state.navigateBack),
+            rightAction = object : SoulTopBarAction {
                 override val content: @Composable (() -> Unit) = {
                     PeriodButton(
                         modifier = Modifier

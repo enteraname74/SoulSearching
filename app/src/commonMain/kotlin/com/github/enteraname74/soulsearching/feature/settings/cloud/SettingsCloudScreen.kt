@@ -17,6 +17,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_alpha_warning_text
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_settings_text
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_settings_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_shared_list_text
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_shared_list_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_sign_in
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_sync_text
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_sync_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_users_text
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_users_title
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_chevron_right
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_groups_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_info_outlined
@@ -27,14 +38,12 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_warning_filled
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import org.jetbrains.compose.resources.DrawableResource
 import com.github.enteraname74.soulsearching.coreui.strings.SoulText
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
+import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 
 @Composable
 fun SettingsCloudScreen(
@@ -43,10 +52,10 @@ fun SettingsCloudScreen(
 ) {
     SettingPage(
         navigateBack = actions::navigateBack,
-        rightAction = object : TopBarActionSpec {
-            override val icon: DrawableResource = CoreRes.drawable.ic_info_outlined
-            override val onClick: () -> Unit = actions::toExplanations
-        },
+        rightAction = SoulTopBarAction.icon(
+            icon = CoreRes.drawable.ic_info_outlined,
+            onClick = actions::toExplanations,
+        ),
         title = CoreRes.string.cloud_title.toTextSpec(),
     ) {
         item {

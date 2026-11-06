@@ -7,19 +7,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.add_musics_title
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_download_done
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.no_new_musics
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.search_for_new_songs
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateScreen
 import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonSpec
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulAdaptiveTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.FETCHED_MUSICS_SPACER_CONTENT_TYPE
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.composable.MusicSelectableComposable
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.SelectableMusicItem
 import kotlin.uuid.Uuid
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsAddMusicsDataScreen(
@@ -36,7 +37,7 @@ fun SettingsAddMusicsDataScreen(
 
         if (fetchedMusics.isEmpty()) {
             SoulTemplateScreen(
-                leftAction = TopBarNavigationAction(onClick = navigateBack),
+                leftAction = SoulTopBarAction.navigation(onClick = navigateBack),
                 icon = CoreRes.drawable.ic_download_done,
                 title = CoreRes.string.add_musics_title.toTextSpec(),
                 text = CoreRes.string.no_new_musics.toTextSpec(),
@@ -46,10 +47,10 @@ fun SettingsAddMusicsDataScreen(
                 ),
             )
         } else {
-            SoulTopBar(
+            SoulAdaptiveTopBar(
                 title = CoreRes.string.add_musics_title.toTextSpec(),
-                leftAction = TopBarNavigationAction(onClick = navigateBack),
-                rightAction = TopBarValidateAction(onClick = saveSelectedSongs),
+                leftAction = SoulTopBarAction.navigation(onClick = navigateBack),
+                rightAction = SoulTopBarAction.validate(onClick = saveSelectedSongs),
             )
             LazyColumnCompat {
                 items(

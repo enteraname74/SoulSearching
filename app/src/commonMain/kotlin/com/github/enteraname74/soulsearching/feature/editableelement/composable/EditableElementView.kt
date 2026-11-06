@@ -6,14 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulAdaptiveTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 @Composable
 fun EditableElementView(
@@ -37,14 +36,14 @@ fun EditableElementView(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            SoulTopBar(
+            SoulAdaptiveTopBar(
                 title = title,
-                leftAction = TopBarNavigationAction(
+                leftAction = SoulTopBarAction.navigation(
                     onClick = navigateBack,
                 ),
-                rightAction = TopBarValidateAction(
+                rightAction = SoulTopBarAction.validate(
                     onClick = onValidateModification,
-                    isEnabled = isValid(),
+                    enabled = isValid(),
                 )
             )
             when (windowSize) {

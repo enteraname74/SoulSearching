@@ -8,11 +8,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_settings_title
 import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
+import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 
 @Composable
 fun SettingsCloudSettingsScreen(
@@ -21,7 +21,7 @@ fun SettingsCloudSettingsScreen(
     SettingPage(
         title = CoreRes.string.cloud_settings_title.toTextSpec(),
         navigateBack = state.navigateBack,
-        rightAction = TopBarValidateAction(
+        rightAction = SoulTopBarAction.validate(
             onClick = state.saveChanges,
         ),
         contentPadding = PaddingValues(all = UiConstants.Spacing.large),
