@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.Dp
 import androidx.paging.compose.LazyPagingItems
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulChoiceButton
@@ -49,6 +51,18 @@ object SettingsStatisticsFactory {
         }
     }
 
+    fun LazyListScope.spacer(
+        height: Dp
+    ) {
+        item {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(height)
+            )
+        }
+    }
+
     fun LazyListScope.playerSpacer() {
         item {
             SoulPlayerSpacer()
@@ -74,7 +88,7 @@ object SettingsStatisticsFactory {
 
     fun LazyListScope.firstLargeCards(
         generalUiStatistics: PeriodGeneralUiStatistics?,
-        artistStatistics: ListStatistics.Artists?,
+        musicStatistics: ListStatistics.Musics?,
     ) {
         item {
             Row(
@@ -92,7 +106,7 @@ object SettingsStatisticsFactory {
                 }
 
                 generalUiStatistics?.musicStatistics?.toUiSpec()?.forEach { spec ->
-                    val weight = if (artistStatistics == null) .5f else .3f
+                    val weight = if (musicStatistics == null) .5f else .3f
 
                     SettingsStatisticsMusicStatisticsCard(
                         modifier = Modifier
@@ -103,7 +117,7 @@ object SettingsStatisticsFactory {
                         spec = spec,
                     )
                 }
-                artistStatistics?.let {
+                musicStatistics?.let {
                     SettingsStatisticsListStatisticsCard(
                         modifier = Modifier
                             .weight(.4f)
@@ -117,6 +131,20 @@ object SettingsStatisticsFactory {
                     )
                 }
             }
+        }
+    }
+
+    fun LazyListScope.otherCards(
+        listStatistics: List<ListStatistics>,
+    ) {
+        item {
+            SettingsStatisticsListStatisticsListView(
+                modifier = Modifier
+                    .padding(
+                        horizontal = UiConstants.Spacing.large,
+                    ),
+                listStatistics = listStatistics,
+            )
         }
     }
 

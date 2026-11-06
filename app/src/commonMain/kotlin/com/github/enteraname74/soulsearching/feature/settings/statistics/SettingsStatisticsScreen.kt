@@ -93,8 +93,8 @@ private fun Header(
         }
     } else {
         SoulBigTopBar(
-            subTitle = CoreRes.string.statistics_title.toTextSpec(),
-            title = SoulTexts.period(state.selectedPeriod),
+            subTitle = null,
+            title = CoreRes.string.statistics_title.toTextSpec(),
             leftAction = SoulBigTopBarAction.navigation { state.navigateBack() },
             rightAction = object : SoulBigTopBarAction {
                 override val content: @Composable (() -> Unit) = {

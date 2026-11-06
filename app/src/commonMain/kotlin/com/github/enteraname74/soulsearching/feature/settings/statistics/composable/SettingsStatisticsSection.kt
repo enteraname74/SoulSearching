@@ -12,7 +12,10 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.settings.statistics.SettingsStatisticsState
 import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.SettingsStatisticsFactory.firstLargeCards
+import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.SettingsStatisticsFactory.otherCards
+import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.SettingsStatisticsFactory.playerSpacer
 import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.SettingsStatisticsFactory.smallCards
+import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.SettingsStatisticsFactory.spacer
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.ListStatistics
 
 // TODO STATS: empty view
@@ -72,6 +75,7 @@ private fun SmallScreen(
                     list = it,
                 )
             }
+            spacer(UiConstants.Spacing.mediumPlus)
             playerSpacer()
         }
     }
@@ -91,7 +95,12 @@ private fun LargeScreen(
         smallCards(state.periodGeneralUiStatistics)
         firstLargeCards(
             generalUiStatistics = state.periodGeneralUiStatistics,
-            artistStatistics = state.listStatistics.find { it.type == ListStatistics.Type.Artists } as? ListStatistics.Artists,
+            musicStatistics = state.listStatistics.find { it.type == ListStatistics.Type.Musics } as? ListStatistics.Musics,
         )
+        otherCards(
+            listStatistics = state.listStatistics.filter { it.type != ListStatistics.Type.Musics },
+        )
+        spacer(UiConstants.Spacing.large)
+        playerSpacer()
     }
 }
