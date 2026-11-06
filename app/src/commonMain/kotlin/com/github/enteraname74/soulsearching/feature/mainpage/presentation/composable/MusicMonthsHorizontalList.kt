@@ -1,19 +1,27 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
-import com.github.enteraname74.soulsearching.coreui.strings.SoulText
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.github.enteraname74.soulsearching.domain.model.MonthMusicsPreview
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
+import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanelUiUtils
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.by_months
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.empty_months
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.empty_months_explanations
 import com.github.enteraname74.soulsearching.coreui.list.LazyRowCompat
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.domain.model.MonthMusicsPreview
 
 @Composable
 fun MusicMonthsHorizontalList(
@@ -25,15 +33,47 @@ fun MusicMonthsHorizontalList(
 ) {
     val lazyListState = rememberLazyListState()
 
+    val listContentPadding = if (NavigationPanelUiUtils.canShowPanel()) {
+        PaddingValues(
+            horizontal = UiConstants.Spacing.huge,
+        )
+    } else {
+        PaddingValues(
+            horizontal = UiConstants.Spacing.medium,
+        )
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(
+                if (NavigationPanelUiUtils.canShowPanel()) {
+                    PaddingValues(
+                        top = UiConstants.Spacing.veryLarge,
+                    )
+                } else {
+                    PaddingValues(
+                        bottom = UiConstants.Spacing.veryLarge,
+                    )
+                }
+            )
             .padding(bottom = UiConstants.Spacing.veryLarge),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
     ) {
         SoulText(
             modifier = Modifier
-                .padding(start = UiConstants.Spacing.medium),
+                .padding(
+                    if (NavigationPanelUiUtils.canShowPanel()) {
+                        PaddingValues(
+                            start = UiConstants.Spacing.huge,
+                            end = UiConstants.Spacing.huge,
+                            bottom = UiConstants.Spacing.medium,
+                        )
+                    } else {
+                        PaddingValues(
+                            start = UiConstants.Spacing.medium,
+                        )
+                    }
+                ),
             text = CoreRes.string.by_months.toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.text,
             style = UiConstants.Typography.titleSmall,
@@ -44,11 +84,14 @@ fun MusicMonthsHorizontalList(
                     state = lazyListState,
                     modifier = Modifier
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
-                    contentPadding = PaddingValues(
-                        start = UiConstants.Spacing.medium,
-                        end = UiConstants.Spacing.medium
-                    )
+                    horizontalArrangement = Arrangement.spacedBy(
+                        if (NavigationPanelUiUtils.canShowPanel()) {
+                            UiConstants.Spacing.mediumPlus
+                        } else {
+                            UiConstants.Spacing.medium
+                        }
+                    ),
+                    contentPadding = listContentPadding,
                 ) {
                     items(
                         items = months,

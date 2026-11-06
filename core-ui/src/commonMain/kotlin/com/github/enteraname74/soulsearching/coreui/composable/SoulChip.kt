@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.composable
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,13 +43,22 @@ fun SoulChip(
         baseColors
     }
 
+    val containerColor by animateColorAsState(
+        targetValue = colors.containerColor,
+        animationSpec = tween(UiConstants.AnimationDuration.normal),
+    )
+    val contentColor by animateColorAsState(
+        targetValue = colors.contentColor,
+        animationSpec = tween(UiConstants.AnimationDuration.normal),
+    )
+
     Row(
         modifier = modifier
             .clip(CircleShape)
             .clickableWithHandCursor {
                 onClick()
             }
-            .background(colors.containerColor)
+            .background(containerColor)
             .padding(contentPadding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
@@ -54,12 +66,12 @@ fun SoulChip(
         leadingIcon?.let {
             SoulIcon(
                 icon = leadingIcon,
-                color = colors.contentColor
+                color = contentColor
             )
         }
         SoulText(
             text = title,
-            color = colors.contentColor,
+            color = contentColor,
             style = UiConstants.Typography.body.copy(
                 fontWeight = FontWeight.SemiBold,
             )
