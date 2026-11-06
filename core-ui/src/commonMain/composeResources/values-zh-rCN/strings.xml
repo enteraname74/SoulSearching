@@ -399,6 +399,14 @@
     <string name="statistics_all_period_label">全部时间</string>
     <string name="statistics_year_period_label">按年</string>
     <string name="statistics_month_period_label">按月</string>
+    <string name="statistics_listening_time_label">收听时长</string>
+    <string name="statistics_songs_played_label">播放歌曲</string>
+    <string name="statistics_unique_songs_label">不同歌曲</string>
+    <string name="statistics_unique_artists_label">不同艺人</string>
+    <string name="statistics_listening_time_subtitle">所有播放歌曲的总计</string>
+    <string name="statistics_songs_played_subtitle">每次播放都计入</string>
+    <string name="statistics_unique_songs_subtitle">听过的不同歌曲</string>
+    <string name="statistics_unique_artists_subtitle">听过的不同艺人</string>
     <string name="playback_error_player_error">无法播放所选歌曲</string>
     <string name="simple_cover_type">单张</string>
     <string name="grid_cover_type">网格</string>

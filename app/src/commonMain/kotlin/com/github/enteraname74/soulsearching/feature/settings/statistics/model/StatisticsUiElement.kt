@@ -59,6 +59,17 @@ fun ListeningStatistics.PlaylistStats.toStatisticsUiElement(
         cover = playlist.cover,
     )
 
+fun ListeningStatistics.CollectionStats.toStatisticsUiElement(
+    onClick: () -> Unit,
+): StatisticsUiElement =
+    StatisticsUiElement(
+        id = id,
+        title = collection.name.toTextSpec(),
+        text = SoulTexts.plays(nbPlayed),
+        onClick = onClick,
+        cover = collection.cover,
+    )
+
 fun ListeningStatistics.MusicStats.toStatisticsUiElement(): StatisticsUiElement =
     StatisticsUiElement(
         id = id,

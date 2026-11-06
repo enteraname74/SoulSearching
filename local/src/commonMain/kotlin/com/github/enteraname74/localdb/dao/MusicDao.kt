@@ -867,7 +867,7 @@ interface MusicDao {
             SELECT * FROM RoomMusic 
             WHERE nbPlayed >= 1 AND isHidden = 0 
             AND scope != 'SharedPlayedList' 
-            ORDER BY nbPlayed DESC 
+            ORDER BY nbPlayed DESC, musicId 
         """
     )
     fun getMostPlayed(): PagingSource<Int, RoomCompleteMusic>

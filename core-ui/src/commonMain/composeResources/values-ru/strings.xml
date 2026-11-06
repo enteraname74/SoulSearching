@@ -399,6 +399,14 @@
     <string name="statistics_all_period_label">За всё время</string>
     <string name="statistics_year_period_label">По годам</string>
     <string name="statistics_month_period_label">По месяцам</string>
+    <string name="statistics_listening_time_label">Время прослушивания</string>
+    <string name="statistics_songs_played_label">Прослушано треков</string>
+    <string name="statistics_unique_songs_label">Уникальных треков</string>
+    <string name="statistics_unique_artists_label">Уникальных исполнителей</string>
+    <string name="statistics_listening_time_subtitle">По всем прослушанным трекам</string>
+    <string name="statistics_songs_played_subtitle">Учтено каждое прослушивание</string>
+    <string name="statistics_unique_songs_subtitle">Разных треков прослушано</string>
+    <string name="statistics_unique_artists_subtitle">Разных исполнителей прослушано</string>
     <string name="playback_error_player_error">Не удалось воспроизвести выбранную песню</string>
     <string name="simple_cover_type">Простая</string>
     <string name="grid_cover_type">Сетка</string>

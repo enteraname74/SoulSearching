@@ -399,6 +399,14 @@
     <string name="statistics_all_period_label">전체 기간</string>
     <string name="statistics_year_period_label">연도별</string>
     <string name="statistics_month_period_label">월별</string>
+    <string name="statistics_listening_time_label">청취 시간</string>
+    <string name="statistics_songs_played_label">재생한 곡</string>
+    <string name="statistics_unique_songs_label">고유 곡</string>
+    <string name="statistics_unique_artists_label">고유 아티스트</string>
+    <string name="statistics_listening_time_subtitle">재생한 모든 곡 기준</string>
+    <string name="statistics_songs_played_subtitle">모든 재생 횟수</string>
+    <string name="statistics_unique_songs_subtitle">들은 서로 다른 곡</string>
+    <string name="statistics_unique_artists_subtitle">들은 서로 다른 아티스트</string>
     <string name="playback_error_player_error">선택한 노래를 재생할 수 없습니다</string>
     <string name="simple_cover_type">단일</string>
     <string name="grid_cover_type">그리드</string>

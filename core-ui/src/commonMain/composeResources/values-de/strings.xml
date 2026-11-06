@@ -399,6 +399,14 @@
     <string name="statistics_all_period_label">Gesamter Zeitraum</string>
     <string name="statistics_year_period_label">Nach Jahr</string>
     <string name="statistics_month_period_label">Nach Monat</string>
+    <string name="statistics_listening_time_label">Hörzeit</string>
+    <string name="statistics_songs_played_label">Gespielte Titel</string>
+    <string name="statistics_unique_songs_label">Einzelne Titel</string>
+    <string name="statistics_unique_artists_label">Einzelne Künstler</string>
+    <string name="statistics_listening_time_subtitle">Über alle gespielten Titel</string>
+    <string name="statistics_songs_played_subtitle">Jede Wiedergabe gezählt</string>
+    <string name="statistics_unique_songs_subtitle">Verschiedene gehörte Titel</string>
+    <string name="statistics_unique_artists_subtitle">Verschiedene gehörte Künstler</string>
     <string name="playback_error_player_error">Ausgewählter Titel kann nicht abgespielt werden</string>
     <string name="simple_cover_type">Einfach</string>
     <string name="grid_cover_type">Raster</string>

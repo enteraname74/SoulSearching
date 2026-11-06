@@ -4,54 +4,81 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewModelScope
 import androidx.paging.map
 import com.github.enteraname74.soulsearching.domain.model.statistics.Period
-import com.github.enteraname74.soulsearching.domain.model.statistics.PeriodStatistics
+import com.github.enteraname74.soulsearching.domain.model.statistics.PeriodPagedStatistics
 import com.github.enteraname74.soulsearching.domain.repository.ListeningStatisticsRepository
+import com.github.enteraname74.soulsearching.feature.settings.statistics.model.ListStatistics
+import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodGeneralUiStatistics
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodType
-import com.github.enteraname74.soulsearching.feature.settings.statistics.model.PeriodUiStatistics
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.toStatisticsUiElement
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.toStatisticsUiListenedElement
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.toStatisticsUiMostSongsElement
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolderV2
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 
 class SettingsStatisticsViewHolder(
     private val listeningStatisticsRepository: ListeningStatisticsRepository,
 ) : SoulViewModelHolderV2<SettingsStatisticsNavScope, SettingsStatisticsState>() {
+    private val selectedMusicsChoiceType: MutableStateFlow<ListStatistics.Choices.Type.Musics> =
+        MutableStateFlow(ListStatistics.Choices.Type.Musics.MostPlays)
+
+    private val selectedArtistsChoiceType: MutableStateFlow<ListStatistics.Choices.Type.Artists> =
+        MutableStateFlow(ListStatistics.Choices.Type.Artists.MostPlays)
+
     override fun getInitialState(): SettingsStatisticsState =
         SettingsStatisticsState(
             selectedPeriod = Period.All,
             availablePeriods = listOf(Period.All),
-            currentStatistics = PeriodUiStatistics(
-                period = Period.All,
-                stats = emptyList(),
-            ),
+            listStatistics = emptyList(),
             onNewPeriod = ::setNewPeriod,
             navigateBack = { navigate { navigateBack() } },
             onNewPeriodType = ::onNewPeriodType,
+            periodGeneralUiStatistics = null,
+            focusedListStatistics = ListStatistics.Type.Musics,
+            onListStatisticsFocused = { updateState { copy(focusedListStatistics = it) } },
         )
 
     private val selectedPeriod: MutableStateFlow<Period> = MutableStateFlow(Period.All)
 
     init {
-        statisticsFlow()
+        listStatisticsFlow()
         availablePeriodsFlow()
+        generalStatisticsFlow()
     }
 
-    private fun statisticsFlow() {
+    private fun listStatisticsFlow() {
+        viewModelScope.launch {
+            combine(
+                selectedMusicsChoiceType,
+                selectedArtistsChoiceType,
+                selectedPeriod,
+            ) { musicsChoiceType, artistsChoiceType, period ->
+                currentState.copy(
+                    listStatistics = listeningStatisticsRepository.getPeriodStatistics(period).toListStatistics(
+                        musicsChoiceType = musicsChoiceType,
+                        artistsChoiceType = artistsChoiceType,
+                    )
+                )
+            }.collectLatest {
+                updateState { it }
+            }
+        }
+    }
+
+    private fun generalStatisticsFlow() {
         viewModelScope.launch {
             selectedPeriod.collectLatest { period ->
-                updateState {
-                    copy(
-                        currentStatistics = listeningStatisticsRepository.getPeriodStatistics(period).toPeriodUiStatistics(),
-                    )
+                listeningStatisticsRepository.observePeriodGeneralStatistics(period).collectLatest { generalStatistics ->
+                    updateState {
+                        copy(
+                            periodGeneralUiStatistics = PeriodGeneralUiStatistics.new(generalStatistics)
+                        )
+                    }
                 }
             }
         }
@@ -93,70 +120,84 @@ class SettingsStatisticsViewHolder(
         }
     }
 
-    private fun PeriodStatistics.toPeriodUiStatistics(): PeriodUiStatistics =
-        PeriodUiStatistics(
-            period = period,
-            stats = listOfNotNull(
-                PeriodUiStatistics.Stats(
-                    title = CoreRes.string.most_played_songs.toTextSpec(),
-                    data = mostPlayedMusics.map { pagingData ->
-                        pagingData.map { it.toStatisticsUiElement() }
-                    },
-                ),
-                PeriodUiStatistics.Stats(
-                    title = CoreRes.string.most_listened_songs.toTextSpec(),
-                    optionalContent = PeriodUiStatistics.Stats.OptionalContent(
-                        title = CoreRes.string.listening_time.toTextSpec(),
-                        flow = listeningTime.map { SoulTexts.duration(it) },
-                    ),
-                    data = mostListenedMusics.map { pagingData ->
-                        pagingData.map { it.toStatisticsUiListenedElement() }
+    private fun PeriodPagedStatistics.toListStatistics(
+        musicsChoiceType: ListStatistics.Choices.Type.Musics,
+        artistsChoiceType: ListStatistics.Choices.Type.Artists,
+    ): List<ListStatistics> = listOf(
+        ListStatistics.Musics(
+            list = when (musicsChoiceType) {
+                ListStatistics.Choices.Type.Musics.MostPlays -> mostPlayedMusics.map { pagingData ->
+                    pagingData.map { it.toStatisticsUiElement() }
+                }
+                ListStatistics.Choices.Type.Musics.MostListened -> mostListenedMusics.map { pagingData ->
+                    pagingData.map { it.toStatisticsUiListenedElement() }
+                }
+            },
+            currentChoice = musicsChoiceType,
+            onChoiceChange = { choice ->
+                (choice as? ListStatistics.Choices.Type.Musics)?.let {
+                    selectedMusicsChoiceType.value = it
+                }
+            },
+        ),
+        ListStatistics.Artists(
+            list = when (artistsChoiceType) {
+                ListStatistics.Choices.Type.Artists.MostPlays -> mostPlayedArtists.map { pagingData ->
+                    pagingData.map {
+                        it.toStatisticsUiElement(
+                            onClick = { navigate { toArtist(it.artist.id) } }
+                        )
                     }
-                ),
-                PeriodUiStatistics.Stats(
-                    title = CoreRes.string.most_played_artists.toTextSpec(),
-                    data = mostPlayedArtists.map { pagingData ->
+                }
+                ListStatistics.Choices.Type.Artists.MostSongs -> (this as? PeriodPagedStatistics.All)?.let {
+                    artistsWithMostMusics.map { pagingData ->
                         pagingData.map {
-                            it.toStatisticsUiElement(
+                            it.toStatisticsUiMostSongsElement(
                                 onClick = { navigate { toArtist(it.artist.id) } }
                             )
                         }
-                    },
-                ),
-                (this as? PeriodStatistics.All)?.let {
-                    PeriodUiStatistics.Stats(
-                        title = CoreRes.string.artists_with_most_songs.toTextSpec(),
-                        data = artistsWithMostMusics.map { pagingData ->
-                            pagingData.map {
-                                it.toStatisticsUiMostSongsElement(
-                                    onClick = { navigate { toArtist(it.artist.id) } }
-                                )
-                            }
-                        },
-                    )
-                },
-                PeriodUiStatistics.Stats(
-                    title = CoreRes.string.most_played_albums.toTextSpec(),
-                    data = mostPlayedAlbums.map { pagingData ->
-                        pagingData.map {
-                            it.toStatisticsUiElement(
-                                onClick = { navigate { toAlbum(it.album.id) } }
-                            )
-                        }
-                    },
-                ),
-                PeriodUiStatistics.Stats(
-                    title = CoreRes.string.most_played_playlists.toTextSpec(),
-                    data = mostPlayedPlaylists.map { pagingData ->
-                        pagingData.map {
-                            it.toStatisticsUiElement(
-                                onClick = { navigate { toPlaylist(it.playlist.id) } }
-                            )
-                        }
-                    },
-                )
+                    }
+                } ?: emptyFlow()
+            },
+            currentChoice = artistsChoiceType,
+            onChoiceChange = { choice ->
+                (choice as? ListStatistics.Choices.Type.Artists)?.let {
+                    selectedArtistsChoiceType.value = it
+                }
+            },
+            choices = listOfNotNull(
+                ListStatistics.Choices.Type.Artists.MostPlays,
+                ListStatistics.Choices.Type.Artists.MostSongs.takeIf { this is PeriodPagedStatistics.All },
             )
-        )
+        ),
+        ListStatistics.Albums(
+            list = mostPlayedAlbums.map { pagingData ->
+                pagingData.map {
+                    it.toStatisticsUiElement(
+                        onClick = { navigate { toAlbum(it.album.id) } }
+                    )
+                }
+            }
+        ),
+        ListStatistics.Playlists(
+            list = mostPlayedPlaylists.map { pagingData ->
+                pagingData.map {
+                    it.toStatisticsUiElement(
+                        onClick = { navigate { toPlaylist(it.playlist.id) } }
+                    )
+                }
+            }
+        ),
+        ListStatistics.Collections(
+            list = mostPlayedCollections.map { pagingData ->
+                pagingData.map {
+                    it.toStatisticsUiElement(
+                        onClick = { navigate { toCollection(it.collection.id) } }
+                    )
+                }
+            }
+        ),
+    )
 
     @Composable
     override fun Content(state: SettingsStatisticsState) {

@@ -52,10 +52,11 @@ fun <T> SoulChoiceButton(
         animationSpec = tween(UiConstants.AnimationDuration.normal),
     )
 
-    Box {
+    Box(
+        modifier = modifier,
+    ) {
         SoulButton(
             onClick = { isExpanded = true },
-            modifier = modifier,
             enabled = enabled,
             shape = shape,
             colors = colors,

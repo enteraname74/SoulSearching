@@ -399,6 +399,14 @@
     <string name="statistics_all_period_label">Todos los períodos</string>
     <string name="statistics_year_period_label">Por año</string>
     <string name="statistics_month_period_label">Por mes</string>
+    <string name="statistics_listening_time_label">Tiempo de escucha</string>
+    <string name="statistics_songs_played_label">Canciones reproducidas</string>
+    <string name="statistics_unique_songs_label">Canciones únicas</string>
+    <string name="statistics_unique_artists_label">Artistas únicos</string>
+    <string name="statistics_listening_time_subtitle">En todas las canciones reproducidas</string>
+    <string name="statistics_songs_played_subtitle">Cada reproducción cuenta</string>
+    <string name="statistics_unique_songs_subtitle">Canciones distintas escuchadas</string>
+    <string name="statistics_unique_artists_subtitle">Artistas distintos escuchados</string>
     <string name="playback_error_player_error">No se puede reproducir la canción seleccionada</string>
     <string name="simple_cover_type">Simple</string>
     <string name="grid_cover_type">Cuadrícula</string>

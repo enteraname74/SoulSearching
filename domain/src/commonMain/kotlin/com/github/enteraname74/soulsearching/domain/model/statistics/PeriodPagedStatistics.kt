@@ -4,14 +4,14 @@ import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Duration
 
-sealed interface PeriodStatistics {
+sealed interface PeriodPagedStatistics {
     val period: Period
     val mostListenedMusics: Flow<PagingData<ListeningStatistics.MusicStats>>
     val mostPlayedMusics: Flow<PagingData<ListeningStatistics.MusicStats>>
     val mostPlayedArtists: Flow<PagingData<ListeningStatistics.ArtistStats>>
     val mostPlayedAlbums: Flow<PagingData<ListeningStatistics.AlbumStats>>
     val mostPlayedPlaylists: Flow<PagingData<ListeningStatistics.PlaylistStats>>
-    val listeningTime: Flow<Duration>
+    val mostPlayedCollections: Flow<PagingData<ListeningStatistics.CollectionStats>>
 
     data class Specific(
         override val period: Period.Specific,
@@ -20,8 +20,8 @@ sealed interface PeriodStatistics {
         override val mostPlayedArtists: Flow<PagingData<ListeningStatistics.ArtistStats>>,
         override val mostPlayedAlbums: Flow<PagingData<ListeningStatistics.AlbumStats>>,
         override val mostPlayedPlaylists: Flow<PagingData<ListeningStatistics.PlaylistStats>>,
-        override val listeningTime: Flow<Duration>,
-    ) : PeriodStatistics
+        override val mostPlayedCollections: Flow<PagingData<ListeningStatistics.CollectionStats>>,
+    ) : PeriodPagedStatistics
 
     data class All(
         override val period: Period,
@@ -30,7 +30,7 @@ sealed interface PeriodStatistics {
         override val mostPlayedArtists: Flow<PagingData<ListeningStatistics.ArtistStats>>,
         override val mostPlayedAlbums: Flow<PagingData<ListeningStatistics.AlbumStats>>,
         override val mostPlayedPlaylists: Flow<PagingData<ListeningStatistics.PlaylistStats>>,
+        override val mostPlayedCollections: Flow<PagingData<ListeningStatistics.CollectionStats>>,
         val artistsWithMostMusics: Flow<PagingData<ListeningStatistics.ArtistStats>>,
-        override val listeningTime: Flow<Duration>,
-    ) : PeriodStatistics
+    ) : PeriodPagedStatistics
 }

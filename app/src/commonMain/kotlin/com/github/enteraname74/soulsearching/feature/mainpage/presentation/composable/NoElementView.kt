@@ -18,11 +18,12 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 
 @Composable
 fun NoElementView(
+    modifier: Modifier = Modifier,
     text: SoulTextSpec = CoreRes.string.no_elements.toTextSpec(),
     height: Dp = 163.dp
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(height),
         verticalArrangement = Arrangement.Center,

@@ -67,6 +67,9 @@ interface CollectionDao {
     @Query("SELECT * FROM RoomCollectionPreview ORDER BY nbPlayed DESC, id ASC")
     fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomCollectionPreview>
 
+    @Query("SELECT * FROM RoomCollectionPreview WHERE nbPlayed >= 1 ORDER BY nbPlayed DESC, id ASC")
+    fun getMostListened(): PagingSource<Int, RoomCollectionPreview>
+
     @Upsert
     suspend fun addArtist(item: RoomCollectionArtist)
 

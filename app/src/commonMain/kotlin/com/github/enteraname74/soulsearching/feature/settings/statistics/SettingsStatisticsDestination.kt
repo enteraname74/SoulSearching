@@ -32,6 +32,10 @@ data object SettingsStatisticsDestination : SettingPage {
                         navigator.push(MusicListDetailDestination(MusicListDetailId.Playlist(playlistId)))
                     }
 
+                    override fun toCollection(collectionId: Uuid) {
+                        navigator.push(MusicListDetailDestination(MusicListDetailId.Collection(collectionId)))
+                    }
+
                     override fun navigateBack() {
                         navigator.pop()
                     }

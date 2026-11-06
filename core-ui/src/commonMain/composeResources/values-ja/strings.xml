@@ -399,6 +399,14 @@
     <string name="statistics_all_period_label">全期間</string>
     <string name="statistics_year_period_label">年別</string>
     <string name="statistics_month_period_label">月別</string>
+    <string name="statistics_listening_time_label">再生時間</string>
+    <string name="statistics_songs_played_label">再生した曲</string>
+    <string name="statistics_unique_songs_label">ユニーク曲数</string>
+    <string name="statistics_unique_artists_label">ユニークアーティスト数</string>
+    <string name="statistics_listening_time_subtitle">再生したすべての曲の合計</string>
+    <string name="statistics_songs_played_subtitle">すべての再生をカウント</string>
+    <string name="statistics_unique_songs_subtitle">聴いた曲の種類</string>
+    <string name="statistics_unique_artists_subtitle">聴いたアーティストの数</string>
     <string name="playback_error_player_error">選択した曲を再生できません</string>
     <string name="simple_cover_type">シンプル</string>
     <string name="grid_cover_type">グリッド</string>

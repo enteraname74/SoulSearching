@@ -18,6 +18,7 @@ fun SoulIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     badgeColor: Color? = null,
+    // TODO Use SoulTextSpec
     contentDescription: String? = null,
     enabled: Boolean = true,
     size: Dp = UiConstants.ImageSize.smallPlus,

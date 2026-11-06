@@ -38,3 +38,6 @@ expect fun rememberWindowWidthDp(): Dp
 
 @Composable
 fun isLargeWindow(): Boolean = rememberWindowSize() == WindowSize.Large
+
+@Composable
+fun isSmallWindow(): Boolean = rememberWindowSize() == WindowSize.Small

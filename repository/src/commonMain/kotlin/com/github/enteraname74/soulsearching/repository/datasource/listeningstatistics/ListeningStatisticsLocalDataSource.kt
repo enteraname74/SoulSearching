@@ -4,7 +4,8 @@ import com.github.enteraname74.soulsearching.domain.model.LocalMonthYear
 import com.github.enteraname74.soulsearching.domain.model.statistics.LightListeningStatistics
 import com.github.enteraname74.soulsearching.domain.model.statistics.ListeningStatistics
 import com.github.enteraname74.soulsearching.domain.model.statistics.Period
-import com.github.enteraname74.soulsearching.domain.model.statistics.PeriodStatistics
+import com.github.enteraname74.soulsearching.domain.model.statistics.PeriodGeneralStatistics
+import com.github.enteraname74.soulsearching.domain.model.statistics.PeriodPagedStatistics
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
@@ -35,7 +36,9 @@ interface ListeningStatisticsLocalDataSource {
         localMonthYear: LocalMonthYear,
     ): ListeningStatistics.CollectionStats?
 
-    fun getPeriodStatistics(period: Period): PeriodStatistics
+    fun getPeriodStatistics(period: Period): PeriodPagedStatistics
+
+    fun observePeriodGeneralStatistics(period: Period): Flow<PeriodGeneralStatistics>
 
     fun observeAllMonthPeriods(): Flow<List<Period.Month>>
 

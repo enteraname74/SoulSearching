@@ -243,6 +243,11 @@
     <string name="statistics_text">Statistics about your plays</string>
     <string name="most_played_songs">Most played songs (number of plays)</string>
     <string name="most_listened_songs">Most played songs (time listened)</string>
+    <string name="time_listened">Time listened</string>
+    <string name="most_plays">Most plays</string>
+    <string name="most_songs">Most songs</string>
+    <string name="most_played_song">Most played song</string>
+    <string name="most_listened_song">Most listened song</string>
     <string name="listening_time">Total time listened</string>
     <string name="no_data_on_this_period">No data on this period</string>
     <string name="most_played_albums">Most played albums</string>
@@ -407,6 +412,14 @@
     <string name="statistics_all_period_label">All periods</string>
     <string name="statistics_year_period_label">By year</string>
     <string name="statistics_month_period_label">By month</string>
+    <string name="statistics_listening_time_label">Listening time</string>
+    <string name="statistics_songs_played_label">Songs played</string>
+    <string name="statistics_unique_songs_label">Unique songs</string>
+    <string name="statistics_unique_artists_label">Unique artists</string>
+    <string name="statistics_listening_time_subtitle">Across every song played</string>
+    <string name="statistics_songs_played_subtitle">Every play counted</string>
+    <string name="statistics_unique_songs_subtitle">Different songs heard</string>
+    <string name="statistics_unique_artists_subtitle">Different artists heard</string>
     <string name="playback_error_player_error">Cannot play selected song</string>
     <string name="simple_cover_type">Simple</string>
     <string name="grid_cover_type">Grid</string>
@@ -553,6 +566,10 @@
     <plurals name="plays">
         <item quantity="one">%1$d play</item>
         <item quantity="other">%1$d plays</item>
+    </plurals>
+    <plurals name="plays_template">
+        <item quantity="one">play</item>
+        <item quantity="other">plays</item>
     </plurals>
     <string name="selected_elements_zero">No selected elements</string>
     <plurals name="selected_elements">

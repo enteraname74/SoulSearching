@@ -6,5 +6,6 @@ interface SettingsStatisticsNavScope {
     fun toAlbum(albumId: Uuid)
     fun toArtist(artistId: Uuid)
     fun toPlaylist(playlistId: Uuid)
+    fun toCollection(collectionId: Uuid)
     fun navigateBack()
 }

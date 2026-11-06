@@ -399,6 +399,14 @@
     <string name="statistics_all_period_label">Tüm zamanlar</string>
     <string name="statistics_year_period_label">Yıla göre</string>
     <string name="statistics_month_period_label">Aya göre</string>
+    <string name="statistics_listening_time_label">Dinleme süresi</string>
+    <string name="statistics_songs_played_label">Çalınan şarkılar</string>
+    <string name="statistics_unique_songs_label">Farklı şarkılar</string>
+    <string name="statistics_unique_artists_label">Farklı sanatçılar</string>
+    <string name="statistics_listening_time_subtitle">Çalınan tüm şarkılarda</string>
+    <string name="statistics_songs_played_subtitle">Her dinleme sayıldı</string>
+    <string name="statistics_unique_songs_subtitle">Dinlenen farklı şarkılar</string>
+    <string name="statistics_unique_artists_subtitle">Dinlenen farklı sanatçılar</string>
     <string name="playback_error_player_error">Seçilen şarkı çalınamıyor</string>
     <string name="simple_cover_type">Basit</string>
     <string name="grid_cover_type">Izgara</string>

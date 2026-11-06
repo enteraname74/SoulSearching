@@ -399,6 +399,14 @@
     <string name="statistics_all_period_label">Cały okres</string>
     <string name="statistics_year_period_label">Według roku</string>
     <string name="statistics_month_period_label">Według miesiąca</string>
+    <string name="statistics_listening_time_label">Czas słuchania</string>
+    <string name="statistics_songs_played_label">Odtworzone utwory</string>
+    <string name="statistics_unique_songs_label">Unikalne utwory</string>
+    <string name="statistics_unique_artists_label">Unikalni wykonawcy</string>
+    <string name="statistics_listening_time_subtitle">Ze wszystkich odtworzonych utworów</string>
+    <string name="statistics_songs_played_subtitle">Każde odtworzenie się liczy</string>
+    <string name="statistics_unique_songs_subtitle">Różne wysłuchane utwory</string>
+    <string name="statistics_unique_artists_subtitle">Różni wysłuchani wykonawcy</string>
     <string name="playback_error_player_error">Nie można odtworzyć wybranego utworu</string>
     <string name="simple_cover_type">Prosta</string>
     <string name="grid_cover_type">Siatka</string>

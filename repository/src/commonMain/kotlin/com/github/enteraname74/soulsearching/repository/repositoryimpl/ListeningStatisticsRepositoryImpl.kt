@@ -4,7 +4,8 @@ import com.github.enteraname74.soulsearching.domain.model.LocalMonthYear
 import com.github.enteraname74.soulsearching.domain.model.statistics.LightListeningStatistics
 import com.github.enteraname74.soulsearching.domain.model.statistics.ListeningStatistics
 import com.github.enteraname74.soulsearching.domain.model.statistics.Period
-import com.github.enteraname74.soulsearching.domain.model.statistics.PeriodStatistics
+import com.github.enteraname74.soulsearching.domain.model.statistics.PeriodGeneralStatistics
+import com.github.enteraname74.soulsearching.domain.model.statistics.PeriodPagedStatistics
 import com.github.enteraname74.soulsearching.domain.repository.CloudPreferencesRepository
 import com.github.enteraname74.soulsearching.domain.repository.ListeningStatisticsRepository
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
@@ -154,8 +155,11 @@ class ListeningStatisticsRepositoryImpl(
             localMonthYear = localMonthYear,
         )
 
-    override fun getPeriodStatistics(period: Period): PeriodStatistics =
+    override fun getPeriodStatistics(period: Period): PeriodPagedStatistics =
         localDataSource.getPeriodStatistics(period)
+
+    override fun observePeriodGeneralStatistics(period: Period): Flow<PeriodGeneralStatistics> =
+        localDataSource.observePeriodGeneralStatistics(period)
 
     override fun observeAllMonthPeriods(): Flow<List<Period.Month>> =
         localDataSource.observeAllMonthPeriods()
