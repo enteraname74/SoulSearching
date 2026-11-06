@@ -1,7 +1,6 @@
-package com.github.enteraname74.soulsearching.feature.editableelement.composable
+package com.github.enteraname74.soulsearching.feature.editableelement.composable.cover
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,17 +9,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material.Shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -34,6 +31,10 @@ import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_add_photo_alternate_filled
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.select_bottom_end_cover_image
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.select_bottom_start_cover_image
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.select_top_end_cover_image
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.select_top_start_cover_image
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -41,62 +42,28 @@ import com.github.enteraname74.soulsearching.domain.model.SoulPlatform
 import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.GridUpdatedCells
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
-import com.github.enteraname74.soulsearching.coreui.strings.SoulText
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun CoverEditModeImage(
     coverEditMode: CoverEditMode,
-    onSwitchModeType: (new: CoverEditMode.Type) -> Unit,
     onSelectImage: (pos: Int) -> Unit,
+    shape: Shape,
+    coverSize: Dp,
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
-    ) {
-        when {
-            coverEditMode.selectedType == CoverEditMode.Type.Grid && coverEditMode.grid != null -> Grid(
-                coverEditMode = coverEditMode.grid,
-                onSelectImage = onSelectImage,
-            )
-            else -> Simple(
-                coverEditMode = coverEditMode.simple,
-                onSelectImage = onSelectImage,
-            )
-        }
-
-        if (coverEditMode.selectionAllowed) {
-            SingleChoiceSegmentedButtonRow {
-                CoverEditMode.Type.entries.forEachIndexed { index, type ->
-                    SegmentedButton(
-                        selected = type == coverEditMode.selectedType,
-                        onClick = { onSwitchModeType(type) },
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = CoverEditMode.Type.entries.size
-                        ),
-                        colors = SegmentedButtonDefaults.colors(
-                            activeBorderColor = SoulSearchingColorTheme.colorScheme.text,
-                            activeContainerColor = SoulSearchingColorTheme.colorScheme.surface,
-                            activeContentColor = SoulSearchingColorTheme.colorScheme.text,
-                            inactiveContainerColor = SoulSearchingColorTheme.colorScheme.surface,
-                            inactiveContentColor = Color.Transparent,
-                            inactiveBorderColor = SoulSearchingColorTheme.colorScheme.text,
-                        ),
-                        label = {
-                            SoulText(
-                                text = type.label(),
-                                color = SoulSearchingColorTheme.colorScheme.text,
-                                style = UiConstants.Typography.bodySmall,
-                            )
-                        },
-                    )
-                }
-            }
-        }
+    when {
+        coverEditMode.selectedType == CoverEditMode.Type.Grid && coverEditMode.grid != null -> Grid(
+            coverEditMode = coverEditMode.grid,
+            onSelectImage = onSelectImage,
+            size = coverSize,
+            shape = shape,
+        )
+        else -> Simple(
+            coverEditMode = coverEditMode.simple,
+            onSelectImage = onSelectImage,
+            size = coverSize,
+            shape = shape,
+        )
     }
 }
 
@@ -104,12 +71,15 @@ internal fun CoverEditModeImage(
 private fun Simple(
     coverEditMode: CoverEditMode.Simple,
     onSelectImage: (pos: Int) -> Unit,
+    size: Dp,
+    shape: Shape,
 ) {
     // TODO WEB: Add support for cover update
     if (coverEditMode.newCover == null) {
         SoulImage(
             cover = coverEditMode.initialCover,
-            size = UiConstants.CoverSize.huge,
+            shape = shape,
+            size = size,
             modifier = Modifier.clickableWithHandCursor(
                 enabled = SoulPlatformUtils.platform != SoulPlatform.Web
             ) {
@@ -119,7 +89,8 @@ private fun Simple(
     } else {
         SoulByteArrayImage(
             data = coverEditMode.newCover,
-            size = UiConstants.CoverSize.huge,
+            size = size,
+            shape = shape,
             modifier = Modifier.clickableWithHandCursor(
                 enabled = SoulPlatformUtils.platform != SoulPlatform.Web
             ) {
@@ -133,14 +104,16 @@ private fun Simple(
 private fun Grid(
     coverEditMode: CoverEditMode.Grid,
     onSelectImage: (pos: Int) -> Unit,
+    size: Dp,
+    shape: Shape,
 ) {
     val isSelectionEnabled = SoulPlatformUtils.platform != SoulPlatform.Web
     val cells = coverEditMode.updatedCells()
 
     Column(
         modifier = Modifier
-            .size(UiConstants.CoverSize.huge)
-            .clip(RoundedCornerShape(percent = 10)),
+            .size(size)
+            .clip(shape),
     ) {
         repeat(2) { rowIndex ->
             Row(
@@ -292,9 +265,3 @@ private fun gridCellContentDescription(index: Int): String =
             else -> error("Unsupported grid cell index: $index")
         }
     )
-
-private fun CoverEditMode.Type.label(): SoulTextSpec =
-    when (this) {
-        CoverEditMode.Type.Simple -> CoreRes.string.simple_cover_type.toTextSpec()
-        CoverEditMode.Type.Grid -> CoreRes.string.grid_cover_type.toTextSpec()
-    }

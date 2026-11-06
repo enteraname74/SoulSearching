@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.composable
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -51,6 +52,34 @@ fun LazyListScope.editableElementTextFieldsView(
     }
 
     item {
+        SoulPlayerSpacer()
+    }
+}
+
+@Composable
+fun EditableElementTextFieldsView(
+    focusManager: FocusManager,
+    textFields: List<SoulTextFieldHolder>,
+    extraFormBottomContent: @Composable (() -> Unit)?,
+    extraFormTopContent: @Composable (() -> Unit)?,
+) {
+    Column {
+        extraFormTopContent?.let {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                it()
+            }
+        }
+        textFields.forEach {
+            it.TextField(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                focusManager = focusManager,
+            )
+        }
+        extraFormBottomContent?.invoke()
         SoulPlayerSpacer()
     }
 }

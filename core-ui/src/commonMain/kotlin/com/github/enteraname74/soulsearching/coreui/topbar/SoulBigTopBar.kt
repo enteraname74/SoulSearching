@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.chainIf
@@ -28,7 +27,7 @@ fun SoulBigTopBar(
     description: SoulTextSpec? = null,
     colors: SoulTopBarColors = SoulTopBarDefaults.primary(),
 ) {
-    Column(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .disableFocus()
@@ -37,14 +36,13 @@ fun SoulBigTopBar(
                 Modifier.statusBarsPadding()
             },
     ) {
-        leftAction?.content()
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large),
+        Column(
+            modifier = Modifier
+                .weight(1f)
         ) {
+            leftAction?.content()
             HeaderText(
                 modifier = Modifier
-                    .weight(1f)
                     .padding(
                         start = UiConstants.Spacing.large,
                         end = UiConstants.Spacing.large,
@@ -55,8 +53,8 @@ fun SoulBigTopBar(
                 description = description,
                 colors = colors,
             )
-            rightAction?.content()
         }
+        rightAction?.content()
     }
 }
 

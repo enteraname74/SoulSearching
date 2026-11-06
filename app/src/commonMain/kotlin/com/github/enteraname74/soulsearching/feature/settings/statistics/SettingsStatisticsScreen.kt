@@ -100,7 +100,8 @@ private fun Header(
                     PeriodButton(
                         modifier = Modifier
                             .padding(
-                                end = UiConstants.Spacing.large,
+                                top = UiConstants.Spacing.medium,
+                                end = UiConstants.Spacing.veryLarge,
                             ),
                         currentPeriod = state.selectedPeriod,
                         allPeriods = state.availablePeriods,

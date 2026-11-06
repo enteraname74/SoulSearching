@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.editableelement.composable
+package com.github.enteraname74.soulsearching.feature.editableelement.composable.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -14,13 +14,15 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.feature.editableelement.composable.cover.EditableElementCoverSection
+import com.github.enteraname74.soulsearching.feature.editableelement.composable.editableElementTextFieldsView
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
-import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 @Composable
-fun EditableElementColumnView(
+fun EditableElementSmallView(
     coverSectionTitle: SoulTextSpec,
     coverEditMode: CoverEditMode,
     onSelectImage: (pos: Int) -> Unit,
@@ -63,6 +65,7 @@ fun EditableElementColumnView(
                     coverEditMode = coverEditMode,
                     onSelectImage = onSelectImage,
                     onSwitchModeType = onSwitchModeType,
+                    coverSize = UiConstants.CoverSize.huge,
                 )
             }
             editableElementTextFieldsView(

@@ -12,6 +12,8 @@ import com.github.enteraname74.soulsearching.coreui.topbar.SoulAdaptiveTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarAction
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
+import com.github.enteraname74.soulsearching.feature.editableelement.composable.views.EditableElementLargeView
+import com.github.enteraname74.soulsearching.feature.editableelement.composable.views.EditableElementSmallView
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
 
 @Composable
@@ -47,7 +49,7 @@ fun EditableElementView(
                 )
             )
             when (windowSize) {
-                WindowSize.Small -> EditableElementColumnView(
+                WindowSize.Small -> EditableElementSmallView(
                     coverEditMode = coverEditMode,
                     onSelectImage = onSelectCover,
                     focusManager = focusManager,
@@ -58,7 +60,7 @@ fun EditableElementView(
                     onSwitchModeType = onSwitchModeType,
                 )
 
-                else -> EditableElementRowView(
+                else -> EditableElementLargeView(
                     coverEditMode = coverEditMode,
                     onSelectImage = onSelectCover,
                     focusManager = focusManager,

@@ -14,7 +14,6 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
  * Constants used throughout the application.
  */
 object UiConstants {
-
     object Player {
         val playerPlayerButtonSize: Dp = 78.dp
     }
