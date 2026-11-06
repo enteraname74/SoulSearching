@@ -15,10 +15,11 @@ import com.github.enteraname74.soulsearching.feature.settings.statistics.model.L
 fun SettingsStatisticsListStatisticsListView(
     listStatistics: List<ListStatistics>,
     modifier: Modifier = Modifier,
+    itemsPerRow: Int,
 ) {
     FlowRow(
         modifier = modifier.fillMaxWidth(),
-        maxItemsInEachRow = 3,
+        maxItemsInEachRow = itemsPerRow,
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.mediumPlus),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large),
     ) {

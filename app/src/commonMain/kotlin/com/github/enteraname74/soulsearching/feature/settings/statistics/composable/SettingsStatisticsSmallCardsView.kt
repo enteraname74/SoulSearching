@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.statistics.composable
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -11,6 +12,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.cards.SettingsStatisticsSmallCard
 import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.cards.SettingsStatisticsSmallCardSpec
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SettingsStatisticsSmallCardsView(
     specs: List<SettingsStatisticsSmallCardSpec>,
@@ -26,7 +28,8 @@ fun SettingsStatisticsSmallCardsView(
     ) {
         specs.forEach {
             SettingsStatisticsSmallCard(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f),
                 spec = it,
             )
         }

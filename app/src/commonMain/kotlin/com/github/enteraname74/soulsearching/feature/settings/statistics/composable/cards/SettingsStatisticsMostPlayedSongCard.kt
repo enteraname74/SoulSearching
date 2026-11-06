@@ -130,25 +130,27 @@ private fun MediumView(
                 size = UiConstants.ImageSize.veryLarge
             )
             Column(
-                verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.veryHuge),
+                verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.veryLarge),
             ) {
                 SoulText(
                     text = spec.title,
                     color = SoulSearchingColorTheme.colorScheme.textSecondary,
-                    style = UiConstants.Typography.bodySmall,
+                    style = UiConstants.Typography.bodyTitle,
                 )
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+                    verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
                 ) {
                     SoulText(
                         text = SoulTextSpec.Raw(spec.music.name),
                         color = SoulSearchingColorTheme.colorScheme.text,
-                        style = UiConstants.Typography.bodyTitle,
+                        style = UiConstants.Typography.titleSmall,
+                        maxLines = 1,
                     )
                     SoulText(
                         text = SoulTextSpec.Raw(spec.music.artistsNames),
                         color = SoulSearchingColorTheme.colorScheme.textSecondary,
                         style = UiConstants.Typography.body,
+                        maxLines = 1,
                     )
                 }
                 SoulText(

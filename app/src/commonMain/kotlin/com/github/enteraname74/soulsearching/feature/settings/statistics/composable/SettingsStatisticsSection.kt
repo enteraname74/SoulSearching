@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.settings.statistics.compos
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,13 +13,16 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.settings.statistics.SettingsStatisticsState
 import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.SettingsStatisticsFactory.firstLargeCards
+import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.SettingsStatisticsFactory.firstMediumCards
 import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.SettingsStatisticsFactory.otherCards
 import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.SettingsStatisticsFactory.playerSpacer
 import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.SettingsStatisticsFactory.smallCards
 import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.SettingsStatisticsFactory.spacer
+import com.github.enteraname74.soulsearching.feature.settings.statistics.composable.cards.SettingsStatisticsListStatisticsCard
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.ListStatistics
 
 // TODO STATS: empty view
+// TODO STATS: click on more to see dialog style list
 @Composable
 fun SettingsStatisticsView(
     state: SettingsStatisticsState,
@@ -31,8 +35,12 @@ fun SettingsStatisticsView(
                 state = state,
             )
         }
-
-        else -> {
+        WindowSize.Medium -> {
+            MediumScreen(
+                state = state,
+            )
+        }
+        WindowSize.Large -> {
             LargeScreen(
                 state = state,
             )
@@ -99,6 +107,46 @@ private fun LargeScreen(
         )
         otherCards(
             listStatistics = state.listStatistics.filter { it.type != ListStatistics.Type.Musics },
+            itemsPerRow = 3,
+        )
+        spacer(UiConstants.Spacing.large)
+        playerSpacer()
+    }
+}
+
+@Composable
+private fun MediumScreen(
+    state: SettingsStatisticsState,
+) {
+    LazyColumnCompat(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentPadding = PaddingValues(
+            top = UiConstants.Spacing.medium,
+        )
+    ) {
+        smallCards(state.periodGeneralUiStatistics)
+        firstMediumCards(
+            generalUiStatistics = state.periodGeneralUiStatistics,
+        )
+        item {
+            state.listStatistics.find { it.type == ListStatistics.Type.Musics }?.let {
+                SettingsStatisticsListStatisticsCard(
+                    modifier = Modifier
+                        .padding(
+                            start = UiConstants.Spacing.large,
+                            end = UiConstants.Spacing.large,
+                            bottom = UiConstants.Spacing.large,
+                        )
+                        .fillMaxWidth(),
+                    listStatistics = it,
+                    maxItems = 5,
+                )
+            }
+        }
+        otherCards(
+            listStatistics = state.listStatistics.filter { it.type != ListStatistics.Type.Musics },
+            itemsPerRow = 2,
         )
         spacer(UiConstants.Spacing.large)
         playerSpacer()

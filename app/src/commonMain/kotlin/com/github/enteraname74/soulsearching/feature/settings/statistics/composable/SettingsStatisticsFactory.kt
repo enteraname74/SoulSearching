@@ -134,8 +134,34 @@ object SettingsStatisticsFactory {
         }
     }
 
+    fun LazyListScope.firstMediumCards(
+        generalUiStatistics: PeriodGeneralUiStatistics?,
+    ) {
+        item {
+            Row(
+                modifier = Modifier
+                    .animateItem()
+                    .fillMaxWidth()
+                    .padding(
+                        vertical = UiConstants.Spacing.large,
+                        horizontal = UiConstants.Spacing.large,
+                    ),
+                horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.mediumPlus),
+            ) {
+                generalUiStatistics?.musicStatistics?.toUiSpec()?.forEach { spec ->
+                    SettingsStatisticsMusicStatisticsCard(
+                        modifier = Modifier
+                            .weight(1f),
+                        spec = spec,
+                    )
+                }
+            }
+        }
+    }
+
     fun LazyListScope.otherCards(
         listStatistics: List<ListStatistics>,
+        itemsPerRow: Int,
     ) {
         item {
             SettingsStatisticsListStatisticsListView(
@@ -144,6 +170,7 @@ object SettingsStatisticsFactory {
                         horizontal = UiConstants.Spacing.large,
                     ),
                 listStatistics = listStatistics,
+                itemsPerRow = itemsPerRow,
             )
         }
     }
