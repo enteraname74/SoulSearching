@@ -35,7 +35,7 @@ fun EditableElementLargeView(
     extraFormBottomContent: @Composable (() -> Unit)?,
 ) {
     BoxWithConstraints {
-        val maxWidthWithoutPadding = maxWidth - (UiConstants.Spacing.large * 2) - UiConstants.Spacing.veryLarge
+        val maxWidthWithoutPadding = maxWidth - (UiConstants.Spacing.huge * 3) - UiConstants.Spacing.veryLarge
 
         Column(
             modifier = Modifier
@@ -44,7 +44,7 @@ fun EditableElementLargeView(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(UiConstants.Spacing.large)
+                    .padding(UiConstants.Spacing.huge)
                     .background(SoulSearchingColorTheme.colorScheme.background)
                     .pointerInput(Unit) {
                         detectTapGestures(

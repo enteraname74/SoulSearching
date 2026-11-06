@@ -192,6 +192,11 @@ private fun Header(
             .fillMaxWidth(),
     ) {
         SoulTopBar(
+            paddingValues = PaddingValues(
+                top = UiConstants.Spacing.medium,
+                start = UiConstants.Spacing.mediumPlus,
+                end = UiConstants.Spacing.mediumPlus,
+            ),
             colors = SoulTopBarDefaults.primary(
                 containerColor = Color.Transparent,
             ),
@@ -296,6 +301,7 @@ private fun Actions(
             onClick = { data.onPlay(null) },
             isSelected = true,
             contentPadding = chipPadding,
+            animated = false,
         )
         SoulChip(
             title = CoreRes.string.element_detail_shuffle.toTextSpec(),
@@ -303,6 +309,7 @@ private fun Actions(
             onClick = data.onShuffle,
             isSelected = false,
             contentPadding = chipPadding,
+            animated = false,
         )
         data.onAddToList?.let {
             SoulChip(
@@ -311,6 +318,7 @@ private fun Actions(
                 onClick = it,
                 isSelected = false,
                 contentPadding = chipPadding,
+                animated = false,
             )
         }
         data.onEdit?.let {
@@ -320,6 +328,7 @@ private fun Actions(
                 onClick = it,
                 isSelected = false,
                 contentPadding = chipPadding,
+                animated = false,
             )
         }
     }

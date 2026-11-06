@@ -6,9 +6,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
@@ -33,6 +35,7 @@ fun SoulTopBar(
     rightAction: SoulTopBarAction? = null,
     withStatusBarPadding: Boolean = true,
     colors: SoulTopBarColors = SoulTopBarDefaults.primary(),
+    paddingValues: PaddingValues = PaddingValues.Zero,
 ) {
     Row(
         modifier = modifier
@@ -41,7 +44,8 @@ fun SoulTopBar(
             .background(colors.containerColor)
             .chainIf(withStatusBarPadding) {
                 Modifier.statusBarsPadding()
-            },
+            }
+            .padding(paddingValues),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

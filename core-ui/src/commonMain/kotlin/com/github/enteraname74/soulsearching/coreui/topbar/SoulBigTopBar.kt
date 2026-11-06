@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.chainIf
 import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
@@ -34,7 +35,12 @@ fun SoulBigTopBar(
             .background(colors.containerColor)
             .chainIf(withStatusBarPadding) {
                 Modifier.statusBarsPadding()
-            },
+            }
+            .padding(
+                top = UiConstants.Spacing.medium,
+                start = 13.dp,
+                end = 13.dp,
+            ),
     ) {
         Column(
             modifier = Modifier

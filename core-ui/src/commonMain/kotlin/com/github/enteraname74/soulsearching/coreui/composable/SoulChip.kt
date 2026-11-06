@@ -32,6 +32,7 @@ fun SoulChip(
     leadingIcon: DrawableResource? = null,
     isSelected: Boolean,
     baseColors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
+    animated: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(
         vertical = 10.dp,
         horizontal = UiConstants.Spacing.large,
@@ -45,11 +46,15 @@ fun SoulChip(
 
     val containerColor by animateColorAsState(
         targetValue = colors.containerColor,
-        animationSpec = tween(UiConstants.AnimationDuration.normal),
+        animationSpec = tween(
+            if (animated) UiConstants.AnimationDuration.normal else 0
+        ),
     )
     val contentColor by animateColorAsState(
         targetValue = colors.contentColor,
-        animationSpec = tween(UiConstants.AnimationDuration.normal),
+        animationSpec = tween(
+            if (animated) UiConstants.AnimationDuration.normal else 0
+        ),
     )
 
     Row(
