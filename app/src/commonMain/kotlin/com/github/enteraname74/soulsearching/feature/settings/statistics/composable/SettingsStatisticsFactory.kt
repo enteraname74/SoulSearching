@@ -71,15 +71,14 @@ object SettingsStatisticsFactory {
 
     fun LazyListScope.smallCards(
         generalUiStatistics: PeriodGeneralUiStatistics?,
+        modifier: Modifier = Modifier,
     ) {
         if (!generalUiStatistics?.smallCards.isNullOrEmpty()) {
             item {
                 SettingsStatisticsSmallCardsView(
                     modifier = Modifier
                         .animateItem()
-                        .padding(
-                            horizontal = UiConstants.Spacing.large,
-                        ),
+                        .then(modifier),
                     specs = generalUiStatistics.smallCards,
                 )
             }
@@ -97,7 +96,6 @@ object SettingsStatisticsFactory {
                     .fillMaxWidth()
                     .padding(
                         vertical = UiConstants.Spacing.large,
-                        horizontal = UiConstants.Spacing.large,
                     ),
                 horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.mediumPlus),
             ) {
@@ -144,7 +142,6 @@ object SettingsStatisticsFactory {
                     .fillMaxWidth()
                     .padding(
                         vertical = UiConstants.Spacing.large,
-                        horizontal = UiConstants.Spacing.large,
                     ),
                 horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.mediumPlus),
             ) {
@@ -162,13 +159,13 @@ object SettingsStatisticsFactory {
     fun LazyListScope.otherCards(
         listStatistics: List<ListStatistics>,
         itemsPerRow: Int,
+        modifier: Modifier = Modifier,
     ) {
         item {
             SettingsStatisticsListStatisticsListView(
                 modifier = Modifier
-                    .padding(
-                        horizontal = UiConstants.Spacing.large,
-                    ),
+                    .animateItem()
+                    .then(modifier),
                 listStatistics = listStatistics,
                 itemsPerRow = itemsPerRow,
             )
@@ -182,6 +179,7 @@ object SettingsStatisticsFactory {
         item {
             Box(
                 modifier = modifier
+                    .animateItem()
             ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.mediumPlus)
@@ -189,7 +187,6 @@ object SettingsStatisticsFactory {
                     generalUiStatistics?.musicStatistics?.toUiSpec()?.forEach { spec ->
                         SettingsStatisticsMusicStatisticsCard(
                             modifier = Modifier
-                                .animateItem()
                                 .fillMaxWidth(),
                             spec = spec,
                         )

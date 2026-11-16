@@ -119,20 +119,26 @@ fun PlaylistLargeView(
                 key = PLAYLIST_CONTINUE_KEY,
                 contentType = PLAYLIST_CONTINUE_CONTENT_TYPE,
             ) {
-                PlaylistContinueCard(
+                Box(
                     modifier = Modifier
-                        .widthIn(max = 500.dp)
                         .fillMaxWidth()
                         .padding(
                             start = UiConstants.Spacing.huge,
+                            end = UiConstants.Spacing.huge,
                             bottom = UiConstants.Spacing.mediumPlus,
                         )
                         .animateItem(
                             // TODO IMPROVE: improve screen to find a way to use placement anim
                             placementSpec = null,
                         ),
-                    spec = it,
-                )
+                ) {
+                    PlaylistContinueCard(
+                        modifier = Modifier
+                            .widthIn(max = 500.dp)
+                            .fillMaxWidth(),
+                        spec = it,
+                    )
+                }
             }
         }
         data.optionalContent?.let { optionalContent ->

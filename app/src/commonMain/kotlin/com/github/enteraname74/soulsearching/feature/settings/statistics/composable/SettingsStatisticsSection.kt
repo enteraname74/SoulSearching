@@ -62,7 +62,13 @@ private fun SmallScreen(
         )
     ) {
         with(SettingsStatisticsFactory) {
-            smallCards(state.periodGeneralUiStatistics)
+            smallCards(
+                modifier = Modifier
+                    .padding(
+                        horizontal = UiConstants.Spacing.large,
+                    ),
+                generalUiStatistics = state.periodGeneralUiStatistics,
+            )
             musicStatisticsCards(
                 generalUiStatistics = state.periodGeneralUiStatistics,
                 modifier = Modifier
@@ -98,9 +104,13 @@ private fun LargeScreen(
             .fillMaxSize(),
         contentPadding = PaddingValues(
             top = UiConstants.Spacing.medium,
+            start = UiConstants.Spacing.huge,
+            end = UiConstants.Spacing.huge,
         )
     ) {
-        smallCards(state.periodGeneralUiStatistics)
+        smallCards(
+            generalUiStatistics = state.periodGeneralUiStatistics,
+        )
         firstLargeCards(
             generalUiStatistics = state.periodGeneralUiStatistics,
             musicStatistics = state.listStatistics.find { it.type == ListStatistics.Type.Musics } as? ListStatistics.Musics,
@@ -123,9 +133,13 @@ private fun MediumScreen(
             .fillMaxSize(),
         contentPadding = PaddingValues(
             top = UiConstants.Spacing.medium,
+            start = UiConstants.Spacing.large,
+            end = UiConstants.Spacing.large,
         )
     ) {
-        smallCards(state.periodGeneralUiStatistics)
+        smallCards(
+            generalUiStatistics = state.periodGeneralUiStatistics,
+        )
         firstMediumCards(
             generalUiStatistics = state.periodGeneralUiStatistics,
         )
@@ -134,8 +148,6 @@ private fun MediumScreen(
                 SettingsStatisticsListStatisticsCard(
                     modifier = Modifier
                         .padding(
-                            start = UiConstants.Spacing.large,
-                            end = UiConstants.Spacing.large,
                             bottom = UiConstants.Spacing.large,
                         )
                         .fillMaxWidth(),
