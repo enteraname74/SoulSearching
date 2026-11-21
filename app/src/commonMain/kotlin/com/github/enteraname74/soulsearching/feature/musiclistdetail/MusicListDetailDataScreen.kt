@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
 import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -40,6 +39,9 @@ import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.PlaylistDetailCover
 import com.github.enteraname74.soulsearching.theme.orDefault
 import kotlinx.coroutines.launch
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.search_for_musics
 
 @OptIn(ExperimentalMaterialApi::class)
 @Suppress("Deprecation")
@@ -132,7 +134,7 @@ fun MusicListDetailDataScreen(
 
             SearchView(
                 searchViewManager = playlistSearchViewManager,
-                placeholder = strings.searchForMusics,
+                placeholder = CoreRes.string.search_for_musics.toTextSpec(),
                 maxHeight = maxHeight,
                 focusRequester = searchBarFocusRequester,
                 onSearch = data.onSearch,

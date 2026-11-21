@@ -172,7 +172,7 @@ interface ArtistDao {
     )
     suspend fun getAllByNbPlayedDesc(limit: Int, offset: Int): List<RoomArtistPreview>
 
-    @Query("SELECT * FROM RoomArtist WHERE artistName = :artistName LIMIT 1")
+    @Query("SELECT * FROM RoomArtist WHERE artistName = :artistName AND scope != 'SharedPlayedList' LIMIT 1")
     suspend fun getFromName(artistName: String): RoomArtist?
 
     @Query("SELECT * FROM RoomArtist WHERE artistName in (:artistsNames)")

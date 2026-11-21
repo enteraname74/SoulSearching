@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -15,8 +16,8 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 
 @Composable
 fun ColorCard(
-    title: String,
-    text: String,
+    title: SoulTextSpec,
+    text: SoulTextSpec,
     onClick: () -> Unit,
     isSelected: Boolean,
     modifier: Modifier = Modifier,

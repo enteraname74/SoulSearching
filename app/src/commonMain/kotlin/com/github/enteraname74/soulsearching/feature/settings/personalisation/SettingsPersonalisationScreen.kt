@@ -7,8 +7,9 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_music_note_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_play_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsPersonalisationRoute(
@@ -33,36 +34,36 @@ private fun SettingsPersonalisationScreenView(
 ) {
     SettingPage(
         navigateBack = navigateBack,
-        title = strings.personalizationTitle,
+        title = CoreRes.string.personalization_title.toTextSpec(),
     ) {
         item {
             SoulMenuElement(
-                title = strings.mainPageTitle,
-                subTitle = strings.mainPageText,
+                title = CoreRes.string.main_page_title.toTextSpec(),
+                subTitle = CoreRes.string.main_page_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_house_filled,
                 onClick = onMainPageClick
             )
         }
         item {
             SoulMenuElement(
-                title = strings.musics,
-                subTitle = strings.manageMusicsViewText,
+                title = CoreRes.string.musics.toTextSpec(),
+                subTitle = CoreRes.string.manage_musics_view_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_music_note_filled,
                 onClick = onMusicPageClick
             )
         }
         item {
             SoulMenuElement(
-                title = strings.manageAlbumViewTitle,
-                subTitle = strings.manageAlbumViewText,
+                title = CoreRes.string.manage_album_view_title.toTextSpec(),
+                subTitle = CoreRes.string.manage_album_view_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_album_filled,
                 onClick = onAlbumViewPageClick,
             )
         }
         item {
             SoulMenuElement(
-                title = strings.managePlayerTitle,
-                subTitle = strings.managePlayerText,
+                title = CoreRes.string.manage_player_title.toTextSpec(),
+                subTitle = CoreRes.string.manage_player_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_play_filled,
                 onClick = onPlayerPageClick
             )

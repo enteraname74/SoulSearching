@@ -8,10 +8,12 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolderV2
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class SettingsCloudUserDataViewHolder(
     private val clearUserDataUseCase: ClearUserDataUseCase,
@@ -52,11 +54,11 @@ class SettingsCloudUserDataViewHolder(
                     @Composable
                     override fun Dialog() {
                         SoulAlertDialog(
-                            title = strings.clearUserStorageButton,
-                            text = strings.clearUserStorageDialogText,
+                            title = CoreRes.string.clear_user_storage_button.toTextSpec(),
+                            text = CoreRes.string.clear_user_storage_dialog_text.toTextSpec(),
                             confirmAction = ::clearData,
-                            dismissText = strings.cancel,
-                            confirmText = strings.delete,
+                            dismissText = CoreRes.string.cancel.toTextSpec(),
+                            confirmText = CoreRes.string.delete.toTextSpec(),
                             dismissAction = { updateState { copy(dialogState = null) } }
                         )
                     }

@@ -1,11 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.addtoplaylist
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +28,6 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
@@ -54,7 +56,7 @@ internal fun AddToPlaylistScreen(
                 .fillMaxSize()
         ) {
             SoulTopBar(
-                title = strings.addToPlaylistScreenTitle,
+                title = CoreRes.string.add_to_playlist_screen_title.toTextSpec(),
                 leftAction = TopBarNavigationAction(
                     onClick = state.navigateBack,
                 ),
@@ -71,7 +73,7 @@ internal fun AddToPlaylistScreen(
                         bottom = UiConstants.Spacing.medium,
                     ),
                 searchText = searchText,
-                placeholder = strings.addToPlaylistSearchPlaceholder,
+                placeholder = CoreRes.string.add_to_playlist_search_placeholder.toTextSpec(),
                 updateTextMethod = {
                     searchText = it
                     state.onSearch(it)
@@ -80,14 +82,14 @@ internal fun AddToPlaylistScreen(
                 focusManager = LocalFocusManager.current,
                 focusRequester = focusRequester,
             )
-            Text(
+            SoulText(
                 modifier = Modifier
                     .padding(
                         start = UiConstants.Spacing.medium,
                         end = UiConstants.Spacing.medium,
                         bottom = UiConstants.Spacing.mediumPlus,
                     ),
-                text = strings.selectedMusics(state.selectedMusicIds.size),
+                text = SoulTexts.selectedMusics(state.selectedMusicIds.size),
                 color = SoulSearchingColorTheme.colorScheme.onPrimary,
                 style = UiConstants.Typography.body,
             )
@@ -108,8 +110,8 @@ internal fun AddToPlaylistScreen(
                                     horizontal = UiConstants.Spacing.large,
                                 )
                                 .animateItem(),
-                            title = strings.addToPlaylistEmptyTitle,
-                            description = strings.addToPlaylistEmptyText,
+                            title = CoreRes.string.add_to_playlist_empty_title.toTextSpec(),
+                            description = CoreRes.string.add_to_playlist_empty_text.toTextSpec(),
                         )
                     }
                 }

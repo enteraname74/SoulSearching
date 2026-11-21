@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,8 +20,8 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 
 @Composable
 fun EmptyCard(
-    title: String,
-    description: String,
+    title: SoulTextSpec,
+    description: SoulTextSpec,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -46,13 +47,13 @@ fun EmptyCard(
                 ),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
+                SoulText(
                     text = title,
                     color = SoulSearchingColorTheme.colorScheme.onSecondary,
                     textAlign = TextAlign.Center,
                     style = UiConstants.Typography.bodyTitle,
                 )
-                Text(
+                SoulText(
                     text = description,
                     color = SoulSearchingColorTheme.colorScheme.onSecondary,
                     textAlign = TextAlign.Center,

@@ -1,16 +1,18 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.domain.model.MonthMusicsPreview
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.list.LazyRowCompat
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -29,10 +31,10 @@ fun MusicMonthsHorizontalList(
             .padding(bottom = UiConstants.Spacing.veryLarge),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
     ) {
-        Text(
+        SoulText(
             modifier = Modifier
                 .padding(start = UiConstants.Spacing.medium),
-            text = strings.byMonths,
+            text = CoreRes.string.by_months.toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.titleSmall,
         )
@@ -55,8 +57,8 @@ fun MusicMonthsHorizontalList(
                     ) { element ->
                         BigPreviewComposable(
                             cover = element.cover,
-                            title = element.month,
-                            text = strings.musics(total = element.totalMusics),
+                            title = element.month.toTextSpec(),
+                            text = SoulTexts.musics(total = element.totalMusics),
                             onClick = {
                                 onMonthClicked(element.month)
                             },
@@ -74,8 +76,8 @@ fun MusicMonthsHorizontalList(
                     .padding(
                         end = UiConstants.Spacing.medium,
                     ),
-                title = strings.emptyMonths,
-                description = strings.emptyMonthsExplanations,
+                title = CoreRes.string.empty_months.toTextSpec(),
+                description = CoreRes.string.empty_months_explanations.toTextSpec(),
             )
         }
     }

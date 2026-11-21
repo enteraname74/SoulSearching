@@ -7,9 +7,11 @@ import com.github.enteraname74.soulsearching.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.domain.usecase.player.JoinSharedPlayedListUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.viewholder.SoulViewModelHolder
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class SettingsCloudSharedListJoinViewHolder(
     private val savedStateHandle: SavedStateHandle,
@@ -24,7 +26,7 @@ class SettingsCloudSharedListJoinViewHolder(
             codeField = SoulTextFieldHolderImpl(
                 id = CODE_FIELD_ID,
                 isValid = { true },
-                getLabel = { strings.sharedListCodeLabel },
+                getLabel = { CoreRes.string.shared_list_code_label.toTextSpec() },
                 getError = { null },
                 onChange = {
                     savedStateHandle[CODE_FIELD_ID] = it

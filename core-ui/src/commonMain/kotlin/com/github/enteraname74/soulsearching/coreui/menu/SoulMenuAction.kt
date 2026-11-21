@@ -9,12 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SoulMenuAction(
-    title: String,
-    subTitle: String?,
+    title: SoulTextSpec,
+    subTitle: SoulTextSpec?,
     clickAction: () -> Unit,
     clickEnabled: Boolean = true,
     isSelected: Boolean,

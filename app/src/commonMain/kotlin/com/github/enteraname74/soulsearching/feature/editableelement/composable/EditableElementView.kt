@@ -13,11 +13,12 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverEditMode
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 @Composable
 fun EditableElementView(
-    title: String,
-    coverSectionTitle: String,
+    title: SoulTextSpec,
+    coverSectionTitle: SoulTextSpec,
     coverEditMode: CoverEditMode,
     navigateBack: () -> Unit,
     onSelectCover: (pos: Int) -> Unit,

@@ -9,11 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.soulsearching.domain.model.CoverFolderRetriever
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.CoverFolderRetrieverActions
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.composable.CoverFolderRetrieverExpander
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.composable.CoverFolderRetrieverFolderSelection
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun CoverFolderRetrieverFolderMode(
@@ -23,8 +25,8 @@ fun CoverFolderRetrieverFolderMode(
 ) {
     val isSelected = coverFolderRetriever.mode == CoverFolderRetriever.DynamicMode.Folder
     CoverFolderRetrieverExpander(
-        title = strings.coverFolderRetrieverFolderTitle,
-        subTitle = strings.coverFolderRetrieverFolderText,
+        title = CoreRes.string.cover_folder_retriever_folder_title.toTextSpec(),
+        subTitle = CoreRes.string.cover_folder_retriever_folder_text.toTextSpec(),
         isExpanded = isSelected,
         onClick = {
             if (!isSelected) {

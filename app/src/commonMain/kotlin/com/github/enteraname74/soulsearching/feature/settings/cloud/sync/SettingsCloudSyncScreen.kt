@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.sync
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -17,9 +17,13 @@ import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.domain.usecase.music.SyncDataWithCloudUseCase
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 
 @Composable
 fun SettingsCloudSyncScreen(
@@ -27,7 +31,7 @@ fun SettingsCloudSyncScreen(
 ) {
     SettingPage(
         navigateBack = state.navigateBack,
-        title = strings.cloudSyncTitle,
+        title = CoreRes.string.cloud_sync_title.toTextSpec(),
         contentPadding = PaddingValues(
             all = UiConstants.Spacing.large,
         ),
@@ -40,7 +44,7 @@ fun SettingsCloudSyncScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 SoulFilledButton(
-                    text = strings.cloudSyncButton,
+                    text = CoreRes.string.cloud_sync_button.toTextSpec(),
                     onClick = state.launchSync,
                     enabled = state.syncingState !is SyncDataWithCloudUseCase.State.WorkingState,
                 )
@@ -62,15 +66,15 @@ fun SettingsCloudSyncScreen(
                         .padding(
                             top = UiConstants.Spacing.medium,
                         ),
-                    title = strings.cloudSettingsLastGeneralSync,
+                    title = CoreRes.string.cloud_settings_last_general_sync.toTextSpec(),
                     date = state.lastSync,
                 )
                 SyncState(
-                    title = strings.cloudSettingsLastSettingsSync,
+                    title = CoreRes.string.cloud_settings_last_settings_sync.toTextSpec(),
                     date = state.lastSettingsSync,
                 )
                 SyncState(
-                    title = strings.cloudSettingsLastStatisticsSync,
+                    title = CoreRes.string.cloud_settings_last_statistics_sync.toTextSpec(),
                     date = state.lastStatisticsSync,
                 )
             }
@@ -87,13 +91,13 @@ private fun SyncingStateView(
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
     ) {
-        Text(
-            text = strings.cloudSyncNotificationTitle(state),
+        SoulText(
+            text = SoulTexts.cloudSyncNotificationTitle(state),
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.bodyTitle
         )
-        Text(
-            text = strings.cloudSyncNotificationText(state),
+        SoulText(
+            text = SoulTexts.cloudSyncNotificationText(state),
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.body
         )
@@ -118,20 +122,20 @@ private fun SyncingStateView(
 
 @Composable
 private fun SyncState(
-    title: String,
-    date: String,
+    title: SoulTextSpec,
+    date: SoulTextSpec,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth(),
     ) {
-        Text(
+        SoulText(
             text = title,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.bodyTitle
         )
-        Text(
+        SoulText(
             text = date,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.body

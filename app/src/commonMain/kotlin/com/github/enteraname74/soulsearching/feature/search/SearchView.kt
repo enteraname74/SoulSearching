@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.search
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -43,7 +44,7 @@ import kotlin.math.roundToInt
 fun SearchView(
     maxHeight: Float,
     searchViewManager: SwipeableViewManager,
-    placeholder: String,
+    placeholder: SoulTextSpec,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     focusRequester: FocusRequester,
     onSearch: (String) -> Unit,

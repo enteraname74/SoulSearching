@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,13 +20,15 @@ import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.composable.MultipleArtistsChoiceItem
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.composable.MultipleArtistsWarningCard
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 
 @Composable
 fun MultipleArtistsChoiceScreen(
@@ -63,7 +64,7 @@ fun MultipleArtistsChoiceScreen(
                     onClick = state.navigateBack,
                 ),
                 icon = CoreRes.drawable.ic_download_done,
-                text = strings.noMultipleArtists,
+                text = CoreRes.string.no_multiple_artists.toTextSpec(),
                 buttonSpec = null,
             )
         }
@@ -77,7 +78,7 @@ private fun UserActionScreen(
     SoulScreen {
         Column {
             SoulTopBar(
-                title = strings.multipleArtistsTitle,
+                title = CoreRes.string.multiple_artists_title.toTextSpec(),
                 rightAction = TopBarValidateAction(
                     onClick = state.onSaveSelection,
                 ),
@@ -105,8 +106,8 @@ private fun UserActionScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text(
-                            text = strings.multipleArtistsSelectionTitle,
+                        SoulText(
+                            text = CoreRes.string.multiple_artists_selection_title.toTextSpec(),
                             color = SoulSearchingColorTheme.colorScheme.onPrimary,
                             style = UiConstants.Typography.bodyTitle,
                             maxLines = 1,

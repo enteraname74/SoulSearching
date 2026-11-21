@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,8 +16,11 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_warning_filled
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 
 @Composable
 fun CoverFolderRetrieverExamplePath(
@@ -50,13 +52,13 @@ private fun Data(
             .padding(all = UiConstants.Spacing.medium),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
     ) {
-        Text(
-            text = strings.artistCoverMethodExampleTitle(artist = EXAMPLE_ARTIST_NAME),
+        SoulText(
+            text = SoulTexts.artistCoverMethodExampleTitle(artist = EXAMPLE_ARTIST_NAME),
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             style = UiConstants.Typography.bodyTitle,
         )
-        Text(
-            text = path,
+        SoulText(
+            text = path.toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             style = UiConstants.Typography.body,
         )
@@ -73,8 +75,8 @@ private fun Error() {
             icon = CoreRes.drawable.ic_warning_filled,
             size = UiConstants.ImageSize.mediumPlus,
         )
-        Text(
-            text = strings.coverFolderRetrieverFolderIncomplete,
+        SoulText(
+            text = CoreRes.string.cover_folder_retriever_folder_incomplete.toTextSpec(),
             style = UiConstants.Typography.body,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
         )

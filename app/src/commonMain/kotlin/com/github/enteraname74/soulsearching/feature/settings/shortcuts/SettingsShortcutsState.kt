@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.shortcuts
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import org.jetbrains.compose.resources.StringArrayResource
 import com.github.enteraname74.soulsearching.feature.settings.shortcuts.ext.commands
 import com.github.enteraname74.soulsearching.feature.settings.shortcuts.ext.description
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -8,8 +10,8 @@ data class SettingsShortcutsState(
     val shortcuts: List<Shortcut> = buildShortcuts()
 ) {
     data class Shortcut(
-        val commands: List<String>,
-        val description: String,
+        val commands: StringArrayResource,
+        val description: SoulTextSpec,
     ) {
         companion object {
             fun fromKeyboardAction(keyboardAction: PlaybackManager.KeyboardAction): Shortcut =

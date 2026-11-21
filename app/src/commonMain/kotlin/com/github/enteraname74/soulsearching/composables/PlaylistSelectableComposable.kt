@@ -1,11 +1,12 @@
 package com.github.enteraname74.soulsearching.composables
 
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,8 +48,8 @@ fun PlaylistSelectableComposable(
                 size = UiConstants.CoverSize.small,
                 tint = textColor
             )
-            Text(
-                text = playlistWithMusics.playlist.name,
+            SoulText(
+                text = playlistWithMusics.playlist.name.toTextSpec(),
                 color = textColor,
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1,

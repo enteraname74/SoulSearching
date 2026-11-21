@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -20,11 +19,13 @@ import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 @Composable
 fun PlayerPanelTab(
     modifier: Modifier = Modifier,
-    title: String,
+    title: SoulTextSpec,
     contentColor: Color,
     isSelected: Boolean,
     onSelected: () -> Unit,
@@ -53,7 +54,7 @@ fun PlayerPanelTab(
                 animationSpec = tween(UiConstants.AnimationDuration.normal)
             )
 
-            Text(
+            SoulText(
                 text = title,
                 fontSize = 15.sp,
                 fontWeight = FontWeight(weight),

@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.musiclistdetail.composable
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -11,21 +10,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import kotlin.time.Duration
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 
 @Composable
 internal fun DurationIndication(
     duration: Duration,
 ) {
-    Text(
+    SoulText(
         modifier = Modifier
             .fillMaxWidth()
             .padding(UiConstants.Spacing.medium),
         textAlign = TextAlign.Center,
         color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-        text = strings.duration(duration = duration),
+        text = SoulTexts.duration(duration = duration),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         fontWeight = FontWeight.ExtraBold,

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +17,7 @@ import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingDarkLightTheme
 import com.github.enteraname74.soulsearching.theme.isInDarkTheme
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 
 @Composable
 fun SettingsThemeItem(
@@ -45,8 +45,8 @@ fun SettingsThemeItem(
             ThemeIndicator(
                 color = theme.palette(isInDarkTheme = isInDarkTheme()).secondary
             )
-            Text(
-                text = theme.name(),
+            SoulText(
+                text = theme.name,
                 color = SoulSearchingColorTheme.colorScheme.onPrimary,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,

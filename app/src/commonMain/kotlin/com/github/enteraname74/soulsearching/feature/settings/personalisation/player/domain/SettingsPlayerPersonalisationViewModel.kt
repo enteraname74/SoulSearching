@@ -6,7 +6,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,6 +14,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.math.max
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class SettingsPlayerPersonalisationViewModel(
     private val settingsRepository: SettingsRepository,
@@ -50,7 +52,7 @@ class SettingsPlayerPersonalisationViewModel(
             val intValue = text.toIntOrNull() ?: return@SoulTextFieldHolderImpl
             viewModelScope.launch { settingsRepository.setSoulMixTotalByList(max(1, intValue)) }
         },
-        getError = { strings.fieldCannotBeEmpty },
+        getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
     )
 
     init {

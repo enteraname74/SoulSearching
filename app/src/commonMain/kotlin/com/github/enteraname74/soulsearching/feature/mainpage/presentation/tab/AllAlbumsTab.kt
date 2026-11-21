@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -8,7 +10,6 @@ import com.github.enteraname74.soulsearching.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.multiselection.SelectionMode
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
@@ -30,7 +31,7 @@ fun allAlbumsTab(
 
         MainPageListPaged(
             list = albums,
-            title = strings.albums,
+            title = CoreRes.string.albums.toTextSpec(),
             setSortType = mainPageViewModel::setAlbumSortType,
             toggleSortDirection = {
                 val newDirection =
@@ -45,15 +46,15 @@ fun allAlbumsTab(
             sortDirection = albumState.sortDirection,
             key = { it?.id },
             contentType = ALL_ALBUMS_CONTENT_TYPE,
-            emptyTitle = strings.emptyAlbums,
-            emptyDescription = strings.emptyAlbumsExplanations,
+            emptyTitle = CoreRes.string.empty_albums.toTextSpec(),
+            emptyDescription = CoreRes.string.empty_albums_explanations.toTextSpec(),
         ) { element ->
             BigPreviewComposable(
                 modifier = Modifier
                     .animateItem(),
                 cover = element.cover,
-                title = element.name,
-                text = element.artist,
+                title = element.name.toTextSpec(),
+                text = element.artist.toTextSpec(),
                 onClick = {
                     navigateToAlbum(element.id)
                 },

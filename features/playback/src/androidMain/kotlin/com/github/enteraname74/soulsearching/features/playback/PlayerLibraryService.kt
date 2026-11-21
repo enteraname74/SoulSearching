@@ -26,7 +26,6 @@ import com.github.enteraname74.soulsearching.domain.usecase.artist.CommonArtistU
 import com.github.enteraname74.soulsearching.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
-import com.github.enteraname74.soulsearching.coreui.strings.StringsUtils
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.mediasession.AndroidAutoMediaIds
@@ -52,6 +51,15 @@ import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.io.File
 import java.lang.ref.WeakReference
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.musics
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.albums
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.artists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.playlists
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.folders
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
 
 @OptIn(UnstableApi::class)
 class PlayerLibraryService : MediaLibraryService(), KoinComponent {
@@ -65,38 +73,37 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
     private val mediaMetadataUtils: MediaMetadataUtils by inject()
     private val coverFileManager: CoverFileManager by inject()
 
-    private val strings by lazy { StringsUtils.getStrings(applicationContext) }
     private val allSongsItem: MediaItem by lazy {
         AndroidAutoMediaIds.AllSongs.browsableItem(
-            title = strings.musics,
+            title = resourceString(CoreRes.string.musics),
             mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_MIXED,
             iconResId = R.drawable.ic_music_note_filled,
         )
     }
     private val allAlbumsItem: MediaItem by lazy {
         AndroidAutoMediaIds.AllAlbums.browsableItem(
-            title = strings.albums,
+            title = resourceString(CoreRes.string.albums),
             mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS,
             iconResId = R.drawable.ic_album_filled,
         )
     }
     private val allArtistsItem: MediaItem by lazy {
         AndroidAutoMediaIds.AllArtists.browsableItem(
-            title = strings.artists,
+            title = resourceString(CoreRes.string.artists),
             mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS,
             iconResId = R.drawable.ic_person_filled,
         )
     }
     private val allPlaylistsItem: MediaItem by lazy {
         AndroidAutoMediaIds.AllPlaylists.browsableItem(
-            title = strings.playlists,
+            title = resourceString(CoreRes.string.playlists),
             mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS,
             iconResId = R.drawable.ic_queue_music,
         )
     }
     private val allFoldersItem: MediaItem by lazy {
         AndroidAutoMediaIds.AllFolders.browsableItem(
-            title = strings.folders,
+            title = resourceString(CoreRes.string.folders),
             mediaType = MediaMetadata.MEDIA_TYPE_FOLDER_MIXED,
             iconResId = R.drawable.ic_folder_filled,
         )
@@ -115,6 +122,9 @@ class PlayerLibraryService : MediaLibraryService(), KoinComponent {
             allArtistsItem,
             allFoldersItem,
         )
+
+    private fun resourceString(resource: StringResource): String =
+        runBlocking { getString(resource) }
 
     private val serviceScope: CoroutineScope by lazy {
         CoroutineScope(SupervisorJob() + workDispatcher.dispatcher)

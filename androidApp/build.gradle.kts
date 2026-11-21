@@ -6,8 +6,8 @@ android {
     namespace = "com.github.soulsearching"
     defaultConfig {
         applicationId = "com.github.enteraname74.soulsearching"
-        versionCode = 42
-        versionName = "0.17.2"
+        versionCode = 43
+        versionName = "0.17.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -51,6 +51,7 @@ dependencies {
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
+    implementation(libs.compose.resources)
     implementation(libs.compose.ui)
     implementation(libs.coroutines.core)
     implementation(libs.jaudiotagger)

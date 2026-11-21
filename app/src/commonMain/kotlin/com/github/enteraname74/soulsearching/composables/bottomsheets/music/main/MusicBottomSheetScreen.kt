@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.soulsearching.composables.bottomsheets.MultipleChoiceBottomSheetView
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 fun MusicBottomSheetScreen(

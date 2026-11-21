@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.composables
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -16,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,7 +37,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.ext.chainIf
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.domain.model.Music
@@ -114,8 +115,8 @@ fun MusicItemComposable(
                                     .size(UiConstants.CoverSize.small),
                                 contentAlignment = Alignment.Center,
                             ) {
-                                Text(
-                                    text = leadingSpec.pos.toString(),
+                                SoulText(
+                                    text = leadingSpec.pos.toString().toTextSpec(),
                                     color = textColor,
                                     style = UiConstants.Typography.bodyTitle,
                                     maxLines = 1,
@@ -159,7 +160,7 @@ fun MusicItemComposable(
                             .clip(CircleShape)
                             .optionalClickable(onMoreClicked),
                         icon = CoreRes.drawable.ic_more_vertical,
-                        contentDescription = strings.moreButton,
+                        contentDescription = CoreRes.string.more_button.toTextSpec().string,
                         color = textColor.disabledIfNoAction(onMoreClicked),
                     )
                 }
@@ -181,8 +182,8 @@ fun UserTagView(
             ),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = userTag.username.firstOrNull()?.toString().orEmpty(),
+        SoulText(
+            text = userTag.username.firstOrNull()?.toString().orEmpty().toTextSpec(),
             style = UiConstants.Typography.bodySmall,
             color = userTag.contentColor
         )
@@ -201,16 +202,16 @@ private fun RowScope.MusicInformationDefaultView(
             .weight(1f),
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = music.name,
+        SoulText(
+            text = music.name.toTextSpec(),
             color = textColor,
             style = MaterialTheme.typography.labelLarge,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             fontWeight = fontWeight
         )
-        Text(
-            text = music.informationText,
+        SoulText(
+            text = music.informationText.toTextSpec(),
             color = textColor,
             style = MaterialTheme.typography.labelLarge,
             maxLines = 1,
@@ -233,8 +234,8 @@ private fun RowScope.MusicInformationWideView(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
     ) {
-        Text(
-            text = music.name,
+        SoulText(
+            text = music.name.toTextSpec(),
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             color = textColor,
@@ -243,8 +244,8 @@ private fun RowScope.MusicInformationWideView(
             overflow = TextOverflow.Ellipsis,
             fontWeight = fontWeight
         )
-        Text(
-            text = music.album.albumName,
+        SoulText(
+            text = music.album.albumName.toTextSpec(),
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             color = textColor,
@@ -253,8 +254,8 @@ private fun RowScope.MusicInformationWideView(
             overflow = TextOverflow.Ellipsis,
             fontWeight = fontWeight
         )
-        Text(
-            text = music.artistsNames,
+        SoulText(
+            text = music.artistsNames.toTextSpec(),
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             color = textColor,

@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.settings.personalisation.p
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,13 +13,16 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationState
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import org.koin.compose.viewmodel.koinViewModel
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsPlayerPersonalisationRoute(
@@ -62,11 +64,11 @@ private fun SettingsPlayerPersonalisationScreenView(
                 )
             },
         navigateBack = navigateBack,
-        title = strings.managePlayerTitle,
+        title = CoreRes.string.manage_player_title.toTextSpec(),
     ) {
         item {
             SoulMenuSwitch(
-                title = strings.playerSwipeTitle,
+                title = CoreRes.string.player_swipe_title.toTextSpec(),
                 toggleAction = togglePlayerSwipe,
                 isChecked = state.isPlayerSwipeEnabled,
                 maxLines = 3,
@@ -78,7 +80,7 @@ private fun SettingsPlayerPersonalisationScreenView(
         }
         item {
             SoulMenuSwitch(
-                title = strings.playerRewindTitle,
+                title = CoreRes.string.player_rewind_title.toTextSpec(),
                 toggleAction = toggleRewind,
                 isChecked = state.isRewindEnabled,
                 maxLines = 3,
@@ -90,7 +92,7 @@ private fun SettingsPlayerPersonalisationScreenView(
         }
         item {
             SoulMenuSwitch(
-                title = strings.playerMinimisedProgressionTitle,
+                title = CoreRes.string.player_minimised_progression_title.toTextSpec(),
                 toggleAction = toggleMinimisedProgression,
                 isChecked = state.isMinimisedSongProgressionShown,
                 maxLines = 3,
@@ -109,8 +111,8 @@ private fun SettingsPlayerPersonalisationScreenView(
                     ),
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
             ) {
-                Text(
-                    text = strings.soulMixSettingsTitle,
+                SoulText(
+                    text = CoreRes.string.soul_mix_settings_title.toTextSpec(),
                     style = UiConstants.Typography.bodyTitle,
                     color = SoulSearchingColorTheme.colorScheme.onPrimary,
                 )
@@ -132,8 +134,8 @@ private fun SettingsPlayerPersonalisationScreenView(
 
                 val uiVolume = state.playerVolume * 10
 
-                Text(
-                    text = strings.playerVolume,
+                SoulText(
+                    text = CoreRes.string.player_volume.toTextSpec(),
                     style = UiConstants.Typography.bodyTitle,
                     color = SoulSearchingColorTheme.colorScheme.onPrimary,
                 )
@@ -143,8 +145,8 @@ private fun SettingsPlayerPersonalisationScreenView(
                         UiConstants.Spacing.small,
                     )
                 ) {
-                    Text(
-                        text = "${uiVolume.toInt()}",
+                    SoulText(
+                        text = "${uiVolume.toInt()}".toTextSpec(),
                         color = SoulSearchingColorTheme.colorScheme.onPrimary,
                         style = UiConstants.Typography.body,
                     )

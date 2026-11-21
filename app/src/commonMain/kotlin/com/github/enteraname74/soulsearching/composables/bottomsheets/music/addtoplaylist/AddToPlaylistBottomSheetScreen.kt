@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.music.addtoplaylist
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -25,7 +27,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
@@ -48,7 +49,7 @@ fun AddToPlaylistBottomSheetScreen(
     ) {
         SoulTopBar(
             withStatusBarPadding = false,
-            title = strings.addToPlaylist,
+            title = CoreRes.string.add_to_playlist.toTextSpec(),
             leftAction = TopBarNavigationAction(
                 onClick = viewModel::navigateBack,
             ),
@@ -114,8 +115,8 @@ private fun LazyListScope.createPlaylistItem(
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 size = UiConstants.ImageSize.medium,
             )
-            Text(
-                text = strings.createPlaylistDialogTitle,
+            SoulText(
+                text = CoreRes.string.create_playlist_dialog_title.toTextSpec(),
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 style = UiConstants.Typography.bodyTitle,
                 maxLines = 1,

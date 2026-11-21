@@ -5,10 +5,14 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.CloudSyncWorker
-import com.github.enteraname74.soulsearching.coreui.strings.StringsUtils
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_sync_channel_notification_name
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cloud_sync_channel_notification_description
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.compose.resources.getString
 
 class App : Application() {
     override fun onCreate() {
@@ -25,14 +29,15 @@ class App : Application() {
      * Create the channel used by the Notification.
      */
     private fun createNotificationChannel() {
-        val strings = StringsUtils.getStrings(applicationContext)
-
-        val syncChannel = NotificationChannel(
-            CloudSyncWorker.CHANNEL_ID,
-            strings.cloudSyncChannelNotificationName,
-            NotificationManager.IMPORTANCE_LOW
-        )
-        syncChannel.description = strings.cloudSyncChannelNotificationDescription
+        val syncChannel = runBlocking {
+            NotificationChannel(
+                CloudSyncWorker.CHANNEL_ID,
+                getString(CoreRes.string.cloud_sync_channel_notification_name),
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = getString(CoreRes.string.cloud_sync_channel_notification_description)
+            }
+        }
 
         val notificationManager =
             getSystemService(NOTIFICATION_SERVICE) as NotificationManager

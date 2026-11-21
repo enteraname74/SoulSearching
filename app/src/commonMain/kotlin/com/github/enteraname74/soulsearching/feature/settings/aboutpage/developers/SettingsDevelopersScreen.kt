@@ -6,8 +6,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_open_in_new
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsDevelopersRoute(
@@ -25,7 +26,7 @@ private fun SettingsDevelopersScreenView(
     val developers = listOf(
         Developer(
             name = "Noah Penin",
-            function = strings.leadDeveloper,
+            function = CoreRes.string.lead_developer.toTextSpec(),
             link = "https://github.com/enteraname74"
         )
     )
@@ -34,11 +35,11 @@ private fun SettingsDevelopersScreenView(
 
     SettingPage(
         navigateBack = navigateBack,
-        title = strings.developersTitle,
+        title = CoreRes.string.developers_title.toTextSpec(),
     ) {
         items(developers) { developer ->
             SoulMenuElement(
-                title = developer.name,
+                title = developer.name.toTextSpec(),
                 subTitle = developer.function,
                 onClick = {
                     uriHandler.openUri(

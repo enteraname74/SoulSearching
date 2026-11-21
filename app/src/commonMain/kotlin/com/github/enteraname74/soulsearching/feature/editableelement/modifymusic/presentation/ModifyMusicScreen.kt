@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,7 +21,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_cloud_download
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.editableelement.WriteFilesCheck
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementAddArtist
@@ -31,6 +29,9 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicState
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 
 @Composable
 fun ModifyMusicRoute(
@@ -73,11 +74,11 @@ private fun CloudStatus(music: Music) {
                 else -> CoreRes.drawable.ic_cloud_done
             }
         )
-        Text(
+        SoulText(
             text = when {
-                music.isRemoteOnly -> strings.musicRemoteOnly
-                music.isLocalOnly -> strings.musicLocalOnly
-                else -> strings.musicSyncedOnCloud
+                music.isRemoteOnly -> CoreRes.string.music_remote_only.toTextSpec()
+                music.isLocalOnly -> CoreRes.string.music_local_only.toTextSpec()
+                else -> CoreRes.string.music_synced_on_cloud.toTextSpec()
             },
             style = UiConstants.Typography.bodyVerySmall,
             color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
@@ -94,13 +95,13 @@ fun MusicPathFooter(
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.verySmall)
     ) {
-        Text(
-            text = strings.musicPath,
+        SoulText(
+            text = CoreRes.string.music_path.toTextSpec(),
             style = UiConstants.Typography.bodyVerySmall,
             color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
         )
-        Text(
-            text = musicPath,
+        SoulText(
+            text = musicPath.toTextSpec(),
             style = UiConstants.Typography.bodyVerySmall,
             color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
         )
@@ -126,8 +127,8 @@ private fun ModifyMusicScreenView(
                 onSave = onValidateModification,
             ) { onSave ->
                 EditableElementView(
-                    title = strings.musicInformation,
-                    coverSectionTitle = strings.albumCover,
+                    title = CoreRes.string.music_information.toTextSpec(),
+                    coverSectionTitle = CoreRes.string.album_cover.toTextSpec(),
                     coverEditMode = state.coverEditMode,
                     navigateBack = navigateBack,
                     onSelectCover = { onSelectCover() },

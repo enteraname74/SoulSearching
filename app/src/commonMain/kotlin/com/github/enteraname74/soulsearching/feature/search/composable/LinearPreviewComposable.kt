@@ -1,5 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.search.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,13 +23,12 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_more_vertical
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun LinearPreviewComposable(
-    title: String,
-    text: String,
+    title: SoulTextSpec,
+    text: SoulTextSpec,
     cover: Cover?,
     onLongClick: (() -> Unit)?,
     onClick: (() -> Unit)?,
@@ -58,14 +60,14 @@ fun LinearPreviewComposable(
                     .weight(1f),
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
+                SoulText(
                     text = title,
                     color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Text(
+                SoulText(
                     text = text,
                     color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.labelLarge,
@@ -78,7 +80,7 @@ fun LinearPreviewComposable(
                 SoulIcon(
                     modifier = Modifier.optionalClickable(onClick = it),
                     icon = CoreRes.drawable.ic_more_vertical,
-                    contentDescription = strings.moreButton,
+                    contentDescription = CoreRes.string.more_button.toTextSpec().string,
                 )
             }
         }

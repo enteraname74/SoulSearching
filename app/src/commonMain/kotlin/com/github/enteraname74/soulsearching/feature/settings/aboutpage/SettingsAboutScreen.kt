@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +27,6 @@ import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuExpand
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.text.SoulMarkdownText
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.AppVersion
@@ -37,6 +35,10 @@ import com.github.enteraname74.soulsearching.domain.model.SoulPlatform
 import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import com.github.enteraname74.soulsearching.ext.isNewerThanCurrentVersion
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 
 private val CardMinWidth: Dp = 0.dp
 private val CardMaxWidth: Dp = 500.dp
@@ -52,7 +54,7 @@ fun SettingsAboutScreen(
 
     SettingPage(
         navigateBack = state.navigateBack,
-        title = strings.aboutTitle,
+        title = CoreRes.string.about_title.toTextSpec(),
     ) {
         if (SoulPlatformUtils.platform != SoulPlatform.Web && state.mostRecentRelease?.isNewerThanCurrentVersion() == true) {
             item {
@@ -65,16 +67,16 @@ fun SettingsAboutScreen(
         }
         item {
             SoulMenuElement(
-                title = strings.developersTitle,
-                subTitle = strings.developersText,
+                title = CoreRes.string.developers_title.toTextSpec(),
+                subTitle = CoreRes.string.developers_text.toTextSpec(),
                 onClick = state.toDevelopers
             )
         }
         state.mostRecentRelease?.changelog?.let { changelog ->
             item {
                 SoulMenuExpand(
-                    title = strings.changelogTitle,
-                    subTitle = strings.changelogText,
+                    title = CoreRes.string.changelog_title.toTextSpec(),
+                    subTitle = CoreRes.string.changelog_text.toTextSpec(),
                     clickAction = { isChangelogExpanded = !isChangelogExpanded },
                     isExpanded = isChangelogExpanded,
                     textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -95,7 +97,7 @@ fun SettingsAboutScreen(
                             ChangelogUpdateCard()
                         }
                         SoulMarkdownText(
-                            text = changelog,
+                            text = changelog.toTextSpec(),
                         )
                     }
                 }
@@ -103,8 +105,8 @@ fun SettingsAboutScreen(
         }
         item {
             SoulMenuElement(
-                title = strings.projectSiteTitle,
-                subTitle = strings.projectSiteText,
+                title = CoreRes.string.project_site_title.toTextSpec(),
+                subTitle = CoreRes.string.project_site_text.toTextSpec(),
                 onClick = {
                     uriHandler.openUri(PROJECT_SITE)
                 },
@@ -113,8 +115,8 @@ fun SettingsAboutScreen(
         }
         item {
             SoulMenuElement(
-                title = strings.versionNameTitle,
-                subTitle = AppVersion.versionName,
+                title = CoreRes.string.version_name_title.toTextSpec(),
+                subTitle = AppVersion.versionName.toTextSpec(),
                 onClick = state.onClickOnVersionName,
             )
         }
@@ -168,14 +170,14 @@ private fun LatestReleaseCard(
                     size = UiConstants.ImageSize.mediumPlus,
                     color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 )
-                Text(
-                    text = strings.newReleaseAvailableTitle,
+                SoulText(
+                    text = CoreRes.string.new_release_available_title.toTextSpec(),
                     color = SoulSearchingColorTheme.colorScheme.onSecondary,
                     textAlign = TextAlign.Center,
                     style = UiConstants.Typography.bodyTitle,
                 )
-                Text(
-                    text = strings.newReleaseAvailableText(
+                SoulText(
+                    text = SoulTexts.newReleaseAvailableText(
                         releaseName = release.name,
                     ),
                     color = SoulSearchingColorTheme.colorScheme.onSecondary,
@@ -197,10 +199,10 @@ private fun ChangelogUpdateCard() {
             containerColor = SoulSearchingColorTheme.colorScheme.secondary
         )
     ) {
-        Text(
+        SoulText(
             modifier = Modifier
                 .padding(UiConstants.Spacing.large),
-            text = strings.changelogUpdateRequired,
+            text = CoreRes.string.changelog_update_required.toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             textAlign = TextAlign.Center,
             style = UiConstants.Typography.body,

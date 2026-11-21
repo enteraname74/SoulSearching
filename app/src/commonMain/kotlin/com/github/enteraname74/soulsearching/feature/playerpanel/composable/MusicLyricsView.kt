@@ -28,7 +28,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -64,12 +63,16 @@ import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateComposable
 import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonSpec
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.domain.model.lyrics.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.playerpanel.ext.description
 import kotlinx.coroutines.launch
 import kotlin.math.max
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.activate_remote_lyrics_fetch_title
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.no_lyrics_found
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 
 @Composable
 fun MusicLyricsView(
@@ -121,9 +124,9 @@ private fun NoPermissionView(
         modifier = Modifier
             .fillMaxSize(),
         icon = CoreRes.drawable.ic_lyrics_filled,
-        text = strings.activateRemoteLyricsFetchText,
+        text = SoulTexts.activateRemoteLyricsFetchText(),
         buttonSpec = TemplateScreenButtonSpec(
-            text = strings.activateRemoteLyricsFetchTitle,
+            text = CoreRes.string.activate_remote_lyrics_fetch_title.toTextSpec(),
             onClick = onActivateRemoteLyrics,
             colors = { buttonColor },
         )
@@ -407,8 +410,8 @@ private fun SyncedLyricsView(
                     Modifier
                 }
 
-                Text(
-                    text = lyrics[pos].line,
+                SoulText(
+                    text = lyrics[pos].line.toTextSpec(),
                     modifier = sizeModifier
                         .fillMaxWidth()
                         .animateItem(
@@ -531,8 +534,8 @@ private fun PlainLyricsView(
         items(
             items = lyrics
         ) {
-            Text(
-                text = it,
+            SoulText(
+                text = it.toTextSpec(),
                 color = contentColor,
                 fontSize = 14.sp
             )
@@ -563,7 +566,7 @@ private fun LyricsProvider(
     provider: MusicLyrics.Provider,
     modifier: Modifier = Modifier,
 ) {
-    Text(
+    SoulText(
         modifier = modifier
             .fillMaxWidth(),
         text = provider.description(),
@@ -583,10 +586,10 @@ private fun NoLyricsFoundView(
             .padding(UiConstants.Spacing.small)
             .padding(bottom = getNavigationBarPadding().toDp())
     ) {
-        Text(
+        SoulText(
             modifier = Modifier
                 .align(Alignment.Center),
-            text = strings.noLyricsFound,
+            text = CoreRes.string.no_lyrics_found.toTextSpec(),
             color = contentColor,
             textAlign = TextAlign.Center,
             fontSize = 14.sp

@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -15,7 +16,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 @Composable
 fun LoadingComposable(
     progressIndicator: Float,
-    progressMessage: String,
+    progressMessage: SoulTextSpec,
     subText: String?,
 ) {
     val windowSize = rememberWindowSize()

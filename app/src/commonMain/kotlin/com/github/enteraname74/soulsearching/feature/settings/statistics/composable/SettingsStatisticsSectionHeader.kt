@@ -22,6 +22,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.settings.statistics.model.StatisticsUiElement
 import com.github.enteraname74.soulsearching.util.CoverUtils
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 
 @Composable
 fun SettingsStatisticsSectionHeader(
@@ -59,7 +60,7 @@ fun SettingsStatisticsSectionHeader(
             Column(
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
             ) {
-                Text(
+                SoulText(
                     color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     text = element.title,
                     maxLines = 2,
@@ -67,7 +68,7 @@ fun SettingsStatisticsSectionHeader(
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 24.sp
                 )
-                Text(
+                SoulText(
                     color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                     text = element.text,
                     maxLines = 1,

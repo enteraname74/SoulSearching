@@ -6,12 +6,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementView
 import com.github.enteraname74.soulsearching.feature.editableelement.modifycollection.domain.ModifyCollectionViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifycollection.domain.state.ModifyCollectionFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifycollection.domain.state.ModifyCollectionNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifycollection.domain.state.ModifyCollectionState
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun ModifyCollectionRoute(
@@ -32,8 +33,8 @@ fun ModifyCollectionRoute(
     when {
         state is ModifyCollectionState.Data && formState is ModifyCollectionFormState.Data -> {
             EditableElementView(
-                title = strings.collectionInformation,
-                coverSectionTitle = strings.collectionCover,
+                title = CoreRes.string.collection_information.toTextSpec(),
+                coverSectionTitle = CoreRes.string.collection_cover.toTextSpec(),
                 onSwitchModeType = viewModel::switchCoverEditModeType,
                 navigateBack = viewModel::navigateBack,
                 onSelectCover = viewModel::showCoversBottomSheet,

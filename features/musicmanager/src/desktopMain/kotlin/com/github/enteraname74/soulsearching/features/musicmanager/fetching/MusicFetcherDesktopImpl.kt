@@ -8,7 +8,6 @@ import com.github.enteraname74.soulsearching.domain.model.Scope
 import com.github.enteraname74.soulsearching.domain.model.Playlist
 import com.github.enteraname74.soulsearching.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.domain.util.AppDirectories
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.flow.firstOrNull
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO

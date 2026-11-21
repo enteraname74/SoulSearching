@@ -14,12 +14,14 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.list.LazyRowCompat
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.musiclistdetail.MusicListDetailState
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.albums
 
 @Composable
 fun ArtistAlbums(
@@ -37,7 +39,7 @@ fun ArtistAlbums(
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
     ) {
         if (spec.albums.isNotEmpty()) {
-            PlaylistPartTitle(title = strings.albums)
+            PlaylistPartTitle(title = CoreRes.string.albums.toTextSpec())
 
             LazyRowCompat(
                 state = lazyListState,
@@ -67,7 +69,7 @@ fun ArtistAlbums(
                         modifier = Modifier
                             .animateItem(),
                         cover = element.cover,
-                        title = element.name,
+                        title = element.name.toTextSpec(),
                         onClick = {
                             spec.onClick(element.id)
                         },

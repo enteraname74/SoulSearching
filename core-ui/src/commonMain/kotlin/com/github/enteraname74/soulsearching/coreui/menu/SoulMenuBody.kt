@@ -3,18 +3,19 @@ package com.github.enteraname74.soulsearching.coreui.menu
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SoulMenuBody(
-    title: String,
-    text: String?,
+    title: SoulTextSpec,
+    text: SoulTextSpec?,
     modifier: Modifier = Modifier,
     titleMaxLines: Int = 1,
     textMaxLines: Int = 2,
@@ -25,7 +26,7 @@ fun SoulMenuBody(
         modifier = modifier,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
+        SoulText(
             text = title,
             color = titleColor,
             style = UiConstants.Typography.bodyTitle,
@@ -33,7 +34,7 @@ fun SoulMenuBody(
             overflow = TextOverflow.Ellipsis
         )
         text?.let {
-            Text(
+            SoulText(
                 text = text,
                 color = textColor,
                 style = UiConstants.Typography.bodySmall,

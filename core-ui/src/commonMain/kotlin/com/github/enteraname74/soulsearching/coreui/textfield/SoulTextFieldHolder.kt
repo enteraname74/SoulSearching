@@ -3,12 +3,13 @@ package com.github.enteraname74.soulsearching.coreui.textfield
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 abstract class SoulTextFieldHolder(
     val id: String,
     initialValue: String = "",
-    private val getLabel: @Composable () -> String?,
-    private val getError: @Composable () -> String?,
+    private val getLabel: @Composable () -> SoulTextSpec?,
+    private val getError: @Composable () -> SoulTextSpec?,
     private val getColors: @Composable () -> SoulTextFieldColors,
     private val onChange: (newValue: String) -> Unit,
     private val isValid: (value: String) -> Boolean = { true },
@@ -16,11 +17,11 @@ abstract class SoulTextFieldHolder(
     var value: String by mutableStateOf(initialValue)
         protected set
 
-    val label: String?
+    val label: SoulTextSpec?
         @Composable
         get() = getLabel()
 
-    val error: String?
+    val error: SoulTextSpec?
         @Composable
         get() = getError()
 

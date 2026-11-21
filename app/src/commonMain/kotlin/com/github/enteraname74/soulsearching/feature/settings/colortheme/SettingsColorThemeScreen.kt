@@ -9,13 +9,14 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_format_paint_filled
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.settings.ColorThemeType
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.ColorCard
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.PersonalizedColorThemeCard
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import com.github.enteraname74.soulsearching.theme.ColorThemeSettings
 import org.koin.compose.viewmodel.koinViewModel
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsColorThemeRoute(
@@ -49,13 +50,13 @@ fun SettingsColorThemeScreenView(
 
     SettingPage(
         navigateBack = navigateBack,
-        title = strings.colorThemeTitle,
+        title = CoreRes.string.color_theme_title.toTextSpec(),
         verticalPadding = UiConstants.Spacing.medium,
     ) {
         item {
             SoulMenuElement(
-                title = strings.themeSelectionTitle,
-                subTitle = strings.themeSelectionText,
+                title = CoreRes.string.theme_selection_title.toTextSpec(),
+                subTitle = CoreRes.string.theme_selection_text.toTextSpec(),
                 leadIcon = CoreRes.drawable.ic_format_paint_filled,
                 onClick = navigateToThemeSelection,
             )
@@ -68,8 +69,8 @@ fun SettingsColorThemeScreenView(
                         end = UiConstants.Spacing.large,
                         bottom = UiConstants.Spacing.mediumPlus,
                     ),
-                title = strings.systemThemeTitle,
-                text = strings.systemThemeText,
+                title = CoreRes.string.system_theme_title.toTextSpec(),
+                text = CoreRes.string.system_theme_text.toTextSpec(),
                 onClick = { updateColorTheme(ColorThemeType.SYSTEM) },
                 isSelected = state.colorThemeSettings is ColorThemeSettings.FromSystem,
             )
@@ -82,8 +83,8 @@ fun SettingsColorThemeScreenView(
                         end = UiConstants.Spacing.large,
                         bottom = UiConstants.Spacing.mediumPlus,
                     ),
-                title = strings.dynamicThemeTitle,
-                text = strings.dynamicThemeText,
+                title = CoreRes.string.dynamic_theme_title.toTextSpec(),
+                text = CoreRes.string.dynamic_theme_text.toTextSpec(),
                 onClick = { updateColorTheme(ColorThemeType.DYNAMIC) },
                 isSelected = state.colorThemeSettings is ColorThemeSettings.DynamicTheme,
             )

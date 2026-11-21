@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +21,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
@@ -152,16 +153,16 @@ sealed interface SoulSegmentedOptionButtonSpec<T> {
 }
 
 data class SoulSegmentedOptionTextButton(
-    override val data: String,
+    override val data: SoulTextSpec,
     override val onClick: () -> Unit,
     override val isSelected: Boolean,
     override val contentPadding: PaddingValues,
-): SoulSegmentedOptionButtonSpec<String> {
+): SoulSegmentedOptionButtonSpec<SoulTextSpec> {
     @Composable
     override fun Content(
         contentColor: Color,
     ) {
-        Text(
+        SoulText(
             color = contentColor,
             text = data,
             fontWeight = FontWeight.Bold,

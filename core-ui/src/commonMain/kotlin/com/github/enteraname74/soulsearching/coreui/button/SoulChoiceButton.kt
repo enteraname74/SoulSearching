@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,12 +26,14 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_arrow_dropdown_filled
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
 fun <T> SoulChoiceButton(
     choices: List<SoulChoiceButtonData<T>>,
-    currentChoiceName: String,
+    currentChoiceName: SoulTextSpec,
     onClick: (T) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -64,7 +65,7 @@ fun <T> SoulChoiceButton(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
+                SoulText(
                     modifier = Modifier
                         .weight(
                             weight = 1f,
@@ -111,7 +112,7 @@ private fun <T> MenuItem(
         modifier = Modifier
             .pointerHoverIcon(PointerIcon.Hand),
         text = {
-            Text(
+            SoulText(
                 text = data.title,
                 color = contentColor,
                 style = UiConstants.Typography.body,
@@ -132,5 +133,5 @@ private fun <T> MenuItem(
 data class SoulChoiceButtonData<T>(
     val icon: DrawableResource?,
     val data: T,
-    val title: String,
+    val title: SoulTextSpec,
 )

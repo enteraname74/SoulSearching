@@ -13,8 +13,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulFilledButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulTextButton
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsCloudSignInScreen(
@@ -34,7 +36,7 @@ fun SettingsCloudSignInScreen(
             },
         navigateBack = actions::navigateBack,
         contentPadding = PaddingValues(all = UiConstants.Spacing.large),
-        title = strings.cloudConnection,
+        title = CoreRes.string.cloud_connection.toTextSpec(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
@@ -59,7 +61,7 @@ fun SettingsCloudSignInScreen(
                     .padding(
                         top = UiConstants.Spacing.mediumPlus,
                     ),
-                text = strings.cloudSignIn,
+                text = CoreRes.string.cloud_sign_in.toTextSpec(),
                 enabled = state.isValid(),
                 onClick = {
                     focusManager.clearFocus()
@@ -73,7 +75,7 @@ fun SettingsCloudSignInScreen(
                     .padding(
                         top = UiConstants.Spacing.medium,
                     ),
-                text = strings.cloudNoAccount,
+                text = CoreRes.string.cloud_no_account.toTextSpec(),
                 onClick = {
                     focusManager.clearFocus()
                     actions.toSignUp()

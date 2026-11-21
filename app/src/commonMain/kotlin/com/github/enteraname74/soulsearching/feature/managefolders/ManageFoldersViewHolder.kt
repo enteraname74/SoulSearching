@@ -11,7 +11,6 @@ import com.github.enteraname74.soulsearching.domain.usecase.music.SaveInitialFet
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.FetchAllMultipleArtistManagerImpl
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -22,6 +21,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 class ManageFoldersViewHolder(
     private val commonFolderUseCase: CommonFolderUseCase,
@@ -107,7 +108,7 @@ class ManageFoldersViewHolder(
         // TODO SHARED PLAYED LIST: Should we show the error if the call doesn't work?
         playbackManager.removeSongsFromPlayedList(musicIds = musicIds)
         feedbackPopUpManager.showFeedback(
-            feedback = strings.savedChanges,
+            feedback = CoreRes.string.saved_changes.toTextSpec(),
         )
         navigate { navigateBack() }
     }

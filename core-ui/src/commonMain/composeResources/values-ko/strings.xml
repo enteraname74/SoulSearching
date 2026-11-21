@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Values shared by every language (interface defaults in Strings) -->
+
+    <string name="playlists">플레이리스트</string>
+    <string name="albums">앨범</string>
+    <string name="ok">확인</string>
+    <string name="glacier_theme">빙하</string>
+    <string name="passion_theme">열정</string>
+    <string name="playlist_detail_title">플레이리스트</string>
+    <string name="collection_detail_title">컬렉션</string>
+    <string name="album_detail_title">앨범</string>
+
+    <string name="app_logo">앱 로고</string>
+    <string name="cannot_retrieve_songs">노래를 불러올 수 없습니다!</string>
+    <string name="no_elements">항목 없음</string>
+    <string name="empty_quick_access">빠른 액세스에 항목이 없습니다</string>
+    <string name="empty_folders">폴더 없음</string>
+    <string name="empty_albums">앨범 없음</string>
+    <string name="empty_musics">노래 없음</string>
+    <string name="empty_artists">아티스트 없음</string>
+    <string name="empty_playlists">플레이리스트 없음</string>
+    <string name="empty_months">월 없음</string>
+    <string name="empty_collections">컬렉션 없음</string>
+    <string name="empty_musics_explanations">설정에서 노래를 추가하면 여기에 표시됩니다</string>
+    <string name="empty_albums_explanations">설정에서 노래를 추가하면 앨범이 여기에 표시됩니다</string>
+    <string name="empty_artists_explanations">설정에서 노래를 추가하면 아티스트가 여기에 표시됩니다</string>
+    <string name="empty_folders_explanations">설정에서 노래를 추가하면 폴더가 여기에 표시됩니다</string>
+    <string name="empty_playlists_explanations">"+" 버튼을 눌러 플레이리스트를 만드세요</string>
+    <string name="empty_quick_access_explanations">노래, 앨범, 아티스트 또는 플레이리스트를 빠른 액세스에 추가하면 여기에 표시됩니다</string>
+    <string name="empty_months_explanations">설정에서 노래를 추가하면 추가된 월별로 묶여 여기에 표시됩니다</string>
+    <string name="empty_collections_explanations">비슷한 앨범과 아티스트를 하나의 컬렉션으로 묶어 보세요. 아티스트나 앨범에 새 노래를 추가하면 연결된 컬렉션에도 자동으로 추가됩니다</string>
+    <string name="back_button">뒤로 버튼</string>
+    <string name="header_bar_right_button">헤더 바 오른쪽 버튼</string>
+    <string name="image">이미지</string>
+    <string name="more_button">더보기 버튼</string>
+    <string name="more">더보기</string>
+    <string name="settings_access_button">설정 열기 버튼</string>
+    <string name="create_playlist_button">플레이리스트 만들기 버튼</string>
+    <string name="shuffle_button">셔플 버튼</string>
+    <string name="favorite">즐겨찾기</string>
+    <string name="in_this_collection">이 컬렉션에 포함</string>
+    <string name="folders">폴더</string>
+    <string name="artists">아티스트</string>
+    <string name="by_folders">폴더별</string>
+    <string name="by_months">월별</string>
+    <string name="musics">노래</string>
+    <string name="quick_access">빠른 액세스</string>
+    <string name="missing_permissions">앱이 제대로 작동하려면 필요한 모든 권한을 허용해야 합니다.</string>
+    <string name="played_list">재생 대기열</string>
+    <string name="current_song">현재 노래</string>
+    <string name="lyrics">가사</string>
+    <string name="activate_remote_lyrics_fetch_title">온라인 가사 검색 사용</string>
+    <!-- %1$s: lyrics_provider_name -->
+    <string name="activate_remote_lyrics_fetch_text">노래 파일에서 가사를 찾을 수 없을 때 외부 서비스(%1$s)를 통해 현재 노래의 가사를 검색하려면 권한이 필요합니다.</string>
+    <!-- %1$s: lyrics_provider_name -->
+    <string name="activate_remote_lyrics_fetch_hint">노래 파일에서 가사를 찾을 수 없을 때 노래 제목, 앨범, 아티스트를 사용해 외부 소스(%1$s)에서 가사를 검색합니다.</string>
+    <string name="no_lyrics_found">이 노래의 가사를 찾을 수 없습니다</string>
+    <string name="local_lyrics_provider">음악 파일 메타데이터의 가사</string>
+    <string name="remote_lyrics_provider">LrcLib에서 제공한 가사</string>
+    <string name="complete_application_title">완벽한 음악 앱</string>
+    <string name="complete_application_text">모든 노래, 앨범, 아티스트, 플레이리스트를 들어 보세요.</string>
+    <string name="quick_access_title">가장 좋아하는 것을 가까이에 두세요.</string>
+    <string name="quick_access_text">빠른 액세스를 사용하면 좋아하는 앨범이나 노래 등에 쉽게 접근할 수 있습니다.</string>
+    <string name="modify_elements_title">음악 관련 항목 편집</string>
+    <string name="modify_elements_text">앨범, 노래, 아티스트 등의 정보를 편집할 수 있습니다…</string>
+    <string name="dynamic_theme_feature_title">다이내믹 테마</string>
+    <string name="dynamic_theme_feature_text">Soul Searching은 현재 재생 중인 노래에 따라 바뀌는 다이내믹 테마를 제공합니다.</string>
+    <string name="manage_folders_title">사용 폴더 관리</string>
+    <string name="manage_folders_text">노래를 가져올 폴더를 관리합니다.</string>
+    <string name="add_new_musics_title">새 노래 추가</string>
+    <string name="add_new_musics_text">기기에서 새 노래를 쉽게 추가할 수 있습니다.</string>
+    <string name="personalize_main_page_title">원하는 대로 설정하세요</string>
+    <string name="personalize_main_page_text">빠른 액세스가 필요 없거나, 메인 화면의 각 섹션으로 바로 이동할 수 있는 바가 필요하신가요? 앱 설정에서 원하는 대로 바꿀 수 있습니다.</string>
+    <string name="manage_album_view_title">앨범 화면</string>
+    <string name="manage_album_view_text">앨범 화면 관리</string>
+    <string name="manage_player_title">음악 플레이어</string>
+    <string name="manage_player_text">음악 플레이어 관리</string>
+    <string name="player_swipe_title">노래 커버를 스와이프하여 재생 대기열에서 앞뒤로 이동</string>
+    <string name="player_rewind_title">이전 노래를 재생하기 전에 현재 노래를 처음부터 재생</string>
+    <string name="player_minimised_progression_title">최소화된 플레이어에 현재 노래 진행 상태 표시</string>
+    <string name="soul_mix_settings_title">Soul Mix에서 폴더별로 가져올 노래 수</string>
+    <string name="searching_songs_from_your_device">기기에서 노래를 검색하는 중…</string>
+    <string name="search_for_musics">노래 검색</string>
+    <string name="search_all">노래, 아티스트, 앨범, 플레이리스트 검색…</string>
+    <string name="sort_by_added_date">추가한 날짜</string>
+    <string name="sort_by_most_listened">가장 많이 들은 순</string>
+    <string name="sort_by_name">가나다순</string>
+    <string name="remove_from_quick_access">빠른 액세스에서 제거</string>
+    <string name="remove_from_playlist">플레이리스트에서 제거</string>
+    <string name="remove_from_played_list">재생 대기열에서 제거</string>
+    <string name="remove_from_collection">컬렉션에서 제거</string>
+    <string name="add_to_quick_access">빠른 액세스에 추가</string>
+    <string name="add_to_playlist">플레이리스트에 추가</string>
+    <string name="add_to_collection">컬렉션에 추가</string>
+    <string name="create">만들기</string>
+    <string name="cancel">취소</string>
+    <string name="delete">삭제</string>
+    <string name="remove">제거</string>
+    <string name="soul_mix_info_dialog_text">각 폴더에서 가져온 노래를 섞어서 들어 보세요!\n폴더별로 가져올 노래 수는 설정에서 지정할 수 있습니다.</string>
+    <string name="create_playlist_dialog_title">새 플레이리스트 만들기</string>
+    <string name="create_collection_dialog_title">새 컬렉션 만들기</string>
+    <string name="playlist_name">플레이리스트 이름</string>
+    <string name="collection_name">컬렉션 이름</string>
+    <string name="name_already_exists">이미 사용 중인 이름입니다</string>
+    <string name="music_name">노래 제목</string>
+    <string name="music_album_position">앨범 내 순서</string>
+    <string name="album_name">앨범 이름</string>
+    <string name="album_artist_name">앨범 아티스트 이름</string>
+    <string name="artist_name">아티스트 이름</string>
+    <string name="playlist_cover">플레이리스트 커버</string>
+    <string name="collection_cover">컬렉션 커버</string>
+    <string name="album_cover">앨범 커버</string>
+    <string name="artist_cover">아티스트 커버</string>
+    <string name="playlist_information">플레이리스트 정보</string>
+    <string name="collection_information">컬렉션 정보</string>
+    <string name="music_information">노래 정보</string>
+    <string name="music_path">노래 경로:</string>
+    <string name="music_file_cover">파일 커버</string>
+    <string name="music_app_cover">앱 커버</string>
+    <string name="cover_selection">커버 선택</string>
+    <string name="select_top_start_cover_image">왼쪽 위 커버 이미지 선택</string>
+    <string name="select_top_end_cover_image">오른쪽 위 커버 이미지 선택</string>
+    <string name="select_bottom_start_cover_image">왼쪽 아래 커버 이미지 선택</string>
+    <string name="select_bottom_end_cover_image">오른쪽 아래 커버 이미지 선택</string>
+    <string name="artist_information">아티스트 정보</string>
+    <string name="album_information">앨범 정보</string>
+    <string name="add_artist">아티스트 추가</string>
+    <string name="delete_music_dialog_title">이 노래를 삭제하시겠습니까?</string>
+    <string name="delete_music_dialog_text">앱에서 삭제됩니다.</string>
+    <string name="delete_album_dialog_title">이 앨범을 삭제하시겠습니까?</string>
+    <string name="delete_playlist_dialog_title">이 플레이리스트를 삭제하시겠습니까?</string>
+    <string name="delete_collection_dialog_title">이 컬렉션을 삭제하시겠습니까?</string>
+    <string name="delete_artist_dialog_title">이 아티스트를 삭제하시겠습니까?</string>
+    <string name="delete_selected_musics_dialog_title">선택한 노래를 삭제하시겠습니까?</string>
+    <string name="delete_selected_musics_dialog_text">앱에서 삭제됩니다.</string>
+    <string name="delete_folder_musics_dialog_title">이 폴더를 삭제하시겠습니까?</string>
+    <string name="delete_folder_musics_dialog_text">이 폴더의 모든 노래가 앱에서 삭제됩니다. 이 폴더는 이후 노래를 가져올 때도 사용되지 않습니다.</string>
+    <string name="delete_selected_folders_musics_dialog_title">선택한 폴더를 삭제하시겠습니까?</string>
+    <string name="delete_selected_folders_musics_dialog_text">이 폴더들의 모든 노래가 앱에서 삭제됩니다. 이 폴더들은 이후 노래를 가져올 때도 사용되지 않습니다.</string>
+    <string name="delete_month_musics_dialog_title">이 월의 노래를 삭제하시겠습니까?</string>
+    <string name="delete_month_musics_dialog_text">이 월의 모든 노래가 앱에서 삭제됩니다.</string>
+    <string name="delete_selected_months_musics_dialog_title">선택한 월의 노래를 삭제하시겠습니까?</string>
+    <string name="delete_selected_months_musics_dialog_text">선택한 월의 모든 노래가 앱에서 삭제됩니다.</string>
+    <string name="delete_selected_albums_dialog_title">선택한 앨범을 삭제하시겠습니까?</string>
+    <string name="delete_selected_artists_dialog_title">선택한 아티스트를 삭제하시겠습니까?</string>
+    <string name="delete_selected_playlists_dialog_title">선택한 플레이리스트를 삭제하시겠습니까?</string>
+    <string name="delete_selected_collections_dialog_title">선택한 컬렉션을 삭제하시겠습니까?</string>
+    <string name="remove_music_from_playlist_title">이 노래를 플레이리스트에서 제거하시겠습니까?</string>
+    <string name="remove_music_from_playlist_text">이 노래는 플레이리스트에서만 제거되며 앱에서는 삭제되지 않습니다.</string>
+    <string name="remove_selected_music_from_playlist_title">선택한 노래를 플레이리스트에서 제거하시겠습니까?</string>
+    <string name="remove_selected_music_from_playlist_text">선택한 노래는 플레이리스트에서만 제거되며 앱에서는 삭제되지 않습니다.</string>
+    <string name="remove_artist_from_collection_title">이 아티스트를 컬렉션에서 제거하시겠습니까?</string>
+    <string name="remove_artist_from_collection_text">이 아티스트는 컬렉션에서만 제거되며 앱에서는 삭제되지 않습니다.</string>
+    <string name="remove_album_from_collection_title">이 앨범을 컬렉션에서 제거하시겠습니까?</string>
+    <string name="remove_album_from_collection_text">이 앨범은 컬렉션에서만 제거되며 앱에서는 삭제되지 않습니다.</string>
+    <string name="modify_album">앨범 편집</string>
+    <string name="modify_artist">아티스트 편집</string>
+    <string name="modify_music">노래 편집</string>
+    <string name="modify_playlist">플레이리스트 편집</string>
+    <string name="modify_collection">컬렉션 편집</string>
+    <string name="covers_of_the_album">앨범 수록곡의 커버</string>
+    <string name="covers_of_the_artist">아티스트 노래의 커버</string>
+    <string name="covers_of_the_playlist">플레이리스트 노래의 커버</string>
+    <string name="covers_of_the_collection">컬렉션 노래의 커버</string>
+    <string name="covers_of_song_album">이 노래가 속한 앨범의 커버</string>
+    <string name="no_available_covers">사용 가능한 커버 없음</string>
+    <string name="delete_album">앨범 삭제</string>
+    <string name="delete_artist">아티스트 삭제</string>
+    <string name="delete_music">노래 삭제</string>
+    <string name="delete_playlist">플레이리스트 삭제</string>
+    <string name="delete_collection">컬렉션 삭제</string>
+    <string name="delete_selected_albums">선택한 앨범 삭제</string>
+    <string name="delete_selected_artists">선택한 아티스트 삭제</string>
+    <string name="delete_selected_playlists">선택한 플레이리스트 삭제</string>
+    <string name="delete_selected_collections">선택한 컬렉션 삭제</string>
+    <string name="delete_selected_musics">선택한 노래 삭제</string>
+    <string name="delete_folder_musics">폴더 삭제</string>
+    <string name="delete_selected_folders_musics">선택한 폴더 삭제</string>
+    <string name="delete_month_musics">월 삭제</string>
+    <string name="delete_selected_months_musics">선택한 월 삭제</string>
+    <string name="play_next">다음에 재생</string>
+    <string name="add_to_queue">대기열에 추가</string>
+    <string name="personalized_theme_title">맞춤 테마</string>
+    <string name="personalized_theme_text">다이내믹 테마 적용 대상:</string>
+    <string name="dynamic_player_view">플레이어 화면</string>
+    <string name="dynamic_playlist_view">플레이리스트, 앨범, 아티스트, 월, 폴더 화면</string>
+    <string name="dynamic_other_view">기타 화면</string>
+    <string name="settings">설정</string>
+    <string name="advanced_settings_title">고급 설정</string>
+    <string name="advanced_settings_text">앱에서 사용하는 커버 관리</string>
+    <string name="reload_covers_title">커버 다시 불러오기</string>
+    <string name="reload_covers_text">파일 데이터에서 커버 다시 불러오기</string>
+    <string name="reload_musics_covers">노래 커버 다시 불러오기</string>
+    <string name="delete_playlists_covers">플레이리스트 커버 삭제</string>
+    <string name="delete_collections_covers">컬렉션 커버 삭제</string>
+    <string name="reload_albums_covers">앨범 커버 다시 불러오기</string>
+    <string name="reload_artists_covers">아티스트 커버 다시 불러오기</string>
+    <string name="split_multiple_artists_title">아티스트 분리</string>
+    <string name="split_multiple_artists_text">여러 아티스트로 구성된 아티스트를 선택하여 분리</string>
+    <string name="artist_cover_method_title">아티스트 커버 출처</string>
+    <string name="artist_cover_method_text">아티스트 커버를 가져올 방식 선택</string>
+    <string name="activate_artist_cover_method">경로로 가져오기 사용</string>
+    <string name="artist_cover_method_dynamic_name_title">아티스트 이름 처리</string>
+    <string name="cover_folder_retriever_path_selection_title">상위 폴더 선택</string>
+    <string name="cover_folder_retriever_path_selection_no_path_selected">선택한 폴더 없음</string>
+    <string name="cover_folder_retriever_file_extension">이미지 확장자</string>
+    <string name="cover_folder_retriever_folder_title">동적 폴더</string>
+    <string name="cover_folder_retriever_folder_text">폴더 이름이 아티스트 이름과 일치합니다</string>
+    <string name="cover_folder_retriever_folder_incomplete">필요한 데이터가 부족합니다</string>
+    <string name="cover_folder_retriever_rules_white_space">공백 바꾸기</string>
+    <string name="cover_folder_retriever_rules_replacement">바꿀 문자</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_uppercase">대문자</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_no_treatment">처리 안 함</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_lowercase">소문자</string>
+    <string name="cover_folder_retriever_file_title">동적 커버 파일</string>
+    <string name="cover_folder_retriever_file_text">이미지 파일 이름이 아티스트 이름과 일치합니다</string>
+    <string name="cover_folder_retriever_dynamic_file_title">커버 파일 이름</string>
+    <string name="activate_github_release_fetch_title">GitHub에서 새 버전 확인 사용</string>
+    <string name="activate_github_release_fetch_text">GitHub에 새 버전이 출시되면 앱 내 알림을 받으시겠습니까?</string>
+    <string name="activate_github_release_fetch_hint">GitHub에 새 버전이 출시되면 앱 내 알림을 받게 됩니다.</string>
+    <string name="go_to_settings">설정으로 이동</string>
+    <string name="manage_musics_title">노래 관리</string>
+    <string name="manage_musics_text">노래 편집 및 추가, 사용 폴더 관리</string>
+    <string name="modify_music_file_title">기기의 파일 수정</string>
+    <string name="modify_music_file_text">노래 정보를 편집하면 기기에 있는 파일의 메타데이터도 수정됩니다</string>
+    <string name="color_theme_title">색상 테마</string>
+    <string name="color_theme_text">다이내믹 테마, 맞춤 테마</string>
+    <string name="personalization_title">개인 설정</string>
+    <string name="personalization_text">플레이어 및 메인 화면 관리</string>
+    <string name="about_title">Soul Searching 정보</string>
+    <string name="about_text">개발자, 앱 버전 이름</string>
+    <string name="new_release_available_title">새 버전이 출시되었습니다!</string>
+    <string name="statistics_title">통계</string>
+    <string name="statistics_text">재생 통계</string>
+    <string name="most_played_songs">가장 많이 재생한 노래 (재생 횟수)</string>
+    <string name="most_listened_songs">가장 많이 재생한 노래 (청취 시간)</string>
+    <string name="listening_time">총 청취 시간</string>
+    <string name="no_data_on_this_period">이 기간의 데이터가 없습니다</string>
+    <string name="most_played_albums">가장 많이 재생한 앨범</string>
+    <string name="most_played_artists">가장 많이 재생한 아티스트</string>
+    <string name="artists_with_most_songs">노래가 가장 많은 아티스트</string>
+    <string name="most_played_playlists">가장 많이 재생한 플레이리스트</string>
+    <string name="theme_selection_title">기본 테마</string>
+    <string name="theme_selection_text">앱의 기본 테마를 선택하세요</string>
+    <string name="force_dark_theme_title">항상 어두운 테마 사용</string>
+    <string name="force_light_theme_title">항상 밝은 테마 사용</string>
+    <string name="steel_theme">강철</string>
+    <string name="dusk_theme">황혼</string>
+    <string name="greenery_theme">초록</string>
+    <string name="tree_bark_theme">나무껍질</string>
+    <string name="extracted_color_title">커버에서 추출한 색상</string>
+    <string name="extracted_color_text">다이내믹 색상 테마를 만드는 데 사용할 기준 색상을 지정합니다</string>
+    <string name="extracted_color_info">선택한 색상을 추출할 수 없으면 주요 색상이 사용됩니다.</string>
+    <string name="main_page_title">메인 화면</string>
+    <string name="main_page_text">메인 화면 관리</string>
+    <string name="show_quick_access">빠른 액세스 표시</string>
+    <string name="show_playlists">플레이리스트 표시</string>
+    <string name="show_collections">컬렉션 표시</string>
+    <string name="collections">컬렉션</string>
+    <string name="show_albums">앨범 표시</string>
+    <string name="show_artists">아티스트 표시</string>
+    <string name="manage_musics_view_text">노래 화면 관리</string>
+    <string name="show_musics_by_folders">폴더별 노래 표시</string>
+    <string name="show_musics_by_months">월별 노래 표시</string>
+    <string name="show_album_track_number">트랙 번호 표시</string>
+    <string name="initial_section_title">시작 섹션</string>
+    <string name="initial_section_text">앱 실행 시 처음 표시할 섹션을 선택하세요</string>
+    <string name="use_vertical_access_bar_title">세로 이동 바 사용</string>
+    <string name="use_horizontal_access_bar_text">가로 이동 바 사용</string>
+    <string name="used_folders_title">사용 폴더</string>
+    <string name="used_folders_text">앱에서 사용할 폴더를 지정합니다</string>
+    <string name="fetching_folders">폴더를 가져오는 중</string>
+    <string name="add_musics_title">노래 추가</string>
+    <string name="add_musics_text">기기의 새 노래를 앱에 추가합니다</string>
+    <string name="deleting_musics_from_unselected_folders">선택 해제된 폴더의 노래를 삭제하는 중…</string>
+    <string name="dynamic_theme_title">다이내믹 테마</string>
+    <string name="dynamic_theme_text">현재 재생 중인 노래의 앨범 커버를 기반으로 한 전체 색상 테마</string>
+    <string name="system_theme_title">시스템 테마</string>
+    <string name="system_theme_text">시스템 색상 모드를 기반으로 한 전체 색상 테마</string>
+    <string name="lead_developer">수석 개발자</string>
+    <string name="developers_title">개발자</string>
+    <string name="developers_text">Soul Searching 프로젝트를 만든 개발자들</string>
+    <string name="changelog_title">최신 업데이트</string>
+    <string name="changelog_text">새로운 기능, 버그 수정</string>
+    <string name="changelog_update_required">앱을 업데이트하고 최신 기능을 사용해 보세요!</string>
+    <string name="version_name_title">앱 버전 이름</string>
+    <string name="project_site_title">프로젝트 웹사이트 및 소스 코드</string>
+    <string name="project_site_text">소스 코드, 제안하기</string>
+    <string name="no_new_musics">추가할 새 노래가 없습니다!</string>
+    <string name="saving_new_musics">새 노래를 저장하는 중…</string>
+    <string name="songs_saved">노래를 저장했습니다!</string>
+    <string name="search_for_new_songs">새 노래 검색</string>
+    <string name="app_migration">앱 데이터를 업데이트하는 중</string>
+    <string name="multiple_artists_title">여러 아티스트가 참여한 노래</string>
+    <string name="multiple_artists_text">여러 아티스트가 참여한 노래가 발견되었습니다. 이 아티스트를 여러 아티스트로 분리할지, 하나의 아티스트로 유지할지 선택하세요.</string>
+    <string name="multiple_artists_selection_title">분리할 아티스트:</string>
+    <string name="no_multiple_artists">분리할 아티스트 없음</string>
+    <string name="multiple_selection">다중 선택</string>
+    <string name="field_cannot_be_empty">필수 입력 항목입니다</string>
+    <string name="field_must_be_anumber">숫자를 입력해야 합니다</string>
+    <string name="player_volume">플레이어 볼륨</string>
+    <string name="an_error_occurred">오류가 발생했습니다</string>
+    <string name="album_does_not_exists">존재하지 않는 앨범입니다</string>
+    <string name="artist_does_not_exists">존재하지 않는 아티스트입니다</string>
+    <string name="playlist_does_not_exists">존재하지 않는 플레이리스트입니다</string>
+    <string name="collection_does_not_exists">존재하지 않는 컬렉션입니다</string>
+    <string name="folder_does_not_exists">존재하지 않는 폴더입니다</string>
+    <string name="month_playlist_does_not_exists">존재하지 않는 월별 목록입니다</string>
+    <string name="artist_detail_title">아티스트</string>
+    <string name="month_detail_title">월</string>
+    <string name="folder_detail_title">폴더</string>
+    <string name="element_detail_edit">편집</string>
+    <string name="element_detail_play">재생</string>
+    <string name="element_detail_shuffle">셔플</string>
+    <string name="element_detail_titles">제목</string>
+    <string name="and">및</string>
+    <string name="continue_played_list_title">이어서 듣기</string>
+    <string name="continue_played_list_action">이어 듣기</string>
+    <string name="saved_changes">변경 사항이 저장되었습니다</string>
+    <string name="cloud_text">Cloudy와 노래 동기화</string>
+    <string name="cloud_settings_title">설정</string>
+    <string name="cloud_settings_text">호스트 URL</string>
+    <string name="cloud_settings_last_general_sync">마지막 전체 동기화</string>
+    <string name="cloud_settings_last_statistics_sync">마지막 통계 동기화</string>
+    <string name="cloud_settings_last_settings_sync">마지막 설정 동기화</string>
+    <string name="cloud_settings_no_sync">동기화 기록 없음</string>
+    <string name="cloud_url_field_label">호스트 URL</string>
+    <string name="cloud_name_field_label">사용자 이름</string>
+    <string name="cloud_password_field_label">비밀번호</string>
+    <string name="cloud_sign_up">가입하기</string>
+    <string name="cloud_no_account">계정이 없습니다</string>
+    <string name="cloud_connection">연결</string>
+    <string name="cloud_sign_in">로그인</string>
+    <string name="cloud_registration_code">가입 코드</string>
+    <string name="cloud_user_settings">사용자 설정</string>
+    <string name="disconnect">로그아웃</string>
+    <string name="inscription_code_settings_title">가입 코드</string>
+    <string name="generate_code_button">코드 생성</string>
+    <string name="inscription_code_settings_text">초대 코드를 관리하고 새 사용자를 위한 일회용 코드를 생성합니다</string>
+    <string name="generated_code">생성된 코드</string>
+    <string name="cloud_sync_title">동기화</string>
+    <string name="cloud_sync_text">앱과 Cloudy 간 동기화 관리</string>
+    <string name="cloud_sync_button">클라우드와 동기화</string>
+    <string name="music_channel_notification_name">현재 재생 중인 음악 알림</string>
+    <string name="music_channel_notification_description">현재 재생 중인 노래를 제어하는 데 사용됩니다</string>
+    <string name="cloud_sync_channel_notification_name">Cloudy 동기화 알림</string>
+    <string name="cloud_sync_channel_notification_description">앱과 Cloudy 간 데이터 동기화에 사용됩니다</string>
+    <string name="start_shared_played_list">공유 재생 대기열 시작</string>
+    <string name="shared_list_title">공유 목록</string>
+    <string name="shared_list_host">호스트</string>
+    <string name="shared_list_guests">게스트</string>
+    <string name="shared_list_code_title">초대 코드</string>
+    <string name="shared_list_code_description">이 코드를 친구에게 공유하여 공유 재생 대기열에 초대하세요!</string>
+    <string name="shared_list_remove_user_title">공유 목록에서 사용자 제거</string>
+    <string name="shared_list_remove_user_text">이 사용자를 제거하면 해당 사용자의 노래도 재생 대기열에서 제거됩니다</string>
+    <string name="shared_list_remove_user_button">제거</string>
+    <string name="shared_list_code_label">초대 코드</string>
+    <string name="cloud_shared_list_title">공유 재생 대기열</string>
+    <string name="cloud_shared_list_text">공유 재생 대기열 참여 및 관리</string>
+    <string name="cloud_shared_list_join_title">재생 대기열 참여</string>
+    <string name="cloud_sharedlist_join_text">코드로 공유 재생 대기열에 참여</string>
+    <string name="join_shared_list_button">참여</string>
+    <string name="cloud_users_title">Cloudy 사용자</string>
+    <string name="cloud_users_text">Cloudy 인스턴스의 모든 사용자 보기</string>
+    <string name="cloud_users_delete_dialog_title">사용자 삭제</string>
+    <string name="cloud_users_delete_dialog_text">이 사용자를 삭제하시겠습니까?</string>
+    <string name="cloud_alpha_warning_text">Cloudy는 알파 단계이므로 앱의 일부 기능이 Cloudy와 함께 제대로 작동하지 않을 수 있습니다</string>
+    <string name="cloud_explanations_title">Soul Searching을 위한 클라우드</string>
+    <string name="cloud_explanations_text">Cloudy는 Soul Searching을 위한 셀프 호스팅 클라우드 시스템으로, 다음과 같은 용도로 설계되었습니다.\n- 여러 기기에서 노래 이용\n- 여러 사용자와 공유 재생 대기열 시작\n- 사용자 관리 (가족, 친구 등)\n\nCloudy를 직접 호스팅하려면 문서를 참고하세요.</string>
+    <string name="cloud_explanations_redirect">Cloudy 문서</string>
+    <string name="cloud_add_url_to_shared_list_title">URL로 노래 추가</string>
+    <string name="add">추가</string>
+    <string name="shared_list_delete_title">이 공유 재생 대기열 삭제</string>
+    <string name="shared_list_delete_text">사용자들의 연결이 끊기고 목록이 삭제됩니다</string>
+    <string name="music_synced_on_cloud">클라우드와 동기화된 노래</string>
+    <string name="music_remote_only">클라우드에서 가져온 노래</string>
+    <string name="music_local_only">클라우드에 업로드되지 않은 노래</string>
+    <string name="shortcuts_title">단축키</string>
+    <string name="shortcuts_text">앱 단축키 보기</string>
+    <string name="shortcut_player_category">플레이어 단축키</string>
+    <string name="shortcut_toggle_play_pause_description">재생/일시정지</string>
+    <string name="shortcut_previous_description">이전</string>
+    <string name="shortcut_next_description">다음</string>
+    <string name="shortcut_seek_forward_description">앞으로 이동</string>
+    <string name="shortcut_seek_backward_description">뒤로 이동</string>
+    <string name="shortcut_volume_up_description">볼륨 높이기</string>
+    <string name="shortcut_volume_down_description">볼륨 낮추기</string>
+    <string name="shortcut_toggle_favorite_description">재생 중인 노래 즐겨찾기 설정/해제</string>
+    <string name="gigabyte_abbreviation">GB</string>
+    <string name="user_storage_title">사용자 데이터</string>
+    <string name="user_storage_text">Cloudy에 저장된 사용자 데이터 관리</string>
+    <string name="user_storage_section_title">저장 공간</string>
+    <string name="user_storage_all_available_info">관리자는 Cloudy 인스턴스의 사용 가능한 저장 공간 전체를 사용할 수 있습니다</string>
+    <string name="user_storage_reduced_info">일반 사용자의 최대 저장 공간은 이 Cloudy 인스턴스의 관리자가 정한 규칙에 따릅니다. 자세한 내용은 관리자에게 문의하세요</string>
+    <string name="clear_user_storage_button">내 데이터 모두 삭제</string>
+    <string name="clear_user_storage_dialog_text">Cloudy에서 모든 데이터가 삭제됩니다. 계정은 삭제되지 않습니다</string>
+    <string name="statistics_all_period_label">전체 기간</string>
+    <string name="statistics_year_period_label">연도별</string>
+    <string name="statistics_month_period_label">월별</string>
+    <string name="playback_error_player_error">선택한 노래를 재생할 수 없습니다</string>
+    <string name="simple_cover_type">단일</string>
+    <string name="grid_cover_type">그리드</string>
+    <string name="add_to_playlist_screen_title">플레이리스트에 추가</string>
+    <string name="add_to_playlist_search_placeholder">플레이리스트에 추가할 노래 검색</string>
+    <string name="add_to_playlist_empty_title">노래 없음</string>
+    <string name="add_to_playlist_empty_text">플레이리스트에 추가할 노래가 없습니다</string>
+
+    <!-- Keyboard shortcuts commands -->
+    <string-array name="shortcut_toggle_play_pause_commands">
+        <item>스페이스</item>
+    </string-array>
+    <string-array name="shortcut_previous_commands">
+        <item>Shift</item>
+        <item>왼쪽 화살표</item>
+    </string-array>
+    <string-array name="shortcut_next_commands">
+        <item>Shift</item>
+        <item>오른쪽 화살표</item>
+    </string-array>
+    <string-array name="shortcut_seek_forward_commands">
+        <item>오른쪽 화살표</item>
+    </string-array>
+    <string-array name="shortcut_seek_backward_commands">
+        <item>왼쪽 화살표</item>
+    </string-array>
+    <string-array name="shortcut_volume_up_commands">
+        <item>위쪽 화살표</item>
+    </string-array>
+    <string-array name="shortcut_volume_down_commands">
+        <item>아래쪽 화살표</item>
+    </string-array>
+    <string-array name="shortcut_toggle_favorite_commands">
+        <item>F</item>
+    </string-array>
+
+    <!-- cloudSyncNotificationTitle(state) -->
+    <string name="cloud_sync_notification_title_syncing_settings">설정 동기화 중</string>
+    <string name="cloud_sync_notification_title_failure">실패</string>
+    <string name="cloud_sync_notification_title_idle">대기 중</string>
+    <string name="cloud_sync_notification_title_no_musics_to_send">보낼 노래 없음</string>
+    <string name="cloud_sync_notification_title_checking_musics_to_send">확인 중</string>
+    <string name="cloud_sync_notification_title_cleaning">노래 정리 중</string>
+    <string name="cloud_sync_notification_title_clearing_remote_music_ids">노래 정리 중</string>
+    <string name="cloud_sync_notification_title_fetching_from_remote">노래 가져오는 중</string>
+    <string name="cloud_sync_notification_title_saving_remote">노래 저장 중</string>
+    <string name="cloud_sync_notification_title_update_musics">노래 업데이트 중</string>
+    <string name="cloud_sync_notification_title_upload_musics">노래 업로드 중</string>
+    <string name="cloud_sync_notification_title_fetching_remote_playlists">플레이리스트 가져오는 중</string>
+    <string name="cloud_sync_notification_title_uploading_playlists">플레이리스트 업로드 중</string>
+    <string name="cloud_sync_notification_title_saving_remote_playlists">플레이리스트 저장 중</string>
+    <string name="cloud_sync_notification_title_finish">완료</string>
+    <string name="cloud_sync_notification_title_clearing_remote_playlist_ids">플레이리스트 정리 중</string>
+    <string name="cloud_sync_notification_title_fetching_remote_collections">컬렉션 가져오는 중</string>
+    <string name="cloud_sync_notification_title_uploading_collections">컬렉션 업로드 중</string>
+    <string name="cloud_sync_notification_title_saving_remote_collections">컬렉션 저장 중</string>
+    <string name="cloud_sync_notification_title_clearing_remote_collection_ids">컬렉션 정리 중</string>
+    <string name="cloud_sync_notification_title_fetching_remote_stats">청취 통계 가져오는 중</string>
+    <string name="cloud_sync_notification_title_uploading_stats">청취 통계 업로드 중</string>
+
+    <!-- cloudSyncNotificationText(state) -->
+    <string name="cloud_sync_notification_text_syncing_settings">클라우드와 설정을 동기화하는 중</string>
+    <string name="cloud_sync_notification_text_failure">동기화 중 오류가 발생했습니다: %1$s</string>
+    <string name="cloud_sync_notification_text_idle">동기화 시작을 기다리는 중</string>
+    <string name="cloud_sync_notification_text_no_musics_to_send">클라우드로 보낼 로컬 노래가 없습니다</string>
+    <string name="cloud_sync_notification_text_checking_musics_to_send">클라우드로 보낼 노래를 확인하는 중</string>
+    <string name="cloud_sync_notification_text_cleaning">동기화 후 이전 로컬 노래를 정리하는 중</string>
+    <string name="cloud_sync_notification_text_clearing_remote_music_ids">동기화 전 삭제된 클라우드 노래를 정리하는 중</string>
+    <string name="cloud_sync_notification_text_fetching_from_remote">클라우드에서 노래를 가져오는 중</string>
+    <string name="cloud_sync_notification_text_saving_remote">클라우드에서 가져온 정보를 저장하는 중</string>
+    <string name="cloud_sync_notification_text_update_musics">클라우드의 기존 노래를 업데이트하는 중</string>
+    <string name="cloud_sync_notification_text_upload_musics">클라우드에 노래를 업로드하는 중</string>
+    <string name="cloud_sync_notification_text_fetching_remote_playlists">클라우드에서 플레이리스트를 가져오는 중</string>
+    <string name="cloud_sync_notification_text_uploading_playlists">클라우드에 플레이리스트를 업로드하는 중</string>
+    <string name="cloud_sync_notification_text_saving_remote_playlists">클라우드의 플레이리스트를 저장하는 중</string>
+    <string name="cloud_sync_notification_text_finish">동기화가 완료되었습니다</string>
+    <string name="cloud_sync_notification_text_clearing_remote_playlist_ids">삭제된 클라우드 플레이리스트를 정리하는 중</string>
+    <string name="cloud_sync_notification_text_fetching_remote_collections">클라우드에서 컬렉션을 가져오는 중</string>
+    <string name="cloud_sync_notification_text_uploading_collections">클라우드에 컬렉션을 업로드하는 중</string>
+    <string name="cloud_sync_notification_text_saving_remote_collections">클라우드의 컬렉션을 저장하는 중</string>
+    <string name="cloud_sync_notification_text_clearing_remote_collection_ids">삭제된 클라우드 컬렉션을 정리하는 중</string>
+    <string name="cloud_sync_notification_text_fetching_remote_stats">클라우드에서 청취 통계를 가져오는 중</string>
+    <string name="cloud_sync_notification_text_uploading_stats">클라우드에 청취 통계를 업로드하는 중</string>
+    <string name="cloud_sync_notification_unknown_error">알 수 없는 오류</string>
+
+    <!-- userType(type) -->
+    <string name="user_type_user">사용자</string>
+    <string name="user_type_admin">관리자</string>
+    <string name="user_type_unknown">상태 없음</string>
+
+    <!-- colorPaletteSeed(seed) -->
+    <string name="color_palette_seed_dark_vibrant">어둡고 선명한 색</string>
+    <string name="color_palette_seed_dark_muted">어둡고 차분한 색</string>
+    <string name="color_palette_seed_light_muted">밝고 차분한 색</string>
+    <string name="color_palette_seed_light_vibrant">밝고 선명한 색</string>
+    <string name="color_palette_seed_dominant">주요 색</string>
+    <string name="color_palette_seed_muted">차분한 색</string>
+    <string name="color_palette_seed_vibrant">선명한 색</string>
+
+    <!-- month(monthNumber) -->
+    <string name="month_january">1월</string>
+    <string name="month_february">2월</string>
+    <string name="month_march">3월</string>
+    <string name="month_april">4월</string>
+    <string name="month_may">5월</string>
+    <string name="month_june">6월</string>
+    <string name="month_july">7월</string>
+    <string name="month_august">8월</string>
+    <string name="month_september">9월</string>
+    <string name="month_october">10월</string>
+    <string name="month_november">11월</string>
+    <string name="month_december">12월</string>
+
+    <!-- Simple formatted functions -->
+    <string name="fetching_musics_from">노래를 가져오는 중: %1$s</string>
+    <string name="new_release_available_text">새 버전을 다운로드할 수 있습니다: %1$s</string>
+    <string name="artist_cover_method_example_title">아티스트 %1$s의 경로 예시:</string>
+
+    <!-- duration(duration): e.g. "2 hours and 3 minutes" -->
+    <string name="duration_format">%1$s %2$s</string>
+    <!-- period(period) for Period.Month: "<month> <year>" -->
+    <string name="period_month_format">%2$d년 %1$s</string>
+
+    <!-- Counting functions. Korean only uses the "other" plural category; each one has a companion *_zero string. -->
+    <string name="musics_count_zero">노래 없음</string>
+    <plurals name="musics_count">
+        <item quantity="other">노래 %1$d곡</item>
+    </plurals>
+    <string name="deleted_musics_automatically_zero">삭제된 노래 없음</string>
+    <plurals name="deleted_musics_automatically">
+        <item quantity="other">기기에 더 이상 존재하지 않는 노래 %1$d곡이 삭제되었습니다</item>
+    </plurals>
+    <string name="plays_zero">재생 기록 없음</string>
+    <plurals name="plays">
+        <item quantity="other">%1$d회 재생</item>
+    </plurals>
+    <string name="selected_elements_zero">선택한 항목 없음</string>
+    <plurals name="selected_elements">
+        <item quantity="other">%1$d개 항목 선택됨</item>
+    </plurals>
+    <string name="selected_musics_zero">선택한 노래 없음</string>
+    <plurals name="selected_musics">
+        <item quantity="other">노래 %1$d곡 선택됨</item>
+    </plurals>
+    <string name="shared_list_preview_users_zero">사용자 없음</string>
+    <plurals name="shared_list_preview_users">
+        <item quantity="other">사용자 %1$d명</item>
+    </plurals>
+    <string name="shared_list_preview_connected_users_zero">접속한 사용자 없음</string>
+    <plurals name="shared_list_preview_connected_users">
+        <item quantity="other">접속한 사용자 %1$d명</item>
+    </plurals>
+
+    <!-- hours(hours) / minutes(minutes) / seconds(seconds) -->
+    <plurals name="hours">
+        <item quantity="other">%1$d시간</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="other">%1$d분</item>
+    </plurals>
+    <plurals name="seconds">
+        <item quantity="other">%1$d초</item>
+    </plurals>
+</resources>

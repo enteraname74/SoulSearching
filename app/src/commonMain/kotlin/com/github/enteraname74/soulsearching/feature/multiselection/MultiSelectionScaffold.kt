@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.multiselection
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -27,7 +28,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.multiselection.LocalMultiSelectionTopBarHeight
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
@@ -116,7 +116,7 @@ private fun MultiSelectionTopBar(
 ) {
     SoulTopBar(
         colors = topBarColors,
-        title = strings.selectedElements(total = total),
+        title = SoulTexts.selectedElements(total = total),
         leftAction = object : TopBarActionSpec {
             override val icon: DrawableResource = CoreRes.drawable.ic_close
             override val onClick: () -> Unit = onCancel

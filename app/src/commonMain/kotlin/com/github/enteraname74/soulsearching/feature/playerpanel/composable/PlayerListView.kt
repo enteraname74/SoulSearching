@@ -25,7 +25,6 @@ import androidx.compose.material.SwipeableState
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -58,7 +57,6 @@ import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.multiselection.composable.SoulSelectedIconColors
@@ -73,6 +71,9 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.uuid.Uuid
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.current_song
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 
 @Composable
 fun PlayerListView(
@@ -119,8 +120,8 @@ fun PlayerListView(
                     }
                 }
             ) {
-                Text(
-                    text = strings.currentSong,
+                SoulText(
+                    text = CoreRes.string.current_song.toTextSpec(),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     color = buttonColors.contentColor,

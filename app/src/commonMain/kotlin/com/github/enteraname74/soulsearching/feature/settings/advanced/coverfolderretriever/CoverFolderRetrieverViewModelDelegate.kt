@@ -4,13 +4,15 @@ import com.github.enteraname74.soulsearching.domain.model.CoverFolderRetriever
 import com.github.enteraname74.soulsearching.domain.repository.SettingsRepository
 import com.github.enteraname74.soulsearching.domain.util.WorkDispatcher
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldDefaults
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 abstract class CoverFolderRetrieverViewModelDelegate(
     private val settingsRepository: SettingsRepository,
@@ -24,7 +26,7 @@ abstract class CoverFolderRetrieverViewModelDelegate(
     override val whiteSpaceReplacementTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
         id = REPLACEMENT_ID,
         initialValue = CoverFolderRetriever.default.whiteSpaceRule.replacement,
-        getLabel = { strings.coverFolderRetrieverRulesReplacement },
+        getLabel = { CoreRes.string.cover_folder_retriever_rules_replacement.toTextSpec() },
         getError = { null },
         onChange = { updateWhiteSpaceReplacement(it) },
         isValid = { true },
@@ -35,8 +37,8 @@ abstract class CoverFolderRetrieverViewModelDelegate(
     override val coverFileNameTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
         id = COVER_FILE_NAME_ID,
         initialValue = CoverFolderRetriever.default.coverFileName.orEmpty(),
-        getLabel = { strings.coverFolderRetrieverDynamicFileTitle },
-        getError = { strings.fieldCannotBeEmpty },
+        getLabel = { CoreRes.string.cover_folder_retriever_dynamic_file_title.toTextSpec() },
+        getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
         onChange = { updateCoverFileName(it) },
         isValid = { it.isNotBlank() },
         style = SoulTextFieldStyle.Unique,
@@ -46,8 +48,8 @@ abstract class CoverFolderRetrieverViewModelDelegate(
     override val extensionTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
         id = EXTENSION_ID,
         initialValue = CoverFolderRetriever.default.fileExtension.orEmpty(),
-        getLabel = { strings.coverFolderRetrieverFileExtension },
-        getError = { strings.fieldCannotBeEmpty },
+        getLabel = { CoreRes.string.cover_folder_retriever_file_extension.toTextSpec() },
+        getError = { CoreRes.string.field_cannot_be_empty.toTextSpec() },
         onChange = { updateFileExtension(it) },
         isValid = { it.isNotBlank() },
         style = SoulTextFieldStyle.Unique,

@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.ext
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_album
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_album_filled
@@ -11,7 +14,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_person_filled
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_queue_music
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_quick_access_filled
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import org.jetbrains.compose.resources.DrawableResource
 
@@ -38,13 +40,13 @@ fun ElementEnum.outlinedIcon(): DrawableResource =
         ElementEnum.FOLDERS -> CoreRes.drawable.ic_folder
     }
 
-fun ElementEnum.text(): String =
+fun ElementEnum.text(): SoulTextSpec =
     when (this) {
-        ElementEnum.QUICK_ACCESS -> strings.quickAccess
-        ElementEnum.PLAYLISTS -> strings.playlists
-        ElementEnum.COLLECTIONS -> strings.collections
-        ElementEnum.ALBUMS -> strings.albums
-        ElementEnum.ARTISTS -> strings.artists
-        ElementEnum.MUSICS -> strings.musics
-        ElementEnum.FOLDERS -> strings.folders
+        ElementEnum.QUICK_ACCESS -> CoreRes.string.quick_access.toTextSpec()
+        ElementEnum.PLAYLISTS -> CoreRes.string.playlists.toTextSpec()
+        ElementEnum.COLLECTIONS -> CoreRes.string.collections.toTextSpec()
+        ElementEnum.ALBUMS -> CoreRes.string.albums.toTextSpec()
+        ElementEnum.ARTISTS -> CoreRes.string.artists.toTextSpec()
+        ElementEnum.MUSICS -> CoreRes.string.musics.toTextSpec()
+        ElementEnum.FOLDERS -> CoreRes.string.folders.toTextSpec()
     }

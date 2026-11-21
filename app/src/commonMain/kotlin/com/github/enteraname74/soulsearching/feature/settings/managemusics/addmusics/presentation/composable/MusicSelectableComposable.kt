@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +19,7 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 
 @Composable
 fun MusicSelectableComposable(
@@ -85,16 +86,16 @@ private fun InnerContent(
                     .weight(1f),
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = music.name,
+                SoulText(
+                    text = music.name.toTextSpec(),
                     color = textColor,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Normal
                 )
-                Text(
-                    text = music.informationText,
+                SoulText(
+                    text = music.informationText.toTextSpec(),
                     color = textColor,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,

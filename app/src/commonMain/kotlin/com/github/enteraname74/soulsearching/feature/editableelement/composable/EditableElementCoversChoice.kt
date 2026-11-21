@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,21 +15,24 @@ import com.github.enteraname74.soulsearching.composables.image.SoulByteArrayImag
 import com.github.enteraname74.soulsearching.coreui.composable.SoulCircularProgressIndicator
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 
 fun LazyGridScope.editableElementCoversChoice(
     coverState: CoverListState,
     onCoverSelected: (ByteArray) -> Unit,
-    sectionTitle: String?,
+    sectionTitle: SoulTextSpec?,
 ) {
     sectionTitle?.let { title ->
         item(
             span = { GridItemSpan(maxLineSpan) }
         ) {
-            Text(
+            SoulText(
                 text = title,
                 maxLines = 2,
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
@@ -68,8 +70,8 @@ fun LazyGridScope.editableElementCoversChoice(
                             ),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text(
-                            text = strings.noAvailableCovers,
+                        SoulText(
+                            text = CoreRes.string.no_available_covers.toTextSpec(),
                             color = SoulSearchingColorTheme.colorScheme.onSecondary,
                             style = UiConstants.Typography.body,
                         )

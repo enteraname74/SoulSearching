@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.users
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,9 +16,11 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_person_filled
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.list.ShapeListStyle
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsCloudUsersScreen(
@@ -30,7 +31,7 @@ fun SettingsCloudUsersScreen(
 
     SettingPage(
         navigateBack = actions::navigateBack,
-        title = strings.cloudUsersTitle,
+        title = CoreRes.string.cloud_users_title.toTextSpec(),
         verticalPadding = UiConstants.Spacing.small,
         contentPadding = PaddingValues(all = UiConstants.Spacing.large)
     ) {
@@ -69,10 +70,10 @@ private fun SimpleUserView(
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             size = UiConstants.ImageSize.medium,
         )
-        Text(
+        SoulText(
             modifier = Modifier
                 .weight(1f),
-            text = user.name,
+            text = user.name.toTextSpec(),
             style = UiConstants.Typography.bodyLarge,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,

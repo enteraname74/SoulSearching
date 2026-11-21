@@ -6,13 +6,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.editableelement.WriteFilesCheck
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementView
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.ModifyArtistViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistState
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun ModifyArtistRoute(
@@ -62,8 +63,8 @@ private fun ModifyArtistScreenView(
                 onSave = onValidateModification,
             ) { onSave ->
                 EditableElementView(
-                    title = strings.artistInformation,
-                    coverSectionTitle = strings.artistCover,
+                    title = CoreRes.string.artist_information.toTextSpec(),
+                    coverSectionTitle = CoreRes.string.artist_cover.toTextSpec(),
                     coverEditMode = state.coverEditMode,
                     navigateBack = navigateBack,
                     onSelectCover = { onSelectCover() },

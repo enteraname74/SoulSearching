@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.user.code
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,10 +16,12 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_delete_filled
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.list.ShapeListStyle
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import com.github.enteraname74.soulsearching.util.rememberClipboardController
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun SettingsCloudCodesScreen(
@@ -29,7 +30,7 @@ fun SettingsCloudCodesScreen(
 ) {
     SettingPage(
         navigateBack = actions::navigateBack,
-        title = strings.inscriptionCodeSettingsTitle,
+        title = CoreRes.string.inscription_code_settings_title.toTextSpec(),
         verticalPadding = UiConstants.Spacing.small,
         contentPadding = PaddingValues(all = UiConstants.Spacing.large),
     ) {
@@ -60,7 +61,7 @@ fun SettingsCloudCodesScreen(
                         .padding(
                             top = UiConstants.Spacing.medium,
                         ),
-                    text = strings.generateCodeButton,
+                    text = CoreRes.string.generate_code_button.toTextSpec(),
                     onClick = actions::generateCode,
                 )
             }
@@ -86,10 +87,10 @@ private fun CodeView(
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
+        SoulText(
             modifier = Modifier
                 .weight(1f),
-            text = code.code.toString(),
+            text = code.code.toString().toTextSpec(),
             style = UiConstants.Typography.bodyLarge,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
         )

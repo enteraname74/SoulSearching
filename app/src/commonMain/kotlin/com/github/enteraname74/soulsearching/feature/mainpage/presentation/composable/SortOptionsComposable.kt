@@ -1,9 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +31,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_sort_by_alpha
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_south
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
@@ -91,7 +93,7 @@ private fun SortTypeItem(
         modifier = Modifier
             .pointerHoverIcon(PointerIcon.Hand),
         text = {
-            Text(
+            SoulText(
                 text = sortType.title(),
                 color = contentColor,
                 style = UiConstants.Typography.body,
@@ -115,11 +117,11 @@ private fun SortType.icon(): DrawableResource =
     }
 
 @Composable
-private fun SortType.title(): String =
+private fun SortType.title(): SoulTextSpec =
     when (this) {
-        SortType.NAME -> strings.sortByName
-        SortType.ADDED_DATE -> strings.sortByAddedDate
-        SortType.NB_PLAYED -> strings.sortByMostListened
+        SortType.NAME -> CoreRes.string.sort_by_name.toTextSpec()
+        SortType.ADDED_DATE -> CoreRes.string.sort_by_added_date.toTextSpec()
+        SortType.NB_PLAYED -> CoreRes.string.sort_by_most_listened.toTextSpec()
     }
 
 private fun SortDirection.icon(): DrawableResource =

@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.collection
 
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRowSpec
@@ -12,7 +15,6 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.ext.gridCoverWithEmpty
 import com.github.enteraname74.soulsearching.domain.model.CollectionWithMusics
 import com.github.enteraname74.soulsearching.domain.model.Music
@@ -108,7 +110,7 @@ class CollectionBottomSheetViewModel(
             add(
                 BottomSheetRowSpec(
                     icon = CoreRes.drawable.ic_edit_filled,
-                    title = strings.modifyCollection,
+                    title = CoreRes.string.modify_collection.toTextSpec(),
                     onClick = ::toModifyCollection,
                 )
             )
@@ -138,9 +140,9 @@ class CollectionBottomSheetViewModel(
             BottomSheetRowSpec(
                 icon = CoreRes.drawable.ic_delete_filled,
                 title = if (collections.size == 1) {
-                    strings.deleteCollection
+                    CoreRes.string.delete_collection.toTextSpec()
                 } else {
-                    strings.deleteSelectedCollections
+                    CoreRes.string.delete_selected_collections.toTextSpec()
                 },
                 onClick = ::showDeleteDialog,
             )
@@ -152,14 +154,14 @@ class CollectionBottomSheetViewModel(
     ): BottomSheetTopInformation = if (collections.size == 1) {
         val collection = collections.first()
         BottomSheetTopInformation(
-            title = collection.collection.name,
-            subTitle = strings.musics(collection.musics.size),
+            title = collection.collection.name.toTextSpec(),
+            subTitle = SoulTexts.musics(collection.musics.size),
             cover = collection.cover,
         )
     } else {
         BottomSheetTopInformation(
-            title = strings.multipleSelection,
-            subTitle = strings.selectedElements(collections.size),
+            title = CoreRes.string.multiple_selection.toTextSpec(),
+            subTitle = SoulTexts.selectedElements(collections.size),
             cover = collections.gridCoverWithEmpty(),
         )
     }

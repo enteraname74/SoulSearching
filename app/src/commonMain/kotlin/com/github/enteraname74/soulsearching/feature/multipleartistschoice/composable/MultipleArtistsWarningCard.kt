@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,8 +19,10 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_groups_filled
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 
 @Composable
 fun MultipleArtistsWarningCard() {
@@ -54,8 +55,8 @@ fun MultipleArtistsWarningCard() {
                     size = UiConstants.ImageSize.mediumPlus,
                     color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 )
-                Text(
-                    text = strings.multipleArtistsText,
+                SoulText(
+                    text = CoreRes.string.multiple_artists_text.toTextSpec(),
                     color = SoulSearchingColorTheme.colorScheme.onSecondary,
                     textAlign = TextAlign.Center,
                     style = UiConstants.Typography.body,

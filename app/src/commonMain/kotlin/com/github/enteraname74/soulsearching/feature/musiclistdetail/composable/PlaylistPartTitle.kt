@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.feature.musiclistdetail.composable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -14,14 +13,16 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 
 @Composable
 fun PlaylistPartTitle(
-    title: String
+    title: SoulTextSpec
 ) {
     val windowSize = rememberWindowSize()
     val canShowColumnLayout = MusicListDetailUiUtils.canShowColumnLayout() && windowSize != WindowSize.Small
-    Text(
+    SoulText(
         modifier = Modifier
             .padding(
                 start = if (canShowColumnLayout) {

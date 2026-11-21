@@ -1,0 +1,37 @@
+Soul Searching è un'app musicale completa, potente e personalizzabile per ascoltare la tua musica locale.
+
+Un'app completa:
+- Creazione di playlist e raccolte
+- Supporto di più liste in riproduzione
+- Gestione della lista in riproduzione (modalità di riproduzione, aggiunta, rimozione, ecc.)
+- Sistema di accesso rapido
+- Statistiche di ascolto (per mese, per anno o complessive)
+- Testi sincronizzati (dal file audio o da una fonte esterna)
+- Modifica di album, artisti e brani (scrittura nei metadati dei file audio)
+- Supporto di più artisti per lo stesso brano
+- Ricerca e ordinamento
+- Gestione delle cartelle
+- Regolazione del volume del lettore
+- Supporto di Android Auto
+
+Un'app ad alte prestazioni:
+- Gestisce un gran numero di brani restando sempre fluida
+- Logica ottimizzata per eseguire rapidamente operazioni complesse
+
+Un'app che rispecchia il tuo stile:
+- Diversi temi di colore predefiniti
+- Possibilità di forzare il tema scuro o chiaro
+- Tema dinamico, basato sul colore della copertina dell'album del brano in riproduzione
+- Possibilità di personalizzare l'applicazione del tema dinamico su tutte le schermate
+- Scelta della base usata per generare il tema dinamico
+- Personalizzazione del lettore (scorrimento per cambiare brano, avanzamento visibile nella modalità ridotta, ecc.)
+- Personalizzazione della pagina iniziale (scheda da aprire all'avvio, schede visibili, stile di visualizzazione, ecc.)
+
+Supporto cloud:
+Nota: Cloudy è stato introdotto di recente ed è ancora in fase alpha.
+
+Con Cloudy, archivia i tuoi brani su un cloud self-hosted, creato appositamente per Soul Searching!
+Accedi ai tuoi brani da più piattaforme, come desktop, web e Android.
+Cloudy offre anche altre funzionalità, come:
+- gestione di più utenti
+- avvio di una lista in riproduzione condivisa con più utenti, come su Spotify

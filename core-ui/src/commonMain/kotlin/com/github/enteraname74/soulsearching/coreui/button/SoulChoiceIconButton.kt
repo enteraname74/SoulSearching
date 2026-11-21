@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.coreui.button
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +16,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_more_vertical
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
@@ -70,7 +70,7 @@ private fun <T> MenuItem(
         modifier = Modifier
             .pointerHoverIcon(PointerIcon.Hand),
         text = {
-            Text(
+            SoulText(
                 text = data.title,
                 color = contentColor,
                 style = UiConstants.Typography.body,

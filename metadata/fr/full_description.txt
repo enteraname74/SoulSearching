@@ -1,14 +1,14 @@
 Soul Searching est une application de musique complète, performante et personnalisable pour écouter vos musiques locales.
 
 Une application complète :
-- Création de playlists
+- Création de playlists, de collections
 - Support de plusieurs listes de lectures
 - Gestion de la liste de lecture (mode de jeu, ajout, suppression,...)
 - Système d'accès rapide
 - Statistiques d'écoutes (par mois, années ou sur la durée d'utilisation de l'app)
 - Paroles synchronisées (provenant du fichier audio ou d'une source externe)
 - Modification d'albums, artistes et musiques (écriture sur les métadonnées des fichiers audio)
-- Support dde multiples artistes pour une même musique
+- Support de multiples artistes pour une même musique
 - Recherche et tris
 - Gestion des dossiers
 - Modification du volume du lecteur

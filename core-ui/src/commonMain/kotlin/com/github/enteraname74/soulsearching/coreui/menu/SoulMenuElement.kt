@@ -12,13 +12,14 @@ import androidx.compose.ui.draw.alpha
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
 fun SoulMenuElement(
-    title: String,
-    subTitle: String?,
+    title: SoulTextSpec,
+    subTitle: SoulTextSpec?,
     onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,

@@ -12,10 +12,11 @@ import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun ManageFoldersScreen(
@@ -27,7 +28,7 @@ fun ManageFoldersScreen(
     SoulScreen {
         Column {
             SoulTopBar(
-                title = strings.usedFoldersTitle,
+                title = CoreRes.string.used_folders_title.toTextSpec(),
                 leftAction = state.navigateBack?.let {
                     TopBarNavigationAction(onClick = it)
                 },
@@ -46,8 +47,8 @@ fun ManageFoldersScreen(
                         SoulMenuSwitch(
                             modifier = Modifier
                                 .animateItem(),
-                            title = it.name,
-                            subTitle = it.folderPath,
+                            title = it.name.toTextSpec(),
+                            subTitle = it.folderPath.toTextSpec(),
                             toggleAction = {
                                 state.setStatus(it, !it.isSelected)
                             },

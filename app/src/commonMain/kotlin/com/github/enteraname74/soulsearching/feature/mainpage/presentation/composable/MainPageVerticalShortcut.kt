@@ -1,12 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -71,7 +71,7 @@ fun MainPageVerticalShortcut(
                     color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     icon = it.filledIcon(),
                 )
-                Text(
+                SoulText(
                     modifier = Modifier
                         .rotate(-90f)
                         .vertical(),

@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Values shared by every language (interface defaults in Strings) -->
+
+    <string name="playlists">プレイリスト</string>
+    <string name="albums">アルバム</string>
+    <string name="ok">OK</string>
+    <string name="glacier_theme">グレイシャー</string>
+    <string name="passion_theme">パッション</string>
+    <string name="playlist_detail_title">プレイリスト</string>
+    <string name="collection_detail_title">コレクション</string>
+    <string name="album_detail_title">アルバム</string>
+
+    <string name="app_logo">アプリのロゴ</string>
+    <string name="cannot_retrieve_songs">曲を取得できません</string>
+    <string name="no_elements">項目がありません</string>
+    <string name="empty_quick_access">クイックアクセスに項目がありません</string>
+    <string name="empty_folders">フォルダがありません</string>
+    <string name="empty_albums">アルバムがありません</string>
+    <string name="empty_musics">曲がありません</string>
+    <string name="empty_artists">アーティストがありません</string>
+    <string name="empty_playlists">プレイリストがありません</string>
+    <string name="empty_months">月がありません</string>
+    <string name="empty_collections">コレクションがありません</string>
+    <string name="empty_musics_explanations">設定から曲を追加すると、ここに表示されます</string>
+    <string name="empty_albums_explanations">設定から曲を追加すると、ここにアルバムが表示されます</string>
+    <string name="empty_artists_explanations">設定から曲を追加すると、ここにアーティストが表示されます</string>
+    <string name="empty_folders_explanations">設定から曲を追加すると、ここにフォルダが表示されます</string>
+    <string name="empty_playlists_explanations">「+」ボタンをクリックしてプレイリストを作成してください</string>
+    <string name="empty_quick_access_explanations">曲、アルバム、アーティスト、プレイリストをクイックアクセスに追加すると、ここに表示されます</string>
+    <string name="empty_months_explanations">設定から曲を追加すると、追加した月ごとにここに表示されます</string>
+    <string name="empty_collections_explanations">似たアルバムやアーティストをコレクションにまとめましょう。アーティストやアルバムに新しい曲を追加すると、関連するコレクションにも自動的に追加されます</string>
+    <string name="back_button">戻るボタン</string>
+    <string name="header_bar_right_button">ヘッダーバーの右ボタン</string>
+    <string name="image">画像</string>
+    <string name="more_button">その他ボタン</string>
+    <string name="more">その他</string>
+    <string name="settings_access_button">設定ボタン</string>
+    <string name="create_playlist_button">プレイリスト作成ボタン</string>
+    <string name="shuffle_button">シャッフルボタン</string>
+    <string name="favorite">お気に入り</string>
+    <string name="in_this_collection">このコレクション内</string>
+    <string name="folders">フォルダ</string>
+    <string name="artists">アーティスト</string>
+    <string name="by_folders">フォルダ別</string>
+    <string name="by_months">月別</string>
+    <string name="musics">曲</string>
+    <string name="quick_access">クイックアクセス</string>
+    <string name="missing_permissions">アプリを正常に動作させるには、必要な権限をすべて許可してください。</string>
+    <string name="played_list">再生キュー</string>
+    <string name="current_song">再生中の曲</string>
+    <string name="lyrics">歌詞</string>
+    <string name="activate_remote_lyrics_fetch_title">オンライン歌詞の取得を有効にする</string>
+    <!-- %1$s: lyrics_provider_name -->
+    <string name="activate_remote_lyrics_fetch_text">曲のファイルに歌詞が見つからない場合に、外部サービス（%1$s）で再生中の曲の歌詞を検索するには許可が必要です。</string>
+    <!-- %1$s: lyrics_provider_name -->
+    <string name="activate_remote_lyrics_fetch_hint">曲のファイルに歌詞が見つからない場合、曲名、アルバム、アーティストを使ってオンラインのソース（%1$s）から歌詞を検索します。</string>
+    <string name="no_lyrics_found">この曲の歌詞が見つかりません</string>
+    <string name="local_lyrics_provider">音楽ファイルのメタデータの歌詞</string>
+    <string name="remote_lyrics_provider">LrcLib 提供の歌詞</string>
+    <string name="complete_application_title">充実の音楽アプリ</string>
+    <string name="complete_application_text">すべての曲、アルバム、アーティスト、プレイリストを楽しめます。</string>
+    <string name="quick_access_title">お気に入りをいつも手元に。</string>
+    <string name="quick_access_text">クイックアクセスを使えば、お気に入りのアルバムや曲などにすぐにアクセスできます。</string>
+    <string name="modify_elements_title">音楽情報を編集</string>
+    <string name="modify_elements_text">アルバム、曲、アーティストなどの情報を編集できます。</string>
+    <string name="dynamic_theme_feature_title">ダイナミックテーマ</string>
+    <string name="dynamic_theme_feature_text">Soul Searching では、再生中の曲に合わせたダイナミックテーマを利用できます。</string>
+    <string name="manage_folders_title">使用するフォルダの管理</string>
+    <string name="manage_folders_text">曲の取得に使用するフォルダを管理します。</string>
+    <string name="add_new_musics_title">新しい曲を追加</string>
+    <string name="add_new_musics_text">デバイスから新しい曲を簡単に追加できます。</string>
+    <string name="personalize_main_page_title">自分好みにカスタマイズ</string>
+    <string name="personalize_main_page_text">クイックアクセスは不要ですか？メインページの各セクションにすばやく移動できるバーが欲しいですか？アプリの設定で自由にカスタマイズできます。</string>
+    <string name="manage_album_view_title">アルバム表示</string>
+    <string name="manage_album_view_text">アルバム表示を管理</string>
+    <string name="manage_player_title">プレーヤー</string>
+    <string name="manage_player_text">プレーヤーを管理</string>
+    <string name="player_swipe_title">曲のジャケットをスワイプして再生キュー内を前後に移動する</string>
+    <string name="player_rewind_title">前の曲を再生する前に再生中の曲を頭出しする</string>
+    <string name="player_minimised_progression_title">ミニプレーヤーに再生中の曲の進行状況を表示する</string>
+    <string name="soul_mix_settings_title">Soul Mix で各フォルダから取得する曲数</string>
+    <string name="searching_songs_from_your_device">デバイス内の曲を検索しています…</string>
+    <string name="search_for_musics">曲を検索</string>
+    <string name="search_all">曲、アーティスト、アルバム、プレイリストを検索…</string>
+    <string name="sort_by_added_date">追加日</string>
+    <string name="sort_by_most_listened">再生回数順</string>
+    <string name="sort_by_name">名前順</string>
+    <string name="remove_from_quick_access">クイックアクセスから削除</string>
+    <string name="remove_from_playlist">プレイリストから削除</string>
+    <string name="remove_from_played_list">再生キューから削除</string>
+    <string name="remove_from_collection">コレクションから削除</string>
+    <string name="add_to_quick_access">クイックアクセスに追加</string>
+    <string name="add_to_playlist">プレイリストに追加</string>
+    <string name="add_to_collection">コレクションに追加</string>
+    <string name="create">作成</string>
+    <string name="cancel">キャンセル</string>
+    <string name="delete">削除</string>
+    <string name="remove">除外</string>
+    <string name="soul_mix_info_dialog_text">各フォルダから集めた曲のミックスを楽しめます！\n各フォルダから取得する曲数は設定で変更できます。</string>
+    <string name="create_playlist_dialog_title">新しいプレイリストを作成</string>
+    <string name="create_collection_dialog_title">新しいコレクションを作成</string>
+    <string name="playlist_name">プレイリスト名</string>
+    <string name="collection_name">コレクション名</string>
+    <string name="name_already_exists">この名前はすでに使われています</string>
+    <string name="music_name">曲名</string>
+    <string name="music_album_position">アルバム内の位置</string>
+    <string name="album_name">アルバム名</string>
+    <string name="album_artist_name">アルバムアーティスト名</string>
+    <string name="artist_name">アーティスト名</string>
+    <string name="playlist_cover">プレイリストのカバー</string>
+    <string name="collection_cover">コレクションのカバー</string>
+    <string name="album_cover">アルバムのカバー</string>
+    <string name="artist_cover">アーティストのカバー</string>
+    <string name="playlist_information">プレイリストの情報</string>
+    <string name="collection_information">コレクションの情報</string>
+    <string name="music_information">曲の情報</string>
+    <string name="music_path">曲のパス：</string>
+    <string name="music_file_cover">ファイルのカバー</string>
+    <string name="music_app_cover">アプリのカバー</string>
+    <string name="cover_selection">カバーの選択</string>
+    <string name="select_top_start_cover_image">左上のカバー画像を選択</string>
+    <string name="select_top_end_cover_image">右上のカバー画像を選択</string>
+    <string name="select_bottom_start_cover_image">左下のカバー画像を選択</string>
+    <string name="select_bottom_end_cover_image">右下のカバー画像を選択</string>
+    <string name="artist_information">アーティストの情報</string>
+    <string name="album_information">アルバムの情報</string>
+    <string name="add_artist">アーティストを追加</string>
+    <string name="delete_music_dialog_title">この曲を削除しますか？</string>
+    <string name="delete_music_dialog_text">アプリから削除されます。</string>
+    <string name="delete_album_dialog_title">このアルバムを削除しますか？</string>
+    <string name="delete_playlist_dialog_title">このプレイリストを削除しますか？</string>
+    <string name="delete_collection_dialog_title">このコレクションを削除しますか？</string>
+    <string name="delete_artist_dialog_title">このアーティストを削除しますか？</string>
+    <string name="delete_selected_musics_dialog_title">選択した曲を削除しますか？</string>
+    <string name="delete_selected_musics_dialog_text">アプリから削除されます。</string>
+    <string name="delete_folder_musics_dialog_title">このフォルダを削除しますか？</string>
+    <string name="delete_folder_musics_dialog_text">このフォルダ内のすべての曲がアプリから削除されます。また、今後の曲の取得にもこのフォルダは使用されなくなります。</string>
+    <string name="delete_selected_folders_musics_dialog_title">選択したフォルダを削除しますか？</string>
+    <string name="delete_selected_folders_musics_dialog_text">これらのフォルダ内のすべての曲がアプリから削除されます。また、今後の曲の取得にもこれらのフォルダは使用されなくなります。</string>
+    <string name="delete_month_musics_dialog_title">この月の曲を削除しますか？</string>
+    <string name="delete_month_musics_dialog_text">この月のすべての曲がアプリから削除されます。</string>
+    <string name="delete_selected_months_musics_dialog_title">選択した月の曲を削除しますか？</string>
+    <string name="delete_selected_months_musics_dialog_text">これらの月のすべての曲がアプリから削除されます。</string>
+    <string name="delete_selected_albums_dialog_title">選択したアルバムを削除しますか？</string>
+    <string name="delete_selected_artists_dialog_title">選択したアーティストを削除しますか？</string>
+    <string name="delete_selected_playlists_dialog_title">選択したプレイリストを削除しますか？</string>
+    <string name="delete_selected_collections_dialog_title">選択したコレクションを削除しますか？</string>
+    <string name="remove_music_from_playlist_title">この曲をプレイリストから除外しますか？</string>
+    <string name="remove_music_from_playlist_text">この曲はプレイリストから除外されますが、アプリからは削除されません。</string>
+    <string name="remove_selected_music_from_playlist_title">選択した曲をプレイリストから除外しますか？</string>
+    <string name="remove_selected_music_from_playlist_text">選択した曲はプレイリストから除外されますが、アプリからは削除されません。</string>
+    <string name="remove_artist_from_collection_title">このアーティストをコレクションから除外しますか？</string>
+    <string name="remove_artist_from_collection_text">このアーティストはコレクションから除外されますが、アプリからは削除されません。</string>
+    <string name="remove_album_from_collection_title">このアルバムをコレクションから除外しますか？</string>
+    <string name="remove_album_from_collection_text">このアルバムはコレクションから除外されますが、アプリからは削除されません。</string>
+    <string name="modify_album">このアルバムを編集</string>
+    <string name="modify_artist">このアーティストを編集</string>
+    <string name="modify_music">この曲を編集</string>
+    <string name="modify_playlist">このプレイリストを編集</string>
+    <string name="modify_collection">このコレクションを編集</string>
+    <string name="covers_of_the_album">アルバム内の曲のカバー</string>
+    <string name="covers_of_the_artist">アーティストの曲のカバー</string>
+    <string name="covers_of_the_playlist">プレイリスト内の曲のカバー</string>
+    <string name="covers_of_the_collection">コレクション内の曲のカバー</string>
+    <string name="covers_of_song_album">曲のアルバム内のカバー</string>
+    <string name="no_available_covers">利用できるカバーがありません</string>
+    <string name="delete_album">このアルバムを削除</string>
+    <string name="delete_artist">このアーティストを削除</string>
+    <string name="delete_music">この曲を削除</string>
+    <string name="delete_playlist">このプレイリストを削除</string>
+    <string name="delete_collection">このコレクションを削除</string>
+    <string name="delete_selected_albums">選択したアルバムを削除</string>
+    <string name="delete_selected_artists">選択したアーティストを削除</string>
+    <string name="delete_selected_playlists">選択したプレイリストを削除</string>
+    <string name="delete_selected_collections">選択したコレクションを削除</string>
+    <string name="delete_selected_musics">選択した曲を削除</string>
+    <string name="delete_folder_musics">フォルダを削除</string>
+    <string name="delete_selected_folders_musics">選択したフォルダを削除</string>
+    <string name="delete_month_musics">この月を削除</string>
+    <string name="delete_selected_months_musics">選択した月を削除</string>
+    <string name="play_next">次に再生</string>
+    <string name="add_to_queue">キューに追加</string>
+    <string name="personalized_theme_title">カスタムテーマ</string>
+    <string name="personalized_theme_text">ダイナミックテーマを適用する画面：</string>
+    <string name="dynamic_player_view">プレーヤー画面</string>
+    <string name="dynamic_playlist_view">プレイリスト、アルバム、アーティスト、月、フォルダの画面</string>
+    <string name="dynamic_other_view">その他の画面</string>
+    <string name="settings">設定</string>
+    <string name="advanced_settings_title">詳細設定</string>
+    <string name="advanced_settings_text">アプリで使用するカバーを管理</string>
+    <string name="reload_covers_title">カバーを再読み込み</string>
+    <string name="reload_covers_text">ファイルのデータからカバーを再読み込み</string>
+    <string name="reload_musics_covers">曲のカバーを再読み込み</string>
+    <string name="delete_playlists_covers">プレイリストのカバーを削除</string>
+    <string name="delete_collections_covers">コレクションのカバーを削除</string>
+    <string name="reload_albums_covers">アルバムのカバーを再読み込み</string>
+    <string name="reload_artists_covers">アーティストのカバーを再読み込み</string>
+    <string name="split_multiple_artists_title">アーティストを分割</string>
+    <string name="split_multiple_artists_text">複数のアーティストで構成されたアーティストを選択して分割</string>
+    <string name="artist_cover_method_title">アーティストのカバーの取得元</string>
+    <string name="artist_cover_method_text">アーティストのカバーの取得方法を選択</string>
+    <string name="activate_artist_cover_method">パスによる取得を有効にする</string>
+    <string name="artist_cover_method_dynamic_name_title">アーティスト名の処理</string>
+    <string name="cover_folder_retriever_path_selection_title">親フォルダを選択</string>
+    <string name="cover_folder_retriever_path_selection_no_path_selected">フォルダが選択されていません</string>
+    <string name="cover_folder_retriever_file_extension">画像の拡張子</string>
+    <string name="cover_folder_retriever_folder_title">動的フォルダ</string>
+    <string name="cover_folder_retriever_folder_text">フォルダ名がアーティスト名と一致します</string>
+    <string name="cover_folder_retriever_folder_incomplete">必要なデータが不足しています</string>
+    <string name="cover_folder_retriever_rules_white_space">空白を置き換える</string>
+    <string name="cover_folder_retriever_rules_replacement">置換文字</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_uppercase">大文字</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_no_treatment">処理しない</string>
+    <string name="cover_folder_retriever_rules_dynamic_name_lowercase">小文字</string>
+    <string name="cover_folder_retriever_file_title">動的カバーファイル</string>
+    <string name="cover_folder_retriever_file_text">画像ファイル名がアーティスト名と一致します</string>
+    <string name="cover_folder_retriever_dynamic_file_title">カバーファイル名</string>
+    <string name="activate_github_release_fetch_title">GitHub で新しいバージョンを確認する</string>
+    <string name="activate_github_release_fetch_text">GitHub で新しいバージョンが公開されたときに、アプリ内で通知を受け取りますか？</string>
+    <string name="activate_github_release_fetch_hint">GitHub で新しいバージョンが公開されると、アプリ内で通知されます。</string>
+    <string name="go_to_settings">設定を開く</string>
+    <string name="manage_musics_title">曲の管理</string>
+    <string name="manage_musics_text">曲の編集と追加、使用するフォルダの管理</string>
+    <string name="modify_music_file_title">デバイス上のファイルを変更する</string>
+    <string name="modify_music_file_text">曲の情報を編集すると、デバイス上のファイルのメタデータも変更されます</string>
+    <string name="color_theme_title">カラーテーマ</string>
+    <string name="color_theme_text">ダイナミックテーマ、カスタムテーマ</string>
+    <string name="personalization_title">カスタマイズ</string>
+    <string name="personalization_text">プレーヤーとメインページの表示を管理</string>
+    <string name="about_title">Soul Searching について</string>
+    <string name="about_text">開発者、アプリのバージョン名</string>
+    <string name="new_release_available_title">新しいバージョンがあります！</string>
+    <string name="statistics_title">統計</string>
+    <string name="statistics_text">再生に関する統計</string>
+    <string name="most_played_songs">よく再生された曲（再生回数）</string>
+    <string name="most_listened_songs">よく再生された曲（再生時間）</string>
+    <string name="listening_time">合計再生時間</string>
+    <string name="no_data_on_this_period">この期間のデータはありません</string>
+    <string name="most_played_albums">よく再生されたアルバム</string>
+    <string name="most_played_artists">よく再生されたアーティスト</string>
+    <string name="artists_with_most_songs">曲数の多いアーティスト</string>
+    <string name="most_played_playlists">よく再生されたプレイリスト</string>
+    <string name="theme_selection_title">メインテーマ</string>
+    <string name="theme_selection_text">アプリのメインテーマを選択</string>
+    <string name="force_dark_theme_title">常にダークテーマを使用</string>
+    <string name="force_light_theme_title">常にライトテーマを使用</string>
+    <string name="steel_theme">スチール</string>
+    <string name="dusk_theme">夕暮れ</string>
+    <string name="greenery_theme">新緑</string>
+    <string name="tree_bark_theme">樹皮</string>
+    <string name="extracted_color_title">カバーから抽出する色</string>
+    <string name="extracted_color_text">ダイナミックカラーテーマの生成に使用する基準色を設定</string>
+    <string name="extracted_color_info">選択した色を抽出できない場合は、ドミナントカラーが使用されます。</string>
+    <string name="main_page_title">メインページ</string>
+    <string name="main_page_text">メインページの表示を管理</string>
+    <string name="show_quick_access">クイックアクセスを表示</string>
+    <string name="show_playlists">プレイリストを表示</string>
+    <string name="show_collections">コレクションを表示</string>
+    <string name="collections">コレクション</string>
+    <string name="show_albums">アルバムを表示</string>
+    <string name="show_artists">アーティストを表示</string>
+    <string name="manage_musics_view_text">曲の表示を管理</string>
+    <string name="show_musics_by_folders">フォルダ別に曲を表示</string>
+    <string name="show_musics_by_months">月別に曲を表示</string>
+    <string name="show_album_track_number">トラック番号を表示</string>
+    <string name="initial_section_title">起動時のセクション</string>
+    <string name="initial_section_text">アプリ起動時に表示するセクションを選択</string>
+    <string name="use_vertical_access_bar_title">縦向きのアクセスバーを使用</string>
+    <string name="use_horizontal_access_bar_text">横向きのアクセスバーを使用</string>
+    <string name="used_folders_title">使用するフォルダ</string>
+    <string name="used_folders_text">アプリで使用するフォルダを設定</string>
+    <string name="fetching_folders">フォルダを取得しています</string>
+    <string name="add_musics_title">曲を追加</string>
+    <string name="add_musics_text">デバイスの新しい曲をアプリに追加</string>
+    <string name="deleting_musics_from_unselected_folders">選択されていないフォルダの曲を削除しています…</string>
+    <string name="dynamic_theme_title">ダイナミックテーマ</string>
+    <string name="dynamic_theme_text">再生中の曲のアルバムカバーに基づく全体のカラーテーマ</string>
+    <string name="system_theme_title">システムテーマ</string>
+    <string name="system_theme_text">システムのカラーモードに基づく全体のカラーテーマ</string>
+    <string name="lead_developer">リード開発者</string>
+    <string name="developers_title">開発者</string>
+    <string name="developers_text">Soul Searching プロジェクトの開発者</string>
+    <string name="changelog_title">最新のアップデート</string>
+    <string name="changelog_text">新機能、バグ修正</string>
+    <string name="changelog_update_required">アプリをアップデートして最新機能をお楽しみください！</string>
+    <string name="version_name_title">アプリのバージョン名</string>
+    <string name="project_site_title">プロジェクトのウェブサイトとソースコード</string>
+    <string name="project_site_text">ソースコード、提案の送信</string>
+    <string name="no_new_musics">追加する新しい曲はありません</string>
+    <string name="saving_new_musics">新しい曲を保存しています…</string>
+    <string name="songs_saved">曲を保存しました！</string>
+    <string name="search_for_new_songs">新しい曲を検索</string>
+    <string name="app_migration">アプリのデータを更新しています</string>
+    <string name="multiple_artists_title">複数のアーティストを含む曲</string>
+    <string name="multiple_artists_text">複数のアーティストを含む曲が見つかりました。これらのアーティストを個別に分割するか、1 人のアーティストとして残すかを選択してください。</string>
+    <string name="multiple_artists_selection_title">分割するアーティスト：</string>
+    <string name="no_multiple_artists">分割するアーティストはありません</string>
+    <string name="multiple_selection">複数選択</string>
+    <string name="field_cannot_be_empty">この項目は必須です</string>
+    <string name="field_must_be_anumber">数値を入力してください</string>
+    <string name="player_volume">プレーヤーの音量</string>
+    <string name="an_error_occurred">エラーが発生しました</string>
+    <string name="album_does_not_exists">このアルバムは存在しません</string>
+    <string name="artist_does_not_exists">このアーティストは存在しません</string>
+    <string name="playlist_does_not_exists">このプレイリストは存在しません</string>
+    <string name="collection_does_not_exists">このコレクションは存在しません</string>
+    <string name="folder_does_not_exists">このフォルダは存在しません</string>
+    <string name="month_playlist_does_not_exists">この月のリストは存在しません</string>
+    <string name="artist_detail_title">アーティスト</string>
+    <string name="month_detail_title">月</string>
+    <string name="folder_detail_title">フォルダ</string>
+    <string name="element_detail_edit">編集</string>
+    <string name="element_detail_play">再生</string>
+    <string name="element_detail_shuffle">シャッフル</string>
+    <string name="element_detail_titles">タイトル</string>
+    <string name="and">と</string>
+    <string name="continue_played_list_title">前回の続きから再生</string>
+    <string name="continue_played_list_action">再開</string>
+    <string name="saved_changes">変更を保存しました</string>
+    <string name="cloud_text">曲を Cloudy と同期</string>
+    <string name="cloud_settings_title">設定</string>
+    <string name="cloud_settings_text">ホスト URL</string>
+    <string name="cloud_settings_last_general_sync">前回の全体同期</string>
+    <string name="cloud_settings_last_statistics_sync">前回の統計の同期</string>
+    <string name="cloud_settings_last_settings_sync">前回の設定の同期</string>
+    <string name="cloud_settings_no_sync">未同期</string>
+    <string name="cloud_url_field_label">ホスト URL</string>
+    <string name="cloud_name_field_label">ユーザー名</string>
+    <string name="cloud_password_field_label">パスワード</string>
+    <string name="cloud_sign_up">新規登録</string>
+    <string name="cloud_no_account">アカウントを持っていません</string>
+    <string name="cloud_connection">ログイン</string>
+    <string name="cloud_sign_in">ログイン</string>
+    <string name="cloud_registration_code">登録コード</string>
+    <string name="cloud_user_settings">ユーザー設定</string>
+    <string name="disconnect">ログアウト</string>
+    <string name="inscription_code_settings_title">登録コード</string>
+    <string name="generate_code_button">コードを生成</string>
+    <string name="inscription_code_settings_text">招待コードを管理し、新しいユーザー用の使い切りコードを生成します</string>
+    <string name="generated_code">生成されたコード</string>
+    <string name="cloud_sync_title">同期</string>
+    <string name="cloud_sync_text">アプリと Cloudy の同期を管理</string>
+    <string name="cloud_sync_button">クラウドと同期</string>
+    <string name="music_channel_notification_name">再生中の音楽の通知</string>
+    <string name="music_channel_notification_description">再生中の曲を操作するために使用します</string>
+    <string name="cloud_sync_channel_notification_name">Cloudy 同期の通知</string>
+    <string name="cloud_sync_channel_notification_description">アプリと Cloudy の間でデータを同期するために使用します</string>
+    <string name="start_shared_played_list">共有再生キューを開始</string>
+    <string name="shared_list_title">共有リスト</string>
+    <string name="shared_list_host">ホスト</string>
+    <string name="shared_list_guests">ゲスト</string>
+    <string name="shared_list_code_title">招待コード</string>
+    <string name="shared_list_code_description">このコードを友達に共有して、共有再生キューに招待しましょう！</string>
+    <string name="shared_list_remove_user_title">共有リストからユーザーを削除</string>
+    <string name="shared_list_remove_user_text">このユーザーを削除すると、そのユーザーの曲も再生キューから削除されます</string>
+    <string name="shared_list_remove_user_button">削除</string>
+    <string name="shared_list_code_label">招待コード</string>
+    <string name="cloud_shared_list_title">共有再生キュー</string>
+    <string name="cloud_shared_list_text">共有再生キューへの参加と管理</string>
+    <string name="cloud_shared_list_join_title">再生キューに参加</string>
+    <string name="cloud_sharedlist_join_text">コードを使って共有再生キューに参加</string>
+    <string name="join_shared_list_button">参加</string>
+    <string name="cloud_users_title">Cloudy のユーザー</string>
+    <string name="cloud_users_text">Cloudy インスタンスのすべてのユーザーを表示</string>
+    <string name="cloud_users_delete_dialog_title">ユーザーを削除</string>
+    <string name="cloud_users_delete_dialog_text">このユーザーを削除しますか？</string>
+    <string name="cloud_alpha_warning_text">Cloudy はアルファ版のため、アプリの一部の機能が Cloudy で正しく動作しない場合があります</string>
+    <string name="cloud_explanations_title">Soul Searching のためのクラウド</string>
+    <string name="cloud_explanations_text">Cloudy は Soul Searching 用のセルフホスト型クラウドシステムで、次のような用途向けに設計されています：\n- 複数のデバイスから曲にアクセスする\n- 複数のユーザーで共有再生キューを開始する\n- ユーザー（家族、友達など）を管理する\n\nCloudy をセルフホストするには、ドキュメントを参照してください。</string>
+    <string name="cloud_explanations_redirect">Cloudy のドキュメント</string>
+    <string name="cloud_add_url_to_shared_list_title">URL から曲を追加</string>
+    <string name="add">追加</string>
+    <string name="shared_list_delete_title">この共有再生キューを削除</string>
+    <string name="shared_list_delete_text">ユーザーはリストから切断され、リストは削除されます</string>
+    <string name="music_synced_on_cloud">クラウドと同期済みの曲</string>
+    <string name="music_remote_only">クラウドからの曲</string>
+    <string name="music_local_only">クラウドに未アップロードの曲</string>
+    <string name="shortcuts_title">ショートカット</string>
+    <string name="shortcuts_text">アプリのショートカットを表示</string>
+    <string name="shortcut_player_category">プレーヤーのショートカット</string>
+    <string name="shortcut_toggle_play_pause_description">再生／一時停止</string>
+    <string name="shortcut_previous_description">前へ</string>
+    <string name="shortcut_next_description">次へ</string>
+    <string name="shortcut_seek_forward_description">早送り</string>
+    <string name="shortcut_seek_backward_description">巻き戻し</string>
+    <string name="shortcut_volume_up_description">音量を上げる</string>
+    <string name="shortcut_volume_down_description">音量を下げる</string>
+    <string name="shortcut_toggle_favorite_description">再生中の曲のお気に入りを切り替え</string>
+    <string name="gigabyte_abbreviation">GB</string>
+    <string name="user_storage_title">ユーザーデータ</string>
+    <string name="user_storage_text">Cloudy に保存されたユーザーデータを管理</string>
+    <string name="user_storage_section_title">ストレージ</string>
+    <string name="user_storage_all_available_info">管理者の場合、利用可能な最大ストレージは Cloudy インスタンスの空き容量と同じです</string>
+    <string name="user_storage_reduced_info">一般ユーザーの場合、利用可能な最大ストレージはこの Cloudy インスタンスの管理者が設定したルールに従います。詳しくは管理者にお問い合わせください</string>
+    <string name="clear_user_storage_button">自分のデータをすべて消去</string>
+    <string name="clear_user_storage_dialog_text">すべてのデータが Cloudy から削除されます。アカウントは削除されません</string>
+    <string name="statistics_all_period_label">全期間</string>
+    <string name="statistics_year_period_label">年別</string>
+    <string name="statistics_month_period_label">月別</string>
+    <string name="playback_error_player_error">選択した曲を再生できません</string>
+    <string name="simple_cover_type">シンプル</string>
+    <string name="grid_cover_type">グリッド</string>
+    <string name="add_to_playlist_screen_title">プレイリストに追加</string>
+    <string name="add_to_playlist_search_placeholder">プレイリストに追加する曲を検索</string>
+    <string name="add_to_playlist_empty_title">曲がありません</string>
+    <string name="add_to_playlist_empty_text">プレイリストに追加できる曲が見つかりません</string>
+
+    <!-- Keyboard shortcuts commands -->
+    <string-array name="shortcut_toggle_play_pause_commands">
+        <item>スペース</item>
+    </string-array>
+    <string-array name="shortcut_previous_commands">
+        <item>Shift</item>
+        <item>←キー</item>
+    </string-array>
+    <string-array name="shortcut_next_commands">
+        <item>Shift</item>
+        <item>→キー</item>
+    </string-array>
+    <string-array name="shortcut_seek_forward_commands">
+        <item>→キー</item>
+    </string-array>
+    <string-array name="shortcut_seek_backward_commands">
+        <item>←キー</item>
+    </string-array>
+    <string-array name="shortcut_volume_up_commands">
+        <item>↑キー</item>
+    </string-array>
+    <string-array name="shortcut_volume_down_commands">
+        <item>↓キー</item>
+    </string-array>
+    <string-array name="shortcut_toggle_favorite_commands">
+        <item>F</item>
+    </string-array>
+
+    <!-- cloudSyncNotificationTitle(state) -->
+    <string name="cloud_sync_notification_title_syncing_settings">設定を同期中</string>
+    <string name="cloud_sync_notification_title_failure">失敗</string>
+    <string name="cloud_sync_notification_title_idle">待機中</string>
+    <string name="cloud_sync_notification_title_no_musics_to_send">送信する曲はありません</string>
+    <string name="cloud_sync_notification_title_checking_musics_to_send">確認中</string>
+    <string name="cloud_sync_notification_title_cleaning">曲を整理中</string>
+    <string name="cloud_sync_notification_title_clearing_remote_music_ids">曲を整理中</string>
+    <string name="cloud_sync_notification_title_fetching_from_remote">曲を取得中</string>
+    <string name="cloud_sync_notification_title_saving_remote">曲を保存中</string>
+    <string name="cloud_sync_notification_title_update_musics">曲を更新中</string>
+    <string name="cloud_sync_notification_title_upload_musics">曲をアップロード中</string>
+    <string name="cloud_sync_notification_title_fetching_remote_playlists">プレイリストを取得中</string>
+    <string name="cloud_sync_notification_title_uploading_playlists">プレイリストをアップロード中</string>
+    <string name="cloud_sync_notification_title_saving_remote_playlists">プレイリストを保存中</string>
+    <string name="cloud_sync_notification_title_finish">完了</string>
+    <string name="cloud_sync_notification_title_clearing_remote_playlist_ids">プレイリストを整理中</string>
+    <string name="cloud_sync_notification_title_fetching_remote_collections">コレクションを取得中</string>
+    <string name="cloud_sync_notification_title_uploading_collections">コレクションをアップロード中</string>
+    <string name="cloud_sync_notification_title_saving_remote_collections">コレクションを保存中</string>
+    <string name="cloud_sync_notification_title_clearing_remote_collection_ids">コレクションを整理中</string>
+    <string name="cloud_sync_notification_title_fetching_remote_stats">再生統計を取得中</string>
+    <string name="cloud_sync_notification_title_uploading_stats">再生統計をアップロード中</string>
+
+    <!-- cloudSyncNotificationText(state) -->
+    <string name="cloud_sync_notification_text_syncing_settings">設定をクラウドと同期しています</string>
+    <string name="cloud_sync_notification_text_failure">同期中にエラーが発生しました：%1$s</string>
+    <string name="cloud_sync_notification_text_idle">同期の開始を待っています</string>
+    <string name="cloud_sync_notification_text_no_musics_to_send">クラウドに送信するローカルの曲はありません</string>
+    <string name="cloud_sync_notification_text_checking_musics_to_send">クラウドに送信する曲を確認しています</string>
+    <string name="cloud_sync_notification_text_cleaning">同期後に古いローカルの曲を整理しています</string>
+    <string name="cloud_sync_notification_text_clearing_remote_music_ids">同期前にクラウドで削除された曲を整理しています</string>
+    <string name="cloud_sync_notification_text_fetching_from_remote">クラウドから曲を取得しています</string>
+    <string name="cloud_sync_notification_text_saving_remote">クラウドから取得した情報を保存しています</string>
+    <string name="cloud_sync_notification_text_update_musics">クラウド上の既存の曲を更新しています</string>
+    <string name="cloud_sync_notification_text_upload_musics">曲をクラウドにアップロードしています</string>
+    <string name="cloud_sync_notification_text_fetching_remote_playlists">クラウドからプレイリストを取得しています</string>
+    <string name="cloud_sync_notification_text_uploading_playlists">プレイリストをクラウドにアップロードしています</string>
+    <string name="cloud_sync_notification_text_saving_remote_playlists">クラウドのプレイリストを保存しています</string>
+    <string name="cloud_sync_notification_text_finish">同期が完了しました</string>
+    <string name="cloud_sync_notification_text_clearing_remote_playlist_ids">クラウドで削除されたプレイリストを整理しています</string>
+    <string name="cloud_sync_notification_text_fetching_remote_collections">クラウドからコレクションを取得しています</string>
+    <string name="cloud_sync_notification_text_uploading_collections">コレクションをクラウドにアップロードしています</string>
+    <string name="cloud_sync_notification_text_saving_remote_collections">クラウドのコレクションを保存しています</string>
+    <string name="cloud_sync_notification_text_clearing_remote_collection_ids">クラウドで削除されたコレクションを整理しています</string>
+    <string name="cloud_sync_notification_text_fetching_remote_stats">クラウドから再生統計を取得しています</string>
+    <string name="cloud_sync_notification_text_uploading_stats">再生統計をクラウドにアップロードしています</string>
+    <string name="cloud_sync_notification_unknown_error">不明なエラー</string>
+
+    <!-- userType(type) -->
+    <string name="user_type_user">ユーザー</string>
+    <string name="user_type_admin">管理者</string>
+    <string name="user_type_unknown">ステータスなし</string>
+
+    <!-- colorPaletteSeed(seed) -->
+    <string name="color_palette_seed_dark_vibrant">ダーク・ビビッド</string>
+    <string name="color_palette_seed_dark_muted">ダーク・ミュート</string>
+    <string name="color_palette_seed_light_muted">ライト・ミュート</string>
+    <string name="color_palette_seed_light_vibrant">ライト・ビビッド</string>
+    <string name="color_palette_seed_dominant">ドミナント</string>
+    <string name="color_palette_seed_muted">ミュート</string>
+    <string name="color_palette_seed_vibrant">ビビッド</string>
+
+    <!-- month(monthNumber) -->
+    <string name="month_january">1月</string>
+    <string name="month_february">2月</string>
+    <string name="month_march">3月</string>
+    <string name="month_april">4月</string>
+    <string name="month_may">5月</string>
+    <string name="month_june">6月</string>
+    <string name="month_july">7月</string>
+    <string name="month_august">8月</string>
+    <string name="month_september">9月</string>
+    <string name="month_october">10月</string>
+    <string name="month_november">11月</string>
+    <string name="month_december">12月</string>
+
+    <!-- Simple formatted functions -->
+    <string name="fetching_musics_from">曲を取得しています：%1$s</string>
+    <string name="new_release_available_text">新しいバージョンをダウンロードできます：%1$s</string>
+    <string name="artist_cover_method_example_title">アーティスト %1$s の場合のパスの例：</string>
+
+    <!-- duration(duration): e.g. "2 hours and 3 minutes" -->
+    <string name="duration_format">%1$s%2$s</string>
+    <!-- period(period) for Period.Month: "<month> <year>" -->
+    <string name="period_month_format">%2$d年%1$s</string>
+
+    <!-- Counting functions. Plural categories cannot express a dedicated "zero" text in English or
+         French (French "one" also covers 0), so each one has a companion *_zero string. -->
+    <string name="musics_count_zero">曲がありません</string>
+    <plurals name="musics_count">
+        <item quantity="other">%1$d 曲</item>
+    </plurals>
+    <string name="deleted_musics_automatically_zero">削除された曲はありません</string>
+    <plurals name="deleted_musics_automatically">
+        <item quantity="other">デバイス上に存在しなくなった %1$d 曲を削除しました</item>
+    </plurals>
+    <string name="plays_zero">再生なし</string>
+    <plurals name="plays">
+        <item quantity="other">%1$d 回再生</item>
+    </plurals>
+    <string name="selected_elements_zero">項目が選択されていません</string>
+    <plurals name="selected_elements">
+        <item quantity="other">%1$d 件選択中</item>
+    </plurals>
+    <string name="selected_musics_zero">曲が選択されていません</string>
+    <plurals name="selected_musics">
+        <item quantity="other">%1$d 曲選択中</item>
+    </plurals>
+    <string name="shared_list_preview_users_zero">ユーザーなし</string>
+    <plurals name="shared_list_preview_users">
+        <item quantity="other">%1$d 人のユーザー</item>
+    </plurals>
+    <string name="shared_list_preview_connected_users_zero">接続中のユーザーなし</string>
+    <plurals name="shared_list_preview_connected_users">
+        <item quantity="other">%1$d 人が接続中</item>
+    </plurals>
+
+    <!-- hours(hours) / minutes(minutes) / seconds(seconds) -->
+    <plurals name="hours">
+        <item quantity="other">%1$d 時間</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="other">%1$d 分</item>
+    </plurals>
+    <plurals name="seconds">
+        <item quantity="other">%1$d 秒</item>
+    </plurals>
+</resources>

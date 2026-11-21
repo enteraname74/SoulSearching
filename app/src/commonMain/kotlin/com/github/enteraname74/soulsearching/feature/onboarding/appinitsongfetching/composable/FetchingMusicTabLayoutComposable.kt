@@ -11,11 +11,12 @@ import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.app.generated.resources.*
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulPageIndicator
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.domain.model.TabData
 import kotlinx.coroutines.launch
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun FetchingMusicTabLayoutComposable(
@@ -23,71 +24,71 @@ fun FetchingMusicTabLayoutComposable(
 ) {
     val pagerScreens = listOf(
         TabData(
-            title = strings.completeApplicationTitle,
+            title = CoreRes.string.complete_application_title.toTextSpec(),
             screen = {
                 AppFeatureComposable(
-                    title = strings.completeApplicationTitle,
-                    description = strings.completeApplicationText,
+                    title = CoreRes.string.complete_application_title.toTextSpec(),
+                    description = CoreRes.string.complete_application_text.toTextSpec(),
                     image = Res.drawable.system_dark_theme_main
                 )
             }
         ),
         TabData(
-            title = strings.quickAccessTitle,
+            title = CoreRes.string.quick_access_title.toTextSpec(),
             screen = {
                 AppFeatureComposable(
-                    title = strings.quickAccessTitle,
-                    description = strings.quickAccessText,
+                    title = CoreRes.string.quick_access_title.toTextSpec(),
+                    description = CoreRes.string.quick_access_text.toTextSpec(),
                     image = Res.drawable.perso_first_example
                 )
             }
         ),
         TabData(
-            title = strings.modifyElementsTitle,
+            title = CoreRes.string.modify_elements_title.toTextSpec(),
             screen = {
                 AppFeatureComposable(
-                    title = strings.modifyElementsTitle,
-                    description = strings.modifyElementsText,
+                    title = CoreRes.string.modify_elements_title.toTextSpec(),
+                    description = CoreRes.string.modify_elements_text.toTextSpec(),
                     image = Res.drawable.modify_album,
                 )
             }
         ),
         TabData(
-            title = strings.dynamicThemeFeatureTitle,
+            title = CoreRes.string.dynamic_theme_feature_title.toTextSpec(),
             screen = {
                 AppFeatureComposable(
-                    title = strings.dynamicThemeFeatureTitle,
-                    description = strings.dynamicThemeFeatureText,
+                    title = CoreRes.string.dynamic_theme_feature_title.toTextSpec(),
+                    description = CoreRes.string.dynamic_theme_feature_text.toTextSpec(),
                     image = Res.drawable.dynamic_main,
                 )
             }
         ),
         TabData(
-            title = strings.manageFoldersTitle,
+            title = CoreRes.string.manage_folders_title.toTextSpec(),
             screen = {
                 AppFeatureComposable(
-                    title = strings.manageFoldersTitle,
-                    description = strings.manageFoldersText,
+                    title = CoreRes.string.manage_folders_title.toTextSpec(),
+                    description = CoreRes.string.manage_folders_text.toTextSpec(),
                     image = Res.drawable.folders_settings,
                 )
             }
         ),
         TabData(
-            title = strings.addNewMusicsTitle,
+            title = CoreRes.string.add_new_musics_title.toTextSpec(),
             screen = {
                 AppFeatureComposable(
-                    title = strings.addNewMusicsTitle,
-                    description = strings.addNewMusicsText,
+                    title = CoreRes.string.add_new_musics_title.toTextSpec(),
+                    description = CoreRes.string.add_new_musics_text.toTextSpec(),
                     image = Res.drawable.add_new_songs_settings,
                 )
             }
         ),
         TabData(
-            title = strings.personalizeMainPageTitle,
+            title = CoreRes.string.personalize_main_page_title.toTextSpec(),
             screen = {
                 AppFeatureComposable(
-                    title = strings.personalizeMainPageTitle,
-                    description = strings.personalizeMainPageText,
+                    title = CoreRes.string.personalize_main_page_title.toTextSpec(),
+                    description = CoreRes.string.personalize_main_page_text.toTextSpec(),
                     image = Res.drawable.perso_third_example,
                 )
             }

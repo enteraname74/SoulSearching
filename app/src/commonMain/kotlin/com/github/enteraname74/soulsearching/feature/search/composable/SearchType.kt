@@ -1,10 +1,11 @@
 package com.github.enteraname74.soulsearching.feature.search.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,7 +16,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 
 @Composable
 fun SearchType(
-    title: String,
+    title: SoulTextSpec,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     modifier: Modifier = Modifier,
@@ -29,7 +30,7 @@ fun SearchType(
                 bottom = UiConstants.Spacing.medium
             )
     ) {
-        Text(
+        SoulText(
             text = title,
             color = textColor,
             fontSize = 18.sp,

@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -8,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
@@ -23,16 +23,19 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulChoiceButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulChoiceButtonData
 import com.github.enteraname74.soulsearching.coreui.button.SoulSwitch
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.CoverFolderRetrieverActions
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @Composable
 fun CoverFolderRetrieverRules(
     actions: CoverFolderRetrieverActions,
     coverFolderRetriever: CoverFolderRetriever,
-    title: String,
+    title: SoulTextSpec,
     whiteSpaceReplacementTextField: SoulTextFieldHolder,
 ) {
     Card(
@@ -46,7 +49,7 @@ fun CoverFolderRetrieverRules(
                 .padding(UiConstants.Spacing.medium),
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
         ) {
-            Text(
+            SoulText(
                 text = title,
                 style = UiConstants.Typography.bodyTitle,
                 color = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -82,9 +85,9 @@ private fun WhiteSpaceRule(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
         ) {
-            Text(
+            SoulText(
                 modifier = Modifier.weight(1f),
-                text = strings.coverFolderRetrieverRulesWhiteSpace,
+                text = CoreRes.string.cover_folder_retriever_rules_white_space.toTextSpec(),
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 style = UiConstants.Typography.bodyLarge,
             )
@@ -117,23 +120,23 @@ private fun LowerCaseRule(
             SoulChoiceButtonData(
                 icon = null,
                 data = true,
-                title = strings.coverFolderRetrieverRulesDynamicNameLowercase,
+                title = CoreRes.string.cover_folder_retriever_rules_dynamic_name_lowercase.toTextSpec(),
             ),
             SoulChoiceButtonData(
                 icon = null,
                 data = null,
-                title = strings.coverFolderRetrieverRulesDynamicNameNoTreatment,
+                title = CoreRes.string.cover_folder_retriever_rules_dynamic_name_no_treatment.toTextSpec(),
             ),
             SoulChoiceButtonData(
                 icon = null,
                 data = false,
-                title = strings.coverFolderRetrieverRulesDynamicNameUppercase,
+                title = CoreRes.string.cover_folder_retriever_rules_dynamic_name_uppercase.toTextSpec(),
             )
         ),
         currentChoiceName = when (lowerCaseRule) {
-            true -> strings.coverFolderRetrieverRulesDynamicNameLowercase
-            false -> strings.coverFolderRetrieverRulesDynamicNameUppercase
-            null -> strings.coverFolderRetrieverRulesDynamicNameNoTreatment
+            true -> CoreRes.string.cover_folder_retriever_rules_dynamic_name_lowercase.toTextSpec()
+            false -> CoreRes.string.cover_folder_retriever_rules_dynamic_name_uppercase.toTextSpec()
+            null -> CoreRes.string.cover_folder_retriever_rules_dynamic_name_no_treatment.toTextSpec()
         },
         onClick = onUpdateLowerCaseRule,
         colors = SoulButtonDefaults.primaryColors(),

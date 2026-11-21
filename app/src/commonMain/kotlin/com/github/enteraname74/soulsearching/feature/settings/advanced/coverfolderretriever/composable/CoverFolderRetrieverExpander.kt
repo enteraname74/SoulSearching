@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -24,8 +25,8 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun CoverFolderRetrieverExpander(
     isExpanded: Boolean,
-    title: String,
-    subTitle: String,
+    title: SoulTextSpec,
+    subTitle: SoulTextSpec,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,

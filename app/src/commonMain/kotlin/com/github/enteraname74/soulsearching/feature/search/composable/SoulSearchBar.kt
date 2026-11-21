@@ -1,11 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.search.composable
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -26,13 +29,12 @@ import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.keyboard.blockGlobalKeyboardShortcutsWhileFocused
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SoulSearchBar(
     searchText: String,
-    placeholder: String,
+    placeholder: SoulTextSpec,
     updateTextMethod: (String) -> Unit,
     modifier: Modifier = Modifier,
     onClose: (() -> Unit)? = null,
@@ -47,7 +49,7 @@ fun SoulSearchBar(
         onClose?.let {
             SoulIconButton(
                 icon = CoreRes.drawable.ic_keyboard_arrow_down,
-                contentDescription = strings.cancel,
+                contentDescription = CoreRes.string.cancel.toTextSpec().string,
                 onClick = onClose,
                 colors = SoulButtonDefaults.colors(
                     contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -64,7 +66,7 @@ fun SoulSearchBar(
             value = searchText,
             onValueChange = updateTextMethod,
             placeholder = {
-                Text(
+                SoulText(
                     text = placeholder,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -74,7 +76,7 @@ fun SoulSearchBar(
                 if (searchText.isNotBlank()) {
                     SoulIcon(
                         icon = CoreRes.drawable.ic_cancel_filled,
-                        contentDescription = strings.cancel,
+                        contentDescription = CoreRes.string.cancel.toTextSpec().string,
                         color = SoulSearchingColorTheme.colorScheme.onSecondary,
                         modifier = Modifier
                             .clickableWithHandCursor {
@@ -84,7 +86,7 @@ fun SoulSearchBar(
                 } else {
                     SoulIcon(
                         icon = CoreRes.drawable.ic_search,
-                        contentDescription = strings.cancel,
+                        contentDescription = CoreRes.string.cancel.toTextSpec().string,
                         color = SoulSearchingColorTheme.colorScheme.onSecondary,
                     )
                 }

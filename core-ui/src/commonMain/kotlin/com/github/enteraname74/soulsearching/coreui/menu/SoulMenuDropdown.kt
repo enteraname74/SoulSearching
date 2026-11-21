@@ -12,14 +12,15 @@ import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulChoiceButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulChoiceButtonData
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun <T>SoulMenuDropdown(
-    title: String,
-    subTitle: String?,
+    title: SoulTextSpec,
+    subTitle: SoulTextSpec?,
     choices: List<SoulChoiceButtonData<T>>,
-    selectedChoiceName: String,
+    selectedChoiceName: SoulTextSpec,
     onChoice: (T) -> Unit,
     padding: PaddingValues = PaddingValues(UiConstants.Spacing.veryLarge),
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,

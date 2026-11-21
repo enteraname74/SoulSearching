@@ -15,11 +15,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import org.koin.compose.viewmodel.koinViewModel
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTexts
 
 @Composable
 fun SettingsColorSeedScreen(
@@ -30,7 +34,7 @@ fun SettingsColorSeedScreen(
 
     SettingPage(
         navigateBack = navigateBack,
-        title = strings.extractedColorTitle,
+        title = CoreRes.string.extracted_color_title.toTextSpec(),
     ) {
         item { InformationCard() }
         items(
@@ -58,12 +62,12 @@ private fun InformationCard() {
             containerColor = SoulSearchingColorTheme.colorScheme.secondary
         )
     ) {
-        Text(
+        SoulText(
             modifier = Modifier
                 .padding(
                     all = UiConstants.Spacing.large,
                 ),
-            text = strings.extractedColorInfo,
+            text = CoreRes.string.extracted_color_info.toTextSpec(),
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             style = UiConstants.Typography.body,
             textAlign = TextAlign.Center,
@@ -97,8 +101,8 @@ private fun SeedRow(
                 unselectedColor = SoulSearchingColorTheme.colorScheme.onPrimary,
             )
         )
-        Text(
-            text = strings.colorPaletteSeed(seed = colorPaletteSeed),
+        SoulText(
+            text = SoulTexts.colorPaletteSeed(seed = colorPaletteSeed),
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = UiConstants.Typography.body,
         )

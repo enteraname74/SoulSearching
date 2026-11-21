@@ -2,24 +2,28 @@ package com.github.enteraname74.soulsearching.coreui.dialog
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.cancel
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ok
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SoulAlertDialog(
     confirmAction: () -> Unit,
     dismissAction: () -> Unit,
-    title: String? = null,
-    text: String = "",
+    title: SoulTextSpec? = null,
+    text: SoulTextSpec = "".toTextSpec(),
     icon: @Composable (() -> Unit)? = null,
-    confirmText: String = strings.ok,
-    dismissText: String? = null,
+    confirmText: SoulTextSpec = CoreRes.string.ok.toTextSpec(),
+    dismissText: SoulTextSpec? = null,
     backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
@@ -27,7 +31,7 @@ fun SoulAlertDialog(
         onDismissRequest = dismissAction,
         confirmButton = {
             TextButton(onClick = { confirmAction() }) {
-                Text(
+                SoulText(
                     text = confirmText,
                     color = contentColor
                 )
@@ -36,7 +40,7 @@ fun SoulAlertDialog(
         dismissButton = dismissText?.let {
             {
                 TextButton(onClick = dismissAction) {
-                    Text(
+                    SoulText(
                         text = it,
                         color = contentColor
                     )
@@ -45,17 +49,17 @@ fun SoulAlertDialog(
         },
         title = title?.let {
             {
-                Text(
+                SoulText(
                     text = it,
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
         },
         text = {
-            Text(
+            SoulText(
                 text = text,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         },
         icon = icon,
@@ -70,12 +74,12 @@ fun SoulAlertDialog(
 fun SoulAlertDialog(
     confirmAction: () -> Unit,
     dismissAction: () -> Unit,
-    title: String,
+    title: SoulTextSpec,
     content: @Composable () -> Unit,
     icon: @Composable (() -> Unit)? = null,
-    confirmText: String = strings.ok,
+    confirmText: SoulTextSpec = CoreRes.string.ok.toTextSpec(),
     isConfirmButtonEnabled: Boolean = true,
-    dismissText: String = strings.cancel,
+    dismissText: SoulTextSpec = CoreRes.string.cancel.toTextSpec(),
     backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
@@ -90,24 +94,24 @@ fun SoulAlertDialog(
                 onClick = { confirmAction() },
                 enabled = isConfirmButtonEnabled,
             ) {
-                Text(
+                SoulText(
                     text = confirmText,
                 )
             }
         },
         dismissButton = {
             TextButton(onClick = dismissAction) {
-                Text(
+                SoulText(
                     text = dismissText,
                     color = contentColor
                 )
             }
         },
         title = {
-            Text(
+            SoulText(
                 text = title,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         },
         text = {

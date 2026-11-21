@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.composables
 
+import com.github.enteraname74.soulsearching.coreui.strings.SoulTextSpec
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -12,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -36,8 +37,8 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 fun BigPreviewComposable(
     modifier: Modifier = Modifier,
     cover: Cover?,
-    title: String?,
-    text: String? = null,
+    title: SoulTextSpec?,
+    text: SoulTextSpec? = null,
     onClick: () -> Unit,
     onLongClick: () -> Unit = {},
     imageSize: Dp? = UiConstants.ImageSize.veryLarge,
@@ -119,7 +120,7 @@ fun BigPreviewComposable(
             }
             Column {
                 title?.let {
-                    Text(
+                    SoulText(
                         text = it,
                         color = contentColor,
                         fontWeight = FontWeight.Bold,
@@ -129,7 +130,7 @@ fun BigPreviewComposable(
                     )
                 }
                 text?.let {
-                    Text(
+                    SoulText(
                         text = it,
                         color = contentColor,
                         style = textStyle,
