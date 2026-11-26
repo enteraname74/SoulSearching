@@ -1,35 +1,22 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.BoxWithConstraintsScope
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -41,9 +28,6 @@ import com.github.enteraname74.soulsearching.domain.model.lyrics.LyricsFetchStat
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.multiselection.state.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils.MaxPlayerSidePanelWidth
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils.MinPlayerSidePanelWidth
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
@@ -51,10 +35,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerV
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMinimisedMainInfo
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMorphingMinimisedSongProgression
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMusicCover
-import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerTopInformation
-import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.ExpandedPlayerControlsComposable
-import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelDraggableView
-import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
+import com.github.enteraname74.soulsearching.feature.player.presentation.screen.views.PlayerSwipeableAdaptiveView
 import kotlin.uuid.Uuid
 
 @Composable
@@ -76,9 +57,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
     onActivateRemoteLyrics: () -> Unit,
     onEnableSwipe: (enabled: Boolean) -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
-    playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
-    val alphaTransition = PlayerUiUtils.getAlphaTransition()
+    val playerUiView = PlayerUiUtils.getPlayerUiView()
+    val transitionRatio = PlayerUiUtils.getTransitionRatio()
 
     val animatedBackgroundColor =
         if (playerViewManager.targetValue == BottomSheetStates.EXPANDED) {
@@ -108,10 +89,15 @@ fun BoxScope.PlayerSwipeableDataScreen(
             )
             .align(Alignment.TopStart)
     ) {
+        var playerTopInformationHeight by remember { mutableStateOf(0.dp) }
 
-        val imageSize = PlayerUiUtils.getImageSize()
-        var playerTopInformationHeight by rememberSaveable { mutableIntStateOf(0) }
-
+        /**
+         * Height usable for the content of the draggable view.
+         * It is the whole height minus the offset
+         * (the view is pushed down out of the view, not reduced in size, so we cannot simply use that)
+         * and minus the top information height.
+         */
+        val visuallyAvailableHeight = (this.maxHeight - playerViewManager.offset.toDp()) - playerTopInformationHeight
 
         PlayerMorphingMinimisedSongProgression(
             settingsState = settingsState,
@@ -121,239 +107,71 @@ fun BoxScope.PlayerSwipeableDataScreen(
             onEnableSwipe = onEnableSwipe,
         )
 
-        PlayerTopInformation(
+        // TODO: Are DPs saveable on screen recomposition?
+        var maxCoverWith by remember {
+            mutableStateOf(0.dp)
+        }
+        var maxCoverHeight by remember {
+            mutableStateOf(0.dp)
+        }
+        val imageSize = PlayerUiUtils.simpleImageSize(
+            maxHeight = maxCoverHeight,
+            maxWidth = maxCoverWith,
+        )
+        val coverUiInformation = PlayerUiUtils.getCoverUiInformation(
+            maxHeight = maxCoverHeight,
+            maxWidth = maxCoverWith,
+            availableHeight = visuallyAvailableHeight,
+            topInfoHeight = playerTopInformationHeight,
+            playerUiView = playerUiView,
+        )
+        PlayerMusicCover(
             modifier = Modifier
-                .align(Alignment.TopStart),
-            alphaTransition = alphaTransition,
+                .padding(
+                    start = UiConstants.Spacing.small * (1 - transitionRatio)
+                ),
+            coverUiInformation = coverUiInformation,
+            onLongClick = { showMusicBottomSheet(state.currentMusic.musicId) },
+            canSwipeCover = settingsState.canSwipeCover,
+            aroundSongs = state.aroundSongs,
+            currentMusic = state.currentMusic,
+        )
+
+        PlayerSwipeableAdaptiveView(
+            maxHeight = maxHeight,
+            currentMusicProgression = currentMusicProgression,
             state = state,
-            onTopInformationHeightChange = { height ->
-                playerTopInformationHeight = height
+            playbackCommandsState = playbackCommandsState,
+            onMaxWidthForCover = {
+                maxCoverWith = it
+            },
+            onMaxHeightForCover = {
+                maxCoverHeight = it
+            },
+            onTopInformationHeight = {
+                playerTopInformationHeight = it
             },
             onArtistClicked = onArtistClicked,
             onAlbumClicked = onAlbumClicked,
-            onShowPanel = if (
-                !PlayerUiUtils.canShowSidePanel()
-                && PlayerUiUtils.getDraggablePanelCollapsedOffset() == 0f
-            ) {
-                {
-                    playerMusicListViewManager.animateTo(
-                        newState = BottomSheetStates.EXPANDED,
-                    )
-                }
-            } else {
-                null
-            },
-            onSongInfoClicked = showMusicBottomSheet.let {
-                { it(state.currentMusic.musicId) }
-            }
+            showMusicBottomSheet = showMusicBottomSheet,
+            lyricsState = lyricsState,
+            onLongSelectOnMusic = onLongSelectOnMusic,
+            onSwiped = onSwiped,
+            onClickOnMusic = onClickOnMusic,
+            multiSelectionState = multiSelectionState,
+            animatedBackgroundColor = animatedBackgroundColor,
+            onActivateRemoteLyrics = onActivateRemoteLyrics,
+            playerUiView = playerUiView,
+            closeSelection = closeSelection,
         )
-
-        var panelWidth: Int by rememberSaveable {
-            mutableIntStateOf(0)
-        }
-        val imageHorizontalPadding = PlayerUiUtils.getImageHorizontalPadding(
-            imageSize = imageSize,
-            maxWidth = if (PlayerUiUtils.canShowSidePanel()) {
-                maxWidth - panelWidth.toDp()
-            } else {
-                maxWidth
-            },
-        )
-        val imageTopPadding = PlayerUiUtils.getImageTopPadding(
-            expandedMainInformationHeight = playerTopInformationHeight,
-            imageSize = imageSize,
-        )
-        val fullImageSize = imageSize + (imageHorizontalPadding * 2)
-        Column(
-            modifier = Modifier
-                .fillMaxHeight(),
-            verticalArrangement = if (PlayerUiUtils.canShowSidePanel()) {
-                Arrangement.SpaceBetween
-            } else {
-                Arrangement.Top
-            },
-        ) {
-            val controlsBoxWidth = if (PlayerUiUtils.canShowSidePanel()) {
-                this@BoxWithConstraints.maxWidth - panelWidth.toDp()
-            } else {
-                PlayerUiUtils.getPlayerControlsWidth(
-                    imageSize = imageSize,
-                ) + (imageHorizontalPadding * 2)
-            }
-
-            PlayerMusicCover(
-                modifier = Modifier
-                    .padding(
-                        start = UiConstants.Spacing.small * (1 - alphaTransition)
-                    ),
-                imageSize = imageSize,
-                horizontalPadding = imageHorizontalPadding,
-                topPadding = imageTopPadding,
-                onLongClick = { showMusicBottomSheet(state.currentMusic.musicId) },
-                canSwipeCover = settingsState.canSwipeCover,
-                aroundSongs = state.aroundSongs,
-                currentMusic = state.currentMusic,
-            )
-
-            if (!PlayerUiUtils.canShowRowControlPanel()) {
-                Box(
-                    modifier = Modifier
-                        .padding(
-                            top = PlayerUiUtils.getTopInformationBottomPadding(),
-                            bottom = if (PlayerUiUtils.canShowSidePanel()) {
-                                UiConstants.Spacing.large
-                            } else {
-                                0.dp
-                            }
-                        )
-                        .width(controlsBoxWidth),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    ExpandedPlayerControlsComposable(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = UiConstants.Spacing.veryLarge,
-                            )
-                            .alpha(alphaTransition),
-                        playbackCommandsState = playbackCommandsState,
-                        state = state,
-                        currentMusicProgression = currentMusicProgression,
-                    )
-                }
-            }
-        }
-
-        if (PlayerUiUtils.canShowRowControlPanel()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        start = fullImageSize,
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                ExpandedPlayerControlsComposable(
-                    modifier = Modifier
-                        .weight(
-                            weight = 1f,
-                            fill = false,
-                        )
-                        .alpha(alphaTransition)
-                        .padding(
-                            horizontal = UiConstants.Spacing.medium,
-                        ),
-                    state = state,
-                    playbackCommandsState = playbackCommandsState,
-                    currentMusicProgression = currentMusicProgression,
-                )
-
-                if (PlayerUiUtils.canShowSidePanel()) {
-                    PlayerPanelContent(
-                        playerState = state,
-                        lyricsState = lyricsState,
-                        onMoreClickedOnMusic = showMusicBottomSheet,
-                        contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                        containerColor = animatedBackgroundColor,
-                        subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-                        isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
-                        buttonColors = SoulButtonDefaults.secondaryColors(),
-                        modifier = Modifier
-                            .padding(
-                                top = imageTopPadding,
-                                start = UiConstants.Spacing.medium,
-                            )
-                            .alpha(alphaTransition)
-                            .weight(1f)
-                            .widthIn(
-                                min = MinPlayerSidePanelWidth,
-                                max = MaxPlayerSidePanelWidth,
-                            ),
-                        multiSelectionState = multiSelectionState,
-                        onLongSelectOnMusic = onLongSelectOnMusic,
-                        onActivateRemoteLyrics = onActivateRemoteLyrics,
-                        onSwiped = onSwiped,
-                        onClickOnMusic = onClickOnMusic,
-                    )
-                }
-            }
-        }
-
-        if (!PlayerUiUtils.canShowSidePanel()) {
-            PlayerPanelDraggableView(
-                maxHeight = maxHeight,
-                playerState = state,
-                lyricsState = lyricsState,
-                onMoreClickedOnMusic = showMusicBottomSheet,
-                containerColor = SoulSearchingColorTheme.colorScheme.secondary,
-                textColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-                buttonColors = SoulButtonDefaults.primaryColors(),
-                multiSelectionState = multiSelectionState,
-                onLongSelectOnMusic = onLongSelectOnMusic,
-                closeSelection = closeSelection,
-                onActivateRemoteLyrics = onActivateRemoteLyrics,
-                onSwiped = onSwiped,
-                onClickOnMusic = onClickOnMusic,
-            )
-        } else if (!PlayerUiUtils.canShowRowControlPanel()) {
-            BoxWithConstraints(
-                modifier = Modifier
-                    .padding(
-                        top = imageTopPadding,
-                        start = UiConstants.Spacing.medium,
-                    )
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.TopEnd,
-            ) {
-                PlayerPanelContent(
-                    playerState = state,
-                    lyricsState = lyricsState,
-                    onMoreClickedOnMusic = showMusicBottomSheet,
-                    contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    containerColor = animatedBackgroundColor,
-                    subTextColor = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                    isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
-                    buttonColors = SoulButtonDefaults.secondaryColors(),
-                    modifier = Modifier
-                        .alpha(alphaTransition)
-                        .width(
-                            this.getSidePanelWidth(
-                                playerControlsWidth = PlayerUiUtils.getPlayerControlsWidth(
-                                    imageSize = imageSize,
-                                )
-                            )
-                        )
-                        .onGloballyPositioned { layoutCoordinates ->
-                            panelWidth = layoutCoordinates.size.width
-                        },
-                    onLongSelectOnMusic = onLongSelectOnMusic,
-                    multiSelectionState = multiSelectionState,
-                    onActivateRemoteLyrics = onActivateRemoteLyrics,
-                    onSwiped = onSwiped,
-                    onClickOnMusic = onClickOnMusic,
-                )
-            }
-        }
 
         PlayerMinimisedMainInfo(
             imageSize = imageSize,
             currentMusic = state.currentMusic,
-            alphaTransition = 1f - alphaTransition,
+            alphaTransition = 1f - transitionRatio,
             playbackCommandsState = playbackCommandsState,
             state = state,
+            startPadding = coverUiInformation.size + coverUiInformation.horizontalPadding,
         )
     }
-}
-
-@Composable
-fun BoxWithConstraintsScope.getSidePanelWidth(playerControlsWidth: Dp): Dp {
-    val maxWidth = this.maxWidth
-    val maxWidthForPanel = maxWidth - playerControlsWidth
-
-    return maxWidthForPanel.coerceIn(
-        minimumValue = MinPlayerSidePanelWidth,
-        maximumValue = MaxPlayerSidePanelWidth,
-    )
 }

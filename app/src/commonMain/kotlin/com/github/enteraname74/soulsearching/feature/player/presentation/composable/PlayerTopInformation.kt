@@ -13,13 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.soulsearching.domain.model.Artist
-import com.github.enteraname74.soulsearching.domain.model.Scope
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_keyboard_arrow_down
@@ -28,23 +26,23 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.Artist
+import com.github.enteraname74.soulsearching.domain.model.Scope
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.ext.disabledIfNoAction
-import com.github.enteraname74.soulsearching.coreui.strings.SoulText
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PlayerTopInformation(
     modifier: Modifier = Modifier,
-    alphaTransition: Float,
-    onTopInformationHeightChange: (Int) -> Unit,
     state: PlayerViewState.Data,
     onShowPanel: (() -> Unit)?,
     onArtistClicked: ((selectedArtist: Artist) -> Unit)?,
@@ -57,11 +55,8 @@ fun PlayerTopInformation(
         modifier = modifier
             .statusBarsPadding()
             .fillMaxWidth()
-            .alpha(alphaTransition),
+            .alpha(PlayerUiUtils.getTransitionRatio()),
     ) {
-
-        val statusBarPadding: Int = getStatusBarPadding()
-
         SoulIcon(
             icon = CoreRes.drawable.ic_keyboard_arrow_down,
             modifier = Modifier
@@ -82,12 +77,7 @@ fun PlayerTopInformation(
         )
         Column(
             modifier = Modifier
-                .weight(1f)
-                .onGloballyPositioned { layoutCoordinates ->
-                    onTopInformationHeightChange(
-                        layoutCoordinates.size.height + statusBarPadding,
-                    )
-                },
+                .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             SoulText(

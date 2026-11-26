@@ -1,54 +1,55 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.CoreRes
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_volume_down
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_volume_up
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.ic_volume_mute
-import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
+import com.github.enteraname74.soulsearching.coreui.strings.SoulText
+import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.Music
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.MinimisedPlayerControlsComposable
-import com.github.enteraname74.soulsearching.coreui.strings.SoulText
-import com.github.enteraname74.soulsearching.coreui.strings.toTextSpec
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PlayerMinimisedMainInfo(
     imageSize: Dp,
+    startPadding: Dp,
     playerViewManager: PlayerViewManager = injectElement(),
     currentMusic: Music,
     alphaTransition: Float,
     playbackCommandsState: PlaybackCommandsState,
     state: PlayerViewState.Data,
 ) {
+    val coverPadding = startPadding + UiConstants.Spacing.large
+
     Row(
         modifier = Modifier
             .height(imageSize)
             .fillMaxWidth()
             .padding(
                 top = UiConstants.Spacing.medium,
-                start = imageSize + UiConstants.Spacing.large,
+                start = coverPadding,
                 end = UiConstants.Spacing.small
             )
             .alpha(alphaTransition),
@@ -58,7 +59,7 @@ fun PlayerMinimisedMainInfo(
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .weight(1f, fill = PlayerUiUtils.canShowSidePanel()),
+                .weight(1f, fill = PlayerUiUtils.canShowMoreInfoOnMinimisedView()),
             verticalArrangement = Arrangement.Center,
         ) {
             SoulText(
@@ -81,12 +82,16 @@ fun PlayerMinimisedMainInfo(
         }
         MinimisedPlayerControlsComposable(
             modifier = Modifier
-                .weight(1f, fill = PlayerUiUtils.canShowSidePanel()),
+                .weight(1f, fill = PlayerUiUtils.canShowMoreInfoOnMinimisedView()),
             playerViewState = playerViewManager.draggableState.currentValue,
             playbackCommandsState = playbackCommandsState,
             state = state,
         )
-        if (PlayerUiUtils.canShowSidePanel()) {
+        if (PlayerUiUtils.canShowMoreInfoOnMinimisedView()) {
+            Spacer(
+                modifier = Modifier
+                    .width(coverPadding)
+            )
             PlayerVolume(
                 modifier = Modifier
                     .weight(1f, fill = true)

@@ -41,7 +41,7 @@ fun MinimisedPlayerControlsComposable(
             alignment = Alignment.CenterHorizontally,
         ),
     ) {
-        if (PlayerUiUtils.canShowSidePanel()) {
+        if (PlayerUiUtils.canShowMoreInfoOnMinimisedView()) {
             SoulIcon(
                 icon = state.playerMode.icon(),
                 modifier = Modifier
@@ -92,7 +92,7 @@ fun MinimisedPlayerControlsComposable(
                 .optionalClickable(playbackCommandsState.next.takeIf { isMinimised }),
             color = SoulSearchingColorTheme.colorScheme.onSecondary.disabledIfNoAction(playbackCommandsState.next)
         )
-        if (PlayerUiUtils.canShowSidePanel()) {
+        if (PlayerUiUtils.canShowMoreInfoOnMinimisedView()) {
             SoulIcon(
                 icon = if (state.isCurrentMusicInFavorite) {
                     CoreRes.drawable.ic_favorite_filled

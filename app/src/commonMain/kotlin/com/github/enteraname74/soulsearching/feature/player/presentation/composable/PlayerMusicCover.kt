@@ -21,6 +21,7 @@ import com.github.enteraname74.soulsearching.coreui.ext.chainIf
 import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.player.domain.CoverUiInformation
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.util.CoverUtils
@@ -30,9 +31,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun PlayerMusicCover(
-    imageSize: Dp,
-    horizontalPadding: Dp,
-    topPadding: Dp,
+    coverUiInformation: CoverUiInformation,
     onLongClick: (() -> Unit)?,
     canSwipeCover: Boolean,
     aroundSongs: List<Music>,
@@ -62,10 +61,10 @@ fun PlayerMusicCover(
     ) {
         Box(
             modifier = Modifier
-                .padding(top = topPadding)
+                .padding(top = coverUiInformation.topPadding)
                 .chainIf(!canUsePager) {
                     Modifier.padding(
-                        horizontal = horizontalPadding,
+                        horizontal = coverUiInformation.horizontalPadding,
                     )
                 }
         ) {
@@ -90,9 +89,9 @@ fun PlayerMusicCover(
                     modifier = Modifier
                         .fillMaxWidth(),
                     state = pagerState,
-                    pageSpacing = horizontalPadding + 64.dp,
+                    pageSpacing = coverUiInformation.horizontalPadding + 64.dp,
                     contentPadding = PaddingValues(
-                        horizontal = horizontalPadding,
+                        horizontal = coverUiInformation.horizontalPadding,
                     ),
                     userScrollEnabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
                 ) { currentSongPos ->
@@ -102,14 +101,14 @@ fun PlayerMusicCover(
                     MusicCover(
                         modifier = imageModifier,
                         cover = song?.cover,
-                        size = imageSize,
+                        size = coverUiInformation.size,
                         offset = playerViewManager.offset,
                     )
                 }
             } else {
                 MusicCover(
                     cover = currentMusic.cover,
-                    size = imageSize,
+                    size = coverUiInformation.size,
                     offset = playerViewManager.offset,
                     modifier = imageModifier,
                 )

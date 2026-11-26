@@ -22,8 +22,11 @@ import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.isMouseAndKeyboardOnly
 import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.util.SoulPlatformUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlaybackCommandsState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
 
@@ -35,8 +38,10 @@ internal fun PlayerMorphingMinimisedSongProgression(
     currentMusicDuration: Float,
     onEnableSwipe: (enabled: Boolean) -> Unit,
 ) {
+    val playerViewManager: PlayerViewManager = injectElement()
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
+    val isMinimised = playerViewManager.currentValue == BottomSheetStates.MINIMISED
 
     val trackColor = SoulSearchingColorTheme.colorScheme.subSecondaryText.blend(
         other = SoulSearchingColorTheme.colorScheme.primary,
@@ -48,7 +53,7 @@ internal fun PlayerMorphingMinimisedSongProgression(
         visible = settingsState.isMinimisedSongProgressionShown && playbackCommandsState.seekTo != null
     ) {
         // Only go to slider mode if mouse/keyboard detected.
-        if (isHovered && SoulPlatformUtils.isMouseAndKeyboardOnly()) {
+        if (isHovered && isMinimised && SoulPlatformUtils.isMouseAndKeyboardOnly()) {
             playbackCommandsState.seekTo?.let { seekTo ->
                 BoxWithConstraints(
                     modifier = Modifier
@@ -80,7 +85,7 @@ internal fun PlayerMorphingMinimisedSongProgression(
             LinearProgressIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(1f - PlayerUiUtils.getAlphaTransition())
+                    .alpha(1f - PlayerUiUtils.getTransitionRatio())
                     .height(2.dp),
                 progress = {
                     (currentMusicProgression / currentMusicDuration).coerceIn(
